@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001480]: alsa-driver 1.0.10rc2 fails to compile with kernel suse-2.4.21
-Date: Thu, 20 Oct 2005 10:43:33 +0200
-Message-ID: <3d5916d84115c88a3deedff90b1c0426@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000442]: alsactl no loading pcm volume properly.
+Date: Thu, 20 Oct 2005 11:00:46 +0200
+Message-ID: <ad654ccdec76883c62f8fb8b5dfbfd1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB114177
-	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 10:43:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BF8E177
+	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 11:00:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,126 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been set as RELATED TO issue 0001484.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1480> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=442> 
 ======================================================================
-Reported By:                roadrunner
-Assigned To:                perex
+Reported By:                lupien_c
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1480
-Category:                   0_compilation problem_!!!
+Issue ID:                   442
+Category:                   PCI - maestro3
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               SuSE Linux
-Kernel Version:             Linux version 2.4.21-297-default (root@i386.suse.de)
-(gcc version 3.3.1 (SuSE Linux)) #1 Sat Jul 23 07:47:39 UTC 2005
+Status:                     assigned
+Distribution:               fedora core 2
+Kernel Version:             2.6.7 + acpi + swsusp2
 ======================================================================
-Date Submitted:             10-18-2005 00:20 CEST
-Last Modified:              10-20-2005 10:43 CEST
+Date Submitted:             08-15-2004 06:35 CEST
+Last Modified:              10-20-2005 11:00 CEST
 ======================================================================
-Summary:                    alsa-driver 1.0.10rc2 fails to compile with kernel
-suse-2.4.21
+Summary:                    alsactl no loading pcm volume properly.
 Description: 
-Compiling fails:
+When using alsactl restore after loading the snd_maestro3 sound driver, the
+pcm volume is restore only on the right channel. Checking the
+settings(with alsactl store or alsamixer) shows the correct value but the
+left channel is quiet. 
 
-command:
-./cvscompile --with-cards=ca0106 --with-debug=basic
+The same effect is seen when restoring after setting the pcm channel
+volume to 0. With a small non-zero volume, the left channel starts quiet
+but after a few secdonds comes on.
 
-result:
-[...]
-make[1]: Entering directory
-`/home/erik/archiv/alsa-driver-1.0.10rc2/acore'
-gcc -D__KERNEL__ -DMODULE=1
--I/home/erik/archiv/alsa-driver-1.0.10rc2/include 
--I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include -DMODVERSIONS -include
-/lib/modules/2.4.21-297-default/build/include/linux/modversions.h  
--DEXPORT_SYMTAB -c memalloc.c
-In file included from memalloc.inc:13,
-                 from memalloc.c:1:
-/home/erik/archiv/alsa-driver-1.0.10rc2/include/adriver.h:667:5: missing
-binary operator before token "("
-/home/erik/archiv/alsa-driver-1.0.10rc2/include/adriver.h:688:5: missing
-binary operator before token "("
-make[1]: *** [memalloc.o] Error 1
-make[1]: Leaving directory
-`/home/erik/archiv/alsa-driver-1.0.10rc2/acore'
-make: *** [compile] Error 1
-
-compiler: gcc-3.3.6
-
+Changing the pcm channel volume with alsamixer, always works properly and
+recovers proper stereo.
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- tiwai - 10-18-05 17:25 
-----------------------------------------------------------------------
-A known problem.  Already fixed on CVS.
-
-----------------------------------------------------------------------
- roadrunner - 10-20-05 10:43 
-----------------------------------------------------------------------
-Bug still exists in current CVS. I think it something with the 'HZ'
-preprocessor macro. In my kernel it is defined like this:
-
-include/linux/hz.h:
-static inline unsigned long get_hz(void)
-{
-#ifdef CONFIG_DEBUG_HZ
-	if (unlikely(!__HZ)) {
-		__label__ here;
-		printk("early HZ: %p\n", &&here);
-	here:
-		init_HZ(USER_HZ);
-	}
-#endif /* CONFIG_DEBUG_HZ */
-	return __HZ;
-}
-
-#define HZ get_hz()
-
-and here is the output of './cvscompile --with-cards=ca0106
---with-debug=basic'
-run on the current cvs version:
-[...]
-gcc -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
--I/home/erik/archiv/alsa-cvs/alsa-driver/include 
--I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -DALSA_BUILD
--nostdinc -iwithprefix include
--I/home/erik/archiv/alsa-cvs/alsa-driver/alsa-kernel/core/oss
--fno-omit-frame-pointer mixer_oss.c pcm_oss.c pcm_plugin.c io.c copy.c
-linear.c mulaw.c route.c rate.c > .depend
-In Datei, eingefügt von
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sound/driver.h:42,
-                    von mixer_oss.c:22:
-/home/erik/archiv/alsa-cvs/alsa-driver/include/adriver.h:670:5: fehlender
-binärer Operator vor Token &#187;(&#171;
-/home/erik/archiv/alsa-cvs/alsa-driver/include/adriver.h:691:5: fehlender
-binärer Operator vor Token &#187;(&#171;
-In Datei, eingefügt von
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sound/driver.h:42,
-                    von pcm_oss.c:29:
-[...]
+related to          0001484 Sound works only after volume change
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-18-05 00:20 roadrunner     New Issue                                    
-10-18-05 00:20 roadrunner     Distribution              => SuSE Linux      
-10-18-05 00:20 roadrunner     Kernel Version            => Linux version
-2.4.21-297-default (root@i386.suse.de) (gcc version 3.3.1 (SuSE Linux)) #1 Sat
-Jul 23 07:47:39 UTC 2005
-10-18-05 17:25 tiwai          Status                   assigned => resolved
-10-18-05 17:25 tiwai          Resolution               open => fixed       
-10-18-05 17:25 tiwai          Note Added: 0006490                          
-10-20-05 10:43 roadrunner     Status                   resolved => feedback
-10-20-05 10:43 roadrunner     Resolution               fixed => reopened   
-10-20-05 10:43 roadrunner     Note Added: 0006500                          
+08-15-04 06:35 lupien_c       New Issue                                    
+08-15-04 06:35 lupien_c       Distribution              => fedora core 2   
+08-15-04 06:35 lupien_c       Kernel Version            => 2.6.7 + acpi +
+swsusp2
+10-20-05 11:00 jdthood        Relationship added       related to 0001484  
 ======================================================================
 
 
