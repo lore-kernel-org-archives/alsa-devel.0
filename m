@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001484]: Sound works only after volume change
-Date: Thu, 20 Oct 2005 11:00:48 +0200
-Message-ID: <2b6daf5ac84194179efd3186ecefb856@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001486]: headphone control disappeared
+Date: Thu, 20 Oct 2005 11:07:45 +0200
+Message-ID: <1b4786912e281bb6ff1913de228492af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A42717B
-	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 11:00:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABCD116F
+	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 11:07:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000442.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1484> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
 ======================================================================
-Reported By:                kyromaster
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1484
-Category:                   PCI - maestro3
+Issue ID:                   1486
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             2.6.13.2-2-default
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-19-2005 14:11 CEST
-Last Modified:              10-20-2005 10:59 CEST
+Date Submitted:             10-20-2005 11:07 CEST
+Last Modified:              10-20-2005 11:07 CEST
 ======================================================================
-Summary:                    Sound works only after volume change
+Summary:                    headphone control disappeared
 Description: 
-Much information about this bug is available on
-https://bugzilla.novell.com/show_bug.cgi?id=118711
-but here is the report again.
+The submitter of Ubuntu bug report 18024 reports that the "Headphone"
+control disappeared when he upgraded from linux-image-2.6.10-5-386
+(2.6.10-34.7, from
+hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
 
-I have a ES1988 Allegro-1 soundcard (reported by YaST). When I start my
-system
-the sound doesn´t work. But when I
-change the volume via kmix or another ALSA mixer(no matter whether up or
-down) sound starts to work
-correctly until I shutdown my system.
+$cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
+                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
+irq 7
+
+See
+
+    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+
+for additional info.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000442 alsactl no loading pcm volume properly.
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 10-20-05 10:59 
-----------------------------------------------------------------------
-Another report of this:
-
-    http://bugzilla.ubuntu.com/show_bug.cgi?id=17825
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-19-05 14:11 kyromaster     New Issue                                    
-10-19-05 14:11 kyromaster     Kernel Version            => 2.6.13.2-2-default
-10-20-05 10:59 jdthood        Note Added: 0006501                          
-10-20-05 11:00 jdthood        Relationship added       related to 0000442  
+10-20-05 11:07 jdthood        New Issue                                    
 ======================================================================
 
 
