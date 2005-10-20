@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001480]: alsa-driver 1.0.10rc2 fails to compile with kernel suse-2.4.21
-Date: Thu, 20 Oct 2005 14:52:50 +0200
-Message-ID: <7c0891b091b397dec0b61d06a45ca7f1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001378]: Surround Channel and Surround mixer doesn't work with a CM9761chip
+Date: Thu, 20 Oct 2005 14:55:28 +0200
+Message-ID: <d770fc640e7b6d8fe50c7c1d92b8fdff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20564174
-	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 14:52:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3105EEF
+	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 14:55:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,131 +22,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1480> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1378> 
 ======================================================================
-Reported By:                roadrunner
-Assigned To:                perex
+Reported By:                midnight
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1480
-Category:                   0_compilation problem_!!!
+Issue ID:                   1378
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               SuSE Linux
-Kernel Version:             Linux version 2.4.21-297-default (root@i386.suse.de)
-(gcc version 3.3.1 (SuSE Linux)) #1 Sat Jul 23 07:47:39 UTC 2005
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.12.5
 ======================================================================
-Date Submitted:             10-18-2005 00:20 CEST
-Last Modified:              10-20-2005 14:52 CEST
+Date Submitted:             08-30-2005 11:33 CEST
+Last Modified:              10-20-2005 14:55 CEST
 ======================================================================
-Summary:                    alsa-driver 1.0.10rc2 fails to compile with kernel
-suse-2.4.21
+Summary:                    Surround Channel and Surround mixer doesn't work
+with a CM9761chip
 Description: 
-Compiling fails:
+The sound works fine on the center, LFE an front channels but I have no
+sound on the rear channel. also, I can't change the volume of the surround
+mixer in alsamixer (I can juste mute/unmute it).
 
-command:
-./cvscompile --with-cards=ca0106 --with-debug=basic
+I use the surround51 device to play my test sound and my test sound is a 6
+channels one.
 
-result:
-[...]
-make[1]: Entering directory
-`/home/erik/archiv/alsa-driver-1.0.10rc2/acore'
-gcc -D__KERNEL__ -DMODULE=1
--I/home/erik/archiv/alsa-driver-1.0.10rc2/include 
--I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include -DMODVERSIONS -include
-/lib/modules/2.4.21-297-default/build/include/linux/modversions.h  
--DEXPORT_SYMTAB -c memalloc.c
-In file included from memalloc.inc:13,
-                 from memalloc.c:1:
-/home/erik/archiv/alsa-driver-1.0.10rc2/include/adriver.h:667:5: missing
-binary operator before token "("
-/home/erik/archiv/alsa-driver-1.0.10rc2/include/adriver.h:688:5: missing
-binary operator before token "("
-make[1]: *** [memalloc.o] Error 1
-make[1]: Leaving directory
-`/home/erik/archiv/alsa-driver-1.0.10rc2/acore'
-make: *** [compile] Error 1
+I use the via82xx module
 
-compiler: gcc-3.3.6
-
+thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- roadrunner - 10-20-05 10:43 
+ tiwai - 10-11-05 16:27 
 ----------------------------------------------------------------------
-Bug still exists in current CVS. I think it something with the 'HZ'
-preprocessor macro. In my kernel it is defined like this:
-
-include/linux/hz.h:
-static inline unsigned long get_hz(void)
-{
-#ifdef CONFIG_DEBUG_HZ
-	if (unlikely(!__HZ)) {
-		__label__ here;
-		printk("early HZ: %p\n", &&here);
-	here:
-		init_HZ(USER_HZ);
-	}
-#endif /* CONFIG_DEBUG_HZ */
-	return __HZ;
-}
-
-#define HZ get_hz()
-
-and here is the output of './cvscompile --with-cards=ca0106
---with-debug=basic'
-run on the current cvs version:
-[...]
-gcc -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
--I/home/erik/archiv/alsa-cvs/alsa-driver/include 
--I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -DALSA_BUILD
--nostdinc -iwithprefix include
--I/home/erik/archiv/alsa-cvs/alsa-driver/alsa-kernel/core/oss
--fno-omit-frame-pointer mixer_oss.c pcm_oss.c pcm_plugin.c io.c copy.c
-linear.c mulaw.c route.c rate.c > .depend
-In Datei, eingefügt von
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sound/driver.h:42,
-                    von mixer_oss.c:22:
-/home/erik/archiv/alsa-cvs/alsa-driver/include/adriver.h:670:5: fehlender
-binärer Operator vor Token &#187;(&#171;
-/home/erik/archiv/alsa-cvs/alsa-driver/include/adriver.h:691:5: fehlender
-binärer Operator vor Token &#187;(&#171;
-In Datei, eingefügt von
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sound/driver.h:42,
-                    von pcm_oss.c:29:
-[...]
+Ah, you has to pass hw:0,1.
+Anyway, the bug in surround51 is fixed on the latest CVS.  Try it first.
 
 ----------------------------------------------------------------------
- tiwai - 10-20-05 14:52 
+ tiwai - 10-20-05 14:55 
 ----------------------------------------------------------------------
-OK, fixed again on CVS.  Wait for a while until the sf's tree is synced.
+... or try 1.0.10rc2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-18-05 00:20 roadrunner     New Issue                                    
-10-18-05 00:20 roadrunner     Distribution              => SuSE Linux      
-10-18-05 00:20 roadrunner     Kernel Version            => Linux version
-2.4.21-297-default (root@i386.suse.de) (gcc version 3.3.1 (SuSE Linux)) #1 Sat
-Jul 23 07:47:39 UTC 2005
-10-18-05 17:25 tiwai          Status                   assigned => resolved
-10-18-05 17:25 tiwai          Resolution               open => fixed       
-10-18-05 17:25 tiwai          Note Added: 0006490                          
-10-20-05 10:43 roadrunner     Status                   resolved => feedback
-10-20-05 10:43 roadrunner     Resolution               fixed => reopened   
-10-20-05 10:43 roadrunner     Note Added: 0006500                          
-10-20-05 14:52 tiwai          Status                   feedback => resolved
-10-20-05 14:52 tiwai          Resolution               reopened => fixed   
-10-20-05 14:52 tiwai          Note Added: 0006504                          
+08-30-05 11:33 midnight       New Issue                                    
+08-30-05 11:33 midnight       Distribution              => Debian Sid      
+08-30-05 11:33 midnight       Kernel Version            => 2.6.12.5        
+09-07-05 11:20 midnight       Note Added: 0006053                          
+09-07-05 15:32 tiwai          Note Added: 0006054                          
+09-08-05 01:10 midnight       Note Added: 0006069                          
+09-08-05 18:58 tiwai          Note Added: 0006076                          
+09-08-05 19:00 midnight       Note Added: 0006077                          
+09-08-05 19:12 tiwai          Note Added: 0006080                          
+09-08-05 19:58 midnight       Note Added: 0006081                          
+09-08-05 20:42 tiwai          Note Added: 0006082                          
+09-08-05 20:44 tiwai          Note Added: 0006083                          
+09-08-05 23:20 midnight       Note Added: 0006084                          
+09-09-05 12:47 tiwai          Note Added: 0006096                          
+09-09-05 14:16 midnight       File Added: ac97#0-0                         
+09-09-05 14:16 midnight       File Added: asound.state                     
+09-09-05 14:21 midnight       Note Added: 0006097                          
+09-09-05 14:29 tiwai          Note Added: 0006098                          
+09-09-05 14:54 midnight       Note Added: 0006099                          
+09-09-05 16:32 tiwai          Note Added: 0006100                          
+09-09-05 19:50 midnight       Note Added: 0006104                          
+09-09-05 20:14 tiwai          Note Added: 0006105                          
+09-09-05 23:41 midnight       Note Added: 0006106                          
+09-13-05 18:27 tiwai          Note Added: 0006155                          
+09-18-05 12:05 midnight       Note Added: 0006270                          
+09-18-05 15:59 midnight       Note Edited: 0006270                         
+09-24-05 14:34 midnight       Note Added: 0006370                          
+10-05-05 19:04 tiwai          Note Added: 0006439                          
+10-10-05 23:26 midnight       Note Added: 0006450                          
+10-11-05 16:27 tiwai          Note Added: 0006451                          
+10-20-05 14:55 tiwai          Note Added: 0006506                          
 ======================================================================
 
 
