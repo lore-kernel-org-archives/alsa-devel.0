@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001486]: headphone control disappeared
-Date: Thu, 20 Oct 2005 14:51:55 +0200
-Message-ID: <922ec4571ae476b2bce4361274b7c2b0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001477]: inserting maestro3 hangs system
+Date: Thu, 20 Oct 2005 14:53:56 +0200
+Message-ID: <c60a83ebd513139f79ec2dbb34bac155@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33493174
-	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 14:51:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9871D174
+	for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2005 14:53:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1477> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                cra
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1486
-Category:                   PCI - intel8x0
+Issue ID:                   1477
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               Fedora Core 5 (development)
+Kernel Version:             2.6.13-1.1600_FC5
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             10-20-2005 11:07 CEST
-Last Modified:              10-20-2005 14:51 CEST
+Date Submitted:             10-16-2005 17:03 CEST
+Last Modified:              10-20-2005 14:53 CEST
 ======================================================================
-Summary:                    headphone control disappeared
+Summary:                    inserting maestro3 hangs system
 Description: 
-The submitter of Ubuntu bug report 18024 reports that the "Headphone"
-control disappeared when he upgraded from linux-image-2.6.10-5-386
-(2.6.10-34.7, from
-hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
+Kernel hangs upon loading snd-maestro3 driver during hardware
+initialization.  The system only hangs if Windows was not booted prior to
+booting Linux.  So it seems that the Windows driver is poking the hardware
+in some way that "helps" the Linux driver, and basically the ALSA driver
+is not initializing the hardware correctly.
 
-$cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
-irq 7
+Bug cross-reference:
 
-See
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000376
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=134507
 
-    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
-
-for additional info.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-20-05 14:51 
+ cra - 10-18-05 18:40 
 ----------------------------------------------------------------------
-Too old kernel to debug.  The bug regarding STAC9751 should have been
-already fixed in the recent version.
+Summary: Fix maestro3 hang after cold boot
+
+This patch fixes the maestro3 driver to call the snd_m3_assp_init
+function to write the DSP firmware into the ASSP chip before sending the
+RUN_ASSP command, thereby solving the hang after a cold boot.
+
+Signed-off-by: Charles R. Anderson <cra@alum.wpi.edu>
+
+----------------------------------------------------------------------
+ tiwai - 10-20-05 14:53 
+----------------------------------------------------------------------
+Thanks, now it's on CVS.
+
+The patch portion to OSS is out of our hands.  Please submit it to LKML.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-20-05 11:07 jdthood        New Issue                                    
-10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
-10-20-05 14:51 tiwai          Note Added: 0006503                          
+10-16-05 17:03 cra            New Issue                                    
+10-16-05 17:03 cra            Distribution              => Fedora Core 5
+(development)
+10-16-05 17:03 cra            Kernel Version            => 2.6.13-1.1600_FC5
+10-16-05 17:18 cra            File Added: dmesg.txt                        
+10-16-05 17:19 cra            File Added: lspci.txt                        
+10-16-05 17:19 cra            File Added: dmidecode.txt                    
+10-16-05 17:40 cra            File Added: linux-2.6-debug-maestro3.patch        
+           
+10-16-05 17:41 cra            File Added: alsa-warmboot-after-win2k.txt         
+          
+10-16-05 17:43 cra            File Added: alsa-coldboot-hang.txt                
+   
+10-16-05 17:44 cra            File Added: oss-coldboot-hang.txt                 
+  
+10-17-05 19:32 cra            File Added: linux-2.6-maestro3-assp-init.patch    
+               
+10-17-05 19:37 cra            Note Added: 0006487                          
+10-18-05 17:27 tiwai          Note Added: 0006491                          
+10-18-05 18:40 cra            Note Added: 0006492                          
+10-20-05 14:53 tiwai          Status                   assigned => resolved
+10-20-05 14:53 tiwai          Resolution               open => fixed       
+10-20-05 14:53 tiwai          Note Added: 0006505                          
 ======================================================================
 
 
