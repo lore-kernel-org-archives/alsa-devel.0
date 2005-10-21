@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001487]: AudioScience cards show as NOT supported.
-Date: Fri, 21 Oct 2005 01:50:24 +0200
-Message-ID: <1157ec751393ed7405c4a2826c8110c9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000321]: Left front channel always muted on boot
+Date: Fri, 21 Oct 2005 03:51:08 +0200
+Message-ID: <c371c30c0e400f78bdf608ce3358b9e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB10F170
-	for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2005 01:50:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9562F181
+	for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2005 03:51:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,36 +22,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1487> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=321> 
 ======================================================================
-Reported By:                dbx
+Reported By:                64bitten
 Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1487
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Issue ID:                   321
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     acknowledged
+Distribution:               gentoo
+Kernel Version:             2.6.6
 ======================================================================
-Date Submitted:             10-21-2005 01:50 CEST
-Last Modified:              10-21-2005 01:50 CEST
+Date Submitted:             06-02-2004 08:09 CEST
+Last Modified:              10-21-2005 03:51 CEST
 ======================================================================
-Summary:                    AudioScience cards show as NOT supported.
+Summary:                    Left front channel always muted on boot
 Description: 
-AudioScience entries in the matrix should be supported.
-Attaching an updated version of the xml card description file.
+ice1724 (M Audio Revolution 7.1 in my case) always restores the mixer
+settings at boot, but the left front channel is muted regardless.  The fix
+is to run alsamixer and adjust the slider again.  This forces the channel
+to unmute.  Should I be worried "amixer scontrols" reports everything as
+"Mono" as well?
 ======================================================================
+
+----------------------------------------------------------------------
+ Fran - 10-20-05 05:18 
+----------------------------------------------------------------------
+Well, I have the same problem, in my case the speaker not working is the
+right one, and the slider I have to change in alsamixer is "DAC" (the
+first one).
+There are no differences between amixer or asound.state before and after,
+that's coherent with the problem, restoring or saving the state doesn't
+help.
+The only difference I see in asound.state between this DAC and the others
+is the "index" property: (I guess this is why this one is called "DAC" and
+the other ones are "DAC n")
+        control.20 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 255'
+                iface MIXER
+                name 'DAC Volume'
+                value 230
+        }
+        control.21 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 255'
+                iface MIXER
+                name 'DAC Volume'
+                index 1
+                value 230
+        }
+
+I'm not sure what else to look at, but I can test whatever you like, just
+ask please.
+I'm using standalone ALSA 1.0.9 and kernel 2.6.12 but this seems to be a
+problem with every version of alsa, since this bug is really old. Mi sound
+card is an M-Audio Revolution 7.1
+
+----------------------------------------------------------------------
+ 64bitten - 10-21-05 03:51 
+----------------------------------------------------------------------
+Is it just me or are the left and right channels swapped on the M-Audio
+Revolution 7.1 card as well?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-05 01:50 dbx            New Issue                                    
-10-21-05 01:50 dbx            File Added: vendor-AudioScience.xml               
-    
+06-02-04 08:09 64bitten       New Issue                                    
+06-02-04 08:09 64bitten       Distribution              => gentoo          
+06-02-04 08:09 64bitten       Kernel Version            => 2.6.6           
+12-17-04 03:15 K6-III         Note Added: 0002845                          
+12-17-04 06:46 herby          Note Added: 0002846                          
+12-17-04 06:51 rlrevell       Note Added: 0002847                          
+12-21-04 07:09 64bitten       File Added: amixer.bad                       
+12-21-04 07:10 64bitten       Note Added: 0002896                          
+04-09-05 17:24 jdthood        Status                   new => acknowledged 
+10-20-05 02:36 sst4           Note Added: 0006497                          
+10-20-05 05:18 Fran           Note Added: 0006498                          
+10-21-05 03:51 64bitten       Note Added: 0006509                          
 ======================================================================
 
 
