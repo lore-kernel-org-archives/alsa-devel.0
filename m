@@ -1,94 +1,107 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Problem with several Creative Labs soundcards,
-	possibly more?
-Date: Sat, 22 Oct 2005 01:09:38 -0400
-Message-ID: <1129957778.6385.3.camel@mindpipe>
-References: <a5a496a90510190840v7f7d2345s133b06eaad0a4719@mail.gmail.com>
-	 <ad2655cb0510190920n5a0a4ddby@mail.gmail.com>
-	 <a5a496a90510191156i24c69e17yc35184577090f9f5@mail.gmail.com>
-	 <4356C414.9060008@superbug.co.uk>
-	 <a5a496a90510191414n651099e8x9d9952638ce84729@mail.gmail.com>
-	 <4356C875.5030607@superbug.co.uk>
-	 <a5a496a90510191845w55200b77y927dc92470b15784@mail.gmail.com>
-	 <a5a496a90510211519y15711764ode0a2fe4053695d8@mail.gmail.com>
-	 <1129939134.4724.26.camel@mindpipe>
-	 <a5a496a90510211958s1252b5fds1e91c699c3bfe7dc@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
+Date: Sat, 22 Oct 2005 16:09:13 +0200
+Message-ID: <1900daf1197dc71b80a65e16a7a04f3b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <a5a496a90510211958s1252b5fds1e91c699c3bfe7dc@mail.gmail.com>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Nazo <nazosan@gmail.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9CCA177
+	for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2005 16:09:13 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Please don't top post.
 
-On Fri, 2005-10-21 at 21:58 -0500, Nazo wrote:
-> If I boot with pci=noacpi, the normal mandriva kernel hangs just after
-> it says hit I for interactive setup.  The vanilla one starts up, but,
-> when I try to play an audio file, I have the same problem.  Bear in
-> mind when saying the problem lies with the kernel that I've seen this
-> issue on several different kernel versions.
-> 
-> As for my motherboard, it's a Gigabyte 9NDA3J.  The chipset is the
-> nForce 3 Ultra (which I believe is basically just a nForce 3 250 with
-> the only change being the socket type, but, I'm not 100% sure.)  I
-> think I saw some things using the 250 driver for the motherboard
-> rather than saying ultra, but, like I said, I think this is probably
-> ok.
-> 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=506> 
+======================================================================
+Reported By:                bekker
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   506
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             kernel 2.6.8-gentoo-r3.
+======================================================================
+Date Submitted:             09-19-2004 13:40 CEST
+Last Modified:              10-22-2005 16:09 CEST
+======================================================================
+Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital
+edition) has no sound on headphone output
+Description: 
+the Fortissimo II card has seperate outputs for front, rear speakers and
+headphone. I cannot get sound on the headphone. 
 
-OK, it still sounds like a kernel problem.  The IRQ handling code in the
-emu10k1 driver is quite simple and almost certainly free of bugs.  OTOH,
-I see TONS of reports like this on LKML, and it's always an ACPI issue.
+Front (HW:0,0) and rear speakers (HW:0,1) work.IEC958 (HW:0,2) is also
+available but I have not tested it.
 
-Unless someone on alsa-devel has a better idea, I think you need to
-report this on the kernel bugzilla.
+The slider marked as headphone in the mixer actually controls the rear
+speaker volume. 
 
-Can you check /proc/interrupts and see if the number of interrupts for
-your soundcard increases when you play sounds?  Also please post the
-output of "dmesg" after rebooting the machine and trying to play a
-sound.
 
-Lee
+======================================================================
 
-> On 10/21/05, Lee Revell <rlrevell@joe-job.com> wrote:
-> > On Fri, 2005-10-21 at 17:19 -0500, Nazo wrote:
-> > > When I got it to sucessfully boot, and tried to play something, it
-> > > played one frame over and over in a loop (kind of like what happens
-> > > when the system locks up in the middle of a game or something.)  When
-> > > the application was closed and another different sound file was
-> > > attempted, it gave an IO error and no sound came out at all.  Based on
-> > > the way it kind of acted like the hardware locked up or something, my
-> > > first guess would be maybe something along the lines of an IRQ
-> > > conflict or somesuch?  That's just a guess though.  Anyway, he thought
-> > > it might be useful if I provided some extra info, so I've added them
-> > > to the bottom of the message:
-> > >
-> >
-> > OK, this is a classic sign that interrupts are not being acknowledged
-> > properly.  It's not a problem with the ALSA drivers but with the kernel.
-> > Probably an ACPI issue.
-> >
-> > What is the make and model of your motherboard?
-> >
-> > Does it work if you boot with "pci=noacpi"?
-> >
-> > Lee
-> >
-> >
-> >
-> 
+----------------------------------------------------------------------
+ darkbrain - 11-28-04 14:44 
+----------------------------------------------------------------------
+I applyed the patch: now i can see Center LFE but it's mapped to rear
+speakers. 
+As you can see Hercules Fortissimo II has only one codec cs4624
+http://images.google.it/imgres?imgurl=http://www.de.tomshardware.com/video/20011018/images/hercules_fort2_card.jpg&imgrefurl=http://www.de.tomshardware.com/video/20011018/audiocards-11.html&h=411&w=425&sz=51&tbnid=GTz4QrL3D3MJ:&tbnh=117&tbnw=120&start=33&prev=/images%3Fq%3Dhercules%2Bfortissimo%2B2%2B%26start%3D20%26hl%3Dit%26lr%3D%26sa%3DN
+
+----------------------------------------------------------------------
+ atler - 10-22-05 16:09 
+----------------------------------------------------------------------
+Is it planned to add headphones output functionality? I still really miss
+it - it's  amplified so it's much butter to use with headphones (sound
+from speakers output is disturbed when volume is quite high) and after all
+it's quite problematic when I switch speakers/headphones or switch OS
+linux/windows.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-19-04 13:40 bekker         New Issue                                    
+09-19-04 13:40 bekker         Distribution              => Gentoo Linux    
+09-19-04 13:40 bekker         Kernel Version            => kernel
+2.6.8-gentoo-r3.
+09-19-04 13:41 bekker         Note Added: 0001784                          
+09-20-04 17:39 tiwai          Note Added: 0001789                          
+09-21-04 20:01 bekker         Note Added: 0001808                          
+09-23-04 18:34 tiwai          Note Added: 0001830                          
+10-06-04 11:33 tiwai          Note Added: 0002019                          
+10-07-04 22:25 bekker         Note Added: 0002040                          
+10-08-04 12:15 tiwai          Note Added: 0002046                          
+10-08-04 14:38 bekker         Note Added: 0002051                          
+10-08-04 15:22 tiwai          Note Added: 0002052                          
+10-08-04 15:23 tiwai          File Added: cs46xx-force-cl.dif                   
+
+10-08-04 20:25 bekker         Note Added: 0002056                          
+10-12-04 14:36 tiwai          Note Added: 0002093                          
+10-14-04 16:41 bekker         Note Added: 0002156                          
+11-19-04 08:04 arphen         Note Added: 0002477                          
+11-19-04 08:04 arphen         Issue Monitored: arphen                      
+11-28-04 14:44 darkbrain      Note Added: 0002624                          
+11-28-04 14:45 darkbrain      Issue Monitored: darkbrain                    
+10-22-05 16:09 atler          Note Added: 0006512                          
+======================================================================
+
 
 
 
