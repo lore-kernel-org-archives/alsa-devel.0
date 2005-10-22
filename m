@@ -1,82 +1,94 @@
-From: Tilman Kranz <tilman.kranz@tk-sls.de>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/pci/ca0106 ca_midi.c,...
-Date: Sat, 22 Oct 2005 06:48:03 +0200
-Message-ID: <4359C483.4010102@tk-sls.de>
-References: <E1ESiQD-0008Jo-Eq@sc8-pr-cvs1.sourceforge.net>	<s5hll0ni3ui.wl%tiwai@suse.de>	<4358D4F1.6020602@superbug.co.uk> <s5hhdbbhvcx.wl%tiwai@suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Problem with several Creative Labs soundcards,
+	possibly more?
+Date: Sat, 22 Oct 2005 01:09:38 -0400
+Message-ID: <1129957778.6385.3.camel@mindpipe>
+References: <a5a496a90510190840v7f7d2345s133b06eaad0a4719@mail.gmail.com>
+	 <ad2655cb0510190920n5a0a4ddby@mail.gmail.com>
+	 <a5a496a90510191156i24c69e17yc35184577090f9f5@mail.gmail.com>
+	 <4356C414.9060008@superbug.co.uk>
+	 <a5a496a90510191414n651099e8x9d9952638ce84729@mail.gmail.com>
+	 <4356C875.5030607@superbug.co.uk>
+	 <a5a496a90510191845w55200b77y927dc92470b15784@mail.gmail.com>
+	 <a5a496a90510211519y15711764ode0a2fe4053695d8@mail.gmail.com>
+	 <1129939134.4724.26.camel@mindpipe>
+	 <a5a496a90510211958s1252b5fds1e91c699c3bfe7dc@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.tk-sls.de (linuxfoo.de [83.151.18.109])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 60AF013E
-	for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2005 06:48:14 +0200 (MEST)
-In-Reply-To: <s5hhdbbhvcx.wl%tiwai@suse.de>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@alsa-project.org
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <a5a496a90510211958s1252b5fds1e91c699c3bfe7dc@mail.gmail.com>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Nazo <nazosan@gmail.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Please don't top post.
 
->At Fri, 21 Oct 2005 12:45:53 +0100,
->James Courtier-Dutton wrote:
->  
->
->>Takashi Iwai wrote:
->>    
->>
->>>But, what is the reason to call them indirectly via pointers at all?
->>>The routine is just for ca0106, so no complex abstraction is
->>>necessary.
->>>      
->>>
->>The same ca_midi.c file should work with the emu10k1x, sb live, sb 
->>audigy1/2.
->>Once this midi code is tested well, we can then share the code amongst 
->>all the different modules.
->>So the indirection is for that purpose.
->>    
->>
->For such a purpose, we can merge it to mpu401_uart.c, instead.
->Many codes are same, and mpu401_uart has already indirect read/write
->function pointers.  Only additional irq_enable/disable callbacks would
->be required.
->  
->
-Hello.
+On Fri, 2005-10-21 at 21:58 -0500, Nazo wrote:
+> If I boot with pci=noacpi, the normal mandriva kernel hangs just after
+> it says hit I for interactive setup.  The vanilla one starts up, but,
+> when I try to play an audio file, I have the same problem.  Bear in
+> mind when saying the problem lies with the kernel that I've seen this
+> issue on several different kernel versions.
+> 
+> As for my motherboard, it's a Gigabyte 9NDA3J.  The chipset is the
+> nForce 3 Ultra (which I believe is basically just a nForce 3 250 with
+> the only change being the socket type, but, I'm not 100% sure.)  I
+> think I saw some things using the 250 driver for the motherboard
+> rather than saying ultra, but, like I said, I think this is probably
+> ok.
+> 
 
-First of all, I just tried ALSA CVS alsa-driver and alsa-kernel with my
-Audigy LS model SB0312. MIDI I/O with the card works. Have many thanks
-for letting those changes in.
+OK, it still sounds like a kernel problem.  The IRQ handling code in the
+emu10k1 driver is quite simple and almost certainly free of bugs.  OTOH,
+I see TONS of reports like this on LKML, and it's always an ACPI issue.
 
-... plays a little tune of gratitude...
+Unless someone on alsa-devel has a better idea, I think you need to
+report this on the kernel bugzilla.
 
-I now would like to comment on what I did.
+Can you check /proc/interrupts and see if the number of interrupts for
+your soundcard increases when you play sounds?  Also please post the
+output of "dmesg" after rebooting the machine and trying to play a
+sound.
 
-I am perfectly aware of my ca_midi.c being the at least 2nd reimplementation
-of an MPU401 driver and I want to apologize for this introduction
-of redundancy.
+Lee
 
-My implementation was result-driven and I wanted to go back to the working
-implementation that is most close to my board. It happened to be emu10k1x.
-I could reuse the algorithms 1:1.
-
-Function pointers in ca_midi_t were introduced to enable emu10k1x to use
-the code as well, if they want to. As opposed to emu10k1x, every read/write
-dereferences the ca_midi_t to the hardware specific read_write which, as
-Takashi Iwai already pointed out, happens to be the way mpu401 does it 
-as well.
-
-Greetings,
-Tilman.
+> On 10/21/05, Lee Revell <rlrevell@joe-job.com> wrote:
+> > On Fri, 2005-10-21 at 17:19 -0500, Nazo wrote:
+> > > When I got it to sucessfully boot, and tried to play something, it
+> > > played one frame over and over in a loop (kind of like what happens
+> > > when the system locks up in the middle of a game or something.)  When
+> > > the application was closed and another different sound file was
+> > > attempted, it gave an IO error and no sound came out at all.  Based on
+> > > the way it kind of acted like the hardware locked up or something, my
+> > > first guess would be maybe something along the lines of an IRQ
+> > > conflict or somesuch?  That's just a guess though.  Anyway, he thought
+> > > it might be useful if I provided some extra info, so I've added them
+> > > to the bottom of the message:
+> > >
+> >
+> > OK, this is a classic sign that interrupts are not being acknowledged
+> > properly.  It's not a problem with the ALSA drivers but with the kernel.
+> > Probably an ACPI issue.
+> >
+> > What is the make and model of your motherboard?
+> >
+> > Does it work if you boot with "pci=noacpi"?
+> >
+> > Lee
+> >
+> >
+> >
+> 
 
 
 
