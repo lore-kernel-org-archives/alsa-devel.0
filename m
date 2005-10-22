@@ -1,23 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-user] Problem with several Creative Labs soundcards,
- possibly more?
-Date: Sat, 22 Oct 2005 16:29:51 -0400
-Message-ID: <1130012992.7717.16.camel@mindpipe>
-References: <a5a496a90510190840v7f7d2345s133b06eaad0a4719@mail.gmail.com>
-	 <ad2655cb0510190920n5a0a4ddby@mail.gmail.com>
-	 <a5a496a90510191156i24c69e17yc35184577090f9f5@mail.gmail.com>
-	 <4356C414.9060008@superbug.co.uk>
-	 <a5a496a90510191414n651099e8x9d9952638ce84729@mail.gmail.com>
-	 <4356C875.5030607@superbug.co.uk>
-	 <a5a496a90510191845w55200b77y927dc92470b15784@mail.gmail.com>
-	 <a5a496a90510211519y15711764ode0a2fe4053695d8@mail.gmail.com>
-	 <1129939134.4724.26.camel@mindpipe>
-	 <a5a496a90510211958s1252b5fds1e91c699c3bfe7dc@mail.gmail.com>
+From: Rudolf Marek <r.marek@sh.cvut.cz>
+Subject: Re: [PATCH] ESS Solo1 IRQ issue take 2
+Date: Sat, 22 Oct 2005 22:32:58 +0200
+Message-ID: <435AA1FA.5070007@sh.cvut.cz>
+References: <20051010085543.GB2369@elf.ucw.cz>	<20051010094629.12123.qmail@desitka.sh.cvut.cz> <s5hachha6j6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <a5a496a90510211958s1252b5fds1e91c699c3bfe7dc@mail.gmail.com>
+In-Reply-To: <s5hachha6j6.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,18 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nazo <nazosan@gmail.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, pavel@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-10-21 at 21:58 -0500, Nazo wrote:
-> If I boot with pci=noacpi, the normal mandriva kernel hangs just after
-> it says hit I for interactive setup.
+>>I tried to disable the DMA crt on the soundcard in suspend routine
+>>but it wont help. Perhaps userspace process is stopped and is not
+>>delivering new data?! Will pci_disable_device also disable the DMA?
+> 
+> 
+> No, you have to stop the stream explicitly in suspend.
+> The following patch should fix this problem.
 
-OK, try "pci=routeirq".
+Hello,
 
-Lee
+Sorry for the delay. I tried the patch but still it is the same. The notebook is 333MHz, so
+maybe userspace processes are stopped and it takes time before the drivers are stopped too?
 
+Any other ideas?
+
+Regards
+
+Rudolf
 
 
 -------------------------------------------------------
