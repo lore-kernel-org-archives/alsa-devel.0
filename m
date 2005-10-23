@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
-Date: Sun, 23 Oct 2005 19:37:04 +0200
-Message-ID: <3fb57f70d12c9bb9e6a2e02c623e9b65@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001109]: I does't job with the 5.1 modules ca0106
+Date: Sun, 23 Oct 2005 19:40:35 +0200
+Message-ID: <0541d2d6296fdab8979c6a0f744df130@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71868144
-	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2005 19:37:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C00C144
+	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2005 19:40:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1109> 
 ======================================================================
-Reported By:                ammiellodebar
+Reported By:                alex4988
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1320
+Issue ID:                   1109
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Arch Linux
+Status:                     closed
+Distribution:               gentoo
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-08-2005 06:03 CEST
-Last Modified:              10-23-2005 19:37 CEST
+Date Submitted:             05-14-2005 09:48 CEST
+Last Modified:              10-23-2005 19:40 CEST
 ======================================================================
-Summary:                    CA0106 with Soundblaster 24-bit live does not allow
-recording
+Summary:                    I does't job with the 5.1 modules ca0106
 Description: 
-When I use the line in on the card, it will not capture unless i crank up
-the mixer to near peak, and then its garbled and distorted sound, my
-capture is up all the way and i know its not a dumb mistake of mine
-
-
+I doesn't work the modules ca0106 with 5.1 system.What i can make??.
+SORRY ENGLISH 
 ======================================================================
 
 ----------------------------------------------------------------------
- qqtortqq - 10-12-05 06:45 
+ jcdutton - 09-10-05 13:18 
 ----------------------------------------------------------------------
-Is there anything I can provide to help? Any code I can test?
+Please try the trouble shooter at: http://alsa.opensrc.org/TroubleShooting
+
+Then post the output of steps 1,2,3 and 4.
+
+
 
 ----------------------------------------------------------------------
- jcdutton - 10-23-05 19:37 
+ jcdutton - 10-23-05 19:40 
 ----------------------------------------------------------------------
-How does the passthrough work?
-On my SB live the mic is shared with the SPDIF, so one cannot do both at
-the same time. Are the connections different on your sound card?
+Closed due to lack of feedback.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 06:03 ammiellodebar  New Issue                                    
-08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
-08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
-08-12-05 23:11 jcdutton       Note Added: 0005791                          
-08-12-05 23:11 jcdutton       Status                   assigned => feedback
-08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
-08-21-05 23:56 ammiellodebar  Note Added: 0005887                          
-08-21-05 23:56 ammiellodebar  Note Edited: 0005717                         
-09-10-05 10:36 jcdutton       Note Added: 0006108                          
-09-10-05 18:15 ammiellodebar  Note Added: 0006124                          
-09-15-05 06:37 qqtortqq       Note Added: 0006192                          
-09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
-10-12-05 06:45 qqtortqq       Note Added: 0006461                          
-10-23-05 19:37 jcdutton       Note Added: 0006513                          
+05-14-05 09:48 alex4988       New Issue                                    
+05-14-05 09:48 alex4988       Distribution              => gentoo          
+06-06-05 10:00 perex          Assigned To              perex => jcdutton   
+06-06-05 10:00 perex          Category                 0_compilation problem_!!!
+=> PCI - ca0106
+09-10-05 13:18 jcdutton       Note Added: 0006120                          
+09-10-05 13:18 jcdutton       Status                   assigned => feedback
+10-23-05 19:40 jcdutton       Status                   feedback => closed  
+10-23-05 19:40 jcdutton       Note Added: 0006514                          
 ======================================================================
 
 
