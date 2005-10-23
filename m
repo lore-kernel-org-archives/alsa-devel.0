@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000992]: no supported card
-Date: Sun, 23 Oct 2005 19:47:06 +0200
-Message-ID: <5c765a47035d8bbe99fd57731d253f99@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001121]: Very low volume through SPDIF (no master volume?)
+Date: Sun, 23 Oct 2005 19:48:05 +0200
+Message-ID: <34946f1944057627d8275bd04c48b8da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43976144
-	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2005 19:47:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA0E0144
+	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2005 19:48:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1121> 
 ======================================================================
-Reported By:                rav0r
+Reported By:                dacid
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   992
-Category:                   PCI - emu10k1
+Issue ID:                   1121
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             2.4
+Status:                     closed
+Distribution:               Gentoo (vanilla kernel)
+Kernel Version:             2.6.12-rc4
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-14-2005 21:52 CET
-Last Modified:              10-23-2005 19:47 CEST
+Date Submitted:             05-21-2005 03:21 CEST
+Last Modified:              10-23-2005 19:48 CEST
 ======================================================================
-Summary:                    no supported card
+Summary:                    Very low volume through SPDIF (no master volume?)
 Description: 
-I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
-this model ever be supported?
+Hello - 
+   I've been trying for a few weeks now to get SPDIF out working on my
+Soundblaster 24bit card working.
+   The issue is that the output to my receiver is very low, if I crank it
+way up (-8db), I can hear some audio, but it is very muffled and
+distored.
+   I've tried various setting combinations in alsamixer, to no avail.
+   I'm also a little curious as to why this soundcard has no master volume
+or PCM controls.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 09-10-05 13:16 
+ jcdutton - 09-10-05 13:21 
 ----------------------------------------------------------------------
-This card should be supported.
-try the troubleshooter on: http://alsa.opensrc.org/TroubleShooting
+Please try the trouble shooter at: http://alsa.opensrc.org/TroubleShooting
+
+The post the output of steps 1,2,3,4 here.
+And also the output of:
+amixer contents
 
 ----------------------------------------------------------------------
- jcdutton - 10-23-05 19:47 
+ jcdutton - 10-23-05 19:48 
 ----------------------------------------------------------------------
-lspci is used to detect your sound card.
-You don't seem to have it installed.
-install pciutils.
-The ./configure should then work fine.
+Closed due to lack of feedback.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 21:52 rav0r          New Issue                                    
-03-14-05 21:52 rav0r          Kernel Version            => 2.4             
-03-14-05 22:57 mikma          Note Added: 0003910                          
-03-15-05 23:13 rav0r          Note Added: 0003925                          
-03-16-05 11:05 mikma          Note Added: 0003935                          
-03-17-05 00:51 rav0r          Note Added: 0003974                          
-03-20-05 19:14 rav0r          Note Added: 0004096                          
-03-20-05 20:28 mikma          Note Added: 0004099                          
-03-21-05 03:32 rav0r          File Added: config.log                       
-03-21-05 03:33 rav0r          Note Added: 0004112                          
-03-21-05 03:33 rav0r          Note Added: 0004113                          
-03-21-05 15:44 mikma          Note Added: 0004118                          
-03-21-05 17:13 rav0r          Note Added: 0004120                          
-04-06-05 18:15 rav0r          Note Added: 0004347                          
-04-06-05 18:16 rav0r          Note Added: 0004348                          
-04-06-05 18:40 jcdutton       Note Added: 0004349                          
-04-06-05 18:40 jcdutton       Status                   assigned => feedback
-04-07-05 12:54 rav0r          Note Added: 0004355                          
-04-07-05 12:55 rav0r          Note Added: 0004356                          
-04-11-05 13:30 rav0r          Note Edited: 0004356                         
-06-06-05 10:03 perex          Assigned To              perex => jcdutton   
-06-06-05 10:03 perex          Category                 0_compilation problem_!!!
-=> PCI - emu10k1
-09-10-05 13:16 jcdutton       Note Added: 0006119                          
-10-23-05 19:47 jcdutton       Note Added: 0006516                          
+05-21-05 03:21 dacid          New Issue                                    
+05-21-05 03:21 dacid          Distribution              => Gentoo (vanilla
+kernel)
+05-21-05 03:21 dacid          Kernel Version            => 2.6.12-rc4      
+05-24-05 01:54 dacid          Issue Monitored: dacid                       
+05-28-05 12:13 jcdutton       Note Added: 0004763                          
+05-28-05 12:30 jcdutton       Note Added: 0004772                          
+05-28-05 12:30 jcdutton       Status                   assigned => feedback
+05-29-05 03:27 dacid          Note Added: 0004778                          
+05-29-05 12:23 jcdutton       Note Added: 0004783                          
+05-30-05 15:35 dacid          Note Added: 0004819                          
+09-10-05 13:21 jcdutton       Note Added: 0006121                          
+10-23-05 19:48 jcdutton       Status                   feedback => closed  
+10-23-05 19:48 jcdutton       Note Added: 0006517                          
 ======================================================================
 
 
