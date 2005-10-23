@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001109]: I does't job with the 5.1 modules ca0106
-Date: Sun, 23 Oct 2005 19:40:35 +0200
-Message-ID: <0541d2d6296fdab8979c6a0f744df130@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001413]: Module update removed support for SB live! 24bit
+Date: Sun, 23 Oct 2005 19:42:10 +0200
+Message-ID: <1f3fa1343111d64cb9c76f268e9c9630@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C00C144
-	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2005 19:40:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3442144
+	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2005 19:42:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1109> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1413> 
 ======================================================================
-Reported By:                alex4988
+Reported By:                csabo2
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1109
+Issue ID:                   1413
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               gentoo
-Kernel Version:             
+Distribution:               
+Kernel Version:             2.6.x
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-14-2005 09:48 CEST
-Last Modified:              10-23-2005 19:40 CEST
+Date Submitted:             09-11-2005 15:13 CEST
+Last Modified:              10-23-2005 19:42 CEST
 ======================================================================
-Summary:                    I does't job with the 5.1 modules ca0106
+Summary:                    Module update removed support for SB live! 24bit
 Description: 
-I doesn't work the modules ca0106 with 5.1 system.What i can make??.
-SORRY ENGLISH 
+I noticed after installing the new fedora core, which came with alsa 1.0.9
+I no longer had support for my card.  When I tried to configure it, it
+said the module audigyls was not included.  So I asked around and found
+out you replaced it with the module im filing this under.  I have been
+unable to get sound working on it, and no one in the support channels has
+been successful thus far.  Seeing as ALSA comes with the kernel now, I
+cannot remove it to install the needed version (1.0.7) If theres anyway I
+can help please let me know.  I'll even MAIL you my card.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 09-10-05 13:18 
+ rlrevell - 09-11-05 20:48 
 ----------------------------------------------------------------------
-Please try the trouble shooter at: http://alsa.opensrc.org/TroubleShooting
-
-Then post the output of steps 1,2,3 and 4.
-
-
+FC4 comes with a buggy ALSA version that doesn't support your card
+properly.  Install ALSA 1.0.10-rc1 from source.  Also file an FC4 bug
+report.
 
 ----------------------------------------------------------------------
- jcdutton - 10-23-05 19:40 
+ jcdutton - 10-23-05 19:42 
 ----------------------------------------------------------------------
-Closed due to lack of feedback.
+The audigyls module name was changed to ca0106.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-05 09:48 alex4988       New Issue                                    
-05-14-05 09:48 alex4988       Distribution              => gentoo          
-06-06-05 10:00 perex          Assigned To              perex => jcdutton   
-06-06-05 10:00 perex          Category                 0_compilation problem_!!!
-=> PCI - ca0106
-09-10-05 13:18 jcdutton       Note Added: 0006120                          
-09-10-05 13:18 jcdutton       Status                   assigned => feedback
-10-23-05 19:40 jcdutton       Status                   feedback => closed  
-10-23-05 19:40 jcdutton       Note Added: 0006514                          
+09-11-05 15:13 csabo2         New Issue                                    
+09-11-05 15:13 csabo2         Kernel Version            => 2.6.x           
+09-11-05 20:48 rlrevell       Note Added: 0006142                          
+10-23-05 19:42 jcdutton       Status                   assigned => closed  
+10-23-05 19:42 jcdutton       Note Added: 0006515                          
 ======================================================================
 
 
