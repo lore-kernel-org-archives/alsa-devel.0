@@ -1,11 +1,17 @@
-From: David =?iso-8859-1?Q?H=E4rdeman?= <david@2gen.com>
-Subject: Problem with usb-audio introduced between 2.6.13 and 2.6.14-rc1
-Date: Sun, 23 Oct 2005 00:13:25 +0200
-Message-ID: <20051022221325.GA6852@hardeman.nu>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Re: Switch to dmix pure by default?
+Date: Sun, 23 Oct 2005 15:04:35 +0200
+Message-ID: <20051023150435.rg5ttf7zgdgkgksc@www3.webhosting.cx>
+References: <20051019154420.GA14091@piware.de>
+	<s5hwtk9jv8g.wl%tiwai@suse.de> <pan.2005.10.19.18.17.37.68892@plan99.net>
+	<s5hoe5kjyu9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hoe5kjyu9.wl%tiwai@suse.de>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,51 +22,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: clemens@ladisch.de, perex@suse.cz, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mike Hearn <mike@plan99.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I sent this to the LKML but forgot some CC:s, the thread is at:
-http://marc.theaimsgroup.com/?l=3Dlinux-kernel&m=3D113001840929175&w=3D2
+HI,
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+This has possibly become the most regularly requested feature. Is there a
+tasklist that has this as a priority?
 
-After updating the kernel on one of my computers today I discovered that=20
-usb-audio via snd-pcm-oss over the snd-usb-audio ALSA drivers stopped=20
-working (worked with 2.6.13, doesn't with 2.6.14-rc[12345]).
+Cheers.
 
-The weird part is that it only stopped working when using the driver=20
-through the oss emulation and only for some programs. I've tried it with=20
-all apps with native alsa support that I had installed, and all of them=20
-worked. I also tried it with a few different apps with oss support, and=20
-most of them worked (xine and mplayer) while one failed (mythmusic).
+Quoting Takashi Iwai <tiwai@suse.de>:
 
-The symptoms is that no sound is heard while the app seems to believe=20
-that everything is just fine. It also progresses through the song at=20
-about 20x normal speed (i.e. it thinks its done playing a 4 minute song=20
-after 12 seconds). The only difference I can come up with is that xine=20
-and mplayer probably up-sample the audio to 48.000Hz while MythMusic=20
-tries to play at 44.100Hz (the device is a TerraTec external USB <->=20
-SPDIF interface).
+> At Wed, 19 Oct 2005 19:17:37 +0100,
+> Mike Hearn wrote:
+>>
+>> On Wed, 19 Oct 2005 19:02:23 +0200, Takashi Iwai wrote:
+>> > dmix uses mmap, and assumes fine enough periods.  So, it wouldn't work
+>> > well the cards supporting only 2 periods, for example.
+>>
+>> Is that for performance? I don't really understand why dmix can't just,
+>> well, mix the streams together and then forward it on as a regular
+>> bytestream using the non-mmap interface. Esound works with any hardware,
+>> so couldn't dmix have a compatibility mode?
+>
+> The question is not doable or not.  It's a completely different
+> design.
+>
+> The mix "server" like esound does:
+> - _read_ the data from clients
+> - mix them
+> - wright them to h/w
+> Because of this mechanism, it requires smaller period to achieve the
+> low latency.
+>
+> OTOH, dmix lets its processes mixing by themselves.  There is no read
+> or write server operation, i.e. there is no real mix "server".
+> (In practice, dmix has a resource server, which is used only to pass
+> the file descriptor for mmap.)
+> Each client mmaps the very same h/w buffer, and add/sub the data on
+> the buffer atomically as write.
+>
+> Of course, it's possible to implement ALSA-mixing server a la
+> esound/arts for the hardwares without mmappable buffers.
+> But, it's just an idea and a plan, so far.  Volunteers are always
+> appreciated ;)
+>
+>
+> Takashi
+>
+>
+> -------------------------------------------------------
+> This SF.Net email is sponsored by:
+> Power Architecture Resource Center: Free content, downloads, discussions,
+> and more. http://solutions.newsforge.com/ibmarch.tmpl
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
 
-I've used git's bisect command to try to find the exact problem, and it=20
-seems to have been introduced by this commit:=09
-7efd8bc800324a967a37e8a425433468b7f06adb
-see also:
-http://www.kernel.org/git/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3D=
-commit;h=3D7efd8bc800324a967a37e8a425433468b7f06adb
 
-patch name: [ALSA] usb-audio: double-buffer all playback data
 
-I'm not sure on how to fix it since the commit is quite big and cannot=20
-be simply reversed with the current tree as there have been other=20
-patches applied to the file afterwards. Comments/suggestions welcome...
+--
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org/ - The Linux Audio Users guide
+Http://www.djcj.org/gigs - Gigs Guide Korea
+========================================
 
-Regards,
-David H=E4rdeman
-david (at) 2gen (dot) com
+Being on stage with the band in front of crowds shouting, "Get off! No!
+We want normal music!", I think that was more like acting than anything
+I've ever done.
 
-PS
-Please CC me on any replies
+Goldie, 8 Nov, 2002
+The Scotsman
+
 
 
 -------------------------------------------------------
