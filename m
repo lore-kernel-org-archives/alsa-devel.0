@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001413]: Module update removed support for SB live! 24bit
-Date: Sun, 23 Oct 2005 19:42:10 +0200
-Message-ID: <1f3fa1343111d64cb9c76f268e9c9630@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000992]: no supported card
+Date: Sun, 23 Oct 2005 19:47:06 +0200
+Message-ID: <5c765a47035d8bbe99fd57731d253f99@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3442144
-	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2005 19:42:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43976144
+	for <alsa-devel@alsa-project.org>; Sun, 23 Oct 2005 19:47:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1413> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
 ======================================================================
-Reported By:                csabo2
+Reported By:                rav0r
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1413
-Category:                   PCI - ca0106
+Issue ID:                   992
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
+Status:                     feedback
 Distribution:               
-Kernel Version:             2.6.x
-Resolution:                 open
-Fixed in Version:           
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             09-11-2005 15:13 CEST
-Last Modified:              10-23-2005 19:42 CEST
+Date Submitted:             03-14-2005 21:52 CET
+Last Modified:              10-23-2005 19:47 CEST
 ======================================================================
-Summary:                    Module update removed support for SB live! 24bit
+Summary:                    no supported card
 Description: 
-I noticed after installing the new fedora core, which came with alsa 1.0.9
-I no longer had support for my card.  When I tried to configure it, it
-said the module audigyls was not included.  So I asked around and found
-out you replaced it with the module im filing this under.  I have been
-unable to get sound working on it, and no one in the support channels has
-been successful thus far.  Seeing as ALSA comes with the kernel now, I
-cannot remove it to install the needed version (1.0.7) If theres anyway I
-can help please let me know.  I'll even MAIL you my card.
+I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
+this model ever be supported?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-11-05 20:48 
+ jcdutton - 09-10-05 13:16 
 ----------------------------------------------------------------------
-FC4 comes with a buggy ALSA version that doesn't support your card
-properly.  Install ALSA 1.0.10-rc1 from source.  Also file an FC4 bug
-report.
+This card should be supported.
+try the troubleshooter on: http://alsa.opensrc.org/TroubleShooting
 
 ----------------------------------------------------------------------
- jcdutton - 10-23-05 19:42 
+ jcdutton - 10-23-05 19:47 
 ----------------------------------------------------------------------
-The audigyls module name was changed to ca0106.
+lspci is used to detect your sound card.
+You don't seem to have it installed.
+install pciutils.
+The ./configure should then work fine.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-11-05 15:13 csabo2         New Issue                                    
-09-11-05 15:13 csabo2         Kernel Version            => 2.6.x           
-09-11-05 20:48 rlrevell       Note Added: 0006142                          
-10-23-05 19:42 jcdutton       Status                   assigned => closed  
-10-23-05 19:42 jcdutton       Note Added: 0006515                          
+03-14-05 21:52 rav0r          New Issue                                    
+03-14-05 21:52 rav0r          Kernel Version            => 2.4             
+03-14-05 22:57 mikma          Note Added: 0003910                          
+03-15-05 23:13 rav0r          Note Added: 0003925                          
+03-16-05 11:05 mikma          Note Added: 0003935                          
+03-17-05 00:51 rav0r          Note Added: 0003974                          
+03-20-05 19:14 rav0r          Note Added: 0004096                          
+03-20-05 20:28 mikma          Note Added: 0004099                          
+03-21-05 03:32 rav0r          File Added: config.log                       
+03-21-05 03:33 rav0r          Note Added: 0004112                          
+03-21-05 03:33 rav0r          Note Added: 0004113                          
+03-21-05 15:44 mikma          Note Added: 0004118                          
+03-21-05 17:13 rav0r          Note Added: 0004120                          
+04-06-05 18:15 rav0r          Note Added: 0004347                          
+04-06-05 18:16 rav0r          Note Added: 0004348                          
+04-06-05 18:40 jcdutton       Note Added: 0004349                          
+04-06-05 18:40 jcdutton       Status                   assigned => feedback
+04-07-05 12:54 rav0r          Note Added: 0004355                          
+04-07-05 12:55 rav0r          Note Added: 0004356                          
+04-11-05 13:30 rav0r          Note Edited: 0004356                         
+06-06-05 10:03 perex          Assigned To              perex => jcdutton   
+06-06-05 10:03 perex          Category                 0_compilation problem_!!!
+=> PCI - emu10k1
+09-10-05 13:16 jcdutton       Note Added: 0006119                          
+10-23-05 19:47 jcdutton       Note Added: 0006516                          
 ======================================================================
 
 
