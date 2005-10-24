@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Mon, 24 Oct 2005 15:37:42 +0200
-Message-ID: <75835fb8c174ed2c04e28f7e55753a56@85.132.177.35>
+Subject: [ALSA - driver 0001490]: unresolved symbol copy_to_user_fromio_R602c96f0 ; unresolved symbol copy_from_user_toio_Rce3ca308
+Date: Mon, 24 Oct 2005 17:14:38 +0200
+Message-ID: <fec5c5d8c14a3362c94a9bb245dbab43@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0EC4F188
-	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 15:37:42 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1698192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 17:14:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,98 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://85.132.177.35/alsa-bug/view.php?id=1276> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1490> 
 ======================================================================
-Reported By:                colding
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1276
-Category:                   PCI - emu10k1
+Issue ID:                   1490
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Gentoo AMD64 2005.0
-Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
-20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
+Status:                     new
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              10-24-2005 15:37 CEST
+Date Submitted:             10-21-2005 15:06 CEST
+Last Modified:              10-24-2005 17:14 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
-playing any sound.
+Summary:                    unresolved symbol copy_to_user_fromio_R602c96f0 ;
+unresolved symbol copy_from_user_toio_Rce3ca308
 Description: 
-I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
-I have enabled ALSA and OSS emulation in the kernel. I have tried as
-compiled in, no modules, and as module. The card is correctly detected on
-boot-up
-and apparently activated. 
+Starting from alsa-1.0.10rc2 and CVS on kernel 2.4.22-1.2199.nptl
 
-Everything seems to be configured correctly according to the alsa guide
-for Gentoo and all I could find at alsa-project and for Gnome. 
+/etc/init.d/alsasound start
 
-The problem is that I am only hearing cyclically repeating clicks, with
-weak static noise in-between, when I am trying to play music. I have a
-set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
-analog output jack (Line Out 1) on the card.
+unresolved symbol copy_to_user_fromio_R602c96f0 
 
-It seems that my problems are the same as in this former post to the
-list:
-
-http://sourceforge.net/mailarchive/message.php?msg_id=11662616
-
-That thread concluded with no solution but to revert to OSS.
-
+unresolved symbol copy_from_user_toio_Rce3ca308
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 10-24-05 15:22 
+ Raymond - 10-24-05 17:14 
 ----------------------------------------------------------------------
-I don't think that this is a problem with the sound card itself. It should
-handle 32bit DMA.
-This might point to a problem with the Linux Kernel's DMA assignment
-routine.
-But for now, applying this patch will just hide the problem, but will keep
-users happy.
+This case can be closed, it looks like I installed the wrong version of
+Intel536ep-4.71 modem driver which cause the unresolved symbol on FC1.
 
-----------------------------------------------------------------------
- pomac - 10-24-05 15:37 
-----------------------------------------------------------------------
-I don't have the techspecs, but i don't think that this would be
-reproducable on a 32 bit platform due to the memory segmentation (lowmem
-goes to 724 or so mb) and dma is allocated below that. So basically, does
-the techspecs state that it CAN do  32 bit dma or not? Other than that, it
-seems like it's a known emu10k1 thing and this card is based on/still
-emu10k1 afair.
 
-Anyways, to little sleep, but atleast i can listen to music using alsa now
-=)
+
+gcc32 -D__KERNEL__ -DMODULE=1 -I/cvs/alsa-driver/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h  
+-DEXPORT_SYMTAB -c sound.c
+sound.c:42: warning: `device_mode' defined but not used
+
+gcc32 -D__KERNEL__ -DMODULE=1 -I/cvs/alsa-driver/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=intel8x0   -c -o intel8x0.o intel8x0.c
+intel8x0.c:93: warning: `enable' defined but not used
+intel8x0.c:95: warning: `joystick' defined but not used
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 22:13 colding        New Issue                                    
-07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
-07-22-05 22:13 colding        Kernel Version            => Linux omc-2
-2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
-Processor 252 AuthenticAMD GNU/Linux
-07-23-05 12:53 colding        Issue Monitored: colding                     
-07-23-05 15:47 colding        Note Added: 0005553                          
-08-16-05 12:34 pzad           Note Added: 0005826                          
-08-16-05 16:52 rlrevell       Note Added: 0005829                          
-08-16-05 16:53 rlrevell       Status                   new => feedback     
-08-17-05 09:05 colding        Note Added: 0005834                          
-09-17-05 18:52 jdthood        Note Added: 0006252                          
-09-19-05 09:25 colding        Note Added: 0006276                          
-09-22-05 15:14 jdthood        Status                   feedback => acknowledged
-10-24-05 15:05 pomac          File Added: digest-alsa-driver-1.0.10_rc2         
-          
-10-24-05 15:06 pomac          File Added: alsa-driver-1.0.10_rc2-dma.patch      
-             
-10-24-05 15:09 pomac          Note Added: 0006518                          
-10-24-05 15:22 jcdutton       Note Added: 0006520                          
-10-24-05 15:37 pomac          Note Added: 0006521                          
+10-21-05 15:06 Raymond        New Issue                                    
+10-21-05 15:06 Raymond        Distribution              => Fedora Core 1   
+10-21-05 15:06 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+10-24-05 17:14 Raymond        Note Added: 0006522                          
 ======================================================================
 
 
