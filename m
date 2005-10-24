@@ -1,15 +1,15 @@
-From: Mark Knecht <markknecht@gmail.com>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Unable to file Alsa bug reports
-Date: Mon, 24 Oct 2005 08:59:30 -0700
-Message-ID: <5bdc1c8b0510240859w64f12364r711c409cd119b645@mail.gmail.com>
+Date: Mon, 24 Oct 2005 12:11:24 -0400
+Message-ID: <1130170285.16563.18.camel@mindpipe>
 References: <5bdc1c8b0510240822r5fd39ef4uf701347017843a7@mail.gmail.com>
 	 <435CFD9F.60407@superbug.co.uk>
+	 <5bdc1c8b0510240859w64f12364r711c409cd119b645@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <435CFD9F.60407@superbug.co.uk>
-Content-Disposition: inline
+In-Reply-To: <5bdc1c8b0510240859w64f12364r711c409cd119b645@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,34 +19,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Mark Knecht <markknecht@gmail.com>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/24/05, James Courtier-Dutton <James@superbug.co.uk> wrote:
-> Mark Knecht wrote:
->
-> >Hi,
-> >   Is there any thing going on with the Alsa Mantis server? I've not
-> >been able to get through to it at all for at least 3-4 days. It's been
-> >hard to get through to for weeks - possibly months. I've lost track.
+On Mon, 2005-10-24 at 08:59 -0700, Mark Knecht wrote:
+> On 10/24/05, James Courtier-Dutton <James@superbug.co.uk> wrote:
+> > Mark Knecht wrote:
 > >
-> >   Will this be fixed?
+> > >Hi,
+> > >   Is there any thing going on with the Alsa Mantis server? I've not
+> > >been able to get through to it at all for at least 3-4 days. It's been
+> > >hard to get through to for weeks - possibly months. I've lost track.
+> > >
+> > >   Will this be fixed?
+> > >
+> > >Thanks,
+> > >Mark
+> > >
+> > >
 > >
-> >Thanks,
-> >Mark
+> > Use IP address: 85.132.177.35 <http://85.132.177.35>
 > >
-> >
->
-> Use IP address: 85.132.177.35 <http://85.132.177.35>
->
-> James
+> > James
+> 
+> What language is this?
+> 
 
-What language is this?
+Internet.
 
-I don't see where to file Alsa bug reports at this site. Sorry.
+> I don't see where to file Alsa bug reports at this site. Sorry.
 
-- Mark
+Just replace "bugtrack.alsa-project.org" in the URLs with
+"85.132.177.35".
+
+Yes, http://85.132.177.35 should redirect to the ALSA bug tracker main
+page.  I've mentioned it before but there's still no redirect.
+
+Lee
+
 
 
 -------------------------------------------------------
