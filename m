@@ -1,8 +1,8 @@
 From: Tim Sawchuck <slocaus@gmail.com>
 Subject: Re: Re: [Alsa-user] Problem with several Creative Labs
  soundcards, possibly more?
-Date: Sun, 23 Oct 2005 21:47:13 -0700
-Message-ID: <20051023214713.0b1a6f25__14677.026103209$1130129557$gmane$org@tjs.homelinux.net>
+Date: Sun, 23 Oct 2005 21:52:25 -0700
+Message-ID: <20051023215225.0ce4dec6@tjs.homelinux.net>
 References: <a5a496a90510190840v7f7d2345s133b06eaad0a4719@mail.gmail.com>
 	<a5a496a90510191414n651099e8x9d9952638ce84729@mail.gmail.com>
 	<4356C875.5030607@superbug.co.uk>
@@ -16,13 +16,10 @@ References: <a5a496a90510190840v7f7d2345s133b06eaad0a4719@mail.gmail.com>
 	<a5a496a90510221928k73428e03j85afe7aff02505d0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed;
- boundary="Signature_Sun__23_Oct_2005_21_47_13_-0700_L8kPkEnSdnNvg=CJ";
+ boundary=Signature_Sun__23_Oct_2005_21_52_25_-0700_1L247QGa0alq1IXf;
  protocol="application/pgp-signature"; micalg=PGP-SHA1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <a5a496a90510221928k73428e03j85afe7aff02505d0@mail.gmail.com>
-Resent-Message-ID: <20051023215019.352f2359@tjs.homelinux.net>
-Resent-To: alsa-user@lists.sourceforge.net,
-	alsa-devel <alsa-devel@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -32,10 +29,10 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nazo <nazosan@gmail.com>
+To: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---Signature_Sun__23_Oct_2005_21_47_13_-0700_L8kPkEnSdnNvg=CJ
+--Signature_Sun__23_Oct_2005_21_52_25_-0700_1L247QGa0alq1IXf
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
@@ -64,18 +61,18 @@ Q: Why is top-posting such a bad thing?
 A: Top-posting.
 Q: What is the most annoying thing on usenet and in e-mail?
 
---Signature_Sun__23_Oct_2005_21_47_13_-0700_L8kPkEnSdnNvg=CJ
+--Signature_Sun__23_Oct_2005_21_52_25_-0700_1L247QGa0alq1IXf
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.2 (GNU/Linux)
 
-iD8DBQFDXGdYr4y5pVzN7/gRAjCmAJ4+vRyxYMH48HYn/eoMg6dQSHO5gACfVYDN
-lLNlTXYTrzjaD7/btZfCYEA=
-=cywR
+iD4DBQFDXGiJr4y5pVzN7/gRAkhwAKCAbLZfyuk5NUJR/EjoMa0d5TnUHgCXQPec
+IaQGOIZ+Xh61CviU8FBy1Q==
+=1Ww4
 -----END PGP SIGNATURE-----
 
---Signature_Sun__23_Oct_2005_21_47_13_-0700_L8kPkEnSdnNvg=CJ--
+--Signature_Sun__23_Oct_2005_21_52_25_-0700_1L247QGa0alq1IXf--
 
 
 -------------------------------------------------------
