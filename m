@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001439]: OSS emulation fails for usb-audio
-Date: Mon, 24 Oct 2005 15:18:45 +0200
-Message-ID: <de909bf197a0779db461757216a81690@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
+Date: Mon, 24 Oct 2005 15:22:30 +0200
+Message-ID: <543eb032c003608abf745cccbfb30c7b@85.132.177.35>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24A52120
-	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 15:18:45 +0200 (MEST)
+Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7584189
+	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 15:22:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,114 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1439> 
+<https://85.132.177.35/alsa-bug/view.php?id=1276> 
 ======================================================================
-Reported By:                dagb
+Reported By:                colding
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1439
-Category:                   CORE OSS - pcm
+Issue ID:                   1276
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
+Status:                     acknowledged
+Distribution:               Gentoo AMD64 2005.0
+Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
+20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
-Date Submitted:             09-21-2005 21:31 CEST
-Last Modified:              10-24-2005 15:18 CEST
+Date Submitted:             07-22-2005 22:13 CEST
+Last Modified:              10-24-2005 15:22 CEST
 ======================================================================
-Summary:                    OSS emulation fails for usb-audio
+Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
+playing any sound.
 Description: 
-With ALSA as found in 2.6.14-rc{12} 
-(which reports as as ALSA version 1.0.10-rc1?):
-When playing audio using the OSS emulation with beep-media-player through
-my USB headset adapter, there is no audio, and the time elapsed in BMP
-runs way too fast.
+I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
+I have enabled ALSA and OSS emulation in the kernel. I have tried as
+compiled in, no modules, and as module. The card is correctly detected on
+boot-up
+and apparently activated. 
 
-It works if I use the native ALSA support in BMP.
-But, I cannot get any audio with skype with this kernel. This is my main
-beef.
-skype does not do ALSA. I have to use the OSS emulation.
+Everything seems to be configured correctly according to the alsa guide
+for Gentoo and all I could find at alsa-project and for Gnome. 
 
-The exact same setup with 2.6.13-gentoo-r1 (using the vanilla kernel ALSA)
-works perfectly for me.
+The problem is that I am only hearing cyclically repeating clicks, with
+weak static noise in-between, when I am trying to play music. I have a
+set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
+analog output jack (Line Out 1) on the card.
+
+It seems that my problems are the same as in this former post to the
+list:
+
+http://sourceforge.net/mailarchive/message.php?msg_id=11662616
+
+That thread concluded with no solution but to revert to OSS.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- dagb - 09-27-05 07:40 
+ pomac - 10-24-05 15:09 
 ----------------------------------------------------------------------
-dagb-home src # uname -sr 
-Linux 2.6.13-gentoo-r1
+Ok, sorry about the dual file upload, must have missed the first time.
 
-dagb-home src # zcat /proc/config.gz | grep CONFIG_USB_BANDWIDTH
-# CONFIG_USB_BANDWIDTH is not set
+Anyways, i pointed out that it was due to more than 1 gb of memory that we
+got this problem and Lee Revell sent a patch, I rediffed it against
+1.0.10rc2.
 
-dagb-home src # grep CONFIG_USB_BANDWIDTH
-/usr/src/linux-2.6.14-rc1/.config
-# CONFIG_USB_BANDWIDTH is not set
-
-Yes. CONFIG_USB_BANDWIDTH disabled in both setups.
+This fixed it for me, and i assume that it's the flaw, but it would be
+better to get confirmation form everyone.
 
 ----------------------------------------------------------------------
- Alphix - 10-24-05 15:18 
+ jcdutton - 10-24-05 15:22 
 ----------------------------------------------------------------------
-I see exactly the same issue with a TerraTec external usb audio card. I've
-reported it LKML
-(http://marc.theaimsgroup.com/?l=linux-kernel&m=113001840929175&w=2) and
-the ALSA mailing list
-(http://article.gmane.org/gmane.linux.alsa.devel/27690).
-
-
-I've included the email below for the records
-=============================================
-
-After updating the kernel on one of my computers today I discovered that 
-usb-audio via snd-pcm-oss over the snd-usb-audio ALSA drivers stopped 
-working (worked with 2.6.13, doesn't with 2.6.14-rc[12345]).
-
-The weird part is that it only stopped working when using the driver 
-through the oss emulation and only for some programs. I've tried it with 
-all apps with native alsa support that I had installed, and all of them 
-worked. I also tried it with a few different apps with oss support, and 
-most of them worked (xine and mplayer) while one failed (mythmusic).
-
-The symptoms is that no sound is heard while the app seems to believe 
-that everything is just fine. It also progresses through the song at 
-about 20x normal speed (i.e. it thinks its done playing a 4 minute song 
-after 12 seconds). The only difference I can come up with is that xine 
-and mplayer probably up-sample the audio to 48.000Hz while MythMusic 
-tries to play at 44.100Hz (the device is a TerraTec external USB <-> 
-SPDIF interface).
-
-I've used git's bisect command to try to find the exact problem, and it 
-seems to have been introduced by this commit:	
-7efd8bc800324a967a37e8a425433468b7f06adb
-see also:
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=7efd8bc800324a967a37e8a425433468b7f06adb
-
-patch name: [ALSA] usb-audio: double-buffer all playback data
-
-I'm not sure on how to fix it since the commit is quite big and cannot 
-be simply reversed with the current tree as there have been other 
-patches applied to the file afterwards. Comments/suggestions welcome...
-
-Regards,
-David Härdeman
+I don't think that this is a problem with the sound card itself. It should
+handle 32bit DMA.
+This might point to a problem with the Linux Kernel's DMA assignment
+routine.
+But for now, applying this patch will just hide the problem, but will keep
+users happy.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-05 21:31 dagb           New Issue                                    
-09-21-05 21:31 dagb           Distribution              => Gentoo          
-09-21-05 21:31 dagb           Kernel Version            => 2.6.14-rc2      
-09-21-05 21:31 dagb           Issue Monitored: dagb                        
-09-26-05 22:07 dagb           Note Added: 0006400                          
-09-26-05 22:32 rlrevell       Note Added: 0006401                          
-09-27-05 07:40 dagb           Note Added: 0006404                          
-10-24-05 15:18 Alphix         Note Added: 0006519                          
+07-22-05 22:13 colding        New Issue                                    
+07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
+07-22-05 22:13 colding        Kernel Version            => Linux omc-2
+2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
+Processor 252 AuthenticAMD GNU/Linux
+07-23-05 12:53 colding        Issue Monitored: colding                     
+07-23-05 15:47 colding        Note Added: 0005553                          
+08-16-05 12:34 pzad           Note Added: 0005826                          
+08-16-05 16:52 rlrevell       Note Added: 0005829                          
+08-16-05 16:53 rlrevell       Status                   new => feedback     
+08-17-05 09:05 colding        Note Added: 0005834                          
+09-17-05 18:52 jdthood        Note Added: 0006252                          
+09-19-05 09:25 colding        Note Added: 0006276                          
+09-22-05 15:14 jdthood        Status                   feedback => acknowledged
+10-24-05 15:05 pomac          File Added: digest-alsa-driver-1.0.10_rc2         
+          
+10-24-05 15:06 pomac          File Added: alsa-driver-1.0.10_rc2-dma.patch      
+             
+10-24-05 15:09 pomac          Note Added: 0006518                          
+10-24-05 15:22 jcdutton       Note Added: 0006520                          
 ======================================================================
 
 
