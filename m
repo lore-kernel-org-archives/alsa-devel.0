@@ -1,12 +1,13 @@
-From: Mark Knecht <markknecht@gmail.com>
-Subject: Unable to file Alsa bug reports
-Date: Mon, 24 Oct 2005 08:22:35 -0700
-Message-ID: <5bdc1c8b0510240822r5fd39ef4uf701347017843a7@mail.gmail.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Unable to file Alsa bug reports
+Date: Mon, 24 Oct 2005 16:28:31 +0100
+Message-ID: <435CFD9F.60407@superbug.co.uk>
+References: <5bdc1c8b0510240822r5fd39ef4uf701347017843a7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <5bdc1c8b0510240822r5fd39ef4uf701347017843a7@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,18 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Mark Knecht <markknecht@gmail.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   Is there any thing going on with the Alsa Mantis server? I've not
-been able to get through to it at all for at least 3-4 days. It's been
-hard to get through to for weeks - possibly months. I've lost track.
+Mark Knecht wrote:
 
-   Will this be fixed?
+>Hi,
+>   Is there any thing going on with the Alsa Mantis server? I've not
+>been able to get through to it at all for at least 3-4 days. It's been
+>hard to get through to for weeks - possibly months. I've lost track.
+>
+>   Will this be fixed?
+>
+>Thanks,
+>Mark
+>  
+>
 
-Thanks,
-Mark
+Use IP address: 85.132.177.35 <http://85.132.177.35>
+
+James
+
 
 
 -------------------------------------------------------
