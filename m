@@ -1,73 +1,81 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [noise] The noise problem wrt Audigy 2 ZS
-Date: Mon, 24 Oct 2005 00:18:50 -0400
-Message-ID: <1130127531.16563.5.camel@mindpipe>
-References: <1130080668.10270.3.camel@localhost>
-	 <1130084827.11980.12.camel@mindpipe>  <1130112868.10270.11.camel@localhost>
+From: Tim Sawchuck <slocaus@gmail.com>
+Subject: Re: Re: [Alsa-user] Problem with several Creative Labs
+ soundcards, possibly more?
+Date: Sun, 23 Oct 2005 21:47:13 -0700
+Message-ID: <20051023214713.0b1a6f25__14677.026103209$1130129557$gmane$org@tjs.homelinux.net>
+References: <a5a496a90510190840v7f7d2345s133b06eaad0a4719@mail.gmail.com>
+	<a5a496a90510191414n651099e8x9d9952638ce84729@mail.gmail.com>
+	<4356C875.5030607@superbug.co.uk>
+	<a5a496a90510191845w55200b77y927dc92470b15784@mail.gmail.com>
+	<a5a496a90510211519y15711764ode0a2fe4053695d8@mail.gmail.com>
+	<1129939134.4724.26.camel@mindpipe>
+	<a5a496a90510211958s1252b5fds1e91c699c3bfe7dc@mail.gmail.com>
+	<1130012992.7717.16.camel@mindpipe>
+	<a5a496a90510221800l18eda48dqa9d3d966ccf9276a@mail.gmail.com>
+	<1130033653.9902.4.camel@mindpipe>
+	<a5a496a90510221928k73428e03j85afe7aff02505d0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <1130112868.10270.11.camel@localhost>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: pomac@vapor.com
-Cc: ALSA user list <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: multipart/signed;
+ boundary="Signature_Sun__23_Oct_2005_21_47_13_-0700_L8kPkEnSdnNvg=CJ";
+ protocol="application/pgp-signature"; micalg=PGP-SHA1
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <a5a496a90510221928k73428e03j85afe7aff02505d0@mail.gmail.com>
+Resent-Message-ID: <20051023215019.352f2359@tjs.homelinux.net>
+Resent-To: alsa-user@lists.sourceforge.net,
+	alsa-devel <alsa-devel@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Nazo <nazosan@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Please make sure to cc: the ALSA lists.
+--Signature_Sun__23_Oct_2005_21_47_13_-0700_L8kPkEnSdnNvg=CJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2005-10-24 at 02:14 +0200, Ian Kumlien wrote:
-> On Sun, 2005-10-23 at 12:27 -0400, Lee Revell wrote:
-> > On Sun, 2005-10-23 at 17:17 +0200, Ian Kumlien wrote:
-> > > Hi, 
-> > > 
-> > > I have found a bunch of topics on this now:
-> > > Squealing / Buzzing / Static noise with EMU10k1 and Audigy 2 ZS
-> > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1276
-> > 
-> > How are you able to access this site at all?  bugtrack.alsa-project.org
-> > has been giving me "Connection refused" for days.
-> 
-> It worked before, both from here and from a friends place... 
-> 
-> > Can you repost the text of the bug report?
-> 
-> Someone else did.
-> 
-> The interesting part of this is that it almost works for a while, if you
-> really work at it, you *can* get it to work sometimes. It feels like it
-> depends on where in the memory "things" are located, and by things i
-> mean either the kernel module or the app itself, i dunno which.
-> 
-> You can also hear more or less of the actual sound with the noise,
-> sometimes you don't hear any of it and sometimes you hear some of it.
-> 
+On Sat, 22 Oct 2005 21:28:57 -0500
+Nazo wrote:
 
-Hmm.  You mentioned this bug only occurs on 64 bit machines or with more
-than 1GB of memory.  Maybe it can only DMA into the first 1GB of memory
-or something.  Try this patch.
+> Just where am I supposed to reply so that everyone is happy
+> then since at the top isn't good enough?  The bottom so people
 
---- include/sound/emu10k1.h~	2005-10-11 12:31:42.000000000 -0400
-+++ include/sound/emu10k1.h	2005-10-24 00:14:40.000000000 -0400
-@@ -48,7 +48,7 @@
- 
- /* FIXME? - according to the OSS driver the EMU10K1 needs a 29 bit DMA mask */
- #define EMU10K1_DMA_MASK	0x7fffffffUL	/* 31bit */
--#define AUDIGY_DMA_MASK		0xffffffffUL	/* 32bit */
-+#define AUDIGY_DMA_MASK		0x7fffffffUL	/* 32bit */
- 
- #define TMEMSIZE        256*1024
- #define TMEMSIZEREG     4
+many of us will just delete your posts and not even try to help.
+If you do not want to follow the choices of this list,
+Bottom posting is the convention on this list.
 
+see why it is so destructive to a thread to top post.
+Go read the archives when trying to solve a problem and you will
+Books read top to bottom, why post otherwise?
 
+read this once a week or two....
+are very busy in professional and personal lives and can only
+Why do you assume that we follow each and every post?  Some of us
+
+--=20
+A: Because it messes up the order in which people normally read
+text.=20
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing on usenet and in e-mail?
+
+--Signature_Sun__23_Oct_2005_21_47_13_-0700_L8kPkEnSdnNvg=CJ
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFDXGdYr4y5pVzN7/gRAjCmAJ4+vRyxYMH48HYn/eoMg6dQSHO5gACfVYDN
+lLNlTXYTrzjaD7/btZfCYEA=
+=cywR
+-----END PGP SIGNATURE-----
+
+--Signature_Sun__23_Oct_2005_21_47_13_-0700_L8kPkEnSdnNvg=CJ--
 
 
 -------------------------------------------------------
