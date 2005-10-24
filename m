@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Mon, 24 Oct 2005 15:22:30 +0200
-Message-ID: <543eb032c003608abf745cccbfb30c7b@85.132.177.35>
+Date: Mon, 24 Oct 2005 15:37:42 +0200
+Message-ID: <75835fb8c174ed2c04e28f7e55753a56@85.132.177.35>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7584189
-	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 15:22:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0EC4F188
+	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 15:37:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
 20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
 Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              10-24-2005 15:22 CEST
+Last Modified:              10-24-2005 15:37 CEST
 ======================================================================
 Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
 playing any sound.
@@ -70,18 +70,6 @@ That thread concluded with no solution but to revert to OSS.
 ======================================================================
 
 ----------------------------------------------------------------------
- pomac - 10-24-05 15:09 
-----------------------------------------------------------------------
-Ok, sorry about the dual file upload, must have missed the first time.
-
-Anyways, i pointed out that it was due to more than 1 gb of memory that we
-got this problem and Lee Revell sent a patch, I rediffed it against
-1.0.10rc2.
-
-This fixed it for me, and i assume that it's the flaw, but it would be
-better to get confirmation form everyone.
-
-----------------------------------------------------------------------
  jcdutton - 10-24-05 15:22 
 ----------------------------------------------------------------------
 I don't think that this is a problem with the sound card itself. It should
@@ -90,6 +78,19 @@ This might point to a problem with the Linux Kernel's DMA assignment
 routine.
 But for now, applying this patch will just hide the problem, but will keep
 users happy.
+
+----------------------------------------------------------------------
+ pomac - 10-24-05 15:37 
+----------------------------------------------------------------------
+I don't have the techspecs, but i don't think that this would be
+reproducable on a 32 bit platform due to the memory segmentation (lowmem
+goes to 724 or so mb) and dma is allocated below that. So basically, does
+the techspecs state that it CAN do  32 bit dma or not? Other than that, it
+seems like it's a known emu10k1 thing and this card is based on/still
+emu10k1 afair.
+
+Anyways, to little sleep, but atleast i can listen to music using alsa now
+=)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -114,6 +115,7 @@ Processor 252 AuthenticAMD GNU/Linux
              
 10-24-05 15:09 pomac          Note Added: 0006518                          
 10-24-05 15:22 jcdutton       Note Added: 0006520                          
+10-24-05 15:37 pomac          Note Added: 0006521                          
 ======================================================================
 
 
