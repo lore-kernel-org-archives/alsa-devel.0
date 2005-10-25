@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
-Date: Tue, 25 Oct 2005 16:45:36 +0200
-Message-ID: <7eb2da9335b536a96847ae6e458be83b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001502]: Bad step values in snd_pcm_channel_area_t from snd_pcm_mmap_begin
+Date: Tue, 25 Oct 2005 16:47:22 +0200
+Message-ID: <af07b2be082e8c61b65d66d98700c2d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79E1216E
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 16:45:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94A3E16E
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 16:47:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,42 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1501> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1502> 
 ======================================================================
-Reported By:                dkoch
+Reported By:                drechsle
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1501
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1502
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.14-rc5-gac9b9c66
 ======================================================================
-Date Submitted:             10-25-2005 16:45 CEST
-Last Modified:              10-25-2005 16:45 CEST
+Date Submitted:             10-25-2005 16:47 CEST
+Last Modified:              10-25-2005 16:47 CEST
 ======================================================================
-Summary:                    intel8x0 surround channels missing and swapped
+Summary:                    Bad step values in snd_pcm_channel_area_t from
+snd_pcm_mmap_begin
 Description: 
-By default, the front channels are OK, the rear channels come out on the
-center/LFE jack and the center/LFE channels don't come out at all.
+I opened the default audio device with 4 channels (MMAP_INTERLEAVED,
+SND_PCM_FORMAT_S16)
+snd_pcm_mmap_begin then returns a snd_pcm_channel_area_t * like the
+following:
 
-Using ICH5/AD1985 (Intel P865PERL motherboard).
+Channel 0:   first:    0    step:   32
+Channel 1:   first:   16    step:   32
+Channel 2:   first:   32    step:   32
+Channel 3:   first:   48    step:   32
 
-Anomolies found: double-rate slot (DRSLOT) is set to 7,8 instead of the
-default
-10,11 (register 0x20=0400 instead of 0).  After setting 0x20 to 0, the
-rear
-channel jack starts working.  RL/RR and Center/LFE are still swapped.
-
-I would assume the swappage was hardware, but the Center and LFE volume
-controls
-affect the speakers on the Center/LFE jack which would indicate the driver
-is
-incorrectly routing the signals.
-
+The step values seem to be wrong. It also doesn't sound very comfortable.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-05 16:45 dkoch          New Issue                                    
-10-25-05 16:45 dkoch          Distribution              => Fedora Core 3   
-10-25-05 16:45 dkoch          Kernel Version            => 2.6.14-rc5-gac9b9c66
+10-25-05 16:47 drechsle       New Issue                                    
 ======================================================================
 
 
