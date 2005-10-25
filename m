@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001498]: error: unknown field `owner'
-Date: Tue, 25 Oct 2005 15:02:37 +0200
-Message-ID: <29b2cc72d59a82210e751e0b3e78ab6f@bugtrack.alsa-project.org>
+Date: Tue, 25 Oct 2005 15:08:46 +0200
+Message-ID: <278492e94641007a1b43c194a51f399e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C99AD166
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 15:02:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28536166
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 15:08:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1498> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             2.6.8.1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             10-25-2005 10:58 CEST
-Last Modified:              10-25-2005 15:02 CEST
+Last Modified:              10-25-2005 15:08 CEST
 ======================================================================
 Summary:                    error: unknown field `owner'
 Description: 
@@ -68,11 +70,6 @@ eric
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-25-05 12:04 
-----------------------------------------------------------------------
-Could you try the patch?
-
-----------------------------------------------------------------------
  eric - 10-25-05 15:02 
 ----------------------------------------------------------------------
 Compilation OK Great job !!
@@ -80,6 +77,11 @@ Compilation OK Great job !!
 thanks
 
 could you add this patch to last cvs ?
+
+----------------------------------------------------------------------
+ tiwai - 10-25-05 15:08 
+----------------------------------------------------------------------
+Yes, already committed.  Thanks for confirmation.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -89,6 +91,10 @@ Date Modified  Username       Field                    Change
 10-25-05 12:04 tiwai          Note Added: 0006532                          
 10-25-05 12:04 tiwai          File Added: old-2.6-fix.diff                    
 10-25-05 15:02 eric           Note Added: 0006540                          
+10-25-05 15:04 eric           Issue Monitored: eric                        
+10-25-05 15:08 tiwai          Status                   assigned => resolved
+10-25-05 15:08 tiwai          Resolution               open => fixed       
+10-25-05 15:08 tiwai          Note Added: 0006541                          
 ======================================================================
 
 
