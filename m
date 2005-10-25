@@ -1,14 +1,14 @@
-From: u_u_oist@yahoo.co.jp
-Subject: =?ISO-2022-JP?B?GyRCMydNTSRLJCpDTiRpJDsbKEI=?=
-Date: Mon, 24 Oct 2005 12:31:49 +0200 (MEST)
-Message-ID: <6729GHPouv.6851@yahoo.co.jp>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001439]: OSS emulation fails for usb-audio
+Date: Tue, 25 Oct 2005 13:44:38 +0200
+Message-ID: <f8b4d4abd5e0e8af8a40ce6a24dc0e33@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FC19120
-	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 12:31:50 +0200 (MEST)
-Received: from gate.perex.cz (171.7.30.125.dy.iij4u.or.jp [125.30.7.171])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 1A786972B7
-	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 12:31:49 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76A0016D
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 13:44:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,75 +21,115 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-┏━━━━━━━━━━━━━━━━━━━━━━┓
-☆　完全無料　素人専科　Girls－MIX　　　　　☆彡
-┗━━━━━━━━━━━━━━━━━━━━━━┛
-料金が発生する事は一切ございません。
-全て完全無料で安心してお楽しみ頂けます！
-http://girls-mix.com/?i04
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1439> 
+======================================================================
+Reported By:                dagb
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1439
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.14-rc2
+======================================================================
+Date Submitted:             09-21-2005 21:31 CEST
+Last Modified:              10-25-2005 13:44 CEST
+======================================================================
+Summary:                    OSS emulation fails for usb-audio
+Description: 
+With ALSA as found in 2.6.14-rc{12} 
+(which reports as as ALSA version 1.0.10-rc1?):
+When playing audio using the OSS emulation with beep-media-player through
+my USB headset adapter, there is no audio, and the time elapsed in BMP
+runs way too fast.
+
+It works if I use the native ALSA support in BMP.
+But, I cannot get any audio with skype with this kernel. This is my main
+beef.
+skype does not do ALSA. I have to use the OSS emulation.
+
+The exact same setup with 2.6.13-gentoo-r1 (using the vanilla kernel ALSA)
+works perfectly for me.
+
+======================================================================
+
+----------------------------------------------------------------------
+ Alphix - 10-24-05 15:18 
+----------------------------------------------------------------------
+I see exactly the same issue with a TerraTec external usb audio card. I've
+reported it LKML
+(http://marc.theaimsgroup.com/?l=linux-kernel&m=113001840929175&w=2) and
+the ALSA mailing list
+(http://article.gmane.org/gmane.linux.alsa.devel/27690).
 
 
-┏─┓　┏─┓　┏─┓　┏─┓　┏─┓　┏─┓
-│高│　│画│　│質│　│☆│　│動│　│画│
-┗─┛　┗─┛　┗─┛　┗─┛　┗─┛　┗─┛
+I've included the email below for the records
+=============================================
 
-①┓りお　19歳　B91/W58/H86　
-┗┛━━━━━━━━━━━━━━━━━━━━━━━
-http://girls-mix.com/img/m-6.jpg
-制服のまま､指責め､バイブ責めで悶え狂うりおチャン。
-喘ぎ声もかなりエロエロでカワイイ。
-年の割には相当な経験の持ち主と見たゾっ。
-http://girls-mix.com/?i04
+After updating the kernel on one of my computers today I discovered that 
+usb-audio via snd-pcm-oss over the snd-usb-audio ALSA drivers stopped 
+working (worked with 2.6.13, doesn't with 2.6.14-rc[12345]).
 
-②┓みき　19歳　B88/W61/H90
-┗┛━━━━━━━━━━━━━━━━━━━━━━━
-http://girls-mix.com/img/f-2.jpg
-援○交際の現場をオジサン自らハメ撮り！
-しつこい程のオジサンからの全身愛撫を表情豊かに
-感じまくるみきチャン。
-http://girls-mix.com/?i04
+The weird part is that it only stopped working when using the driver 
+through the oss emulation and only for some programs. I've tried it with 
+all apps with native alsa support that I had installed, and all of them 
+worked. I also tried it with a few different apps with oss support, and 
+most of them worked (xine and mplayer) while one failed (mythmusic).
 
-③┓みゆ　23歳　B94/W63/H93
-┗┛━━━━━━━━━━━━━━━━━━━━━━━
-http://girls-mix.com/img/f-5.jpg
-某有名コスプレカフェの人気NO1ウェイトレスが
-お店から線路沿い､オフィス街で脱ぎまくり！
-ｷﾀ━━━━━(ﾟ∀ﾟ)━━━━━━!!!!
-コスプレ衣装代の借金返済をするみたいです。
-http://girls-mix.com/?i04
+The symptoms is that no sound is heard while the app seems to believe 
+that everything is just fine. It also progresses through the song at 
+about 20x normal speed (i.e. it thinks its done playing a 4 minute song 
+after 12 seconds). The only difference I can come up with is that xine 
+and mplayer probably up-sample the audio to 48.000Hz while MythMusic 
+tries to play at 44.100Hz (the device is a TerraTec external USB <-> 
+SPDIF interface).
 
-┏━━━━━━━━━━━━━━━━━━━━━━┓
-☆　Girls－MIX　放課後特集　　　　　　　　　☆彡
-┗━━━━━━━━━━━━━━━━━━━━━━┛
-http://girls-mix.com/?i04
-部活の着替え中､更衣室で先輩にレ◎プの危機！
-先生に弱みを握られ､毎日職員室で性奴隷になる。
-彼氏と屋上で､野外ファ◎ク！
-ブルマ姿のまま体育館倉庫で､濡れマン披露。
-http://girls-mix.com/?i04
+I've used git's bisect command to try to find the exact problem, and it 
+seems to have been introduced by this commit:	
+7efd8bc800324a967a37e8a425433468b7f06adb
+see also:
+http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=7efd8bc800324a967a37e8a425433468b7f06adb
 
+patch name: [ALSA] usb-audio: double-buffer all playback data
 
-＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋
-＠メルマガの館
-------------------------------------------
-・当局は、メールマガジン専用の配信スタンドです。
-・当局からのメールマガジンの内容、
-ご利用に関しては、ご購読者個人の責任において
-ご利用ください。
-・当局からご紹介させて頂いているサイトに
-おけるいかなるトラブル損害に対しても
-一切の責任を負いかねます。
-・当局からのメールマガジンの内容についての
-ご質問には応じておりません。
-・当局からのメールマガジンに掲載された記事を
-許可なく転載する事を禁止致します。
-------------------------------------------
-□購読解除方法
-購読解除をご希望の方は、お手数ですが下記URL宛に
-ご連絡ください。
-rejectgirlsmix@yahoo.com.au 
-＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋
+I'm not sure on how to fix it since the commit is quite big and cannot 
+be simply reversed with the current tree as there have been other 
+patches applied to the file afterwards. Comments/suggestions welcome...
 
+Regards,
+David H舐deman
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 10-25-05 13:44 
+----------------------------------------------------------------------
+What are the contents of /proc/asound/cardX/pcm0p/sub0/hw_params while
+playing?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-21-05 21:31 dagb           New Issue                                    
+09-21-05 21:31 dagb           Distribution              => Gentoo          
+09-21-05 21:31 dagb           Kernel Version            => 2.6.14-rc2      
+09-21-05 21:31 dagb           Issue Monitored: dagb                        
+09-26-05 22:07 dagb           Note Added: 0006400                          
+09-26-05 22:32 rlrevell       Note Added: 0006401                          
+09-27-05 07:40 dagb           Note Added: 0006404                          
+10-24-05 15:18 Alphix         Note Added: 0006519                          
+10-24-05 15:20 Alphix         Issue Monitored: Alphix                      
+10-24-05 17:28 Clemens LadischAssigned To               => Clemens Ladisch 
+10-24-05 17:28 Clemens LadischStatus                   new => assigned     
+10-24-05 17:28 Clemens LadischCategory                 CORE OSS - pcm => USB -
+usb-audio
+10-25-05 13:44 Clemens LadischNote Added: 0006538                          
+======================================================================
 
 
 
