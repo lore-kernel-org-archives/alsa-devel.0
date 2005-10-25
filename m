@@ -1,8 +1,14 @@
-From: "Keith Parker" <LULHPZZDNY@thebergmangroup.com>
-Subject: j2 Voicemail Message
-Date: Tue, 25 Oct 2005 08:31:26 -0700
-Message-ID: <28706.7257836044$1130251076@news.gmane.org>
+From: "Caleb Russell" <shimshamgal@zgas.net>
+Subject: What IS 0EM Software And Why D0 You Care?
+Date: Tue, 25 Oct 2005 14:35:55 +0200
+Message-ID: <000001c5d970$786e8280$0100007f@localhost>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_000_0001_01C5D970.786E8280"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from localhost (ZU181031.ppp.dion.ne.jp [59.133.181.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3651A16E
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 16:36:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,33 +21,141 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sensational revolution in medicine!
+This is a multi-part message in MIME format.
 
-Enlarge your penis up to 10 cm or up to 4 inches!
+------=_NextPart_000_0001_01C5D970.786E8280
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+ TOP 10 NEW TITLES  
+ ON SALE NOW!
+  1 Office Pro 2003
+  2 Adobe Photoshop 9.0
+  3 Windows XP Pro
+  4 Adobe Acrobat 7 Pro
+  5 Flash MX 2004
+  6 Corel Draw 12
+  7 Norton Antivirus 2005
+  8 Windows 2003 Server
+  9 Alias Maya 6 Wavefrt
+  10 Adobe Illustrator 11
+  See more by this manufacturer
+    Microsoft
+    Symantec
+    Adobe
+ Microsoft Office Professional Edition 2003
+   by Microsoft
 
-It's herbal solution what hasn't side effect, but has 100% guaranteed results!
 
-Don't loose your chance and but know wihtout doubts, you will be impressed with results!
+ListPrice:  $550.00 
+OurPrice:  $69.95 
+YouSave:  $480.05 ( 87%) 
 
-Clisk here: http://bounchers.com
+ 
 
-
-
-
-
+Availability: Available for INSTANT download! 
 
 
 
+Sales Rank: #1 
+Average Customer Review:  
+(based on 43 reviews)
+
+--------------------------------------------------------------------------------
+ 
+Microsoft Windows XP Professional 
+   by Microsoft 
+
+
+ListPrice:  $200.00 
+OurPrice:  $49.95 
+YouSave:  $150.05 ( 75%) 
+
+ 
+
+Availability: Available for INSTANT download! 
 
 
 
+Sales Rank: #2 
+Average Customer Review:  
+(based on 40 reviews)
 
-         
-        
-          
-       
-       
-       
+--------------------------------------------------------------------------------
+ 
+Adobe Photoshop CS2 V 9.0 
+   by Adobe 
+
+
+ListPrice:  $599.00 
+OurPrice:  $69.95 
+YouSave:  $529.05 ( 88%) 
+
+ 
+
+Availability: Available for INSTANT download! 
+
+
+
+Sales Rank: #3 
+Average Customer Review:  
+(based on 43 reviews)
+
+--------------------------------------------------------------------------------
+
+------=_NextPart_000_0001_01C5D970.786E8280
+Content-Type: text/html;
+    charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+  <HEAD>
+    <STYLE type=3Dtext/css>
+      .eyebrow { FONT-WEIGHT: bold; FONT-SIZE: 10px; TEXT-TRANSFORM: uppercase; COLOR: #ffffff; FONT-FAMILY: verdana,arial,helvetica,sans-serif; TEXT-DECORATION: none } A.eyebrow:link { TEXT-DECORATION: none }
+    </STYLE>
+    <TITLE>
+      Software
+    </TITLE>
+    <META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1252">
+    <META content=3D"MSHTML 6.00.2900.2627" name=3DGENERATOR>
+    <STYLE type=3Dtext/css>
+      .serif { FONT-SIZE: small; FONT-FAMILY: times,serif } .sans { FONT-SIZE: small; FONT-FAMILY: verdana,arial,helvetica,sans-serif } .small { FONT-SIZE: x-small; FONT-FAMILY: verdana,arial,helvetica,sans-serif } .h1 { FONT-SIZE: small; COLOR: #cc6600; FONT-FAMILY: verdana, arial,helvetica,sans-serif } .h3color { FONT-SIZE: x-small; COLOR: #cc6600; FONT-FAMILY: verdana,
+      arial,helvetica,sans-serif } .tiny { FONT-SIZE: xx-small; FONT-FAMILY: verdana,arial,helvetica, sans-serif } .listprice { FONT-SIZE: x-small; FONT-FAMILY: arial,verdana,sans-serif; TEXT-DECORATION: line-through } .price { FONT-SIZE: x-small; COLOR: #990000; FONT-FAMILY: verdana,arial,helvetica,sans-serif } .tinyprice { FONT-SIZE: xx-small; COLOR: #990000; FONT-FAMILY: verdana,arial,helvetica,sans-serif } .attention { BACKGROUND-COLOR: #ffffd5 } .eyebrow { FONT-WEIGHT: bold; FONT-SIZE: 10px; TEXT-TRANSFORM: uppercase; COLOR: #ffffff; FONT-FAMILY: verdana,arial,helvetica,sans-serif; TEXT-DECORATION: none } A.eyebrow:link { TEXT-DECORATION: none }
+    </STYLE>
+  </HEAD>
+<BODY text=3D#000000 vLink=3D#996633 aLink=3D#FF9933 link=3D#003399 bgColor=3D#FFFFFF><TABLE cellSpacing=3D0 cellPadding=3D0 width=3D705 border=3D0><DIV align=3Dleft></TABLE></DIV><TBODY><TR> <TD class=3Dsmall align=3Dmiddle bgColor=3D#ffffdd width=3D707></TD></TR></TBODY></TABLE><TABLE cellSpacing=3D0 cellPadding=3D0 width=3D704 border=3D0><TR> <TD vAlign=3Dtop width=3D166><TABLE cellSpacing=3D0 cellPadding=3D0 width=3D155 bgColor=3D#eeeecc border=3D0><TR vAlign=3Dbottom align=3Dmiddle> <TD><TABLE cellSpacing=3D0 cellPadding=3D0 width=3D155 border=3D0><TR vAlign=3Dtop bgColor=3D#333399> <TD width=3D5 bgcolor=3D#000080> <FONT size=3D1> <IMG src=3Dhttp://g-images.amazon.com/images/G/01/icons/eyebrow-upper-left-corner.gif width=3D5 height=3D5></FONT></TD> <TD bgcolor=3D#000080><TABLE cellSpacing=3D3 cellPadding=3D0 width=3D99% border=3D0><TR> <TD vAlign=3Dbottom><P align=3Dcenter> <B> <FON
+ T face=3Dverdana,arial,helvetica size=3D1 color=3D#FFFFFF> TOP 10 NEW TITLES</FONT></B></P
+ ></TD></TR></TABLE></TD> <TD align=3Dright width=3D5 bgcolor=3D#000080> <FONT size=3D1>
+<IMG src=3Dhttp://g-images.amazon.com/images/G/01/icons/eyebrow-upper-right-corner.gif width=3D5 height=3D5></FONT></TD></TR></TABLE></TD></TR><TR> <TD><TABLE cellSpacing=3D0 cellPadding=3D1 width=3D100% bgColor=3D#cccc99 border=3D0><TR> <TD width=3D100%><TABLE cellSpacing=3D0 cellPadding=3D0 width=3D100% bgColor=3D#cccc99 border=3D0><TR> <TD vAlign=3Dtop width=3D100% bgColor=3D#eeeecc><TABLE cellSpacing=3D0 cellPadding=3D2 width=3D153 border=3D0><TR> <TD width=3D141 colspan=3D3 bgcolor=3D#FFFFFF><P align=3Dcenter> <B> <FONT face=3Dverdana,arial,helvetica size=3D1 color=3D#CC6600> &nbsp;ON SALE NOW!</FONT></B></P></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8> <FONT face=3DVerdana size=3D1> 1</FONT></TD> <TD width=3D129> <FONT face=3Dverdana,arial,helvetica size=3D1> <A href=3Dhttp://topsoftshop.com/> Office Pro 2003</A></FONT></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=
+ 3D8> <FONT face=3DVerdana size=3D1> 2</FONT></TD> <TD width=3D129> <A href=3Dhttp://topsof
+ tshop.com/> <FONT face=3Dverdana,arial,helvetica size=3D1> Adobe Photoshop 9.0</FONT></A></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8>
+<FONT face=3DVerdana size=3D1> 3</FONT></TD> <TD width=3D129> <A href=3Dhttp://topsoftshop.com/> <FONT face=3Dverdana,arial,helvetica size=3D1> Windows XP Pro</FONT></A></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8> <FONT face=3DVerdana size=3D1> 4</FONT></TD> <TD width=3D129> <A href=3Dhttp://topsoftshop.com/> <FONT face=3Dverdana,arial,helvetica size=3D1> Adobe Acrobat 7 Pro</FONT></A></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8> <FONT face=3DVerdana size=3D1> 5</FONT></TD> <TD width=3D129> <FONT face=3Dverdana,arial,helvetica size=3D1> <A href=3Dhttp://topsoftshop.com/> Flash MX 2004</A></FONT></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8> <FONT face=3DVerdana size=3D1> 6</FONT></TD> <TD width=3D129> <FONT face=3Dverdana,arial,helvetica size=3D1> <A href=3Dhttp://topsoftshop.com/> Corel Draw 12</A></FONT></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD widt
+ h=3D8> <FONT face=3DVerdana size=3D1> 7</FONT></TD> <TD width=3D129> <A href=3Dhttp://tops
+ oftshop.com/> <FONT face=3Dverdana,arial,helvetica size=3D1> Norton Antivirus 2005</FONT></A></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8>
+<FONT face=3DVerdana size=3D1> 8</FONT></TD> <TD width=3D129> <FONT face=3Dverdana,arial,helvetica size=3D1> <A href=3Dhttp://topsoftshop.com/> Windows 2003 Server</A></FONT></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8> <FONT face=3DVerdana size=3D1> 9</FONT></TD> <TD width=3D129> <FONT face=3Dverdana,arial,helvetica size=3D1> <A href=3Dhttp://topsoftshop.com/> Alias Maya 6 Wavefrt</A></FONT></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8> <FONT face=3DVerdana size=3D1> 10</FONT></TD> <TD width=3D129> <FONT face=3Dverdana,arial,helvetica size=3D1> <A href=3Dhttp://topsoftshop.com/> Adobe </A></FONT> <A href=3Dhttp://topsoftshop.com/> <FONT face=3Dverdana,arial,helvetica size=3D1> Illustrator 11</FONT></A></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD colSpan=3D2 width=3D141> <SPAN class=3Dsmall> <B> <FONT face=3DVerdana size=3D1> See more by this manufacturer</FONT></B>
+ </SPAN></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8> &nbsp;</TD> <TD width=3D12
+ 9> <FONT face=3Dverdana,arial,helvetica size=3D1> <A href=3Dhttp://topsoftshop.com/> Microsoft</A></FONT></TD></TR><TR> <TD width=3D4> &nbsp;</TD>
+<TD width=3D8> &nbsp;</TD> <TD width=3D129> <A href=3Dhttp://topsoftshop.com/> <FONT face=3Dverdana,arial,helvetica size=3D1> Symantec</FONT></A></TD></TR><TR> <TD width=3D4> &nbsp;</TD> <TD width=3D8> &nbsp;</TD> <TD width=3D129> <FONT face=3Dverdana,arial,helvetica size=3D1> <A href=3Dhttp://topsoftshop.com/> Adobe</A></FONT></TD></TR></TABLE></TD></TR></TABLE></TD></TR></TABLE></TD></TR></TABLE></TD> <TD vAlign=3Dtop align=3Dleft width=3D530><TABLE border=3D0 cellpadding=3D0 cellspacing=3D0 style=3D"border-collapse: collapse" bordercolor=3D#111111 width=3D100% id=3DAutoNumber1 height=3D55><TR> <TD width=3D100% height=3D55><P> <B class=3Dsans> Microsoft Office Professional Edition 2003</B> <BR> <SPAN class=3Dsmall> &nbsp;&nbsp;&nbsp;by Microsoft <IMG border=3D0 src=3Dhttp://g-images.amazon.com/images/G/01/promotions/sticker/newest_version.gif width=3D82 height=3D14></SPAN></P><P> <A hr
+ ef=3Dhttp://topsoftshop.com/> <IMG height=3D150 src=3Dhttp://images.amazon.com/images/P/B0
+ 000AZJVC.01.TZZZZZZZ.jpg width=3D118 align=3Dleft border=3D0 name=3Dprod_image hspace=3D5></A></P> <SPAN class=3Dsmall>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0 height=3D21 width=3D189><TR> <TD class=3Dsmall vAlign=3Dtop noWrap align=3Dright height=3D18 width=3D73> <B>ListPrice:</B></TD> <TD height=3D18 width=3D11></TD> <TD class=3Dsmall height=3D18 width=3D105> <SPAN class=3Dlistprice> $550.00</SPAN></TD></TR><TR> <TD class=3Dsmall vAlign=3Dtop noWrap align=3Dright height=3D18 width=3D73> <B>OurPrice:</B></TD> <TD height=3D18 width=3D11></TD> <TD class=3Dsmall height=3D18 width=3D105> <B class=3Dprice> $69.95</B></TD></TR><TR> <TD class=3Dsmall vAlign=3Dtop noWrap align=3Dright height=3D1 width=3D73> <B>YouSave:</B></TD> <TD height=3D1 width=3D11></TD> <TD class=3Dsmall height=3D1 width=3D105> <SPAN class=3Dprice> $480.05 ( 87%)</SPAN></TD></TR></TABLE><P> <A href=3Dhttp://topsoftshop.com/> <IMG border=3D0 src=3Dhttp://g-images.amazon.com/images/G/01/buttons/add-to-cart-yellow-short.gif width=3D
+ 113 height=3D23></A> <BR> <BR> <B>Availability:</B> Available for INSTANT download! <BR></
+ P><P></SPAN> <BR> <SPAN class=3Dtiny> <B>Sales Rank:</B> #1 <BR></SPAN> <FONT class=3Dtiny> <B>Average Customer Review:</B>
+<IMG height=3D12 alt=3D"5 out of 5 stars" src=3Dhttp://g-images.amazon.com/images/G/01/x-locale/common/customer-reviews/stars-5-0.gif width=3D64 border=3D0> <BR>(based on 36 reviews)</FONT></P></FONT><HR noShade SIZE=3D1></TD></TR><TR> <TD width=3D100% height=3D55><P> <B class=3Dsans> Microsoft Windows XP Professional</B> <BR> <SPAN class=3Dsmall> &nbsp;&nbsp;&nbsp;by Microsoft <IMG border=3D0 src=3Dhttp://g-images.amazon.com/images/G/01/promotions/sticker/newest_version.gif width=3D82 height=3D14></SPAN></P><P> <A href=3Dhttp://topsoftshop.com/> <IMG height=3D150 src=3Dhttp://images.amazon.com/images/P/B00005MOTG.01._SCMZZZZZZZ_.jpg width=3D118 align=3Dleft border=3D0 name=3Dprod_image hspace=3D5></A></P> <SPAN class=3Dsmall><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0 height=3D21 width=3D189><TR> <TD class=3Dsmall vAlign=3Dtop noWrap align=3Dright height=3D18 width=3D73> <B>ListPr
+ ice:</B></TD> <TD height=3D18 width=3D11></TD> <TD class=3Dsmall height=3D18 width=3D105> 
+ <SPAN class=3Dlistprice> $200.00</SPAN></TD></TR><TR>
+<TD class=3Dsmall vAlign=3Dtop noWrap align=3Dright height=3D18 width=3D73> <B>OurPrice:</B></TD> <TD height=3D18 width=3D11></TD> <TD class=3Dsmall height=3D18 width=3D105> <B class=3Dprice> $49.95</B></TD></TR><TR> <TD class=3Dsmall vAlign=3Dtop noWrap align=3Dright height=3D1 width=3D73> <B>YouSave:</B></TD> <TD height=3D1 width=3D11></TD> <TD class=3Dsmall height=3D1 width=3D105> <SPAN class=3Dprice> $150.05 ( 75%)</SPAN></TD></TR></TABLE><P> <A href=3Dhttp://topsoftshop.com/> <IMG border=3D0 src=3Dhttp://g-images.amazon.com/images/G/01/buttons/add-to-cart-yellow-short.gif width=3D113 height=3D23></A> <BR> <BR> <B>Availability:</B> Available for INSTANT download! <BR></P><P></SPAN> <BR> <SPAN class=3Dtiny> <B>Sales Rank:</B> #2 <BR></SPAN> <FONT class=3Dtiny> <B>Average Customer Review:</B> <IMG height=3D12 alt=3D"5 out of 5 stars" src=3Dhttp://g-images.amazon.com/images/G/01/x-local
+ e/common/customer-reviews/stars-5-0.gif width=3D64 border=3D0> <BR>(based on 45 reviews)</
+ FONT></P></FONT><HR noShade SIZE=3D1></TD></TR><TR> <TD width=3D100% height=3D55><P> <B class=3Dsans>
+Adobe Photoshop CS2 V 9.0</B> <BR> <SPAN class=3Dsmall> &nbsp;&nbsp;&nbsp;by Adobe <IMG border=3D0 src=3Dhttp://g-images.amazon.com/images/G/01/promotions/sticker/newest_version.gif width=3D82 height=3D14></SPAN></P><P> <A href=3Dhttp://topsoftshop.com/> <IMG height=3D150 src=3Dhttp://images.amazon.com/images/P/B00081I6JI.01._PE7_SCMZZZZZZZ_.jpg width=3D118 align=3Dleft border=3D0 name=3Dprod_image hspace=3D5></A></P> <SPAN class=3Dsmall><TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0 height=3D21 width=3D189><TR> <TD class=3Dsmall vAlign=3Dtop noWrap align=3Dright height=3D18 width=3D73> <B>ListPrice:</B></TD> <TD height=3D18 width=3D11></TD> <TD class=3Dsmall height=3D18 width=3D105> <SPAN class=3Dlistprice> $599.00</SPAN></TD></TR><TR> <TD class=3Dsmall vAlign=3Dtop noWrap align=3Dright height=3D18 width=3D73> <B>OurPrice:</B></TD> <TD height=3D18 width=3D11></TD> <TD class=3Dsmall h
+ eight=3D18 width=3D105> <B class=3Dprice> $69.95</B></TD></TR><TR> <TD class=3Dsmall vAlig
+ n=3Dtop noWrap align=3Dright height=3D1 width=3D73> <B>YouSave:</B></TD> <TD height=3D1 width=3D11></TD> <TD class=3Dsmall height=3D1 width=3D105>
+<SPAN class=3Dprice> $529.05 ( 88%)</SPAN></TD></TR></TABLE><P> <A href=3Dhttp://topsoftshop.com/> <IMG border=3D0 src=3Dhttp://g-images.amazon.com/images/G/01/buttons/add-to-cart-yellow-short.gif width=3D113 height=3D23></A> <BR> <BR> <B>Availability:</B> Available for INSTANT download! <BR></P><P></SPAN> <BR> <SPAN class=3Dtiny> <B>Sales Rank:</B> #3 <BR></SPAN> <FONT class=3Dtiny> <B>Average Customer Review:</B> <IMG height=3D12 alt=3D"5 out of 5 stars" src=3Dhttp://g-images.amazon.com/images/G/01/x-locale/common/customer-reviews/stars-5-0.gif width=3D64 border=3D0> <BR>(based on 42 reviews)</FONT></P></FONT><HR noShade SIZE=3D1></TD></TR></TABLE></TD></TR></TABLE></FORM></TD></TR></TABLE></BODY>
+</HTML>
+
+------=_NextPart_000_0001_01C5D970.786E8280--
+
 
 
 -------------------------------------------------------
