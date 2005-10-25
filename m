@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001482]: Front channels distorsions in Phase 28
-Date: Tue, 25 Oct 2005 20:06:59 +0200
-Message-ID: <96459fcba75a7d574a3956184a368c7a@bugtrack.alsa-project.org>
+Date: Tue, 25 Oct 2005 20:05:05 +0200
+Message-ID: <931981136bf2f8679a58804f0813f6dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C35A188
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 20:06:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51559188
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 20:05:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.8.1 Custom epia
 ======================================================================
 Date Submitted:             10-18-2005 11:45 CEST
-Last Modified:              10-25-2005 20:06 CEST
+Last Modified:              10-25-2005 20:05 CEST
 ======================================================================
 Summary:                    Front channels distorsions in Phase 28
 Description: 
@@ -66,16 +66,6 @@ distortion.
 
 thanks
 
-----------------------------------------------------------------------
- eric - 10-25-05 20:06 
-----------------------------------------------------------------------
-Hi , with last alsa cvs , same problem.
-
-i don't understand why six channels works perfectly and two have strange 
-distortion.
-
-thanks
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -83,7 +73,6 @@ Date Modified  Username       Field                    Change
 10-18-05 11:45 eric           File Added: screenshot.zip                    
 10-18-05 11:45 eric           Kernel Version            => 2.6.8.1 Custom epia
 10-25-05 20:05 eric           Note Added: 0006550                          
-10-25-05 20:06 eric           Note Added: 0006551                          
 ======================================================================
 
 
