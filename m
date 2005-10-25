@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
-Date: Tue, 25 Oct 2005 17:56:21 +0200
-Message-ID: <21ef8202968e80c3f053229d102a73d8@bugtrack.alsa-project.org>
+Date: Tue, 25 Oct 2005 18:09:28 +0200
+Message-ID: <f76337edb6fc26a0f83291a10bea0e50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CACA8167
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 17:56:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD154167
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 18:09:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.14-rc5-gac9b9c66
 ======================================================================
 Date Submitted:             10-25-2005 16:45 CEST
-Last Modified:              10-25-2005 17:56 CEST
+Last Modified:              10-25-2005 18:09 CEST
 ======================================================================
 Summary:                    intel8x0 surround channels missing and swapped
 Description: 
@@ -72,6 +72,11 @@ extended status regsiter.
 Could you check whether reg 0x2a bit 1 (0x0002) is off during playback of
 48khz (or less) samples?
 
+----------------------------------------------------------------------
+ dkoch - 10-25-05 18:09 
+----------------------------------------------------------------------
+0x2a, bit 1 is off: 0:2a = 05f1
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +84,7 @@ Date Modified  Username       Field                    Change
 10-25-05 16:45 dkoch          Distribution              => Fedora Core 3   
 10-25-05 16:45 dkoch          Kernel Version            => 2.6.14-rc5-gac9b9c66
 10-25-05 17:56 tiwai          Note Added: 0006546                          
+10-25-05 18:09 dkoch          Note Added: 0006547                          
 ======================================================================
 
 
