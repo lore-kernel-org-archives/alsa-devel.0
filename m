@@ -1,17 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Dave Cunningham <spark@xdev.net>
 Subject: Re: Re: CMedia 8738 - problems running Jack
-Date: Mon, 24 Oct 2005 18:46:27 -0400
-Message-ID: <1130193988.23853.69.camel@mindpipe>
-References: <5bdc1c8b0510240924w10e1a8d1o499e3739fd8e1923@mail.gmail.com>
-	 <5bdc1c8b0510240932o6566fef2q96f1f2a5a970b771@mail.gmail.com>
-	 <20051024202157.GA11137@meep>
-	 <5bdc1c8b0510241455s1aaf8940gc408902fe06af8f@mail.gmail.com>
-	 <20051024223838.GA25313@meep>
+Date: Tue, 25 Oct 2005 01:24:20 +0100
+Message-ID: <20051025002420.GB11137@meep>
+References: <5bdc1c8b0510240924w10e1a8d1o499e3739fd8e1923@mail.gmail.com> <5bdc1c8b0510240932o6566fef2q96f1f2a5a970b771@mail.gmail.com> <20051024202157.GA11137@meep> <5bdc1c8b0510241455s1aaf8940gc408902fe06af8f@mail.gmail.com> <20051024223838.GA25313@meep> <1130193988.23853.69.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051024223838.GA25313@meep>
+Content-Disposition: inline
+In-Reply-To: <1130193988.23853.69.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,27 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dave Cunningham <spark@xdev.net>
-Cc: Mark Knecht <markknecht@gmail.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-10-24 at 23:38 +0100, Dave Cunningham wrote:
-> It's also pretty confusing why sometimes there are several
-> stereo pcm devices to access different channels, and sometimes a
-> single pcm device with multiple alsa "channels".  Especially
-> since this confusion is presented to the user.
-> 
+On Mon, Oct 24, 2005 at 06:46:27PM -0400, Lee Revell wrote:
+>On Mon, 2005-10-24 at 23:38 +0100, Dave Cunningham wrote:
+>> It's also pretty confusing why sometimes there are several
+>> stereo pcm devices to access different channels, and sometimes a
+>> single pcm device with multiple alsa "channels".  Especially
+>> since this confusion is presented to the user.
+>> 
+>
+>It's not confusing at all, it makes perfect sense.  If you want to play
+>stereo out the front speakers use the "front" device.  If you want to
+>play stereo out the rear speakers use the "rear" device.  Etc.  If you
+>want to play 5.1 surround out of all 6 speakers use the "surround51"
+>device.
+>
+>What could be simpler?
+>
+>Lee
 
-It's not confusing at all, it makes perfect sense.  If you want to play
-stereo out the front speakers use the "front" device.  If you want to
-play stereo out the rear speakers use the "rear" device.  Etc.  If you
-want to play 5.1 surround out of all 6 speakers use the "surround51"
-device.
+It would be great if it were like that, but this is how it
+appears to me:
 
-What could be simpler?
+name: C-Media PCI DAC/ADC
 
-Lee
+has 6 channels, only 2 of which seem to work, whereas
 
+name: C-Media PCI 2nd DAC
+
+seems to have 2 channels.
+
+There is another device for IEC958 as well, and there is also a
+bunch of mixer controls relating to "four channel mode" and "mic
+as rear" etc.  It's *very* confusing.
+
+The card is 5.1 and has 3 analogue output jacks, and a pair of
+optical ports around the back.
 
 
 -------------------------------------------------------
