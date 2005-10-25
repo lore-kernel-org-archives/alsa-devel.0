@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001482]: Front channels distorsions in Phase 28
-Date: Tue, 25 Oct 2005 20:05:05 +0200
-Message-ID: <931981136bf2f8679a58804f0813f6dd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001504]: Swap Front/Rear Output on SBLive! 5.1
+Date: Tue, 25 Oct 2005 23:58:01 +0200
+Message-ID: <151fce85da6d692b5e088840e265af09@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51559188
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 20:05:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7B2F176
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 23:58:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1482> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1504> 
 ======================================================================
-Reported By:                eric
+Reported By:                ripps818
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1482
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1504
+Category:                   PCI - emu10k1
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             2.6.8.1 Custom epia
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             10-18-2005 11:45 CEST
-Last Modified:              10-25-2005 20:05 CEST
+Date Submitted:             10-25-2005 23:58 CEST
+Last Modified:              10-25-2005 23:58 CEST
 ======================================================================
-Summary:                    Front channels distorsions in Phase 28
+Summary:                    Swap Front/Rear Output on SBLive! 5.1
 Description: 
-Hello , i have problems on Terratec Phase 28 :
-
-front channels distortions, other no problems (rear , center , side ...)
-
-you can view for sample screenshots of 1000Hz signal applied of front and
-rear channels
-
-I use last alsa drivers 1.0.9b and last library on Debian sarge 3.1
-
-thanks 
+I want to know if it's possible to make my rear output my primary master
+output for my soundcard. I use KxDriver in Windows and I want to be able
+to keep my setup working in linux as well. I don't too much about
+programming and the driver's archetecture, but it seems like it wouldn't
+be too complicated to fix.
 ======================================================================
-
-----------------------------------------------------------------------
- eric - 10-25-05 20:05 
-----------------------------------------------------------------------
-Hi , with last alsa cvs , same problem.
-
-i don't understand why six channels works perfectly and two have strange 
-distortion.
-
-thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-18-05 11:45 eric           New Issue                                    
-10-18-05 11:45 eric           File Added: screenshot.zip                    
-10-18-05 11:45 eric           Kernel Version            => 2.6.8.1 Custom epia
-10-25-05 20:05 eric           Note Added: 0006550                          
+10-25-05 23:58 ripps818       New Issue                                    
+10-25-05 23:58 ripps818       Kernel Version            => 2.6.13          
 ======================================================================
 
 
