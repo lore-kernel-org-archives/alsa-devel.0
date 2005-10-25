@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001500]: Dell Inspiron 8600 needs AC97_TUNE_HP_ONLY quirk
-Date: Tue, 25 Oct 2005 12:37:08 +0200
-Message-ID: <51702828289947f70fd4306a03ec69f3@bugtrack.alsa-project.org>
+Date: Tue, 25 Oct 2005 12:45:56 +0200
+Message-ID: <fcff2e6df7d8ab963e8f6353c92a3a9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C733176
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 12:37:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8E23173
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 12:45:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian GNU/Linux
 Kernel Version:             2.6.14pre3
 ======================================================================
 Date Submitted:             10-25-2005 12:32 CEST
-Last Modified:              10-25-2005 12:37 CEST
+Last Modified:              10-25-2005 12:45 CEST
 ======================================================================
 Summary:                    Dell Inspiron 8600 needs AC97_TUNE_HP_ONLY quirk
 Description: 
@@ -57,6 +57,15 @@ patch works fine for me.
 Could you provide the change log and the signed-off-by line for submission,
 as described in Main page?
 
+----------------------------------------------------------------------
+ lorentey - 10-25-05 12:45 
+----------------------------------------------------------------------
+But of course:
+
+Add AC97_TUNE_HP_ONLY quirk for Dell Inspiron 8600.
+
+Signed-off-by: Karoly Lorentey <lorentey@elte.hu>
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -66,6 +75,7 @@ dell-inspiron-8600.intel8x0.quirk.patch
 10-25-05 12:32 lorentey       Distribution              => Debian GNU/Linux
 10-25-05 12:32 lorentey       Kernel Version            => 2.6.14pre3      
 10-25-05 12:37 tiwai          Note Added: 0006535                          
+10-25-05 12:45 lorentey       Note Added: 0006536                          
 ======================================================================
 
 
