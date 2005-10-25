@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Tue, 25 Oct 2005 10:52:14 +0200
-Message-ID: <e1160e809599748c455fad90b66cbf3c@85.132.177.35>
+Subject: [ALSA - driver 0001498]: error: unknown field `owner'
+Date: Tue, 25 Oct 2005 10:58:10 +0200
+Message-ID: <d9096c788eeaffea763df64c5c7e370b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4A7C173
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 10:52:14 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD6D7173
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 10:58:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,120 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://85.132.177.35/alsa-bug/view.php?id=1276> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1498> 
 ======================================================================
-Reported By:                colding
-Assigned To:                
+Reported By:                eric
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1276
-Category:                   PCI - emu10k1
+Issue ID:                   1498
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Gentoo AMD64 2005.0
-Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
-20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              10-25-2005 10:52 CEST
+Date Submitted:             10-25-2005 10:58 CEST
+Last Modified:              10-25-2005 10:58 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
-playing any sound.
+Summary:                    error: unknown field `owner'
 Description: 
-I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
-I have enabled ALSA and OSS emulation in the kernel. I have tried as
-compiled in, no modules, and as module. The card is correctly detected on
-boot-up
-and apparently activated. 
+compilation problem with kernel 2.6.8.1
 
-Everything seems to be configured correctly according to the alsa guide
-for Gentoo and all I could find at alsa-project and for Gnome. 
+with alsa 10RC2 => cvs
 
-The problem is that I am only hearing cyclically repeating clicks, with
-weak static noise in-between, when I am trying to play music. I have a
-set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
-analog output jack (Line Out 1) on the card.
+10RC1 no problems
 
-It seems that my problems are the same as in this former post to the
-list:
+sample error:
 
-http://sourceforge.net/mailarchive/message.php?msg_id=11662616
+In file included from /usr/src/cvs/alsa-driver/pci/via82xx.c:1:
+/usr/src/cvs/alsa-driver/alsa-kernel/pci/via82xx.c:2481: error: unknown
+field `owner' specified in initializer
+/usr/src/cvs/alsa-driver/alsa-kernel/pci/via82xx.c:2481: attention :
+initialisation d'un type pointeur incompatible
+make[3]: *** [/usr/src/cvs/alsa-driver/pci/via82xx.o] Erreur 1
+make[2]: *** [/usr/src/cvs/alsa-driver/pci] Erreur 2
+make[1]: *** [_module_/usr/src/cvs/alsa-driver] Erreur 2
+make[1]: Leaving directory `/usr/src/linux-2.6.8.1
 
-That thread concluded with no solution but to revert to OSS.
+Thanks 
 
+eric
 ======================================================================
-
-----------------------------------------------------------------------
- colding - 10-25-05 10:43 
-----------------------------------------------------------------------
-A few lines telling me how to proceed will be very appreciated. I've done
-it before, but it is really to long ago for me to remember and I am really
-to busy right now to spend much time reading up on it again. I would be
-gratefull for a few words then ;-)
-
-Thanks a lot,
-  jules
-
-----------------------------------------------------------------------
- pomac - 10-25-05 10:52 
-----------------------------------------------------------------------
-Ok =)
-
-copy the patch file into /usr/portage/media-sound/alsa-driver/files
-edit the approprate ebuild adding:
-epatch ${FILESDIR}/${PN}-1.0.10_rc2-dma.patch
-
-just before:
-convert_to_m ${S}/Makefile
-
-then, do ebuild 'ebuild file' digest and youre ready to emerge.
-I did this with 1.0.10-rc2 and since i had used the in kernel version
-before i also removed /etc/asound.state (since it changes sometimes).
-
-If you have a portdir_overlay i could actually tar it up for you later
-today.
-
-Anyways, then just remove the old sound modules (use -f if you use gnome
-(the mixer applet will be killed and it'll want to restart it, much
-easier))
-then just start alsasound using the init.d file =)
-
-(perhaps i should have finished my coffee first, but i hope i wasn't too
-thurough =)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 22:13 colding        New Issue                                    
-07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
-07-22-05 22:13 colding        Kernel Version            => Linux omc-2
-2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
-Processor 252 AuthenticAMD GNU/Linux
-07-23-05 12:53 colding        Issue Monitored: colding                     
-07-23-05 15:47 colding        Note Added: 0005553                          
-08-16-05 12:34 pzad           Note Added: 0005826                          
-08-16-05 16:52 rlrevell       Note Added: 0005829                          
-08-16-05 16:53 rlrevell       Status                   new => feedback     
-08-17-05 09:05 colding        Note Added: 0005834                          
-09-17-05 18:52 jdthood        Note Added: 0006252                          
-09-19-05 09:25 colding        Note Added: 0006276                          
-09-22-05 15:14 jdthood        Status                   feedback => acknowledged
-10-24-05 15:05 pomac          File Added: digest-alsa-driver-1.0.10_rc2         
-          
-10-24-05 15:06 pomac          File Added: alsa-driver-1.0.10_rc2-dma.patch      
-             
-10-24-05 15:09 pomac          Note Added: 0006518                          
-10-24-05 15:22 jcdutton       Note Added: 0006520                          
-10-24-05 15:37 pomac          Note Added: 0006521                          
-10-25-05 05:56 rlrevell       Note Added: 0006526                          
-10-25-05 09:27 colding        Note Added: 0006527                          
-10-25-05 10:34 pomac          Note Added: 0006529                          
-10-25-05 10:43 colding        Note Added: 0006530                          
-10-25-05 10:52 pomac          Note Added: 0006531                          
+10-25-05 10:58 eric           New Issue                                    
+10-25-05 10:58 eric           Kernel Version            => 2.6.8.1         
 ======================================================================
 
 
