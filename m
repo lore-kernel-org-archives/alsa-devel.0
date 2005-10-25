@@ -1,15 +1,14 @@
-From: Panagiotis Papadakos <papadako@ics.forth.gr>
-Subject: Re: snd-hda-intel at Asus A6Va laptop
-Date: Tue, 25 Oct 2005 19:48:57 +0300 (EET DST)
-Message-ID: <Pine.GSO.4.58.0510251944100.20376@calliope>
-References: <Pine.GSO.4.58.0510251859280.20376@calliope> <s5hd5lt8tfs.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001503]: snd_intel8x0 don't work
+Date: Tue, 25 Oct 2005 19:43:23 +0200
+Message-ID: <454e06f1bbaf328c9a6ce81f1c03b7c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailhost.ics.forth.gr (mailhost.ics.forth.gr [139.91.157.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91186159
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 18:48:59 +0200 (MEST)
-In-Reply-To: <s5hd5lt8tfs.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8312D167
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 19:43:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,30 +18,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Panagiotis Papadakos <papadako@ics.forth.gr>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Well just compiled CVS but no sound from headphones, with default
-parameters of model=asus. Still have to use z71v model.
 
-On Tue, 25 Oct 2005, Takashi Iwai wrote:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1503> 
+======================================================================
+Reported By:                Trojanets
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1503
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.13-fc4
+======================================================================
+Date Submitted:             10-25-2005 19:43 CEST
+Last Modified:              10-25-2005 19:43 CEST
+======================================================================
+Summary:                    snd_intel8x0 don't work
+Description: 
+modprobe snd_intel8x0 :
+sh: -c: line 0: syntax error near unexpected taken '&'
+sh: -c: line 0: /sbin/modeprobe --ignore-install snd-intel8x0 && 
+/usr/sbin/alsactrl restore > /dev/nul 2 > &1
+FATAL: Error running install command for snd_intel8x0
 
-> At Tue, 25 Oct 2005 19:07:51 +0300 (EET DST),
-> Panagiotis Papadakos wrote:
-> >
-> > Using the default parameteres for the snd-hda-intel module
-> > for my laptop, I could not get sound from the headphones, which
-> > is in the same jack as the SPDIF. So I used the option model=z71v
-> > to make it work. Here is the related info:
->
-> Did you try the latest version of ALSA?
-> There are other models for ASUS, too.  I guess they will suit better
-> to your laptop.
->
->
-> Takashi
->
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-25-05 19:43 Trojanets      New Issue                                    
+10-25-05 19:43 Trojanets      Kernel Version            => 2.6.13-fc4      
+======================================================================
+
+
 
 
 -------------------------------------------------------
