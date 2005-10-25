@@ -1,22 +1,14 @@
-From: Panagiotis Papadakos <papadako@ics.forth.gr>
-Subject: snd-hda-intel at Asus A6Va laptop
-Date: Tue, 25 Oct 2005 19:07:51 +0300 (EET DST)
-Message-ID: <Pine.GSO.4.58.0510251859280.20376@calliope>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
+Date: Tue, 25 Oct 2005 18:11:46 +0200
+Message-ID: <9bbf1abc8189f32c09f5718389e3739d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailhost.ics.forth.gr (mailhost.ics.forth.gr [139.91.157.50])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B9B0167
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 18:07:57 +0200 (MEST)
-Received: from mailhost.ics.forth.gr (nemesis.ics.forth.gr [139.91.157.50])
-	by mailhost.ics.forth.gr (8.12.10/ICS-FORTH/V10-Server-1.0) with SMTP id j9PG5r67008029
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 19:07:56 +0300 (EEST)
-Received: (from ASSP-nospam [127.0.0.1])
- by mailhost.ics.forth.gr (SMSSMTP 4.1.0.19) with SMTP id M2005102519075113571
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 19:07:51 +0300
-Received: from localhost (papadako@localhost)
-	by calliope.ics.forth.gr (8.9.3/ICS-FORTH/V8.2.2C-INTNULL) with ESMTP id TAA23791
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 19:07:51 +0300 (EET DST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 353EB167
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 18:11:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,23 +21,80 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Using the default parameteres for the snd-hda-intel module
-for my laptop, I could not get sound from the headphones, which
-is in the same jack as the SPDIF. So I used the option model=z71v
-to make it work. Here is the related info:
 
-00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 1043:1173
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at febf8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] #10 [0091]
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1501> 
+======================================================================
+Reported By:                dkoch
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1501
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.14-rc5-gac9b9c66
+======================================================================
+Date Submitted:             10-25-2005 16:45 CEST
+Last Modified:              10-25-2005 18:11 CEST
+======================================================================
+Summary:                    intel8x0 surround channels missing and swapped
+Description: 
+By default, the front channels are OK, the rear channels come out on the
+center/LFE jack and the center/LFE channels don't come out at all.
+
+Using ICH5/AD1985 (Intel P865PERL motherboard).
+
+Anomolies found: double-rate slot (DRSLOT) is set to 7,8 instead of the
+default
+10,11 (register 0x20=0400 instead of 0).  After setting 0x20 to 0, the
+rear
+channel jack starts working.  RL/RR and Center/LFE are still swapped.
+
+I would assume the swappage was hardware, but the Center and LFE volume
+controls
+affect the speakers on the Center/LFE jack which would indicate the driver
+is
+incorrectly routing the signals.
+
+======================================================================
+
+----------------------------------------------------------------------
+ dkoch - 10-25-05 18:09 
+----------------------------------------------------------------------
+0x2a, bit 1 is off: 0:2a = 05f1
+
+----------------------------------------------------------------------
+ tiwai - 10-25-05 18:11 
+----------------------------------------------------------------------
+An experimental patch is attached.  Give it a try.
+
+It won't fix the problem of channel swapping.
+This is also what I don't figure out yet.  On older ICH chips, the
+surround channels are swapped on alsa-lib.  But, ICH4 or newer don't do
+this because the bugreports have suggested they work without swapping. 
+And now you report that it's not...
+
+The fix isn't difficult.  The configuration for each card is found in
+/usr/share/alsa/cards directory.  Change "surround51" definition in
+ICH4.conf just like ICH.conf, using route plugin.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-25-05 16:45 dkoch          New Issue                                    
+10-25-05 16:45 dkoch          Distribution              => Fedora Core 3   
+10-25-05 16:45 dkoch          Kernel Version            => 2.6.14-rc5-gac9b9c66
+10-25-05 17:56 tiwai          Note Added: 0006546                          
+10-25-05 18:09 dkoch          Note Added: 0006547                          
+10-25-05 18:11 tiwai          Note Added: 0006548                          
+======================================================================
 
 
-Regards
-	Papadakos Panagiotis
 
 
 -------------------------------------------------------
