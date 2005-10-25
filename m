@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001488]: alsa-driver CVS 10-21-2005 fails to build with kernel-suse-2.4.21-297
-Date: Tue, 25 Oct 2005 09:33:16 +0200
-Message-ID: <d9530bac197842684ad0e7e6776f7d5e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
+Date: Tue, 25 Oct 2005 10:34:51 +0200
+Message-ID: <d65de5de22935e6390c3aed3132fc2bb@85.132.177.35>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FA2F186
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 09:33:16 +0200 (MEST)
+Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4620E167
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 10:34:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,130 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1488> 
+<https://85.132.177.35/alsa-bug/view.php?id=1276> 
 ======================================================================
-Reported By:                roadrunner
-Assigned To:                perex
+Reported By:                colding
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1488
-Category:                   0_compilation problem_!!!
+Issue ID:                   1276
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               suse linux
-Kernel Version:             Linux version 2.4.21-297-default (root@i386.suse.de)
-(gcc version 3.3.1 (SuSE Linux)) #1 Sat Jul 23 07:47:3 UTC 20059
+Status:                     acknowledged
+Distribution:               Gentoo AMD64 2005.0
+Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
+20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
-Date Submitted:             10-21-2005 13:34 CEST
-Last Modified:              10-25-2005 09:33 CEST
+Date Submitted:             07-22-2005 22:13 CEST
+Last Modified:              10-25-2005 10:34 CEST
 ======================================================================
-Summary:                    alsa-driver CVS 10-21-2005 fails to build with
-kernel-suse-2.4.21-297
+Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
+playing any sound.
 Description: 
-Building alsa-driver CVS 10-21-2005 fails.
-command:
+I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
+I have enabled ALSA and OSS emulation in the kernel. I have tried as
+compiled in, no modules, and as module. The card is correctly detected on
+boot-up
+and apparently activated. 
 
-./cvscompile --with-cards=ca0106
+Everything seems to be configured correctly according to the alsa guide
+for Gentoo and all I could find at alsa-project and for Gnome. 
 
-output (complete output attached):
-[...]
-gcc -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
--I/home/erik/archiv/alsa-cvs/alsa-driver/include 
--I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -DALSA_BUILD
--nostdinc -iwithprefix include  ac97_codec.c ac97_pcm.c ac97_patch.c
-ac97_proc.c > .depend
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ac97'
-make  -C ali5451 fastdep
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ali5451'
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
-updated
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ali5451'
-make  -C asihpi fastdep
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/asihpi'
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
-updated
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/asihpi'
-make  -C au88x0 fastdep
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/au88x0'
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
-updated
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/au88x0'
-make  -C ca0106 fastdep
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ca0106'
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
-updated
-make[2]: *** No rule to make target `ca_midi.c', needed by `fastdep'. 
-Stop.
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ca0106'
-make[1]: *** [_sfdep_ca0106] Error 2
-make[1]: Leaving directory `/home/erik/archiv/alsa-cvs/alsa-driver/pci'
-make: *** [dep] Error 1
+The problem is that I am only hearing cyclically repeating clicks, with
+weak static noise in-between, when I am trying to play music. I have a
+set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
+analog output jack (Line Out 1) on the card.
 
+It seems that my problems are the same as in this former post to the
+list:
+
+http://sourceforge.net/mailarchive/message.php?msg_id=11662616
+
+That thread concluded with no solution but to revert to OSS.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-21-05 14:53 
+ colding - 10-25-05 09:27 
 ----------------------------------------------------------------------
-Already fixed.
+I'll test the patch soonish. Sometime this week I hope.
 
 ----------------------------------------------------------------------
- roadrunner - 10-25-05 09:33 
+ pomac - 10-25-05 10:34 
 ----------------------------------------------------------------------
-Build still fails in CVS 10-25-2005:
-
-command: ./cvscompile --with-cards=ca0106
-
-output:
-[...]
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ac97'
-gcc -D__KERNEL__ -DMODULE=1
--I/home/erik/archiv/alsa-cvs/alsa-driver/include 
--I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include -DMODVERSIONS -include
-/lib/modules/2.4.21-297-default/build/include/linux/modversions.h  
--DEXPORT_SYMTAB -c ac97_codec.c
-In file included from ac97_codec.c:33:
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sound/ac97_codec.h:517:
-error: field `dev' has incomplete type
-make[2]: *** [ac97_codec.o] Fehler 1
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ac97'
-make[1]: *** [_modsubdir_ac97] Fehler 2
-make[1]: Leaving directory `/home/erik/archiv/alsa-cvs/alsa-driver/pci'
-make: *** [compile] Fehler 1
+I dunno how much you've played with gentoo but, do you want info on how to
+make gentoo patch it etc?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-05 13:34 roadrunner     New Issue                                    
-10-21-05 13:34 roadrunner     File Added: compile.log                      
-10-21-05 13:34 roadrunner     Distribution              => suse linux      
-10-21-05 13:34 roadrunner     Kernel Version            => Linux version
-2.4.21-297-default (root@i386.suse.de) (gcc version 3.3.1 (SuSE Linux)) #1 Sat
-Jul 23 07:47:3 UTC 20059
-10-21-05 14:53 tiwai          Status                   assigned => resolved
-10-21-05 14:53 tiwai          Resolution               open => fixed       
-10-21-05 14:53 tiwai          Note Added: 0006511                          
-10-25-05 09:33 roadrunner     Status                   resolved => feedback
-10-25-05 09:33 roadrunner     Resolution               fixed => reopened   
-10-25-05 09:33 roadrunner     Note Added: 0006528                          
+07-22-05 22:13 colding        New Issue                                    
+07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
+07-22-05 22:13 colding        Kernel Version            => Linux omc-2
+2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
+Processor 252 AuthenticAMD GNU/Linux
+07-23-05 12:53 colding        Issue Monitored: colding                     
+07-23-05 15:47 colding        Note Added: 0005553                          
+08-16-05 12:34 pzad           Note Added: 0005826                          
+08-16-05 16:52 rlrevell       Note Added: 0005829                          
+08-16-05 16:53 rlrevell       Status                   new => feedback     
+08-17-05 09:05 colding        Note Added: 0005834                          
+09-17-05 18:52 jdthood        Note Added: 0006252                          
+09-19-05 09:25 colding        Note Added: 0006276                          
+09-22-05 15:14 jdthood        Status                   feedback => acknowledged
+10-24-05 15:05 pomac          File Added: digest-alsa-driver-1.0.10_rc2         
+          
+10-24-05 15:06 pomac          File Added: alsa-driver-1.0.10_rc2-dma.patch      
+             
+10-24-05 15:09 pomac          Note Added: 0006518                          
+10-24-05 15:22 jcdutton       Note Added: 0006520                          
+10-24-05 15:37 pomac          Note Added: 0006521                          
+10-25-05 05:56 rlrevell       Note Added: 0006526                          
+10-25-05 09:27 colding        Note Added: 0006527                          
+10-25-05 10:34 pomac          Note Added: 0006529                          
 ======================================================================
 
 
