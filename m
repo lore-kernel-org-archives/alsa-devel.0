@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Thu, 27 Oct 2005 02:27:47 +0200
-Message-ID: <73fb77232f741fa007b68caa25f1ece5@bugtrack.alsa-project.org>
+From: "Strobe E. Framers" <tomsoft@mcimail.com>
+Subject: Protect yourself and your family from bird flu!
+Date: Mon, 24 Oct 2005 21:05:11 -0400
+Message-ID: <8367896830.20051024210511@mcimail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------4390DB6CD14430B"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78471181
-	for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2005 02:27:47 +0200 (MEST)
+Received: from -1211983696 (adsl-69-239-92-137.dsl.irvnca.pacbell.net [69.239.92.137])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 52EA516E
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 03:04:25 +0200 (MEST)
+Received: from mcimail.com (-1212056888 [-1212055584])
+	by adsl-69-239-92-137.dsl.irvnca.pacbell.net (Qmailv1) with ESMTP id 56E2D48161
+	for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2005 21:05:11 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,134 +21,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
-======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              10-27-2005 02:27 CEST
-======================================================================
-Summary:                    module hangs at seemingly random times
-Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+------------4390DB6CD14430B
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
+"The European Commission has also confirmed that the bird flue found in Turkey 
+is the H5N1 type which is lethal for humans. The same type of bird flu had
+killed over 60 people in Asia"
+FOX News 
+"Deadly H5N1 bird flu virus suspected in a vicinity of Moscow. Presence 
+of antigen and genetic material of H5N1 subtype of bird flue virus in some 
+of the samples"
+USA Today
 
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
+"Bird flue case discovered in the USA. 2,000 turkeys had died of the disease 
+on Balikesir farm. All animals on the farm had been slaughtered to prevent the 
+disease spreading"
+Reuters
 
+Protect yourself and your family from bird flu!
 
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
+Many of you know our site very well. Our goal is to provide our customers
+with rare and high efficiency medicines. We have already helped thousands of
+people to get rid of their diseases and improve their health as well as 
+the quality of their lives.
 
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
+Right now we cannot leave you to face to face with this impending life-threat.
+We have a high efficiency European medicine T a m i f l u to offer. 
 
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
-======================================================================
+Tamiflu is a drug with generic name of Oseltamivir. It is a drug belonging to the
+family of antivirals. Anti-virus drugs such as Tamiflu are used to treat diseases 
+that are caused by viruses thus, the name antiviral. 
 
-----------------------------------------------------------------------
- Raymond - 08-24-05 11:13 
-----------------------------------------------------------------------
-When playing mono streams on hw:0,2 (16 subdevices) on my au8830 (32-bits
-platform), the 17th mono stream (aplay) seem to be blocked
-(snd_pcm_open).
+Tamiflu is indicated for the treatment of viral infections especially flu viruses.
+Tamiflu can treat influenza A and influenza B (Bird Flu). 
 
-Is this the normal behaviour of snd_pcm_open when maximum number of
-subdevice have been opened ?
+Don't wait before it's too late. Protect yourself and your family now!
+More info on our site:
+http://realergeriumpan.info/
 
-When playing mono streams on hw:0,0 (32 subdevices) on au8830, the 17th
-mono stream (aplay) will aborted immediately since snd_pcm_hw_params()
-return no more SRC available error.
+------------4390DB6CD14430B
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
 
-Please note that the capture stream also using DMA, SRC and MIXER.
+<html>
+<body> 
+&quot;The European Commission has also confirmed that the bird flue found in Turkey <br> 
+is the H5N1 type which is lethal for humans. The same type of bird flu had<br> 
+killed over 60 people in Asia&quot;<br> 
+<em><strong>FOX News </strong></em> 
+<p>&quot;Deadly H5N1 bird flu virus suspected in a vicinity of Moscow. Presence <br> 
+  of antigen and genetic material of H5N1 subtype of bird flue virus in some <br> 
+  of the samples&quot;<br> 
+  <em><strong>USA Today</strong></em></p> 
+<p>&quot;Bird flue case discovered in the USA. 2,000 turkeys had died of the disease <br> 
+  on Balikesir farm. All animals on the farm had been slaughtered to prevent the <br> 
+  disease spreading&quot;<br> 
+  <em><strong>Reuters</strong></em></p> 
+<p><strong><font color="#DF0000">Protect yourself and your family from bird flu!</font></strong></p> 
+<p>Many of you know our site very well. Our goal is to provide our customers<br> 
+  with rare and high efficiency medicines. We have already helped thousands of<br> 
+  people to get rid of their diseases and improve their health as well as <br> 
+  the quality of their lives.</p> 
+<p>Right now we cannot leave you to face to face with this impending life-threat.<br> 
+  We have a high efficiency European medicine <font color="#DF0000"> <strong> T a m i f l u </strong></font>to offer. </p> 
+<p> <strong>Tamiflu</strong> is a drug with generic name of <strong>Oseltamivir</strong>. It is a drug belonging to the<br> 
+  family of antivirals. Anti-virus drugs such as Tamiflu are used to treat diseases <br> 
+  that are caused by viruses thus, the name antiviral. </p> 
+<p><strong>Tamiflu</strong> is indicated for the treatment of viral infections especially flu viruses.<br> 
+  <strong>Tamiflu </strong>can treat influenza A and influenza B (Bird Flu). <br> 
+  <br> 
+  <strong>Don't wait before it's too late. Protect yourself and your family now!<br> 
+  More info on <a href="http://realergeriumpan.info/">Our site</a> </strong></p> 
+<p>&nbsp;</p> 
+<p>&nbsp;</p> 
+</body>
+</html>
 
-I guess some weird things happen when there is only 1 SRC left and the
-ALSA application (stereo stream) request 2 SRC.
-
-au88x0 driver should check the available number of SRC >= the number of
-channels before it allocate the SRC and MIXER. THe error recovery may not
-released the SRC and MIXER properly.
-
-
-You should add printk to log the resource DMA, SRC, MIXER usuage at the
-start and the end of a successful snd_pcm_vortex_hw_params().
-
-----------------------------------------------------------------------
- Raymond - 10-27-05 02:27 
-----------------------------------------------------------------------
-It looks like au88x0_gameport.c need patch too.
-
-static int
-vortex_game_cooked_read(struct gameport *gameport, int *axes, int
-*buttons)
-{
-	vortex_t *vortex = gameport_get_port_data(gameport);
-	int i;
-
-	*buttons = (~hwread(vortex->mmio, VORTEX_GAME_LEGACY) >> 4) & 0xf;
-
-	for (i = 0; i < 4; i++) {
-		axes[i] =
-		    hwread(vortex->mmio, VORTEX_GAME_AXIS + (i * AXIS_SIZE));
-		if (axes[i] == AXIS_RANGE)
-			axes[i] = -1;
-	}
-	return 0;
-}
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-======================================================================
+------------4390DB6CD14430B--
 
 
 
