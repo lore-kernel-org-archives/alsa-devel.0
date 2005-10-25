@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Tue, 25 Oct 2005 10:43:23 +0200
-Message-ID: <a958906e665c1674d31cda513b2d77da@85.132.177.35>
+Date: Tue, 25 Oct 2005 10:52:14 +0200
+Message-ID: <e1160e809599748c455fad90b66cbf3c@85.132.177.35>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E8C4167
-	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 10:43:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4A7C173
+	for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2005 10:52:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
 20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
 ======================================================================
 Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              10-25-2005 10:43 CEST
+Last Modified:              10-25-2005 10:52 CEST
 ======================================================================
 Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
 playing any sound.
@@ -70,12 +70,6 @@ That thread concluded with no solution but to revert to OSS.
 ======================================================================
 
 ----------------------------------------------------------------------
- pomac - 10-25-05 10:34 
-----------------------------------------------------------------------
-I dunno how much you've played with gentoo but, do you want info on how to
-make gentoo patch it etc?
-
-----------------------------------------------------------------------
  colding - 10-25-05 10:43 
 ----------------------------------------------------------------------
 A few lines telling me how to proceed will be very appreciated. I've done
@@ -85,6 +79,33 @@ gratefull for a few words then ;-)
 
 Thanks a lot,
   jules
+
+----------------------------------------------------------------------
+ pomac - 10-25-05 10:52 
+----------------------------------------------------------------------
+Ok =)
+
+copy the patch file into /usr/portage/media-sound/alsa-driver/files
+edit the approprate ebuild adding:
+epatch ${FILESDIR}/${PN}-1.0.10_rc2-dma.patch
+
+just before:
+convert_to_m ${S}/Makefile
+
+then, do ebuild 'ebuild file' digest and youre ready to emerge.
+I did this with 1.0.10-rc2 and since i had used the in kernel version
+before i also removed /etc/asound.state (since it changes sometimes).
+
+If you have a portdir_overlay i could actually tar it up for you later
+today.
+
+Anyways, then just remove the old sound modules (use -f if you use gnome
+(the mixer applet will be killed and it'll want to restart it, much
+easier))
+then just start alsasound using the init.d file =)
+
+(perhaps i should have finished my coffee first, but i hope i wasn't too
+thurough =)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -114,6 +135,7 @@ Processor 252 AuthenticAMD GNU/Linux
 10-25-05 09:27 colding        Note Added: 0006527                          
 10-25-05 10:34 pomac          Note Added: 0006529                          
 10-25-05 10:43 colding        Note Added: 0006530                          
+10-25-05 10:52 pomac          Note Added: 0006531                          
 ======================================================================
 
 
