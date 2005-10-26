@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001502]: Bad step values in snd_pcm_channel_area_t from snd_pcm_mmap_begin
-Date: Wed, 26 Oct 2005 08:26:37 +0200
-Message-ID: <65f344c912ba9e080adf77f1ce13e796@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001503]: snd_intel8x0 don't work
+Date: Wed, 26 Oct 2005 12:57:44 +0200
+Message-ID: <a23cd2de17961d71334edeea401cac8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09DF815A
-	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 08:26:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07FF9165
+	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 12:57:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1502> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1503> 
 ======================================================================
-Reported By:                drechsle
+Reported By:                Trojanets
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1502
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1503
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.13-fc4
 ======================================================================
-Date Submitted:             10-25-2005 16:47 CEST
-Last Modified:              10-26-2005 08:26 CEST
+Date Submitted:             10-25-2005 19:43 CEST
+Last Modified:              10-26-2005 12:57 CEST
 ======================================================================
-Summary:                    Bad step values in snd_pcm_channel_area_t from
-snd_pcm_mmap_begin
+Summary:                    snd_intel8x0 don't work
 Description: 
-I opened the default audio device with 4 channels (MMAP_INTERLEAVED,
-SND_PCM_FORMAT_S16)
-snd_pcm_mmap_begin then returns a snd_pcm_channel_area_t * like the
-following:
+modprobe snd_intel8x0 :
+sh: -c: line 0: syntax error near unexpected taken '&'
+sh: -c: line 0: /sbin/modeprobe --ignore-install snd-intel8x0 && 
+/usr/sbin/alsactrl restore > /dev/nul 2 > &1
+FATAL: Error running install command for snd_intel8x0
 
-Channel 0:   first:    0    step:   32
-Channel 1:   first:   16    step:   32
-Channel 2:   first:   32    step:   32
-Channel 3:   first:   48    step:   32
-
-The step values seem to be wrong. It also doesn't sound very comfortable.
 ======================================================================
 
 ----------------------------------------------------------------------
- drechsle - 10-25-05 18:35 
+ tiwai - 10-26-05 12:57 
 ----------------------------------------------------------------------
-Hardware: Tyan S2885, 2xOpteron 248, 
-Audio Device: AMD8111 (intel8x0)
-Kernel: 2.6.13 (smp, patched by suse)
-
-----------------------------------------------------------------------
- drechsle - 10-26-05 08:26 
-----------------------------------------------------------------------
-tried 1.0.10rc2: same problem
+It's the problem of your module configuration.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-05 16:47 drechsle       New Issue                                    
-10-25-05 17:44 tiwai          Note Added: 0006545                          
-10-25-05 18:35 drechsle       Note Added: 0006549                          
-10-26-05 08:26 drechsle       Note Added: 0006553                          
+10-25-05 19:43 Trojanets      New Issue                                    
+10-25-05 19:43 Trojanets      Kernel Version            => 2.6.13-fc4      
+10-26-05 12:57 tiwai          Note Added: 0006555                          
 ======================================================================
 
 
