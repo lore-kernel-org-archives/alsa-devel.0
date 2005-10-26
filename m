@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001502]: Bad step values in snd_pcm_channel_area_t from snd_pcm_mmap_begin
-Date: Wed, 26 Oct 2005 14:04:28 +0200
-Message-ID: <c2b771d94e9f9d7c0b064f45ad13a40d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001439]: OSS emulation fails for usb-audio
+Date: Wed, 26 Oct 2005 14:38:08 +0200
+Message-ID: <1fcd93eb39eb492e99e9af2a91898e0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79B35183
-	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 14:04:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1F53183
+	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 14:38:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,187 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CONFIRMED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1502> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1439> 
 ======================================================================
-Reported By:                drechsle
-Assigned To:                
+Reported By:                dagb
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1502
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1439
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     confirmed
+Distribution:               Gentoo
+Kernel Version:             2.6.14-rc2
 ======================================================================
-Date Submitted:             10-25-2005 16:47 CEST
-Last Modified:              10-26-2005 14:04 CEST
+Date Submitted:             09-21-2005 21:31 CEST
+Last Modified:              10-26-2005 14:38 CEST
 ======================================================================
-Summary:                    Bad step values in snd_pcm_channel_area_t from
-snd_pcm_mmap_begin
+Summary:                    OSS emulation fails for usb-audio
 Description: 
-I opened the default audio device with 4 channels (MMAP_INTERLEAVED,
-SND_PCM_FORMAT_S16)
-snd_pcm_mmap_begin then returns a snd_pcm_channel_area_t * like the
-following:
+With ALSA as found in 2.6.14-rc{12} 
+(which reports as as ALSA version 1.0.10-rc1?):
+When playing audio using the OSS emulation with beep-media-player through
+my USB headset adapter, there is no audio, and the time elapsed in BMP
+runs way too fast.
 
-Channel 0:   first:    0    step:   32
-Channel 1:   first:   16    step:   32
-Channel 2:   first:   32    step:   32
-Channel 3:   first:   48    step:   32
+It works if I use the native ALSA support in BMP.
+But, I cannot get any audio with skype with this kernel. This is my main
+beef.
+skype does not do ALSA. I have to use the OSS emulation.
 
-The step values seem to be wrong. It also doesn't sound very comfortable.
+The exact same setup with 2.6.13-gentoo-r1 (using the vanilla kernel ALSA)
+works perfectly for me.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- drechsle - 10-26-05 13:54 
+ dagb - 09-26-05 22:07 
 ----------------------------------------------------------------------
-updated driver, libs, ...
-I used the default device, on a standard suse 10.0 system.
-I'll upload the alsa configuration files. A ~.asoundrc is not used
+Uh. I guess the Category is a little bit off here. This problem only
+affects (AFAIK) snd-usb-audio.
 
 ----------------------------------------------------------------------
- tiwai - 10-26-05 14:04 
+ rlrevell - 09-26-05 22:32 
 ----------------------------------------------------------------------
-How could you open 4 channels for default PCM?  The default PCM is only for
-2 channels.
+Do you have CONFIG_USB_BANDWIDTH disabled in both configs?
+
+----------------------------------------------------------------------
+ dagb - 09-27-05 07:40 
+----------------------------------------------------------------------
+dagb-home src # uname -sr 
+Linux 2.6.13-gentoo-r1
+
+dagb-home src # zcat /proc/config.gz | grep CONFIG_USB_BANDWIDTH
+# CONFIG_USB_BANDWIDTH is not set
+
+dagb-home src # grep CONFIG_USB_BANDWIDTH
+/usr/src/linux-2.6.14-rc1/.config
+# CONFIG_USB_BANDWIDTH is not set
+
+Yes. CONFIG_USB_BANDWIDTH disabled in both setups.
+
+----------------------------------------------------------------------
+ Alphix - 10-24-05 15:18 
+----------------------------------------------------------------------
+I see exactly the same issue with a TerraTec external usb audio card. I've
+reported it LKML
+(http://marc.theaimsgroup.com/?l=linux-kernel&m=113001840929175&w=2) and
+the ALSA mailing list
+(http://article.gmane.org/gmane.linux.alsa.devel/27690).
+
+
+I've included the email below for the records
+=============================================
+
+After updating the kernel on one of my computers today I discovered that 
+usb-audio via snd-pcm-oss over the snd-usb-audio ALSA drivers stopped 
+working (worked with 2.6.13, doesn't with 2.6.14-rc[12345]).
+
+The weird part is that it only stopped working when using the driver 
+through the oss emulation and only for some programs. I've tried it with 
+all apps with native alsa support that I had installed, and all of them 
+worked. I also tried it with a few different apps with oss support, and 
+most of them worked (xine and mplayer) while one failed (mythmusic).
+
+The symptoms is that no sound is heard while the app seems to believe 
+that everything is just fine. It also progresses through the song at 
+about 20x normal speed (i.e. it thinks its done playing a 4 minute song 
+after 12 seconds). The only difference I can come up with is that xine 
+and mplayer probably up-sample the audio to 48.000Hz while MythMusic 
+tries to play at 44.100Hz (the device is a TerraTec external USB <-> 
+SPDIF interface).
+
+I've used git's bisect command to try to find the exact problem, and it 
+seems to have been introduced by this commit:	
+7efd8bc800324a967a37e8a425433468b7f06adb
+see also:
+http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=7efd8bc800324a967a37e8a425433468b7f06adb
+
+patch name: [ALSA] usb-audio: double-buffer all playback data
+
+I'm not sure on how to fix it since the commit is quite big and cannot 
+be simply reversed with the current tree as there have been other 
+patches applied to the file afterwards. Comments/suggestions welcome...
+
+Regards,
+David Härdeman
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 10-25-05 13:44 
+----------------------------------------------------------------------
+What are the contents of /proc/asound/cardX/pcm0p/sub0/hw_params while
+playing?
+
+----------------------------------------------------------------------
+ Alphix - 10-26-05 00:08 
+----------------------------------------------------------------------
+With a module without the previously mentioned patch (i.e. when audio
+works):
+access: RW_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1)
+period_size: 1114
+buffer_size: 8912
+tick_time: 1000
+OSS format: S16_LE
+OSS channels: 2
+OSS rate: 44100
+OSS period bytes: 4096
+OSS periods: 8
+OSS period frames: 1114
+
+With a unpatched 2.6.14-rc5 (i.e. non-working audio):
+access: RW_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1)
+period_size: 1114
+buffer_size: 142592
+tick_time: 1000
+OSS format: S16_LE
+OSS channels: 2
+OSS rate: 44100
+OSS period bytes: 4096
+OSS periods: 128
+OSS period frames: 1114
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 10-26-05 14:38 
+----------------------------------------------------------------------
+I could reproduce some strange behaviour with these settings.
+
+It seems that this particular period size (1114) results in an immediate
+underrun whenever some data is written to the device.  This is a bug in
+the driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-05 16:47 drechsle       New Issue                                    
-10-25-05 17:44 tiwai          Note Added: 0006545                          
-10-25-05 18:35 drechsle       Note Added: 0006549                          
-10-26-05 08:26 drechsle       Note Added: 0006553                          
-10-26-05 12:56 tiwai          Note Added: 0006554                          
-10-26-05 13:54 drechsle       Note Added: 0006556                          
-10-26-05 13:55 drechsle       File Added: alsa.tar.bz2                     
-10-26-05 14:04 tiwai          Note Added: 0006557                          
+09-21-05 21:31 dagb           New Issue                                    
+09-21-05 21:31 dagb           Distribution              => Gentoo          
+09-21-05 21:31 dagb           Kernel Version            => 2.6.14-rc2      
+09-21-05 21:31 dagb           Issue Monitored: dagb                        
+09-26-05 22:07 dagb           Note Added: 0006400                          
+09-26-05 22:32 rlrevell       Note Added: 0006401                          
+09-27-05 07:40 dagb           Note Added: 0006404                          
+10-24-05 15:18 Alphix         Note Added: 0006519                          
+10-24-05 15:20 Alphix         Issue Monitored: Alphix                      
+10-24-05 17:28 Clemens LadischAssigned To               => Clemens Ladisch 
+10-24-05 17:28 Clemens LadischStatus                   new => assigned     
+10-24-05 17:28 Clemens LadischCategory                 CORE OSS - pcm => USB -
+usb-audio
+10-25-05 13:44 Clemens LadischNote Added: 0006538                          
+10-26-05 00:08 Alphix         Note Added: 0006552                          
+10-26-05 14:38 Clemens LadischNote Added: 0006558                          
+10-26-05 14:38 Clemens LadischStatus                   assigned => confirmed
 ======================================================================
 
 
