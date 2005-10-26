@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001439]: OSS emulation fails for usb-audio
-Date: Wed, 26 Oct 2005 00:08:03 +0200
-Message-ID: <11870febc4ad4eb8cf9bf60a2670247f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001502]: Bad step values in snd_pcm_channel_area_t from snd_pcm_mmap_begin
+Date: Wed, 26 Oct 2005 08:26:37 +0200
+Message-ID: <65f344c912ba9e080adf77f1ce13e796@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 685A717C
-	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 00:08:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09DF815A
+	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 08:26:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,102 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1439> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1502> 
 ======================================================================
-Reported By:                dagb
-Assigned To:                Clemens Ladisch
+Reported By:                drechsle
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1439
-Category:                   USB - usb-audio
+Project:                    ALSA - lib
+Issue ID:                   1502
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
+Status:                     new
 ======================================================================
-Date Submitted:             09-21-2005 21:31 CEST
-Last Modified:              10-26-2005 00:08 CEST
+Date Submitted:             10-25-2005 16:47 CEST
+Last Modified:              10-26-2005 08:26 CEST
 ======================================================================
-Summary:                    OSS emulation fails for usb-audio
+Summary:                    Bad step values in snd_pcm_channel_area_t from
+snd_pcm_mmap_begin
 Description: 
-With ALSA as found in 2.6.14-rc{12} 
-(which reports as as ALSA version 1.0.10-rc1?):
-When playing audio using the OSS emulation with beep-media-player through
-my USB headset adapter, there is no audio, and the time elapsed in BMP
-runs way too fast.
+I opened the default audio device with 4 channels (MMAP_INTERLEAVED,
+SND_PCM_FORMAT_S16)
+snd_pcm_mmap_begin then returns a snd_pcm_channel_area_t * like the
+following:
 
-It works if I use the native ALSA support in BMP.
-But, I cannot get any audio with skype with this kernel. This is my main
-beef.
-skype does not do ALSA. I have to use the OSS emulation.
+Channel 0:   first:    0    step:   32
+Channel 1:   first:   16    step:   32
+Channel 2:   first:   32    step:   32
+Channel 3:   first:   48    step:   32
 
-The exact same setup with 2.6.13-gentoo-r1 (using the vanilla kernel ALSA)
-works perfectly for me.
-
+The step values seem to be wrong. It also doesn't sound very comfortable.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 10-25-05 13:44 
+ drechsle - 10-25-05 18:35 
 ----------------------------------------------------------------------
-What are the contents of /proc/asound/cardX/pcm0p/sub0/hw_params while
-playing?
+Hardware: Tyan S2885, 2xOpteron 248, 
+Audio Device: AMD8111 (intel8x0)
+Kernel: 2.6.13 (smp, patched by suse)
 
 ----------------------------------------------------------------------
- Alphix - 10-26-05 00:08 
+ drechsle - 10-26-05 08:26 
 ----------------------------------------------------------------------
-With a module without the previously mentioned patch (i.e. when audio
-works):
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 48000 (48000/1)
-period_size: 1114
-buffer_size: 8912
-tick_time: 1000
-OSS format: S16_LE
-OSS channels: 2
-OSS rate: 44100
-OSS period bytes: 4096
-OSS periods: 8
-OSS period frames: 1114
-
-With a unpatched 2.6.14-rc5 (i.e. non-working audio):
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 48000 (48000/1)
-period_size: 1114
-buffer_size: 142592
-tick_time: 1000
-OSS format: S16_LE
-OSS channels: 2
-OSS rate: 44100
-OSS period bytes: 4096
-OSS periods: 128
-OSS period frames: 1114
+tried 1.0.10rc2: same problem
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-05 21:31 dagb           New Issue                                    
-09-21-05 21:31 dagb           Distribution              => Gentoo          
-09-21-05 21:31 dagb           Kernel Version            => 2.6.14-rc2      
-09-21-05 21:31 dagb           Issue Monitored: dagb                        
-09-26-05 22:07 dagb           Note Added: 0006400                          
-09-26-05 22:32 rlrevell       Note Added: 0006401                          
-09-27-05 07:40 dagb           Note Added: 0006404                          
-10-24-05 15:18 Alphix         Note Added: 0006519                          
-10-24-05 15:20 Alphix         Issue Monitored: Alphix                      
-10-24-05 17:28 Clemens LadischAssigned To               => Clemens Ladisch 
-10-24-05 17:28 Clemens LadischStatus                   new => assigned     
-10-24-05 17:28 Clemens LadischCategory                 CORE OSS - pcm => USB -
-usb-audio
-10-25-05 13:44 Clemens LadischNote Added: 0006538                          
-10-26-05 00:08 Alphix         Note Added: 0006552                          
+10-25-05 16:47 drechsle       New Issue                                    
+10-25-05 17:44 tiwai          Note Added: 0006545                          
+10-25-05 18:35 drechsle       Note Added: 0006549                          
+10-26-05 08:26 drechsle       Note Added: 0006553                          
 ======================================================================
 
 
