@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001502]: Bad step values in snd_pcm_channel_area_t from snd_pcm_mmap_begin
-Date: Wed, 26 Oct 2005 13:54:38 +0200
-Message-ID: <d341aeb11f5a1b32055c51b0468d0ea8@bugtrack.alsa-project.org>
+Date: Wed, 26 Oct 2005 14:04:28 +0200
+Message-ID: <c2b771d94e9f9d7c0b064f45ad13a40d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F392F183
-	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 13:54:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79B35183
+	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 14:04:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             10-25-2005 16:47 CEST
-Last Modified:              10-26-2005 13:54 CEST
+Last Modified:              10-26-2005 14:04 CEST
 ======================================================================
 Summary:                    Bad step values in snd_pcm_channel_area_t from
 snd_pcm_mmap_begin
@@ -57,17 +57,17 @@ The step values seem to be wrong. It also doesn't sound very comfortable.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-26-05 12:56 
-----------------------------------------------------------------------
-Cannot reproduce here.  Did you update alsa-lib to 1.0.10rc2, too?
-What PCM did you use?  surround40?
-
-----------------------------------------------------------------------
  drechsle - 10-26-05 13:54 
 ----------------------------------------------------------------------
 updated driver, libs, ...
 I used the default device, on a standard suse 10.0 system.
 I'll upload the alsa configuration files. A ~.asoundrc is not used
+
+----------------------------------------------------------------------
+ tiwai - 10-26-05 14:04 
+----------------------------------------------------------------------
+How could you open 4 channels for default PCM?  The default PCM is only for
+2 channels.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -78,6 +78,8 @@ Date Modified  Username       Field                    Change
 10-26-05 08:26 drechsle       Note Added: 0006553                          
 10-26-05 12:56 tiwai          Note Added: 0006554                          
 10-26-05 13:54 drechsle       Note Added: 0006556                          
+10-26-05 13:55 drechsle       File Added: alsa.tar.bz2                     
+10-26-05 14:04 tiwai          Note Added: 0006557                          
 ======================================================================
 
 
