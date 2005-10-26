@@ -1,12 +1,16 @@
-From: Richard Smith <smithbone@gmail.com>
-Subject: Status of M-Audio Audiophile USB
-Date: Wed, 26 Oct 2005 14:16:42 -0500
-Message-ID: <8a0c36780510261216x387ca9c0ib9e51f64e319852a@mail.gmail.com>
+From: Panagiotis Papadakos <papadako@ics.forth.gr>
+Subject: Re: snd-hda-intel at Asus A6Va laptop
+Date: Wed, 26 Oct 2005 22:35:31 +0300 (EET DST)
+Message-ID: <Pine.GSO.4.58.0510262235040.7575@calliope>
+References: <Pine.GSO.4.58.0510251859280.20376@calliope> <s5hd5lt8tfs.wl%tiwai@suse.de>
+ <Pine.GSO.4.58.0510251944100.20376@calliope> <s5hsluo7d1w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from mailhost.ics.forth.gr (mailhost.ics.forth.gr [139.91.157.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CA07185
+	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 21:35:38 +0200 (MEST)
+In-Reply-To: <s5hsluo7d1w.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Panagiotis Papadakos <papadako@ics.forth.gr>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I reciently purchased an Audiophile USB and it arrived last night.
+Unfortunately I can't try SPDIF :-(
 
-My needs are not multi-channel and so I thought it would be nice to
-have a high quality sound device I could use with both my laptop and
-my desktop.  I googled for compatibility and found that usb-audio
-stuff should work Ok with alsa
+Regards
+	Panagiotis Papadakos
 
-Of course I didn't google deep enough to find out that the Audiophile
-USB is a non-standard device.  I've managed to make the device play
-using alsaplayer and the Big Endian formats.  I see that if I set up
-the plughw then I can probally get it to work with other programs.
+On Wed, 26 Oct 2005, Takashi Iwai wrote:
 
-What I haven't made work is recording.  Using arecord and hw:0,0 just
-gives silence and hw:0,1 white noise.
-I've dug up a post that said that recording on this device is
-problematic and it could be a while before it worked but it was dated
-earlier this year.
-
-Has there been any movement on this device?  I can run under Windows
-and capture USB logs if needed.
-
---
-Richard A. Smith
+> At Tue, 25 Oct 2005 19:48:57 +0300 (EET DST),
+> Panagiotis Papadakos wrote:
+> >
+> > Well just compiled CVS but no sound from headphones, with default
+> > parameters of model=asus. Still have to use z71v model.
+>
+> Then, z71v must be a right choice.
+> However, it has still no SPDIF support (I don't know whether z71v
+> has it, too).  Can you test SPDIF?
+>
+>
+> Takashi
+>
 
 
 -------------------------------------------------------
