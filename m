@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001506]: What is required to add echoaudio drivers to the alsa-kernel tree
-Date: Wed, 26 Oct 2005 22:46:07 +0200
-Message-ID: <be1e24b31f6ac01528a92a2b5dc8909a@bugtrack.alsa-project.org>
+From: Richard Smith <smithbone@gmail.com>
+Subject: Re: Status of M-Audio Audiophile USB
+Date: Wed, 26 Oct 2005 16:13:58 -0500
+Message-ID: <8a0c36780510261413j2d5673a2tff4603dd59020648@mail.gmail.com>
+References: <8a0c36780510261216x387ca9c0ib9e51f64e319852a@mail.gmail.com>
+	 <1130357854.4483.125.camel@mindpipe>
+	 <8a0c36780510261403w1487a429kbc5d530a2e21d8f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97ADC190
-	for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2005 22:46:07 +0200 (MEST)
+In-Reply-To: <8a0c36780510261403w1487a429kbc5d530a2e21d8f@mail.gmail.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+Oops.  I sent this direct rather than to the list.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1506> 
-======================================================================
-Reported By:                wbrown338
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1506
-Category:                   PCI - echoaudio
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             10-26-2005 22:46 CEST
-Last Modified:              10-26-2005 22:46 CEST
-======================================================================
-Summary:                    What is required to add echoaudio drivers to the
-alsa-kernel tree
-Description: 
-Greetings:
+On 10/26/05, Lee Revell <rlrevell@joe-job.com> wrote:
+> On Wed, 2005-10-26 at 14:16 -0500, Richard Smith wrote:
+> > What I haven't made work is recording.  Using arecord and hw:0,0 just
+> > gives silence and hw:0,1 white noise.
+>
+> What about arecord with plughw:0,0 and plughw:0,1?
 
-I would like to see the echoaudio drivers (specifically mia) added to the
-alsa-kernel tree so that I do not have to disable the 2.6 alsa-kernels,
-custom compile alsa for my driver with the kernel source and then modify
-several config files.  What are the requirements for this driver to be
-added to alsa-kernel tree to be included in the kernel releases?  Are any
-otheres out there using these drivers??
-Thanks.
- 
-======================================================================
+Hmm not sure.  I was actually testing with -t raw and  -f S24_3BE so
+thats why I was using hw.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-26-05 22:46 wbrown338      New Issue                                    
-10-26-05 22:46 wbrown338      Kernel Version            => 2.6.12          
-======================================================================
+I'll try the plughw tonight.  What format should I use?  It seemed to
+be very picky about the format or I just got an error.
+
+--
+Richard A. Smith
 
 
+--
+Richard A. Smith
 
 
 -------------------------------------------------------
