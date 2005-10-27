@@ -1,12 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Re: Status of M-Audio Audiophile USB
-Date: Thu, 27 Oct 2005 10:00:02 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0510270958560.2999-100000@studcom.urz.uni-halle.de>
-References: <8a0c36780510261413j2d5673a2tff4603dd59020648@mail.gmail.com>
+From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
+Subject: [PATCH] AMD Au1x00 driver: buggy spinlocks
+Date: Thu, 27 Oct 2005 15:26:00 +0400
+Message-ID: <4360B948.2060202@ru.mvista.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed;
+ boundary="------------050004000303010301040707"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <8a0c36780510261413j2d5673a2tff4603dd59020648@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +15,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Richard Smith <smithbone@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Richard Smith wrote:
-> On 10/26/05, Lee Revell <rlrevell@joe-job.com> wrote:
-> > On Wed, 2005-10-26 at 14:16 -0500, Richard Smith wrote:
-> > > What I haven't made work is recording.  Using arecord and hw:0,0 just
-> > > gives silence and hw:0,1 white noise.
-> >
-> > What about arecord with plughw:0,0 and plughw:0,1?
->
-> Hmm not sure.  I was actually testing with -t raw and  -f S24_3BE so
-> thats why I was using hw.
->
-> I'll try the plughw tonight.  What format should I use?
+This is a multi-part message in MIME format.
+--------------050004000303010301040707
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-/proc/asound/cardX/stream0 lists all supported sample formats.
-Please try every one.
+Hello.
+
+          AMD Au1x00 ALSA driver fails compilation with the alternate spinlock
+implementation because it doesn't do locking/unlocking correctly in some
+places (passes spinlock by value).
+
+WBR, Sergei
 
 
-Regards,
-Clemens
 
+
+
+--------------050004000303010301040707
+Content-Type: text/plain;
+ name="Au1x00-ALSA-spinlocks.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="Au1x00-ALSA-spinlocks.patch"
+
+Signed-off-by: Konstantin Baydarov <kbaidarov@ru.mvista.com>
+Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+
+Index: sound/mips/au1x00.c
+===================================================================
+--- sound/mips/au1x00.c	23 Sep 2005 20:03:28 -0000	1.3
++++ sound/mips/au1x00.c	26 Oct 2005 19:00:40 -0000
+@@ -474,7 +474,7 @@ snd_au1000_ac97_read(ac97_t *ac97, unsig
+ 	u32 volatile cmd;
+ 	u16 volatile data;
+ 	int             i;
+-	spin_lock(au1000->ac97_lock);
++	spin_lock(&au1000->ac97_lock);
+ /* would rather use the interupt than this polling but it works and I can't
+ get the interupt driven case to work efficiently */
+ 	for (i = 0; i < 0x5000; i++)
+@@ -497,7 +497,7 @@ get the interupt driven case to work eff
+ 	}
+ 
+ 	data = au1000->ac97_ioport->cmd & 0xffff;
+-	spin_unlock(au1000->ac97_lock);
++	spin_unlock(&au1000->ac97_lock);
+ 
+ 	return data;
+ 
+@@ -509,7 +509,7 @@ snd_au1000_ac97_write(ac97_t *ac97, unsi
+ {
+ 	u32 cmd;
+ 	int i;
+-	spin_lock(au1000->ac97_lock);
++	spin_lock(&au1000->ac97_lock);
+ /* would rather use the interupt than this polling but it works and I can't
+ get the interupt driven case to work efficiently */
+ 	for (i = 0; i < 0x5000; i++)
+@@ -522,7 +522,7 @@ get the interupt driven case to work eff
+ 	cmd &= ~AC97C_READ;
+ 	cmd |= ((u32) val << AC97C_WD_BIT);
+ 	au1000->ac97_ioport->cmd = cmd;
+-	spin_unlock(au1000->ac97_lock);
++	spin_unlock(&au1000->ac97_lock);
+ }
+ static void
+ snd_au1000_ac97_free(ac97_t *ac97)
+
+
+
+--------------050004000303010301040707--
 
 
 -------------------------------------------------------
