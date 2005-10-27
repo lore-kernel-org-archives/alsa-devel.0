@@ -1,16 +1,14 @@
-From: Richard Smith <smithbone@gmail.com>
-Subject: Re: Status of M-Audio Audiophile USB
-Date: Wed, 26 Oct 2005 16:13:58 -0500
-Message-ID: <8a0c36780510261413j2d5673a2tff4603dd59020648@mail.gmail.com>
-References: <8a0c36780510261216x387ca9c0ib9e51f64e319852a@mail.gmail.com>
-	 <1130357854.4483.125.camel@mindpipe>
-	 <8a0c36780510261403w1487a429kbc5d530a2e21d8f@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Thu, 27 Oct 2005 02:27:47 +0200
+Message-ID: <73fb77232f741fa007b68caa25f1ece5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <8a0c36780510261403w1487a429kbc5d530a2e21d8f@mail.gmail.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78471181
+	for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2005 02:27:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,30 +18,136 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Oops.  I sent this direct rather than to the list.
 
-On 10/26/05, Lee Revell <rlrevell@joe-job.com> wrote:
-> On Wed, 2005-10-26 at 14:16 -0500, Richard Smith wrote:
-> > What I haven't made work is recording.  Using arecord and hw:0,0 just
-> > gives silence and hw:0,1 white noise.
->
-> What about arecord with plughw:0,0 and plughw:0,1?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+======================================================================
+Reported By:                alien999999999
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              10-27-2005 02:27 CEST
+======================================================================
+Summary:                    module hangs at seemingly random times
+Description: 
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-Hmm not sure.  I was actually testing with -t raw and  -f S24_3BE so
-thats why I was using hw.
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
 
-I'll try the plughw tonight.  What format should I use?  It seemed to
-be very picky about the format or I just got an error.
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
 
---
-Richard A. Smith
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 08-24-05 11:13 
+----------------------------------------------------------------------
+When playing mono streams on hw:0,2 (16 subdevices) on my au8830 (32-bits
+platform), the 17th mono stream (aplay) seem to be blocked
+(snd_pcm_open).
+
+Is this the normal behaviour of snd_pcm_open when maximum number of
+subdevice have been opened ?
+
+When playing mono streams on hw:0,0 (32 subdevices) on au8830, the 17th
+mono stream (aplay) will aborted immediately since snd_pcm_hw_params()
+return no more SRC available error.
+
+Please note that the capture stream also using DMA, SRC and MIXER.
+
+I guess some weird things happen when there is only 1 SRC left and the
+ALSA application (stereo stream) request 2 SRC.
+
+au88x0 driver should check the available number of SRC >= the number of
+channels before it allocate the SRC and MIXER. THe error recovery may not
+released the SRC and MIXER properly.
 
 
---
-Richard A. Smith
+You should add printk to log the resource DMA, SRC, MIXER usuage at the
+start and the end of a successful snd_pcm_vortex_hw_params().
+
+----------------------------------------------------------------------
+ Raymond - 10-27-05 02:27 
+----------------------------------------------------------------------
+It looks like au88x0_gameport.c need patch too.
+
+static int
+vortex_game_cooked_read(struct gameport *gameport, int *axes, int
+*buttons)
+{
+	vortex_t *vortex = gameport_get_port_data(gameport);
+	int i;
+
+	*buttons = (~hwread(vortex->mmio, VORTEX_GAME_LEGACY) >> 4) & 0xf;
+
+	for (i = 0; i < 4; i++) {
+		axes[i] =
+		    hwread(vortex->mmio, VORTEX_GAME_AXIS + (i * AXIS_SIZE));
+		if (axes[i] == AXIS_RANGE)
+			axes[i] = -1;
+	}
+	return 0;
+}
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
