@@ -1,11 +1,14 @@
-From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
-Subject: [PATCH] AMD Au1x00 driver: buggy spinlocks
-Date: Thu, 27 Oct 2005 15:26:00 +0400
-Message-ID: <4360B948.2060202@ru.mvista.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001508]: flash mozilla plugin steals the sound from other plugins
+Date: Thu, 27 Oct 2005 16:51:02 +0200
+Message-ID: <0897fd76f8182e0b4cb0ab3c378b7062@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050004000303010301040707"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C37B19D
+	for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2005 16:51:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,80 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050004000303010301040707
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1508> 
+======================================================================
+Reported By:                sermat
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1508
+Category:                   0_general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             10-27-2005 16:51 CEST
+Last Modified:              10-27-2005 16:51 CEST
+======================================================================
+Summary:                    flash mozilla plugin steals the sound from other
+plugins
+Description: 
+Hi to all:
+This is probably the last obstacle for achieving my Linux computer
+(PCLinuxOS, based on Mandriva/KDE) to work 100%.
 
-          AMD Au1x00 ALSA driver fails compilation with the alternate spinlock
-implementation because it doesn't do locking/unlocking correctly in some
-places (passes spinlock by value).
+When I visit a web site that first plays some flash content, flash video
+and sound are OK, but when after that I try to play Realplayer content,
+video is OK, ***BUT*** no sound.  On its own, Realplayer plugin sound and
+video are 100% OK.
 
-WBR, Sergei
+Here is the output, after attempting to play Realplayer content
+***AFTER*** flash content just played:
 
+[root@presario plugins]# artsd
+ALSA lib pcm_dmix.c:802:(snd_pcm_dmix_open) unable to open slave
+Error while initializing the sound driver:
+device: default can't be opened for playback (Device or resource busy)
+[root@presario plugins]#
 
+Many thanks, and regards to all,
+sermat.
+======================================================================
 
-
-
---------------050004000303010301040707
-Content-Type: text/plain;
- name="Au1x00-ALSA-spinlocks.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="Au1x00-ALSA-spinlocks.patch"
-
-Signed-off-by: Konstantin Baydarov <kbaidarov@ru.mvista.com>
-Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-
-Index: sound/mips/au1x00.c
-===================================================================
---- sound/mips/au1x00.c	23 Sep 2005 20:03:28 -0000	1.3
-+++ sound/mips/au1x00.c	26 Oct 2005 19:00:40 -0000
-@@ -474,7 +474,7 @@ snd_au1000_ac97_read(ac97_t *ac97, unsig
- 	u32 volatile cmd;
- 	u16 volatile data;
- 	int             i;
--	spin_lock(au1000->ac97_lock);
-+	spin_lock(&au1000->ac97_lock);
- /* would rather use the interupt than this polling but it works and I can't
- get the interupt driven case to work efficiently */
- 	for (i = 0; i < 0x5000; i++)
-@@ -497,7 +497,7 @@ get the interupt driven case to work eff
- 	}
- 
- 	data = au1000->ac97_ioport->cmd & 0xffff;
--	spin_unlock(au1000->ac97_lock);
-+	spin_unlock(&au1000->ac97_lock);
- 
- 	return data;
- 
-@@ -509,7 +509,7 @@ snd_au1000_ac97_write(ac97_t *ac97, unsi
- {
- 	u32 cmd;
- 	int i;
--	spin_lock(au1000->ac97_lock);
-+	spin_lock(&au1000->ac97_lock);
- /* would rather use the interupt than this polling but it works and I can't
- get the interupt driven case to work efficiently */
- 	for (i = 0; i < 0x5000; i++)
-@@ -522,7 +522,7 @@ get the interupt driven case to work eff
- 	cmd &= ~AC97C_READ;
- 	cmd |= ((u32) val << AC97C_WD_BIT);
- 	au1000->ac97_ioport->cmd = cmd;
--	spin_unlock(au1000->ac97_lock);
-+	spin_unlock(&au1000->ac97_lock);
- }
- static void
- snd_au1000_ac97_free(ac97_t *ac97)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-27-05 16:51 sermat         New Issue                                    
+======================================================================
 
 
-
---------------050004000303010301040707--
 
 
 -------------------------------------------------------
