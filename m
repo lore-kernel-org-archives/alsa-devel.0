@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Fri, 28 Oct 2005 23:48:48 +0200
-Message-ID: <9cbf97a52d935e91c3da4266c5c4ca4d@85.132.177.35>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Linux 2.6.14: Total lockup using aplaymidi
+Date: Sat, 29 Oct 2005 00:33:21 +0100 (BST)
+Message-ID: <20051028233321.64683.qmail@web52909.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE17017B
-	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2005 23:48:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,113 +15,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been RESOLVED.
-======================================================================
-<https://85.132.177.35/alsa-bug/view.php?id=1276> 
-======================================================================
-Reported By:                colding
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1276
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo AMD64 2005.0
-Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
-20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              10-28-2005 23:48 CEST
-======================================================================
-Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
-playing any sound.
-Description: 
-I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
-I have enabled ALSA and OSS emulation in the kernel. I have tried as
-compiled in, no modules, and as module. The card is correctly detected on
-boot-up
-and apparently activated. 
+I've just installed Linux 2.6.14-SMP with ALSA 1.0.10rc1 on my UP PIII ma=
+chine, and I've found
+that:
 
-Everything seems to be configured correctly according to the alsa guide
-for Gentoo and all I could find at alsa-project and for Gnome. 
+$ aplaymidi -p 65:0 <midifile>
 
-The problem is that I am only hearing cyclically repeating clicks, with
-weak static noise in-between, when I am trying to play music. I have a
-set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
-analog output jack (Line Out 1) on the card.
+immediately locks my machine up hard. This machine has a "SB-Live! 5.1 Ga=
+mer" sound card, and the
+PCM driver seems to be OK. I don't get an Oops on the serial console, and=
+ so I'm suspecting a
+dead-lock somewhere. 30 seconds later, the watchdog driver forces a reboo=
+t.
 
-It seems that my problems are the same as in this former post to the
-list:
+I have also tried this kernel with ALSA 1.0.10rc2 CVS, with exactly the s=
+ame results.
 
-http://sourceforge.net/mailarchive/message.php?msg_id=11662616
-
-That thread concluded with no solution but to revert to OSS.
-
-======================================================================
-
-----------------------------------------------------------------------
- pomac - 10-28-05 22:07 
-----------------------------------------------------------------------
-Good then it's confirmed working =)
-
-PS. do /etc/init.d/alsasound stop
-    rm /etc/asound.state
-    /etc/init.d/alsasound start
-
-That will fix the warnings, remember to unmute though =)
-
-----------------------------------------------------------------------
- rlrevell - 10-28-05 23:48 
-----------------------------------------------------------------------
-Fixed in CVS.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-22-05 22:13 colding        New Issue                                    
-07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
-07-22-05 22:13 colding        Kernel Version            => Linux omc-2
-2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
-Processor 252 AuthenticAMD GNU/Linux
-07-23-05 12:53 colding        Issue Monitored: colding                     
-07-23-05 15:47 colding        Note Added: 0005553                          
-08-16-05 12:34 pzad           Note Added: 0005826                          
-08-16-05 16:52 rlrevell       Note Added: 0005829                          
-08-16-05 16:53 rlrevell       Status                   new => feedback     
-08-17-05 09:05 colding        Note Added: 0005834                          
-09-17-05 18:52 jdthood        Note Added: 0006252                          
-09-19-05 09:25 colding        Note Added: 0006276                          
-09-22-05 15:14 jdthood        Status                   feedback => acknowledged
-10-24-05 15:05 pomac          File Added: digest-alsa-driver-1.0.10_rc2         
-          
-10-24-05 15:06 pomac          File Added: alsa-driver-1.0.10_rc2-dma.patch      
-             
-10-24-05 15:09 pomac          Note Added: 0006518                          
-10-24-05 15:22 jcdutton       Note Added: 0006520                          
-10-24-05 15:37 pomac          Note Added: 0006521                          
-10-25-05 05:56 rlrevell       Note Added: 0006526                          
-10-25-05 09:27 colding        Note Added: 0006527                          
-10-25-05 10:34 pomac          Note Added: 0006529                          
-10-25-05 10:43 colding        Note Added: 0006530                          
-10-25-05 10:52 pomac          Note Added: 0006531                          
-10-28-05 14:49 colding        Note Added: 0006568                          
-10-28-05 22:07 pomac          Note Added: 0006570                          
-10-28-05 23:48 rlrevell       Status                   acknowledged => resolved
-10-28-05 23:48 rlrevell       Resolution               open => fixed       
-10-28-05 23:48 rlrevell       Assigned To               => rlrevell        
-10-28-05 23:48 rlrevell       Note Added: 0006571                          
-======================================================================
+Cheers,
+Chris
 
 
+
+=09
+=09
+	=09
+___________________________________________________________=20
+Yahoo! Messenger - NEW crystal clear PC to PC calling worldwide with voic=
+email http://uk.messenger.yahoo.com
 
 
 -------------------------------------------------------
