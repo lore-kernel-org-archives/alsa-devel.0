@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Re: Status of M-Audio Audiophile USB
-Date: Fri, 28 Oct 2005 14:49:49 -0400
-Message-ID: <1130525389.4363.53.camel@mindpipe>
+Date: Fri, 28 Oct 2005 14:51:03 -0400
+Message-ID: <1130525464.4363.55.camel@mindpipe>
 References: <8a0c36780510271056q5bf98a9p9d8f05f8816fbf4@mail.gmail.com>
 	 <Pine.HPX.4.33n.0510281416340.24464-100000@studcom.urz.uni-halle.de>
 	 <8a0c36780510281134gce42934v61b094b072d8f841@mail.gmail.com>
@@ -24,17 +24,11 @@ Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, 2005-10-28 at 13:34 -0500, Richard Smith wrote:
-> arecord | aplay @ S24_3BE/96k still gives lots of static but now I can
-> acutally hear the source.  However if I do an arecord to a (raw) file
-> and then aplay back that file it works. 
+> Next I tried to get jackd up but jackd dosen't like S24_3BE and if I
+> use plughw I get XRUNS. 
 
-Because arecord | aplay does not account for the inherent realtime
-constraint.  I suspect "nice -n -20 arecord | nice -n -20 aplay" would
-work.
-
-Keep in mind that 24/96 full duplex over USB 1.1 is really pushing the
-USB bandwidth limits.  Most people I talk to report that this doesn't
-work reliably on any OS.
+Known issue.  JACK doesn't like plughw but does not support big endian
+formats.  See jackit-devel archives for a patch.
 
 Lee
 
