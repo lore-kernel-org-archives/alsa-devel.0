@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0001509]: Roland HP-107 verified to work with usb-snd-audio
-Date: Fri, 28 Oct 2005 02:43:28 +0200
-Message-ID: <33ecca3d9b895a35ddb3a25e011ae331@bugtrack.alsa-project.org>
+Date: Fri, 28 Oct 2005 10:21:32 +0200
+Message-ID: <5727f45f14f89e0072aca5e0bf82a35a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A154A16F
-	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2005 02:43:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 897891A6
+	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2005 10:21:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1509> 
 ======================================================================
 Reported By:                habazi
-Assigned To:                
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - WWW server
 Issue ID:                   1509
@@ -35,10 +35,12 @@ Category:                   soundcard matrix
 Reproducibility:            N/A
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             10-28-2005 02:43 CEST
-Last Modified:              10-28-2005 02:43 CEST
+Last Modified:              10-28-2005 10:21 CEST
 ======================================================================
 Summary:                    Roland HP-107 verified to work with usb-snd-audio
 Description: 
@@ -50,10 +52,19 @@ Tested on Linux >= 2.6.8 on powerpc and i386.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 10-28-05 10:21 
+----------------------------------------------------------------------
+Updated.  Thanks!
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-28-05 02:43 habazi         New Issue                                    
+10-28-05 10:21 Clemens LadischNote Added: 0006567                          
+10-28-05 10:21 Clemens LadischAssigned To               => Clemens Ladisch 
+10-28-05 10:21 Clemens LadischStatus                   new => closed       
+10-28-05 10:21 Clemens LadischResolution               open => fixed       
 ======================================================================
 
 
