@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001276]: Audigy 2 ZS [SB0350] - Only static noise when playing any sound.
-Date: Fri, 28 Oct 2005 14:49:45 +0200
-Message-ID: <f28e013cd2bd36ff1d611c77dfc09e3f@85.132.177.35>
+Subject: [ALSA - driver 0001510]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to control volume by master channel, PCM and headphones work
+Date: Fri, 28 Oct 2005 17:54:45 +0200
+Message-ID: <46769680fc0981f66d8287c1d0cd9b5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BED81AE
-	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2005 14:49:46 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 380B9147
+	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2005 17:54:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,120 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://85.132.177.35/alsa-bug/view.php?id=1276> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1510> 
 ======================================================================
-Reported By:                colding
+Reported By:                wiktorw
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1276
-Category:                   PCI - emu10k1
+Issue ID:                   1510
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Gentoo AMD64 2005.0
-Kernel Version:             Linux omc-2 2.6.12-gentoo-r6 #2 SMP Fri Jul 22
-20:12:38 CEST 2005 x86_64 AMD Opteron(tm) Processor 252 AuthenticAMD GNU/Linux
+Status:                     new
+Distribution:               Gentoo 2005.1
+Kernel Version:             2.6.13-gentoo-r4
 ======================================================================
-Date Submitted:             07-22-2005 22:13 CEST
-Last Modified:              10-28-2005 14:49 CEST
+Date Submitted:             10-28-2005 17:54 CEST
+Last Modified:              10-28-2005 17:54 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS [SB0350] - Only static noise when
-playing any sound.
+Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to
+control volume by master channel, PCM and headphones work
 Description: 
-I have a Audigy 2 ZS [SB0350] sound card installed in my dual 252 Opteron.
-I have enabled ALSA and OSS emulation in the kernel. I have tried as
-compiled in, no modules, and as module. The card is correctly detected on
-boot-up
-and apparently activated. 
+On my Acer Aspire 5002LM laptop I have the following problem:
+- Master channel does not control volume level (no matter if I slide it or
+mute)
+- PCM channel works
+- Headphone/PCM-2 channel works
 
-Everything seems to be configured correctly according to the alsa guide
-for Gentoo and all I could find at alsa-project and for Gnome. 
+The Master/PCM/Headphone channels are for the "SiS SI7012 (Alsa Mixer)"
+device, while Volume/PCM/PCM-2 channels are for the "Realtek ALC203 rev 0
+(OSS Mixer)" device. They do the same thing: Master/Volume control in
+gnome-volume-control applet doesn't change the volume level.
 
-The problem is that I am only hearing cyclically repeating clicks, with
-weak static noise in-between, when I am trying to play music. I have a
-set of analog 2.1 speakers (Altec Lansing FX-6021) connected to the
-analog output jack (Line Out 1) on the card.
+At first I thought that this problem is software-related, but in fact it
+isn't. Now I have tested several things and all give me the same result. I
+also suspect that not only I have such problems, althought the original
+posters might not be aware of it. See here for the original discussion:
 
-It seems that my problems are the same as in this former post to the
-list:
-
-http://sourceforge.net/mailarchive/message.php?msg_id=11662616
-
-That thread concluded with no solution but to revert to OSS.
+http://forums.gentoo.org/viewtopic-t-387739.html
 
 ======================================================================
-
-----------------------------------------------------------------------
- pomac - 10-25-05 10:52 
-----------------------------------------------------------------------
-Ok =)
-
-copy the patch file into /usr/portage/media-sound/alsa-driver/files
-edit the approprate ebuild adding:
-epatch ${FILESDIR}/${PN}-1.0.10_rc2-dma.patch
-
-just before:
-convert_to_m ${S}/Makefile
-
-then, do ebuild 'ebuild file' digest and youre ready to emerge.
-I did this with 1.0.10-rc2 and since i had used the in kernel version
-before i also removed /etc/asound.state (since it changes sometimes).
-
-If you have a portdir_overlay i could actually tar it up for you later
-today.
-
-Anyways, then just remove the old sound modules (use -f if you use gnome
-(the mixer applet will be killed and it'll want to restart it, much
-easier))
-then just start alsasound using the init.d file =)
-
-(perhaps i should have finished my coffee first, but i hope i wasn't too
-thurough =)
-
-----------------------------------------------------------------------
- colding - 10-28-05 14:49 
-----------------------------------------------------------------------
-I finally got time to test alsa-driver-1.0.10_rc2-dma.patch. The good news
-is that it works. I now have ALSA sound on my 8GB dual opteron on gentoo
-:-)
-
-The bad news is that a shitload of warnings rolls by when booting. I
-assume they are harmless debug messages, but I wanted to tell anyway.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-22-05 22:13 colding        New Issue                                    
-07-22-05 22:13 colding        Distribution              => Gentoo AMD64 2005.0
-07-22-05 22:13 colding        Kernel Version            => Linux omc-2
-2.6.12-gentoo-r6 #2 SMP Fri Jul 22 20:12:38 CEST 2005 x86_64 AMD Opteron(tm)
-Processor 252 AuthenticAMD GNU/Linux
-07-23-05 12:53 colding        Issue Monitored: colding                     
-07-23-05 15:47 colding        Note Added: 0005553                          
-08-16-05 12:34 pzad           Note Added: 0005826                          
-08-16-05 16:52 rlrevell       Note Added: 0005829                          
-08-16-05 16:53 rlrevell       Status                   new => feedback     
-08-17-05 09:05 colding        Note Added: 0005834                          
-09-17-05 18:52 jdthood        Note Added: 0006252                          
-09-19-05 09:25 colding        Note Added: 0006276                          
-09-22-05 15:14 jdthood        Status                   feedback => acknowledged
-10-24-05 15:05 pomac          File Added: digest-alsa-driver-1.0.10_rc2         
-          
-10-24-05 15:06 pomac          File Added: alsa-driver-1.0.10_rc2-dma.patch      
-             
-10-24-05 15:09 pomac          Note Added: 0006518                          
-10-24-05 15:22 jcdutton       Note Added: 0006520                          
-10-24-05 15:37 pomac          Note Added: 0006521                          
-10-25-05 05:56 rlrevell       Note Added: 0006526                          
-10-25-05 09:27 colding        Note Added: 0006527                          
-10-25-05 10:34 pomac          Note Added: 0006529                          
-10-25-05 10:43 colding        Note Added: 0006530                          
-10-25-05 10:52 pomac          Note Added: 0006531                          
-10-28-05 14:49 colding        Note Added: 0006568                          
+10-28-05 17:54 wiktorw        New Issue                                    
+10-28-05 17:54 wiktorw        Distribution              => Gentoo 2005.1   
+10-28-05 17:54 wiktorw        Kernel Version            => 2.6.13-gentoo-r4
 ======================================================================
 
 
