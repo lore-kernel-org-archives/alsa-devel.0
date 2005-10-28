@@ -1,14 +1,15 @@
-From: "Fillin Krone" <fillito@rectorat.uab.es>
-Subject: Re: Claudes Story about V
-Date: Fri, 28 Oct 2005 13:55:18 -0500
-Message-ID: <002f01c5dbf1$238d6f00$d330a8c0@monomaniac>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: Status of M-Audio Audiophile USB
+Date: Fri, 28 Oct 2005 14:51:57 -0400
+Message-ID: <1130525518.4363.57.camel@mindpipe>
+References: <8a0c36780510271056q5bf98a9p9d8f05f8816fbf4@mail.gmail.com>
+	 <Pine.HPX.4.33n.0510281416340.24464-100000@studcom.urz.uni-halle.de>
+	 <8a0c36780510281134gce42934v61b094b072d8f841@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002C_01C5DBC7.3AB76700"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from rectorat.uab.es (gprs6.orange.pl [217.116.100.252])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 89569177
-	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2005 20:54:53 +0200 (MEST)
+In-Reply-To: <8a0c36780510281134gce42934v61b094b072d8f841@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,106 +19,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Olabode Vitela <alsa-devel@alsa-project.org>
+To: Richard Smith <smithbone@gmail.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Fri, 2005-10-28 at 13:34 -0500, Richard Smith wrote:
+> I'm away till Sunday.  So I'll post it then.  I'm not having a lot of
+> luck with the oops ether.  ksymoops wants to look for  /proc/ksyms but
+> I don't seem to have one.  I have a /proc/kallsyms that looks like
+> something useful but ksymoops complains its not a useable format.
+> 
 
-------=_NextPart_000_002C_01C5DBC7.3AB76700
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Don't use ksymoops for 2.6.  Just post the oops verbatim.
 
-Hello,
-Do you want
-VE UP
-% on
-edications?
-to SA
-TO 70
-your M
-It's 
-rmaE
-p
-not so hard with Pha
-xpress Sho
-CIAVALAmbVIAXanLev
-LIS Now $IUM Now $ienGRA Now $axitra
-99.9585.45 69.95  
-plus 200 other - Additional information
+The kernel docs were wrong for a long time but they were recently fixed.
 
-
-------=_NextPart_000_002C_01C5DBC7.3AB76700
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<TABLE bgColor=3D#000000 cellPadding=3D10 cellSpacing=3D1 style=3D"=
-WHITE-SPACE: normal;">
-  <TR>
-    <TD bgColor=3D#0389C3>
-<DIV align=3Dcenter><FONT face=3DArial size=3D4 color=3D#F1F3F2>Hello,</=
-FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial><TABLE cellPadding=3D0 cellSpacing=3D0>
-  <TR>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F1F3F2>Do you =
-want</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F1F3F2>VE =
-UP</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F1F3F2>% =
-on</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F1F3F2>e=
-dications?</FONT></TD><TD></TD>
-  </TR>
-  <TR>
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F1F3F2>&nbsp;to SA</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F1F3F2>TO 70</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F1F3F2>&nbsp;your =
-M</FONT></TD></TR></TABLE></FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial><TABLE cellPadding=3D0 cellSpacing=3D0>
-  <TR style=3D"PADDING-BOTTOM: 0px;">
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F1F3F2>It's&=
-nbsp;</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F1F3F2>=
-rmaE</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F1F3F2>p=
-</FONT></TD><TD></TD>
-  </TR>
-  <TR style=3D"PADDING-BOTTOM: 0px;">
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F1F3F2>not so hard with =
-Pha</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F1F3F2>xpress =
-Sho</FONT></TD></TR></TABLE></FONT></DIV></TD></TR>
-  <TR>
-    <TD bgColor=3D#ffffff><FONT face=3DCourier size=3D3>
-<TABLE align=3Dcenter cellPadding=3D0 cellSpacing=3D0>
-  <TR>
-<TD><B>CIA</B><BR><B>VAL</B><BR>Amb<BR><B>VIA</B><BR>Xan<BR>Lev</TD>
-<TD><B>LIS Now $</B><BR><B>IUM Now $</B><BR>ien<BR><B>GRA Now =
-$</B><BR>ax<BR>itra</TD>
-<TD><B>99.95</B><BR><B>85.45</B><BR>&nbsp;<BR><B>69.95</B><BR>&nbsp;<B=
-R>&nbsp;</TD>
-  </TR></TABLE></FONT>
-    </TD>
-  </TR>
-  <TR>
-    <TD bgColor=3D#ffffff>
-      <DIV align=3Dcenter><FONT face=3DArial size=3D3>plus 200 other - <A =
-href=3D"http://ichneumonsld.showehe.com"><FONT face=3DArial size=3D3>=
-Additional information</FONT></A></FONT></DIV>
-    </TD>
-  </TR>
-</TABLE></BODY></HTML>
-
-------=_NextPart_000_002C_01C5DBC7.3AB76700--
+Lee
 
 
 
