@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001509]: Roland HP-107 verified to work with usb-snd-audio
-Date: Fri, 28 Oct 2005 10:21:32 +0200
-Message-ID: <5727f45f14f89e0072aca5e0bf82a35a@bugtrack.alsa-project.org>
+From: Ian Campbell <icampbell@arcom.com>
+Subject: Re: [PXA2XX] make pxa2xx audio driver sparse clean
+Date: Fri, 28 Oct 2005 11:05:37 +0100
+Message-ID: <1130493937.12578.15.camel@icampbell-debian>
+References: <1130335228.5700.13.camel@icampbell-debian>
+	 <s5hd5ls74mh.wl%tiwai@suse.de> <1130337543.5700.42.camel@icampbell-debian>
+	 <Pine.LNX.4.64.0510261145480.5288@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 897891A6
-	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2005 10:21:32 +0200 (MEST)
+Received: from mail9.messagelabs.com (mail9.messagelabs.com [194.205.110.133])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 35247159
+	for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2005 12:05:48 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.64.0510261145480.5288@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +22,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Nicolas Pitre <nico@cam.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2005-10-26 at 11:47 -0400, Nicolas Pitre wrote:
+> I don't mind that alternative patch, as long as you also fix the other 
+> warnings too, in which case it should be submitted to RMK's patch 
+> system.
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1509> 
-======================================================================
-Reported By:                habazi
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1509
-Category:                   soundcard matrix
-Reproducibility:            N/A
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             10-28-2005 02:43 CEST
-Last Modified:              10-28-2005 10:21 CEST
-======================================================================
-Summary:                    Roland HP-107 verified to work with usb-snd-audio
-Description: 
-I've tested Roland HP-107.
+FYI I submitted it as ARM patch 3044
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3044/1
 
-"[MIDIio] both" works.
+Now I can leave alsa-devel alone ;-) Sorry for the noise.
 
-Tested on Linux >= 2.6.8 on powerpc and i386.
-
-======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 10-28-05 10:21 
-----------------------------------------------------------------------
-Updated.  Thanks!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-28-05 02:43 habazi         New Issue                                    
-10-28-05 10:21 Clemens LadischNote Added: 0006567                          
-10-28-05 10:21 Clemens LadischAssigned To               => Clemens Ladisch 
-10-28-05 10:21 Clemens LadischStatus                   new => closed       
-10-28-05 10:21 Clemens LadischResolution               open => fixed       
-======================================================================
+Thanks,
+Ian.
+-- 
+Ian Campbell, Senior Design Engineer
+                                        Web: http://www.arcom.com
+Arcom, Clifton Road, 			Direct: +44 (0)1223 403 465
+Cambridge CB1 7EA, United Kingdom	Phone:  +44 (0)1223 411 200
 
 
+_____________________________________________________________________
+The message in this transmission is sent in confidence for the attention of the addressee only and should not be disclosed to any other party. Unauthorised recipients are requested to preserve this confidentiality. Please advise the sender if the addressee is not resident at the receiving end.  Email to and from Arcom is automatically monitored for operational and lawful business reasons.
+
+This message has been virus scanned by MessageLabs.
 
 
 -------------------------------------------------------
