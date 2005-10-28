@@ -1,12 +1,16 @@
-From: "Philipp Kindt" <pkindt@directbox.com>
-Subject: snd-hda-intel: autoconfig failure
-Date: Fri, 28 Oct 2005 22:26:06
-Message-ID: <147407D50A1C141A063E0@directbox.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [linux-audio-dev] jack and S24_3BE
+Date: Fri, 28 Oct 2005 17:00:31 -0400
+Message-ID: <1130533231.4363.139.camel@mindpipe>
+References: <8a0c36780510281158v20818ba6h4424772005f63d07@mail.gmail.com>
+	 <1130529260.16535.34.camel@localhost.localdomain>
+	 <8a0c36780510281309m2ce6a258mff18c52a78c06a1@mail.gmail.com>
+	 <1130531053.16535.36.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1130531053.16535.36.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +20,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: paul@linuxaudiosystems.com, The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+On Fri, 2005-10-28 at 16:24 -0400, Paul Davis wrote:
+> On Fri, 2005-10-28 at 15:09 -0500, Richard Smith wrote:
+> > >
+> > > i believe that the patch already exists.
+> > 
+> > Sweet.  Where?  I googled for jack & S24_3BE but nothing showed up.
+> > 
+> 
+> http://sourceforge.net/tracker/?group_id=39687&atid=425939
+> 
+> 
+> 
 
-i've just got the ASUS W1Vc Laptop. After problems (sound did not work), =
-i compiled
-ALSA 1.0.10rc2. The module can now be loaded in the kernel, and sound wor=
-ks.
-But the headphones don't. If i probe model=3D6stack-digout, the headphone=
- port works fine.
+"hw:1,0 is iec958 for capture and analogue/headphone for
+playback
+hw:1,1 is analogue for capture and iec958 for playback"
 
-lspci -nv says about the audio controller:
+Now this is just silly.  We should probably seize the opportunity to fix
+this in the ALSA driver (or alsa-lib) now, as there seem to be very few
+working setups to break.  I don't want to repeat the emu10k1
+multichannel device numbering snafu.
 
-0000:02:02.0 0480: 1131:7133 (rev d1)
-Subsystem: 1461:f636
-Flags: bus master, medium devsel, latency 64, IRQ 23
-Memory at feafa000 (32-bit, non-prefetchable) [size=3D2K]
-
-Thanks a lot for writing ALSA
-
-Philipp Kindt
-
-P.S.: If you wish to contact me, DO NOT write to the mailing list. I have=
- not subscribed.
-
+Lee
 
 
 
