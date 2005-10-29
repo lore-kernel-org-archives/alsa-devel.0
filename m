@@ -1,14 +1,14 @@
-From: "Venus Mccutchan" <mccut@laimail.com>
-Subject: Re: Jessies energy story
-Date: Fri, 28 Oct 2005 23:21:01 -0500
-Message-ID: <004501c5dc40$2b283480$a62fa8c0@fishing>
+From: "Joanna Francisco" <joannafrancisco@patricia-ann.com>
+Subject: Re: Dwaynes The Amazing story
+Date: Sat, 29 Oct 2005 00:53:03 -0500
+Message-ID: <004d01c5dc4d$06868980$3627a8c0@effluvium>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0042_01C5DC16.42522C80"
+	boundary="----=_NextPart_000_004A_01C5DC23.1DB08180"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from laimail.com (p5176-ipad51sasajima.aichi.ocn.ne.jp [60.38.197.176])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2743916F
-	for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2005 06:20:24 +0200 (MEST)
+Received: from patricia-ann.com (bzq-80-51-184.red.bezeqint.net [82.80.51.184])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 422F815C
+	for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2005 07:52:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,36 +18,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sally Castellano <alsa-devel@alsa-project.org>
+To: Toya Clarkson <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0042_01C5DC16.42522C80
+------=_NextPart_000_004A_01C5DC23.1DB08180
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-Good days,
-Do you want t
-VE UPTO
-% on 
-tions?
-o SA
-70
-your Medica
-Yes? Pea
-armaExpres
-hop
-ce of cake with Ph
-s S
-AmbVALLevXanVIACIA
-ienIUM Now $itraaxGRA Now $LIS Now $
-85.45  69.9599.95
-And more than 200 other - More info
+Heyo,
+Do
+AVE UP
+% o
+ons?
+you want to S
+TO 70
+n your Medicati
+B
+maExp
+op
+ut It Is easy with Phar
+ress Sh
+VIAXanCIALevAmbVAL
+GRA Now $axLIS Now $itraienIUM Now $
+69.95 99.95  85.45
+and 200 other - More Detailed information
 
 
-------=_NextPart_000_0042_01C5DC16.42522C80
+------=_NextPart_000_004A_01C5DC23.1DB08180
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -60,64 +60,65 @@ Content-Transfer-Encoding: quoted-printable
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV>&nbsp;</DIV>
-<TABLE cellPadding=3D10 bgColor=3D#000000 style=3D"PADDING-BOTTOM: 0px;" =
-cellSpacing=3D1>
+<TABLE bgColor=3D#000000 cellSpacing=3D1 style=3D"MARGIN-RIGHT: 0px;" =
+cellPadding=3D10>
   <TR>
-    <TD bgColor=3D#0188C0>
-<DIV align=3Dcenter><FONT face=3DArial size=3D4 color=3D#F7F8F6>Good =
-days,</FONT></DIV>
-<DIV align=3Dcenter><FONT face=3DArial><TABLE cellPadding=3D0 cellSpacing=3D0>
-  <TR>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>Do you =
-want t</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>VE =
-UPTO</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>% =
-on&nbsp;</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>tio=
-ns?</FONT></TD><TD></TD>
-  </TR>
-  <TR>
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>o SA</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>&nbsp;70</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>your Medica</FON=
-T></TD></TR></TABLE></FONT></DIV>
+    <TD bgColor=3D#0589C6>
+<DIV align=3Dcenter><FONT face=3DArial size=3D4 color=3D#F9F0F6>Heyo,</FON=
+T></DIV>
 <DIV align=3Dcenter><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0>
+  <TR>
+    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F9F0F6>Do</FON=
+T></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F9F0F6>AVE =
+UP</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F9F0F6>% =
+o</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F9F0F6>ons?</=
+FONT></TD><TD></TD>
+  </TR>
+  <TR>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F9F0F6>&nbsp;you want to =
+S</FONT></TD>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F9F0F6>TO 70</FONT></TD>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F9F0F6>n your =
+Medicati</FONT></TD></TR></TABLE></FONT></DIV>
+<DIV align=3Dcenter><FONT face=3DArial><TABLE cellPadding=3D0 cellSpacing=3D0>
   <TR style=3D"BORDER-LEFT-WIDTH: 0px;">
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>Yes? =
-Pea</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>armaE=
-xpres</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>hop=
-</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F9F0F6>B</FONT=
+></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F9F0F6>maExp<=
+/FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 color=3D#F9F0F6>op<=
+/FONT></TD><TD></TD>
   </TR>
   <TR style=3D"BORDER-LEFT-WIDTH: 0px;">
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>ce of cake with =
-Ph</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>s S</FONT></TD>=
-</TR></TABLE></FONT></DIV></TD></TR>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F9F0F6>ut It Is easy with =
+Phar</FONT></TD>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F9F0F6>ress Sh</FONT><=
+/TD></TR></TABLE></FONT></DIV></TD></TR>
   <TR>
     <TD bgColor=3D#ffffff><FONT face=3DCourier size=3D3>
-<TABLE align=3Dcenter cellSpacing=3D0 cellPadding=3D0>
+<TABLE align=3Dcenter cellPadding=3D0 cellSpacing=3D0>
   <TR>
-<TD>Amb<BR><B>VAL</B><BR>Lev<BR>Xan<BR><B>VIA</B><BR><B>CIA</B></TD>
-<TD>ien<BR><B>IUM Now $</B><BR>itra<BR>ax<BR><B>GRA Now $</B><BR><B>LIS Now =
+<TD><B>VIA</B><BR>Xan<BR><B>CIA</B><BR>Lev<BR>Amb<BR><B>VAL</B></TD>
+<TD><B>GRA Now $</B><BR>ax<BR><B>LIS Now $</B><BR>itra<BR>ien<BR><B>IUM Now =
 $</B></TD>
-<TD>&nbsp;<BR><B>85.45</B><BR>&nbsp;<BR>&nbsp;<BR><B>69.95</B><BR><B>99.9=
+<TD><B>69.95</B><BR>&nbsp;<BR><B>99.95</B><BR>&nbsp;<BR>&nbsp;<BR><B>85.4=
 5</B></TD>
   </TR></TABLE></FONT>
     </TD>
   </TR>
   <TR>
     <TD bgColor=3D#ffffff>
-      <DIV align=3Dcenter><FONT face=3DArial size=3D3>And more than 200 other =
-- <A href=3D"http://seawallqlr.jusomebac.com"><FONT face=3DArial =
-size=3D3>More info</FONT></A></FONT></DIV>
+      <DIV align=3Dcenter><FONT face=3DArial size=3D3>and 200 other - <A =
+href=3D"http://cofferaed.wirupenzal.com"><FONT face=3DArial size=3D3>More =
+Detailed information</FONT></A></FONT></DIV>
     </TD>
   </TR>
 </TABLE></BODY></HTML>
 
-------=_NextPart_000_0042_01C5DC16.42522C80--
+------=_NextPart_000_004A_01C5DC23.1DB08180--
 
 
 
