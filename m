@@ -1,25 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: emu10k1 multichannel issue/observation
-Date: Fri, 28 Oct 2005 22:27:07 -0400
-Message-ID: <1130552828.32367.66.camel@mindpipe>
-References: <434E7646.3000507@poeticstudios.com>
-	 <5bdc1c8b0510221502v28a2cbe0ybfe049be2f34e186@mail.gmail.com>
-	 <200510230053.44479.Martin.Wohlleben@gmx.de>
-	 <5bdc1c8b0510221655r4d28430fr7b80f5403d8daaa4@mail.gmail.com>
-	 <435AF023.70903@woh.rr.com>
-	 <5bdc1c8b0510221957s278a28a7n8ead2de1e0760cf6@mail.gmail.com>
-	 <435B74E9.20308@woh.rr.com>
-	 <20051023180312.GA4544@mobilat.informatik.uni-bremen.de>
-	 <5bdc1c8b0510231123h5ed64b38nd178ce9dfcb13f87@mail.gmail.com>
-	 <1130097599.11980.54.camel@mindpipe>
-	 <5bdc1c8b0510231318j4e9db7b0x1106e9b240329249@mail.gmail.com>
-	 <435CFC95.6000703@vt.edu> <1130170444.16563.22.camel@mindpipe>
-	 <4362CBD7.8080606@vt.edu>
+From: "Venus Mccutchan" <mccut@laimail.com>
+Subject: Re: Jessies energy story
+Date: Fri, 28 Oct 2005 23:21:01 -0500
+Message-ID: <004501c5dc40$2b283480$a62fa8c0@fishing>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0042_01C5DC16.42522C80"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4362CBD7.8080606@vt.edu>
+Received: from laimail.com (p5176-ipad51sasajima.aichi.ocn.ne.jp [60.38.197.176])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2743916F
+	for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2005 06:20:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,27 +18,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rick Wright <riwright@vt.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: Sally Castellano <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-10-28 at 21:09 -0400, Rick Wright wrote:
-> My questions are:
-> 1) Was there an early version(s) of this card where the side channels
-> aren't supported by the ALSA driver?
+This is a multi-part message in MIME format.
 
-Possible.
+------=_NextPart_000_0042_01C5DC16.42522C80
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-> 2) Could this be made to work?
+Good days,
+Do you want t
+VE UPTO
+% on 
+tions?
+o SA
+70
+your Medica
+Yes? Pea
+armaExpres
+hop
+ce of cake with Ph
+s S
+AmbVALLevXanVIACIA
+ienIUM Now $itraaxGRA Now $LIS Now $
+85.45  69.9599.95
+And more than 200 other - More info
 
-Yes.
 
-> 3) If so, what info is needed and who needs it?
+------=_NextPart_000_0042_01C5DC16.42522C80
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Please provide lspci output for the new card (working side channels) and
-the old one (non working side channels).
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<TABLE cellPadding=3D10 bgColor=3D#000000 style=3D"PADDING-BOTTOM: 0px;" =
+cellSpacing=3D1>
+  <TR>
+    <TD bgColor=3D#0188C0>
+<DIV align=3Dcenter><FONT face=3DArial size=3D4 color=3D#F7F8F6>Good =
+days,</FONT></DIV>
+<DIV align=3Dcenter><FONT face=3DArial><TABLE cellPadding=3D0 cellSpacing=3D0>
+  <TR>
+    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>Do you =
+want t</FONT></TD><TD></TD>
+    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>VE =
+UPTO</FONT></TD><TD></TD>
+    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>% =
+on&nbsp;</FONT></TD><TD></TD>
+    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>tio=
+ns?</FONT></TD><TD></TD>
+  </TR>
+  <TR>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>o SA</FONT></TD>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>&nbsp;70</FONT></TD>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>your Medica</FON=
+T></TD></TR></TABLE></FONT></DIV>
+<DIV align=3Dcenter><FONT face=3DArial><TABLE cellSpacing=3D0 cellPadding=3D0>
+  <TR style=3D"BORDER-LEFT-WIDTH: 0px;">
+    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>Yes? =
+Pea</FONT></TD><TD></TD>
+    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>armaE=
+xpres</FONT></TD><TD></TD>
+    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>hop=
+</FONT></TD><TD></TD>
+  </TR>
+  <TR style=3D"BORDER-LEFT-WIDTH: 0px;">
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>ce of cake with =
+Ph</FONT></TD>
+    <TD vAlign=3Dbottom><FONT size=3D4 color=3D#F7F8F6>s S</FONT></TD>=
+</TR></TABLE></FONT></DIV></TD></TR>
+  <TR>
+    <TD bgColor=3D#ffffff><FONT face=3DCourier size=3D3>
+<TABLE align=3Dcenter cellSpacing=3D0 cellPadding=3D0>
+  <TR>
+<TD>Amb<BR><B>VAL</B><BR>Lev<BR>Xan<BR><B>VIA</B><BR><B>CIA</B></TD>
+<TD>ien<BR><B>IUM Now $</B><BR>itra<BR>ax<BR><B>GRA Now $</B><BR><B>LIS Now =
+$</B></TD>
+<TD>&nbsp;<BR><B>85.45</B><BR>&nbsp;<BR>&nbsp;<BR><B>69.95</B><BR><B>99.9=
+5</B></TD>
+  </TR></TABLE></FONT>
+    </TD>
+  </TR>
+  <TR>
+    <TD bgColor=3D#ffffff>
+      <DIV align=3Dcenter><FONT face=3DArial size=3D3>And more than 200 other =
+- <A href=3D"http://seawallqlr.jusomebac.com"><FONT face=3DArial =
+size=3D3>More info</FONT></A></FONT></DIV>
+    </TD>
+  </TR>
+</TABLE></BODY></HTML>
 
-Lee
+------=_NextPart_000_0042_01C5DC16.42522C80--
 
 
 
