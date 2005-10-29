@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Linux 2.6.14: Total lockup using aplaymidi
-Date: Sat, 29 Oct 2005 13:30:05 -0400
-Message-ID: <1130607006.32367.116.camel@mindpipe>
-References: <20051029102357.49836.qmail@web52903.mail.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001512]: snd-usb-audio is not compatible with Midiman Midisport 1x1
+Date: Sat, 29 Oct 2005 21:36:23 +0200
+Message-ID: <509f0143f903e9ebc6c937916dc97cbf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051029102357.49836.qmail@web52903.mail.yahoo.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2D35184
+	for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2005 21:36:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,70 +18,245 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-10-29 at 11:23 +0100, Chris Rankin wrote:
-> NMI Watchdog detected LOCKUP on CPU0, eip c029a65a, registers:
-> Modules linked in: snd_usb_audio snd_usb_lib snd_seq_oss snd_seq_midi snd_emu10k1_synth
-> snd_emux_synth snd_seq_virmidi snd_seq_midi_event snd_seq_midi_emul mga
-> drm ipv6 floppy snd_pcm_oss snd_mixer_oss snd_seq snd_rtctimer binfmt_misc matroxfb_maven
-> i2c_matroxfb i2c_algo_bit loop w83781d eeprom i2c_sensor tsdev ide_cd
-> cdrom psmouse pcspkr button processor nfs nfsd exportfs lockd parport_pc parport ehci_hcd eth1394
-> ohci_hcd ohci1394 ieee1394 8139too mii emu10k1_gp gameport snd_emu10k1 snd_rawmidi snd_seq_device
-> snd_ac97_codec snd_pcm snd_timer snd_ac97_bus snd_page_alloc snd_util_mem snd_hwdep snd soundcore
-> i2c_i801 i2c_core uhci_hcd usbcore i8xx_tco intel_agp agpgart evdev sunrpc ext3 jbd
-> CPU:    0
-> EIP:    0060:[<c029a65a>]    Not tainted VLI
-> EFLAGS: 00000086   (2.6.13.1)
-> EIP is at _spin_lock+0xa/0x10
-> eax: dafe64e4   ebx: dfd49220   ecx: d808ed0c   edx: 00000001
-> esi: 00000000   edi: dafe6400   ebp: 00000008   esp: c0389f8c
-> ds: 007b   es: 007b   ss: 0068
-> Process aplaymidi (pid: 3932, threadinfo=c0389000 task=dfadfa60)
-> Stack: e2900e13 00000001 d9b41a2c 00000292 0000284c dafe64e4 d9b41800 80020024
->        dfd49220 00000000 d808ed84 00000008 c02029d5 d808efbc c0139be2 00000000
->        c034c2c0 00000008 dfd49220 c034c2dc c0139cf9 d808efbc dfd49220 d808ed84
-> Call Trace:
->  [<e2900e13>] snd_timer_interrupt+0x23/0x310 [snd_timer]
->  [<c02029d5>] rtc_interrupt+0xe5/0xf0
->  [<c0139be2>] handle_IRQ_event+0x32/0x70
->  [<c0139cf9>] __do_IRQ+0xd9/0x140
->  [<c0105306>] do_IRQ+0x46/0x70
->  =======================
->  [<c0103836>] common_interrupt+0x1a/0x20
->  [<c02031e8>] rtc_do_ioctl+0x6c8/0x8a0
->  [<c0142a9c>] make_ahead_window+0x7c/0xc0
->  [<c0120a4f>] current_fs_time+0x5f/0x70
->  [<c013f7d0>] prep_new_page+0x40/0x70
->  [<c013fd17>] buffered_rmqueue+0xe7/0x1d0
->  [<c0140139>] __alloc_pages+0x269/0x400
->  [<c0203710>] rtc_control+0x30/0x70
->  [<e2b72067>] rtctimer_start+0x27/0x30 [snd_rtctimer]
->  [<e290093e>] snd_timer_start1+0x7e/0xa0 [snd_timer]
->  [<e2900a25>] snd_timer_start+0x65/0xa0 [snd_timer]
->  [<e2c3ee86>] snd_seq_timer_start+0x36/0x50 [snd_seq]
->  [<e2c3da60>] snd_seq_queue_process_event+0xb0/0x100 [snd_seq]
->  [<e2c3d41f>] queue_access_lock+0x3f/0x60 [snd_seq]
->  [<e2c3dafd>] snd_seq_control_queue+0x4d/0x90 [snd_seq]
->  [<e2c39bdf>] snd_seq_deliver_single_event+0x16f/0x180 [snd_seq]
->  [<e2c39de4>] snd_seq_deliver_event+0x34/0x50 [snd_seq]
->  [<e2c3a036>] snd_seq_client_enqueue_event+0xe6/0x130 [snd_seq]
->  [<c01afb8a>] copy_from_user+0x3a/0x80
->  [<e2c3a225>] snd_seq_write+0x125/0x1a0 [snd_seq]
->  [<c0159390>] vfs_write+0x170/0x180
->  [<c0159451>] sys_write+0x41/0x70
->  [<c0102e1f>] sysenter_past_esp+0x54/0x75
-> Code: c3 ba 00 f0 ff ff 21 e2 81 42 14 00 01 00 00 f0 81 28 00 00 00 01 74 05 e8 7c e8 ff ff c3 8d
-> 76 00 f0 fe 08 79 09 f3 90 80 38 00 <7e> f9 eb f2 c3 90 f0 81 28 00 00 00 01 74 05 e8 5a e8 ff ff
-> c3
-> console shuts up ...
 
-OK, great.  This is related to the recent change to make the RTC the
-default timer for the ALSA sequencer, it's not an emu10k1 driver bug.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1512> 
+======================================================================
+Reported By:                negrolder
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1512
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             10-29-2005 21:36 CEST
+Last Modified:              10-29-2005 21:36 CEST
+======================================================================
+Summary:                    snd-usb-audio is not compatible with Midiman
+Midisport 1x1
+Description: 
+When I tryed debian and ubuntu I did all an everythig said by als-project
+to
+install Midiman midisport 1x1 on my PC.
 
-Lee
+Now I try Open Suse 10.0 and can't make it work.
+
+First I thought the problem was udev but I study it and made the rule for
+udev
+to load firmware as before. But couldn't make it work.
+
+So searchig for the solution I figured out snd-usb-audio alsa module
+cannot be
+loaded, as never before. Yast could not instal the generic usb audio
+device. 
+
+When system is recently start up I did this
+
+linux:/home/negrolder # lsmod | grep snd
+snd_pcm_oss            59168  0
+snd_mixer_oss          18944  1 snd_pcm_oss
+snd_seq                51984  0
+snd_seq_device          8588  1 snd_seq
+snd_intel8x0           33408  0
+snd_ac97_codec         90876  1 snd_intel8x0
+snd_ac97_bus            2432  1 snd_ac97_codec
+snd_pcm                93064  3 snd_pcm_oss,snd_intel8x0,snd_ac97_codec
+snd_timer              24452  2 snd_seq,snd_pcm
+snd                    60420  8
+snd_pcm_oss,snd_mixer_oss,snd_seq,snd_seq_device,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
+soundcore               9184  1 snd
+snd_page_alloc         10632  2 snd_intel8x0,snd_pcm
+
+I figured it out this is a modules problem so:
+
+linux:/home/negrolder # modinfo snd-usb-audio
+filename:      
+/lib/modules/2.6.13-15-default/kernel/sound/usb/snd-usb-audio.ko
+author:         Takashi Iwai <tiwai@suse.de>
+description:    USB Audio
+license:        GPL
+vermagic:       2.6.13-15-default 586 REGPARM gcc-4.0
+supported:      yes
+depends:        usbcore,snd-usb-lib,snd-pcm,snd,snd-hwdep
+alias:          usb:v0499p1000d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1001d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1002d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1003d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1004d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0499p1005d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1006d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1007d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1008d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1009d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p100Ad*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0499p100Cd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p100Dd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p100Ed*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p100Fd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1010d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1011d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1012d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1013d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1014d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1015d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1017d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1018d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1019d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p101Ad*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p101Bd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p101Cd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p101Dd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p101Ed*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1020d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1021d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1022d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1023d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1024d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1025d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1026d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1027d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1028d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1029d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p102Ad*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p102Bd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p102Ed*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1030d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1031d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1032d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1033d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1034d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1035d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1036d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1037d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1038d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p1039d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p103Ad*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p103Bd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p103Cd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p103Dd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p2000d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p2001d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p2002d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5000d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5001d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5002d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5003d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5004d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5005d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5006d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5007d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5008d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p5009d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p500Ad*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p500Bd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p500Cd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p500Dd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p500Ed*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p7000d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0499p7010d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0000d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0002d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0003d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0004d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0005d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0007d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0008d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0009d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p000Bd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p000Cd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0010d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0012d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0014d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0016d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p001Bd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p001Dd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0023d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0025d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0027d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0029d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p002Bd*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0582p002Dd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p002Fd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0033d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0037d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p003Bd*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0582p0040d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0042d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0044d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0048d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p004Dd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0050d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0052d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0065d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p006Ad*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0582p006Dd*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0582p0074d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0582p0075d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0763p1002d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p1011d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p1015d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p1021d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p1031d010dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0763p1033d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p1041d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p2001d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p2003d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p2008d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v0763p200Dd*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v07FDp0001d*dc*dsc02dp*ic*isc*ip*
+alias:          usb:v041Ep3010d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v086Ap0001d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v086Ap0002d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v086Ap0003d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v0CCDp0013d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v1235p0001d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v1235p0002d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v1235p4661d*dc*dsc*dp*icFFisc*ip*
+alias:          usb:v4752p0011d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v7104p2202d*dc*dsc*dp*ic*isc*ip*
+alias:          usb:v*p*d*dc*dsc*dp*ic01isc03ip*
+alias:          usb:v*p*d*dc*dsc*dp*ic01isc01ip*
+srcversion:     FEE16F0661551F72912AAD4
+parm:           async_unlink:Use async unlink mode. (bool)
+parm:           nrpacks:Max. number of packets per URB. (int)
+parm:           pid:Product ID for the USB audio device. (array of int)
+parm:           vid:Vendor ID for the USB audio device. (array of int)
+parm:           enable:Enable USB audio adapter. (array of bool)
+parm:           id:ID string for the USB audio adapter. (array of charp)
+parm:           index:Index value for the USB audio adapter. (array of
+int)
+
+Midiman Midisport 1x1 has vid=0763 and pid=1010. If I'm not worng (or if
+I
+understood good) in the alias list above is not pid=1010, and that would
+be the
+reason why snd-usb-audio cannot be loaded.
+
+Then &iquest;Why is not supported in that module? &iquest;is an alsa
+problem or Open Suse 10.0 problem?
+
+I'm using alsa-1.0.9 from distro/mirrors.kernel.org
+
+Thanx
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-29-05 21:36 negrolder      New Issue                                    
+======================================================================
+
 
 
 
