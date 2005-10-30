@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
-Date: Sun, 30 Oct 2005 20:58:01 +0100
-Message-ID: <4c573d1882ee4e576e441bdbd6185c87@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001292]: Audigy 2 ZS Notebook initialization hangs kernel.
+Date: Sun, 30 Oct 2005 21:07:25 +0100
+Message-ID: <78e5c18f0473c8e696756889335f02ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1134A170
-	for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2005 20:58:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2337E193
+	for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2005 21:07:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1292> 
 ======================================================================
-Reported By:                ammiellodebar
-Assigned To:                jcdutton
+Reported By:                tomch
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1320
-Category:                   PCI - ca0106
+Issue ID:                   1292
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               Arch Linux
-Kernel Version:             
+Status:                     closed
+Distribution:               Debian unstable/experimental
+Kernel Version:             2.6.13-rc4
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-08-2005 06:03 CEST
-Last Modified:              10-30-2005 20:58 CET
+Date Submitted:             07-29-2005 23:14 CEST
+Last Modified:              10-30-2005 21:07 CET
 ======================================================================
-Summary:                    CA0106 with Soundblaster 24-bit live does not allow
-recording
+Summary:                    Audigy 2 ZS Notebook initialization hangs kernel.
 Description: 
-When I use the line in on the card, it will not capture unless i crank up
-the mixer to near peak, and then its garbled and distorted sound, my
-capture is up all the way and i know its not a dumb mistake of mine
+When Emu10k1 option in kernel is disabled, it boots just fine.
+If support is compiled in, boot hangs just after displaing: Audigy2
+value:Special config.
 
-
+I don't know anything about kernel programming, but i could help with
+additional informations or try to debug this.
 ======================================================================
 
 ----------------------------------------------------------------------
- qqtortqq - 10-30-05 03:54 
+ jcdutton - 10-30-05 21:07 
 ----------------------------------------------------------------------
-Passthrough works great starting with the latest version's RC1.  I have 5
-jacks on my card, one is a line AND mic input, next is stereo out, then
-rear out, then center/sub out, then SPDIF out.  I think that is the order.
+Fixed in CVS 30-10-2005
 
-----------------------------------------------------------------------
- jcdutton - 10-30-05 20:58 
-----------------------------------------------------------------------
-Ok, you have a card I do not recognise.
-Can you post the output of:
-lspci -vn | grep -1 0401
-cat /proc/asound/version
-cat /proc/asound/cards
-
-I also need what model number is written on the sound card.
-e.g. SB0410
-
-Then, also point me to a url that shows a picture of the card.
-This sounds like an Audigy LS, but I might be wrong.
-
+The Audigy2 ZS Notebook no longer crashes the kernel.
+The card is not properly recognised.
+TODO: The sound is badly distorted, so more work need to be done to fix
+that.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 06:03 ammiellodebar  New Issue                                    
-08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
-08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
-08-12-05 23:11 jcdutton       Note Added: 0005791                          
-08-12-05 23:11 jcdutton       Status                   assigned => feedback
-08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
-08-21-05 23:56 ammiellodebar  Note Added: 0005887                          
-08-21-05 23:56 ammiellodebar  Note Edited: 0005717                         
-09-10-05 10:36 jcdutton       Note Added: 0006108                          
-09-10-05 18:15 ammiellodebar  Note Added: 0006124                          
-09-15-05 06:37 qqtortqq       Note Added: 0006192                          
-09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
-10-12-05 06:45 qqtortqq       Note Added: 0006461                          
-10-23-05 19:37 jcdutton       Note Added: 0006513                          
-10-30-05 03:54 qqtortqq       Note Added: 0006572                          
-10-30-05 20:57 jcdutton       Status                   feedback => assigned
-10-30-05 20:58 jcdutton       Note Added: 0006575                          
-10-30-05 20:58 jcdutton       Status                   assigned => feedback
+07-29-05 23:14 tomch          New Issue                                    
+07-29-05 23:14 tomch          Distribution              => Debian
+unstable/experimental
+07-29-05 23:14 tomch          Kernel Version            => 2.6.13-rc4      
+07-31-05 03:51 buckvitulli    Issue Monitored: buckvitulli                    
+08-01-05 01:04 jpeak          Issue Monitored: jpeak                       
+10-30-05 21:07 jcdutton       Status                   new => closed       
+10-30-05 21:07 jcdutton       Note Added: 0006576                          
 ======================================================================
 
 
