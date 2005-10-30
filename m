@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
-Date: Sun, 30 Oct 2005 03:54:50 +0100
-Message-ID: <f9d531b76a1a4a76466fafaf232e7a2a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001510]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to control volume by master channel, PCM and headphones work
+Date: Sun, 30 Oct 2005 09:35:41 +0100
+Message-ID: <2949232c86158e9223fb831ad2334ed4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD38818A
-	for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2005 03:54:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07350196
+	for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2005 09:35:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1510> 
 ======================================================================
-Reported By:                ammiellodebar
-Assigned To:                jcdutton
+Reported By:                wiktorw
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1320
-Category:                   PCI - ca0106
+Issue ID:                   1510
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Arch Linux
-Kernel Version:             
+Status:                     new
+Distribution:               Gentoo 2005.1
+Kernel Version:             2.6.13-gentoo-r4
 ======================================================================
-Date Submitted:             08-08-2005 06:03 CEST
-Last Modified:              10-30-2005 03:54 CET
+Date Submitted:             10-28-2005 17:54 CEST
+Last Modified:              10-30-2005 09:35 CET
 ======================================================================
-Summary:                    CA0106 with Soundblaster 24-bit live does not allow
-recording
+Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to
+control volume by master channel, PCM and headphones work
 Description: 
-When I use the line in on the card, it will not capture unless i crank up
-the mixer to near peak, and then its garbled and distorted sound, my
-capture is up all the way and i know its not a dumb mistake of mine
+On my Acer Aspire 5002LM laptop I have the following problem:
+- Master channel does not control volume level (no matter if I slide it or
+mute)
+- PCM channel works
+- Headphone/PCM-2 channel works
 
+The Master/PCM/Headphone channels are for the "SiS SI7012 (Alsa Mixer)"
+device, while Volume/PCM/PCM-2 channels are for the "Realtek ALC203 rev 0
+(OSS Mixer)" device. They do the same thing: Master/Volume control in
+gnome-volume-control applet doesn't change the volume level.
+
+At first I thought that this problem is software-related, but in fact it
+isn't. Now I have tested several things and all give me the same result. I
+also suspect that not only I have such problems, althought the original
+posters might not be aware of it. See here for the original discussion:
+
+http://forums.gentoo.org/viewtopic-t-387739.html
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 10-23-05 19:37 
+ garfungiloops - 10-30-05 09:35 
 ----------------------------------------------------------------------
-How does the passthrough work?
-On my SB live the mic is shared with the SPDIF, so one cannot do both at
-the same time. Are the connections different on your sound card?
+I have nearly the same problem with SiS 745 and intel8x0.
+However I cannot control PCM also. Only one thing i can do is to mute this
+channel.
 
-----------------------------------------------------------------------
- qqtortqq - 10-30-05 03:54 
-----------------------------------------------------------------------
-Passthrough works great starting with the latest version's RC1.  I have 5
-jacks on my card, one is a line AND mic input, next is stereo out, then
-rear out, then center/sub out, then SPDIF out.  I think that is the order.
+I've tryed in-kernel driver (gentoo-2.6.13-r5) and the recent module.
+It works the same way.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 06:03 ammiellodebar  New Issue                                    
-08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
-08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
-08-12-05 23:11 jcdutton       Note Added: 0005791                          
-08-12-05 23:11 jcdutton       Status                   assigned => feedback
-08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
-08-21-05 23:56 ammiellodebar  Note Added: 0005887                          
-08-21-05 23:56 ammiellodebar  Note Edited: 0005717                         
-09-10-05 10:36 jcdutton       Note Added: 0006108                          
-09-10-05 18:15 ammiellodebar  Note Added: 0006124                          
-09-15-05 06:37 qqtortqq       Note Added: 0006192                          
-09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
-10-12-05 06:45 qqtortqq       Note Added: 0006461                          
-10-23-05 19:37 jcdutton       Note Added: 0006513                          
-10-30-05 03:54 qqtortqq       Note Added: 0006572                          
+10-28-05 17:54 wiktorw        New Issue                                    
+10-28-05 17:54 wiktorw        Distribution              => Gentoo 2005.1   
+10-28-05 17:54 wiktorw        Kernel Version            => 2.6.13-gentoo-r4
+10-30-05 09:35 garfungiloops  Note Added: 0006573                          
 ======================================================================
 
 
