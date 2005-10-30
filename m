@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Mon, 31 Oct 2005 00:19:58 +0100
-Message-ID: <198e4883bf1c6b7862215e9e4df2e5fa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
+Date: Mon, 31 Oct 2005 00:55:45 +0100
+Message-ID: <a936c8ae827fb606487beee35072ad58@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4E44179
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 00:19:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 255921A1
+	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 00:55:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
 ======================================================================
-Reported By:                er-ku
-Assigned To:                tiwai
+Reported By:                gflash
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1517
-Category:                   PCI - hda-intel
+Issue ID:                   927
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-9-686
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              10-31-2005 00:19 CET
+Date Submitted:             02-20-2005 08:53 CET
+Last Modified:              10-31-2005 00:55 CET
 ======================================================================
-Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
+Summary:                    Support for Creative SB Audigy 2 ZS Notebook
 Description: 
-This will be very much like other reports around.
+Is this PCMCIA Souncard supported or will it be supported in the next time?
+I haven't heard any positive reports yet...
 
-Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
-Sound modules load silently, no complainments, alsamixer works and
-channels are unmuted, but I get absolutely no sound from speakers of
-headphones.
-
-I'm not the only one having this issue
-(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
-managed to google either didn't help me, or was simply unfinished (like
-forum questions that aren't answered).
-
-I tried the stock drivers provided by the Ubuntu kernel, then I tried
-1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
-all cases the result was the same - absolute silence.
-
+Thank you!
 ======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 10-30-05 21:08 
+----------------------------------------------------------------------
+Updated Status: alsa CVS 30-10-2005
+
+The Audigy2 ZS Notebook no longer crashes the kernel.
+The card is now properly recognised.
+TODO: The sound is badly distorted, so more work need to be done to fix
+that.
+
+----------------------------------------------------------------------
+ buckvitulli - 10-31-05 00:55 
+----------------------------------------------------------------------
+Outstanding work, I appreciate your efforts.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-05 00:19 er-ku          New Issue                                    
-10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
-10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
+02-20-05 08:53 gflash         New Issue                                    
+02-20-05 12:32 jcdutton       Note Added: 0003673                          
+02-20-05 14:06 gflash         Note Added: 0003674                          
+02-20-05 14:39 jcdutton       Note Added: 0003675                          
+02-20-05 14:47 jcdutton       Note Edited: 0003675                         
+07-25-05 17:43 dale           Note Added: 0005564                          
+07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
+08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
+10-30-05 21:08 jcdutton       Note Added: 0006577                          
+10-31-05 00:55 buckvitulli    Note Added: 0006578                          
 ======================================================================
 
 
