@@ -1,14 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001514]: Actually disable NLS support when --disable-nls is passed
-Date: Sun, 30 Oct 2005 13:25:02 +0100
-Message-ID: <d5f9023ccc290ba444952a37566efa7e@bugtrack.alsa-project.org>
+From: Magnar Haaland <magnarh@lyse.net>
+Subject: I am not able to compile alsa-driver-0.9.6 (on 1985Linux.zip )
+Date: Sun, 30 Oct 2005 17:42:50 +0100
+Message-ID: <200510301742.50518.magnarh@lyse.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+	boundary="Boundary-00=_KgPZDoAw0ftvWZA"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 772541A2
-	for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2005 13:25:02 +0100 (MET)
+Received: from asav1.lyse.net (asav1.lyse.net [213.167.96.68])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 760B9189
+	for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2005 15:42:20 +0100 (MET)
+Received: from asav1.lyse.net (asav1.lyse.net [127.0.0.1])
+	by localhost.lyse.net (Postfix) with ESMTP id BB8CE90836
+	for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2005 15:42:17 +0100 (CET)
+Received: from mail1.lyse.net (unknown [192.168.42.2])by asav1.lyse.net (Pos
+	tfix) with ESMTP id AA69790825for <alsa-devel@alsa-project.org>; Sun, 30 Oc
+	t 2005 15:42:17 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,46 +25,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: magnarh@lyse.net
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1514> 
-======================================================================
-Reported By:                Flameeyes
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1514
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             10-30-2005 13:25 CET
-Last Modified:              10-30-2005 13:25 CET
-======================================================================
-Summary:                    Actually disable NLS support when --disable-nls is
-passed
-Description: 
-The attached patch makes sure that when passing --disable-nls to configure
-script NLS support is actually disabled.
-This is needed to build alsa-utils on uClibc systems, where NLS function
-are not provided by the system library (and needs gettext).
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-30-05 13:25 Flameeyes      New Issue                                    
-10-30-05 13:25 Flameeyes      File Added: alsa-utils-1.0.10_rc1-nls.patch       
-            
-======================================================================
+--Boundary-00=_KgPZDoAw0ftvWZA
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
+Hi !
+
+I tried to compile alsa-driver-0.9.6 , but was not able to do so .
+
+I tried ./configure   ( look at attached file )  but somthing went wrong
+
+checking for GCC version... Kernel compiler: GCC 3.3.5 (Debian 1:3.3.5-13) 
+Used compiler: gcc (GCC) 3.3.5 (Debian 1:3.3.5-13)
+Fatal error: Compiler type does not match
+Decoded kernel compiler: type= version=3.3.5
+Decoded used compiler: type=gcc version=3.3.5
+
+
+
+I am using debian 3.1 and kernel 2.6.14  and an intel 686 cpu .
+
+Could you please give me some advice about the compilation ?
+
+Thanks
+
+Magnar Haaland
+
+
+
+
+--Boundary-00=_KgPZDoAw0ftvWZA
+Content-Type: text/plain;
+  charset="us-ascii";
+  name="alsa.out"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="alsa.out"
+
+checking for gcc... gcc
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for executable suffix... 
+checking for object suffix... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for ranlib... ranlib
+checking for a BSD compatible install... /usr/bin/install -c
+checking how to run the C preprocessor... gcc -E
+checking for ANSI C header files... yes
+checking for gcc option to accept ANSI C... none needed
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc needs -traditional... no
+checking for current directory... /home/magnarh/Linux/alsa-driver-0.9.6
+checking cross compile... 
+checking for directory with kernel source... /lib/modules/2.6.14/build
+checking for kernel version... 2.6.14
+checking for GCC version... Kernel compiler: GCC 3.3.5 (Debian 1:3.3.5-13) Used compiler: gcc (GCC) 3.3.5 (Debian 1:3.3.5-13)
+Fatal error: Compiler type does not match
+Decoded kernel compiler: type= version=3.3.5
+Decoded used compiler: type=gcc version=3.3.5
+Please, send ./configure output to <alsa-devel@alsa-project.org>
+
+--Boundary-00=_KgPZDoAw0ftvWZA--
 
 
 -------------------------------------------------------
