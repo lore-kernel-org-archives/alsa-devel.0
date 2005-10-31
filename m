@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001504]: Swap Front/Rear Output on SBLive! 5.1
-Date: Mon, 31 Oct 2005 21:09:36 +0100
-Message-ID: <f7a1e0e986ef24c47963e4066abd81ab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
+Date: Tue, 1 Nov 2005 00:35:11 +0100
+Message-ID: <71118a0afdeef31790d46d399c8843bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3AC813D
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 21:09:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A62CD167
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 00:35:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1504> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
 ======================================================================
-Reported By:                ripps818
+Reported By:                drow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1504
-Category:                   PCI - emu10k1
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1407
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.13
+Distribution:               Debian
+Kernel Version:             2.6.13-rc6
 ======================================================================
-Date Submitted:             10-25-2005 23:58 CEST
-Last Modified:              10-31-2005 21:09 CET
+Date Submitted:             09-09-2005 05:11 CEST
+Last Modified:              11-01-2005 00:35 CET
 ======================================================================
-Summary:                    Swap Front/Rear Output on SBLive! 5.1
+Summary:                    Can't use rear speaker channels
 Description: 
-I want to know if it's possible to make my rear output my primary master
-output for my soundcard. I use KxDriver in Windows and I want to be able
-to keep my setup working in linux as well. I don't too much about
-programming and the driver's archetecture, but it seems like it wouldn't
-be too complicated to fix.
+I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
+ice1724.  I've spent most of tonight trying to get surround sound to
+work... but the best I can get is four channels (specifically, front
+left/right, center, LFE).  Nothing happens when samples are sent to the
+rear channels.  And the front channels are mirrored onto the rear
+speakers, under control of the Headphone volume control.
+
+Which is really annoying, because it means that muting the master volume
+doesn't mute the back speakers.
+
+I realize this isn't much information.  I don't know what else to check
+but I'll be glad to debug it if someone can give me a pointer.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 10-31-05 07:56 
+ drow - 09-12-05 18:05 
 ----------------------------------------------------------------------
-No, why would it?  Master controls the front speakers.  That's a completely
-separate issue.
+I don't know if this is related, but if I use ttable to remap channels, I
+get strange results.  I can map the center channel of a sample to the
+center speaker, or to the front speakers.  But I can't map the front
+channels to the center speaker!
+
+    # ttable.1.0 1 # FR comes out FL speaker
+    # ttable.1.1 1 # FR comes out FR speaker
+    # ttable.1.* 1 -> nothing
+
+    # ttable.0.0 1 # FL comes out FL speaker
+    # ttable.0.* 1 -> nothing
+
+    # ttable.2.0 1 # RL comes out FL
+    # ttable.2.1 1 # RL comes out FR
+    # ttable.2.2 1 # RL comes out C
+    # ttable.2.* 1 -> nothing
+
+    # ttable.3.3 1 # RR (?) comes out center speaker muffled - LFE?
+
+    # ttable.4.4 1 # Nothing, 0-3 work
+    # ttable.5.5 1 # Nothing
+
+    # ttable.5.0 1 # Mixed comes out FL
+    # ttable.5.1 1 # Mixed comes out FR
+    # ttable.5.2 1 # Mixed comes out C
+    # ttable.5.3 1 # Mixed comes out LFE
+    # ttable.5.4 1 # Nothing
+    # ttable.5.5 1 # Nothing
 
 ----------------------------------------------------------------------
- ripps818 - 10-31-05 21:09 
+ drow - 11-01-05 00:35 
 ----------------------------------------------------------------------
-How about ld10k1 that mikma mentioned. Is there anywhere where I can get
-some more information on it?
+Still no luck with this.  However, I now have Windows installed on the same
+machine, and the VIA drivers can talk to the rear speakers just fine.  Is
+there any way I can dump useful information from the chip registers while
+in Windows?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-05 23:58 ripps818       New Issue                                    
-10-25-05 23:58 ripps818       Kernel Version            => 2.6.13          
-10-25-05 23:58 ripps818       Issue Monitored: ripps818                    
-10-31-05 01:26 mikma          Note Added: 0006579                          
-10-31-05 01:27 mikma          Note Edited: 0006579                         
-10-31-05 04:45 ripps818       Note Added: 0006581                          
-10-31-05 07:56 rlrevell       Note Added: 0006585                          
-10-31-05 21:09 ripps818       Note Added: 0006590                          
+09-09-05 05:11 drow           New Issue                                    
+09-09-05 05:11 drow           Distribution              => Debian          
+09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
+09-09-05 05:13 drow           Note Added: 0006091                          
+09-12-05 18:05 drow           Note Added: 0006148                          
+11-01-05 00:35 drow           Note Added: 0006591                          
 ======================================================================
 
 
