@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001512]: snd-usb-audio is not compatible with Midiman Midisport 1x1
-Date: Mon, 31 Oct 2005 16:30:43 +0100
-Message-ID: <4491ef11c409e6c20d4cd1606fd89a7c@bugtrack.alsa-project.org>
+From: Richard Smith <smithbone@gmail.com>
+Subject: Re: Re: Status of M-Audio Audiophile USB
+Date: Mon, 31 Oct 2005 09:47:24 -0600
+Message-ID: <8a0c36780510310747j3485f9b5ja5caca0dcf3ff848@mail.gmail.com>
+References: <8a0c36780510271056q5bf98a9p9d8f05f8816fbf4@mail.gmail.com>
+	 <Pine.HPX.4.33n.0510281416340.24464-100000@studcom.urz.uni-halle.de>
+	 <8a0c36780510281134gce42934v61b094b072d8f841@mail.gmail.com>
+	 <1130525518.4363.57.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_6470_29392135.1130773644513"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F067416B
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 16:30:43 +0100 (MET)
+In-Reply-To: <1130525518.4363.57.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,404 +20,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_6470_29392135.1130773644513
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1512> 
-======================================================================
-Reported By:                negrolder
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1512
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-29-2005 21:36 CEST
-Last Modified:              10-31-2005 16:30 CET
-======================================================================
-Summary:                    snd-usb-audio is not compatible with Midiman
-Midisport 1x1
-Description: 
-When I tryed debian and ubuntu I did all an everythig said by als-project
-to
-install Midiman midisport 1x1 on my PC.
+> Don't use ksymoops for 2.6.  Just post the oops verbatim.
+>
+> The kernel docs were wrong for a long time but they were recently fixed.
 
-Now I try Open Suse 10.0 and can't make it work.
+The oops I got is attached.
 
-First I thought the problem was udev but I study it and made the rule for
-udev
-to load firmware as before. But couldn't make it work.
+Oh and I solved my static problems!
 
-So searchig for the solution I figured out snd-usb-audio alsa module
-cannot be
-loaded, as never before. Yast could not instal the generic usb audio
-device. 
+You may find this humorous.
 
-When system is recently start up I did this
+I was overdriving the input.  The source I was using turned out to be
+a headphone output rather than a line level output.  So if I had the
+volume turned up hardly any at all it would bang the input from rail
+to rail thus creating what I thought  was noise.
 
-linux:/home/negrolder # lsmod | grep snd
-snd_pcm_oss            59168  0
-snd_mixer_oss          18944  1 snd_pcm_oss
-snd_seq                51984  0
-snd_seq_device          8588  1 snd_seq
-snd_intel8x0           33408  0
-snd_ac97_codec         90876  1 snd_intel8x0
-snd_ac97_bus            2432  1 snd_ac97_codec
-snd_pcm                93064  3 snd_pcm_oss,snd_intel8x0,snd_ac97_codec
-snd_timer              24452  2 snd_seq,snd_pcm
-snd                    60420  8
-snd_pcm_oss,snd_mixer_oss,snd_seq,snd_seq_device,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-soundcore               9184  1 snd
-snd_page_alloc         10632  2 snd_intel8x0,snd_pcm
+That explains why I wasn't able to repeat any of my findings since it
+really had nothing to do with any of the variables I was changing.
 
-I figured it out this is a modules problem so:
+Thanks for all your help though.
 
-linux:/home/negrolder # modinfo snd-usb-audio
-filename:      
-/lib/modules/2.6.13-15-default/kernel/sound/usb/snd-usb-audio.ko
-author:         Takashi Iwai <tiwai@suse.de>
-description:    USB Audio
-license:        GPL
-vermagic:       2.6.13-15-default 586 REGPARM gcc-4.0
-supported:      yes
-depends:        usbcore,snd-usb-lib,snd-pcm,snd,snd-hwdep
-alias:          usb:v0499p1000d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1001d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1002d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1003d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1004d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0499p1005d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1006d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1007d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1008d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1009d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p100Ad*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0499p100Cd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p100Dd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p100Ed*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p100Fd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1010d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1011d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1012d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1013d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1014d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1015d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1017d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1018d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1019d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p101Ad*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p101Bd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p101Cd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p101Dd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p101Ed*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1020d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1021d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1022d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1023d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1024d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1025d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1026d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1027d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1028d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1029d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p102Ad*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p102Bd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p102Ed*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1030d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1031d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1032d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1033d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1034d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1035d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1036d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1037d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1038d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p1039d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p103Ad*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p103Bd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p103Cd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p103Dd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p2000d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p2001d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p2002d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5000d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5001d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5002d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5003d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5004d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5005d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5006d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5007d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5008d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p5009d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p500Ad*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p500Bd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p500Cd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p500Dd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p500Ed*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p7000d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0499p7010d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0000d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0002d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0003d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0004d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0005d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0007d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0008d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0009d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p000Bd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p000Cd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0010d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0012d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0014d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0016d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p001Bd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p001Dd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0023d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0025d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0027d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0029d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p002Bd*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0582p002Dd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p002Fd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0033d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0037d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p003Bd*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0582p0040d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0042d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0044d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0048d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p004Dd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0050d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0052d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0065d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p006Ad*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0582p006Dd*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0582p0074d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0582p0075d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0763p1002d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p1011d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p1015d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p1021d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p1031d010dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0763p1033d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p1041d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p2001d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p2003d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p2008d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v0763p200Dd*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v07FDp0001d*dc*dsc02dp*ic*isc*ip*
-alias:          usb:v041Ep3010d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v086Ap0001d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v086Ap0002d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v086Ap0003d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v0CCDp0013d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v1235p0001d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v1235p0002d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v1235p4661d*dc*dsc*dp*icFFisc*ip*
-alias:          usb:v4752p0011d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v7104p2202d*dc*dsc*dp*ic*isc*ip*
-alias:          usb:v*p*d*dc*dsc*dp*ic01isc03ip*
-alias:          usb:v*p*d*dc*dsc*dp*ic01isc01ip*
-srcversion:     FEE16F0661551F72912AAD4
-parm:           async_unlink:Use async unlink mode. (bool)
-parm:           nrpacks:Max. number of packets per URB. (int)
-parm:           pid:Product ID for the USB audio device. (array of int)
-parm:           vid:Vendor ID for the USB audio device. (array of int)
-parm:           enable:Enable USB audio adapter. (array of bool)
-parm:           id:ID string for the USB audio adapter. (array of charp)
-parm:           index:Index value for the USB audio adapter. (array of
-int)
+--
+Richard A. Smith
 
-Midiman Midisport 1x1 has vid=0763 and pid=1010. If I'm not worng (or if
-I
-understood good) in the alias list above is not pid=1010, and that would
-be the
-reason why snd-usb-audio cannot be loaded.
-
-Then &iquest;Why is not supported in that module? &iquest;is an alsa
-problem or Open Suse 10.0 problem?
-
-I'm using alsa-1.0.9 from distro/mirrors.kernel.org
-
-Thanx
-
-======================================================================
-
-----------------------------------------------------------------------
- negrolder - 10-31-05 16:30 
-----------------------------------------------------------------------
-Here is something strange:
-
-I compiled my own kernel. This did not solve the problem. I downloaded
-alsa-driver-1.0.9rc4. Passed this options to confgure:
-
-./configure --with-cards=usb-audio --with-sequencer=yes --with-suse=yes
---with-moddir=/lib/modules/2.6.13-15-negrolder/
-
-the output was:
-checking for gcc... gcc
-checking for C compiler default output... a.out
-checking whether the C compiler works... yes
-checking whether we are cross compiling... no
-checking for suffix of executables...
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc accepts -g... yes
-checking for gcc option to accept ANSI C... none needed
-checking for ranlib... ranlib
-checking for a BSD-compatible install... /usr/bin/install -c
-checking how to run the C preprocessor... gcc -E
-checking for egrep... grep -E
-checking for ANSI C header files... yes
-checking for an ANSI C-conforming const... yes
-checking for inline... inline
-checking whether time.h and sys/time.h may both be included... yes
-checking whether gcc needs -traditional... no
-checking for current directory... /home/negrolder/alsa-driver-1.0.9rc4
-checking cross compile...
-checking for directory with kernel source...
-/lib/modules/2.6.13-15-negrolder/source
-checking for directory with kernel build...
-/lib/modules/2.6.13-15-negrolder/build
-checking for kernel version... 2.6.13-15-negrolder
-checking for GCC version... Kernel compiler: gcc 4.0.2 20050901
-(prerelease) (SUSE Linux) Used compiler: gcc (GCC) 4.0.2 20050901
-(prerelease) (SUSE Linux)
-checking for built-in ALSA... "no"
-checking for existing ALSA module... "yes"
-checking for Red Hat kernel... "auto"
-checking for Red Hat kernel... "no"
-checking for SUSE kernel... "yes"
-checking to modify of kernel linux/kmod.h... "no"
-checking for kernel linux/compiler.h... "yes"
-checking for kernel linux/pm.h... "yes"
-checking for kernel linux/spinlock.h... "yes"
-checking for kernel linux/irq.h... "yes"
-checking for kernel linux/threads.h... "yes"
-checking for kernel linux/rwsem.h... "yes"
-checking for kernel linux/gameport.h... "yes"
-checking for kernel linux/devfs_fs_kernel.h... "yes"
-checking for kernel linux/highmem.h... "yes"
-checking for kernel linux/workqueue.h... "yes"
-checking for kernel linux/dma-mapping.h... "yes"
-checking for kernel asm/hw_irq.h... "yes"
-checking for kernel linux/device.h... "yes"
-checking for kernel linux/jiffies.h... "yes"
-checking for kernel linux/compat.h... "yes"
-checking for kernel linux/adb.h... "yes"
-checking for kernel linux/cuda.h... "yes"
-checking for kernel linux/pmu.h... "yes"
-checking for kernel linux/moduleparam.h... "yes"
-checking for kernel linux/syscalls.h... "yes"
-checking for kernel linux/firmware.h... "yes"
-checking for kernel module symbol versions... "yes"
-checking for PCI support in kernel... "yes"
-checking for I2C driver in kernel... module
-checking for firmware loader... module
-checking for input subsystem in kernel... yes
-checking for directory to store kernel modules...
-/lib/modules/2.6.13-15-negrolder/
-checking for verbose printk... on
-checking for debug level... none
-checking for ISA support in kernel... "yes"
-checking for processor type... k7
-checking for i386 machine type... default
-checking for SMP... "no"
-checking for Video device support in kernel... "yes"
-checking for ISA PnP driver in kernel... yes
-checking for PnP driver in kernel... yes
-checking for Kernel ISA-PnP support... "yes"
-checking for strlcpy... "yes"
-checking for snprintf... "yes"
-checking for vsnprintf... "yes"
-checking for scnprintf... "yes"
-checking for sscanf... "yes"
-checking for vmalloc_to_page... "yes"
-checking for old kmod... "no"
-checking for PDE... "yes"
-checking for pci_set_consistent_dma_mask... "yes"
-checking for pci_dev_present... "yes"
-checking for msleep... "yes"
-checking for msleep_interrupt... "yes"
-checking for tty->count is the atomic type... "no"
-checking for video_get_drvdata... "yes"
-checking for io_remap_pfn_range... "yes"
-checking for kcalloc... "yes"
-checking for saved_config_space in pci_dev... "yes"
-checking for new pci_save_state... "yes"
-checking for driver version... 1.0.9rc4
-checking for sequencer support... yes
-checking for OSS/Free emulation... yes
-checking for RTC callback support in kernel... "yes"
-checking for HPET support... "yes"
-checking for Procfs support... "yes"
-checking for USB support... "yes"
-checking for new unlocked/compat_ioctl... "no"
-checking for PC-Speaker hook... "no"
-checking for kernel PCMCIA
-checking for PCMCIA support... "yes"
-checking for PC9800 support in kernel... "no"
-checking for parallel port support... "yes"
-checking for which soundcards to compile driver for... usb-audio
-configure: creating ./config.status
-config.status: creating version
-config.status: creating Makefile.conf
-config.status: creating snddevices
-config.status: creating utils/alsa-driver.spec
-config.status: creating utils/buildrpm
-config.status: creating toplevel.config
-config.status: creating utils/alsasound
-config.status: creating utils/alsasound.posix
-config.status: creating include/config.h
-config.status: include/config.h is unchanged
-config.status: creating include/config1.h
-config.status: include/config1.h is unchanged
-config.status: creating include/version.h
-config.status: include/version.h is unchanged
-config.status: creating include/autoconf-extra.h
-config.status: include/autoconf-extra.h is unchanged
-Hacking autoconf.h...
-
-Then Typed make and I got:
+------=_Part_6470_29392135.1130773644513
+Content-Type: application/octet-stream; name=oops
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="oops"
 
 
-[...quoted...]
-/home/negrolder/alsa-driver-1.0.9rc4/acore/sound.c: In function
-&#8216;snd_register_device&#8217;:
-/home/negrolder/alsa-driver-1.0.9rc4/acore/sound.c:240: error: implicit
-declaration of function &#8216;class_simple_device_add&#8217;
-/home/negrolder/alsa-driver-1.0.9rc4/acore/sound.c: In function
-&#8216;snd_unregister_device&#8217;:
-/home/negrolder/alsa-driver-1.0.9rc4/acore/sound.c:272: error: implicit
-declaration of function &#8216;class_simple_device_remove&#8217;
-make[4]: *** [/home/negrolder/alsa-driver-1.0.9rc4/acore/sound.o] Error 1
-make[3]: *** [/home/negrolder/alsa-driver-1.0.9rc4/acore] Error 2
-make[2]: *** [_module_/home/negrolder/alsa-driver-1.0.9rc4] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.13-15'
-make: *** [compile] Error 2
+Oct 27 10:16:18 engine36 kernel: usb 1-2: USB disconnect, address 3
 
-&#191;What's this?
+Oct 27 10:16:18 engine36 kernel: c01915c3
+Oct 27 10:16:18 engine36 kernel: PREEMPT SMP 
+Oct 27 10:16:18 engine36 kernel: Modules linked in: radeon drm rfcomm l2cap bluetooth sd_mod ipx p8022 psnap llc parport_pc lp parport ipv6 snd_via82xx snd_ac97_codec snd_ac97_bus snd_mpu401_uart i2c_viapro i2c_core via_agp ehci_hcd snd_usb_audio snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd_page_alloc snd_usb_lib snd_rawmidi snd_hwdep snd soundcore uhci_hcd sg sr_mod dm_mod autofs4 af_packet agpgart via_rhine mii thermal processor fan button battery ac rtc usb_storage usbcore ide_cd cdrom ide_scsi scsi_mod
+Oct 27 10:16:18 engine36 kernel: CPU:    0
+Oct 27 10:16:18 engine36 kernel: EIP:    0060:[<c01915c3>]    Not tainted VLI
+Oct 27 10:16:18 engine36 kernel: EFLAGS: 00010246   (2.6.14-rc5) 
+Oct 27 10:16:18 engine36 kernel: EIP is at sysfs_hash_and_remove+0x1f/0x102
+Oct 27 10:16:18 engine36 kernel: eax: df4912c8   ebx: dea09f08   ecx: dea28dc0   edx: dc0a27fc
+Oct 27 10:16:18 engine36 kernel: esi: 00000000   edi: df206fe0   ebp: dedb7b80   esp: df1cbdb0
+Oct 27 10:16:18 engine36 kernel: ds: 007b   es: 007b   ss: 0068
+Oct 27 10:16:18 engine36 kernel: Process khubd (pid: 996, threadinfo=df1ca000 task=decc6550)
+Oct 27 10:16:18 engine36 kernel: Stack: dffe0980 de9048bc de904878 dea09f08 dea09f00 df206fe0 dedb7b80 c02200bb 
+Oct 27 10:16:18 engine36 kernel:        df4912c8 df206fe0 dedb7bfc dea09f00 df9baa60 e08f50e2 00000000 c0220121 
+Oct 27 10:16:18 engine36 kernel:        dea09f00 df9baa40 e08ef550 dea09f00 07400000 00000000 df206360 df635d40 
+Oct 27 10:16:18 engine36 kernel: Call Trace:
+Oct 27 10:16:18 engine36 kernel:  [<c02200bb>] class_device_del+0xa5/0xfb
+Oct 27 10:16:18 engine36 kernel:  [<c0220121>] class_device_unregister+0x10/0x1d
+Oct 27 10:16:18 engine36 kernel:  [<e08ef550>] snd_unregister_device+0x83/0xcf [snd]
+Oct 27 10:16:18 engine36 kernel:  [<e08f3c54>] snd_ctl_dev_unregister+0x23/0x39 [snd]
+Oct 27 10:16:18 engine36 kernel:  [<e08f4173>] snd_device_free+0x9c/0xae [snd]
+Oct 27 10:16:18 engine36 kernel:  [<e08f435b>] snd_device_free_all+0x58/0x61 [snd]
+Oct 27 10:16:18 engine36 kernel:  [<e08efd74>] snd_card_free+0xff/0x1f9 [snd]
+Oct 27 10:16:18 engine36 kernel:  [<e095fc4d>] snd_usb_audio_disconnect+0xb1/0xe7 [snd_usb_audio]
+Oct 27 10:16:18 engine36 kernel:  [<e095fce2>] usb_audio_disconnect+0x22/0x26 [snd_usb_audio]
+Oct 27 10:16:18 engine36 kernel:  [<e087e0f5>] usb_unbind_interface+0x41/0x7d [usbcore]
+Oct 27 10:16:18 engine36 kernel:  [<c021f109>] __device_release_driver+0x61/0x81
+Oct 27 10:16:18 engine36 kernel:  [<c021f146>] device_release_driver+0x1d/0x2f
+Oct 27 10:16:18 engine36 kernel:  [<c021e957>] bus_remove_device+0x6a/0x82
+Oct 27 10:16:18 engine36 kernel:  [<c021dad8>] device_del+0x34/0x72
+Oct 27 10:16:18 engine36 kernel:  [<e088596a>] usb_disable_device+0xcb/0x142 [usbcore]
+Oct 27 10:16:18 engine36 kernel:  [<e0880656>] usb_disconnect+0xaa/0x145 [usbcore]
+Oct 27 10:16:18 engine36 kernel:  [<e08815ec>] hub_port_connect_change+0x57/0x3f2 [usbcore]
+Oct 27 10:16:18 engine36 kernel:  [<e087f147>] clear_port_feature+0x57/0x5b [usbcore]
+Oct 27 10:16:18 engine36 kernel:  [<e0881c3a>] hub_events+0x2b3/0x41d [usbcore]
+Oct 27 10:16:18 engine36 kernel:  [<e0881da4>] hub_thread+0x0/0xe2 [usbcore]
+Oct 27 10:16:18 engine36 kernel:  [<e0881db8>] hub_thread+0x14/0xe2 [usbcore]
+Oct 27 10:16:18 engine36 kernel:  [<c0130973>] autoremove_wake_function+0x0/0x4b
+Oct 27 10:16:18 engine36 kernel:  [<c013055d>] kthread+0xaf/0xb3
+Oct 27 10:16:18 engine36 kernel:  [<c01304ae>] kthread+0x0/0xb3
+Oct 27 10:16:18 engine36 kernel:  [<c0101171>] kernel_thread_helper+0x5/0xb
+Oct 27 10:16:18 engine36 kernel: Code: e9 7b bc fe ff 83 c4 04 5b 5e 5f c3 55 57 56 53 83 ec 0c 8b 44 24 20 8b 70 58 8b 50 10 85 d2 74 75 f0 ff 4a 78 0f 88 e3 00 00 00 <8b> 46 0c 8d 68 fc 8b 4d 04 0f 18 01 90 89 c3 83 c6 0c 89 74 24 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-29-05 21:36 negrolder      New Issue                                    
-10-31-05 16:24 negrolder      Issue Monitored: negrolder                    
-10-31-05 16:30 negrolder      Note Added: 0006586                          
-======================================================================
 
 
+
+
+
+------=_Part_6470_29392135.1130773644513--
 
 
 -------------------------------------------------------
