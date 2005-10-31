@@ -1,14 +1,26 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001504]: Swap Front/Rear Output on SBLive! 5.1
-Date: Mon, 31 Oct 2005 01:26:49 +0100
-Message-ID: <d013a6c1286a752482198fce44bf5f48@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1 multichannel issue/observation
+Date: Sun, 30 Oct 2005 19:50:26 -0500
+Message-ID: <1130719826.32101.2.camel@mindpipe>
+References: <434E7646.3000507@poeticstudios.com>
+	 <5bdc1c8b0510221502v28a2cbe0ybfe049be2f34e186@mail.gmail.com>
+	 <200510230053.44479.Martin.Wohlleben@gmx.de>
+	 <5bdc1c8b0510221655r4d28430fr7b80f5403d8daaa4@mail.gmail.com>
+	 <435AF023.70903@woh.rr.com>
+	 <5bdc1c8b0510221957s278a28a7n8ead2de1e0760cf6@mail.gmail.com>
+	 <435B74E9.20308@woh.rr.com>
+	 <20051023180312.GA4544@mobilat.informatik.uni-bremen.de>
+	 <5bdc1c8b0510231123h5ed64b38nd178ce9dfcb13f87@mail.gmail.com>
+	 <1130097599.11980.54.camel@mindpipe>
+	 <5bdc1c8b0510231318j4e9db7b0x1106e9b240329249@mail.gmail.com>
+	 <435CFC95.6000703@vt.edu> <1130170444.16563.22.camel@mindpipe>
+	 <4362CBD7.8080606@vt.edu> <1130552828.32367.66.camel@mindpipe>
+	 <43656175.3040303@vt.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 626FF1A1
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 01:26:49 +0100 (MET)
+In-Reply-To: <43656175.3040303@vt.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +30,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Rick Wright <riwright@vt.edu>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2005-10-30 at 19:12 -0500, Rick Wright wrote:
+> 
+> Lee Revell wrote: 
+> > On Fri, 2005-10-28 at 21:09 -0400, Rick Wright wrote:
+> >   
+> > > My questions are:
+> > > 1) Was there an early version(s) of this card where the side channels
+> > > aren't supported by the ALSA driver?
+> > >     
+> > 
+> > Possible.
+> > 
+> >   
+> > > 2) Could this be made to work?
+> > >     
+> > 
+> > Yes.
+> > 
+> >   
+> > > 3) If so, what info is needed and who needs it?
+> > >     
+> > 
+> > Please provide lspci output for the new card (working side channels) and
+> > the old one (non working side channels).
+> > 
+> >   
+> Attached are the outputs of lspci for both working/non-working side
+> channel machines.
+> 
+> These machines are basically clones and the Audigy2 card is in the
+> same PCI slot in both machines.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1504> 
-======================================================================
-Reported By:                ripps818
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1504
-Category:                   PCI - emu10k1
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             10-25-2005 23:58 CEST
-Last Modified:              10-31-2005 01:26 CET
-======================================================================
-Summary:                    Swap Front/Rear Output on SBLive! 5.1
-Description: 
-I want to know if it's possible to make my rear output my primary master
-output for my soundcard. I use KxDriver in Windows and I want to be able
-to keep my setup working in linux as well. I don't too much about
-programming and the driver's archetecture, but it seems like it wouldn't
-be too complicated to fix.
-======================================================================
+Sorry I should have been more specific.  I need 
+"lspci -vn | grep -A1 0401" output for both machines.
 
-----------------------------------------------------------------------
- mikma - 10-31-05 01:26 
-----------------------------------------------------------------------
-It's easy to swap the front and rear pcm channels, but Line-in, CD etc will
-still be routed to the front output, unless you change the DSP programming
-by modifing the emu10k1 driver or using ld10k1.
-
-#Swap front<->rear pcm channels
-pcm.!front {
-	type plug
-	slave.pcm "cards.pcm.rear"
-}
-
-pcm.!rear {
-	type plug
-	slave.pcm "cards.pcm.front"
-}
-
-/Mikael
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-25-05 23:58 ripps818       New Issue                                    
-10-25-05 23:58 ripps818       Kernel Version            => 2.6.13          
-10-25-05 23:58 ripps818       Issue Monitored: ripps818                    
-10-31-05 01:26 mikma          Note Added: 0006579                          
-======================================================================
+Lee
 
 
 
