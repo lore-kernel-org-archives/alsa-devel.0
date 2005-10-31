@@ -1,15 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?Q?[ALSA_-_liboss_0001518]:_dmix_plugin_doesn=B4t_work_with_O?=
- =?iso-8859-1?Q?SS_kernel_emulation?=
-Date: Mon, 31 Oct 2005 01:22:49 +0100
-Message-ID: <53634f9657ac5a20e83bba3143d73c3e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001504]: Swap Front/Rear Output on SBLive! 5.1
+Date: Mon, 31 Oct 2005 01:26:49 +0100
+Message-ID: <d013a6c1286a752482198fce44bf5f48@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B1F01A1
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 01:22:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 626FF1A1
+	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 01:26:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,39 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1518> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1504> 
 ======================================================================
-Reported By:                kyromaster
+Reported By:                ripps818
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1518
-Category:                   
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   1504
+Category:                   PCI - emu10k1
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             10-31-2005 01:22 CET
-Last Modified:              10-31-2005 01:22 CET
+Date Submitted:             10-25-2005 23:58 CEST
+Last Modified:              10-31-2005 01:26 CET
 ======================================================================
-Summary:                    dmix plugin doesn´t work with OSS kernel emulation
+Summary:                    Swap Front/Rear Output on SBLive! 5.1
 Description: 
-I hope this isn´t misplaced here, but IMHO this is a bug in the
-architecture. Many people have those crappy AC97 codecs without hardware
-mixing and want to use OSS apps beside their ALSA ones (like teamspeak
-together with games). dmix works but not with the kernel emulation, and
-"aoss" is not easy enough for newbies and also doesn´t work with all
-apps.
-So will dmix support be added to the kernel OSS emulation layer?+
+I want to know if it's possible to make my rear output my primary master
+output for my soundcard. I use KxDriver in Windows and I want to be able
+to keep my setup working in linux as well. I don't too much about
+programming and the driver's archetecture, but it seems like it wouldn't
+be too complicated to fix.
 ======================================================================
+
+----------------------------------------------------------------------
+ mikma - 10-31-05 01:26 
+----------------------------------------------------------------------
+It's easy to swap the front and rear pcm channels, but Line-in, CD etc will
+still be routed to the front output, unless you change the DSP programming
+by modifing the emu10k1 driver or using ld10k1.
+
+#Swap front<->rear pcm channels
+pcm.!front {
+	type plug
+	slave.pcm "cards.pcm.rear"
+}
+
+pcm.!rear {
+	type plug
+	slave.pcm "cards.pcm.front"
+}
+
+/Mikael
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-05 01:22 kyromaster     New Issue                                    
+10-25-05 23:58 ripps818       New Issue                                    
+10-25-05 23:58 ripps818       Kernel Version            => 2.6.13          
+10-25-05 23:58 ripps818       Issue Monitored: ripps818                    
+10-31-05 01:26 mikma          Note Added: 0006579                          
 ======================================================================
 
 
