@@ -1,13 +1,14 @@
-From: Rick Wright <riwright@vt.edu>
-Subject: Re: emu10k1 multichannel issue/observation
-Date: Mon, 31 Oct 2005 11:03:35 -0500
-Message-ID: <43664057.3000205@vt.edu>
-References: <434E7646.3000507@poeticstudios.com> <5bdc1c8b0510221502v28a2cbe0ybfe049be2f34e186@mail.gmail.com> <200510230053.44479.Martin.Wohlleben@gmx.de> <5bdc1c8b0510221655r4d28430fr7b80f5403d8daaa4@mail.gmail.com> <435AF023.70903@woh.rr.com> <5bdc1c8b0510221957s278a28a7n8ead2de1e0760cf6@mail.gmail.com> <435B74E9.20308@woh.rr.com> <20051023180312.GA4544@mobilat.informatik.uni-bremen.de> <5bdc1c8b0510231123h5ed64b38nd178ce9dfcb13f87@mail.gmail.com> <1130097599.11980.54.camel@mindpipe> <5bdc1c8b0510231318j4e9db7b0x1106e9b240329249@mail.gmail.com> <435CFC95.6000703@vt.edu> <1130170444.16563.22.camel@mindpipe> <4362CBD7.8080606@vt.edu> <1130552828.32367.66.camel@mindpipe> <43656175.3040303@vt.edu> <1130719826.32101.2.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001301]: Kernel OSS emulation stops working after a few seconds when used with VoIP softphones
+Date: Mon, 31 Oct 2005 17:44:23 +0100
+Message-ID: <a060917466f950892ede48b4861a142b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020308010201000809070804"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1130719826.32101.2.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 366C2164
+	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 17:44:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,179 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020308010201000809070804
-Content-Type: multipart/alternative;
- boundary="------------030902050206050608050401"
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1301> 
+======================================================================
+Reported By:                tek01
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1301
+Category:                   ISA - ad1816a
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10 and Debians
+2.6.8-2
+======================================================================
+Date Submitted:             08-02-2005 17:16 CEST
+Last Modified:              10-31-2005 17:44 CET
+======================================================================
+Summary:                    Kernel OSS emulation stops working after a few
+seconds when used with VoIP softphones
+Description: 
+Kernel OSS emulation fails a few seconds after a call is established when
+used with kphone(Debian) or iaxcomm(self made) softphones. Examining the
+process using strace reveals, that the file descriptor of the sound device
+is no longer listed in the readset or writeset when the select() syscall
+returns. Audio Playback using XMMS is working fine using the OSS API
+ 
+Also the native OSS driver is working fine with both VoIP phones on the
+same system and kernel.
 
 
---------------030902050206050608050401
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001300 modprobe goes into D-state when inserti...
+======================================================================
+
+----------------------------------------------------------------------
+ perex - 08-18-05 13:18 
+----------------------------------------------------------------------
+Use the latest ALSA from CVS (you can compile ALSA as external module) and
+the latest kernel (with the patch from
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1300).
+
+----------------------------------------------------------------------
+ rlrevell - 10-31-05 17:44 
+----------------------------------------------------------------------
+Is this problem still present in the latest ALSA release?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-02-05 17:16 tek01          New Issue                                    
+08-02-05 17:16 tek01          Distribution              => Debian Sarge    
+08-02-05 17:16 tek01          Kernel Version            => vanilla 2.6.11.12,
+vanilla 2.6.10 and Debians 2.6.8-2
+08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+08-03-05 10:10 perex          Relationship added       related to 0001300  
+08-03-05 10:47 perex          Note Added: 0005614                          
+08-05-05 11:20 tek01          Note Added: 0005664                          
+08-18-05 13:18 perex          Note Added: 0005847                          
+10-31-05 17:44 rlrevell       Note Added: 0006587                          
+======================================================================
 
 
-
-Lee Revell wrote:
-
->On Sun, 2005-10-30 at 19:12 -0500, Rick Wright wrote:
->  
->
->>Lee Revell wrote: 
->>    
->>
->>>On Fri, 2005-10-28 at 21:09 -0400, Rick Wright wrote:
->>>  
->>>      
->>>
->>>>My questions are:
->>>>1) Was there an early version(s) of this card where the side channels
->>>>aren't supported by the ALSA driver?
->>>>    
->>>>        
->>>>
->>>Possible.
->>>
->>>  
->>>      
->>>
->>>>2) Could this be made to work?
->>>>    
->>>>        
->>>>
->>>Yes.
->>>
->>>  
->>>      
->>>
->>>>3) If so, what info is needed and who needs it?
->>>>    
->>>>        
->>>>
->>>Please provide lspci output for the new card (working side channels) and
->>>the old one (non working side channels).
->>>
->>>  
->>>      
->>>
->>Attached are the outputs of lspci for both working/non-working side
->>channel machines.
->>
->>These machines are basically clones and the Audigy2 card is in the
->>same PCI slot in both machines.
->>
->>    
->>
->
->Sorry I should have been more specific.  I need 
->"lspci -vn | grep -A1 0401" output for both machines.
->
->  
->
-Ok, here they are.
-
-Rick
-
---------------030902050206050608050401
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-</head>
-<body bgcolor="#ffffff" text="#000000">
-<br>
-<br>
-Lee Revell wrote:
-<blockquote cite="mid1130719826.32101.2.camel@mindpipe" type="cite">
-  <pre wrap="">On Sun, 2005-10-30 at 19:12 -0500, Rick Wright wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">Lee Revell wrote: 
-    </pre>
-    <blockquote type="cite">
-      <pre wrap="">On Fri, 2005-10-28 at 21:09 -0400, Rick Wright wrote:
-  
-      </pre>
-      <blockquote type="cite">
-        <pre wrap="">My questions are:
-1) Was there an early version(s) of this card where the side channels
-aren't supported by the ALSA driver?
-    
-        </pre>
-      </blockquote>
-      <pre wrap="">Possible.
-
-  
-      </pre>
-      <blockquote type="cite">
-        <pre wrap="">2) Could this be made to work?
-    
-        </pre>
-      </blockquote>
-      <pre wrap="">Yes.
-
-  
-      </pre>
-      <blockquote type="cite">
-        <pre wrap="">3) If so, what info is needed and who needs it?
-    
-        </pre>
-      </blockquote>
-      <pre wrap="">Please provide lspci output for the new card (working side channels) and
-the old one (non working side channels).
-
-  
-      </pre>
-    </blockquote>
-    <pre wrap="">Attached are the outputs of lspci for both working/non-working side
-channel machines.
-
-These machines are basically clones and the Audigy2 card is in the
-same PCI slot in both machines.
-
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-Sorry I should have been more specific.  I need 
-"lspci -vn | grep -A1 0401" output for both machines.
-
-  </pre>
-</blockquote>
-Ok, here they are.<br>
-<br>
-Rick<br>
-</body>
-</html>
-
---------------030902050206050608050401--
-
---------------020308010201000809070804
-Content-Type: text/plain;
- name="lspci-output-no-side-channels.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="lspci-output-no-side-channels.txt"
-
-00:0b.0 Class 0401: 1102:0004 (rev 04)
-	Subsystem: 1102:1005
-
---------------020308010201000809070804
-Content-Type: text/plain;
- name="lspci-output-side-channels-working.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="lspci-output-side-channels-working.txt"
-
-00:0b.0 Class 0401: 1102:0004 (rev 04)
-	Subsystem: 1102:2001
-
---------------020308010201000809070804--
 
 
 -------------------------------------------------------
