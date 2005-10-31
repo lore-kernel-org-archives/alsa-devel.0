@@ -1,26 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: emu10k1 multichannel issue/observation
-Date: Sun, 30 Oct 2005 19:50:26 -0500
-Message-ID: <1130719826.32101.2.camel@mindpipe>
-References: <434E7646.3000507@poeticstudios.com>
-	 <5bdc1c8b0510221502v28a2cbe0ybfe049be2f34e186@mail.gmail.com>
-	 <200510230053.44479.Martin.Wohlleben@gmx.de>
-	 <5bdc1c8b0510221655r4d28430fr7b80f5403d8daaa4@mail.gmail.com>
-	 <435AF023.70903@woh.rr.com>
-	 <5bdc1c8b0510221957s278a28a7n8ead2de1e0760cf6@mail.gmail.com>
-	 <435B74E9.20308@woh.rr.com>
-	 <20051023180312.GA4544@mobilat.informatik.uni-bremen.de>
-	 <5bdc1c8b0510231123h5ed64b38nd178ce9dfcb13f87@mail.gmail.com>
-	 <1130097599.11980.54.camel@mindpipe>
-	 <5bdc1c8b0510231318j4e9db7b0x1106e9b240329249@mail.gmail.com>
-	 <435CFC95.6000703@vt.edu> <1130170444.16563.22.camel@mindpipe>
-	 <4362CBD7.8080606@vt.edu> <1130552828.32367.66.camel@mindpipe>
-	 <43656175.3040303@vt.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
+Date: Mon, 31 Oct 2005 03:10:07 +0100
+Message-ID: <a2cd6e08f7bc2542314c6019577ffb7b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43656175.3040303@vt.edu>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7EAAD1A9
+	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 03:10:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -30,47 +18,107 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rick Wright <riwright@vt.edu>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-10-30 at 19:12 -0500, Rick Wright wrote:
-> 
-> Lee Revell wrote: 
-> > On Fri, 2005-10-28 at 21:09 -0400, Rick Wright wrote:
-> >   
-> > > My questions are:
-> > > 1) Was there an early version(s) of this card where the side channels
-> > > aren't supported by the ALSA driver?
-> > >     
-> > 
-> > Possible.
-> > 
-> >   
-> > > 2) Could this be made to work?
-> > >     
-> > 
-> > Yes.
-> > 
-> >   
-> > > 3) If so, what info is needed and who needs it?
-> > >     
-> > 
-> > Please provide lspci output for the new card (working side channels) and
-> > the old one (non working side channels).
-> > 
-> >   
-> Attached are the outputs of lspci for both working/non-working side
-> channel machines.
-> 
-> These machines are basically clones and the Audigy2 card is in the
-> same PCI slot in both machines.
-> 
 
-Sorry I should have been more specific.  I need 
-"lspci -vn | grep -A1 0401" output for both machines.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
+======================================================================
+Reported By:                ammiellodebar
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1320
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Arch Linux
+Kernel Version:             
+======================================================================
+Date Submitted:             08-08-2005 06:03 CEST
+Last Modified:              10-31-2005 03:10 CET
+======================================================================
+Summary:                    CA0106 with Soundblaster 24-bit live does not allow
+recording
+Description: 
+When I use the line in on the card, it will not capture unless i crank up
+the mixer to near peak, and then its garbled and distorted sound, my
+capture is up all the way and i know its not a dumb mistake of mine
 
-Lee
+
+======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 10-30-05 20:58 
+----------------------------------------------------------------------
+Ok, you have a card I do not recognise.
+Can you post the output of:
+lspci -vn | grep -1 0401
+cat /proc/asound/version
+cat /proc/asound/cards
+
+I also need what model number is written on the sound card.
+e.g. SB0410
+
+Then, also point me to a url that shows a picture of the card.
+This sounds like an Audigy LS, but I might be wrong.
+
+
+----------------------------------------------------------------------
+ qqtortqq - 10-31-05 03:10 
+----------------------------------------------------------------------
+tort@tort:~$ lspci -vn | grep -1 0401
+
+0000:00:0b.0 0401: 1102:0007
+        Subsystem: 1102:1006
+tort@tort:~$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc2.
+Compiled on Oct 11 2005 for kernel 2.6.12.2.
+tort@tort:~$ cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! 7.1 24bit [SB0410] at 0xd400 irq 10
+
+It is a creative live 24-bit 0410.  
+
+This is the product listing at the retailer I bought it from:
+http://shop3.outpost.com/product/4219514?site=sr:SEARCH:MAIN_RSLT_PG
+
+http://www.ewiz.com/detail.php?name=SCSB0410VP
+That is a picture of the card, albeit a crummy one.  I pulled my computer
+out and checked- I was mistaken on the number of jacks the card has- it
+only has 4 as is shown in the picture.
+
+http://www.emaxasp.com/product_images/CE34SB0410B.jpg
+That is a better picture.  If you need me to pull mine out to look at
+chipset identifiers or anything, let me know.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-08-05 06:03 ammiellodebar  New Issue                                    
+08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
+08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
+08-12-05 23:11 jcdutton       Note Added: 0005791                          
+08-12-05 23:11 jcdutton       Status                   assigned => feedback
+08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
+08-21-05 23:56 ammiellodebar  Note Added: 0005887                          
+08-21-05 23:56 ammiellodebar  Note Edited: 0005717                         
+09-10-05 10:36 jcdutton       Note Added: 0006108                          
+09-10-05 18:15 ammiellodebar  Note Added: 0006124                          
+09-15-05 06:37 qqtortqq       Note Added: 0006192                          
+09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
+10-12-05 06:45 qqtortqq       Note Added: 0006461                          
+10-23-05 19:37 jcdutton       Note Added: 0006513                          
+10-30-05 03:54 qqtortqq       Note Added: 0006572                          
+10-30-05 20:57 jcdutton       Status                   feedback => assigned
+10-30-05 20:58 jcdutton       Note Added: 0006575                          
+10-30-05 20:58 jcdutton       Status                   assigned => feedback
+10-31-05 03:10 qqtortqq       Note Added: 0006580                          
+======================================================================
 
 
 
