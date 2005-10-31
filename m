@@ -1,14 +1,14 @@
-From: "Kristen Hill" <kristenblwdhill@bvenergy.com>
-Subject: Re: Carloss useful information
-Date: Mon, 31 Oct 2005 13:01:38 -0500
-Message-ID: <001501c5de45$2385ad00$5a8aa8c0@insignificance>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001504]: Swap Front/Rear Output on SBLive! 5.1
+Date: Mon, 31 Oct 2005 21:09:36 +0100
+Message-ID: <f7a1e0e986ef24c47963e4066abd81ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0012_01C5DE1B.3AAFA500"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bvenergy.com (1-1-11-17a.gtd.gbg.bostream.se [82.182.172.58])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B523E16B
-	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 19:00:38 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3AC813D
+	for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2005 21:09:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,91 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: River Juarez <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0012_01C5DE1B.3AAFA500
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1504> 
+======================================================================
+Reported By:                ripps818
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1504
+Category:                   PCI - emu10k1
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             10-25-2005 23:58 CEST
+Last Modified:              10-31-2005 21:09 CET
+======================================================================
+Summary:                    Swap Front/Rear Output on SBLive! 5.1
+Description: 
+I want to know if it's possible to make my rear output my primary master
+output for my soundcard. I use KxDriver in Windows and I want to be able
+to keep my setup working in linux as well. I don't too much about
+programming and the driver's archetecture, but it seems like it wouldn't
+be too complicated to fix.
+======================================================================
 
-Hello
-'t miss P
-s S
-er
-, Don
-harmaExpres
-pecial Off
-XaVAAmLeVICI
-naxLIUM Now $bienvitraAGRA Now $ALIS Now $
-1.20  3.313.69
-and 200 other - More Detailed info
->> Home >> Best >> Total >> Fast >> Easy 
-DelPriConShiOrd
-iverycesfidentialityppingering
+----------------------------------------------------------------------
+ rlrevell - 10-31-05 07:56 
+----------------------------------------------------------------------
+No, why would it?  Master controls the front speakers.  That's a completely
+separate issue.
 
+----------------------------------------------------------------------
+ ripps818 - 10-31-05 21:09 
+----------------------------------------------------------------------
+How about ld10k1 that mikma mentioned. Is there anywhere where I can get
+some more information on it?
 
-------=_NextPart_000_0012_01C5DE1B.3AAFA500
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-25-05 23:58 ripps818       New Issue                                    
+10-25-05 23:58 ripps818       Kernel Version            => 2.6.13          
+10-25-05 23:58 ripps818       Issue Monitored: ripps818                    
+10-31-05 01:26 mikma          Note Added: 0006579                          
+10-31-05 01:27 mikma          Note Edited: 0006579                         
+10-31-05 04:45 ripps818       Note Added: 0006581                          
+10-31-05 07:56 rlrevell       Note Added: 0006585                          
+10-31-05 21:09 ripps818       Note Added: 0006590                          
+======================================================================
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0>
-  <TR style=3D"MARGIN-TOP: 0px;">
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 face=3DArial =
-color=3D#359637>Hello</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 face=3DArial =
-color=3D#359637>'t miss P</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 face=3DArial =
-color=3D#359637>s S</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom rowSpan=3D2><FONT size=3D4 face=3DArial =
-color=3D#359637>er</FONT></TD><TD></TD>
-  </TR>
-  <TR style=3D"MARGIN-TOP: 0px;">
-    <TD vAlign=3Dbottom><FONT size=3D4 face=3DArial color=3D#359637>, =
-Don</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 face=3DArial color=3D#359637>=
-harmaExpres</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 face=3DArial color=3D#359637>pecial =
-Off</FONT></TD>
-  </TR></TABLE>
-<DIV>&nbsp;</DIV>
-<TABLE cellSpacing=3D0 style=3D"MARGIN-RIGHT: 0px;" cellPadding=3D0>
-<TR>
-<TD><FONT size=3D3 face=3DCourier>Xa<BR><B>VA</B><BR>Am<BR>Le<BR><B>VI<=
-/B><BR><B>CI</B></FONT></TD>
-<TD><FONT size=3D3 face=3DCourier>nax<BR><B>LIUM Now $</B><BR>bien<BR>vi=
-tra<BR><B>AGRA Now $</B><BR><B>ALIS Now $</B></FONT></TD>
-<TD><FONT size=3D3 face=3DCourier>&nbsp;<BR><B>1.20</B><BR>&nbsp;<B=
-R>&nbsp;<BR><B>3.31</B><BR><B>3.69</B></FONT></TD>
-</TR>
-</TABLE>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D3>and 200 other - <A href=3D"http://inst=
-rumentalistaww.atlowes.com"><FONT face=3DArial size=3D3>More Detailed =
-info</FONT></A></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<TABLE cellSpacing=3D0 style=3D"MARGIN-RIGHT: 0px;" cellPadding=3D0>
-<TR>
-<TD><FONT size=3D3 face=3DCourier>>> Home&nbsp;<BR>>> Best&nbsp;<BR>>> =
-Total&nbsp;<BR>>> Fast&nbsp;<BR>>> Easy&nbsp;</FONT></TD>
-<TD><FONT size=3D3 face=3DCourier>Del<BR>Pri<BR>Con<BR>Shi<BR>Ord</FONT></TD>
-<TD><FONT size=3D3 face=3DCourier>ivery<BR>ces<BR>fidentiality<BR>ppin=
-g<BR>ering</FONT></TD>
-</TR>
-</TABLE></BODY></HTML>
-
-------=_NextPart_000_0012_01C5DE1B.3AAFA500--
 
 
 
