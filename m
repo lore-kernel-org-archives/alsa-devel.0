@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001521]: Speakers misplaced in 5.1 surround
-Date: Tue, 1 Nov 2005 14:29:57 +0100
-Message-ID: <88b123c5f0d90e38e77fcb260e11fe97@bugtrack.alsa-project.org>
+Date: Tue, 1 Nov 2005 15:27:18 +0100
+Message-ID: <a4322dfd884303cd80b2734355c218a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C95E15A
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 14:29:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41E93156
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:27:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been set as RELATED TO issue 0001501.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1521> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.12.9 - 2.6.13.4 - 2.6.14
 ======================================================================
 Date Submitted:             11-01-2005 14:29 CET
-Last Modified:              11-01-2005 14:29 CET
+Last Modified:              11-01-2005 15:27 CET
 ======================================================================
 Summary:                    Speakers misplaced in 5.1 surround
 Description: 
@@ -53,6 +53,10 @@ working results, every channel on the right speaker.
 
 Tried with kernels 2.6.12.9 - 2.6.13.4 - 2.6.14
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001501 intel8x0 surround channels missing and ...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -61,6 +65,7 @@ Date Modified  Username       Field                    Change
 11-01-05 14:29 chareos        Distribution              => Ubuntu          
 11-01-05 14:29 chareos        Kernel Version            => 2.6.12.9 - 2.6.13.4 -
 2.6.14
+11-01-05 15:27 jdthood        Relationship added       related to 0001501  
 ======================================================================
 
 
