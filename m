@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
-Date: Tue, 1 Nov 2005 15:27:20 +0100
-Message-ID: <ea1173e3ea43cb5dcf0f90d13f3e955c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001521]: Speakers misplaced in 5.1 surround
+Date: Tue, 1 Nov 2005 15:28:32 +0100
+Message-ID: <92f2bf60809465d7a3109c1111f32a70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C814160
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:27:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18D7E156
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:28:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,92 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001521.
+The following issue has been set as RELATED TO issue 0001206.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1501> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1521> 
 ======================================================================
-Reported By:                dkoch
+Reported By:                chareos
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1501
+Issue ID:                   1521
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.14-rc5-gac9b9c66
+Distribution:               Ubuntu
+Kernel Version:             2.6.12.9 - 2.6.13.4 - 2.6.14
 ======================================================================
-Date Submitted:             10-25-2005 16:45 CEST
-Last Modified:              10-25-2005 18:12 CEST
+Date Submitted:             11-01-2005 14:29 CET
+Last Modified:              11-01-2005 15:28 CET
 ======================================================================
-Summary:                    intel8x0 surround channels missing and swapped
+Summary:                    Speakers misplaced in 5.1 surround
 Description: 
-By default, the front channels are OK, the rear channels come out on the
-center/LFE jack and the center/LFE channels don't come out at all.
+With basic Ubuntu Breezy settings I get speakers misplaced: voices are on
+rear left channel, rear right channel is mute and I suppose front channel
+are messed up.
 
-Using ICH5/AD1985 (Intel P865PERL motherboard).
+Note that "speaker-test -Dplug:surround51 -c6" gives excellent and perfect
+working results, every channel on the right speaker.
 
-Anomolies found: double-rate slot (DRSLOT) is set to 7,8 instead of the
-default
-10,11 (register 0x20=0400 instead of 0).  After setting 0x20 to 0, the
-rear
-channel jack starts working.  RL/RR and Center/LFE are still swapped.
-
-I would assume the swappage was hardware, but the Center and LFE volume
-controls
-affect the speakers on the Center/LFE jack which would indicate the driver
-is
-incorrectly routing the signals.
-
+Tried with kernels 2.6.12.9 - 2.6.13.4 - 2.6.14
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001521 Speakers misplaced in 5.1 surround
+related to          0001501 intel8x0 surround channels missing and ...
+related to          0001206 No center channel; rear left and right ...
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-25-05 17:56 
-----------------------------------------------------------------------
-Setting DR slot to 7/8 is intentional, as found in ac97_codec.c.
-The question is whether this still has influence even DRA bit is off on
-extended status regsiter.
-Could you check whether reg 0x2a bit 1 (0x0002) is off during playback of
-48khz (or less) samples?
-
-----------------------------------------------------------------------
- dkoch - 10-25-05 18:09 
-----------------------------------------------------------------------
-0x2a, bit 1 is off: 0:2a = 05f1
-
-----------------------------------------------------------------------
- tiwai - 10-25-05 18:11 
-----------------------------------------------------------------------
-An experimental patch is attached.  Give it a try.
-
-It won't fix the problem of channel swapping.
-This is also what I don't figure out yet.  On older ICH chips, the
-surround channels are swapped on alsa-lib.  But, ICH4 or newer don't do
-this because the bugreports have suggested they work without swapping. 
-And now you report that it's not...
-
-The fix isn't difficult.  The configuration for each card is found in
-/usr/share/alsa/cards directory.  Change "surround51" definition in
-ICH4.conf just like ICH.conf, using route plugin.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-05 16:45 dkoch          New Issue                                    
-10-25-05 16:45 dkoch          Distribution              => Fedora Core 3   
-10-25-05 16:45 dkoch          Kernel Version            => 2.6.14-rc5-gac9b9c66
-10-25-05 17:56 tiwai          Note Added: 0006546                          
-10-25-05 18:09 dkoch          Note Added: 0006547                          
-10-25-05 18:11 tiwai          Note Added: 0006548                          
-10-25-05 18:12 tiwai          File Added: ac97-dra-conflict.diff                
-   
-11-01-05 15:27 jdthood        Relationship added       related to 0001521  
+11-01-05 14:29 chareos        New Issue                                    
+11-01-05 14:29 chareos        Distribution              => Ubuntu          
+11-01-05 14:29 chareos        Kernel Version            => 2.6.12.9 - 2.6.13.4 -
+2.6.14
+11-01-05 15:27 jdthood        Relationship added       related to 0001501  
+11-01-05 15:28 jdthood        Relationship added       related to 0001206  
 ======================================================================
 
 
