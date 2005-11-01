@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001521]: Speakers misplaced in 5.1 surround
-Date: Tue, 1 Nov 2005 15:27:18 +0100
-Message-ID: <a4322dfd884303cd80b2734355c218a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001369]: Rear left/right channels swapped with center/lfe
+Date: Tue, 1 Nov 2005 15:35:57 +0100
+Message-ID: <800617aac8c28b72d31810b38525ef11@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41E93156
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:27:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CFD2156
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:35:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,34 +24,33 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been set as RELATED TO issue 0001501.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1521> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1369> 
 ======================================================================
-Reported By:                chareos
+Reported By:                ukr
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1521
+Issue ID:                   1369
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.12.9 - 2.6.13.4 - 2.6.14
+Distribution:               Fedora Core 4 (but latest stable versions of kernel,
+alsa-driver and alsa-lib installed as mentioned earlier)
+Kernel Version:             Linux 2.6.12.5 (compiled with SMP support with gcc
+4.0)
 ======================================================================
-Date Submitted:             11-01-2005 14:29 CET
-Last Modified:              11-01-2005 15:27 CET
+Date Submitted:             08-25-2005 11:00 CEST
+Last Modified:              11-01-2005 15:35 CET
 ======================================================================
-Summary:                    Speakers misplaced in 5.1 surround
+Summary:                    Rear left/right channels swapped with center/lfe
 Description: 
-With basic Ubuntu Breezy settings I get speakers misplaced: voices are on
-rear left channel, rear right channel is mute and I suppose front channel
-are messed up.
+The rear left and right channel outputs have been swapped with center and
+lfe respectively. speaker-test (alsa-utils-1.0.9) confirms this. I'm using
+alsa-lib-1.0.9 with alsa-driver-1.0.9b.
 
-Note that "speaker-test -Dplug:surround51 -c6" gives excellent and perfect
-working results, every channel on the right speaker.
 
-Tried with kernels 2.6.12.9 - 2.6.13.4 - 2.6.14
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
@@ -61,11 +60,14 @@ related to          0001501 intel8x0 surround channels missing and ...
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-01-05 14:29 chareos        New Issue                                    
-11-01-05 14:29 chareos        Distribution              => Ubuntu          
-11-01-05 14:29 chareos        Kernel Version            => 2.6.12.9 - 2.6.13.4 -
-2.6.14
-11-01-05 15:27 jdthood        Relationship added       related to 0001501  
+08-25-05 11:00 ukr            New Issue                                    
+08-25-05 11:00 ukr            File Added: asound.state                     
+08-25-05 11:00 ukr            Distribution              => Fedora Core 4 (but
+latest stable versions of kernel, alsa-driver and alsa-lib installed as
+mentioned earlier)
+08-25-05 11:00 ukr            Kernel Version            => Linux 2.6.12.5
+(compiled with SMP support with gcc 4.0)
+11-01-05 15:35 jdthood        Relationship added       related to 0001501  
 ======================================================================
 
 
