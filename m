@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001520]: Soundchip was not detected
-Date: Tue, 1 Nov 2005 10:35:16 +0100
-Message-ID: <92269fc8a7bef19c2df6746fe8d9489e@bugtrack.alsa-project.org>
+From: "Demetrius" <mkkawasawwvg@office.aichi-edu.ac.jp>
+Subject: -<-<-{@
+Date: Tue, 1 Nov 2005 05:01:50 -0500
+Message-ID: <5131301612.20051101050150@kdewzirregvdrk>
+Reply-To: "Demetrius Kelley" <mkkawasawwvg@office.aichi-edu.ac.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/html; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99E5A15C
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 10:35:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +16,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa.jcu.cz
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1520> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1520
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 9.0
-Kernel Version:             2.6.14-rc4
-======================================================================
-Date Submitted:             11-01-2005 10:35 CET
-Last Modified:              11-01-2005 10:35 CET
-======================================================================
-Summary:                    Soundchip was not detected
-Description: 
-I have an HP Omnibook 5700 CTX with some CS423x chip onboard, which is not
-detected by alsaconf. I did not find the ids in cs4236.c so I think the
-Pnp ID's
-must added to this file.
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-01-05 10:35 Henne          New Issue                                    
-11-01-05 10:35 Henne          Distribution              => Slackware 9.0   
-11-01-05 10:35 Henne          Kernel Version            => 2.6.14-rc4      
-======================================================================
-
+<p>When she turned her head and told "Wow!" I wasnt hasitate - It works!</p>
+<p>Everyone wants to be a hero in bed. I wanted to bring unreal satisfaction for both of us, I wanted to spent wild nights feeling myself as strong as at the begining.</p>
+<p>First of all I tryed Vi**ra (Its the only preparation I knew and it was my mistake) For thousand dollars I got twenty minutes of pleasure. Not so long.</p>
+<p>I started to look something else. More reasanble and last longer. And I found C|AL|S.</p>
+<p>I odered some pills to try. What can I say. It was a night of love. Actually it was a night, day and morning of love. Me and Betty made love, slept and started again... I barely came in time to my office!</p>
+<p>Im satisfied. In our world its hard to believe in mirracles, but sometimes they happen.</p>
+<p><a href="http://de.geocities.com/Bessie85789Vilma88611/">Well.. So long, man. Take care. And dont waste an opportunity to improve yourself by ordering C|AL|S.</a></p>
 
 
 
