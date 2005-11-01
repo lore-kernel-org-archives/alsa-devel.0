@@ -1,12 +1,10 @@
-From: "reiner" <stk1oj@aol.com>
-Subject: GrandSlam Stock
-Date: Wed, 02 Nov 2005 01:17:59 -1100
-Message-ID: <9A20A173.196FBD6@aol.com>
-Reply-To: "reiner" <stk1oj@aol.com>
+From: "Natasha Jensen" <n_jensen_gb@geocities.com>
+Subject: Microcap Oil Observer Newsletter
+Date: Tue, 01 Nov 2005 06:40:01 +0000
+Message-ID: <EJHLBHPHFNAPPOFANAEHKFAHBMAB.n_jensen_gb@geocities.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,88 +15,128 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: johnny <alsa-cvslog@alsa-project.org>, alsa-user@alsa-project.org, alsa-announce@alsa-project.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-devel-request@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Symbol: -CEOA . pk-
-Recent Price: $1.08
-Expected Trading Range: $3.50 - $5.00 (post split) -
-Shares Outstanding: 35M (est.)=20
-Float (est.): 5M=20
-
-
-This st0ck has just started a Major PR Campaign!!=20
-How will it react to th0usands of investors=20
-in the know now?=20
-
-
-Could this be some fast cash?=20
-We are expecting a explosion in the price.=20
-Don't wait act early watch this one trade Friday=20
-and ALL following days!!=20
-
-
-*Read Below Why we think this one is going to take=20
-off this week with this major PR campaign.=20
-
-
-Recent News Headlines Late September:=20
-
-
-   1. CEO America announces 3 for 1 forward split.=20
-
-
-   2. Sales and marketing expertise joins CEO America=20
-
-
-   3. Creditz used to fund local education foundation=20
-
-
-*Goto Your Favorite Financial Site to read the Full Stories!=20
-
-
-Researchers say: .Creditz is fast becoming the country.s foremost=20
-choice of currency in e-commerce, a $20 billion a year industry..=20
-
-
-Breaking News:=20
-October 2005 CEO America plans on publishing revenue numbers due to the=20
-signing of a contract with a billion dollar Telecommunications=20
-Company which should result in revenue in the mid seven figures.=20
-Revenue should be posted within the next several weeks.=20
-
-
-October 2005: CEO America is currently completing the signing of a=20
-multi-million dollar equity financing and will reveal more=20
-information and the details of the agreement in the weeks to come.=20
-
-
-Recent Headlines:=20
-October 10, 2005:  CEO America promotes its Creditz brand by teaming=20
-with Red Bull Cheever Racing as a team sponsor for the=20
-Toyota 500 held at the California Speedway.=20
-
-
-October 18, 2005:  David Vaters, Chairman of CEO America interviewed by=20
-Larry Nelson on w3w3 talk radio.  Larry Nelson,=20
-host and founder of w3w3 stated, .CEO America is a breakthrough company,=20
-and we wanted to inform our listeners about this revolutionary business=20
-model..=20
-
-
-Information within this email contains "forward looking=20
-statements" within the meaning of Section 27A of the=20
-Securities Act of 1933 and Section 21B of the=20
-Securities Exchange Act of 1934. Any statements that=20
-express or involve discussions with respect to=20
-predictions, goals,=20
-expectations, beliefs, plans, projections, objectives,=20
-assumptions or future events or performance are not=20
-statements of historical fact and may be "forward=20
-looking statements..=20
-To be taken off the list email NOSTK1@Yahoo.com
-
+SG90LVN0MGNrIGluIHRoZSBPaWwgSW5kdXN0cnkhIQ0KDQorKysrKysrKysr
+K0N1cnJlbnQgUHJvZmlsZSsrKysrKysrKysrKysrKysNCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KQW1lcmljYW4gUGV0cm9s
+ZXVtIEdyb3VwLCBJbmMuJ3MgKE9UQ0JCOiBBTVBFKQ0KU3ltYm9sOiBBTVBF
+IC5PQiAgICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgDQpDdXJyZW50IFByaWNlOiAkMC4z
+NyAgICAgICAgICAgICAgICAgICANCjMgZGF5IFRhcmdldDogICQwLjcwICAg
+ICAgICAgICAgICAgICANCjIgd2VlayBUYXJnZXQ6ICQxLjI1ICAgICAgICAg
+ICAgICAgICAgIA0KKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrDQoNCiBXYXRjaCB0aGlzIG9uZSB0cmFkZSBzdGFydGluZyBXZWRu
+ZXNkYXkgTW9ybmluZw0KYW5kIEVzcGVjaWFsbHkgYWxsIHRoaXMgd2Vlay4g
+DQoNCiBBIGh1Z2UgUFIgQ2FtcGFpZ24ganVzdCBzdGFydGVkIGFuZCB0aGUg
+cHJpY2UgaXMNCmV4cGVjdGVkIHRvIHJpc2UgcXVpdGUgbmljZWx5LiBJdHMg
+b25seSB0cmFkaW5nIA0KYXQgLjM3IHdpdGggYmlnIGluY3JlYXNlcyBwb3Nz
+aWJsZSEgDQoNCiogQWN0IEZhc3QgYW5kIEVhcmx5ISAqDQoNClRoaXMgaXMg
+YSBVLlMuIGJhc2VkLWNvbXBhbnkgcHJvdmlkaW5nIHJlLXJlZmluZWQNCm9p
+bCB0byB0aGUgYmlsbGlvbiBkb2xsYXIgbW90b3Igb2lsIGluZHVzdHJ5Lg0K
+DQoNCldpdGggc2t5IHJvY2tldGluZyBjcnVkZSBvaWwgcHJpY2VzLCBBTVBF
+IGhhcw0KZm91bmQgYSBodWdlIG1hcmtldCBuaWNoZSBmb3IgdHVybmluZyB1
+c2VkDQp1bmNvbWJ1c3RlZCBvaWwgaW50byBhIFJlbmV3ZWQgYmFzZSBvaWwg
+Zm9yDQpkaXN0cmlidXRpb24gYXMgYm90dGxlZCBtb3RvciBvaWwuIA0KDQpB
+TVBFIGhhcyByZWNlbnRseSByZWNlaXZlZCBjb21taXRtZW50cyBmcm9tIA0K
+c2V2ZXJhbCBrZXkgY3VzdG9tZXJzIHdoaWNoIHdpbGwgcmVxdWlyZSBhbg0K
+YWRkaXRpb25hbCAyNTAsMDAwIGdhbGxvbnMgb2Ygb2lsIHBlciBtb250aC4N
+ClRoYXSScyBhbiBpbmNyZWFzZSBvZiBvdmVyIDQwMCUgaW4gcmV2ZW51ZSBm
+cm9tDQppdHMgYmVzdCBtb250aCBpbiBTZXB0ZW1iZXIuIA0KDQpJcyBJdCBQ
+b2lzZWQgdG8gR28gSGlnaGVyPyANCkRvZXMgSXQgU291bmQgTmV3IGFuZCBF
+eGNpdGluZyBUbyBZb3U/DQpQbGVhc2UgUmV2aWV3IEV4YWN0bHkgV2hhdCB0
+aGlzIENvbXBhbnkgRG9lcy4gIA0KDQoNCldoeSBDb25zaWRlciBBbWVyaWNh
+biBQZXRyb2xldW0gR3JvdXAsIEluYy4ncz8gDQoNCi0gQSBGaW5hbmNpYWwg
+Sm91cm5hbGlzdCByZWNlbnRseSBub3RlZCB0aGUNCiAgU3QwY2sgdmFsdWUg
+b2YgQU1QRSBuZWVkcyB0byBnYWluIDU1MCUganVzdCANCiAgdG8gcmVhY2gg
+aXRzIGZhaXIgbWFya2V0IHZhbHVlLg0KDQotCUhhcyByZWNlbnRseSBpbmNy
+ZWFzZWQgaXRzIG1vbnRobHkgcmV2ZW51ZSBieQ0Kb3ZlciA0MDAlIHdpdGgg
+ZGVtYW5kIGZyb20ga2V5IGN1c3RvbWVycy4NCiAgICAgIA0KLSBJdCBpcyBp
+biBvbmUgb2YgdGhlIGZhc3Rlc3QgZ3Jvd2luZyBzZWdtZW50cw0KICBvZiB0
+aGUgb2lsIG1hcmtldC4NCg0KLSBIYXMgbG9ja2VkIGluIHNhbGVzIGNvbnRy
+YWN0cyB3aXRoIEV4eG9uLCANCiAgQW1vY28sIGFuZCBtYW55IG90aGVycy4N
+Cg0KKiogR28gdG8geW91ciBmYXZvcml0ZSBGaW5hbmNpYWwgd2Vic2l0ZSB0
+byByZWFkIA0KICAgQWxsIHRoZSByZWNlbnQgQnJlYWtpbmcgTmV3cyBmb3I6
+DQoNCiogQW1lcmljYW4gUGV0cm9sZXVtIEdyb3VwLCBJbmMuJ3MgKEFNUEUu
+T0IpISAqDQogIFN5bWJvbDogQU1QRS5PQiANCg0KDQpBYm91dCB0aGUgY29t
+cGFueToNCg0KQW1lcmljYW4gUGV0cm9sZXVtIEdyb3VwLCBJbmMuJ3MgKEFN
+UEUuT0IpDQphbm5vdW5jZWQgdG9kYXkgdGhhdCBpdCBoYXMgcmVjZWl2ZWQg
+YWRkaXRpb25hbCANCmNvbW1pdG1lbnRzIGZyb20gc2V2ZXJhbCBzdHJhdGVn
+aWMgY3VzdG9tZXJzIA0KZm9yIG92ZXIgMjUwLDAwMCBnYWxsb25zL21vbnRo
+IG9mIGZpbmlzaGVkIG1vdG9yIA0Kb2lsLiBUaGVzZSBuZXcgY29tbWl0bWVu
+dHMgd2lsbCBpbmNyZWFzZSBjdXJyZW50DQpyZXZlbnVlcyBieSBtb3JlIHRo
+YW4gNDAwJSBvdmVyIGl0cyBiZXN0IG1vbnRoLg0KICANCkdlb3JnZSBDYW1w
+YmVsbCwgcHJlc2lkZW50IGFuZCBDRU8gb2YgQU1QRSwgDQpzdGF0ZWQsICJX
+ZSBhcmUgdmVyeSBwbGVhc2VkIHRvIG9idGFpbiB0aGVzZSANCmNvbW1pdG1l
+bnRzLiBXZSBoYXZlIHNlZW4gc3RlYWR5IG9yZ2FuaWMgc2FsZXMgDQpncm93
+dGggYWxsIHllYXIuIFRoZSBuZXcgc3VwcGx5IG9mIG9pbCBmcm9tIERldHJv
+aXQsIA0KY29tYmluZWQgd2l0aCBoaWdoIHBldHJvbGV1bSBwcmljZXMsIHNo
+b3VsZCBjb250aW51ZSANCnRvIGRyaXZlIHN0cm9uZyBkZW1hbmSFIFdlIGFy
+ZSBjb250aW51aW5nIHRvIGV4cGFuZCANCm91ciBkaXN0cmlidXRpb24gY2hh
+bm5lbCBhbmQgYW50aWNpcGF0ZSBtb3JlIHBvc2l0aXZlIA0KYW5ub3VuY2Vt
+ZW50cyBpbiB0aGUgbmV4dCBzZXZlcmFsIG1vbnRocy4iIA0KDQpBbWVyaWNh
+biBQZXRyb2xldW0gR3JvdXCScyBjb3JlIGJ1c2luZXNzIGlzIHRvIA0KdHVy
+biB1c2VkLCAidW5jb21idXN0ZWQiIG9pbHMgKHN1Y2ggYXMgZ2VhciBvaWws
+IA0KdXNlZCBtb3RvciBvaWwsIG1hY2hpbmUgb2lscywgZXRjLikgaW50byAi
+cmVuZXdlZCIgDQpwZXRyb2xldW0gYmFzZSBvaWwuIFRoaXMgYmFzZSBvaWwg
+aXMgYmxlbmRlZCB3aXRoIA0KbmV3IGNydWRlIGFuZCBvdGhlciBjaGVtaWNh
+bCBjb21wb25lbnRzIGFuZCBzb2xkIA0KYXMgYnVsayBhbmQgYm90dGxlZCBt
+b3RvciBvaWwsIHdpdGggYSBzaWduaWZpY2FudGx5DQpyZWR1Y2VkIHByb2R1
+Y3Rpb24gY29zdC4gIA0KDQoNCkNvbmNsdXNpb246DQoNClRoZSBleGFtcGxl
+cyBhYm92ZSBzaG93IHRoZSBBd2Vzb21lLCBFYXJuaW5nIA0KUG90ZW50aWFs
+IG9mIGxpdHRsZSBrbm93biBDb21wYW5pZXMgDQpUaGF0IEV4cGxvZGUgb250
+byBJbnZlc3RvcnMgUmFkYXIgU2NyZWVucy4gDQpUaGlzIHN0MGNrIHdpbGwg
+bm90IGJlIGEgU2VjcmV0IGZvciBsb25nLiANCllvdSBNYXkgRmVlbCB0aGUg
+RGVzaXJlIHRvIEFjdCBSaWdodCBOb3chIA0KQW5kIFBsZWFzZSBXYXRjaCBU
+aGlzIE9uZSBUcmFkZSEgDQoNCkdPIEFNUEUhDQpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCg0KDQpJbmYwcm1hdGlv
+biB3aXRoaW4gdGhpcyBlbTRpbCBjb250NGlucyAiZjByd2FyZA0KX2wwMGtp
+bmcgX3N0NHRlbWVudHMiIHdpdGhpbiB0aGUgbWVhbmluZyBvZiBTZWN0aW9u
+IA0KMjdBIG9mIHRoZSBTZWN1cml0aWVzIEFjdCBvZiAxOTMzIGFuZCBTZWN0
+aW9uIDIxQiANCm9mIHRoZSBTZWN1cml0aWVzIEV4Y2hhbmdlIEFjdCBvZiAx
+OTM0LiBBbnkgc3RhdGVtZW50cyANCnRoYXQgZXhwcmVzcyBvciBpbnZvbHZl
+IGRpc2N1c3Npb25zIHdpdGggcmVzcGVjdCB0byANCnByZWRpY3Rpb25zLCBn
+b2FscywgZXhwZWN0YXRpb25zLCBiZWxpZWZzLCBwbGFucywgDQpwcm9qZWN0
+aW9ucywgb2JqZWN0aXZlcywgYXNzdW1wdGlvbnMgb3IgZnV0dXJlIGV2ZW50
+cyANCm9yIHBlcmZvcm1hbmNlIGFyZSBub3Qgc3RhdGVtZW50cyBvZiBoaXN0
+b3JpY2FsIA0KZmFjdCBhbmQgbWF5IGJlICJmMHJ3YXJkX2wwMGtpbmdfc3Q0
+dGVtZW50cy4iIEYwcndhcmQNCl9sMDBraW5nX3N0NHRlbWVudHMgYXJlIGJh
+c2VkIG9uIGV4cGVjdGF0aW9ucywgDQplc3RpbWF0ZXMgYW5kIHByb2plY3Rp
+b25zIGF0IHRoZSB0aW1lIHRoZSBzdGF0ZW1lbnRzIA0KYXJlIG1hZGUgdGhh
+dCBpbnZvbHZlIGEgbnVtYmVyIG9mIHJpc2tzIGFuZCB1bmNlcnRhaW50aWVz
+IA0Kd2hpY2ggY291bGQgY2F1c2UgYWN0dWFsIHJlc3VsdHMgb3IgZXZlbnRz
+IHRvIGRpZmZlciANCm1hdGVyaWFsbHkgZnJvbSB0aG9zZSBwcmVzZW50bHkg
+YW50aWNpcGF0ZWQuIFRoaXMgDQpwcm9maWxlIGlzIGluIG5vIHdheSBhZmZp
+bGlhdGVkIHdpdGggdGhlIGZlYXR1cmVkIGNvbXBhbnkuDQpUd2VudHkgdGgw
+dXM0bmQgZDB8fGFycyB3YXMgcGFpZCBieSBhIHRoaXJkIHBhcnR5IGZvciB0
+aGUgDQpkaXNzZW1pbmF0aW9uIG9mIHRoaXMgcmVwb3J0LkYwcndhcmRfbDAw
+a2luZ19zdDR0ZW1lbnRzIA0KaW4gdGhpcyBhY3Rpb24gbWF5IGJlIGlkZW50
+aWZpZWQgdGhyb3VnaCB0aGUgdXNlIG9mIHdvcmRzDQpzdWNoIGFzOiAicHJv
+amVjdHMiLCAiZm9yZXNlZSIsICJleHBlY3RzIiwgImVzdGltYXRlcywiIA0K
+ImJlbGlldmVzLCIidW5kZXJzdGFuZHMiICJ3aWxsLCIgInBhcnQgb2Y6ICIg
+YW50aWNpcGF0ZXMsIiANCm9yIHRoYXQgYnlzdGF0ZW1lbnRzIGluZGljYXRp
+bmcgY2VydGFpbiBhY3Rpb25zICJtYXksIg0KImNvdWxkLCIgb3IgIm1pZ2h0
+IiBvY2N1ci4gQWxsIGluZm9ybWF0aW9uIHByb3ZpZGVkDQp3aXRoaW4gdGhp
+cyBlbWFpbCBwZXJ0YWluaW5nIHRvIGludmVzdGluZywgc3QwYy5rcywgDQpz
+ZWN1cml0aWVzIG11c3QgYmUgdW5kZXJzdG9vZCBhcyBpbmZvcm1hdGlvbiBw
+cm92aWRlZCANCmFuZCBub3QgaW52ZXN0bWVudCBhZHZpY2UuIFdlIGFkdmlz
+ZSBhbGwgcmVhZGVycyBhbmQgDQpzdWJzY3JpYmVycyB0byBzZWVrIGFkdmlj
+ZSBmcm9tIGEgcjNnaXN0ZXJlZCBwcm9mZXNzaW9uYWwgDQpzZWN1cml0aWVz
+IHJlcHJlc2VudGF0aXZlIGJlZm9yZSBkZWNpZGluZyB0byB0cmFkZSBpbiBz
+dDBjLmtzIA0KZmVhdHVyZWQgd2l0aGluIHRoaXMgZW1haWwuIE5vbmUgb2Yg
+dGhlIG1hdGVyaWFsIHdpdGhpbiB0aGlzIA0KcmVwb3J0IHNoYWxsIGJlIGNv
+bnN0cnVlZCBhcyBhbnkga2luZCBvZiBpbnZlc3RtZW50IGFkdmljZS4gDQpQ
+bGVhc2UgaGF2ZSBpbiBtaW5kIHRoYXQgdGhlIGludGVycHJldGF0aW9uIG9m
+IHRoZSB3cml0ZXIgb2YgDQp0aGlzIG5ld3NsZXR0ZXIgYWJvdXQgdGhlIG5l
+d3MgcHVibGlzaGVkIGJ5IHRoZSBjb21wYW55IA0KZG9lcyBub3QgcmVwcmVz
+ZW50IHRoZSBjb21wYW55IG9mZmljaWFsIHN0YXRlbWVudCBhbmQgaW4gDQpm
+YWN0IG1heSBkaWZmZXIgZnJvbSB0aGUgcmVhbCBtZWFuaW5nIG9mIHdoYXQg
+dGhlIG5ld3MgDQpyZWxlYXNlIG1lYW50IHRvIHNheS4gTG9vayBhdCB0aGUg
+bmV3cyByZWxlYXNlIGJ5IHlvdXJzZWxmIA0KYW5kIGp1ZGdlIGJ5IHlvdXJz
+ZWxmIGFib3V0IHRoZSBkZXRhaWxzIGluIGl0LiBJZiB5b3Ugd2lzaCB0byAN
+CnN0b3AgZnV0dXJlIG00aWxpbmdzLCBwbGVhc2UgbTRpbCB0bzogbm9uZWVk
+bmV3c2xldHRlciAoYXQpIA0KeWFob28uY29tDQo=
 
 
 
