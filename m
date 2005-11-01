@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
-Date: Tue, 1 Nov 2005 15:35:58 +0100
-Message-ID: <91938f567a445618a654e1d474ed2934@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001516]: sound truncated unless I move mouse
+Date: Tue, 1 Nov 2005 15:35:18 +0100
+Message-ID: <8535d7f182b72649aa1d206245230e06@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97BFF160
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:35:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37979156
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:35:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,94 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001369.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1501> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1516> 
 ======================================================================
-Reported By:                dkoch
+Reported By:                moobaxx
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1501
+Issue ID:                   1516
 Category:                   PCI - intel8x0
-Reproducibility:            always
+Reproducibility:            N/A
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.14-rc5-gac9b9c66
+Distribution:               slackware
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             10-25-2005 16:45 CEST
-Last Modified:              10-25-2005 18:12 CEST
+Date Submitted:             10-30-2005 20:14 CET
+Last Modified:              11-01-2005 15:35 CET
 ======================================================================
-Summary:                    intel8x0 surround channels missing and swapped
+Summary:                    sound truncated unless I move mouse
 Description: 
-By default, the front channels are OK, the rear channels come out on the
-center/LFE jack and the center/LFE channels don't come out at all.
-
-Using ICH5/AD1985 (Intel P865PERL motherboard).
-
-Anomolies found: double-rate slot (DRSLOT) is set to 7,8 instead of the
-default
-10,11 (register 0x20=0400 instead of 0).  After setting 0x20 to 0, the
-rear
-channel jack starts working.  RL/RR and Center/LFE are still swapped.
-
-I would assume the swappage was hardware, but the Center and LFE volume
-controls
-affect the speakers on the Center/LFE jack which would indicate the driver
-is
-incorrectly routing the signals.
-
+there's something unusual, becouse when i reproduce a sound, it's sounds
+cut off. Today i discovered that moving the mouse while playing, it's
+sound perfect. When i stop moving it, the sound starts cut off again. 
+As you notice, my english is very poor, so if you need aditional
+information, just ask!
+tnx.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001521 Speakers misplaced in 5.1 surround
-related to          0001369 Rear left/right channels swapped with c...
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-25-05 17:56 
-----------------------------------------------------------------------
-Setting DR slot to 7/8 is intentional, as found in ac97_codec.c.
-The question is whether this still has influence even DRA bit is off on
-extended status regsiter.
-Could you check whether reg 0x2a bit 1 (0x0002) is off during playback of
-48khz (or less) samples?
-
-----------------------------------------------------------------------
- dkoch - 10-25-05 18:09 
-----------------------------------------------------------------------
-0x2a, bit 1 is off: 0:2a = 05f1
-
-----------------------------------------------------------------------
- tiwai - 10-25-05 18:11 
-----------------------------------------------------------------------
-An experimental patch is attached.  Give it a try.
-
-It won't fix the problem of channel swapping.
-This is also what I don't figure out yet.  On older ICH chips, the
-surround channels are swapped on alsa-lib.  But, ICH4 or newer don't do
-this because the bugreports have suggested they work without swapping. 
-And now you report that it's not...
-
-The fix isn't difficult.  The configuration for each card is found in
-/usr/share/alsa/cards directory.  Change "surround51" definition in
-ICH4.conf just like ICH.conf, using route plugin.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-05 16:45 dkoch          New Issue                                    
-10-25-05 16:45 dkoch          Distribution              => Fedora Core 3   
-10-25-05 16:45 dkoch          Kernel Version            => 2.6.14-rc5-gac9b9c66
-10-25-05 17:56 tiwai          Note Added: 0006546                          
-10-25-05 18:09 dkoch          Note Added: 0006547                          
-10-25-05 18:11 tiwai          Note Added: 0006548                          
-10-25-05 18:12 tiwai          File Added: ac97-dra-conflict.diff                
-   
-11-01-05 15:27 jdthood        Relationship added       related to 0001521  
-11-01-05 15:35 jdthood        Relationship added       related to 0001369  
+10-30-05 20:14 moobaxx        New Issue                                    
+10-30-05 20:14 moobaxx        File Added: sonido.wav                       
+10-30-05 20:14 moobaxx        Distribution              => slackware       
+10-30-05 20:14 moobaxx        Kernel Version            => 2.4             
+11-01-05 15:35 jdthood        Summary                  sounds cut off => sound
+truncated unless I move mouse
 ======================================================================
 
 
