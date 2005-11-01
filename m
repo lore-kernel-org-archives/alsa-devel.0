@@ -1,16 +1,11 @@
-From: Horms <horms@debian.org>
-Subject: via82C686 MPU detection problem
-Date: Tue, 1 Nov 2005 15:06:05 +0900
-Message-ID: <20051101060604.GA19674@verge.net.au>
-References: <E1EWDEG-0001Go-DX@localhost.localdomain>
+From: Davin McCall <davmac@davmac.org>
+Subject: mmap_commit() and hardware buffering
+Date: Tue, 1 Nov 2005 16:56:51 +1100
+Message-ID: <20051101165651.2a5f125b.davmac@davmac.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from koto.vergenet.net (koto.vergenet.net [210.128.90.7])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A147E172
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 07:08:53 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <E1EWDEG-0001Go-DX@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,30 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Vincent =?iso-8859-1?Q?L=F6nngren?= <bice77@malmo2.net>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@alsa-project.org, 319789@bugs.debian.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vincent,
+Hi,
 
-sorry for the inaction on this problem for so long. I breifly played
-around with on my via box, but the sound chip is the older
-VT8233/A/8235/8237, so I don't get anywhere. I'm forwarding it to the
-alsa maintainers for consideration, I suspect its just a problem of
-identifying your card.
+I have an intel 8x0 card and Alsa 1.0.9.
+
+Despite snd_pcm_hw_params_is_batch() and is_double() both returning false, the hardware seems to be double buffering the mmap buffer. That is, if I snd_pcm_mmap_commit() the whole buffer, and then immediately modify the buffer, the modification doesn't take effect - the sound hardware just outputs the original contents of the buffer.
+
+Can anyone confirm whether these cards actually do double buffering? Or is there something else going on here?
+
+I am trying to get wine's alsa driver behaving better. It was committing the whole buffer, then progressively committing the buffer again as it became available. The result on my system is that sounds play twice.
+
+The best improvement I've got so far is to commit only a couple of periods worth of data at the beginning, and then commit a single period each time the callback is called (i.e. commit another period as a period is drained). This means the software mixer is able to stay ahead of the commit pointer. However it also means that the potential for buffer underrun is greatly increased, because there are only ever two periods committed.
+
+My thinking is that for double-buffered cards, the driver could demand that the lock/unlock buffer calls be used (i.e. the direct sound layer has to lock part of the buffer before updating it, and unlock it when done), in which case the driver has much better info about how much it can commit (a portion of the buffer can be committed when it is unlocked).
+
+For non-double buffered cards it would be better to use the previous strategy, however, as this allows just-in-time mixing. Unfortunately though is_batch() and is_double() seem to give incorrect information - so I'm not sure how to decide which strategy should be used.
+
+Any ideas?
+
+Also I'd be interested if there is any way to do just-in-time mixing (rendering) for double-buffered hardware?
 
 
-Jaroslav,
+Thanks,
 
-Just to recap what is at http://bugs.debian.org/319789/, which isn't
-much. It seems that snd_via82xx isn't handling the MPU of a VIA82C686
-as expected. The problem seems to have been around since at least 2.6.8
-and has been confirmed in 2.6.14.
-
-Regards
-
--- 
-Horms
+Davin
 
 
 -------------------------------------------------------
