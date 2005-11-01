@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001270]: "External amplifier" consistently mis-configured on upgrade, breaks sound
-Date: Tue, 1 Nov 2005 15:39:58 +0100
-Message-ID: <4b1119a965f2f925631bd6545f46d594@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001173]: No sound from rear channels
+Date: Tue, 1 Nov 2005 15:42:17 +0100
+Message-ID: <6bfd3990ac3a0eb12405e3bd5f86157b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB0E112B
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:39:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E749B15C
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:42:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been set as RELATED TO issue 0001501.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1270> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1173> 
 ======================================================================
-Reported By:                eyequeue
+Reported By:                rraptorr
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1270
+Issue ID:                   1173
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Ubuntu (breezy)
-Kernel Version:             2.6.12
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.6.11.11
 ======================================================================
-Date Submitted:             07-21-2005 09:10 CEST
-Last Modified:              11-01-2005 15:39 CET
+Date Submitted:             06-08-2005 21:19 CEST
+Last Modified:              11-01-2005 15:42 CET
 ======================================================================
-Summary:                    "External amplifier" consistently mis-configured on
-upgrade, breaks sound
+Summary:                    No sound from rear channels
 Description: 
-Each time the ALSA packages are upgraded, sound becomes inoperative.
-
-To fix, I have to run alsamixer as root, and DISable the "External
-amplifier" setting, which somehow keeps getting turned on, upon package
-upgrade.
-
-This is a laptop, so there is no "external" anything, and turning this
-setting off again allows sound to once again work.
-
-Upon asking advice on IRC i was told this was an upstream "AC97 codec bug"
-if that phrase helps you in any way.
+I was trying to get my surround setup working under Linux. Everything is
+working fine under Windows so hardware is OK. But under Linux I was unable
+to get any sound from Center/LFE. And the rear channels where controlled
+by Center/LFE mixer. After changing routing in ICH4.conf (as in 1.0.8) I
+have sound from Center/LFE which is controlled by correct mixer but now I
+don't get any sound from Rear speakers. I've even tried some random mixer
+settings (due to the fact, that oryginally Rear was controlled by Center)
+but with no luck.
 
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- jdthood - 11-01-05 15:39 
-----------------------------------------------------------------------
-One bug like this was fixed in Ubuntu Breezy.
-
+related to          0001501 intel8x0 surround channels missing and ...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-21-05 09:10 eyequeue       New Issue                                    
-07-21-05 09:10 eyequeue       Distribution              => Ubuntu (breezy) 
-07-21-05 09:10 eyequeue       Kernel Version            => 2.6.12          
-07-21-05 09:11 eyequeue       Issue Monitored: eyequeue                    
-11-01-05 15:39 jdthood        Note Added: 0006595                          
-11-01-05 15:39 jdthood        Status                   new => closed       
-11-01-05 15:39 jdthood        Resolution               open => not an issue
+06-08-05 21:19 rraptorr       New Issue                                    
+06-08-05 21:19 rraptorr       Distribution              => Slackware       
+06-08-05 21:19 rraptorr       Kernel Version            => 2.6.11.11       
+11-01-05 15:42 jdthood        Relationship added       related to 0001501  
 ======================================================================
 
 
