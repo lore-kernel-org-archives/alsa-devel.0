@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001451]: SPDF and Line out simultaneously
-Date: Tue, 1 Nov 2005 20:38:09 +0100
-Message-ID: <249a87cc3152154fccffcdd140f9e829@bugtrack.alsa-project.org>
+From: Jeff Ballard <jeffballard@pianodisc.com>
+Subject: Pitchbend issues
+Date: Tue, 01 Nov 2005 13:57:41 -0800
+Message-ID: <4367E4D5.1070504@pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D2AB187
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 20:38:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1451> 
-======================================================================
-Reported By:                anli
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1451
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             09-24-2005 15:46 CEST
-Last Modified:              11-01-2005 20:38 CET
-======================================================================
-Summary:                    SPDF and Line out simultaneously
-Description: 
-I tried to get the answer from user and dev lists to this question: how to
-configure the driver to make SPDF and Line-out work simultaneously. I was
-not lucky to get an answer. I have concluded, it's impossible. So -
-reporting the bug.
+I am writing a small application to playback standard midi files.  At 
+this point, my program seems just about complete.  The only issue I am 
+having is that pitchbends are not being played.  I have confirmed that 
+the event has the correct channel and parameter value and is using an 
+algorithm nearly identical to other implementations I have run across.  
+The only evidence I have found is that if I artifically increase the 
+bend ammount (10 times the calculated value), I can hear studdering in 
+playback on that channel when the pitchbends should take place.  It 
+sounds almost like the bend is occuring, but ending so quickly that it 
+is difficult to hear.  Does anyone have any idea what might be happening?
 
-It is almost impossible to do any serious mastering/editing work without
-such opportunity.
-======================================================================
-
-----------------------------------------------------------------------
- anli - 10-11-05 21:30 
-----------------------------------------------------------------------
-Takashi,
-
-I'll try to recognize how to do it via multi and route plugins. It will
-take some time to learn and try.
-
-Andrew
-
-----------------------------------------------------------------------
- anli - 11-01-05 20:38 
-----------------------------------------------------------------------
-Takashi,
-
-If you still remember, we have tried about 6 patches to resolve the issue,
-but without success. Probably an opposite way is possible: to mirror an
-spdif out to analog rather analog to spdif. From user's point  (or, at
-least, my one :-)) these ways are equal.
-
-Andrew
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-05 15:46 anli           New Issue                                    
-10-05-05 19:01 tiwai          Note Added: 0006438                          
-10-06-05 17:25 anli           Issue Monitored: anli                        
-10-11-05 17:24 tiwai          Note Added: 0006456                          
-10-11-05 21:30 anli           Note Added: 0006460                          
-11-01-05 20:38 anli           Note Added: 0006599                          
-======================================================================
-
-
+Thanks
+-Jeff
 
 
 -------------------------------------------------------
