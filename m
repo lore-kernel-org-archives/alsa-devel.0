@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001294]: intel8x0 does not compile properly with new compiled kernel
-Date: Tue, 1 Nov 2005 15:38:34 +0100
-Message-ID: <a3346e174880c7763c82195212576332@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001270]: "External amplifier" consistently mis-configured on upgrade, breaks sound
+Date: Tue, 1 Nov 2005 15:39:58 +0100
+Message-ID: <4b1119a965f2f925631bd6545f46d594@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A872EF
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:38:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB0E112B
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:39:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1294> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1270> 
 ======================================================================
-Reported By:                tanman
+Reported By:                eyequeue
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1294
+Issue ID:                   1270
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora4
-Kernel Version:             2.6.12.3
+Distribution:               Ubuntu (breezy)
+Kernel Version:             2.6.12
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-31-2005 22:23 CEST
-Last Modified:              11-01-2005 15:38 CET
+Date Submitted:             07-21-2005 09:10 CEST
+Last Modified:              11-01-2005 15:39 CET
 ======================================================================
-Summary:                    intel8x0 does not compile properly with new compiled
-kernel
+Summary:                    "External amplifier" consistently mis-configured on
+upgrade, breaks sound
 Description: 
-The module snd-8x0 produces the following errors once I compiled the kernel
-linux-2.6.12.3:
+Each time the ALSA packages are upgraded, sound becomes inoperative.
 
-dmesg
-snd_intel8x0: Unknown parameter `'
-snd_intel8x0: Unknown parameter `'
-snd_intel8x0: Unknown parameter `'
+To fix, I have to run alsamixer as root, and DISable the "External
+amplifier" setting, which somehow keeps getting turned on, upon package
+upgrade.
 
-Is there anything I have to edit in the configuration files when migrating
-to the latest kernel?
+This is a laptop, so there is no "external" anything, and turning this
+setting off again allows sound to once again work.
 
-
-
+Upon asking advice on IRC i was told this was an upstream "AC97 codec bug"
+if that phrase helps you in any way.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 11-01-05 15:38 
+ jdthood - 11-01-05 15:39 
 ----------------------------------------------------------------------
-Your module configuration would appear to be faulty.  Please file a bug
-report with your GNU/Linux distributor.
+One bug like this was fixed in Ubuntu Breezy.
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-05 22:23 tanman         New Issue                                    
-07-31-05 22:23 tanman         Distribution              => Fedora4         
-07-31-05 22:23 tanman         Kernel Version            => 2.6.12.3        
-11-01-05 15:38 jdthood        Note Added: 0006594                          
-11-01-05 15:38 jdthood        Status                   new => closed       
-11-01-05 15:38 jdthood        Resolution               open => not an issue
-11-01-05 15:38 jdthood        Summary                  Alsa soundcard intel8xo
-does not compile properly with new compiled kernel => intel8x0 does not compile
-properly with new compiled kernel
+07-21-05 09:10 eyequeue       New Issue                                    
+07-21-05 09:10 eyequeue       Distribution              => Ubuntu (breezy) 
+07-21-05 09:10 eyequeue       Kernel Version            => 2.6.12          
+07-21-05 09:11 eyequeue       Issue Monitored: eyequeue                    
+11-01-05 15:39 jdthood        Note Added: 0006595                          
+11-01-05 15:39 jdthood        Status                   new => closed       
+11-01-05 15:39 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
