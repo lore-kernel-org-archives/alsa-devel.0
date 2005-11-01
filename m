@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
-Date: Tue, 1 Nov 2005 15:44:17 +0100
-Message-ID: <ef8dc345dc77003d3788e35abea2747c@bugtrack.alsa-project.org>
+Date: Tue, 1 Nov 2005 15:45:50 +0100
+Message-ID: <cd0cd7ded79e212bec484d3aa21cb3de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CD2A161
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:44:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A29015C
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:45:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001206.
+The following issue has been set as RELATED TO issue 0001191.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1501> 
 ======================================================================
@@ -68,6 +68,7 @@ related to          0001521 Speakers misplaced in 5.1 surround
 related to          0001369 Rear left/right channels swapped with c...
 related to          0001173 No sound from rear channels
 related to          0001206 No center channel; rear left and right ...
+related to          0001191 Center channel and 32-bit emulation bro...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -114,6 +115,7 @@ Date Modified  Username       Field                    Change
 11-01-05 15:35 jdthood        Relationship added       related to 0001369  
 11-01-05 15:42 jdthood        Relationship added       related to 0001173  
 11-01-05 15:43 jdthood        Relationship added       related to 0001206  
+11-01-05 15:45 jdthood        Relationship added       related to 0001191  
 ======================================================================
 
 
