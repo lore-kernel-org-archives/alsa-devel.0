@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001469]: Japanese characters are broken with alsaconf
-Date: Tue, 1 Nov 2005 18:25:30 +0100
-Message-ID: <d9896cc2bb6951a6a216197f0bcc6baf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000230]: sound is bad when dma is enabled
+Date: Tue, 1 Nov 2005 19:06:51 +0100
+Message-ID: <0f08d9b85a2a3c385d3269845332bb63@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B59C10C
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 18:25:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BBEE183
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 19:06:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1469> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=230> 
 ======================================================================
-Reported By:                speedking
+Reported By:                Hetfield
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1469
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   230
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             10-05-2005 18:01 CEST
-Last Modified:              11-01-2005 18:25 CET
+Date Submitted:             04-23-2004 18:55 CEST
+Last Modified:              11-01-2005 19:06 CET
 ======================================================================
-Summary:                    Japanese characters are broken with alsaconf
+Summary:                    sound is bad when dma is enabled
 Description: 
-"alsaconf" displays broken characters for k/d button messages while using
-Japanese.
+when dma is enabled for my harddisk sound is so bad
+
+0000:00:0b.0 Multimedia audio controller: Ensoniq ES1370 [AudioPCI] (rev
+01)
+        Subsystem: Unknown device 4942:4c4c
+        Flags: bus master, slow devsel, latency 248, IRQ 10
+        I/O ports at b000
+
+i setted latency to 248 but i tried lots of values, nothing changed.
+interrupts are not shared.
+disabling dma make sound clean.
+
+with 2.6.x only...2.4.x works so good.
+i tred with 2.6 integrated or external libs too, as module o builtin.
+nothing changes.
+
+how to fix that? should i disable busmaster or change devsel value? how?
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- speedking - 10-20-05 17:03 
+ Hetfield - 07-03-05 13:50 
 ----------------------------------------------------------------------
-It looks like we have to install ncurses.  Can download it at
-http://www.gnu.org/software/ncurses/ncurses.html but it's very complicated
-to install it. I tried multiple things but I'm not sure I did correctly.
-It does not work the way I have it installed.  Any help you could offer on
-installing it for RHEL3 U5 would be appreciated.
+same errors with 2.6.13-rc1 and alsa 1.0.9
 
 ----------------------------------------------------------------------
- speedking - 11-01-05 18:25 
+ Hetfield - 11-01-05 19:06 
 ----------------------------------------------------------------------
-Tiwai,
+seems now i got it **pretty** fixed.
 
-I've got the 'ncurses' library built but how do I "pass the proper
-configure option for that"?  Do I need to rebuild 'alsaconf' with a
-specific option to get it to pull in the 'ncurses' library?
+what i did:
+1) updated kernel to 2.6.14-git4
+2) setted 100Hz instead of 250
+3) setted latency to 0x40 (64) instead of old 0x20 (32)
+4) disabled pci 2.1 in my bios.
+
+you can mark as closed
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-05-05 18:01 speedking      New Issue                                    
-10-05-05 18:36 tiwai          Note Added: 0006431                          
-10-19-05 17:47 speedking      Note Added: 0006493                          
-10-19-05 18:11 tiwai          Note Added: 0006494                          
-10-19-05 18:13 speedking      Note Added: 0006495                          
-10-20-05 17:03 speedking      Note Added: 0006507                          
-11-01-05 18:25 speedking      Note Added: 0006597                          
+04-23-04 18:55 Hetfield       New Issue                                    
+04-23-04 18:55 Hetfield       Kernel Version            => 2.6.x           
+04-24-04 14:10 perex          Note Added: 0000924                          
+04-24-04 14:10 perex          Severity                 major => tweak      
+04-24-04 14:10 perex          Description Updated                          
+04-25-04 11:00 Hetfield       Note Added: 0000937                          
+02-23-05 13:34 Hetfield       Note Added: 0003710                          
+07-03-05 13:50 Hetfield       Note Added: 0005375                          
+11-01-05 19:06 Hetfield       Note Added: 0006598                          
 ======================================================================
 
 
