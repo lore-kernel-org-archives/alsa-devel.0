@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
-Date: Tue, 1 Nov 2005 15:45:50 +0100
-Message-ID: <cd0cd7ded79e212bec484d3aa21cb3de@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001191]: Center channel and 32-bit emulation broken when upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
+Date: Tue, 1 Nov 2005 15:45:44 +0100
+Message-ID: <f02e9df79748b812eb946b8bef5b9b83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A29015C
-	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:45:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B87E915C
+	for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2005 15:45:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,100 +22,115 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001191.
+The following issue has been set as RELATED TO issue 0001501.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1501> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1191> 
 ======================================================================
-Reported By:                dkoch
+Reported By:                robert
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1501
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1191
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.14-rc5-gac9b9c66
 ======================================================================
-Date Submitted:             10-25-2005 16:45 CEST
-Last Modified:              10-25-2005 18:12 CEST
+Date Submitted:             06-14-2005 11:45 CEST
+Last Modified:              11-01-2005 15:45 CET
 ======================================================================
-Summary:                    intel8x0 surround channels missing and swapped
+Summary:                    Center channel and 32-bit emulation broken when
+upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
 Description: 
-By default, the front channels are OK, the rear channels come out on the
-center/LFE jack and the center/LFE channels don't come out at all.
-
-Using ICH5/AD1985 (Intel P865PERL motherboard).
-
-Anomolies found: double-rate slot (DRSLOT) is set to 7,8 instead of the
-default
-10,11 (register 0x20=0400 instead of 0).  After setting 0x20 to 0, the
-rear
-channel jack starts working.  RL/RR and Center/LFE are still swapped.
-
-I would assume the swappage was hardware, but the Center and LFE volume
-controls
-affect the speakers on the Center/LFE jack which would indicate the driver
-is
-incorrectly routing the signals.
-
+I'm running AMD64 gentoo on an nforce4 system, audio is nVidia CK804 with
+ALC850. I can emerge the newest alsa-driver package (1.0.9b), but when I
+upgrade alsa-lib to 1.0.9, three things happen.  First, my 32 bit sound
+applications, like mplayer32, don't work with alsa anymore.  Second, the
+center channel on all 5.1 sound goes out.  Third, the a/v synchonization
+on mplayer gets hosed using alsa (oss emulation still ok.)
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001521 Speakers misplaced in 5.1 surround
-related to          0001369 Rear left/right channels swapped with c...
-related to          0001173 No sound from rear channels
-related to          0001206 No center channel; rear left and right ...
-related to          0001191 Center channel and 32-bit emulation bro...
+related to          0001501 intel8x0 surround channels missing and ...
+has duplicate       0001206 No center channel; rear left and right ...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-25-05 17:56 
+ jdthood - 06-15-05 14:01 
 ----------------------------------------------------------------------
-Setting DR slot to 7/8 is intentional, as found in ac97_codec.c.
-The question is whether this still has influence even DRA bit is off on
-extended status regsiter.
-Could you check whether reg 0x2a bit 1 (0x0002) is off during playback of
-48khz (or less) samples?
+Do the problems go away if you disable the dmix plugin?
 
 ----------------------------------------------------------------------
- dkoch - 10-25-05 18:09 
+ robert - 06-15-05 22:00 
 ----------------------------------------------------------------------
-0x2a, bit 1 is off: 0:2a = 05f1
+How does one do that?
 
 ----------------------------------------------------------------------
- tiwai - 10-25-05 18:11 
+ jdthood - 06-15-05 23:42 
 ----------------------------------------------------------------------
-An experimental patch is attached.  Give it a try.
+mplayer -ao alsa:device=hw=0
 
-It won't fix the problem of channel swapping.
-This is also what I don't figure out yet.  On older ICH chips, the
-surround channels are swapped on alsa-lib.  But, ICH4 or newer don't do
-this because the bugreports have suggested they work without swapping. 
-And now you report that it's not...
+should do it
 
-The fix isn't difficult.  The configuration for each card is found in
-/usr/share/alsa/cards directory.  Change "surround51" definition in
-ICH4.conf just like ICH.conf, using route plugin.
+----------------------------------------------------------------------
+ robert - 08-18-05 21:12 
+----------------------------------------------------------------------
+Those mplayer options do nothing to fix the problem.  The bug is in
+NFORCE.conf.  Somebody decided to break it for alsa-lib 1.0.9 for unknown
+reasons.
+
+Narrowing the problem down to this file took several hours.  At least one
+other person (bug # 1206) has the same problem.  I've also found the bug
+on an AthlonXP nforce2 board.  My conclusion:  It's likely that nobody
+with an nforce motherboard has functioning surround sound in Linux right
+now.  
+
+How did this happen?  Was there no TESTING before these changes were made?
+ End users (who have no clue how to debug this kind of stuff) will never
+be able to straighten this out.
+
+----------------------------------------------------------------------
+ rlrevell - 08-18-05 21:31 
+----------------------------------------------------------------------
+So are you volunteering to buy me an Nforce2 motherboard?
+
+Otherwise, please fuck off.
+
+----------------------------------------------------------------------
+ robert - 08-19-05 02:45 
+----------------------------------------------------------------------
+If neither you nor the other developers have a nforce motherboard, WHO
+CHANGED NFORCE.conf, thereby introducing the bug?
+
+----------------------------------------------------------------------
+ rlrevell - 08-19-05 03:10 
+----------------------------------------------------------------------
+The change was made to fix some other bug.
+
+ Details here:
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/conf/cards/NFORCE.conf?rev=1.9&view=log
+
+What you are asking is that each change be fully regression tested with
+every single piece of hardware on the market.  We are not Microsoft, we
+don't have those kinds of resources.
+
+Try reverting the last three changes one at a time and see which causes
+the problem.  Or try the patch I posted to #1206.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-05 16:45 dkoch          New Issue                                    
-10-25-05 16:45 dkoch          Distribution              => Fedora Core 3   
-10-25-05 16:45 dkoch          Kernel Version            => 2.6.14-rc5-gac9b9c66
-10-25-05 17:56 tiwai          Note Added: 0006546                          
-10-25-05 18:09 dkoch          Note Added: 0006547                          
-10-25-05 18:11 tiwai          Note Added: 0006548                          
-10-25-05 18:12 tiwai          File Added: ac97-dra-conflict.diff                
-   
-11-01-05 15:27 jdthood        Relationship added       related to 0001521  
-11-01-05 15:35 jdthood        Relationship added       related to 0001369  
-11-01-05 15:42 jdthood        Relationship added       related to 0001173  
-11-01-05 15:43 jdthood        Relationship added       related to 0001206  
-11-01-05 15:45 jdthood        Relationship added       related to 0001191  
+06-14-05 11:45 robert         New Issue                                    
+06-15-05 14:01 jdthood        Note Added: 0005023                          
+06-15-05 22:00 robert         Note Added: 0005045                          
+06-15-05 23:42 jdthood        Note Added: 0005048                          
+08-18-05 21:12 robert         Note Added: 0005853                          
+08-18-05 21:31 rlrevell       Note Added: 0005855                          
+08-18-05 21:32 rlrevell       Relationship added       has duplicate 0001206
+08-19-05 02:45 robert         Note Added: 0005863                          
+08-19-05 03:10 rlrevell       Note Added: 0005865                          
+11-01-05 15:45 jdthood        Relationship added       related to 0001501  
 ======================================================================
 
 
