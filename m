@@ -1,17 +1,13 @@
-From: Richard Smith <smithbone@gmail.com>
-Subject: Re: Re: Status of M-Audio Audiophile USB
-Date: Wed, 2 Nov 2005 09:39:24 -0600
-Message-ID: <8a0c36780511020739o7eaa9677y27c7a4536f0551d2@mail.gmail.com>
-References: <8a0c36780510271056q5bf98a9p9d8f05f8816fbf4@mail.gmail.com>
-	 <Pine.HPX.4.33n.0510281416340.24464-100000@studcom.urz.uni-halle.de>
-	 <8a0c36780510281134gce42934v61b094b072d8f841@mail.gmail.com>
-	 <1130525389.4363.53.camel@mindpipe> <4368B577.3060502@champin.net>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Pitchbend issues
+Date: Wed, 02 Nov 2005 19:01:28 +0100
+Message-ID: <1130954488.4368fef88bb0c@webmail.uni-halle.de>
+References: <4367E4D5.1070504@pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4368B577.3060502@champin.net>
-Content-Disposition: inline
+In-reply-to: <4367E4D5.1070504@pianodisc.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,25 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pierre-Antoine Champin <alsa-050822@champin.net>
-Cc: alsa-devel@lists.sourceforge.net, Lee Revell <rlrevell@joe-job.com>
+To: Jeff Ballard <jeffballard@pianodisc.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTEvMi8wNSwgUGllcnJlLUFudG9pbmUgQ2hhbXBpbiA8YWxzYS0wNTA4MjJAY2hhbXBpbi5u
-ZXQ+IHdyb3RlOgo+IEkgY29uZmlybTogYWNjb3JkaW5nIHRvCj4gICBodHRwOi8vd3d3Lm0tYXVk
-aW8uY29tL3Byb2R1Y3RzL2VuX3VzL0F1ZGlvcGhpbGVVU0ItZm9jdXMuaHRtbAo+Cj4gICAgICAg
-ICCVIDI0LWJpdC85NmtIeiA+IDItaW4gb3IgMi1vdXQKCkkgdGhpbmsgeW91IGd1eXMgYXJlIHJp
-Z2h0LiAgSSBjYW4ndCBmaW5kIGFueXdoZXJlIGluIGFueSBvZiB0aGUKZG9jdW1lbnRhdGlvbiBt
-ZW50aW9uIG9mIHVzYiAyLjAuICBJdCBkb2VzIG1lbnRpb24gaW4gb25lIG9mIHRoZSBzcGVjCmxp
-c3RpbmdzIDI0Lzk2a0h6LCBmdWxsIGR1cGxleCByZWNvcmRpbmcgYnV0IEkgdGhpbmsgdGhhdHMg
-bm90CmNvcnJlY3QuCgpJIGp1c3QgbG9va2VkIGF0IC9wcm9jL2J1cy91c2IvZGV2aWNlcyBhbmQg
-SSBzZWUgdGhlIFNwZD0xMiBmb3IgdGhlCkF1ZGlvcGhpbGUgVVNCIHNvIHllcCBpdHMgYSB1c2Ig
-MSBkZXZpY2UuICBDcmFwLgoKVGhhdCBwcm9iYWxseSBtZWFucyB0aGF0IGV2ZW4gd2hlbiB0aGUg
-YmlnIGVuZGlhbiBqYWNrIHBhdGNoZXMgZ2V0CndvcmtlZCBvdXQsIChUaGV5IGN1cnJlbnRseSBk
-b24ndCBhcHBseSBjbGVhbmx5KSBpdCBzdGlsbCB3b24ndCByZWFsbHkKcnVuIHZlcnkgd2lsbCBz
-aW5jZSBpdCBjYW4ndCBkbyBmdWxsIGR1cGxleCBhdCB0aGF0IHJhdGUuCgpJIHRoaW5rIGphY2sg
-Y2FuIGJlIHNldCB0byByZWNvcmQgb25seSB0aG91Z2ggc28gaXRzIG5vdCBhIHRvdGFsIGxvc3Mu
-CgpCYWNrIHRvIHRoZSBkcmF3aW5nIGJvYXJkLgotLQpSaWNoYXJkIEEuIFNtaXRoCg==
+Jeff Ballard :
+> I am writing a small application to playback standard midi files.  At
+> this point, my program seems just about complete.  The only issue I am
+> having is that pitchbends are not being played.  I have confirmed that
+> the event has the correct channel and parameter value and is using an
+> algorithm nearly identical to other implementations I have run across.
+> The only evidence I have found is that if I artifically increase the
+> bend ammount (10 times the calculated value), I can hear studdering in
+> playback on that channel when the pitchbends should take place.  It
+> sounds almost like the bend is occuring, but ending so quickly that it
+> is difficult to hear.
+
+When you play a file containg a pitch bend event to an aseqdump port with both
+aplaymidi and your app, what are the differences in the output?
+
+
+Regards,
+Clemens
 
 
 -------------------------------------------------------
