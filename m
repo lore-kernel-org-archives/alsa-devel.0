@@ -1,7 +1,7 @@
 From: Chris Rankin <rankincj@yahoo.com>
 Subject: Re: Linux 2.6.14: Total lockup using aplaymidi
-Date: Wed, 2 Nov 2005 23:00:35 +0000 (GMT)
-Message-ID: <20051102230035.3897.qmail@web52903.mail.yahoo.com>
+Date: Wed, 2 Nov 2005 23:24:51 +0000 (GMT)
+Message-ID: <20051102232451.29114.qmail@web52907.mail.yahoo.com>
 References: <s5hek5y7r1i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
@@ -22,30 +22,22 @@ Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 --- Takashi Iwai <tiwai@suse.de> wrote:
-> > Anyway, could you run rmmod manually just like your script and check
-> > the soft lockup at each rmmod?
+> Also, the below is an improved patch for the timer deadlock.
+> Please give a shot.
 
-I have just unloaded every snd* module one by one, by hand, without trigg=
-ering the soft lockup
-watchdog.
-=20
-> Above all, please check whether the problem at unloading happens, too,
-> if the system timer is used instead of rtctimer.  I guess it's related
-> to rtctimer, though.
-
-Is it enough just to have the snd-rtctimer module loaded to do that? Beca=
-use as I rule I *do* have
-the snd-rtctimer module loaded.
+The first patch worked, but this second one didn't.
 
 Cheers,
 Chris
 
 
 
+=09
+=09
 	=09
 ___________________________________________________________=20
-How much free photo storage do you get? Store your holiday=20
-snaps for FREE with Yahoo! Photos http://uk.photos.yahoo.com
+Yahoo! Messenger - NEW crystal clear PC to PC calling worldwide with voic=
+email http://uk.messenger.yahoo.com
 
 
 -------------------------------------------------------
