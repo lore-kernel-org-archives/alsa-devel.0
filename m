@@ -1,13 +1,14 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: Linux 2.6.14: Total lockup using aplaymidi
-Date: Wed, 2 Nov 2005 00:00:23 +0000 (GMT)
-Message-ID: <20051102000024.80775.qmail@web52915.mail.yahoo.com>
-References: <1130887377.22089.22.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0001523]: Missing reference to CS4298 driver
+Date: Wed, 2 Nov 2005 06:59:40 +0100
+Message-ID: <6f76c095d6c7503c010d9beba0b9b8c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1130887377.22089.22.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD7EA1A3
+	for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2005 06:59:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> You unloaded the modules while asfxload was loading a soundfont?
 
-a) Not intentionally. (It must have been udev.)
-b) It *still* shouldn't have caused an oops.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1523> 
+======================================================================
+Reported By:                segfault
+Assigned To:                
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   1523
+Category:                   soundcard matrix
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-02-2005 06:59 CET
+Last Modified:              11-02-2005 06:59 CET
+======================================================================
+Summary:                    Missing reference to CS4298 driver
+Description: 
+As I found some reference to CS4298 in ac97 codec, I suppose this chipset
+is supported anywhere by alsa... But I can't found which driver I have to
+use with the card matrix.
+======================================================================
 
-Cheers,
-Chris
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-02-05 06:59 segfault       New Issue                                    
+======================================================================
 
 
-
-	=09
-___________________________________________________________=20
-To help you stay safe and secure online, we've developed the all new Yaho=
-o! Security Centre. http://uk.security.yahoo.com
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Downl=
-oad
+Tame your development challenges with Apache's Geronimo App Server. Download
 it for free - -and be entered to win a 42" plasma tv or your very own
 Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
