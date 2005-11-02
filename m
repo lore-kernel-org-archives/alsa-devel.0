@@ -1,13 +1,13 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: Linux 2.6.14: Total lockup using aplaymidi
-Date: Wed, 2 Nov 2005 12:42:44 +0000 (GMT)
-Message-ID: <20051102124244.52422.qmail@web52903.mail.yahoo.com>
-References: <s5hwtjr70mp.wl%tiwai@suse.de>
+From: Pierre-Antoine Champin <alsa-050822@champin.net>
+Subject: Re: Re: Status of M-Audio Audiophile USB
+Date: Wed, 02 Nov 2005 13:47:51 +0100
+Message-ID: <4368B577.3060502@champin.net>
+References: <8a0c36780510271056q5bf98a9p9d8f05f8816fbf4@mail.gmail.com>	 <Pine.HPX.4.33n.0510281416340.24464-100000@studcom.urz.uni-halle.de>	 <8a0c36780510281134gce42934v61b094b072d8f841@mail.gmail.com> <1130525389.4363.53.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwtjr70mp.wl%tiwai@suse.de>
+In-Reply-To: <1130525389.4363.53.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Lee Revell <rlrevell@joe-job.com>, Richard Smith <smithbone@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---- Takashi Iwai <tiwai@suse.de> wrote:
-=20
-> Which rmmod triggers the oops?
-> Apparently, the udev is who starts asfxload during rmmod.  Please show
-> up the configuration, too, in order to check the condition.
+Richard Smith wrote :
+> Why would it only doing USB 1.1?  I thought this was USB 2.0 device.
 
-I'm not in front of that PC right now, but from memory, the oops happened=
- when I ran my "unalsa"
-alias. This alias is basically parsing /proc/modules into awk, picking th=
-ose modules beginning
-with ^snd and rmmoding them. Hence it was trying to remove them *all*, in=
- the order that they
-appear in /proc/modules, and I think the oops showed that it was the snd_=
-hwdep module that
-deadlocked while unmapping something.
+Are you sure ?
+I bought an Audiophile USB a few months ago, I seem to remember it is
+USB 1.1 only...
+(or did M-Audio release a new one?)
 
-I'll dig out udev's alsa.dev file when I get home.
+Lee Revell a =C3=A9crit :
+> Keep in mind that 24/96 full duplex over USB 1.1 is really pushing the
+> USB bandwidth limits.  Most people I talk to report that this doesn't
+> work reliably on any OS.
 
-Cheers,
-Chris
+I confirm: according to
+  http://www.m-audio.com/products/en_us/AudiophileUSB-focus.html
 
+USB recording:
+ 	=E2=80=A2 16-bit/44.1kHz > 4-in/4-out
+ 	=E2=80=A2 24-bit/44.1kHz > 4-in/2-out or 2-in/4-out
+ 	=E2=80=A2 24-bit/48kHz > 4-in/2-out or 2-in/4-out
+ 	=E2=80=A2 24-bit/96kHz > 2-in or 2-out
+ 	                      ^^
 
+I also has trouble with the Audiophile, but hadn't have much time to
+test it for quite a long time now. As soon as I find time to compile
+kernel 2.6.14, I'll give it a try with all this new information.
 
-	=09
-___________________________________________________________=20
-How much free photo storage do you get? Store your holiday=20
-snaps for FREE with Yahoo! Photos http://uk.photos.yahoo.com
+  pA
 
 
 -------------------------------------------------------
