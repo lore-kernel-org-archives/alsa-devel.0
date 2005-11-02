@@ -1,13 +1,14 @@
-From: Pierre-Antoine Champin <alsa-050822@champin.net>
-Subject: Re: Re: Status of M-Audio Audiophile USB
-Date: Wed, 02 Nov 2005 13:47:51 +0100
-Message-ID: <4368B577.3060502@champin.net>
-References: <8a0c36780510271056q5bf98a9p9d8f05f8816fbf4@mail.gmail.com>	 <Pine.HPX.4.33n.0510281416340.24464-100000@studcom.urz.uni-halle.de>	 <8a0c36780510281134gce42934v61b094b072d8f841@mail.gmail.com> <1130525389.4363.53.camel@mindpipe>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: new_ad_forinternet@yahoo.com.tw
+Subject: =?ISO-2022-JP?B?GyRCTCQ+NUJ6OS05cCIoGyhC?=
+Date: Wed,  2 Nov 2005 12:52:50 +0100 (MET)
+Message-ID: <2601F4S74T.8720@yahoo.com.tw>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1130525389.4363.53.camel@mindpipe>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CBF6148
+	for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2005 12:52:58 +0100 (MET)
+Received: from gate.perex.cz (89.179.150.220.ap.yournet.ne.jp [220.150.179.89])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id C667E98A1C
+	for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2005 12:52:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,43 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Lee Revell <rlrevell@joe-job.com>, Richard Smith <smithbone@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Richard Smith wrote :
-> Why would it only doing USB 1.1?  I thought this was USB 2.0 device.
+当サイトは男性と女性の出会いの場としてのコミュニティを提供して
+います。広告収入により運営を行っていますので、もれなく完全無料
+でご利用いただけます。
+------------------------------------------------------------
+☆完全無料！！　→　http://ad.love-meets.com/?a001
+------------------------------------------------------------
+不要なモノは一切削除！シンプルさが利用する上での気軽さを生み、
+現在女性ユーザーが大幅に増加中です！当然ユーザーになっただけ
+で利用しない女の子もいますが・・・でもユーザーである以上、
+あなたがメールを送ればその子には確実に届きます(^.^
+女の子の関心を引く、素敵☆なメールを送ってあげてください！
 
-Are you sure ?
-I bought an Audiophile USB a few months ago, I seem to remember it is
-USB 1.1 only...
-(or did M-Audio release a new one?)
+[余計なルールも一切なし！出会い優先のシステムです！]
+広告収入によって運営しているサイトなので、プロフィールの閲覧・
+メールの送受信などは一切無料です！さらに・・・
 
-Lee Revell a =C3=A9crit :
-> Keep in mind that 24/96 full duplex over USB 1.1 is really pushing the
-> USB bandwidth limits.  Most people I talk to report that this doesn't
-> work reliably on any OS.
+□　直アド/直電の送信・交換も全く問題なし！
 
-I confirm: according to
-  http://www.m-audio.com/products/en_us/AudiophileUSB-focus.html
+フィーリングが合う女の子がいたら、ぜひ！直アド/直電を交換して
+ください！お互いにきっと安心して連絡が取れるでしょう！
 
-USB recording:
- 	=E2=80=A2 16-bit/44.1kHz > 4-in/4-out
- 	=E2=80=A2 24-bit/44.1kHz > 4-in/2-out or 2-in/4-out
- 	=E2=80=A2 24-bit/48kHz > 4-in/2-out or 2-in/4-out
- 	=E2=80=A2 24-bit/96kHz > 2-in or 2-out
- 	                      ^^
+------------------------------------------------------------
+☆完全無料！！　→　http://ad.love-meets.com/?a001
+------------------------------------------------------------
 
-I also has trouble with the Audiophile, but hadn't have much time to
-test it for quite a long time now. As soon as I find time to compile
-kernel 2.6.14, I'll give it a try with all this new information.
+□　フリメでの登録ＯＫ！
 
-  pA
+ya○○oや、hot○ailなどのフリーメールの利用は全然問題なしです！
+気軽に使ってくださいね。
+おまけですが、「このキャラ（自分のユーザー情報）だめだな」と
+思ったら、新しくフリーメールを取って新キャラで再度チャレンジ
+してください！！
+プロフィールで女の子の気持ちをつかめると話が早いですよ！
+
+------------------------------------------------------------
+☆完全無料！！　→　http://ad.love-meets.com/?a001
+------------------------------------------------------------
+
+□　いつでも退会ＯＫ
+
+寂しいですが、「だめだなー」と思ったらいつでも退会ＯＫです・・・
+まぁ、タイミングが合わないと全くダメなことももしかしたらある
+かもしれないので・・・。
+
+------------------------------------------------------------
+☆完全無料！！　→　http://ad.love-meets.com/?a001
+------------------------------------------------------------
+
+ooooooooooooooooooooooooooooooooooooooooooooo
+インターネット広告新社　瀬川一樹
+東京都豊島区南長崎5-6-1
+配信拒否は下記アドレスまでその旨ご連絡ください
+new_ad_forinternet@yahoo.com.tw
+ooooooooooooooooooooooooooooooooooooooooooooo
+
+
+
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Downl=
-oad
+Tame your development challenges with Apache's Geronimo App Server. Download
 it for free - -and be entered to win a 42" plasma tv or your very own
 Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
