@@ -1,13 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Pitchbend issues
-Date: Wed, 02 Nov 2005 19:01:28 +0100
-Message-ID: <1130954488.4368fef88bb0c@webmail.uni-halle.de>
-References: <4367E4D5.1070504@pianodisc.com>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: Linux 2.6.14: Total lockup using aplaymidi
+Date: Wed, 2 Nov 2005 18:29:51 +0000 (GMT)
+Message-ID: <20051102182951.13206.qmail@web52912.mail.yahoo.com>
+References: <s5hwtjr70mp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <4367E4D5.1070504@pianodisc.com>
+In-Reply-To: <s5hwtjr70mp.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jeff Ballard <jeffballard@pianodisc.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jeff Ballard :
-> I am writing a small application to playback standard midi files.  At
-> this point, my program seems just about complete.  The only issue I am
-> having is that pitchbends are not being played.  I have confirmed that
-> the event has the correct channel and parameter value and is using an
-> algorithm nearly identical to other implementations I have run across.
-> The only evidence I have found is that if I artifically increase the
-> bend ammount (10 times the calculated value), I can hear studdering in
-> playback on that channel when the pitchbends should take place.  It
-> sounds almost like the bend is occuring, but ending so quickly that it
-> is difficult to hear.
+--- Takashi Iwai <tiwai@suse.de> wrote:
+> Which rmmod triggers the oops?
+> Apparently, the udev is who starts asfxload during rmmod.  Please show
+> up the configuration, too, in order to check the condition.
 
-When you play a file containg a pitch bend event to an aseqdump port with both
-aplaymidi and your app, what are the differences in the output?
+$ cat /etc/dev.d/snd/controlC0/alsa.dev=20
+#!/bin/sh -e
+exec /usr/sbin/alsactl restore 0
+
+$ cat /etc/dev.d/snd/midiC0D1/alsa.dev=20
+#!/bin/sh -e
+exec /usr/bin/asfxload /usr/lib/sfbank/8mbgmsfx.sf2
+
+Cheers,
+Chris
 
 
-Regards,
-Clemens
+
+	=09
+___________________________________________________________=20
+To help you stay safe and secure online, we've developed the all new Yaho=
+o! Security Centre. http://uk.security.yahoo.com
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Download
+Tame your development challenges with Apache's Geronimo App Server. Downl=
+oad
 it for free - -and be entered to win a 42" plasma tv or your very own
 Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
