@@ -1,17 +1,14 @@
-From: "Vesna Joo" <joovesn@rtools.com>
-Subject: Re: Justins To let you know
-Date: Thu, 3 Nov 2005 07:22:40 -0500
-Message-ID: <001301c5e071$485e6800$372ca8c0@devote>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001366]: 3D control, EQ peaks and EQ controls appear in capture view of alsamixer and they also have capture channels in amixer
+Date: Thu, 3 Nov 2005 14:17:45 +0100
+Message-ID: <824b9ff3464cd4078d3e37e9ae703e46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0010_01C5E047.5F886000"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0435418F
-	for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2005 13:21:28 +0100 (MET)
-Received: from rtools.com (unknown [195.16.35.253])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 69E9098BCD
-	for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2005 13:21:25 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72E5C1BA
+	for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2005 14:17:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,87 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Fabio Koester <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0010_01C5E047.5F886000
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1366> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1366
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             08-24-2005 09:26 CEST
+Last Modified:              11-03-2005 14:17 CET
+======================================================================
+Summary:                    3D control, EQ peaks and EQ controls appear in
+capture view of alsamixer and they also have capture channels in amixer
+Description: 
+3D control (Depth and Rear Depth) appear in capture view of alsamixer.
 
-Good day
-n't miss Pha
-ss S
-ffer
-s, Do
-rmaExpre
-pecial O
-XaVIAmVACILe
-naxAGRA Now $bienLIUM Now $ALIS Now $vitra
-3.32 1.233.67 
-And more than 200 other - http://honorificarm.utomtical.com
-Easy Total Fast Home Best 
-OrCoShDePr
-deringnfidentialityippingliveryices
+amixer display these controls have capture channels.
 
 
-------=_NextPart_000_0010_01C5E047.5F886000
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-<HTML>
-<BODY bgColor=3D#FFFFFF>
-<DIV>&nbsp;</DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0>
-  <TR style=3D"PADDING-TOP: 0px;">
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 face=3DArial =
-color=3D#359A36>Good day</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 face=3DArial =
-color=3D#359A36>n't miss Pha</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 face=3DArial =
-color=3D#359A36>ss S</FONT></TD><TD></TD>
-    <TD rowSpan=3D2 vAlign=3Dbottom><FONT size=3D4 face=3DArial =
-color=3D#359A36>ffer</FONT></TD><TD></TD>
-  </TR>
-  <TR style=3D"PADDING-TOP: 0px;">
-    <TD vAlign=3Dbottom><FONT size=3D4 face=3DArial color=3D#359A36>s, =
-Do</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 face=3DArial color=3D#359A36>rm=
-aExpre</FONT></TD>
-    <TD vAlign=3Dbottom><FONT size=3D4 face=3DArial color=3D#359A36>pecial =
-O</FONT></TD>
-  </TR></TABLE>
-<DIV>&nbsp;</DIV>
-<TABLE style=3D"PADDING-LEFT: 0px;" cellPadding=3D0 cellSpacing=3D0>
-<TR>
-<TD><FONT size=3D3 face=3D"Courier New">Xa<BR><B>VI</B><BR>Am<BR><B>VA=
-</B><BR><B>CI</B><BR>Le</FONT></TD>
-<TD><FONT size=3D3 face=3D"Courier New">nax<BR><B>AGRA Now $</B><BR>=
-bien<BR><B>LIUM Now $</B><BR><B>ALIS Now $</B><BR>vitra</FONT></TD>
-<TD><FONT size=3D3 face=3D"Courier New">&nbsp;<BR><B>3.32</B><BR>&nbs=
-p;<BR><B>1.23</B><BR><B>3.67</B><BR>&nbsp;</FONT></TD>
-</TR>
-</TABLE>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D3>And more than 200 other - <A =
-href=3D"http://honorificarm.utomtical.com"><FONT face=3DArial =
-size=3D3>http://honorificarm.utomtical.com</FONT></A></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<TABLE style=3D"PADDING-LEFT: 0px;" cellPadding=3D0 cellSpacing=3D0>
-<TR>
-<TD><FONT size=3D3 color=3D#973902 face=3D"Courier New"><EM>Easy&nbsp;<BR=
->Total&nbsp;<BR>Fast&nbsp;<BR>Home&nbsp;<BR>Best&nbsp;</EM></FONT></TD>
-<TD><FONT size=3D3 color=3D#973902 face=3D"Courier New"><EM>Or<BR>Co<BR=
->Sh<BR>De<BR>Pr</EM></FONT></TD>
-<TD><FONT size=3D3 color=3D#973902 face=3D"Courier New"><EM>dering<=
-BR>nfidentiality<BR>ipping<BR>livery<BR>ices</EM></FONT></TD>
-</TR>
-</TABLE></BODY></HTML>
+EQ peaks
 
-------=_NextPart_000_0010_01C5E047.5F886000--
+alsamixer cannot display 10-bands EQ peaks properly.
+
+amixer display the wrong channel name for EQ peaks (Feature request).
+
+Refer to 5.2.3.4.2.6 Graphical Equalizer Controls in USB audio
+http://www.usb.org/developers/devclass_docs/audio10.pdf
+
+Is it feasible to adopt the naming convention of the EQ center frequency
+in amixer/alsamixer ?
+
+
+
+10-bands stereo EQ controls
+
+alsamixer display 10-bands stereo EQ controls in capture view.
+
+amixer display the 10 EQ controls have capture channels.
+
+In theory, the EQ controls can be connected to regulate the capture audio
+from AC97, but this will need a rewrite of the existing driver to support
+dynamic disconnect of the equalizer from the playback device and connect
+the capture device and vice versa.
+
+Most au8810/au8830 users perfer to use the Equalizer to control playback
+only.
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 11-03-05 14:17 
+----------------------------------------------------------------------
+The two Sigmatel 3D Depth and Rear Depth controls still appear in the
+Capture View of alsamixer v-1.0.10rc2
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-24-05 09:26 Raymond        New Issue                                    
+09-05-05 15:18 Raymond        File Added: Capture.png                      
+09-05-05 15:19 Raymond        File Added: alsamixer.png                    
+11-03-05 14:17 Raymond        Note Added: 0006603                          
+======================================================================
+
 
 
 
