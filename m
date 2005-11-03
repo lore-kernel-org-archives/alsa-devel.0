@@ -1,16 +1,8 @@
-From: Mark Knecht <markknecht@gmail.com>
-Subject: Re: USB audio - 10x too fast on 2.6.14
-Date: Thu, 3 Nov 2005 11:02:53 -0800
-Message-ID: <5bdc1c8b0511031102n128ce6can6af48df2e25d52c5@mail.gmail.com>
-References: <5bdc1c8b0511021804m250a54dbx5b88e21acd4b74a6@mail.gmail.com>
-	 <1131013713.4369e6518359d@webmail.uni-halle.de>
-	 <1131044040.13952.5.camel@mindpipe>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: "Arlena Street" <kvyvalsa-announce-request-old@alsa-project.org>
+Subject: RE: Diploma Status
+Date: Thu,  3 Nov 2005 21:48:20 +0100 (MET)
+Message-ID: <825903079827.jW8UbSg4828375@85.132.177.35>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1131044040.13952.5.camel@mindpipe>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,31 +12,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-announce-request-old@alsa-project.org
+Cc: alsa-announce@alsa-project.org, alsa-user-request-old@alsa-project.org, alsa-conf@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/3/05, Lee Revell <rlrevell@joe-job.com> wrote:
-> On Thu, 2005-11-03 at 11:28 +0100, Clemens Ladisch wrote:
-> > Mark Knecht wrote:
-> > > However, when we tried our USB->TosLink device a 3:30 minute song pla=
-ys in
-> > > about 25 seconds.
-> >
-> > A bug in the snd-usb-audio driver.  Using another playback program (usi=
-ng ALSA
-> > instead of OSS) may work instead.  This has been fixed in CVS.
->
-> Where's the patch?  This needs to be submitted for the stable kernel.
->
-> Lee
+Thu, 03 Nov 2005 15:48:27 -0500
+MIME-version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 
-If there's a 2.6.14+ test kernel one of these days please let me know
-and I'll test it immediately. In the meantime I've gone back to
-2.6.13-gentoo-r3-ht which works fine for me.
+you won't believe this
 
-Cheers,
-Mark
+UN{IVERS}ITY DI.PLOMA]S
+
+Obtain A Prosperous Future, M(oney-Earning Power, and the Prestige that comes with having the C.areer position 
+you've always dreamed of. Dipl)omas from Prest;igious non-accredited U|niversi.ties based on your present knowledge and life experience
+
+If you qualify, no required tests, classes, books or examinations.
+
+Bache,lors', Mas{ters', MBA's, Doct!orate & Ph.D. d:egrees available in your field.
+
+CONFIDENT;IALITY ASSURED
+
+C@LL NOW TO RECEIVE YOUR DlIPLOMA WITHIN 2 WEEKS
+ 
+---> 1*206*666*2839 <---
+
+C@LL 24HRS, 7 DAYS A WEEK, INCLUDING SUNDAYS & HOLIDAYS
+
+Best Regards
 
 
 -------------------------------------------------------
