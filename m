@@ -1,12 +1,14 @@
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-Subject: asym plugin in asoundrc causes "poll time out" errors in jackd
-Date: Thu, 3 Nov 2005 18:12:29 +0200
-Message-ID: <20051103161229.GB10146@edu.joroinen.fi>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001425]: Driver only records left channel when requested to record in stereo from Line-In
+Date: Thu, 3 Nov 2005 17:14:29 +0100
+Message-ID: <175243c824517620e38a291cfd34eb8c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F032F1CF
+	for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2005 17:14:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,91 +18,141 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi list!
 
-I've already sent this mail to jackd mailing list, but didn't got any
-helpful replies.. so I'm trying if somebody knows more about asym stuff
-here.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1425> 
+======================================================================
+Reported By:                David Klusacek
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1425
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               my own build
+Kernel Version:             2.6.5
+======================================================================
+Date Submitted:             09-15-2005 21:49 CEST
+Last Modified:              11-03-2005 17:14 CET
+======================================================================
+Summary:                    Driver only records left channel when requested to
+record in stereo from Line-In
+Description: 
 
-I'm trying to run jackd with multi + asym plugins in ~/.asoundrc, but I g=
-et
-"ALSA: poll time out, polled for 17407547 usecs" messages all the time fr=
-om
-jackd..
+DESCRIBTION
 
-.asounrdc available here:
-http://nrg.joroinen.fi/asoundrc-asym.txt
+When recording analog source, only one channel is really being captured,
+while the other returns some garbage (usually low volume), regardless of
+the recording program being used. 
 
-Ok.. you might ask why I need multi + asym plugins? Well.. the whole poin=
-t
-is to combine two ice1712 cards (M-Audio Delta 1010LT's) for use in studi=
-o
-multichannel recording. Therefore "multi" plugin is needed to combine the
-channels and to create one virtual "jackmulti" device which jackd can use=
-.
+The cables I'm using are OK, since although the right channel cannot be
+recorded it still gives rise to feedback driven oscilations when the
+volume of Line-In is  
+elevated enough (and microphone (which is connected to Line-In thru
+low-noise amplifier) captures what the speaker emits).
 
-One virtual combined device is needed because jackd supports only one
-card/device.
+The interesting thing is that the left channel behaves the opposite way.
+It can 
+be recorded, but it cannot be listened to just by changing the volume by
+the alsamixer. 
 
-In these tests I haven't (yet) combined the cards, so this problem happen=
-s
-with one/single ice1712 card!
-
-Now, these ice1712 cards have 12 channels in, and 10 channels out.
-Asymmetric channel count. Jackd won't start with this kind of asymmetric
-"jackmulti" device. Therefore I use "asym" plugin to create "duplex" devi=
-ce,
-which has symmetric channel count in and out.
-
-Jackd starts fine with this multi+asym "jackmulti" device.
-
-The problem is this:
-
-$ jackd -d alsa -d jackmulti -r 44100 -p 512
-jackd 0.100.0
-Copyright 2001-2005 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-JACK compiled with System V SHM support.
-loading driver ..
-apparent rate =3D 44100
-creating alsa driver ...
-jackmulti|jackmulti|512|2|44100|0|0|nomon|swmeter|-|32bit
-configuring for 44100Hz, period =3D 512 frames, buffer =3D 2 periods
-nperiods =3D 2 for capture
-nperiods =3D 2 for playback
-ALSA: poll time out, polled for 17407870 usecs
-ALSA: poll time out, polled for 17407477 usecs
-....
+I'm using kernel version 2.6.5, alsa driver version 1.0.9b, alsa library
+version 1.0.9, alsa utils version 1.0.9a, all compiled by gcc-2.95.3 with
+glibc-2.2.5.
 
 
-Those "poll time out" messages are printed all the time, even if I don't
-start any jack clients!
 
-If I start jackd with -P or -C parameter, it will work OK and I don't get
-those poll time outs! (And audio can be played normally etc).
+STEPS TO REPRODUCE
 
-I'm running Debian unstable, with 2.6.14-1-686-smp kernel. The same probl=
-em
-was with 2.6.12-1-686-smp kernel.
+(a) Set up the mixer (this is taken from my system init scripts. It looks
+strange but it was the only way to get the volume right the old days I had
+VA-503+ mainboad (FIC).)
 
-I have patched/recompiled debian jackd packege with MMAP_COMPLEX
-support/patch.
+amix()
+{
+  amixer -qc "$@"
+  usleep 100000
+}
 
-Any comments/ideas very welcome.. I'm willing to debug and work on this.=20
+mmm() { #strange workaround for ill behaving card or chipset
+  amix  $1 set Master 70% mute
+  amix  $1 set Master 60% unmute
+  amix  $1 set Capture 70% unmute
+  amix  $1 set Mic 100% captur mute
+  amix  $1 set PCM 70% mute
+  amix  $1 set PCM 90% unmute
+  amix  $1 set PCM 95% unmute
+  amix  $1 set Master 100% unmute
+  amix  $1 set Capture 80% mute
+  amix  $1 set Mic 50% captur mute
+  amix  $1 set Capture 50% unmute
+  amix  $1 set Line 0% captur mute
+}
 
--- Pasi K=E4rkk=E4inen
-      =20
-                                   ^
-                                .     .
-                                 Linux
-                              /    -    \
-                             Choice.of.the
-                           .Next.Generation.
+(b) connect left channel of Line-In to signal source.
+
+arecord -f dat left.wav
+
+(c) connect right channel of Line-In to signal source.
+
+arecord -f dat right.wav
+
+(d) when playing left.wav and right.wav you will find out, that right.wav
+contains nearly silence in its right channel and some crosstalk in the
+left channel, while the left.wav contains the recorded signal in its left
+channel.
+
+
+NOTE
+
+This problem appears to exist on at least three different soundcards
+(snd-ens1371, snd-via82xx and snd-intel8x0 (intel records left and omits
+right channel)), I think that it may have something to do with the pcm
+core or 
+snd-ac97-codec. 
+
+Note also, that drivers for ens1371 and via82xx worked well in the older
+(0.5.10b) versions of ALSA.
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ David Klusacek - 09-15-05 22:08 
+----------------------------------------------------------------------
+ad (a) in steps to reproduce: I have acidentally omitted the last command:
+
+mmm 0
+
+----------------------------------------------------------------------
+ ris - 11-03-05 17:14 
+----------------------------------------------------------------------
+As of kernel 2.6.14, I am getting this too. Using kernel 2.6.12.5, this was
+not an issue.
+
+Now using alsa-libs & alsa-utils 1.0.10rc2 and only receiving a noise
+floor on the right channel when using line in with an ens1371.
+
+Using an empty asound.conf.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-15-05 21:49 David Klusacek New Issue                                    
+09-15-05 21:49 David Klusacek Distribution              => my own build    
+09-15-05 21:49 David Klusacek Kernel Version            => 2.6.5           
+09-15-05 22:08 David Klusacek Note Added: 0006223                          
+11-03-05 17:14 ris            Note Added: 0006604                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
