@@ -1,7 +1,7 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: Question: setting up the hardware for alsa
-Date: Fri, 04 Nov 2005 16:14:23 +0000
-Message-ID: <436B88DF.9080501@superbug.co.uk>
+Date: Fri, 04 Nov 2005 16:13:50 +0000
+Message-ID: <436B88BE.1090106@superbug.co.uk>
 References: <b15982770511040749k3ccbaa07gcbd7bac05689a8e7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
