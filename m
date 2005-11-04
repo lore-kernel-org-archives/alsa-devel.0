@@ -1,13 +1,12 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: Linux 2.6.14: Total lockup using aplaymidi
-Date: Fri, 4 Nov 2005 16:39:49 +0000 (GMT)
-Message-ID: <20051104163949.12853.qmail@web52909.mail.yahoo.com>
-References: <s5hirv8qzir.wl%tiwai@suse.de>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: 90% of the spam I receive comes through this list
+Date: Fri, 4 Nov 2005 08:48:37 -0800
+Message-ID: <5bdc1c8b0511040848u1117ee0ana295723f130bece8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hirv8qzir.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,27 +16,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---- Takashi Iwai <tiwai@suse.de> wrote:
-> Then please show the alias.
+It's just an observation but about 90% of the spam I receive every
+week seems to come through this list. The only other list I ever
+receive any spam from is LKML and it's very much lower than
+Alsa-devel.
 
-awk '{print \$1}' < /proc/modules | grep ^snd | xargs /sbin/rmmod
+Is there no filtering on this server or does the filter just let this
+much get through?
 
+NOTE: I have not tried to prove that any of the spam was actually sent
+by this server. I only filter based on mailing list name and 90% of
+the spam ends up in this folder.
 
-
-
-	=09
-___________________________________________________________=20
-How much free photo storage do you get? Store your holiday=20
-snaps for FREE with Yahoo! Photos http://uk.photos.yahoo.com
+- Mark
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Downl=
-oad
+Tame your development challenges with Apache's Geronimo App Server. Download
 it for free - -and be entered to win a 42" plasma tv or your very own
 Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
