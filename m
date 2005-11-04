@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001528]: Support for Terratec Producer audio hardware
-Date: Fri, 4 Nov 2005 22:41:53 +0100
-Message-ID: <aff62bff171759b7a1e6bb766753c3c9@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: Re: 90% of the spam I receive comes through this list
+Date: Fri, 4 Nov 2005 13:49:50 -0800
+Message-ID: <5bdc1c8b0511041349g28c66af9web2fa77442b9bb64@mail.gmail.com>
+References: <5bdc1c8b0511040848u1117ee0ana295723f130bece8@mail.gmail.com>
+	 <1131129636.4770.16.camel@mindpipe>
+	 <1131137744.4770.36.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8224165
-	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2005 22:41:53 +0100 (MET)
+In-Reply-To: <1131137744.4770.36.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +20,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On 11/4/05, Lee Revell <rlrevell@joe-job.com> wrote:
+> On Fri, 2005-11-04 at 13:40 -0500, Lee Revell wrote:
+> > On Fri, 2005-11-04 at 08:48 -0800, Mark Knecht wrote:
+> > > It's just an observation but about 90% of the spam I receive every
+> > > week seems to come through this list. The only other list I ever
+> > > receive any spam from is LKML and it's very much lower than
+> > > Alsa-devel.
+> > >
+> > > Is there no filtering on this server or does the filter just let this
+> > > much get through?
+> >
+> > There obviously is filtering, it just lets some through.  It's really
+> > not bad, 2 or 3 messages a day.
+> >
+>
+> What I mean is that every list message has headers like this:
+>
+> X-Spam-Score: 0.0 (/)
+> X-Spam-Report: Spam Filtering performed by sourceforge.net. See
+> http://spamassassin.org/tag/ for more details. Report problems to
+> http://sf.net/tracker/?func=3Dadd&group_id=3D1&atid=3D200001
+>
+> The basic issue is that alsa-devel is required to be an open list as
+> it's listed in the kernel MAINTAINERS file.  But sourceforge does not
+> have nearly as good spam filtering as vger.kernel.org.
+>
+> Lee
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1528> 
-======================================================================
-Reported By:                virgult
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1528
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE 10
-Kernel Version:             
-======================================================================
-Date Submitted:             11-04-2005 22:41 CET
-Last Modified:              11-04-2005 22:41 CET
-======================================================================
-Summary:                    Support for Terratec Producer audio hardware
-Description: 
-I see that my Terratec Producer Phase 22, as all the products of its
-family, is not supported at all by alsa, though it's one of the most
-common audio cards among all the "prosumer" and audiophile target
-(http://www.terratec.net/producer/fr/modules.php?op=modload&name=News&file=article&sid=4).
-This lack of support, in fact, doesn't still allow me to abandon Windows
-and its derivates.... Will you develop any driver for audio cards of its
-kind?
-======================================================================
+Thanks. At least this confirms that others see more or less the same
+thing as I do. That's helpful.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-04-05 22:41 virgult        New Issue                                    
-11-04-05 22:41 virgult        Distribution              => SuSE 10         
-======================================================================
+I seem to be getting a bit more, like possibly 6-10 a day, maybe 1-2 a
+week on LKML, and very little on all the other lists.
 
+GMail seems to be very good at catching spam emailed directly to me
+but it puts everythign coming from a list into a folder and makes me
+deal with that myself. Not a big problem, but it would be nice if
+alsa-devel could do a bit better on this.
 
+Thanks,
+Mark
 
 
 -------------------------------------------------------
