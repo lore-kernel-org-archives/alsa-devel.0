@@ -1,17 +1,13 @@
-From: Eckhard Jokisch <e.jokisch@u-code.de>
-Subject: Re: [ALSA - driver 0001525]: not possible to configure emua0k1
-Date: Fri, 4 Nov 2005 12:33:40 +0100
-Message-ID: <200511041233.43400.e.jokisch@u-code.de>
-References: <02d1244f40a72419e3b89c038efedcf4@85.132.177.35>
-Reply-To: e.jokisch@u-code.de
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: PXA2xx i2Sound: support for PXA2xx I2S audio
+Date: Fri, 04 Nov 2005 11:49:34 +0000
+Message-ID: <1131104974.10911.41.camel@cearnarfon>
+References: <200511041152.22570.giorgio@mandarinlogiq.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart14319110.AlZqdt1Q5l";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <02d1244f40a72419e3b89c038efedcf4@85.132.177.35>
+In-Reply-To: <200511041152.22570.giorgio@mandarinlogiq.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,95 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Giorgio Padrin <giorgio@mandarinlogiq.org>
+Cc: alsa-devel@lists.sourceforge.net, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
---nextPart14319110.AlZqdt1Q5l
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Fri, 2005-11-04 at 11:52 +0100, Giorgio Padrin wrote:
 
-Can anyone comfirm/reproduce  thi or am I wrong?
-BR=20
-Eckhard
-> The following issue has been SUBMITTED.
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> <https://85.132.177.35/alsa-bug/view.php?id=3D1525>
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Reported By:                eckjok
-> Assigned To:                perex
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Project:                    ALSA - driver
-> Issue ID:                   1525
-> Category:                   0_compilation problem_!!!
-> Reproducibility:            always
-> Severity:                   block
-> Priority:                   normal
-> Status:                     assigned
-> Distribution:               gentoo
-> Kernel Version:             2.6.14
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Date Submitted:             11-03-2005 12:04 CET
-> Last Modified:              11-03-2005 12:04 CET
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Summary:                    not possible to configure emua0k1
-> Description:
-> with alsa-driver-1.0.10rc2 it is not possible to configure
-> --with-cards=3Demu10k1.
-> Other cards can be configured( i.e. portman2x4)
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Issue History
-> Date Modified  Username       Field                    Change
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> 11-03-05 12:04 eckjok         New Issue
-> 11-03-05 12:04 eckjok         Distribution              =3D> gentoo
-> 11-03-05 12:04 eckjok         Kernel Version            =3D> 2.6.14
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->
->
->
-> -------------------------------------------------------
-> SF.Net email is sponsored by:
-> Tame your development challenges with Apache's Geronimo App Server.
-> Download it for free - -and be entered to win a 42" plasma tv or your very
-> own Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> I wish to know whether there are other similar works in development.
 
---nextPart14319110.AlZqdt1Q5l
-Content-Type: application/pgp-signature
+Yes there is. Richard Purdie and I have been working on an ALSA SoC
+audio layer. It's designed to make audio codec drivers SoC processor
+independent and provide dynamic power management for each codec.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
+Currently, we only have support for the pxa2xx platform on the Mainstone
+and corgi machines (more are in progress). SoC supports all 3 pxa audio
+interfaces (i.e. AC97, I2S and SSP) and can support them in both master
+and slave modes. 
 
-iD8DBQBDa0cXiF9FD4kCbGQRAvnyAKDb8VlE4Lf9Jd0P6d7UaKpKuuxN1gCfd405
-S6DikumPWgkdr+mhdwEDJQ4=
-=cLO3
------END PGP SIGNATURE-----
+I do plan to add support for more platforms and machines in the near
+future. I'll be working on iMX (mx21) and AMD Alchemy as I have both
+boards available.
 
---nextPart14319110.AlZqdt1Q5l--
+SoC currently has support for the following codecs:-
+
+ o WM8753
+ o WM8731
+ o WM8750
+ o WM8971
+ o All AC97 codecs (that are supported by ac97_codec.c)
+ o WM9713 voice interface
+
+SoC also provides dynamic power management (dpm) to reduce the power
+used by the codec to the minimum at all times.  dpm works by powering
+(up/down) the codecs internal system blocks depending on it's usage and
+internal audio routing. This is all done by the SoC layer and is
+transparent to any audio application.
+
+I'm planning to send a more detailed announcement to alsa dev next
+week. 
+
+The current development release of ALSA SoC is currently available from
+http://www.rpsys.net/openzaurus/patches/alsa/alsa_soc_0.5-r0.patch
+ 
+
+Liam
+
 
 
 -------------------------------------------------------
