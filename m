@@ -1,13 +1,13 @@
-From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
-Subject: Re: Audio support for codec Philips UDA1380
-Date: Fri, 04 Nov 2005 13:43:41 +0100
-Message-ID: <85wtjo4m82.fsf@Orfeo.duckcorp.org>
-References: <200511041201.01260.giorgio@mandarinlogiq.org>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: Linux 2.6.14: Total lockup using aplaymidi
+Date: Fri, 4 Nov 2005 14:01:45 +0000 (GMT)
+Message-ID: <20051104140145.50953.qmail@web52908.mail.yahoo.com>
+References: <s5hr79wr6v6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200511041201.01260.giorgio@mandarinlogiq.org> (Giorgio Padrin's
-	message of "Fri, 4 Nov 2005 12:01:01 +0100")
+In-Reply-To: <s5hr79wr6v6.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giorgio Padrin <giorgio@mandarinlogiq.org>
-Cc: alsa-devel@lists.sourceforge.net, linux-arm-kernel@lists.arm.linux.org.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Giorgio Padrin <giorgio@mandarinlogiq.org> writes:
+--- Takashi Iwai <tiwai@suse.de> wrote:
+> Could you do the following?
+> - First, show your unalsa script
 
-> Hi all,
->
+I thought I had already? And it's an alias, not a script. Basically, it p=
+arses /proc/modules
+through awk and extracts the module name, which it then passes to rmmod v=
+ia xargs.=20
 
-Hi !
+> Did you set the module option to snd-seq as I requested to disable rtc
+> timer?
 
-> I want to contribute code to support audio codec Philips UDA1380.
-> Download from: "http://www.mandarinlogiq.org/PXA2xx i2Sound/"
->
-> Clean write for ALSA and kernel 2.6 with full power optimizations at subchip 
-> level, enabling hw blocks on need. Looking around in the kernel, this seems 
-> to be a novelty among sound drivers, that run commonly in an 
-> all-always-powered-up manner.
->
-> See h2200_audio (also on the site) for a sample glue module, that support the 
-> audio of an iPAQ h2200 handheld, using it together with a complementary module 
-> for the Intel PXA2xx I2S audio.
->
+No, but then the snd-rtctimer module wasn't loaded here in the first plac=
+e.
 
-So, the uda1380 module is generic enough to be used on non PXA boards ?
+Cheers,
+Chris
 
 
-> I wish to know whether there are other similar works in development.
 
-uda1380 with i2s support was on my todo list but I think I will remove it as
-you've done it :)
-
-Do you plan to send it to the ALSA folks ?
-
-Regards,
-Arnaud
-
+	=09
+___________________________________________________________=20
+To help you stay safe and secure online, we've developed the all new Yaho=
+o! Security Centre. http://uk.security.yahoo.com
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Download
+Tame your development challenges with Apache's Geronimo App Server. Downl=
+oad
 it for free - -and be entered to win a 42" plasma tv or your very own
 Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
