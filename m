@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: 90% of the spam I receive comes through this list
-Date: Fri, 04 Nov 2005 15:55:44 -0500
-Message-ID: <1131137744.4770.36.camel@mindpipe>
-References: <5bdc1c8b0511040848u1117ee0ana295723f130bece8@mail.gmail.com>
-	 <1131129636.4770.16.camel@mindpipe>
+From: "Becky Bochenek" <boche@gallard.com>
+Subject: Re: Dick Great position
+Date: Fri, 4 Nov 2005 15:51:14 -0500
+Message-ID: <002401c5e181$7e8b0d00$7607a8c0@differentiation>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0021_01C5E157.95B50500"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1131129636.4770.16.camel@mindpipe>
+Received: from gallard.com (LAubervilliers-151-11-57-15.w193-251.abo.wanadoo.fr [193.251.94.15])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 709A9189
+	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2005 21:51:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,36 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@gmail.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Bronislava Kirkman <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-11-04 at 13:40 -0500, Lee Revell wrote:
-> On Fri, 2005-11-04 at 08:48 -0800, Mark Knecht wrote:
-> > It's just an observation but about 90% of the spam I receive every
-> > week seems to come through this list. The only other list I ever
-> > receive any spam from is LKML and it's very much lower than
-> > Alsa-devel.
-> > 
-> > Is there no filtering on this server or does the filter just let this
-> > much get through?
-> 
-> There obviously is filtering, it just lets some through.  It's really
-> not bad, 2 or 3 messages a day.
-> 
+This is a multi-part message in MIME format.
 
-What I mean is that every list message has headers like this:
+------=_NextPart_000_0021_01C5E157.95B50500
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-X-Spam-Score: 0.0 (/)
-X-Spam-Report: Spam Filtering performed by sourceforge.net. See
-http://spamassassin.org/tag/ for more details. Report problems to
-http://sf.net/tracker/?func=add&group_id=1&atid=200001
+H
+overpayi
+your Meddi
+isit our Pha
+ess Sh
+i, Quit
+ng for
+cations - v
+rmaExpr
+op.
+Review more info - http://underhandedboh.racknello.com
 
-The basic issue is that alsa-devel is required to be an open list as
-it's listed in the kernel MAINTAINERS file.  But sourceforge does not
-have nearly as good spam filtering as vger.kernel.org.
+------=_NextPart_000_0021_01C5E157.95B50500
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Lee
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<TABLE cellPadding=3D0 style=3D"BORDER-RIGHT-WIDTH: 0px;" cellSpacing=3D0>
+  <TR style=3D"BORDER-WIDTH: 0px;">
+    <TD vAlign=3Dbottom rowSpan=3D2 style=3D"BORDER-COLOR: #FFFFFF;"><FONT =
+size=3D3>H</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2 style=3D"BORDER-COLOR: #FFFFFF;"><FONT =
+size=3D3>&nbsp;overpayi</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2 style=3D"BORDER-COLOR: #FFFFFF;"><FONT =
+size=3D3>&nbsp;your Meddi</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2 style=3D"BORDER-COLOR: #FFFFFF;"><FONT =
+size=3D3>isit our Pha</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom rowSpan=3D2 style=3D"BORDER-COLOR: #FFFFFF;"><FONT =
+size=3D3>ess Sh</FONT></TD><TD></TD>
+  </TR>
+  <TR style=3D"BORDER-WIDTH: 0px;">
+    <TD vAlign=3Dbottom style=3D"WORD-SPACING: normal;"><FONT size=3D3>i, =
+Quit</FONT></TD>
+    <TD vAlign=3Dbottom style=3D"WORD-SPACING: normal;"><FONT size=3D3>ng =
+for</FONT></TD>
+    <TD vAlign=3Dbottom style=3D"WORD-SPACING: normal;"><FONT =
+size=3D3>cations - v</FONT></TD>
+    <TD vAlign=3Dbottom style=3D"WORD-SPACING: normal;"><FONT =
+size=3D3>rmaExpr</FONT></TD>
+    <TD vAlign=3Dbottom style=3D"WORD-SPACING: normal;"><FONT =
+size=3D3>op.</FONT></TD>
+  </TR></TABLE>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D3>Review more info - <A href=3D"http://underhandedboh.r=
+acknello.com"><FONT face=3DArial size=3D3>http://underhandedboh.racknello.=
+com</FONT></A></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0021_01C5E157.95B50500--
 
 
 
