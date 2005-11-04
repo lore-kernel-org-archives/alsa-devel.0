@@ -1,10 +1,14 @@
-From: "Nambiar, Anil" <NambiarA@sharpsec.com>
-Subject: switching between mic and line-in
-Date: Fri, 4 Nov 2005 17:58:54 -0500
-Message-ID: <6A09F73E2878E447BF6B87C43162C8270215463B@excwa1b2.sharpsec.com>
+From: "Loma Frese" <lomafrese@calinst.com>
+Subject: Re: Saoirse Works Very Good
+Date: Fri, 4 Nov 2005 18:36:05 -0500
+Message-ID: <000e01c5e198$8609e080$16c0a8c0@quaky>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_000B_01C5E16E.9D33D880"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from calinst.com (ALyon-254-1-1-63.w86-193.abo.wanadoo.fr [86.193.0.63])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B708A178
+	for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2005 00:36:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,26 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Gaetano Desir <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-	I have a h/w which has 2 inputs and 2 outputs for the audio using
-AC94 codec. For the output I have headphone and speaker out. When the
-headphone is connected, I can detect the interrupt and switch between
-headphone and speaker out at the driver level, so it's not a problem. 
-       But for the input, there is no interrupt and I need to switch between
-the mic and line-in based on what the user application selects. Now in AC97
-codec chip, the capture input can be switched between mic and line-in by
-changing a few bits. Is there any IOCTL in alsa which I can use to switch
-between mic and line-in.
-	The solution so far I have seen is to use two capture devices in the
-driver. Is that the only way? If that is the case, how do I obtain mutual
-exclusion, so that at any given time only one capture device is opened?
-	I appreciate all the help.
-Thanks,
-AniL
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_000B_01C5E16E.9D33D880
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+H
+it overpay
+r Meddicati
+it our Pharm
+xpress Sh
+i Qu
+ing for you
+ons - vis
+aE
+op.
+Additional info - http://nutshellquo.omnifacer.info
+
+------=_NextPart_000_000B_01C5E16E.9D33D880
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<TABLE style=3D"PADDING-LEFT: 0px;" cellSpacing=3D0 cellPadding=3D0>
+  <TR style=3D"BORDER: 0px;">
+    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
+size=3D3>H</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
+size=3D3>it overpay</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
+size=3D3>r Meddicati</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
+size=3D3>it our Pharm</FONT></TD><TD></TD>
+    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
+size=3D3>xpress Sh</FONT></TD><TD></TD>
+  </TR>
+  <TR style=3D"BORDER: 0px;">
+    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>i =
+Qu</FONT></TD>
+    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>ing for =
+you</FONT></TD>
+    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>ons - =
+vis</FONT></TD>
+    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>aE</FO=
+NT></TD>
+    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>op.<=
+/FONT></TD>
+  </TR></TABLE>
+<DIV>&nbsp;</DIV>
+<DIV><FONT size=3D3>Additional info - <A href=3D"http://nutshellquo.=
+omnifacer.info"><FONT face=3DArial size=3D3>http://nutshellquo.omni=
+facer.info</FONT></A></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_000B_01C5E16E.9D33D880--
 
 
 
