@@ -1,8 +1,14 @@
-From: "Arlena Street" <kvyvalsa-announce-request-old@alsa-project.org>
-Subject: RE: Diploma Status
-Date: Thu,  3 Nov 2005 21:48:20 +0100 (MET)
-Message-ID: <825903079827.jW8UbSg4828375@85.132.177.35>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001526]: No sound from device
+Date: Fri, 4 Nov 2005 04:02:45 +0100
+Message-ID: <72946431d419f6a8119b6669f6128113@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E9ED1B0
+	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2005 04:02:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,36 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-announce-request-old@alsa-project.org
-Cc: alsa-announce@alsa-project.org, alsa-user-request-old@alsa-project.org, alsa-conf@alsa-project.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thu, 03 Nov 2005 15:48:27 -0500
-MIME-version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
 
-you won't believe this
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1526> 
+======================================================================
+Reported By:                winggndm
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1526
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             11-04-2005 04:02 CET
+Last Modified:              11-04-2005 04:02 CET
+======================================================================
+Summary:                    No sound from device
+Description: 
+As of 1.0.10a which is int he 2.6.14 kernel, my sound card will not play
+any sound.  The problem is with the configuration of the card.  If i first
+load windows,let it init the card, and reboot, the card works fine. 
+Something is not being configured corectly or at all and i think it could
+be the external amp.  I have a similar problem with 1.0.9 but if i just
+reload the module, it works fine.
+======================================================================
 
-UN{IVERS}ITY DI.PLOMA]S
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-04-05 04:02 winggndm       New Issue                                    
+11-04-05 04:02 winggndm       Distribution              => gentoo          
+11-04-05 04:02 winggndm       Kernel Version            => 2.6.14          
+======================================================================
 
-Obtain A Prosperous Future, M(oney-Earning Power, and the Prestige that comes with having the C.areer position 
-you've always dreamed of. Dipl)omas from Prest;igious non-accredited U|niversi.ties based on your present knowledge and life experience
 
-If you qualify, no required tests, classes, books or examinations.
-
-Bache,lors', Mas{ters', MBA's, Doct!orate & Ph.D. d:egrees available in your field.
-
-CONFIDENT;IALITY ASSURED
-
-C@LL NOW TO RECEIVE YOUR DlIPLOMA WITHIN 2 WEEKS
- 
----> 1*206*666*2839 <---
-
-C@LL 24HRS, 7 DAYS A WEEK, INCLUDING SUNDAYS & HOLIDAYS
-
-Best Regards
 
 
 -------------------------------------------------------
