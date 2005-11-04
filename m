@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: getting started: USBpre support
-Date: Fri, 04 Nov 2005 16:03:05 +0100
-Message-ID: <1131116585.436b78293c8f2@webmail.uni-halle.de>
-References: <loom.20051030T175159-949@post.gmane.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001527]: amixer fails to set right 'Capture Source' channel
+Date: Fri, 4 Nov 2005 16:11:55 +0100
+Message-ID: <7a53b2d1624773245134fefd86d422da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <loom.20051030T175159-949@post.gmane.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88DF8190
+	for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2005 16:11:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,41 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jim Carroll <jim@maplesong.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jim Carroll wrote:
-> I'm having trouble getting started writing an alsa driver for my Sound
-> Devices USBpre microphone interface.  It is a full sound card, playing and
-> recording full duplex, but it also drives my condenser microphones with
-> phantom power.
->
-> I've been reading the linux kernel driver book, and Takashi Iwai's
-> writing-an-alsa-driver.pdf, but neither are quite applicable to my hardware.
->
-> What else can I read to get started?
 
-Linux USB documentation, USB Audio specification
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1527> 
+======================================================================
+Reported By:                tartif
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1527
+Category:                   amixer
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-04-2005 16:11 CET
+Last Modified:              11-04-2005 16:11 CET
+======================================================================
+Summary:                    amixer fails to set right 'Capture Source' channel
+Description: 
+I use the ice1724 driver (Prodigy 7.1 card), ALSA 1.0.10_rc2 (also happens
+with 1.0.9).
 
-> I've been looking at the generic usb alsa driver, and starting to modify it
-> for my usb device...
+amixer fails to set the 'capture source' for the right channel (left is
+OK). Left channel is set to that requested, right channel always set to
+0.
 
-What changes are needed?  How does the USBpre differ from class-compliant
-devices?
+======================================================================
 
-> does anyone have a similar stand-alone kernel module project that I could use
-> as a starting place?
-
-drivers/usb/class/audio.c is somewhat similar to usbaudio.c.
-
-> I have some windows source for reference on how to talk to the USBpre.
-
-Can it be published somewhere?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-04-05 16:11 tartif         New Issue                                    
+======================================================================
 
 
-Regards,
-Clemens
 
 
 -------------------------------------------------------
