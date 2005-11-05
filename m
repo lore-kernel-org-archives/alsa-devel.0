@@ -1,14 +1,14 @@
 From: Giorgio Padrin <giorgio@mandarinlogiq.org>
-Subject: Re: PXA2xx i2Sound: support for PXA2xx I2S audio
-Date: Sat, 5 Nov 2005 07:47:59 +0100
-Message-ID: <200511050747.59907.giorgio@mandarinlogiq.org>
-References: <200511041152.22570.giorgio@mandarinlogiq.org> <1131104974.10911.41.camel@cearnarfon>
+Subject: Re: Audio support for codec Philips UDA1380
+Date: Sat, 5 Nov 2005 07:57:01 +0100
+Message-ID: <200511050757.01732.giorgio@mandarinlogiq.org>
+References: <200511041201.01260.giorgio@mandarinlogiq.org> <85wtjo4m82.fsf@Orfeo.duckcorp.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1131104974.10911.41.camel@cearnarfon>
+In-Reply-To: <85wtjo4m82.fsf@Orfeo.duckcorp.org>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,23 +19,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+To: "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>
 Cc: alsa-devel@lists.sourceforge.net, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Alle 12:49, venerd=C3=AC 4 novembre 2005, Liam Girdwood ha scritto:
-> On Fri, 2005-11-04 at 11:52 +0100, Giorgio Padrin wrote:
-> > I wish to know whether there are other similar works in development.
+Alle 13:43, venerd=EC 4 novembre 2005, Arnaud Patard ha scritto:
+> > See h2200_audio (also on the site) for a sample glue module, that suppo=
+rt
+> > the audio of an iPAQ h2200 handheld, using it together with a
+> > complementary module for the Intel PXA2xx I2S audio.
 >
-> Yes there is. Richard Purdie and I have been working on an ALSA SoC
-> audio layer. It's designed to make audio codec drivers SoC processor
-> independent and provide dynamic power management for each codec.
+> So, the uda1380 module is generic enough to be used on non PXA boards ?
 
-This sounds great news; and a kind of organizing framework like that is=20
-welcome  for a widespread audio support of embedded devices under Linux.
-Provided it'll be flexible enough and support desired power optimizations, =
-I'm=20
-willing to cooperate and merge things.
+Yes. It's so intended.
 
 Giorgio
 
