@@ -1,13 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Fix for slow snd-ali5451 initialization
-Date: Sat, 05 Nov 2005 15:22:12 -0500
-Message-ID: <1131222132.13627.19.camel@mindpipe>
-References: <Pine.LNX.4.61.0511051136400.16526@sixpak.sixpak.org>
+From: Ove Kaaven <ovek@transgaming.com>
+Subject: Re: mmap_commit() and hardware buffering
+Date: Sat, 05 Nov 2005 15:40:44 -0500
+Message-ID: <1131223244.5118.13.camel@renegade>
+References: <20051101165651.2a5f125b.davmac@davmac.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0511051136400.16526@sixpak.sixpak.org>
+In-Reply-To: <20051101165651.2a5f125b.davmac@davmac.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Vince Busam <vince@sixpak.org>
+To: Davin McCall <davmac@davmac.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-11-05 at 11:38 -0800, Vince Busam wrote:
-> The snd-ali5451 driver takes 10 seconds to load, which is quite annoying 
-> on a laptop that boots every day.  This patch lowers that to a much more 
-> managable time, and still works fine on my laptop.
-> 
-> Vince
-> 
->      Summary: Speed up ali5451 initialization
-> 
->      The patch speeds up loading the ali5451 driver by lowering the
->      wait time in snd_ali_codec_ready()
+tir, 01,.11.2005 kl. 16.56 +1100, skrev Davin McCall:
+> My thinking is that for double-buffered cards, the driver could demand that the lock/unlock buffer calls be used (i.e. the direct sound layer has to lock part of the buffer before updating it, and unlock it when done), in which case the driver has much better info about how much it can commit (a portion of the buffer can be committed when it is unlocked).
 
-Does not apply against current ALSA or kernel sources.  Please provide
-an updated patch.
+The TransGaming Cedega alsa driver does something like this - always.
+The overhead is negligible, it works on pretty much everything (barring
+dmix bugs, which AFAIK still remains a problem), and just-in-time mixing
+is possible (thanks to suggestions from the alsa developers).
 
-Also, why is this an issue?  Do your distros init scripts delay the boot
-until this driver is loaded?  Shouldn't it be loading all drivers in
-parallel?
-
-Lee
+This implementation was once upon a time offered to Wine in a wine-devel
+posting, but as is normal, there was no reply.
 
 
 
