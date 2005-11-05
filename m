@@ -1,13 +1,10 @@
-From: =?ISO-2022-JP?B?GyRCJDUkSCRfGyhCIA==?= <berry1017kiss@mail.goo.ne.jp>
-Subject: =?ISO-2022-JP?B?UmU6GyRCPlw6WSEiJDQzTkcnMjwkNSQkISMbKEI=?=
-Date: Sat, 05 Nov 2005 14:12:55 +0900
-Message-ID: <20051105.0512550231@berry1017kiss-mail.goo.ne.jp>
+From: Vince Busam <vince@sixpak.org>
+Subject: Fix for slow snd-ali5451 initialization
+Date: Sat, 5 Nov 2005 11:38:03 -0800 (PST)
+Message-ID: <Pine.LNX.4.61.0511051136400.16526@sixpak.sixpak.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hoge (pl663.nas923.ichikawa.nttpc.ne.jp [219.102.240.151])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9103B198
-	for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2005 20:37:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +14,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-先程、あなた様へ近隣在住女性より指名が入りました。詳細になります。
-名前：木村さやか（26）
-タイトル：お酒飲みたい気分です。
-メッセージ：
-今から会えませんか？実は、今日、彼氏と別れたんです。
-１人で居るのが辛くて、今日だけでもいいから、一緒に居てくれないですか？
-http://www.luv2006.tv/?hv0511
-完全無料登録です。サイト内(登録、メールのやり取りすべての利用,
-検索〜出会いまで自由解放しております。)
-※直電話機能をご用意致しましたのでご利用下さい。
-これは貴方様限定のお知らせですので他者には絶対に教えないで下さい！
-不法な請求は一切ございません。
+The snd-ali5451 driver takes 10 seconds to load, which is quite annoying 
+on a laptop that boots every day.  This patch lowers that to a much more 
+managable time, and still works fine on my laptop.
 
+Vince
 
+     Summary: Speed up ali5451 initialization
 
+     The patch speeds up loading the ali5451 driver by lowering the
+     wait time in snd_ali_codec_ready()
 
+     Author: Vince Busam <vince@sixpak.org
+     Signed-off-by: Vince Busam <vince@sixpak.org>
 
-拒否の場合は下記へ
-kyohi0902@yahoo.co.jp
+--- linux-source-2.6.12/sound/pci/ali5451/ali5451.c	2005-10-10 05:12:34.000000000 -0700
++++ linux-source-2.6.12-new/sound/pci/ali5451/ali5451.c	2005-11-05 11:25:11.000000000 -0800
+@@ -399,7 +399,7 @@ static int snd_ali_codec_ready(	ali_t *c
+  	unsigned long end_time;
+  	unsigned int res;
 
+-	end_time = jiffies + 10 * (HZ >> 2);
++	end_time = jiffies + 10 * (HZ >> 6);
+  	do {
+  		res = snd_ali_5451_peek(codec,port);
+  		if (! (res & 0x8000))
+
+-- 
+Vince Busam
+vince@sixpak.org
+http://sixpak.org/vince/
 
 
 -------------------------------------------------------
