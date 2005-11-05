@@ -1,10 +1,14 @@
-From: =?GB2312?B?1cXDwLrn?= <dfjh@atom.com>
-Subject: =?GB2312?B?us/X9w==?=
-Date: Tue, 7 Jun 2005 20:21:10 +0800
-Message-ID: <E1EYN4E-0006U2-O8@mail.sourceforge.net>
-Reply-To: hltkh3@tom.com
-Content-Type: text/plain;charset="GB2312"
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001529]: hardware mixing does not work with spdif
+Date: Sat, 5 Nov 2005 14:24:06 +0100
+Message-ID: <4b846dd9e26501b7d9eff1dbba0a59fd@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D8DF198
+	for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2005 14:24:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,21 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-先生/小姐：
 
-   您好！很高兴认识您。我司有意与您们合作:可长久给您们带来
-巨大的效益,另因合作项目的高度自动化，您们每天只需工作几分钟，
-对您们现有的工作没有影响！若有意，请电邮/电话给我,或请把您的
-联系电话/QQ告诉我，以便更好地与您交流,进一步商谈合作事宜，谢谢！
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1529> 
+======================================================================
+Reported By:                visit0r
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1529
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Unstable
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             11-05-2005 14:24 CET
+Last Modified:              11-05-2005 14:24 CET
+======================================================================
+Summary:                    hardware mixing does not work with spdif
+Description: 
+I'm using SB Live! with s/pdif passthrough for PCM and AC3. 
 
-深圳市公司发展部  张美虹
-网址：http://www.cnhlt.com
-Email: hltzmh@tom.com
-QQ:569691796
-电话：0755-88829928,81519553
+It works fine for a single application when I use 'spdif' as a device, but
+ hardware mixing does not work. It has never worked for me, thus I thought
+
+previously it's just not supported in my card revision for some reason.
+After I upgraded my kernel to 2.6.14, the hardware mixing suddenly started
+to work with the 'default' device. 
+
+Now it stopped working again, 'default' device does not produce sounds at
+all, and I have to use 'spdif' using which hardware mixing does not work
+(only one app may play sounds at once). I have no idea what made it stop,
+possibly some
+Debian Unstable package upgrade broke it.
+
+I'd appreciate any pointers for solving this long standing problem of
+mine.
+
+I have installed a new alsalib (1.0.10rc2) from Debian Experimental, so it
+
+should not be the reason.
+
+Thanks.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-05-05 14:24 visit0r        New Issue                                    
+11-05-05 14:24 visit0r        Distribution              => Debian Unstable 
+11-05-05 14:24 visit0r        Kernel Version            => 2.6.14          
+======================================================================
+
 
 
 
