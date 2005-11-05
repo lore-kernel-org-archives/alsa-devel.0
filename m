@@ -1,14 +1,15 @@
-From: "Loma Frese" <lomafrese@calinst.com>
-Subject: Re: Saoirse Works Very Good
-Date: Fri, 4 Nov 2005 18:36:05 -0500
-Message-ID: <000e01c5e198$8609e080$16c0a8c0@quaky>
+From: Giorgio Padrin <giorgio@mandarinlogiq.org>
+Subject: Re: PXA2xx i2Sound: support for PXA2xx I2S audio
+Date: Sat, 5 Nov 2005 07:47:59 +0100
+Message-ID: <200511050747.59907.giorgio@mandarinlogiq.org>
+References: <200511041152.22570.giorgio@mandarinlogiq.org> <1131104974.10911.41.camel@cearnarfon>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000B_01C5E16E.9D33D880"
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from calinst.com (ALyon-254-1-1-63.w86-193.abo.wanadoo.fr [86.193.0.63])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B708A178
-	for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2005 00:36:05 +0100 (MET)
+In-Reply-To: <1131104974.10911.41.camel@cearnarfon>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +19,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gaetano Desir <alsa-devel@alsa-project.org>
+To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Cc: alsa-devel@lists.sourceforge.net, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Alle 12:49, venerd=C3=AC 4 novembre 2005, Liam Girdwood ha scritto:
+> On Fri, 2005-11-04 at 11:52 +0100, Giorgio Padrin wrote:
+> > I wish to know whether there are other similar works in development.
+>
+> Yes there is. Richard Purdie and I have been working on an ALSA SoC
+> audio layer. It's designed to make audio codec drivers SoC processor
+> independent and provide dynamic power management for each codec.
 
-------=_NextPart_000_000B_01C5E16E.9D33D880
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+This sounds great news; and a kind of organizing framework like that is=20
+welcome  for a widespread audio support of embedded devices under Linux.
+Provided it'll be flexible enough and support desired power optimizations, =
+I'm=20
+willing to cooperate and merge things.
 
-H
-it overpay
-r Meddicati
-it our Pharm
-xpress Sh
-i Qu
-ing for you
-ons - vis
-aE
-op.
-Additional info - http://nutshellquo.omnifacer.info
-
-------=_NextPart_000_000B_01C5E16E.9D33D880
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<TABLE style=3D"PADDING-LEFT: 0px;" cellSpacing=3D0 cellPadding=3D0>
-  <TR style=3D"BORDER: 0px;">
-    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
-size=3D3>H</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
-size=3D3>it overpay</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
-size=3D3>r Meddicati</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
-size=3D3>it our Pharm</FONT></TD><TD></TD>
-    <TD vAlign=3Dbottom style=3D"BORDER-BOTTOM-WIDTH: 0px;" rowSpan=3D2><FONT =
-size=3D3>xpress Sh</FONT></TD><TD></TD>
-  </TR>
-  <TR style=3D"BORDER: 0px;">
-    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>i =
-Qu</FONT></TD>
-    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>ing for =
-you</FONT></TD>
-    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>ons - =
-vis</FONT></TD>
-    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>aE</FO=
-NT></TD>
-    <TD style=3D"MARGIN-TOP: 0px;" vAlign=3Dbottom><FONT size=3D3>op.<=
-/FONT></TD>
-  </TR></TABLE>
-<DIV>&nbsp;</DIV>
-<DIV><FONT size=3D3>Additional info - <A href=3D"http://nutshellquo.=
-omnifacer.info"><FONT face=3DArial size=3D3>http://nutshellquo.omni=
-facer.info</FONT></A></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_000B_01C5E16E.9D33D880--
-
+Giorgio
 
 
 -------------------------------------------------------
