@@ -1,14 +1,27 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001529]: hardware mixing does not work with spdif
-Date: Sat, 5 Nov 2005 14:24:06 +0100
-Message-ID: <4b846dd9e26501b7d9eff1dbba0a59fd@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1 multichannel issue/observation
+Date: Sat, 05 Nov 2005 14:24:15 -0500
+Message-ID: <1131218656.13627.12.camel@mindpipe>
+References: <434E7646.3000507@poeticstudios.com>
+	 <5bdc1c8b0510221502v28a2cbe0ybfe049be2f34e186@mail.gmail.com>
+	 <200510230053.44479.Martin.Wohlleben@gmx.de>
+	 <5bdc1c8b0510221655r4d28430fr7b80f5403d8daaa4@mail.gmail.com>
+	 <435AF023.70903@woh.rr.com>
+	 <5bdc1c8b0510221957s278a28a7n8ead2de1e0760cf6@mail.gmail.com>
+	 <435B74E9.20308@woh.rr.com>
+	 <20051023180312.GA4544@mobilat.informatik.uni-bremen.de>
+	 <5bdc1c8b0510231123h5ed64b38nd178ce9dfcb13f87@mail.gmail.com>
+	 <1130097599.11980.54.camel@mindpipe>
+	 <5bdc1c8b0510231318j4e9db7b0x1106e9b240329249@mail.gmail.com>
+	 <435CFC95.6000703@vt.edu> <1130170444.16563.22.camel@mindpipe>
+	 <4362CBD7.8080606@vt.edu> <1130552828.32367.66.camel@mindpipe>
+	 <43656175.3040303@vt.edu> <1130719826.32101.2.camel@mindpipe>
+	 <43664057.3000205@vt.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D8DF198
-	for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2005 14:24:07 +0100 (MET)
+In-Reply-To: <43664057.3000205@vt.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +31,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Rick Wright <riwright@vt.edu>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2005-10-31 at 11:03 -0500, Rick Wright wrote:
+> > > These machines are basically clones and the Audigy2 card is in the
+> > > same PCI slot in both machines.
+> > > 
+> > >     
+> > 
+> > Sorry I should have been more specific.  I need 
+> > "lspci -vn | grep -A1 0401" output for both machines.
+> > 
+> >   
+> Ok, here they are.
+> 
+> Rick
+> plain text document attachment (lspci-output-no-side-channels.txt)
+> 00:0b.0 Class 0401: 1102:0004 (rev 04)
+> 	Subsystem: 1102:1005
+> plain text document attachment
+> (lspci-output-side-channels-working.txt)
+> 00:0b.0 Class 0401: 1102:0004 (rev 04)
+> 	Subsystem: 1102:2001
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1529> 
-======================================================================
-Reported By:                visit0r
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1529
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Unstable
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             11-05-2005 14:24 CET
-Last Modified:              11-05-2005 14:24 CET
-======================================================================
-Summary:                    hardware mixing does not work with spdif
-Description: 
-I'm using SB Live! with s/pdif passthrough for PCM and AC3. 
+The driver currently detects the card with the non-working side channels
+as an Audigy 2 EX.  Is this correct?  Do you know whether all Audigy2 EX
+cards have side channels?
 
-It works fine for a single application when I use 'spdif' as a device, but
- hardware mixing does not work. It has never worked for me, thus I thought
+Anyway, here's a patch to enable the side channels.
 
-previously it's just not supported in my card revision for some reason.
-After I upgraded my kernel to 2.6.14, the hardware mixing suddenly started
-to work with the 'default' device. 
+Enable side surround channels for Audigy2 EX.  Tested by Rick Wright
+<riwright@vt.edu>.
 
-Now it stopped working again, 'default' device does not produce sounds at
-all, and I have to use 'spdif' using which hardware mixing does not work
-(only one app may play sounds at once). I have no idea what made it stop,
-possibly some
-Debian Unstable package upgrade broke it.
+Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-I'd appreciate any pointers for solving this long standing problem of
-mine.
-
-I have installed a new alsalib (1.0.10rc2) from Debian Experimental, so it
-
-should not be the reason.
-
-Thanks.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-05-05 14:24 visit0r        New Issue                                    
-11-05-05 14:24 visit0r        Distribution              => Debian Unstable 
-11-05-05 14:24 visit0r        Kernel Version            => 2.6.14          
-======================================================================
+--- alsa-kernel/pci/emu10k1/emu10k1_main.c~	2005-10-28 17:20:22.000000000 -0400
++++ alsa-kernel/pci/emu10k1/emu10k1_main.c	2005-11-05 14:22:34.000000000 -0500
+@@ -680,6 +680,7 @@
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+ 	 .ca0151_chip = 1,
++	 .spk71 = 1,
+ 	 .spdif_bug = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10021102,
+ 	 .driver = "Audigy2", .name = "Audigy 2 Platinum [SB0240P]", 
 
 
 
