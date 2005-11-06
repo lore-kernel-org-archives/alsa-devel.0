@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Mon, 7 Nov 2005 00:02:13 +0100
-Message-ID: <aa0abf8001acca25752327562ed1d0b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001323]: MIC jack not supported
+Date: Mon, 7 Nov 2005 00:06:40 +0100
+Message-ID: <1136b1f3849c2d1f4dbf4ec4b2c63113@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FAD0171
-	for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2005 00:02:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4637171
+	for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2005 00:06:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1323> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                submax82
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1331
+Issue ID:                   1323
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   feature
 Priority:                   normal
 Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398-x86_64
+Distribution:               debian 3.1 sarge
+Kernel Version:             linux 2.6.12.4
 ======================================================================
-Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              11-07-2005 00:02 CET
+Date Submitted:             08-08-2005 22:10 CEST
+Last Modified:              11-07-2005 00:06 CET
 ======================================================================
-Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
+Summary:                    MIC jack not supported
 Description: 
-I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
-integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack like the pci version of the sb live 24
-bit.
-
-With this card I cannot hear any sound that come from line-in.
-For Example I have a tv card, its output audio go into line-in: result is
-I cannot hear nothing from the tv, I can only see channels without audio.
-
-The "Capture feedback into playback" in the mixer change the mic's
-volume.
-There is nothing that change line-in's volume.
+The problem is simple but important! The alsamixer do not show the volume
+of the MIC therefore this do not work!
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 10-19-05 19:13 
+ qqtortqq - 09-25-05 04:00 
 ----------------------------------------------------------------------
-1) Alsa is installed via module. Actually I've kernel v2.6.12.9
-2) Advanced Linux Sound Architecture Driver Version 1.0.9 (Sun May 29
-07:31:02 2005 UTC).
-3) 1.0.9
-4)
-0 [CA0106         ]: CA0106 - CA0106
-                     MSI K8N Diamond MB [SB0438] at 0xde00 irq 16
-1 [Camera         ]: USB-Audio - Camera
-                     Camera at usb-0000:00:02.0-8, full speed
+Anything I can provide to help you get this working with sb live 24 bit?
 
 ----------------------------------------------------------------------
- jcdutton - 11-07-05 00:02 
+ jcdutton - 11-07-05 00:06 
 ----------------------------------------------------------------------
-The version of alsa-driver you have is too old.
-Support for your sound card was only added recently.
-Please upgrade your version of alsa-driver.
-If you compiled your own kernel, then simply installing alsa-driver will
-update them for you.
+You seem to have drivers up to date enough.
+The controls to adjust are the
+Mic/Line in
+SPDIF out
+
+These are mutually exclusive. I.e. if SPDIF out is un-muted, Mic/Line in
+will not work.
+To capture from mic, select Mic on the Mic/Line in control in alsamixer
+playback windows, and then I2S in on the capture window.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 01:27 Cimmo          New Issue                                    
-08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
-08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
-08-13-05 01:41 jcdutton       Note Added: 0005798                          
-08-13-05 01:42 jcdutton       Status                   assigned => feedback
-08-13-05 18:30 Cimmo          Note Added: 0005807                          
-08-31-05 15:14 Cimmo          Note Added: 0005989                          
-08-31-05 18:59 rlrevell       Note Added: 0005991                          
-09-10-05 10:31 jcdutton       Note Added: 0006107                          
-10-19-05 19:13 Cimmo          Note Added: 0006496                          
-11-07-05 00:02 jcdutton       Note Added: 0006610                          
+08-08-05 22:10 submax82       New Issue                                    
+08-08-05 22:10 submax82       Distribution              => debian 3.1 sarge
+08-08-05 22:10 submax82       Kernel Version            => linux 2.6.12.4  
+08-08-05 22:59 submax82       Issue Monitored: submax82                    
+08-08-05 23:00 submax82       Note Added: 0005714                          
+08-10-05 05:21 rlrevell       Note Added: 0005746                          
+08-12-05 23:09 jcdutton       Note Added: 0005790                          
+08-12-05 23:09 jcdutton       Status                   assigned => feedback
+08-13-05 14:28 submax82       Note Added: 0005804                          
+08-13-05 14:33 submax82       Issue End Monitor: submax82                    
+08-17-05 17:02 submax82       Note Added: 0005839                          
+09-10-05 10:39 jcdutton       Note Added: 0006109                          
+09-15-05 06:44 qqtortqq       Note Added: 0006194                          
+09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
+09-25-05 04:00 qqtortqq       Note Added: 0006383                          
+11-07-05 00:06 jcdutton       Note Added: 0006611                          
 ======================================================================
 
 
