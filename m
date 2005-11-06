@@ -1,88 +1,42 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001486]: headphone control disappeared
-Date: Sun, 6 Nov 2005 16:58:26 +0100
-Message-ID: <f93d1c1c39a31e2a867beb8f9a02549d@bugtrack.alsa-project.org>
+From: "Jack O'Quin" <joq@io.com>
+Subject: Re: the big jack bug... > crappy audio on XRUNS
+Date: Sun, 06 Nov 2005 11:25:56 -0600
+Message-ID: <7qek5tadsr.fsf@io.com>
+References: <436E25DB.2070804@inwind.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2CF7172
-	for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2005 16:58:26 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+In-Reply-To: <436E25DB.2070804@inwind.it> (federico's message of "Sun, 06
+ Nov 2005 16:48:43 +0100")
+Sender: jackit-devel-admin@lists.sourceforge.net
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: federico <xaero@inwind.it>
+Cc: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
+federico <xaero@inwind.it> writes:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1486
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-20-2005 11:07 CEST
-Last Modified:              11-06-2005 16:58 CET
-======================================================================
-Summary:                    headphone control disappeared
-Description: 
-The submitter of Ubuntu bug report 18024 reports that the "Headphone"
-control disappeared when he upgraded from linux-image-2.6.10-5-386
-(2.6.10-34.7, from
-hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
+> it happens randomly, while I play a soft synth, that jack XRUNs once,
+> and the audio become crappy, noisy, like a kinda of digital
+> effect....bit crusher?
+>
+> then all synthesizers (all audio apps) sound the same sh*t...
+> i tried recording with ardour the output, and the output is clean, so
+> I guess is a problem of sync or something that has to do with the
+> hardware (soundcard).
 
-$cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
-irq 7
+This is likely a hardware problem.
 
-See
-
-    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
-
-for additional info.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-20-05 14:51 
-----------------------------------------------------------------------
-Too old kernel to debug.  The bug regarding STAC9751 should have been
-already fixed in the recent version.
-
-----------------------------------------------------------------------
- apeeters - 11-06-05 16:58 
-----------------------------------------------------------------------
-I am the submitter of the Ubuntu bug. I used a pristine 2.6.14 kernel and
-the Headphone control does not appear. Necessary information is attached.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-20-05 11:07 jdthood        New Issue                                    
-10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
-10-20-05 14:51 tiwai          Note Added: 0006503                          
-11-06-05 16:58 apeeters       Note Added: 0006607                          
-======================================================================
-
-
+Have you reported it on alsa-devel?  What card do you have?
+-- 
+  joq
 
 
 -------------------------------------------------------
