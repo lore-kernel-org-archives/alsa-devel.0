@@ -1,16 +1,13 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Question: setting up the hardware for alsa
-Date: Sat, 05 Nov 2005 19:32:49 -0500
-Message-ID: <1131237169.6781.15.camel@mindpipe>
+Date: Sat, 05 Nov 2005 19:45:02 -0500
+Message-ID: <1131237903.6781.22.camel@mindpipe>
 References: <b15982770511040749k3ccbaa07gcbd7bac05689a8e7@mail.gmail.com>
-	 <436B88BE.1090106@superbug.co.uk>
-	 <b15982770511040933t2ee5ec9dke8b898929cb287e1@mail.gmail.com>
-	 <20051105233443.GA10745@tecr>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051105233443.GA10745@tecr>
+In-Reply-To: <b15982770511040749k3ccbaa07gcbd7bac05689a8e7@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,28 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sasha Khapyorsky <sashakh@gmail.com>
-Cc: David Smoot <davidsmoot@gmail.com>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
+To: David Smoot <davidsmoot@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-11-06 at 01:34 +0200, Sasha Khapyorsky wrote:
-> On 11:33 Fri 04 Nov     , David Smoot wrote:
-> > 
-> > I can compile and run the first listing, it just prints out some variables
-> > set up by the soundalib. But the second listing that actually calls
-> > "snd_pcm_open"
-> > fails because it cannot open the default device.
+On Fri, 2005-11-04 at 09:49 -0600, David Smoot wrote:
+> 5.  I copied libasound to my libraries folder.
 > 
-> You probably need to copy (create) some minimalistic configuration set
-> (such as in alsa-lib/src/conf ) in order to use "default" or "hw" device
-> names.
+> At this point I at least knew libasound was OK because I could
+> execute some simple code that listed libasound data types and
+> parameters.
+> 
+> But I can't open any devices and talk to them.  I know I am missing
+> some kind of crucial step in setting up the hw:0,0 device but I can't
+> seem to figure out the next step.  I've read tutorials, googled, but I
+> am stuck.  If someone would point me to the proper documents I would
+> be grateful.
 > 
 
-Actually you should not have to do this - alsa-lib should open the
-file /usr/share/alsa/cards/CA0106.conf which defines the default PCM for
-this card.
+Ah, this is the problem.  It's not sufficient to just copy the libasound
+binary into your LD_LIBRARY_PATH.  Alsa-lib needs these files too:
 
-Try stracing your app and verify that it's trying to open that file.
+/usr/share/alsa/alsa.conf
+/usr/share/alsa/pcm/*
+/usr/share/alsa/cards/*
+
+Why not just run "make install" instead of trying to install alsa-lib by
+hand?
 
 Lee
 
