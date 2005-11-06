@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001532]: Mute controls are gone, therefore unmuting impossible and no sound: NM256,AC97
-Date: Sun, 6 Nov 2005 19:32:47 +0100
-Message-ID: <43fac3f67bdc364c20b5e0460e514a19@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [linux-audio-dev] the big jack bug... > crappy audio on XRUNS
+Date: Sun, 06 Nov 2005 13:37:42 -0500
+Message-ID: <1131302264.13599.8.camel@mindpipe>
+References: <436E25DB.2070804@inwind.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24A4F129
-	for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2005 19:32:48 +0100 (MET)
+In-Reply-To: <436E25DB.2070804@inwind.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>
+Cc: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2005-11-06 at 16:48 +0100, federico wrote:
+> it happens randomly, while I play a soft synth, that jack XRUNs once, 
+> and the audio become crappy, noisy, like a kinda of digital 
+> effect....bit crusher?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1532> 
-======================================================================
-Reported By:                sstefan
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1532
-Category:                   PCI - nm256
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             11-06-2005 19:32 CET
-Last Modified:              11-06-2005 19:32 CET
-======================================================================
-Summary:                    Mute controls are gone, therefore unmuting
-impossible and no sound: NM256,AC97
-Description: 
-Upgrading from Linux 2.6.10 to 2.6.13, I was no longer able to use the alsa
-nm256 driver, because the mute controls (e.g. for Master and PCM output)
-disappeared from alsamixer or kmix. The chip is muted by default, so upon
-playing nothing is output to the speakers, and there's no way to unmute
-the channels.
-======================================================================
+It's probably a driver bug but could also be a PCI latency issue.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-06-05 19:32 sstefan        New Issue                                    
-11-06-05 19:32 sstefan        Distribution              => Debian          
-11-06-05 19:32 sstefan        Kernel Version            => 2.6.13          
-======================================================================
+Try setpci -d CARD:ID latency_timer=40 where CARD:ID is the PCI id of
+the card obtained from lspci.  Do this immediately after loading the
+driver and before playing any audio.
 
+Lee
 
 
 
