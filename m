@@ -1,8 +1,14 @@
-From: John Rigg <ad@sound-man.co.uk>
-Subject: alsa-utils-1.0.10rc2 compile failure
-Date: Sun, 06 Nov 2005 16:05:33 +0000
-Message-ID: <E1EYn1R-0001GR-2H@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001486]: headphone control disappeared
+Date: Sun, 6 Nov 2005 16:58:26 +0100
+Message-ID: <f93d1c1c39a31e2a867beb8f9a02549d@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2CF7172
+	for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2005 16:58:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,45 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I just tried compiling alsa-utils-1.0.10rc2 and it failed with the following 
-error:
 
-make[2]: Entering directory `/home/jqr/alsa-1.0.10/alsa-utils-1.0.10rc2/alsaconf/po'
-mv: cannot stat `t-ja.gmo': No such file or directory
-make[2]: *** [ja.gmo] Error 1
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1486
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             10-20-2005 11:07 CEST
+Last Modified:              11-06-2005 16:58 CET
+======================================================================
+Summary:                    headphone control disappeared
+Description: 
+The submitter of Ubuntu bug report 18024 reports that the "Headphone"
+control disappeared when he upgraded from linux-image-2.6.10-5-386
+(2.6.10-34.7, from
+hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
 
-I tried again with --disable-nls and it got further but failed here:
+$cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
+                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
+irq 7
 
-aplay.c: In function 'main':
-aplay.c:365: error: 'LC_ALL' undeclared (first use in this function)
-aplay.c:365: error: (Each undeclared identifier is reported only once
-aplay.c:365: error: for each function it appears in.)
-aplay.c: In function 'voc_pcm_write':
-aplay.c:1335: warning: pointer targets in passing argument 1 of 'pcm_write' differ in signedness
-aplay.c: In function 'voc_write_silence':
-aplay.c:1358: warning: pointer targets in passing argument 1 of 'voc_pcm_write' differ in signedness
-aplay.c: In function 'voc_pcm_flush':
-aplay.c:1378: warning: pointer targets in passing argument 1 of 'pcm_write' differ in signedness
-aplay.c: In function 'playback_go':
-aplay.c:1875: warning: pointer targets in passing argument 1 of 'pcm_write' differ in signedness
-aplay.c:1904: warning: pointer targets in passing argument 1 of 'pcm_write' differ in signedness
-aplay.c: In function 'capture_go':
-aplay.c:1929: warning: pointer targets in passing argument 1 of 'pcm_read' differ in signedness
-aplay.c: In function 'playbackv_go':
-aplay.c:2047: warning: pointer targets in assignment differ in signedness
-aplay.c: In function 'capturev_go':
-aplay.c:2094: warning: pointer targets in assignment differ in signedness
-make[1]: *** [aplay.o] Error 1
-make[1]: Leaving directory `/home/jqr/alsa-1.0.10/alsa-utils-1.0.10rc2/aplay'
-make: *** [all-recursive] Error 1
+See
 
-System is Debian unstable amd64, gcc-4.0_4.0.2-2.
-Any ideas why this is happening?
+    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
 
-John
+for additional info.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 10-20-05 14:51 
+----------------------------------------------------------------------
+Too old kernel to debug.  The bug regarding STAC9751 should have been
+already fixed in the recent version.
+
+----------------------------------------------------------------------
+ apeeters - 11-06-05 16:58 
+----------------------------------------------------------------------
+I am the submitter of the Ubuntu bug. I used a pristine 2.6.14 kernel and
+the Headphone control does not appear. Necessary information is attached.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-20-05 11:07 jdthood        New Issue                                    
+10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
+10-20-05 14:51 tiwai          Note Added: 0006503                          
+11-06-05 16:58 apeeters       Note Added: 0006607                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
