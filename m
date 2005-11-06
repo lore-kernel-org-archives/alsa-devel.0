@@ -1,31 +1,45 @@
-From: "aiqing" <aiqing@l163.com>
-Subject: =?GB2312?B?0NS9zNP9tefTsMasOsPit9HK1L+0?=
-Date: Sun, 6 Nov 2005 21:15:46 +0800
-Message-ID: <E1EYkN6-0008Iw-0j@mail.sourceforge.net>
-Reply-To: aiqing@l163.com
-Content-Type: text/plain;charset="GB2312"
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+From: federico <xaero@inwind.it>
+Subject: the big jack bug... > crappy audio on XRUNS
+Date: Sun, 06 Nov 2005 16:48:43 +0100
+Message-ID: <436E25DB.2070804@inwind.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+Sender: jackit-devel-admin@lists.sourceforge.net
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
+it happens randomly, while I play a soft synth, that jack XRUNs once, 
+and the audio become crappy, noisy, like a kinda of digital 
+effect....bit crusher?
 
+then all synthesizers (all audio apps) sound the same sh*t...
+i tried recording with ardour the output, and the output is clean, so I 
+guess is a problem of sync or something that has to do with the hardware 
+(soundcard).
 
-您好！
+in order to record this noise, i had to connect the soundcard output in 
+its input and record it via analog in: 
+http://xaero.ath.cx/jackbug_stereo.wav.bz2 (it is a stereo file, with 
+the clean track panned on the left, and the dirty one on the right).
 
-性教育电影片，免费试看三天！
+i hope it could be useful to debug the problem...
+what other information I can provide useful for debug?
+note that this happens with many version of alsa (1.0.9b, 1.0.10rc2, 
+1.0.7 or less) and with many kernels (gentoo-sources (slightly patched 
+for speed improvement), ck-sources, ck-sources+realtime-lsm)
 
-另有超多“激情电影”免费观看，大好机会别错过！
-
-地址：http://www.abandon.cn
+i hope to solve this problem, since my audio desktop is unusable as si, 
+since audio crasher after playng for just 5 minutes :(
 
 
 -------------------------------------------------------
