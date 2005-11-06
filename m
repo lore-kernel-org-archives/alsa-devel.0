@@ -1,45 +1,56 @@
-From: federico <xaero@inwind.it>
-Subject: the big jack bug... > crappy audio on XRUNS
-Date: Sun, 06 Nov 2005 16:48:43 +0100
-Message-ID: <436E25DB.2070804@inwind.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-Sender: jackit-devel-admin@lists.sourceforge.net
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu
+From: John Rigg <ad@sound-man.co.uk>
+Subject: alsa-utils-1.0.10rc2 compile failure
+Date: Sun, 06 Nov 2005 16:05:33 +0000
+Message-ID: <E1EYn1R-0001GR-2H@localhost.localdomain>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-it happens randomly, while I play a soft synth, that jack XRUNs once, 
-and the audio become crappy, noisy, like a kinda of digital 
-effect....bit crusher?
+I just tried compiling alsa-utils-1.0.10rc2 and it failed with the following 
+error:
 
-then all synthesizers (all audio apps) sound the same sh*t...
-i tried recording with ardour the output, and the output is clean, so I 
-guess is a problem of sync or something that has to do with the hardware 
-(soundcard).
+make[2]: Entering directory `/home/jqr/alsa-1.0.10/alsa-utils-1.0.10rc2/alsaconf/po'
+mv: cannot stat `t-ja.gmo': No such file or directory
+make[2]: *** [ja.gmo] Error 1
 
-in order to record this noise, i had to connect the soundcard output in 
-its input and record it via analog in: 
-http://xaero.ath.cx/jackbug_stereo.wav.bz2 (it is a stereo file, with 
-the clean track panned on the left, and the dirty one on the right).
+I tried again with --disable-nls and it got further but failed here:
 
-i hope it could be useful to debug the problem...
-what other information I can provide useful for debug?
-note that this happens with many version of alsa (1.0.9b, 1.0.10rc2, 
-1.0.7 or less) and with many kernels (gentoo-sources (slightly patched 
-for speed improvement), ck-sources, ck-sources+realtime-lsm)
+aplay.c: In function 'main':
+aplay.c:365: error: 'LC_ALL' undeclared (first use in this function)
+aplay.c:365: error: (Each undeclared identifier is reported only once
+aplay.c:365: error: for each function it appears in.)
+aplay.c: In function 'voc_pcm_write':
+aplay.c:1335: warning: pointer targets in passing argument 1 of 'pcm_write' differ in signedness
+aplay.c: In function 'voc_write_silence':
+aplay.c:1358: warning: pointer targets in passing argument 1 of 'voc_pcm_write' differ in signedness
+aplay.c: In function 'voc_pcm_flush':
+aplay.c:1378: warning: pointer targets in passing argument 1 of 'pcm_write' differ in signedness
+aplay.c: In function 'playback_go':
+aplay.c:1875: warning: pointer targets in passing argument 1 of 'pcm_write' differ in signedness
+aplay.c:1904: warning: pointer targets in passing argument 1 of 'pcm_write' differ in signedness
+aplay.c: In function 'capture_go':
+aplay.c:1929: warning: pointer targets in passing argument 1 of 'pcm_read' differ in signedness
+aplay.c: In function 'playbackv_go':
+aplay.c:2047: warning: pointer targets in assignment differ in signedness
+aplay.c: In function 'capturev_go':
+aplay.c:2094: warning: pointer targets in assignment differ in signedness
+make[1]: *** [aplay.o] Error 1
+make[1]: Leaving directory `/home/jqr/alsa-1.0.10/alsa-utils-1.0.10rc2/aplay'
+make: *** [all-recursive] Error 1
 
-i hope to solve this problem, since my audio desktop is unusable as si, 
-since audio crasher after playng for just 5 minutes :(
+System is Debian unstable amd64, gcc-4.0_4.0.2-2.
+Any ideas why this is happening?
+
+John
 
 
 -------------------------------------------------------
