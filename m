@@ -1,22 +1,14 @@
-From: "D. Hugh Redelmeier" <hugh@mimosa.com>
-Subject: Re: [ALSA - tools 0001343]: bitops not 64bit clean
-Date: Sun, 6 Nov 2005 17:56:30 -0500 (EST)
-Message-ID: <Pine.LNX.4.61.0511061626150.16077@redshift.mimosa.com>
-References: <ad23d0cdd86a56c2aa486fb59a4801ae@bugtrack.alsa-project.org>
-Reply-To: "D. Hugh Redelmeier" <hugh@mimosa.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001320]: CA0106 with Soundblaster 24-bit live does not allow recording
+Date: Sun, 6 Nov 2005 23:59:56 +0100
+Message-ID: <3984bea9545bf0eaf2c1b7d3c4afffe6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newpack.xtdnet.nl (newpack.xtdnet.nl [193.110.157.75])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B508171
-	for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2005 22:56:47 +0100 (MET)
-Received: from gw-c.mimosa.com (CPE00606767ed59-CM000f9fa81660.cpe.net.cable.rogers.com [69.199.79.248])
-	by newpack.xtdnet.nl (8.13.1/8.13.1) with ESMTP id jA6LucvK020332
-	for <alsa-devel@alsa-project.org>; Sun, 6 Nov 2005 22:56:41 +0100
-Received: from redshift.mimosa.com (redshift.mimosa.com [192.139.70.107])
-	by gw-c.mimosa.com (8.12.8/8.12.8) with ESMTP id jA6LuV4a020324
-	for <alsa-devel@alsa-project.org>; Sun, 6 Nov 2005 16:56:31 -0500
-In-Reply-To: <ad23d0cdd86a56c2aa486fb59a4801ae@bugtrack.alsa-project.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 319F2144
+	for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2005 23:59:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,132 +21,107 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-| From: bugtrack@alsa-project.org
-| Date: Fri, 26 Aug 2005 14:42:44 +0200
 
-| The following issue has been RESOLVED.
-| ======================================================================
-| <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1343> 
-| ======================================================================
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1320> 
+======================================================================
+Reported By:                ammiellodebar
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1320
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Arch Linux
+Kernel Version:             
+======================================================================
+Date Submitted:             08-08-2005 06:03 CEST
+Last Modified:              11-06-2005 23:59 CET
+======================================================================
+Summary:                    CA0106 with Soundblaster 24-bit live does not allow
+recording
+Description: 
+When I use the line in on the card, it will not capture unless i crank up
+the mixer to near peak, and then its garbled and distorted sound, my
+capture is up all the way and i know its not a dumb mistake of mine
 
-| The bitops functions (set_bit and associated) that ld10k1 use come from
-| the linux kernel, and assume that longs are 32bit only, causing a buffer
-| overflow of the bit buffer.
-| 
-| The attached patch fixes the bitops to be independent of the size of
-| longs, and is confirmed to fix the bug on my box.
 
-| diff -ur alsa-tools-1.0.9/ld10k1/src/bitops.h
-| alsa-tools-1.0.9.mine/ld10k1/src/bitops.h
-| --- alsa-tools-1.0.9/ld10k1/src/bitops.h	2005-03-18 08:41:02.000000000
+======================================================================
 
-| -	addr += nr >> 5;
-| -	mask = 1 << (nr & 0x1f);
-| +	addr += nr >> (sizeof(long) + 1);
-| +	mask = 1 << (nr & (sizeof(long) * 8 - 1));
+----------------------------------------------------------------------
+ qqtortqq - 10-31-05 03:10 
+----------------------------------------------------------------------
+tort@tort:~$ lspci -vn | grep -1 0401
 
-[A similar change appears two other places in the bitops.h.]
+0000:00:0b.0 0401: 1102:0007
+        Subsystem: 1102:1006
+tort@tort:~$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc2.
+Compiled on Oct 11 2005 for kernel 2.6.12.2.
+tort@tort:~$ cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! 7.1 24bit [SB0410] at 0xd400 irq 10
 
-You cans see this in CVS:
-  http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-tools/ld10k1/src/bitops.h?rev=1.2&view=log
+It is a creative live 24-bit 0410.  
 
-This patch looks very wrong to me.  The original code used 5 because
-it is the base 2 log of the number of bits in an unsigned long
-(thought to be always 32) and 0x1f because it is a mask with the
-length of that same 5.
+This is the product listing at the retailer I bought it from:
+http://shop3.outpost.com/product/4219514?site=sr:SEARCH:MAIN_RSLT_PG
 
-When sizeof(unsigned long) == 4:
-	sizeof(long) + 1 == 5
-and
-	log2(sizeof(unsigned long) * 8) == 5
-so the new code should work in this case.
+http://www.ewiz.com/detail.php?name=SCSB0410VP
+That is a picture of the card, albeit a crummy one.  I pulled my computer
+out and checked- I was mistaken on the number of jacks the card has- it
+only has 4 as is shown in the picture.
 
-When sizeof(unsigned long) == 8
-	sizeof(long) + 1 == 9
-and
-	log2(sizeof(unsigned long) * 8) == 6
-so the new code should not work in this case.
+http://www.emaxasp.com/product_images/CE34SB0410B.jpg
+That is a better picture.  If you need me to pull mine out to look at
+chipset identifiers or anything, let me know.
 
-If this code actually works on a system with sizeof(long) == 8, then
-something very funny is going on.
+----------------------------------------------------------------------
+ jcdutton - 11-06-05 23:59 
+----------------------------------------------------------------------
+The mic/Line-in is shared with the spdif in/out jack.
+So, you can either do mic/line-in using the Mic/Line in control in the
+playback display of alsamixer. You then go to the capture display of
+alsamixer to select the input.
+For min/line-in select I2S input.
 
-I don't know anything about how these functions are used, so I cannot
-say what the correct fix is.
+For spdif in/out jack, unmute the "spdif out" control. This will disable
+mic/line-in and enable spdif out via the special external optical in/out
+connector.
 
-As rlrevell said in the bugtrack entry, the right change might be to
-use type u32 rather than long.
+There are currently no volume controls for mic/line-in volume. They are
+just set at the loudest setting that you can have without distortion.
 
-Alternatively, you need a way to reference log2(sizeof(long) * 8).
-Perhaps this is in some header.  It is kind of hard to calculate lg2
-in a manifest constant expression.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-08-05 06:03 ammiellodebar  New Issue                                    
+08-08-05 06:03 ammiellodebar  Distribution              => Arch Linux      
+08-09-05 04:13 ammiellodebar  Note Added: 0005717                          
+08-12-05 23:11 jcdutton       Note Added: 0005791                          
+08-12-05 23:11 jcdutton       Status                   assigned => feedback
+08-13-05 03:40 ammiellodebar  Note Added: 0005800                          
+08-21-05 23:56 ammiellodebar  Note Added: 0005887                          
+08-21-05 23:56 ammiellodebar  Note Edited: 0005717                         
+09-10-05 10:36 jcdutton       Note Added: 0006108                          
+09-10-05 18:15 ammiellodebar  Note Added: 0006124                          
+09-15-05 06:37 qqtortqq       Note Added: 0006192                          
+09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
+10-12-05 06:45 qqtortqq       Note Added: 0006461                          
+10-23-05 19:37 jcdutton       Note Added: 0006513                          
+10-30-05 03:54 qqtortqq       Note Added: 0006572                          
+10-30-05 20:57 jcdutton       Status                   feedback => assigned
+10-30-05 20:58 jcdutton       Note Added: 0006575                          
+10-30-05 20:58 jcdutton       Status                   assigned => feedback
+10-31-05 03:10 qqtortqq       Note Added: 0006580                          
+11-06-05 23:59 jcdutton       Note Added: 0006609                          
+======================================================================
 
-UNTESTED CODE:
-/* lg2_ulong_bits: log-base-2 of the number of bits in an unsigned long.
- * Assumes:
- * (1) a char is 8 bits (almost always true, but not required by C)
- * (2) sizeof(unsigned long) is a power of two (almost always true; assumed
- *     by other parts of the code)
- * (3) sizeof(unsigned long) is at least 4 (guaranteed by C and (1))
- * (4) sizeof(unsigned long) is at most 32 (likely true for a long while)
- */
-#define lg2_ulong_bits (5 + \
-	(sizeof(unsigned long) > 4) + \
-	(sizeof(unsigned long) > 8) + \
-	(sizeof(unsigned long) > 16))
 
-| -	addr += nr >> 5;
-| -	mask = 1 << (nr & 0x1f);
-| +	addr += nr >> lg2_ulong_bits;
-| +	mask = 1 << (nr & (sizeof(unsigned long) * 8 - 1));
-
-There is a SECOND bug in this code.  The mask is declared to be of
-type int but should be of type unsigned long.
-
-The assignment to mask is also wrong:  the "1" being shifted should
-actually be "1UL".  Otherwise the shift is done with an int and will
-get the wrong value if sizeof(int) != sizeof(unsigned long).
-Technically, but not practically, an int overflow results in undefined
-behavior, according to the C standard.
-
-Similar changes are needed in the other *_bit functions.
-
-NOTE: I am new to the internals to alsa.  I only noticed this because
-I just read the (old!) mail to which I am replying.
-
-I did a quick look at the ld10k1/src directory in CVS.  The first file
-that referred to a *_bit function was dl10k1.c.  It seems to include
-<bitops.h>, not "bitops.h".  Normally, this would be the system
-header file (depending on the flags used to invoke the C compiler).
-On my system, Fedora Core 4 on x86_64, there is no <bitops.h> but
-there is an <asm/bitops.h>.  So: I don't know what header would be
-used.
-
-The <asm/bitops.h> versions are atomic: they use lock prefixes.
-Is this what ld10k1 wants?  Most single-threaded userland code doesn't
-need this.  The code in "bitops.h" doesn't seem to be coded to be
-atomic.  If so, I think that the naming convention in the kernel should be
-followed: use names prefixed by __.  I admit that I don't like this
-convention, but it has been adopted in the kernel.  I further admit
-that the C standard reserves names starting with __ for the C
-implementation -- one of many things with which the kernel plays fast and
-loose.
-
-I would also recommend using <asm/bitops.h>.  Why not let the kernel
-coders make sure that the code is correct and efficient?  I'm not sure
-that it mixes with glibc and hence normal userland code.  So this
-might not be possible.
-
-If you don't wish to use the kernel implementation, I strongly
-recommend that you use names distinct from what the kernel uses.  This
-will confuse readers less.
-
-================
-
-Will some ALSA developer work on this?  I'm willing to help, but I
-hope not to have to build or test ALSA.
-
-BTW: thanks to the team for producing such a useful product for all of
-us.
 
 
 -------------------------------------------------------
