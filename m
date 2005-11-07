@@ -1,41 +1,53 @@
-From: =?ISO-8859-1?Q?Rafael_Esp=EDndola?= <rafael.espindola@gmail.com>
-Subject: alc861
-Date: Mon, 7 Nov 2005 17:35:30 -0200
-Message-ID: <564d96fb0511071135x5e57e26cyf3f6f886e6acae72@mail.gmail.com>
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: [Alsa-devel] Re: +
+ v4l-720-alsa-support-for-saa7134-that-should-work-fix.patch added to -mm
+ tree
+Date: Mon, 7 Nov 2005 11:48:43 -0800
+Message-ID: <20051107114843.0a476d90.akpm@osdl.org>
+References: <200511060743.jA67hpZa018948@shell0.pdx.osdl.net>
+	<20051106001249.48d3ade0.akpm@osdl.org>
+	<1131301995.13599.5.camel@mindpipe>
+	<1131344803.10094.8.camel@localhost>
+	<1131377615.8383.9.camel@mindpipe>
+	<s5h4q6opi5t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from wproxy.gmail.com (wproxy.gmail.com [64.233.184.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91C8118A
-	for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2005 20:35:32 +0100 (MET)
-Received: by wproxy.gmail.com with SMTP id 70so347788wra
-        for <alsa-devel@alsa-project.org>; Mon, 07 Nov 2005 11:35:31 -0800 (PST)
-Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S965190AbVKGTtT@vger.kernel.org>
+In-Reply-To: <s5h4q6opi5t.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: rlrevell@joe-job.com, mchehab@brturbo.com.br, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, nshmyrev@yandex.ru, v4l@cerqueira.org
 List-Id: alsa-devel@alsa-project.org
 
-realtek has an altered version of alsa 1.09b with support for alc861.
-It is in ftp://61.56.86.122/pc/hda/alc880d/realtek-linux-audiopack-3.4-9.ta=
-r.bz2.
+Takashi Iwai <tiwai@suse.de> wrote:
+>
+> > OK, a brief review:
+>  > 
+>  >  - Why couldn't you use ALSA's DMA API?
+> 
+>  This is OK, IMO.  Basically, it's up to the driver.
+> 
+> 
+>  >  - The DMA must be stopped and started in the trigger callback, not the
+>  > prepare callback.
+>  > 
+>  >  - If this device lacks a volume control alsa-lib can emulate it in
+>  > software, just create a proper /usr/share/alsa/cards/your_card.conf
+>  > file.
+>  > 
+>  >  - By ALSA convention the acceptable formats, sample rates, etc should
+>  > be directly defined in the snd_pcm_hardware_t structure.
+>  > 
+>  >  - dev->oss needs to go.
+> 
+>  Agreed about the rest.
 
-Is there interest in porting it to the cvs version?
+Thanks, guys.
 
-Thanks,
-Rafael
+Despite all that, I am inclined to merge this patch into 2.6.15.  Because
+it's in the middle of a 192-patch series and we do need to get the v4l tree
+synced up.
 
-
--------------------------------------------------------
-SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Download
-it for free - -and be entered to win a 42" plasma tv or your very own
-Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+Mauro&co, if we do that, do you think the above points can be addressed
+inside the next four weeks or so?
