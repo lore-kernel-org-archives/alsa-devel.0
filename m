@@ -1,34 +1,41 @@
-From: Mauro Carvalho Chehab <mchehab@brturbo.com.br>
+From: Mauro Carvalho Chehab <mauro_chehab@yahoo.com.br>
 Subject: Re: + v4l-720-alsa-support-for-saa7134-that-should-work-fix.patch
-	added to -mm tree
-Date: Mon, 07 Nov 2005 04:26:43 -0200
-Message-ID: <1131344803.10094.8.camel@localhost>
+ added to -mm tree
+Date: Mon, 07 Nov 2005 04:42:13 -0200
+Message-ID: <1131345733.10094.17.camel@localhost>
 References: <200511060743.jA67hpZa018948@shell0.pdx.osdl.net>
 	 <20051106001249.48d3ade0.akpm@osdl.org> <1131301995.13599.5.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-iWYbpUo1MCI1oOfOcHG8"
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S964807AbVKGG0w@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="=-RqW1q1+BPPuMC7ifKyqE"
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <1131301995.13599.5.camel@mindpipe>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, nshmyrev@yandex.ru, v4l@cerqueira.org
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---=-iWYbpUo1MCI1oOfOcHG8
+--=-RqW1q1+BPPuMC7ifKyqE
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
 Lee,
 
-Em Dom, 2005-11-06 às 13:33 -0500, Lee Revell escreveu:
+Em Dom, 2005-11-06 =E0s 13:33 -0500, Lee Revell escreveu:
 > On Sun, 2005-11-06 at 00:12 -0800, Andrew Morton wrote:
 > > Well that didn't work.  The problem is that
 > > drivers/media/video/saa7134/saa7134-alsa.c doesn't appear to be wired
 > > up into the build system - it simply doesn't get compiled.
-> > 
-> > Please send a fix against next -mm? 
-> 
+> >=20
+> > Please send a fix against next -mm?=20
+>=20
 > Also please send all ALSA related patches to
 > alsa-devel@lists.sourceforge.net for review.
 
@@ -38,14 +45,14 @@ saa7134 parts, since PCI stuff are common to both video and audio
 funcion on this device.
 	This is meant to replace saa7134-oss (after more tests) that,
 currently, is part of saa7134 module.
-> 
+>=20
 > Lee
-> 
-> 
-Cheers, 
+>=20
+>=20
+Cheers,=20
 Mauro.
 
---=-iWYbpUo1MCI1oOfOcHG8
+--=-RqW1q1+BPPuMC7ifKyqE
 Content-Disposition: attachment; filename=saa_alsa.patch
 Content-Type: text/x-patch; name=saa_alsa.patch; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -1133,4 +1140,23 @@ Content-Transfer-Encoding: 7bit
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Ricardo Cerqueira");
 
---=-iWYbpUo1MCI1oOfOcHG8--
+--=-RqW1q1+BPPuMC7ifKyqE--
+
+
+	
+
+	
+		
+_______________________________________________________ 
+Yahoo! Acesso Grátis: Internet rápida e grátis. 
+Instale o discador agora!
+http://br.acesso.yahoo.com/
+
+
+
+
+-------------------------------------------------------
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server. Download
+it for free - -and be entered to win a 42" plasma tv or your very own
+Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
