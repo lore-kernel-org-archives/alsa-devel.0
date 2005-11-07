@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Mon, 7 Nov 2005 11:07:35 +0100
-Message-ID: <d28c8ca5a71b94fd482d5450ec2c8df1@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Question: setting up the hardware for alsa
+Date: Mon, 07 Nov 2005 11:26:44 +0100
+Message-ID: <1131359204.436f2be439fc8@webmail.uni-halle.de>
+References: <b15982770511040749k3ccbaa07gcbd7bac05689a8e7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94629158
-	for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2005 11:07:35 +0100 (MET)
+In-reply-to: <b15982770511040749k3ccbaa07gcbd7bac05689a8e7@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: David Smoot <davidsmoot@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+David Smoot wrote:
+> 3. made scripts to make my device nodes
+> mknod /dev/mixer c 14 0
+> ...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
-======================================================================
-Reported By:                Cimmo
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1331
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398-x86_64
-======================================================================
-Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              11-07-2005 11:07 CET
-======================================================================
-Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
-Description: 
-I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
-integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack like the pci version of the sb live 24
-bit.
+ALSA devices are in /dev/snd/; see the snddevices script in the alsa-driver
+package.
 
-With this card I cannot hear any sound that come from line-in.
-For Example I have a tv card, its output audio go into line-in: result is
-I cannot hear nothing from the tv, I can only see channels without audio.
+> 4. Made another script to load my kernel modules
+> /run/tools/insmod soundcore.ko
+> ...
 
-The "Capture feedback into playback" in the mixer change the mic's
-volume.
-There is nothing that change line-in's volume.
-======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 11-07-05 00:02 
-----------------------------------------------------------------------
-The version of alsa-driver you have is too old.
-Support for your sound card was only added recently.
-Please upgrade your version of alsa-driver.
-If you compiled your own kernel, then simply installing alsa-driver will
-update them for you.
-
-----------------------------------------------------------------------
- Cimmo - 11-07-05 11:07 
-----------------------------------------------------------------------
-So I've to switch to development version 1.0.10rc2?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-13-05 01:27 Cimmo          New Issue                                    
-08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
-08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
-08-13-05 01:41 jcdutton       Note Added: 0005798                          
-08-13-05 01:42 jcdutton       Status                   assigned => feedback
-08-13-05 18:30 Cimmo          Note Added: 0005807                          
-08-31-05 15:14 Cimmo          Note Added: 0005989                          
-08-31-05 18:59 rlrevell       Note Added: 0005991                          
-09-10-05 10:31 jcdutton       Note Added: 0006107                          
-10-19-05 19:13 Cimmo          Note Added: 0006496                          
-11-07-05 00:02 jcdutton       Note Added: 0006610                          
-11-07-05 11:07 Cimmo          Note Added: 0006612                          
-======================================================================
+If you use the OSS emulation (/dev/dsp etc.), you have to load the snd-xxx-oss
+modules.
 
 
+HTH
+Clemens
 
 
 -------------------------------------------------------
