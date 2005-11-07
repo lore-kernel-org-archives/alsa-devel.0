@@ -1,13 +1,13 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: behaviour of the trigger operation
-Date: Mon, 07 Nov 2005 11:31:47 +0100
-Message-ID: <1131359507.436f2d131d628@webmail.uni-halle.de>
-References: <bf04f99c0511062057t599036d5g62582ee1cda7d050@mail.gmail.com>
+Subject: Re: addressing hardware directly?
+Date: Mon, 07 Nov 2005 11:33:49 +0100
+Message-ID: <1131359629.436f2d8d869ad@webmail.uni-halle.de>
+References: <b15982770511061007k17711a3aq6c008b7fc4246619@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <bf04f99c0511062057t599036d5g62582ee1cda7d050@mail.gmail.com>
+In-reply-to: <b15982770511061007k17711a3aq6c008b7fc4246619@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,22 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tehn Yit Chin <tehn.yit.chin@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: David Smoot <davidsmoot@gmail.com>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Tehn Yit Chin wrote:
-> I am trying to understand how the trigger operation behaves.
->
-> The behaviour that I am observing is that when ALSA starts up, it seems to
-> be going through a few cycles of prepare, trigger_start and trigger_stop
-> before it starts to streams data through to the codec. Is this normal
-> behaviour?
+David Smoot wrote:
+> If I am not developing a generic sound application but I specifically
+> want to talk to a single card, can I address a card directly in my
+> software rather than using the "default" or the "hw:0,0" interface?
+> My target platform is a very limited device, the less stuff I install,
+> the better.
 
-No.  Which hardware and software are you using?
+"hw" is the most direct ALSA interface.  If you want to be more direct, you have
+to write your own driver.
+
+> So what is the naming convention for the sound devices when I call
+> "snd_pcm_open"?  So far all I found in the documentation is "default"
+> or "hw:0,0".  I've tried poking around in /proc/asound/ but have not
+> found it yet.
+
+An ALSA PCM device name "xxx" is looked up as a "pcm.xxx" definition in one of
+the
+configuration files (~/.asoundrc, /etc/asound.conf, /usr/share/alsa/...).
 
 
-Regards,
+HTH
 Clemens
 
 
