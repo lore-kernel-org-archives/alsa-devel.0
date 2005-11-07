@@ -1,13 +1,13 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Question: setting up the hardware for alsa
-Date: Mon, 07 Nov 2005 11:26:44 +0100
-Message-ID: <1131359204.436f2be439fc8@webmail.uni-halle.de>
-References: <b15982770511040749k3ccbaa07gcbd7bac05689a8e7@mail.gmail.com>
+Subject: Re: behaviour of the trigger operation
+Date: Mon, 07 Nov 2005 11:31:47 +0100
+Message-ID: <1131359507.436f2d131d628@webmail.uni-halle.de>
+References: <bf04f99c0511062057t599036d5g62582ee1cda7d050@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <b15982770511040749k3ccbaa07gcbd7bac05689a8e7@mail.gmail.com>
+In-reply-to: <bf04f99c0511062057t599036d5g62582ee1cda7d050@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,27 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Smoot <davidsmoot@gmail.com>
+To: Tehn Yit Chin <tehn.yit.chin@gmail.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-David Smoot wrote:
-> 3. made scripts to make my device nodes
-> mknod /dev/mixer c 14 0
-> ...
+Tehn Yit Chin wrote:
+> I am trying to understand how the trigger operation behaves.
+>
+> The behaviour that I am observing is that when ALSA starts up, it seems to
+> be going through a few cycles of prepare, trigger_start and trigger_stop
+> before it starts to streams data through to the codec. Is this normal
+> behaviour?
 
-ALSA devices are in /dev/snd/; see the snddevices script in the alsa-driver
-package.
-
-> 4. Made another script to load my kernel modules
-> /run/tools/insmod soundcore.ko
-> ...
-
-If you use the OSS emulation (/dev/dsp etc.), you have to load the snd-xxx-oss
-modules.
+No.  Which hardware and software are you using?
 
 
-HTH
+Regards,
 Clemens
 
 
