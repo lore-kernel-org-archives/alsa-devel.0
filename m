@@ -1,12 +1,14 @@
-From: "Melvin" <kdanielswmhy@aquent.com>
-Subject: Secret
-Date: Tue, 8 Nov 2005 10:29:15 -0500
-Message-ID: <2822317928.20051108102915@lrnesdsfcaiqfv>
-Reply-To: "Melvin Riley" <kdanielswmhy@aquent.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001514]: Actually disable NLS support when --disable-nls is passed
+Date: Tue, 8 Nov 2005 17:43:43 +0100
+Message-ID: <59e3b4610e24931220d92b0a8e75e187@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 389D71A8
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 17:43:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa.jcu.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<head>
-<META content="text/html; charset=us-ascii">
-</head>
-<body>
-You can be the best! :)<br>
-<b>  try  CjAALj.S Softt.abbs</b><br>
-It will work in 15 mins<br>
-<a href="http://de.geocities.com/Joscelin53469Cassy49538/">Learn here!<br>
-Bring her what she needs! :)<br>
-Your order will be shipped in 24hrs</a><br><hr>
-<I></I><br>
-If you cannot renounce the world the genius of happiness will never salute you.<br>
-Happiness can exist only in acceptance.
-</body>
-</html>
+
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1514> 
+======================================================================
+Reported By:                Flameeyes
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1514
+Category:                   aplay/arecord
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             10-30-2005 13:25 CET
+Last Modified:              11-08-2005 17:43 CET
+======================================================================
+Summary:                    Actually disable NLS support when --disable-nls is
+passed
+Description: 
+The attached patch makes sure that when passing --disable-nls to configure
+script NLS support is actually disabled.
+This is needed to build alsa-utils on uClibc systems, where NLS function
+are not provided by the system library (and needs gettext).
+
+======================================================================
+
+----------------------------------------------------------------------
+ Flameeyes - 11-08-05 16:15 
+----------------------------------------------------------------------
+This still apply to rc3
+
+----------------------------------------------------------------------
+ tiwai - 11-08-05 17:43 
+----------------------------------------------------------------------
+Applied to CVS.  Thanks.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-30-05 13:25 Flameeyes      New Issue                                    
+10-30-05 13:25 Flameeyes      File Added: alsa-utils-1.0.10_rc1-nls.patch       
+            
+11-08-05 16:15 Flameeyes      Note Added: 0006622                          
+11-08-05 17:43 tiwai          Status                   new => resolved     
+11-08-05 17:43 tiwai          Resolution               open => fixed       
+11-08-05 17:43 tiwai          Assigned To               => tiwai           
+11-08-05 17:43 tiwai          Note Added: 0006625                          
+======================================================================
+
 
 
 
