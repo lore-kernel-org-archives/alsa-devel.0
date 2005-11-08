@@ -1,10 +1,13 @@
-From: "Nambiar, Anil" <NambiarA@sharpsec.com>
-Subject: RE: switching between mic and line-in
-Date: Mon, 7 Nov 2005 19:34:40 -0500
-Message-ID: <6A09F73E2878E447BF6B87C43162C8270215463F@excwa1b2.sharpsec.com>
+From: Vince Busam <vince@sixpak.org>
+Subject: Re: Fix for slow snd-ali5451 initialization
+Date: Mon, 07 Nov 2005 21:14:30 -0800
+Message-ID: <43703436.7070206@sixpak.org>
+References: <Pine.LNX.4.61.0511051136400.16526@sixpak.sixpak.org>	<s5hy840pw24.wl%tiwai@suse.de>	<20051107154626.GA14736@tecr> <s5h64r4pifp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h64r4pifp.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,51 +17,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Takashi Iwai' <tiwai@suse.de>, "Nambiar, Anil" <NambiarA@sharpsec.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sasha Khapyorsky <sashakh@gmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-	Thank you for the information. I have created a control structure
-for "capture source" in the driver as per given in the "writing an alsa
-driver" document. Could you please provide me pointer to code examples or
-document on how to make use of the "capture source" control at the
-application level. 
-	How do I pass values to my driver level "get" and "put" functions
-from the application using alsa lib? I appreciate for the help.
+This is with 2.6.12-9-k7 from Ubuntu and 2.6.13-1.1526_FC4 from Fedora 
+Core 4.  I'll try pulling the latest code from CVS and see if that helps.
 
-Thanks,
-AniL
+I don't think it's a problem with attempting the second mixer (which it 
+does, and fails).  It happens while creating the first mixer, in the 
+snd_ac97_mixer() call in this loop when i==0.
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Monday, November 07, 2005 2:47 AM
-To: Nambiar, Anil
-Cc: alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] switching between mic and line-in
+for ( i = 0 ; i < codec->num_of_codecs ; i++) {
+   ac97.num = i;
+   if ((err = snd_ac97_mixer(codec->ac97_bus, &ac97, &codec->ac97[i])) < 
+0) {
+     snd_printk("ali mixer %d creating error.\n", i);
+     if(i == 0)
+       return err;
+    }
+}
 
-At Fri, 4 Nov 2005 17:58:54 -0500,
-Nambiar, Anil wrote:
+Vince
+
+Takashi Iwai wrote:
+> At Mon, 7 Nov 2005 17:46:26 +0200,
+> Sasha Khapyorsky wrote:
 > 
-> Hi,
-> 	I have a h/w which has 2 inputs and 2 outputs for the audio using
-> AC94 codec. For the output I have headphone and speaker out. When the
-> headphone is connected, I can detect the interrupt and switch between
-> headphone and speaker out at the driver level, so it's not a problem. 
->        But for the input, there is no interrupt and I need to switch
-between
-> the mic and line-in based on what the user application selects. Now in
-AC97
-> codec chip, the capture input can be switched between mic and line-in by
-> changing a few bits. Is there any IOCTL in alsa which I can use to switch
-> between mic and line-in.
-
-Use ALSA control API.
-The control element is named as "Capture Source", and it's enum with 2
-channels for an AC97 chip.
-
-
-Takashi
+>>On 11:54 Mon 07 Nov     , Takashi Iwai wrote:
+>>
+>>>At Sat, 5 Nov 2005 11:38:03 -0800 (PST),
+>>>Vince Busam wrote:
+>>>
+>>>>The snd-ali5451 driver takes 10 seconds to load, which is quite annoying 
+>>>>on a laptop that boots every day.  This patch lowers that to a much more 
+>>>>managable time, and still works fine on my laptop.
+>>>>
+>>>>Vince
+>>>>
+>>>>     Summary: Speed up ali5451 initialization
+>>>>
+>>>>     The patch speeds up loading the ali5451 driver by lowering the
+>>>>     wait time in snd_ali_codec_ready()
+>>>>
+>>>>     Author: Vince Busam <vince@sixpak.org
+>>>>     Signed-off-by: Vince Busam <vince@sixpak.org>
+>>>
+>>>Well, it's not a good solution.  It's already strange that so many
+>>>timeouts occur.  And, the driver works correctly after that?  That is,
+>>>you don't get any timeouts once after the driver is initialized?
+>>
+>>This could be initialization attempt of non-existed secondary codec. At
+>>least such attempt was reported in the past.
+> 
+> 
+> Yes, that's also my suspect.
+> 
+> Vince, are you using the latest ALSA code?  At least, the probe code
+> is a bit improved on 2.6.14 kernel, like ALSA CVS version.
+> 
+> 
+> Takashi
 
 
 -------------------------------------------------------
