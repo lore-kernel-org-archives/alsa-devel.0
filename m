@@ -1,13 +1,14 @@
-From: conrad =?iso-8859-1?q?berh=F6rster?= <conrad.berhoerster@gmx.de>
-Subject: capturing with phase 28
-Date: Tue, 8 Nov 2005 18:51:33 +0100
-Message-ID: <200511081851.35199.conrad.berhoerster@gmx.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001529]: hardware mixing does not work with spdif
+Date: Tue, 8 Nov 2005 19:26:59 +0100
+Message-ID: <c1f2b4060f10182e1463bea51e04e639@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 977491CD
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 19:26:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,171 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net.
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all, 
-last week i spend much work into got terratecs phase 28 to work. 
-this is an ice1724 and an IEC958 chip.
 
-currently playback is fine und jack working good. 
-the only problem is the capturing.
-it seems, that there is no signal coming into the alsa. 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1529> 
+======================================================================
+Reported By:                visit0r
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1529
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Unstable
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             11-05-2005 14:24 CET
+Last Modified:              11-08-2005 19:26 CET
+======================================================================
+Summary:                    hardware mixing does not work with spdif
+Description: 
+I'm using SB Live! with s/pdif passthrough for PCM and AC3. 
 
-to get closer to the problem, i just want to capture with arecord.
-but arecord test.wav produce an file with no signals. 
+It works fine for a single application when I use 'spdif' as a device, but
+ hardware mixing does not work. It has never worked for me, thus I thought
 
-i'm using alsa 1.0.10rc2 and append the output from amixer at the end 
-are there any ideas if something is configured badly. there seems no capturing 
-device recogniced, since there are only 2 captures (and not 8 !) 
+previously it's just not supported in my card revision for some reason.
+After I upgraded my kernel to 2.6.14, the hardware mixing suddenly started
+to work with the 'default' device. 
 
-maybe someone out there can explain, what these two chips are for. what are 
-the special purposes of these chips.    
+Now it stopped working again, 'default' device does not produce sounds at
+all, and I have to use 'spdif' using which hardware mixing does not work
+(only one app may play sounds at once). I have no idea what made it stop,
+possibly some
+Debian Unstable package upgrade broke it.
+
+I'd appreciate any pointers for solving this long standing problem of
+mine.
+
+I have installed a new alsalib (1.0.10rc2) from Debian Experimental, so it
+
+should not be the reason.
+
+Thanks.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 11-08-05 18:38 
+----------------------------------------------------------------------
+It's not supported.
+
+----------------------------------------------------------------------
+ visit0r - 11-08-05 19:26 
+----------------------------------------------------------------------
+How come it worked for while then? I'm 100% sure I didn't dream it up :)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-05-05 14:24 visit0r        New Issue                                    
+11-05-05 14:24 visit0r        Distribution              => Debian Unstable 
+11-05-05 14:24 visit0r        Kernel Version            => 2.6.14          
+11-05-05 14:27 visit0r        Issue Monitored: visit0r                     
+11-08-05 18:38 tiwai          Note Added: 0006634                          
+11-08-05 19:26 visit0r        Note Added: 0006639                          
+======================================================================
 
 
-
------------------------------- schnipp ---------------------
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 190 [75%] [on]
-  Front Right: Playback 190 [75%] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 128
-  Mono: Playback 95 [74%] [on]
-Simple mixer control 'Front',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 127
-  Mono:
-  Front Left: Playback 93 [73%] [on]
-  Front Right: Playback 93 [73%] [on]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 127
-  Mono: Playback 94 [74%] [on]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 127
-  Mono: Playback 87 [69%] [on]
-Simple mixer control 'Side',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 127
-  Mono:
-  Front Left: Playback 90 [71%] [on]
-  Front Right: Playback 90 [71%] [on]
-Simple mixer control 'IEC958',0
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'IEC958 Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958',1
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'ADC Oversampling',0
-  Capabilities: enum
-  Items: '128x' '64x'
-  Item0: '128x'
-Simple mixer control 'DAC Deemphasis',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'H/W',0
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'H/W',1
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'H/W',2
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'H/W',3
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'H/W',4
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'H/W',5
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'H/W',6
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'H/W',7
-  Capabilities: enum
-  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
-  Item0: 'PCM Out'
-Simple mixer control 'Multi Track Internal Clock',0
-  Capabilities: enum
-  Items: '8000' '9600' '11025' '12000' '16000' '22050' '24000' '32000' '44100' 
-'48000' '64000' '88200' '96000' '176400' '192000' 'IEC958 Input'
-  Item0: '48000'
-Simple mixer control 'Multi Track Peak',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right - Rear Left - Rear Right - Front 
-Center - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ? - ? 
-- ? - ? - ? - ? - ? - ? - ? - ?
-  Capture channels: Front Left - Front Right - Rear Left - Rear Right - Front 
-Center - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ? - ? 
-- ? - ? - ? - ? - ? - ? - ? - ?
-  Limits: 0 - 255
-  Front Left: 0 [0%]
-  Front Right: 0 [0%]
-  Rear Left: 0 [0%]
-  Rear Right: 0 [0%]
-  Front Center: 0 [0%]
-  Woofer: 0 [0%]
-  Side Left: 0 [0%]
-  Side Right: 0 [0%]
-  Rear Center: 0 [0%]
-  ?: 0 [0%]
-  ?: 112 [44%]
-  ?: 113 [44%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-Simple mixer control 'Multi Track Rate Locking',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Multi Track Rate Reset',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Rear',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 127
-  Mono:
-  Front Left: Playback 93 [73%] [on]
-  Front Right: Playback 93 [73%] [on]
-
- 
 
 
 -------------------------------------------------------
