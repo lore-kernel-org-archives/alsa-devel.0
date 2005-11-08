@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001514]: Actually disable NLS support when --disable-nls is passed
-Date: Tue, 8 Nov 2005 17:43:43 +0100
-Message-ID: <59e3b4610e24931220d92b0a8e75e187@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001513]: Add largefile support to alsa-utils
+Date: Tue, 8 Nov 2005 17:42:32 +0100
+Message-ID: <507e851e9f3633981efe5e5d16484cc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 389D71A8
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 17:43:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 148A81A8
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 17:42:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1514> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1513> 
 ======================================================================
 Reported By:                Flameeyes
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1514
+Issue ID:                   1513
 Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-30-2005 13:25 CET
-Last Modified:              11-08-2005 17:43 CET
+Date Submitted:             10-30-2005 13:21 CET
+Last Modified:              11-08-2005 17:42 CET
 ======================================================================
-Summary:                    Actually disable NLS support when --disable-nls is
-passed
+Summary:                    Add largefile support to alsa-utils
 Description: 
-The attached patch makes sure that when passing --disable-nls to configure
-script NLS support is actually disabled.
-This is needed to build alsa-utils on uClibc systems, where NLS function
-are not provided by the system library (and needs gettext).
+The attached patch allows to play/record and in general open large files
+(>=2GB) with 32-bit systems (like x86).
 
+It's just a matter of checking largefile support in libc and then enable
+it.
 ======================================================================
 
 ----------------------------------------------------------------------
- Flameeyes - 11-08-05 16:15 
+ Flameeyes - 11-08-05 16:22 
 ----------------------------------------------------------------------
-This still apply to rc3
+This still applies to rc3.
 
 ----------------------------------------------------------------------
- tiwai - 11-08-05 17:43 
+ tiwai - 11-08-05 17:42 
 ----------------------------------------------------------------------
 Applied to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-30-05 13:25 Flameeyes      New Issue                                    
-10-30-05 13:25 Flameeyes      File Added: alsa-utils-1.0.10_rc1-nls.patch       
-            
-11-08-05 16:15 Flameeyes      Note Added: 0006622                          
-11-08-05 17:43 tiwai          Status                   new => resolved     
-11-08-05 17:43 tiwai          Resolution               open => fixed       
-11-08-05 17:43 tiwai          Assigned To               => tiwai           
-11-08-05 17:43 tiwai          Note Added: 0006625                          
+10-30-05 13:21 Flameeyes      New Issue                                    
+10-30-05 13:21 Flameeyes      File Added: alsa-utils-1.0.10_rc1-largefile.patch 
+                  
+11-08-05 16:22 Flameeyes      Note Added: 0006623                          
+11-08-05 17:42 tiwai          Status                   new => resolved     
+11-08-05 17:42 tiwai          Resolution               open => fixed       
+11-08-05 17:42 tiwai          Assigned To               => tiwai           
+11-08-05 17:42 tiwai          Note Added: 0006624                          
 ======================================================================
 
 
