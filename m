@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001536]: Error during compiling hpetimer.c
-Date: Tue, 8 Nov 2005 18:49:47 +0100
-Message-ID: <d6ed83149d2e42f2edd5912ba1cf2f68@bugtrack.alsa-project.org>
+From: conrad =?iso-8859-1?q?berh=F6rster?= <conrad.berhoerster@gmx.de>
+Subject: capturing with phase 28
+Date: Tue, 8 Nov 2005 18:51:33 +0100
+Message-ID: <200511081851.35199.conrad.berhoerster@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECACB1C1
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 18:49:47 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +17,171 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net.
 List-Id: alsa-devel@alsa-project.org
 
+Hello all, 
+last week i spend much work into got terratecs phase 28 to work. 
+this is an ice1724 and an IEC958 chip.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1536> 
-======================================================================
-Reported By:                spm
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1536
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.14-rc3
-======================================================================
-Date Submitted:             11-08-2005 15:54 CET
-Last Modified:              11-08-2005 18:49 CET
-======================================================================
-Summary:                    Error during compiling hpetimer.c
-Description: 
-This error occurs when trying to make 1.09b driver on my 2.6.14-rc3
-kernel.
+currently playback is fine und jack working good. 
+the only problem is the capturing.
+it seems, that there is no signal coming into the alsa. 
 
-make[1]: Entering directory `/usr/src/linux-2.6.14-rc3'
-  CC [M]  /usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o
-In file included from
-/usr/src/alsa/alsa-driver-1.0.9b/include/adriver.h:677,
-                 from
-/usr/src/alsa/alsa-driver-1.0.9b/include/sound/driver.h:42,
-                 from
-/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.c:22:
-include/linux/pci.h:392: error: parse error before numeric constant
-make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o] Error 1
-make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore] Error 2
+to get closer to the problem, i just want to capture with arecord.
+but arecord test.wav produce an file with no signals. 
+
+i'm using alsa 1.0.10rc2 and append the output from amixer at the end 
+are there any ideas if something is configured badly. there seems no capturing 
+device recogniced, since there are only 2 captures (and not 8 !) 
+
+maybe someone out there can explain, what these two chips are for. what are 
+the special purposes of these chips.    
 
 
-Any ideas? I have also tried on the development release
-(alsa-driver-1.0.10rc2), and get the same error..
 
+------------------------------ schnipp ---------------------
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 190 [75%] [on]
+  Front Right: Playback 190 [75%] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 128
+  Mono: Playback 95 [74%] [on]
+Simple mixer control 'Front',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 127
+  Mono:
+  Front Left: Playback 93 [73%] [on]
+  Front Right: Playback 93 [73%] [on]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 127
+  Mono: Playback 94 [74%] [on]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 127
+  Mono: Playback 87 [69%] [on]
+Simple mixer control 'Side',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 127
+  Mono:
+  Front Left: Playback 90 [71%] [on]
+  Front Right: Playback 90 [71%] [on]
+Simple mixer control 'IEC958',0
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'IEC958',1
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'ADC Oversampling',0
+  Capabilities: enum
+  Items: '128x' '64x'
+  Item0: '128x'
+Simple mixer control 'DAC Deemphasis',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'H/W',0
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'H/W',1
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'H/W',2
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'H/W',3
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'H/W',4
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'H/W',5
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'H/W',6
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'H/W',7
+  Capabilities: enum
+  Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
+  Item0: 'PCM Out'
+Simple mixer control 'Multi Track Internal Clock',0
+  Capabilities: enum
+  Items: '8000' '9600' '11025' '12000' '16000' '22050' '24000' '32000' '44100' 
+'48000' '64000' '88200' '96000' '176400' '192000' 'IEC958 Input'
+  Item0: '48000'
+Simple mixer control 'Multi Track Peak',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right - Rear Left - Rear Right - Front 
+Center - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ? - ? 
+- ? - ? - ? - ? - ? - ? - ? - ?
+  Capture channels: Front Left - Front Right - Rear Left - Rear Right - Front 
+Center - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ? - ? 
+- ? - ? - ? - ? - ? - ? - ? - ?
+  Limits: 0 - 255
+  Front Left: 0 [0%]
+  Front Right: 0 [0%]
+  Rear Left: 0 [0%]
+  Rear Right: 0 [0%]
+  Front Center: 0 [0%]
+  Woofer: 0 [0%]
+  Side Left: 0 [0%]
+  Side Right: 0 [0%]
+  Rear Center: 0 [0%]
+  ?: 0 [0%]
+  ?: 112 [44%]
+  ?: 113 [44%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+  ?: 0 [0%]
+Simple mixer control 'Multi Track Rate Locking',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Multi Track Rate Reset',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Rear',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 127
+  Mono:
+  Front Left: Playback 93 [73%] [on]
+  Front Right: Playback 93 [73%] [on]
 
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-08-05 18:28 
-----------------------------------------------------------------------
-It's likely pci_set_consistent_dma_mask().  That is, configure script
-didn't detect it correctly.  Please upload config.log for checking.
-
-----------------------------------------------------------------------
- spm - 11-08-05 18:49 
-----------------------------------------------------------------------
-You are correct, line 392 is:
-
-int pci_set_consistent_dma_mask(struct pci_dev *dev, u64 mask);
-
-My mobo is VIA if that helps...
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-08-05 15:54 spm            New Issue                                    
-11-08-05 15:54 spm            Distribution              => Debian          
-11-08-05 15:54 spm            Kernel Version            => 2.6.14-rc3      
-11-08-05 18:18 Clemens LadischNote Added: 0006629                          
-11-08-05 18:28 tiwai          Note Added: 0006631                          
-11-08-05 18:48 spm            File Added: config.log                       
-11-08-05 18:49 spm            Note Added: 0006638                          
-======================================================================
-
-
+ 
 
 
 -------------------------------------------------------
