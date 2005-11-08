@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001510]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to control volume by master channel, PCM and headphones work
-Date: Tue, 8 Nov 2005 17:45:11 +0100
-Message-ID: <38e60096e4f95d5de44e2fb070876a7c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001535]: The sound card is detected. No sound from the speakers or headphones.
+Date: Tue, 8 Nov 2005 17:46:21 +0100
+Message-ID: <eafc90e925ed51908c2ef59372752a7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 094831A8
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 17:45:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E70031A8
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 17:46:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1510> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1535> 
 ======================================================================
-Reported By:                wiktorw
-Assigned To:                
+Reported By:                h4ndr3s
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1510
-Category:                   PCI - intel8x0
+Issue ID:                   1535
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo 2005.1
-Kernel Version:             2.6.13-gentoo-r4
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             10-28-2005 17:54 CEST
-Last Modified:              11-08-2005 17:45 CET
+Date Submitted:             11-08-2005 12:17 CET
+Last Modified:              11-08-2005 17:46 CET
 ======================================================================
-Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to
-control volume by master channel, PCM and headphones work
+Summary:                    The sound card is detected. No sound from the
+speakers or headphones.
 Description: 
-On my Acer Aspire 5002LM laptop I have the following problem:
-- Master channel does not control volume level (no matter if I slide it or
-mute)
-- PCM channel works
-- Headphone/PCM-2 channel works
-
-The Master/PCM/Headphone channels are for the "SiS SI7012 (Alsa Mixer)"
-device, while Volume/PCM/PCM-2 channels are for the "Realtek ALC203 rev 0
-(OSS Mixer)" device. They do the same thing: Master/Volume control in
-gnome-volume-control applet doesn't change the volume level.
-
-At first I thought that this problem is software-related, but in fact it
-isn't. Now I have tested several things and all give me the same result. I
-also suspect that not only I have such problems, althought the original
-posters might not be aware of it. See here for the original discussion:
-
-http://forums.gentoo.org/viewtopic-t-387739.html
-
+I have a Motherboard Intel D915GAV with a sound card Intel HDA onboard,
+chipset Realtek ALC880. The Sound Card is detected, the modules are
+loaded, but no sound come from the speakers or headphones. 
 ======================================================================
 
 ----------------------------------------------------------------------
- mrblur - 11-08-05 08:44 
+ tiwai - 11-08-05 17:46 
 ----------------------------------------------------------------------
-Acer AS5002WLMi - the same card - the same problem :/
-
-----------------------------------------------------------------------
- tiwai - 11-08-05 17:45 
-----------------------------------------------------------------------
-Make sure that you all have the same AC97 codec chip (check
-/proc/asound/card0/codec97#0/* file).  Otherwise it's a completely
-different problem!
+Try the later version of ALSA.
+If it still doesn't work, pass an appropriate model module option to
+snd-hda-intel module.  See ALSA-Configuration.txt for details.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-28-05 17:54 wiktorw        New Issue                                    
-10-28-05 17:54 wiktorw        Distribution              => Gentoo 2005.1   
-10-28-05 17:54 wiktorw        Kernel Version            => 2.6.13-gentoo-r4
-10-30-05 09:35 garfungiloops  Note Added: 0006573                          
-10-30-05 09:36 garfungiloops  Issue Monitored: garfungiloops                    
-11-08-05 08:44 mrblur         Note Added: 0006619                          
-11-08-05 17:45 tiwai          Note Added: 0006626                          
+11-08-05 12:17 h4ndr3s        New Issue                                    
+11-08-05 12:17 h4ndr3s        Distribution              => Slackware       
+11-08-05 12:17 h4ndr3s        Kernel Version            => 2.6.13          
+11-08-05 17:46 tiwai          Note Added: 0006627                          
 ======================================================================
 
 
