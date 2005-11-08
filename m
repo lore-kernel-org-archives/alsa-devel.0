@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001329]: input part of kmix don't show any settings
-Date: Tue, 8 Nov 2005 15:55:06 +0100
-Message-ID: <84a7ef8639249ef45910a4d54f22d013@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001514]: Actually disable NLS support when --disable-nls is passed
+Date: Tue, 8 Nov 2005 16:15:34 +0100
+Message-ID: <a1a1414f7e946d15822ec14ba757011a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2164E1C0
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 15:55:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A6B01AC
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 16:15:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,170 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1329> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1514> 
 ======================================================================
-Reported By:                submax82
-Assigned To:                jcdutton
+Reported By:                Flameeyes
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1329
-Category:                   PCI - ca0106
+Project:                    ALSA - utils
+Issue ID:                   1514
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               debian
-Kernel Version:             2.6.12.4
+Status:                     new
 ======================================================================
-Date Submitted:             08-12-2005 14:59 CEST
-Last Modified:              11-08-2005 15:55 CET
+Date Submitted:             10-30-2005 13:25 CET
+Last Modified:              11-08-2005 16:15 CET
 ======================================================================
-Summary:                    input part of kmix don't show any settings
+Summary:                    Actually disable NLS support when --disable-nls is
+passed
 Description: 
-The input section of kmix, on kde, do not show any settings: cd, line-in,
-mic ecc... Those are not present! This is big lack!
+The attached patch makes sure that when passing --disable-nls to configure
+script NLS support is actually disabled.
+This is needed to build alsa-utils on uClibc systems, where NLS function
+are not provided by the system library (and needs gettext).
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 09-10-05 10:43 
+ Flameeyes - 11-08-05 16:15 
 ----------------------------------------------------------------------
-I think you need a more up to date version of alsa-driver.
-Version 1.0.9b or above should work.
-
-----------------------------------------------------------------------
- roadrunner - 11-08-05 15:55 
-----------------------------------------------------------------------
-Still nothing in input part of kmix with alsa 1.0.10rc3:
-alsamixer shows only some switches in the capture view.
-The only volume control that controls an input is 'CAPTURE feedback'. It
-is displayed as output control, although it controls the recording volume
-for line-in / mic.
-
-> cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3.
-Compiled on Nov  8 2005 for kernel 2.4.21-297-default with versioned
-symbols
-
-> cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0xd400 irq 5
-
-> amixer
-Simple mixer control 'Mic/Line in Capture',0
-  Capabilities: enum
-  Items: 'Line in' 'Mic in'
-  Item0: 'Line in'
-Simple mixer control 'AC97 in',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'Analog Center/LFE',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'Analog Front',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 154 [60%]
-  Front Right: Playback 154 [60%]
-Simple mixer control 'Analog Rear',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'Analog Side',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'CAPTURE feedback',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'SPDIF Center/LFE',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'SPDIF Front',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'SPDIF Out',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'SPDIF Rear',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'SPDIF Unknown',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-Simple mixer control 'SPDIF in',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'SPDIF out',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'SRC out',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'i2s in',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [on]
-Simple mixer control 'i2s mixer out',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
+This still apply to rc3
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-12-05 14:59 submax82       New Issue                                    
-08-12-05 14:59 submax82       Distribution              => debian          
-08-12-05 14:59 submax82       Kernel Version            => 2.6.12.4        
-08-13-05 01:51 jcdutton       Note Added: 0005799                          
-08-13-05 01:51 jcdutton       Status                   assigned => feedback
-08-13-05 14:29 submax82       Note Added: 0005805                          
-08-13-05 14:49 submax82       Note Edited: 0005805                         
-08-17-05 16:58 submax82       Note Added: 0005838                          
-09-10-05 10:43 jcdutton       Note Added: 0006111                          
-11-08-05 15:55 roadrunner     Note Added: 0006621                          
+10-30-05 13:25 Flameeyes      New Issue                                    
+10-30-05 13:25 Flameeyes      File Added: alsa-utils-1.0.10_rc1-nls.patch       
+            
+11-08-05 16:15 Flameeyes      Note Added: 0006622                          
 ======================================================================
 
 
