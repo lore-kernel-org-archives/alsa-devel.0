@@ -1,83 +1,44 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001520]: Soundchip was not detected
-Date: Tue, 8 Nov 2005 21:00:21 +0100
-Message-ID: <f0d726e3e0c353fb75261eced762ffe1@bugtrack.alsa-project.org>
+From: R C <v4l@cerqueira.org>
+Subject: Re: [Patch 1/1] V4L (926) Saa7134 alsa can only be
+	autoloaded	after	saa7134 is active
+Date: Tue, 08 Nov 2005 21:09:15 +0000
+Message-ID: <1131484155.4851.10.camel@frolic>
+References: <1131397121.6632.127.camel@localhost>
+	<s5hd5lbnzg6.wl%tiwai@suse.de> <1131451671.2863.4.camel@frolic>
+	<s5h4q6nnunn.wl%tiwai@suse.de>
+Reply-To: Linux and Kernel Video <video4linux-list@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F0A71CB
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 21:00:21 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <video4linux-list-bounces@redhat.com>
+In-Reply-To: <s5h4q6nnunn.wl%tiwai@suse.de>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
+List-Post: <mailto:video4linux-list@redhat.com>
+List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
+Sender: video4linux-list-bounces@redhat.com
+Errors-To: video4linux-list-bounces@redhat.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: akpm@osdl.org, video4linux-list@redhat.com, mchehab@brturbo.com.br, linux-kernel@vger.kernel.org, rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1520> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1520
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 9.0
-Kernel Version:             2.6.14-rc4
-======================================================================
-Date Submitted:             11-01-2005 10:35 CET
-Last Modified:              11-08-2005 21:00 CET
-======================================================================
-Summary:                    Soundchip was not detected
-Description: 
-I have an HP Omnibook 5700 CTX with some CS423x chip onboard, which is not
-detected by alsaconf. I did not find the ids in cs4236.c so I think the
-Pnp ID's
-must added to this file.
+On Tue, 2005-11-08 at 14:20 +0100, Takashi Iwai wrote:
 
+> But saa7134_dma_stop() should be already called in trigger callback,
+> which is called via snd_pcm_stop().
 
-======================================================================
+You're right. I wasn't aware pcm_stop() caused a trigger.
+You may want to check the current version at
+http://linuxtv.org/cgi-bin/viewcvs.cgi/v4l-kernel/linux/drivers/media/video/saa7134/saa7134-alsa.c?rev=1.21&root=v4l&view=auto
 
-----------------------------------------------------------------------
- tiwai - 11-08-05 18:48 
-----------------------------------------------------------------------
-Could you try the patch in #875?
+--
+RC
 
-----------------------------------------------------------------------
- Henne - 11-08-05 21:00 
-----------------------------------------------------------------------
-Sure, but I don't know where this patch is.
-Please help.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-01-05 10:35 Henne          New Issue                                    
-11-01-05 10:35 Henne          Distribution              => Slackware 9.0   
-11-01-05 10:35 Henne          Kernel Version            => 2.6.14-rc4      
-11-08-05 18:48 tiwai          Note Added: 0006637                          
-11-08-05 21:00 Henne          Note Added: 0006643                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Download
-it for free - -and be entered to win a 42" plasma tv or your very own
-Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+--
+video4linux-list mailing list
+Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/video4linux-list
