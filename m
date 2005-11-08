@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001510]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to control volume by master channel, PCM and headphones work
-Date: Tue, 8 Nov 2005 19:37:46 +0100
-Message-ID: <708103f61416346fa9451933e785b20d@bugtrack.alsa-project.org>
+Date: Tue, 8 Nov 2005 19:41:11 +0100
+Message-ID: <dd2db95f8c93a75a369db4d7181fe448@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A17971BB
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 19:37:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3E171BB
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 19:41:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo 2005.1
 Kernel Version:             2.6.13-gentoo-r4
 ======================================================================
 Date Submitted:             10-28-2005 17:54 CEST
-Last Modified:              11-08-2005 19:37 CET
+Last Modified:              11-08-2005 19:41 CET
 ======================================================================
 Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to
 control volume by master channel, PCM and headphones work
@@ -64,13 +64,6 @@ posters might not be aware of it. See here for the original discussion:
 http://forums.gentoo.org/viewtopic-t-387739.html
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-08-05 17:45 
-----------------------------------------------------------------------
-Make sure that you all have the same AC97 codec chip (check
-/proc/asound/card0/codec97#0/* file).  Otherwise it's a completely
-different problem!
 
 ----------------------------------------------------------------------
  garfungiloops - 11-08-05 19:37 
@@ -102,6 +95,11 @@ Double rate slots: 7/8
 Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 DRA
 Extended status  : SPCV LDAC SDAC CDAC SPDIF
 
+----------------------------------------------------------------------
+ garfungiloops - 11-08-05 19:41 
+----------------------------------------------------------------------
+But under Windows it's recognized as Realtek ....
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -113,6 +111,7 @@ Date Modified  Username       Field                    Change
 11-08-05 08:44 mrblur         Note Added: 0006619                          
 11-08-05 17:45 tiwai          Note Added: 0006626                          
 11-08-05 19:37 garfungiloops  Note Added: 0006640                          
+11-08-05 19:41 garfungiloops  Note Added: 0006641                          
 ======================================================================
 
 
