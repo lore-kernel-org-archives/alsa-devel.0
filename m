@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001513]: Add largefile support to alsa-utils
-Date: Tue, 8 Nov 2005 17:42:32 +0100
-Message-ID: <507e851e9f3633981efe5e5d16484cc6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001534]: Mixer channel problems
+Date: Tue, 8 Nov 2005 17:48:00 +0100
+Message-ID: <947b20832c77f82dd9b0368234804c05@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 148A81A8
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 17:42:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7BF91A8
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 17:48:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1513> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1534> 
 ======================================================================
-Reported By:                Flameeyes
-Assigned To:                tiwai
+Reported By:                mrblur
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1513
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   1534
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             10-30-2005 13:21 CET
-Last Modified:              11-08-2005 17:42 CET
+Date Submitted:             11-08-2005 08:41 CET
+Last Modified:              11-08-2005 17:48 CET
 ======================================================================
-Summary:                    Add largefile support to alsa-utils
+Summary:                    Mixer channel problems
 Description: 
-The attached patch allows to play/record and in general open large files
-(>=2GB) with 32-bit systems (like x86).
-
-It's just a matter of checking largefile support in libc and then enable
-it.
+I'm using Acer AS5002WLMi with SiS 7012 soundcard. It works quite good,
+but... unfortunately if I would like to change sound volume I have to do
+it on headphones channel, master channel stereo/mona are not working.
 ======================================================================
 
 ----------------------------------------------------------------------
- Flameeyes - 11-08-05 16:22 
+ tiwai - 11-08-05 17:48 
 ----------------------------------------------------------------------
-This still applies to rc3.
+Check /proc/asound/card0/codec97#0/* file.  If your ac97 codec is C-Media
+one, it's not a bug.  The codec has no volume control at all.
 
-----------------------------------------------------------------------
- tiwai - 11-08-05 17:42 
-----------------------------------------------------------------------
-Applied to CVS.  Thanks.
+In such a case, as long as you use the default PCM with ALSA apps, the
+softvol is enabled automatically.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-30-05 13:21 Flameeyes      New Issue                                    
-10-30-05 13:21 Flameeyes      File Added: alsa-utils-1.0.10_rc1-largefile.patch 
-                  
-11-08-05 16:22 Flameeyes      Note Added: 0006623                          
-11-08-05 17:42 tiwai          Status                   new => resolved     
-11-08-05 17:42 tiwai          Resolution               open => fixed       
-11-08-05 17:42 tiwai          Assigned To               => tiwai           
-11-08-05 17:42 tiwai          Note Added: 0006624                          
+11-08-05 08:41 mrblur         New Issue                                    
+11-08-05 08:41 mrblur         Kernel Version            => 2.6.14          
+11-08-05 17:48 tiwai          Note Added: 0006628                          
 ======================================================================
 
 
