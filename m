@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001529]: hardware mixing does not work with spdif
-Date: Tue, 8 Nov 2005 19:56:42 +0100
-Message-ID: <c53d4f557a967b940a31f217bc2f1ccf@bugtrack.alsa-project.org>
+From: Eric Shattow <lucent@gmail.com>
+Subject: Re: alc861
+Date: Tue, 8 Nov 2005 13:32:26 -0600
+Message-ID: <2c746f620511081132i5eeb53eci5fc081a3844f1e63@mail.gmail.com>
+References: <564d96fb0511071135x5e57e26cyf3f6f886e6acae72@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52B2C1AD
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 19:56:42 +0100 (MET)
+Received: from xproxy.gmail.com (xproxy.gmail.com [66.249.82.206])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF6141BD
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 20:32:27 +0100 (MET)
+Received: by xproxy.gmail.com with SMTP id i31so634579wxd
+        for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2005 11:32:26 -0800 (PST)
+In-Reply-To: <564d96fb0511071135x5e57e26cyf3f6f886e6acae72@mail.gmail.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +23,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?Rafael_Esp=EDndola?= <rafael.espindola@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/7/05, Rafael Esp=EDndola <rafael.espindola@gmail.com> wrote:
+> realtek has an altered version of alsa 1.09b with support for alc861.
+> It is in ftp://61.56.86.122/pc/hda/alc880d/realtek-linux-audiopack-3.4-9.=
+tar.bz2.
+>
+> Is there interest in porting it to the cvs version?
+>
+> Thanks,
+> Rafael
+>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1529> 
-======================================================================
-Reported By:                visit0r
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1529
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Unstable
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             11-05-2005 14:24 CET
-Last Modified:              11-08-2005 19:56 CET
-======================================================================
-Summary:                    hardware mixing does not work with spdif
-Description: 
-I'm using SB Live! with s/pdif passthrough for PCM and AC3. 
+Is this already in CVS or no?
 
-It works fine for a single application when I use 'spdif' as a device, but
- hardware mixing does not work. It has never worked for me, thus I thought
-
-previously it's just not supported in my card revision for some reason.
-After I upgraded my kernel to 2.6.14, the hardware mixing suddenly started
-to work with the 'default' device. 
-
-Now it stopped working again, 'default' device does not produce sounds at
-all, and I have to use 'spdif' using which hardware mixing does not work
-(only one app may play sounds at once). I have no idea what made it stop,
-possibly some
-Debian Unstable package upgrade broke it.
-
-I'd appreciate any pointers for solving this long standing problem of
-mine.
-
-I have installed a new alsalib (1.0.10rc2) from Debian Experimental, so it
-
-should not be the reason.
-
-Thanks.
-======================================================================
-
-----------------------------------------------------------------------
- visit0r - 11-08-05 19:26 
-----------------------------------------------------------------------
-How come it worked for while then? I'm 100% sure I didn't dream it up :)
-
-----------------------------------------------------------------------
- visit0r - 11-08-05 19:56 
-----------------------------------------------------------------------
-Let me clear this up: mixing multiple *PCM* streams worked. I don't expect
-mixing multiple AC3 streams to work.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-05-05 14:24 visit0r        New Issue                                    
-11-05-05 14:24 visit0r        Distribution              => Debian Unstable 
-11-05-05 14:24 visit0r        Kernel Version            => 2.6.14          
-11-05-05 14:27 visit0r        Issue Monitored: visit0r                     
-11-08-05 18:38 tiwai          Note Added: 0006634                          
-11-08-05 19:26 visit0r        Note Added: 0006639                          
-11-08-05 19:56 visit0r        Note Added: 0006642                          
-======================================================================
-
-
+ Eric
 
 
 -------------------------------------------------------
