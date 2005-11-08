@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001535]: The sound card is detected. No sound from the speakers or headphones.
-Date: Tue, 8 Nov 2005 17:46:21 +0100
-Message-ID: <eafc90e925ed51908c2ef59372752a7a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001536]: Error during compiling hpetimer.c
+Date: Tue, 8 Nov 2005 18:18:55 +0100
+Message-ID: <578d95b42032591e06018d1760697d39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E70031A8
-	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 17:46:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 758031AD
+	for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2005 18:18:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1535> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1536> 
 ======================================================================
-Reported By:                h4ndr3s
-Assigned To:                tiwai
+Reported By:                spm
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1535
-Category:                   PCI - hda-intel
+Issue ID:                   1536
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.13
+Distribution:               Debian
+Kernel Version:             2.6.14-rc3
 ======================================================================
-Date Submitted:             11-08-2005 12:17 CET
-Last Modified:              11-08-2005 17:46 CET
+Date Submitted:             11-08-2005 15:54 CET
+Last Modified:              11-08-2005 18:18 CET
 ======================================================================
-Summary:                    The sound card is detected. No sound from the
-speakers or headphones.
+Summary:                    Error during compiling hpetimer.c
 Description: 
-I have a Motherboard Intel D915GAV with a sound card Intel HDA onboard,
-chipset Realtek ALC880. The Sound Card is detected, the modules are
-loaded, but no sound come from the speakers or headphones. 
+This error occurs when trying to make 1.09b driver on my 2.6.14-rc3
+kernel.
+
+make[1]: Entering directory `/usr/src/linux-2.6.14-rc3'
+  CC [M]  /usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o
+In file included from
+/usr/src/alsa/alsa-driver-1.0.9b/include/adriver.h:677,
+                 from
+/usr/src/alsa/alsa-driver-1.0.9b/include/sound/driver.h:42,
+                 from
+/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.c:22:
+include/linux/pci.h:392: error: parse error before numeric constant
+make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o] Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore] Error 2
+
+
+Any ideas? I have also tried on the development release
+(alsa-driver-1.0.10rc2), and get the same error..
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-08-05 17:46 
+ Clemens Ladisch - 11-08-05 18:18 
 ----------------------------------------------------------------------
-Try the later version of ALSA.
-If it still doesn't work, pass an appropriate model module option to
-snd-hda-intel module.  See ALSA-Configuration.txt for details.
+What is line 392 in the include/linux/pci.h file in your kernel source?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-08-05 12:17 h4ndr3s        New Issue                                    
-11-08-05 12:17 h4ndr3s        Distribution              => Slackware       
-11-08-05 12:17 h4ndr3s        Kernel Version            => 2.6.13          
-11-08-05 17:46 tiwai          Note Added: 0006627                          
+11-08-05 15:54 spm            New Issue                                    
+11-08-05 15:54 spm            Distribution              => Debian          
+11-08-05 15:54 spm            Kernel Version            => 2.6.14-rc3      
+11-08-05 18:18 Clemens LadischNote Added: 0006629                          
 ======================================================================
 
 
