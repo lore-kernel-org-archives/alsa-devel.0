@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001535]: The sound card is detected. No sound from the speakers or headphones.
-Date: Wed, 9 Nov 2005 14:22:54 +0100
-Message-ID: <144756c13bc73daee657adf1556b4c38@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001510]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to control volume by master channel, PCM and headphones work
+Date: Wed, 9 Nov 2005 15:23:54 +0100
+Message-ID: <f7edf529cf8c38cbde7219c4a2d40dd2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8E001BD
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 14:22:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19CB11CB
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 15:23:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,181 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1535> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1510> 
 ======================================================================
-Reported By:                h4ndr3s
-Assigned To:                tiwai
+Reported By:                wiktorw
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1535
-Category:                   PCI - hda-intel
+Issue ID:                   1510
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.13
+Status:                     new
+Distribution:               Gentoo 2005.1
+Kernel Version:             2.6.13-gentoo-r4
 ======================================================================
-Date Submitted:             11-08-2005 12:17 CET
-Last Modified:              11-09-2005 14:22 CET
+Date Submitted:             10-28-2005 17:54 CEST
+Last Modified:              11-09-2005 15:23 CET
 ======================================================================
-Summary:                    The sound card is detected. No sound from the
-speakers or headphones.
+Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to
+control volume by master channel, PCM and headphones work
 Description: 
-I have a Motherboard Intel D915GAV with a sound card Intel HDA onboard,
-chipset Realtek ALC880. The Sound Card is detected, the modules are
-loaded, but no sound come from the speakers or headphones. 
+On my Acer Aspire 5002LM laptop I have the following problem:
+- Master channel does not control volume level (no matter if I slide it or
+mute)
+- PCM channel works
+- Headphone/PCM-2 channel works
+
+The Master/PCM/Headphone channels are for the "SiS SI7012 (Alsa Mixer)"
+device, while Volume/PCM/PCM-2 channels are for the "Realtek ALC203 rev 0
+(OSS Mixer)" device. They do the same thing: Master/Volume control in
+gnome-volume-control applet doesn't change the volume level.
+
+At first I thought that this problem is software-related, but in fact it
+isn't. Now I have tested several things and all give me the same result. I
+also suspect that not only I have such problems, althought the original
+posters might not be aware of it. See here for the original discussion:
+
+http://forums.gentoo.org/viewtopic-t-387739.html
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-05 13:34 
+ garfungiloops - 11-08-05 19:41 
 ----------------------------------------------------------------------
-Yes, the problem is likely the permission of your sound device.  There are
-different methods to control them, dependong on the distro and setup.
-
-Does 3stack-digout support all the function on your board?  If yes, please
-provide the output of "lspci -nv", so that this model is chosen
-automatically.
+But under Windows it's recognized as Realtek ....
 
 ----------------------------------------------------------------------
- h4ndr3s - 11-09-05 14:22 
+ wiktorw - 11-09-05 15:23 
 ----------------------------------------------------------------------
-I must debug that, but if all the functions are supported, i pass you the
-out of "lspci -nv". I'll do a couple more of probes with diferent models,
-to see wich one it's better, tomorrow maybe. See you later.
+For me it is as follows:
+
+
+# cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: Realtek ALC203 rev 0
+
+Revision         : 0x00
+Compat. Class    : 0x00
+Subsys. Vendor ID: 0xffff
+Subsys. ID       : 0xffff
+
+Capabilities     : -headphone out-
+DAC resolution   : 20-bit
+ADC resolution   : 18-bit
+3D enhancement   : No 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : on
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Double rate slots: 7/8
+Extended ID      : codec=0 rev=2 AMAP DSA=0 SPDIF DRA VRA
+Extended status  : SPCV SPDIF=7/8 VRA
+PCM front DAC    : 22050Hz
+PCM ADC          : 22050Hz
+SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+
+                    Gain     Inverted  Buffer delay  Location
+Master Out       :   0.0 dBV    -      23/fs         Rear I/O Panel
+AUX Out          :   0.0 dBV    -      23/fs         Rear I/O Panel
+Center/LFE Out   :   0.0 dBV    -      23/fs         Rear I/O Panel
+SPDIF Out        :   0.0 dBV    -      23/fs         Rear I/O Panel
+Phone In         :   0.0 dBV    -      23/fs         Rear I/O Panel
+Mic 1            :   0.0 dBV    -      23/fs         Rear I/O Panel
+Mic 2            :   0.0 dBV    -      23/fs         Rear I/O Panel
+Line In          :   0.0 dBV    -      23/fs         Rear I/O Panel
+CD In            :   0.0 dBV    -      23/fs         Rear I/O Panel
+Video In         :   0.0 dBV    -      23/fs         Rear I/O Panel
+Aux In           :   0.0 dBV    -      23/fs         Rear I/O Panel
+Mono Out         :   0.0 dBV    -      23/fs         Rear I/O Panel
+
+
+# cat /proc/asound/card0/codec97#0/ac97#0-0+regs
+0:00 = 0190
+0:02 = 0c0c
+0:04 = 0505
+0:06 = 000b
+0:08 = 0000
+0:0a = 0012
+0:0c = 801f
+0:0e = 831f
+0:10 = 0707
+0:12 = 0202
+0:14 = 0000
+0:16 = 0d0d
+0:18 = 0c0c
+0:1a = 0000
+0:1c = 0b0b
+0:1e = 8000
+0:20 = 2400
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 0a07
+0:2a = 0411
+0:2c = 5622
+0:2e = 0000
+0:30 = 0000
+0:32 = 5622
+0:34 = bb80
+0:36 = 0000
+0:38 = 0000
+0:3a = 2824
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 0aea
+0:6a = 0308
+0:6c = 3601
+0:6e = 0014
+0:70 = 0008
+0:72 = 0000
+0:74 = 0100
+0:76 = 0000
+0:78 = 0c07
+0:7a = 6002
+0:7c = 414c
+0:7e = 4770
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-08-05 12:17 h4ndr3s        New Issue                                    
-11-08-05 12:17 h4ndr3s        Distribution              => Slackware       
-11-08-05 12:17 h4ndr3s        Kernel Version            => 2.6.13          
-11-08-05 17:46 tiwai          Note Added: 0006627                          
-11-09-05 12:18 h4ndr3s        Note Added: 0006645                          
-11-09-05 12:24 h4ndr3s        Note Edited: 0006645                         
-11-09-05 13:34 tiwai          Note Added: 0006648                          
-11-09-05 14:22 h4ndr3s        Note Added: 0006653                          
+10-28-05 17:54 wiktorw        New Issue                                    
+10-28-05 17:54 wiktorw        Distribution              => Gentoo 2005.1   
+10-28-05 17:54 wiktorw        Kernel Version            => 2.6.13-gentoo-r4
+10-30-05 09:35 garfungiloops  Note Added: 0006573                          
+10-30-05 09:36 garfungiloops  Issue Monitored: garfungiloops                    
+11-08-05 08:44 mrblur         Note Added: 0006619                          
+11-08-05 17:45 tiwai          Note Added: 0006626                          
+11-08-05 19:37 garfungiloops  Note Added: 0006640                          
+11-08-05 19:41 garfungiloops  Note Added: 0006641                          
+11-09-05 15:23 wiktorw        Note Added: 0006654                          
 ======================================================================
 
 
