@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001451]: SPDF and Line out simultaneously
-Date: Wed, 9 Nov 2005 13:42:07 +0100
-Message-ID: <747c2c88f19dd2779901052fade45202@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001486]: headphone control disappeared
+Date: Wed, 9 Nov 2005 13:44:34 +0100
+Message-ID: <2587a84c8352354610ae383e3658aab7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF6DC1A8
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 13:42:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFCD21A8
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 13:44:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1451> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
 ======================================================================
-Reported By:                anli
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1451
-Category:                   PCI - ice1724
+Issue ID:                   1486
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
@@ -39,52 +39,54 @@ Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             09-24-2005 15:46 CEST
-Last Modified:              11-09-2005 13:42 CET
+Date Submitted:             10-20-2005 11:07 CEST
+Last Modified:              11-09-2005 13:44 CET
 ======================================================================
-Summary:                    SPDF and Line out simultaneously
+Summary:                    headphone control disappeared
 Description: 
-I tried to get the answer from user and dev lists to this question: how to
-configure the driver to make SPDF and Line-out work simultaneously. I was
-not lucky to get an answer. I have concluded, it's impossible. So -
-reporting the bug.
+The submitter of Ubuntu bug report 18024 reports that the "Headphone"
+control disappeared when he upgraded from linux-image-2.6.10-5-386
+(2.6.10-34.7, from
+hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
 
-It is almost impossible to do any serious mastering/editing work without
-such opportunity.
+$cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
+                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
+irq 7
+
+See
+
+    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+
+for additional info.
 ======================================================================
 
 ----------------------------------------------------------------------
- anli - 11-01-05 20:38 
+ tiwai - 11-08-05 18:34 
 ----------------------------------------------------------------------
-Takashi,
-
-If you still remember, we have tried about 6 patches to resolve the issue,
-but without success. Probably an opposite way is possible: to mirror an
-spdif out to analog rather analog to spdif. From user's point  (or, at
-least, my one :-)) these ways are equal.
-
-Andrew
+Does the attached patch fix the problem?  Preferably try together with ALSA
+1.0.10rc3.
 
 ----------------------------------------------------------------------
- tiwai - 11-09-05 13:42 
+ apeeters - 11-09-05 13:44 
 ----------------------------------------------------------------------
-OK, point taken
-Then "spdif" device isn't appropriate because it outputs via a special PCM
-device (hw:0,2) for raw output to avoid the modification of data.
-
-You may output to SPDIF from hw:0,0 and toggling "IEC958 Optical Raw"
-switch manually (may need "SB Live Analog/Digital Output Jack", too).
+No, unfortunately it does not fix the problem. I used 1.0.10rc3 with your
+patch. 
+The data of amixer etc (as in alsa_headphone for the pristine 2.6.14) is
+identical.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 15:46 anli           New Issue                                    
-10-05-05 19:01 tiwai          Note Added: 0006438                          
-10-06-05 17:25 anli           Issue Monitored: anli                        
-10-11-05 17:24 tiwai          Note Added: 0006456                          
-10-11-05 21:30 anli           Note Added: 0006460                          
-11-01-05 20:38 anli           Note Added: 0006599                          
-11-09-05 13:42 tiwai          Note Added: 0006649                          
+10-20-05 11:07 jdthood        New Issue                                    
+10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
+10-20-05 14:51 tiwai          Note Added: 0006503                          
+11-06-05 16:58 apeeters       Note Added: 0006607                          
+11-06-05 16:58 apeeters       File Added: alsa_headphone                    
+11-08-05 18:34 tiwai          Note Added: 0006633                          
+11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
+
+11-09-05 13:44 apeeters       Note Added: 0006650                          
 ======================================================================
 
 
