@@ -1,11 +1,13 @@
-From: Benjamin Pracht <bigben+alsa@videolan.org>
-Subject: snd_pcm_hw_params fails with snd_intel8x0 on fl32, 96kHz streams
-Date: Wed, 09 Nov 2005 08:42:45 +0100
-Message-ID: <1131522165.4273.0.camel@endymion.home>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: addressing hardware directly?
+Date: Wed, 09 Nov 2005 09:12:46 +0100 (CET)
+Message-ID: <XFMail.20051109091246.pochini@shiny.it>
+References: <1131359629.436f2d8d869ad@webmail.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1131359629.436f2d8d869ad@webmail.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,36 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Alsa-devel@lists.sourceforge.net, David Smoot <davidsmoot@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
 
-I'd like to report an issue I have with alsa (1.0.9 and 1.0.10rc2,
-kernel 2.6.13 and 2.6.14)
+On 07-Nov-2005 Clemens Ladisch wrote:
+> David Smoot wrote:
+>> If I am not developing a generic sound application but I specifically
+>> want to talk to a single card, can I address a card directly in my
+>> software rather than using the "default" or the "hw:0,0" interface?
+>> My target platform is a very limited device, the less stuff I install,
+>> the better.
+>
+> "hw" is the most direct ALSA interface.  If you want to be more direct,=
+ you have
+> to write your own driver.
 
-It seems you cannot play fl32, 96kHz streams on a device using the
-snd_intel8x0 driver module (tested on a nforce2 as well as other intel
-chipsets). s16l or rates until 95999 Hz work well. Other drivers
-(snd_emu10k1 and snd_powermac) seem to work well. Software resampling is
-enabled on the devices (snd_pcm_hw_params_set_rate_resample).
-
-The error occurs on snd_pcm_hw_params (alsa doesn't complain on
-snd_pcm_hw_params_set_rate_near or snd_pcm_hw_params_set_format). The
-error code is -22 (invalid argument).
-
-Any help or remark on this is much welcomed ;)
-
-Thanks in advance, 
-
--- 
-BigBen
+He can also get rid of alsa-lib accessing alsa-kernel through
+ioctl's. It's hard, but not as much as writing his own driver.
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
 SF.Net email is sponsored by:
-Tame your development challenges with Apache's Geronimo App Server. Download
+Tame your development challenges with Apache's Geronimo App Server. Downl=
+oad
 it for free - -and be entered to win a 42" plasma tv or your very own
 Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
