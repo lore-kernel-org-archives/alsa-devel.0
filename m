@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001510]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to control volume by master channel, PCM and headphones work
-Date: Wed, 9 Nov 2005 15:23:54 +0100
-Message-ID: <f7edf529cf8c38cbde7219c4a2d40dd2@bugtrack.alsa-project.org>
+Date: Wed, 9 Nov 2005 15:27:52 +0100
+Message-ID: <39dcd749cc7ac837dc142ff31f6e7fc9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19CB11CB
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 15:23:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 168CD1CB
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 15:27:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo 2005.1
 Kernel Version:             2.6.13-gentoo-r4
 ======================================================================
 Date Submitted:             10-28-2005 17:54 CEST
-Last Modified:              11-09-2005 15:23 CET
+Last Modified:              11-09-2005 15:27 CET
 ======================================================================
 Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to
 control volume by master channel, PCM and headphones work
@@ -64,11 +64,6 @@ posters might not be aware of it. See here for the original discussion:
 http://forums.gentoo.org/viewtopic-t-387739.html
 
 ======================================================================
-
-----------------------------------------------------------------------
- garfungiloops - 11-08-05 19:41 
-----------------------------------------------------------------------
-But under Windows it's recognized as Realtek ....
 
 ----------------------------------------------------------------------
  wiktorw - 11-09-05 15:23 
@@ -186,6 +181,23 @@ Mono Out         :   0.0 dBV    -      23/fs         Rear I/O Panel
 0:7c = 414c
 0:7e = 4770
 
+----------------------------------------------------------------------
+ wiktorw - 11-09-05 15:27 
+----------------------------------------------------------------------
+My last post was the output of the commands I issued on the Gentoo Linux
+machine with:
+
+# uname -a
+Linux widmo 2.6.14-gentoo #1 PREEMPT Mon Oct 31 08:14:56 CET 2005
+i686 AMD Turion(tm) 64 Mobile Technology ML-30 AuthenticAMD GNU/Linux
+
+media-libs/alsa-lib-1.0.9
+media-sound/alsa-headers-1.0.9b
+media-sound/alsa-tools-1.0.8-r1
+media-sound/alsa-utils-1.0.9a
+
+and the in-kernel alsa drivers.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -199,6 +211,7 @@ Date Modified  Username       Field                    Change
 11-08-05 19:37 garfungiloops  Note Added: 0006640                          
 11-08-05 19:41 garfungiloops  Note Added: 0006641                          
 11-09-05 15:23 wiktorw        Note Added: 0006654                          
+11-09-05 15:27 wiktorw        Note Added: 0006655                          
 ======================================================================
 
 
