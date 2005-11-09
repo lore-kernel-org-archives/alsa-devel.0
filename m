@@ -1,35 +1,84 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Patch 1/1] V4L (926) Saa7134 alsa can only be
-	autoloaded	after	saa7134 is active
-Date: Wed, 09 Nov 2005 17:59:03 -0500
-Message-ID: <1131577144.8383.126.camel@mindpipe>
-References: <1131397121.6632.127.camel@localhost>
-	 <s5hd5lbnzg6.wl%tiwai@suse.de> <1131451671.2863.4.camel@frolic>
-	 <s5h4q6nnunn.wl%tiwai@suse.de>  <1131484155.4851.10.camel@frolic>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001532]: Mute controls are gone, therefore unmuting impossible and no sound: NM256,AC97
+Date: Thu, 10 Nov 2005 00:23:19 +0100
+Message-ID: <f163268e07b11b630bd54514971418e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750938AbVKIXBF@vger.kernel.org>
-In-Reply-To: <1131484155.4851.10.camel@frolic>
-Sender: linux-kernel-owner@vger.kernel.org
-To: R C <v4l@cerqueira.org>
-Cc: Takashi Iwai <tiwai@suse.de>, mchehab@brturbo.com.br, linux-kernel@vger.kernel.org, akpm@osdl.org, video4linux-list@redhat.com, alsa-devel@lists.sourceforge.net, nshmyrev@yandex.ru
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 832AE16F
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 00:23:19 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-11-08 at 21:09 +0000, R C wrote:
-> On Tue, 2005-11-08 at 14:20 +0100, Takashi Iwai wrote:
-> 
-> > But saa7134_dma_stop() should be already called in trigger callback,
-> > which is called via snd_pcm_stop().
-> 
-> You're right. I wasn't aware pcm_stop() caused a trigger.
-> You may want to check the current version at
-> http://linuxtv.org/cgi-bin/viewcvs.cgi/v4l-kernel/linux/drivers/media/video/saa7134/saa7134-alsa.c?rev=1.21&root=v4l&view=auto
 
-Did you not read Takashi-san's ALSA driver guide?  If not I'm impressed
-you made it work at all...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1532> 
+======================================================================
+Reported By:                sstefan
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1532
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             11-06-2005 19:32 CET
+Last Modified:              11-10-2005 00:23 CET
+======================================================================
+Summary:                    Mute controls are gone, therefore unmuting
+impossible and no sound: NM256,AC97
+Description: 
+Upgrading from Linux 2.6.10 to 2.6.13, I was no longer able to use the alsa
+nm256 driver, because the mute controls (e.g. for Master and PCM output)
+disappeared from alsamixer or kmix. The chip is muted by default, so upon
+playing nothing is output to the speakers, and there's no way to unmute
+the channels.
+======================================================================
 
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/
+----------------------------------------------------------------------
+ tiwai - 11-08-05 18:29 
+----------------------------------------------------------------------
+Any changes with the latest ALSA 1.0.10rc3?
+
+----------------------------------------------------------------------
+ sstefan - 11-10-05 00:23 
+----------------------------------------------------------------------
+With ALSA 1.0.10rc3, the same problem occurs. 
+
+The only mute switch showing up is the one for the "PC Speaker" channel.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-06-05 19:32 sstefan        New Issue                                    
+11-06-05 19:32 sstefan        Distribution              => Debian          
+11-06-05 19:32 sstefan        Kernel Version            => 2.6.13          
+11-08-05 18:29 tiwai          Note Added: 0006632                          
+11-10-05 00:23 sstefan        Note Added: 0006658                          
+======================================================================
 
 
-Lee
+
+
+-------------------------------------------------------
+SF.Net email is sponsored by:
+Tame your development challenges with Apache's Geronimo App Server. Download
+it for free - -and be entered to win a 42" plasma tv or your very own
+Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
