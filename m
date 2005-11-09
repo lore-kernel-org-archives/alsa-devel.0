@@ -1,14 +1,14 @@
-From: Corvus Corax <corvus-ml@cybertrench.com>
-Subject: Re: lo10K1 not working on x86_64 ?
-Date: Wed, 9 Nov 2005 14:13:10 +0100
-Message-ID: <20051109141310.69fb39f4@VikingPC.home>
-References: <20051102212009.6121d6c3@VikingPC.home>
-	<20051103120117.GA27985@skinner.hem.za.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001535]: The sound card is detected. No sound from the speakers or headphones.
+Date: Wed, 9 Nov 2005 14:22:54 +0100
+Message-ID: <144756c13bc73daee657adf1556b4c38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051103120117.GA27985@skinner.hem.za.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8E001BD
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 14:22:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,42 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have tested it again now, and failed to get a useable configuration doe to the
-following problems.
 
-As soon as I load a more complex patch set - by init_live - or just by inserting
-multiple master_volume patches (Am I correct that the 6 channel master volume is
-the only one with a single slider to control 2 channels i.e. left and right
-component? because the 2-channel Vol sets up separate mixer sliders for each
-control) I get heavy distortion and the actual output seems to have nothing to
-do anymore with the intention of the patchset, I have then to load a different
-saved set from disk, or clear the DSP / unload all patches manually, and load
-new ones to get normal output again.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1535> 
+======================================================================
+Reported By:                h4ndr3s
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1535
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             11-08-2005 12:17 CET
+Last Modified:              11-09-2005 14:22 CET
+======================================================================
+Summary:                    The sound card is detected. No sound from the
+speakers or headphones.
+Description: 
+I have a Motherboard Intel D915GAV with a sound card Intel HDA onboard,
+chipset Realtek ALC880. The Sound Card is detected, the modules are
+loaded, but no sound come from the speakers or headphones. 
+======================================================================
 
-That happens already when loading the patchsets, usually before actually
-connecting their I/O channels together. Its almost like they would overwrite
-eachother on loading, creating garbage in the DSP memory...
+----------------------------------------------------------------------
+ tiwai - 11-09-05 13:34 
+----------------------------------------------------------------------
+Yes, the problem is likely the permission of your sound device.  There are
+different methods to control them, dependong on the distro and setup.
 
-However a single patch does work as expected as it seems, at least for volume
-controls and routings.
+Does 3stack-digout support all the function on your board?  If yes, please
+provide the output of "lspci -nv", so that this model is chosen
+automatically.
 
-I haven't tested the FX-BUS because I dont know how that one is supposed to
-work. On loading that patch over an existing routing I usually get the mentioned
-distortion and most mixer controls cease to function.
+----------------------------------------------------------------------
+ h4ndr3s - 11-09-05 14:22 
+----------------------------------------------------------------------
+I must debug that, but if all the functions are supported, i pass you the
+out of "lspci -nv". I'll do a couple more of probes with diferent models,
+to see wich one it's better, tomorrow maybe. See you later.
 
-By the way, is there a way to control custom volume sliders with OSS mixer
-controls? Does the OSS emulation driver have to be re-loaded after loading the
-patchset? I get mixer program hangs when trying to use OSS mixer controls, and
-when overriding Alsa PCM or Master sliders with new ones, their OSS counterparts
-still control only the left/right channels like with no patchset.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-08-05 12:17 h4ndr3s        New Issue                                    
+11-08-05 12:17 h4ndr3s        Distribution              => Slackware       
+11-08-05 12:17 h4ndr3s        Kernel Version            => 2.6.13          
+11-08-05 17:46 tiwai          Note Added: 0006627                          
+11-09-05 12:18 h4ndr3s        Note Added: 0006645                          
+11-09-05 12:24 h4ndr3s        Note Edited: 0006645                         
+11-09-05 13:34 tiwai          Note Added: 0006648                          
+11-09-05 14:22 h4ndr3s        Note Added: 0006653                          
+======================================================================
 
-regards
-
-Corvus
 
 
 
