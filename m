@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001532]: Mute controls are gone, therefore unmuting impossible and no sound: NM256,AC97
-Date: Thu, 10 Nov 2005 00:23:19 +0100
-Message-ID: <f163268e07b11b630bd54514971418e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001536]: Error during compiling hpetimer.c
+Date: Thu, 10 Nov 2005 00:34:51 +0100
+Message-ID: <2bc209558812591ace7ddaebfa5f3707@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 832AE16F
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 00:23:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 899BC183
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 00:34:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1532> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1536> 
 ======================================================================
-Reported By:                sstefan
-Assigned To:                tiwai
+Reported By:                spm
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1532
-Category:                   PCI - nm256
+Issue ID:                   1536
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               Debian
-Kernel Version:             2.6.13
+Kernel Version:             2.6.14-rc3
 ======================================================================
-Date Submitted:             11-06-2005 19:32 CET
-Last Modified:              11-10-2005 00:23 CET
+Date Submitted:             11-08-2005 15:54 CET
+Last Modified:              11-10-2005 00:34 CET
 ======================================================================
-Summary:                    Mute controls are gone, therefore unmuting
-impossible and no sound: NM256,AC97
+Summary:                    Error during compiling hpetimer.c
 Description: 
-Upgrading from Linux 2.6.10 to 2.6.13, I was no longer able to use the alsa
-nm256 driver, because the mute controls (e.g. for Master and PCM output)
-disappeared from alsamixer or kmix. The chip is muted by default, so upon
-playing nothing is output to the speakers, and there's no way to unmute
-the channels.
+This error occurs when trying to make 1.09b driver on my 2.6.14-rc3
+kernel.
+
+make[1]: Entering directory `/usr/src/linux-2.6.14-rc3'
+  CC [M]  /usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o
+In file included from
+/usr/src/alsa/alsa-driver-1.0.9b/include/adriver.h:677,
+                 from
+/usr/src/alsa/alsa-driver-1.0.9b/include/sound/driver.h:42,
+                 from
+/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.c:22:
+include/linux/pci.h:392: error: parse error before numeric constant
+make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o] Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore] Error 2
+
+
+Any ideas? I have also tried on the development release
+(alsa-driver-1.0.10rc2), and get the same error..
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-08-05 18:29 
+ spm - 11-09-05 21:29 
 ----------------------------------------------------------------------
-Any changes with the latest ALSA 1.0.10rc3?
+So, did you review the config? What is is telling you?
 
 ----------------------------------------------------------------------
- sstefan - 11-10-05 00:23 
+ rlrevell - 11-10-05 00:34 
 ----------------------------------------------------------------------
-With ALSA 1.0.10rc3, the same problem occurs. 
+Why on Earth would you try to compile an ALSA version that's older than the
+one that comes with kernel 2.6.14-rc3?  Backwards compatibility is one
+thing but forward compatibility would require the ability to predict the
+future...
 
-The only mute switch showing up is the one for the "PC Speaker" channel.
+Just use the ALSA drivers that come with your kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-06-05 19:32 sstefan        New Issue                                    
-11-06-05 19:32 sstefan        Distribution              => Debian          
-11-06-05 19:32 sstefan        Kernel Version            => 2.6.13          
-11-08-05 18:29 tiwai          Note Added: 0006632                          
-11-10-05 00:23 sstefan        Note Added: 0006658                          
+11-08-05 15:54 spm            New Issue                                    
+11-08-05 15:54 spm            Distribution              => Debian          
+11-08-05 15:54 spm            Kernel Version            => 2.6.14-rc3      
+11-08-05 18:18 Clemens LadischNote Added: 0006629                          
+11-08-05 18:28 tiwai          Note Added: 0006631                          
+11-08-05 18:48 spm            File Added: config.log                       
+11-08-05 18:49 spm            Note Added: 0006638                          
+11-09-05 00:27 spm            Note Edited: 0006638                         
+11-09-05 21:29 spm            Note Added: 0006656                          
+11-10-05 00:34 rlrevell       Note Added: 0006659                          
 ======================================================================
 
 
