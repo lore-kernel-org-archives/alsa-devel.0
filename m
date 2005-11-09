@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001486]: headphone control disappeared
-Date: Wed, 9 Nov 2005 13:44:34 +0100
-Message-ID: <2587a84c8352354610ae383e3658aab7@bugtrack.alsa-project.org>
+Date: Wed, 9 Nov 2005 13:47:24 +0100
+Message-ID: <9350be70637014b414df3aa0c4001d9f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFCD21A8
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 13:44:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 925511AF
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 13:47:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             10-20-2005 11:07 CEST
-Last Modified:              11-09-2005 13:44 CET
+Last Modified:              11-09-2005 13:47 CET
 ======================================================================
 Summary:                    headphone control disappeared
 Description: 
@@ -62,18 +62,17 @@ for additional info.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-08-05 18:34 
-----------------------------------------------------------------------
-Does the attached patch fix the problem?  Preferably try together with ALSA
-1.0.10rc3.
-
-----------------------------------------------------------------------
  apeeters - 11-09-05 13:44 
 ----------------------------------------------------------------------
 No, unfortunately it does not fix the problem. I used 1.0.10rc3 with your
 patch. 
 The data of amixer etc (as in alsa_headphone for the pristine 2.6.14) is
 identical.
+
+----------------------------------------------------------------------
+ tiwai - 11-09-05 13:47 
+----------------------------------------------------------------------
+Then try ac97_quirk=none option for snd-intel8x0, to be sure.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -87,6 +86,7 @@ Date Modified  Username       Field                    Change
 11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
 
 11-09-05 13:44 apeeters       Note Added: 0006650                          
+11-09-05 13:47 tiwai          Note Added: 0006651                          
 ======================================================================
 
 
