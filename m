@@ -1,15 +1,14 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: 1.0.10rc3 release
-Date: Wed, 9 Nov 2005 11:33:55 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0511091131250.28985@denise.shiny.it>
-References: <Pine.LNX.4.61.0511081101340.9285@tm8103.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001535]: The sound card is detected. No sound from the speakers or headphones.
+Date: Wed, 9 Nov 2005 12:18:39 +0100
+Message-ID: <e408b83eab6c19fe91538620d4385869@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E9351DD
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 11:34:00 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.61.0511081101340.9285@tm8103.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07154127
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 12:18:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,24 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1535> 
+======================================================================
+Reported By:                h4ndr3s
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1535
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             11-08-2005 12:17 CET
+Last Modified:              11-09-2005 12:18 CET
+======================================================================
+Summary:                    The sound card is detected. No sound from the
+speakers or headphones.
+Description: 
+I have a Motherboard Intel D915GAV with a sound card Intel HDA onboard,
+chipset Realtek ALC880. The Sound Card is detected, the modules are
+loaded, but no sound come from the speakers or headphones. 
+======================================================================
 
-On Tue, 8 Nov 2005, Jaroslav Kysela wrote:
+----------------------------------------------------------------------
+ tiwai - 11-08-05 17:46 
+----------------------------------------------------------------------
+Try the later version of ALSA.
+If it still doesn't work, pass an appropriate model module option to
+snd-hda-intel module.  See ALSA-Configuration.txt for details.
 
-> 	1.0.10rc3 ALSA packages were released for testing. Hopefully, the
-> 1.0.10-final release will come soon. For full list of changes, please, see
-> http://www.alsa-project.org/changes/v1-0-10rc2--v1-0-10rc3.txt .
+----------------------------------------------------------------------
+ h4ndr3s - 11-09-05 12:18 
+----------------------------------------------------------------------
+Ok, I try the latest version of ALSA, with kernel 2.6.14. At the beginning
+was the same, no sound... So, I read ALSA-Configuration.txt and pass to
+the module the appropiate model option to snd_hda_intel. That was
+model=3stack-digout, and the sound began to flow! :D
+After that, i reboot the machine, and no problem, so the problem was
+resolved. Now, i only can hear sound with the root user, with normal user
+the sound system gives me an error, and alsamixer too, but if the problem
+goes on after a few trys, I'll come back. 
+Thanks!!!
 
-The pmac driver didn't compile with the CVS version of few days ago. I
-can't check anything until tomorrow night, sorry.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-08-05 12:17 h4ndr3s        New Issue                                    
+11-08-05 12:17 h4ndr3s        Distribution              => Slackware       
+11-08-05 12:17 h4ndr3s        Kernel Version            => 2.6.13          
+11-08-05 17:46 tiwai          Note Added: 0006627                          
+11-09-05 12:18 h4ndr3s        Note Added: 0006645                          
+======================================================================
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
