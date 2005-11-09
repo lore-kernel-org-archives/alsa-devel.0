@@ -1,15 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Linux 2.6.14: Total lockup using aplaymidi
-Date: Wed, 9 Nov 2005 10:34:55 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0511091034150.9595@tm8103.perex-int.cz>
-References: <s5h8xw66pj9.wl%tiwai@suse.de> <20051105204439.41052.qmail@web52902.mail.yahoo.com>
- <s5h1x1srbbh.wl%tiwai@suse.de> <1131394955.8383.96.camel@mindpipe>
- <s5hr79ro32v.wl%tiwai@suse.de> <Pine.LNX.4.61.0511081121060.9285@tm8103.perex-int.cz>
- <s5hlkzzo1c2.wl%tiwai@suse.de>
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: 1.0.10rc3 release
+Date: Wed, 9 Nov 2005 11:33:55 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0511091131250.28985@denise.shiny.it>
+References: <Pine.LNX.4.61.0511081101340.9285@tm8103.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlkzzo1c2.wl%tiwai@suse.de>
+Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E9351DD
+	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 11:34:00 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.61.0511081101340.9285@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,24 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, Chris Rankin <rankincj@yahoo.com>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 8 Nov 2005, Takashi Iwai wrote:
 
-> > I think that it's already merged in Linus's git tree:
-> 
-> That's good to hear, but we talked about the 2.6.14.x stable tree :)
 
-I see. Sorry.
+On Tue, 8 Nov 2005, Jaroslav Kysela wrote:
 
-						Jaroslav
+> 	1.0.10rc3 ALSA packages were released for testing. Hopefully, the
+> 1.0.10-final release will come soon. For full list of changes, please, see
+> http://www.alsa-project.org/changes/v1-0-10rc2--v1-0-10rc3.txt .
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+The pmac driver didn't compile with the CVS version of few days ago. I
+can't check anything until tomorrow night, sorry.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
