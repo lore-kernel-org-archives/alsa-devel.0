@@ -1,10 +1,9 @@
-From: "Amanda Bush" <gfischerxmzy@options.com>
-Subject: Become young again
-Date: Tue, 9 Nov 2004 04:57:22 -0500
-Message-ID: <5245444803.9641597881@options.com>
-Reply-To: "Amanda Bush" <gfischerxmzy@options.com>
+From: Matt Kelly <radius@charter.net>
+Subject: Midi oss compat no longer works in ALSA 1.0.9b!
+Date: Tue, 08 Nov 2005 22:22:53 -0600
+Message-ID: <4371799D.6000201@charter.net>
 Mime-Version: 1.0
-Content-Type: text/html; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -16,25 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa.jcu.cz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<head>
-<HEAD></HEAD>
-</head>
-<body>
-You can be the best! :)<br>
-<b>Simply use  CjjALj.S Softt..abs</b><br>
-It work in 15 mins<br>
-<a href="http://de.geocities.com/Kerk26478Haley53988/">Get it more!<br>
-Endure yourself! :)<br>
-Pack will be shipped the very same day</a><br><hr>
-<I></I><br>
-We must never confuse elegance with snobbery.<br>
-Let us consider the critic, therefore, as a discoverer of discoveries.
-</body>
-</html>
+Hello,
+
+I just upgraded from ALSA 0.9.6 to 1.0.9b.  Whenever I try
+to use /dev/music and send data to it, I get nothing out.
+My sound card is an Audigy-2.  I'm using the external MIDI
+port, the same as always (worked great in 0.9.6).
+
+Did something change drastically such that I need to tweak my
+setup?
+
+Thanks,
+
+Matt K.
 
 
 
