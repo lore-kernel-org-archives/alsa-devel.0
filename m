@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001486]: headphone control disappeared
-Date: Wed, 9 Nov 2005 13:57:36 +0100
-Message-ID: <fa02f78ff22a07377aa5ac904dda256e@bugtrack.alsa-project.org>
+From: Corvus Corax <corvus-ml@cybertrench.com>
+Subject: Re: lo10K1 not working on x86_64 ?
+Date: Wed, 9 Nov 2005 14:13:10 +0100
+Message-ID: <20051109141310.69fb39f4@VikingPC.home>
+References: <20051102212009.6121d6c3@VikingPC.home>
+	<20051103120117.GA27985@skinner.hem.za.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 066691CD
-	for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2005 13:57:36 +0100 (MET)
+In-Reply-To: <20051103120117.GA27985@skinner.hem.za.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +18,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I have tested it again now, and failed to get a useable configuration doe to the
+following problems.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1486
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-20-2005 11:07 CEST
-Last Modified:              11-09-2005 13:57 CET
-======================================================================
-Summary:                    headphone control disappeared
-Description: 
-The submitter of Ubuntu bug report 18024 reports that the "Headphone"
-control disappeared when he upgraded from linux-image-2.6.10-5-386
-(2.6.10-34.7, from
-hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
+As soon as I load a more complex patch set - by init_live - or just by inserting
+multiple master_volume patches (Am I correct that the 6 channel master volume is
+the only one with a single slider to control 2 channels i.e. left and right
+component? because the 2-channel Vol sets up separate mixer sliders for each
+control) I get heavy distortion and the actual output seems to have nothing to
+do anymore with the intention of the patchset, I have then to load a different
+saved set from disk, or clear the DSP / unload all patches manually, and load
+new ones to get normal output again.
 
-$cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
-irq 7
+That happens already when loading the patchsets, usually before actually
+connecting their I/O channels together. Its almost like they would overwrite
+eachother on loading, creating garbage in the DSP memory...
 
-See
+However a single patch does work as expected as it seems, at least for volume
+controls and routings.
 
-    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+I haven't tested the FX-BUS because I dont know how that one is supposed to
+work. On loading that patch over an existing routing I usually get the mentioned
+distortion and most mixer controls cease to function.
 
-for additional info.
-======================================================================
+By the way, is there a way to control custom volume sliders with OSS mixer
+controls? Does the OSS emulation driver have to be re-loaded after loading the
+patchset? I get mixer program hangs when trying to use OSS mixer controls, and
+when overriding Alsa PCM or Master sliders with new ones, their OSS counterparts
+still control only the left/right channels like with no patchset.
 
-----------------------------------------------------------------------
- tiwai - 11-09-05 13:47 
-----------------------------------------------------------------------
-Then try ac97_quirk=none option for snd-intel8x0, to be sure.
+regards
 
-----------------------------------------------------------------------
- apeeters - 11-09-05 13:57 
-----------------------------------------------------------------------
-Nothing, the same result.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-20-05 11:07 jdthood        New Issue                                    
-10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
-10-20-05 14:51 tiwai          Note Added: 0006503                          
-11-06-05 16:58 apeeters       Note Added: 0006607                          
-11-06-05 16:58 apeeters       File Added: alsa_headphone                    
-11-08-05 18:34 tiwai          Note Added: 0006633                          
-11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
-
-11-09-05 13:44 apeeters       Note Added: 0006650                          
-11-09-05 13:47 tiwai          Note Added: 0006651                          
-11-09-05 13:57 apeeters       Note Added: 0006652                          
-======================================================================
-
+Corvus
 
 
 
