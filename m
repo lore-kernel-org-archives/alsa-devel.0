@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001538]: Latency was better on earlier version
-Date: Thu, 10 Nov 2005 19:11:45 +0100
-Message-ID: <f8617e68b32374240a8414cd9f0f053c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001529]: hardware mixing does not work with spdif
+Date: Thu, 10 Nov 2005 19:12:17 +0100
+Message-ID: <9560c8e54131bf7b477383690df5a641@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F59D1D9
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 19:11:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB1EE1D9
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 19:12:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,181 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1538> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1529> 
 ======================================================================
-Reported By:                pesalomo
+Reported By:                visit0r
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1538
-Category:                   PCI - intel8x0
+Issue ID:                   1529
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
+Distribution:               Debian Unstable
 Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             11-09-2005 21:01 CET
-Last Modified:              11-10-2005 19:11 CET
+Date Submitted:             11-05-2005 14:24 CET
+Last Modified:              11-10-2005 19:12 CET
 ======================================================================
-Summary:                    Latency was better on earlier version
+Summary:                    hardware mixing does not work with spdif
 Description: 
-I don't know what category which is best for this - but I'm comparing Linux
-kernel 2.6.10 and 2.6.14. 
+I'm using SB Live! with s/pdif passthrough for PCM and AC3. 
 
-Using I82801DBICH4, version 1.0.10rc1, which is bundled with Linux 2.6.14
-- the performance is much weaker than when using kernel 2.6.10 (don't
-remember the driver version there).
+It works fine for a single application when I use 'spdif' as a device, but
+ hardware mixing does not work. It has never worked for me, thus I thought
 
-On 2.6.10 I was able to use a buffer size down to 128 bytes, but now the
-lowest I can go is 512. And the sound is still crispy.
+previously it's just not supported in my card revision for some reason.
+After I upgraded my kernel to 2.6.14, the hardware mixing suddenly started
+to work with the 'default' device. 
+
+Now it stopped working again, 'default' device does not produce sounds at
+all, and I have to use 'spdif' using which hardware mixing does not work
+(only one app may play sounds at once). I have no idea what made it stop,
+possibly some
+Debian Unstable package upgrade broke it.
+
+I'd appreciate any pointers for solving this long standing problem of
+mine.
+
+I have installed a new alsalib (1.0.10rc2) from Debian Experimental, so it
+
+should not be the reason.
+
+Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 11-10-05 08:57 
+ visit0r - 11-08-05 19:56 
 ----------------------------------------------------------------------
-The driver's buffer size didn't change.
-
-What is the output of "aplay -D hw:0 -v --period-size=32 --buffer-size=64
--t raw -f dat /dev/zero"?
+Let me clear this up: mixing multiple *PCM* streams worked. I don't expect
+mixing multiple AC3 streams to work.
 
 ----------------------------------------------------------------------
- pesalomo - 11-10-05 19:11 
+ tiwai - 11-10-05 19:12 
 ----------------------------------------------------------------------
-This is some of the output of "aplay -D hw:0 -v --period-size=32
---buffer-size=64 -t raw -f dat /dev/zero" using kernel 2.6.14
+OK, point taken
+Then "spdif" device isn't appropriate because it outputs via a special PCM
+device (hw:0,2) for raw output to avoid the modification of data.
 
-Status:
-state       : XRUN
-trigger_time: 1131646180.600730000
-tstamp      : 1131646180.600815000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 2.237 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.617336000
-tstamp      : 1131646180.619571000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 0.033 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.632774000
-tstamp      : 1131646180.632805000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 1.898 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.634022000
-tstamp      : 1131646180.635918000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 0.191 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.637126000
-tstamp      : 1131646180.637316000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 1.944 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.653834000
-tstamp      : 1131646180.655776000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 1.959 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.669669000
-tstamp      : 1131646180.671626000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 2.220 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.685502000
-tstamp      : 1131646180.687720000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 1.991 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.701584000
-tstamp      : 1131646180.703573000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 2.132 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.717439000
-tstamp      : 1131646180.719569000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 2.060 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.733440000
-tstamp      : 1131646180.735498000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 2.118 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.749384000
-tstamp      : 1131646180.751500000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 0.105 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.764712000
-tstamp      : 1131646180.764815000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 1.782 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.766023000
-tstamp      : 1131646180.767804000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 0.120 ms long)
-Status:
-state       : XRUN
-trigger_time: 1131646180.769001000
-tstamp      : 1131646180.769119000
-delay       : 0
-avail       : 64
-avail_max   : 64
-underrun!!! (at least 1.813 ms long)
+You may output to SPDIF from hw:0,0 and toggling "IEC958 Optical Raw"
+switch manually (may need "SB Live Analog/Digital Output Jack", too).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-09-05 21:01 pesalomo       New Issue                                    
-11-09-05 21:01 pesalomo       Distribution              => Gentoo Linux    
-11-09-05 21:01 pesalomo       Kernel Version            => 2.6.14          
-11-09-05 21:02 pesalomo       Issue Monitored: pesalomo                    
-11-10-05 08:57 Clemens LadischNote Added: 0006660                          
-11-10-05 19:11 pesalomo       Note Added: 0006668                          
+11-05-05 14:24 visit0r        New Issue                                    
+11-05-05 14:24 visit0r        Distribution              => Debian Unstable 
+11-05-05 14:24 visit0r        Kernel Version            => 2.6.14          
+11-05-05 14:27 visit0r        Issue Monitored: visit0r                     
+11-08-05 18:38 tiwai          Note Added: 0006634                          
+11-08-05 19:26 visit0r        Note Added: 0006639                          
+11-08-05 19:56 visit0r        Note Added: 0006642                          
+11-10-05 19:12 tiwai          Note Added: 0006669                          
 ======================================================================
 
 
