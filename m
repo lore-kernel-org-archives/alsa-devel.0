@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001451]: SPDF and Line out simultaneously
-Date: Thu, 10 Nov 2005 18:56:29 +0100
-Message-ID: <841c9d59f6764dac9cadb5e7bd2b29ff@85.132.177.35>
+Date: Thu, 10 Nov 2005 19:11:11 +0100
+Message-ID: <b2777bbf76277a49baa3785557ea2f3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A81991D7
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 18:56:29 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E8561D9
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 19:11:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,7 +24,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://85.132.177.35/alsa-bug/view.php?id=1451> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1451> 
 ======================================================================
 Reported By:                anli
 Assigned To:                
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             09-24-2005 15:46 CEST
-Last Modified:              11-10-2005 18:56 CET
+Last Modified:              11-10-2005 19:11 CET
 ======================================================================
 Summary:                    SPDF and Line out simultaneously
 Description: 
@@ -54,25 +54,22 @@ such opportunity.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-05 13:42 
-----------------------------------------------------------------------
-OK, point taken
-Then "spdif" device isn't appropriate because it outputs via a special PCM
-device (hw:0,2) for raw output to avoid the modification of data.
-
-You may output to SPDIF from hw:0,0 and toggling "IEC958 Optical Raw"
-switch manually (may need "SB Live Analog/Digital Output Jack", too).
-
-----------------------------------------------------------------------
- anli - 11-10-05 18:56 
+ anli - 11-10-05 19:02 
 ----------------------------------------------------------------------
 Takashi,
 
 Sorry, I haven't understood your last message: the ICE1724 driver doesn't
-have any mixer controls knows as "IEC958 Optical Raw" or "SB Live
+have any mixer controls known as "IEC958 Optical Raw" or "SB Live
 Analog/Digital Output Jack" :-)
 
 Andrew
+
+
+
+----------------------------------------------------------------------
+ tiwai - 11-10-05 19:11 
+----------------------------------------------------------------------
+Oops, sorry, a wrong bug number...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +82,8 @@ Date Modified  Username       Field                    Change
 11-01-05 20:38 anli           Note Added: 0006599                          
 11-09-05 13:42 tiwai          Note Added: 0006649                          
 11-10-05 18:56 anli           Note Added: 0006666                          
+11-10-05 19:02 anli           Note Edited: 0006666                         
+11-10-05 19:11 tiwai          Note Added: 0006667                          
 ======================================================================
 
 
