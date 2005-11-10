@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001539]: alsa-lib make check: omixer does not build
-Date: Thu, 10 Nov 2005 12:37:33 +0100
-Message-ID: <1b0837f4710142fa64c312821609b252@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001540]: alsa-lib make check: code.c does not compile with GCC4
+Date: Thu, 10 Nov 2005 12:40:15 +0100
+Message-ID: <d83dc1d1ada89894107ff8ba2f1cb7f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF0DB1CA
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 12:37:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00D24167
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 12:40:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,32 +24,28 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1539> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1540> 
 ======================================================================
 Reported By:                Flameeyes
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1539
+Issue ID:                   1540
 Category:                   aconnect
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             11-10-2005 12:37 CET
-Last Modified:              11-10-2005 12:37 CET
+Date Submitted:             11-10-2005 12:40 CET
+Last Modified:              11-10-2005 12:40 CET
 ======================================================================
-Summary:                    alsa-lib make check: omixer does not build
+Summary:                    alsa-lib make check: code.c does not compile with
+GCC4
 Description: 
-make check for alsa-lib does not complete correctly, as the omixer.c source
-file does not build at all.
-
-It tries to include mixer_ordinary.h header that is not present on alsa
-1.0.10_rc3 (but it's present on 1.0.9), and then tries to use sndo_*
-functions that are in that file). If that is gone, the test should go
-away, too. I've worked this around on Portage by removing omixer test
-entirely.
+test/code.c source file does not compile with GCC4 as it uses casted
+lvalues (that are deprecated in GCC 3.4 and invalid in GCC4).
+The attached patch should solve without problems.
 
 HTH,
 Diego
@@ -58,7 +54,9 @@ Diego
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-10-05 12:37 Flameeyes      New Issue                                    
+11-10-05 12:40 Flameeyes      New Issue                                    
+11-10-05 12:40 Flameeyes      File Added: alsa-lib-1.0.10_rc3-test.patch        
+           
 ======================================================================
 
 
