@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001532]: Mute controls are gone, therefore unmuting impossible and no sound: NM256,AC97
-Date: Thu, 10 Nov 2005 22:31:41 +0100
-Message-ID: <3719faafefb3749288a692586c11b681@bugtrack.alsa-project.org>
+From: Corvus Corax <corvus-ml@cybertrench.com>
+Subject: Re: lo10K1 not working on x86_64 ?
+Date: Thu, 10 Nov 2005 23:24:27 +0100
+Message-ID: <20051110232427.0ecb5175@VikingPC.home>
+References: <20051102212009.6121d6c3@VikingPC.home>
+	<20051103120117.GA27985@skinner.hem.za.org>
+	<20051109141310.69fb39f4@VikingPC.home>
+	<Pine.LNX.4.61.0511091339240.16661@redshift.mimosa.com>
+	<20051109234958.4040a03e@VikingPC.home>
+	<Pine.LNX.4.61.0511101158510.16661@redshift.mimosa.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7482C1D9
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 22:31:41 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.61.0511101158510.16661@redshift.mimosa.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +22,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "D. Hugh Redelmeier" <hugh@mimosa.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Am Thu, 10 Nov 2005 12:09:32 -0500 (EST)
+schrieb "D. Hugh Redelmeier" <hugh@mimosa.com>:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1532> 
-======================================================================
-Reported By:                sstefan
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1532
-Category:                   PCI - nm256
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             11-06-2005 19:32 CET
-Last Modified:              11-10-2005 22:31 CET
-======================================================================
-Summary:                    Mute controls are gone, therefore unmuting
-impossible and no sound: NM256,AC97
-Description: 
-Upgrading from Linux 2.6.10 to 2.6.13, I was no longer able to use the alsa
-nm256 driver, because the mute controls (e.g. for Master and PCM output)
-disappeared from alsamixer or kmix. The chip is muted by default, so upon
-playing nothing is output to the speakers, and there's no way to unmute
-the channels.
-======================================================================
+> 
+> Great!  Glad to hear that your problem is solved.
+> 
+> My bug fix came from reading a small code fragment.  I never figured
+> out the big picture of what the symptoms would be.  I'd like to know
+> if the symptoms you encountered were due to the bug I fixed or due to
+> some other change between the earlier version you tested and HEAD.
+> 
+> It would be great if you would test your working version but with the
+> file bitops.h reverted to what it was before the fix (version 1.2).
+> 
+> I realise that this is asking a lot -- it won't benefit you since you
+> already have a working system.  But it should help me understand the
+> consequences of the fix.
+> 
+> Thanks.
+> 
 
-----------------------------------------------------------------------
- sstefan - 11-10-05 00:23 
-----------------------------------------------------------------------
-With ALSA 1.0.10rc3, the same problem occurs. 
+Confirmed!
 
-The only mute switch showing up is the one for the "PC Speaker" channel.
+I tried the packpatch to version 1.2 of bitops.h,
+with that the error occurs like described, DSP meory gets garbed when a certain
+amount or combination of patches is loaded,
+resultuing in heavy distorted sound output and non-functioning controls.
 
-----------------------------------------------------------------------
- sstefan - 11-10-05 22:31 
-----------------------------------------------------------------------
-I isolated the code that actually broke it, it is the snd_ac97_try_bit if
-clause in  snd_ac97_cmix_new_stereo().
----
-	if (snd_ac97_try_bit(ac97, reg, 15)) {
-        {
-		sprintf(name, "%s Switch", pfx);
-		if ((err = snd_ac97_cmute_new_stereo(card, name, reg, check_stereo,
-ac97)) < 0)
-			return err;
-	}
----
-When I commented out the condition, the mute switches were all there!
+(See tar.gz attached to other mail in this thread for DSP patch memory dumps)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-06-05 19:32 sstefan        New Issue                                    
-11-06-05 19:32 sstefan        Distribution              => Debian          
-11-06-05 19:32 sstefan        Kernel Version            => 2.6.13          
-11-08-05 18:29 tiwai          Note Added: 0006632                          
-11-10-05 00:23 sstefan        Note Added: 0006658                          
-11-10-05 22:31 sstefan        Note Added: 0006674                          
-======================================================================
+With the actual version, no corruption occurs, patches get loaded successfully
+and work as expected.
 
+regards
 
+Corvus Corax
+
+PS: thanks for fixing that bug :)
 
 
 -------------------------------------------------------
