@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001535]: The sound card is detected. No sound from the speakers or headphones.
-Date: Thu, 10 Nov 2005 16:00:52 +0100
-Message-ID: <63a37c9d6df22d621599ba162d0dc162@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001536]: Error during compiling hpetimer.c
+Date: Thu, 10 Nov 2005 16:26:05 +0100
+Message-ID: <f6f5c84d33c27eac30651bdf3697d69c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4D9B1C7
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 16:00:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EC881DC
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 16:26:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1535> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1536> 
 ======================================================================
-Reported By:                h4ndr3s
-Assigned To:                tiwai
+Reported By:                spm
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1535
-Category:                   PCI - hda-intel
+Issue ID:                   1536
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.13
+Distribution:               Debian
+Kernel Version:             2.6.14-rc3
 ======================================================================
-Date Submitted:             11-08-2005 12:17 CET
-Last Modified:              11-10-2005 16:00 CET
+Date Submitted:             11-08-2005 15:54 CET
+Last Modified:              11-10-2005 16:26 CET
 ======================================================================
-Summary:                    The sound card is detected. No sound from the
-speakers or headphones.
+Summary:                    Error during compiling hpetimer.c
 Description: 
-I have a Motherboard Intel D915GAV with a sound card Intel HDA onboard,
-chipset Realtek ALC880. The Sound Card is detected, the modules are
-loaded, but no sound come from the speakers or headphones. 
+This error occurs when trying to make 1.09b driver on my 2.6.14-rc3
+kernel.
+
+make[1]: Entering directory `/usr/src/linux-2.6.14-rc3'
+  CC [M]  /usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o
+In file included from
+/usr/src/alsa/alsa-driver-1.0.9b/include/adriver.h:677,
+                 from
+/usr/src/alsa/alsa-driver-1.0.9b/include/sound/driver.h:42,
+                 from
+/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.c:22:
+include/linux/pci.h:392: error: parse error before numeric constant
+make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o] Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore] Error 2
+
+
+Any ideas? I have also tried on the development release
+(alsa-driver-1.0.10rc2), and get the same error..
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- h4ndr3s - 11-09-05 14:22 
+ rlrevell - 11-10-05 00:34 
 ----------------------------------------------------------------------
-I must debug that, but if all the functions are supported, i pass you the
-out of "lspci -nv". I'll do a couple more of probes with diferent models,
-to see wich one it's better, tomorrow maybe. See you later.
+Why on Earth would you try to compile an ALSA version that's older than the
+one that comes with kernel 2.6.14-rc3?  Backwards compatibility is one
+thing but forward compatibility would require the ability to predict the
+future...
+
+Just use the ALSA drivers that come with your kernel.
 
 ----------------------------------------------------------------------
- jrgns - 11-10-05 16:00 
+ spm - 11-10-05 16:26 
 ----------------------------------------------------------------------
-I'm still having this problem. Info as follows:
-Distro: Gentoo
-Kernel: 2.6.12-r10
-Hardware: 0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW
-(ICH6 Family) High Definition Audio Controller (rev 04) (This is a Fujitsu
-Siemens Amilo Pro V2040 Laptop)
-Software: ALSA Driver Version 1.0.9b
+Good point...I didnt realize. I am new at this.
 
-I tried with various model=xxx options and different combinations of
-channels muted, etc.. No luck
+I was getting an error accessing ALSA, so someone "knowledgeable" told me
+to install the Dev Release of ALSA to fix my problem. Thats where I
+encountered the problem.
+
+Here is the original error I got (starting VDR):
+
+
+
+ALSA lib confmisc.c:560:(snd_determine_driver) could not open control for
+card 0
+ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_card_driver
+returned error: No such device or address
+ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_concat
+returned error: No such device or address
+ALSA lib confmisc.c:955:(snd_func_refer) error evaluating name
+ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
+returned error: No such device or address
+ALSA lib conf.c:3948:(snd_config_expand) Evaluate error: No such device or
+address
+ALSA lib pcm.c:2090:(snd_pcm_open_noupdate) Unknown PCM default
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-08-05 12:17 h4ndr3s        New Issue                                    
-11-08-05 12:17 h4ndr3s        Distribution              => Slackware       
-11-08-05 12:17 h4ndr3s        Kernel Version            => 2.6.13          
-11-08-05 17:46 tiwai          Note Added: 0006627                          
-11-09-05 12:18 h4ndr3s        Note Added: 0006645                          
-11-09-05 12:24 h4ndr3s        Note Edited: 0006645                         
-11-09-05 13:34 tiwai          Note Added: 0006648                          
-11-09-05 14:22 h4ndr3s        Note Added: 0006653                          
-11-10-05 16:00 jrgns          Note Added: 0006664                          
+11-08-05 15:54 spm            New Issue                                    
+11-08-05 15:54 spm            Distribution              => Debian          
+11-08-05 15:54 spm            Kernel Version            => 2.6.14-rc3      
+11-08-05 18:18 Clemens LadischNote Added: 0006629                          
+11-08-05 18:28 tiwai          Note Added: 0006631                          
+11-08-05 18:48 spm            File Added: config.log                       
+11-08-05 18:49 spm            Note Added: 0006638                          
+11-09-05 00:27 spm            Note Edited: 0006638                         
+11-09-05 21:29 spm            Note Added: 0006656                          
+11-10-05 00:34 rlrevell       Note Added: 0006659                          
+11-10-05 16:26 spm            Note Added: 0006665                          
 ======================================================================
 
 
