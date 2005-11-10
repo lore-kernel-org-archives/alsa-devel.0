@@ -1,15 +1,14 @@
-From: "D. Hugh Redelmeier" <hugh@mimosa.com>
-Subject: Re: lo10K1 not working on x86_64 ?
-Date: Thu, 10 Nov 2005 12:09:32 -0500 (EST)
-Message-ID: <Pine.LNX.4.61.0511101158510.16661@redshift.mimosa.com>
-References: <20051102212009.6121d6c3@VikingPC.home> <20051103120117.GA27985@skinner.hem.za.org>
- <20051109141310.69fb39f4@VikingPC.home> <Pine.LNX.4.61.0511091339240.16661@redshift.mimosa.com>
- <20051109234958.4040a03e@VikingPC.home>
-Reply-To: "D. Hugh Redelmeier" <hugh@mimosa.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001451]: SPDF and Line out simultaneously
+Date: Thu, 10 Nov 2005 18:56:29 +0100
+Message-ID: <841c9d59f6764dac9cadb5e7bd2b29ff@85.132.177.35>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051109234958.4040a03e@VikingPC.home>
+Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A81991D7
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 18:56:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,37 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Corvus Corax <corvus-ml@cybertrench.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-| From: Corvus Corax <corvus-ml@cybertrench.com>
 
-| Am Wed, 9 Nov 2005 13:47:55 -0500 (EST)
-| schrieb "D. Hugh Redelmeier" <hugh@mimosa.com>:
+A NOTE has been added to this issue.
+======================================================================
+<https://85.132.177.35/alsa-bug/view.php?id=1451> 
+======================================================================
+Reported By:                anli
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1451
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-24-2005 15:46 CEST
+Last Modified:              11-10-2005 18:56 CET
+======================================================================
+Summary:                    SPDF and Line out simultaneously
+Description: 
+I tried to get the answer from user and dev lists to this question: how to
+configure the driver to make SPDF and Line-out work simultaneously. I was
+not lucky to get an answer. I have concluded, it's impossible. So -
+reporting the bug.
 
-| > See https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1533
+It is almost impossible to do any serious mastering/editing work without
+such opportunity.
+======================================================================
 
-| >  You might consider testing HEAD.
-| 
-| Confirmed, the problem seems NOT to occur with ld10k1 compiled from the current
-| CVS HEAD
+----------------------------------------------------------------------
+ tiwai - 11-09-05 13:42 
+----------------------------------------------------------------------
+OK, point taken
+Then "spdif" device isn't appropriate because it outputs via a special PCM
+device (hw:0,2) for raw output to avoid the modification of data.
 
-Great!  Glad to hear that your problem is solved.
+You may output to SPDIF from hw:0,0 and toggling "IEC958 Optical Raw"
+switch manually (may need "SB Live Analog/Digital Output Jack", too).
 
-My bug fix came from reading a small code fragment.  I never figured
-out the big picture of what the symptoms would be.  I'd like to know
-if the symptoms you encountered were due to the bug I fixed or due to
-some other change between the earlier version you tested and HEAD.
+----------------------------------------------------------------------
+ anli - 11-10-05 18:56 
+----------------------------------------------------------------------
+Takashi,
 
-It would be great if you would test your working version but with the
-file bitops.h reverted to what it was before the fix (version 1.2).
+Sorry, I haven't understood your last message: the ICE1724 driver doesn't
+have any mixer controls knows as "IEC958 Optical Raw" or "SB Live
+Analog/Digital Output Jack" :-)
 
-I realise that this is asking a lot -- it won't benefit you since you
-already have a working system.  But it should help me understand the
-consequences of the fix.
+Andrew
 
-Thanks.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-24-05 15:46 anli           New Issue                                    
+10-05-05 19:01 tiwai          Note Added: 0006438                          
+10-06-05 17:25 anli           Issue Monitored: anli                        
+10-11-05 17:24 tiwai          Note Added: 0006456                          
+10-11-05 21:30 anli           Note Added: 0006460                          
+11-01-05 20:38 anli           Note Added: 0006599                          
+11-09-05 13:42 tiwai          Note Added: 0006649                          
+11-10-05 18:56 anli           Note Added: 0006666                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
