@@ -1,11 +1,14 @@
-From: "Sverker Abrahamsson" <sverker@abrahamsson.com>
-Subject: Loopback, cards, devices and substreams
-Date: Thu, 10 Nov 2005 23:49:19 +0100
-Message-ID: <02eb01c5e648$fc7bc210$3c01010a@Fiona>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0001533]: the *_bit routines are broken for systems with sizeof(long) != 4
+Date: Fri, 11 Nov 2005 00:53:23 +0100
+Message-ID: <a100525a0e765fc55726babfea24d2d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_02E8_01C5E651.5DE93070"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52F9A16E
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 00:53:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,91 +18,110 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_02E8_01C5E651.5DE93070
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been REOPENED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1533> 
+======================================================================
+Reported By:                Hugh
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   1533
+Category:                   ld10k1
+Reproducibility:            have not tried
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+======================================================================
+Date Submitted:             11-07-2005 22:02 CET
+Last Modified:              11-11-2005 00:53 CET
+======================================================================
+Summary:                    the *_bit routines are broken for systems with
+sizeof(long) != 4
+Description: 
+These problems were discovered by reading the code.  No testing has been
+done.  The code in question is in
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-tools/ld10k1/src/bitops.h?rev=1.2&view=log
 
-Hi,
-I'm working on a loopback device based on a patch that was posted =
-earlier this year for making the dummy driver a loopback. Unforturnatly =
-the aloop driver doesn't work at all, it just oops my kernel. Snd-dummy =
-on the other hand works fine as loopback with the patch, as long as I =
-only run one instance (because there is only one buffer, I think).
+I have made a number of fixes to the code.  Please find attached the new
+version.  Of course you should be wary of untested code.  Do read it and
+understand what I've done and why this fixes several bugs.
 
-I'm trying to figure out how the card, device and substeams belong =
-together. I want to be able to have as many loopbacks as possible, =
-specified by module parameters of course. I've managed to load the =
-driver to two "cards" by using an option line in modprobe.conf so that =
-part is quite straight forward. What I don't quite get is the devices =
-and substreams.
+CHANGES:
 
-My idea is that I should be able to have one loopback per device, i.e. 4 =
-loopbacks per card (of which there can be maximum 8). Substreams, as I =
-understood it would not help me since having multiple streams from a =
-capture device just means that I can have several apps capturing from =
-the same device, but all getting the same content. Correct?
+ The shift right of nr to calculate the subscript of addr
+ was by sizeof(long) + 1.  The correct amount to shift by would be
+ log2(sizeof(unsigned long) * 8).  It is awkward to calculate this
+ value in a compile-time constant.
+ Since gcc is smart enough to implement division or remainder of
+ an unsigned by a power-of-two constant using shift or mask,
+ I changed the code to use these clearer operations.
 
-I hope that someone of you can enlight me on these questions
-/Sverker
-------=_NextPart_000_02E8_01C5E651.5DE93070
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ Each parameter "nr" changed from int to unsigned.
+ This more correctly reflects the fact that it must not be negative.
+ (If it were supposed to allow negative numbers, it ought to have been
+ of type ptrdiff_t since int might not work in systems where
+ sizeof(int) < sizeof(void *).)
+ It makes bitwise operations on nr more sensible.
+ It allows the compiler to convert division-by-power-of-2 to shift.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2769" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>I'm working on a loopback device based =
-on a patch=20
-that was posted earlier this year for making the dummy driver a =
-loopback.=20
-Unforturnatly the aloop driver doesn't work at all, it just oops my =
-kernel.=20
-Snd-dummy on the other hand works fine as loopback with the patch, as =
-long as I=20
-only run one instance (because there is only one buffer, I =
-think).</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm trying to figure out how the card, =
-device and=20
-substeams belong together. I want to be able to have as many loopbacks =
-as=20
-possible, specified by module parameters of course. I've managed to load =
-the=20
-driver to two "cards" by using an option line in modprobe.conf so that =
-part is=20
-quite straight forward. What I don't quite get is the devices and=20
-substreams.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>My idea is that I should be able to =
-have one=20
-loopback per device, i.e. 4 loopbacks per card (of which there can be =
-maximum=20
-8). Substreams, as I understood it would not help me since having =
-multiple=20
-streams from a capture device just means that I can have several apps =
-capturing=20
-from the same device, but all getting the same content. =
-Correct?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I hope that someone of you can enlight =
-me on these=20
-questions</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>/Sverker</FONT></DIV></BODY></HTML>
+ Each local variable "mask" changed from int to unsigned long.
+ This matches the type of *addr, with which it will be combined.
+ This prevents overflow when it is computed.
 
-------=_NextPart_000_02E8_01C5E651.5DE93070--
+ Each assignment to mask was done with "1" shifted left.
+ This needs to be done in unsigned long, so "1UL" is now used.
+
+ Add "const" to type of *addr int test_bit (not a bug fix).
+
+ Fixed the comments to be accurate.
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 11-09-05 13:33 
+----------------------------------------------------------------------
+Thanks.  Merged to CVS.
+BTW, please attach a patch ratner than a file at the next.
+
+----------------------------------------------------------------------
+ Hugh - 11-11-05 00:53 
+----------------------------------------------------------------------
+[Just a note -- no action required.]
+
+It turns out that this bug does manifest itself.  See the alsa-devel
+thread with
+  Subject: lo10K1 not working on x86_64 ?
+
+http://news.gmane.org/find-root.php?message_id=%3c20051102212009.6121d6c3%40VikingPC.home%3e
+
+[I hope that link is persistent.]
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-07-05 22:02 Hugh           New Issue                                    
+11-07-05 22:02 Hugh           File Added: bitops.h                         
+11-07-05 22:05 Hugh           Issue Monitored: Hugh                        
+11-08-05 18:27 tiwai          Status                   new => resolved     
+11-08-05 18:27 tiwai          Resolution               open => fixed       
+11-08-05 18:27 tiwai          Assigned To               => tiwai           
+11-08-05 18:27 tiwai          Note Added: 0006630                          
+11-09-05 08:42 Hugh           Status                   resolved => feedback
+11-09-05 08:42 Hugh           Resolution               fixed => reopened   
+11-09-05 08:42 Hugh           Note Added: 0006644                          
+11-09-05 13:33 tiwai          Status                   feedback => resolved
+11-09-05 13:33 tiwai          Resolution               reopened => fixed   
+11-09-05 13:33 tiwai          Note Added: 0006647                          
+11-11-05 00:53 Hugh           Status                   resolved => feedback
+11-11-05 00:53 Hugh           Resolution               fixed => reopened   
+11-11-05 00:53 Hugh           Note Added: 0006675                          
+======================================================================
+
 
 
 
