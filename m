@@ -1,17 +1,14 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [RFC] ALSA SoC layer
-Date: Thu, 10 Nov 2005 11:24:46 +0000
-Message-ID: <1131621886.14631.177.camel@cearnarfon>
-References: <1131618567.14631.155.camel@cearnarfon>
-	 <s5h8xvw22jl.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001539]: alsa-lib make check: omixer does not build
+Date: Thu, 10 Nov 2005 12:37:33 +0100
+Message-ID: <1b0837f4710142fa64c312821609b252@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from orlando.wolfsonmicro.main (webmail.wolfsonmicro.com [212.20.225.142])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA8381AB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 12:24:47 +0100 (MET)
-In-Reply-To: <s5h8xvw22jl.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF0DB1CA
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 12:37:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,71 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Richard Purdie <rpurdie@rpsys.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-11-10 at 11:57 +0100, Takashi Iwai wrote:
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1539> 
+======================================================================
+Reported By:                Flameeyes
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1539
+Category:                   aconnect
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-10-2005 12:37 CET
+Last Modified:              11-10-2005 12:37 CET
+======================================================================
+Summary:                    alsa-lib make check: omixer does not build
+Description: 
+make check for alsa-lib does not complete correctly, as the omixer.c source
+file does not build at all.
 
-> 
-> SoC can superseed the existing drivers, right?
-> 
+It tries to include mixer_ordinary.h header that is not present on alsa
+1.0.10_rc3 (but it's present on 1.0.9), and then tries to use sndo_*
+functions that are in that file). If that is gone, the test should go
+away, too. I've worked this around on Portage by removing omixer test
+entirely.
 
-Yes, providing the platform/machine and codec is supported. They can
-also co-exist (as in my tree atm).
+HTH,
+Diego
+======================================================================
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-10-05 12:37 Flameeyes      New Issue                                    
+======================================================================
 
-> 
-> At a quick glance, the code looks promising.
-> Very minor nitpicks:
-> 
-> - case is usually not indented in switch() in kernel codes
->   (althought not written explicitly in CodingStyle).
-> 
-> - *_add_widgets() can be optimized with an array.
-> 
-
-I'll fix all this in 0.7 (snapshot next week)
-
-> - documentation is missing ;)
-> 
-
-Apologies, I know. I'll try and get something together for the next
-release. Promise ;)
-
-> 
-> How is the planned schedule?
-
-Now that the pxa2xx platform is stable, I still have the following core
-functionality to implement:-
-
-o Machine codec pin connections (for dpm - only power up output if
-physically connected - machine specific)
-o Some code clean up (including above)
-o Machine specific kcontrols.
-o Mic Bias
-
-I'm hoping to have this done in the next 2 weeks. After this, I'll be
-adding other platforms. Hopefully, I'll have added iMX and some of
-au1x00 by xmas time. More codecs will also be added in this time.
-
-After the iMX platform is added the API should be relatively stable.
-I'll be looking to submit patches to alsa-dev at this point. 
-
-> I'll merge my big patches to replace xxx_t with struct xxx likely
-> in the next week just after releasing ALSA 1.0.10-final.  Although the
-> backward compatibility will be kept mostly, the code rewriting (just
-> running sed or whatever) will be done after that.
-> 
-> 
-
-ok, I'll wait until 1.0.10 and remove ASoC xxx_t. This will make ASoC
-0.8 depend on 1.0.10 and above.
-
-Cheers
-
-Liam
 
 
 
