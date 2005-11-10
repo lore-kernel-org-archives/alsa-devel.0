@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001536]: Error during compiling hpetimer.c
-Date: Thu, 10 Nov 2005 00:34:51 +0100
-Message-ID: <2bc209558812591ace7ddaebfa5f3707@bugtrack.alsa-project.org>
+From: Rafael =?iso-8859-1?q?=C1vila_de_Esp=EDndola?= <rafael.espindola@gmail.com>
+Subject: Re: alc861
+Date: Wed, 9 Nov 2005 22:48:26 -0200
+Message-ID: <200511092248.31222.rafael.espindola@gmail.com>
+References: <564d96fb0511071135x5e57e26cyf3f6f886e6acae72@mail.gmail.com> <s5h3bm6m3cw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/signed;
+  boundary="nextPart2352447.xnYpilhA7A";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 899BC183
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 00:34:51 +0100 (MET)
+Received: from zproxy.gmail.com (zproxy.gmail.com [64.233.162.194])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0EBD1C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 01:45:31 +0100 (MET)
+Received: by zproxy.gmail.com with SMTP id 34so275512nzf
+        for <alsa-devel@alsa-project.org>; Wed, 09 Nov 2005 16:45:30 -0800 (PST)
+In-Reply-To: <s5h3bm6m3cw.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +25,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--nextPart2352447.xnYpilhA7A
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1536> 
-======================================================================
-Reported By:                spm
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1536
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.14-rc3
-======================================================================
-Date Submitted:             11-08-2005 15:54 CET
-Last Modified:              11-10-2005 00:34 CET
-======================================================================
-Summary:                    Error during compiling hpetimer.c
-Description: 
-This error occurs when trying to make 1.09b driver on my 2.6.14-rc3
-kernel.
+> We need a patch, instead of tarball.
+> Care to create a patch?
+Sure. The order of the function has changed. This makes it a bit hard to fi=
+nd=20
+out what has really changed. I expect to receive a motherboard with the=20
+alc861 in 1 week and I should send a patch soon after. Maybe I will also se=
+nd=20
+a raw patch after I "fix" the reorder.
 
-make[1]: Entering directory `/usr/src/linux-2.6.14-rc3'
-  CC [M]  /usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o
-In file included from
-/usr/src/alsa/alsa-driver-1.0.9b/include/adriver.h:677,
-                 from
-/usr/src/alsa/alsa-driver-1.0.9b/include/sound/driver.h:42,
-                 from
-/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.c:22:
-include/linux/pci.h:392: error: parse error before numeric constant
-make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o] Error 1
-make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore] Error 2
+> Takashi
 
+Rafael
 
-Any ideas? I have also tried on the development release
-(alsa-driver-1.0.10rc2), and get the same error..
+--nextPart2352447.xnYpilhA7A
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
 
-======================================================================
+iD8DBQBDcpjfLlrfGJ8JUHwRAphyAJ9sim8fMX/dGgU+nBxeHeruNf9YYQCgotN9
+DpoZIeM3mvtjArW2CQ3kA/k=
+=FDCr
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------------
- spm - 11-09-05 21:29 
-----------------------------------------------------------------------
-So, did you review the config? What is is telling you?
-
-----------------------------------------------------------------------
- rlrevell - 11-10-05 00:34 
-----------------------------------------------------------------------
-Why on Earth would you try to compile an ALSA version that's older than the
-one that comes with kernel 2.6.14-rc3?  Backwards compatibility is one
-thing but forward compatibility would require the ability to predict the
-future...
-
-Just use the ALSA drivers that come with your kernel.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-08-05 15:54 spm            New Issue                                    
-11-08-05 15:54 spm            Distribution              => Debian          
-11-08-05 15:54 spm            Kernel Version            => 2.6.14-rc3      
-11-08-05 18:18 Clemens LadischNote Added: 0006629                          
-11-08-05 18:28 tiwai          Note Added: 0006631                          
-11-08-05 18:48 spm            File Added: config.log                       
-11-08-05 18:49 spm            Note Added: 0006638                          
-11-09-05 00:27 spm            Note Edited: 0006638                         
-11-09-05 21:29 spm            Note Added: 0006656                          
-11-10-05 00:34 rlrevell       Note Added: 0006659                          
-======================================================================
-
-
+--nextPart2352447.xnYpilhA7A--
 
 
 -------------------------------------------------------
