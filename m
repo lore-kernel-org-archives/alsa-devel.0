@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001541]: alsa-lib make check: static building doesn't work on PIC architectures
-Date: Thu, 10 Nov 2005 12:44:27 +0100
-Message-ID: <dff11de18eb6519574ab814c2199759f@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001542]: Bug tracker does not carry a "lib" or "tracker" category
+Date: Thu, 10 Nov 2005 12:47:09 +0100
+Message-ID: <dbe4840f1a4d53cabba2a22089f9ade7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED89A1CA
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 12:44:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DD051CA
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 12:47:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1541> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1542> 
 ======================================================================
 Reported By:                Flameeyes
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1541
+Issue ID:                   1542
 Category:                   aconnect
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             11-10-2005 12:44 CET
-Last Modified:              11-10-2005 12:44 CET
+Date Submitted:             11-10-2005 12:47 CET
+Last Modified:              11-10-2005 12:47 CET
 ======================================================================
-Summary:                    alsa-lib make check: static building doesn't work on
-PIC architectures
+Summary:                    Bug tracker does not carry a "lib" or "tracker"
+category
 Description: 
-Some architectures, such as AMD64, IA64 and Alpha cannot mix PIC and
-non-PIC objects when creating a PIC output. Hardened compilers (which uses
-SSP and PIE) creates PIC executables, passing -static in CFLAGS for tests
-in make check in alsa-lib makes their linking to fail.
+When reporting issues with alsa-lib package I had to report them as
+"aconnect" category as I cannot select "lib" category. Similarly, for this
+bug, I would have used a "tracker" category, or at least a "generic"
+category.
 
-The attached patch removes the -static flag, and let libtool handle the
-linking to the local copy of libasound instead of the system's one.
+Mis-categorization is not so good when looking for open bugs.
+
+Thanks,
+Diego
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-10-05 12:44 Flameeyes      New Issue                                    
-11-10-05 12:44 Flameeyes      File Added: alsa-lib-1.0.10_rc3-hardened.patch    
-               
+11-10-05 12:47 Flameeyes      New Issue                                    
 ======================================================================
 
 
