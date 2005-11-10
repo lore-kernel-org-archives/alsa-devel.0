@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001538]: Latency was better on earlier version
-Date: Thu, 10 Nov 2005 08:57:33 +0100
-Message-ID: <2903e1110e2096b8f62178a7f789f13d@bugtrack.alsa-project.org>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: [RFC] ALSA SoC layer
+Date: Thu, 10 Nov 2005 10:29:27 +0000
+Message-ID: <1131618567.14631.155.camel@cearnarfon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78D8C1AD
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 08:57:33 +0100 (MET)
+Received: from orlando.wolfsonmicro.main (webmail.wolfsonmicro.com [212.20.225.142])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4BD51AB
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 11:29:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,59 +19,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: Richard Purdie <rpurdie@rpsys.net>
 List-Id: alsa-devel@alsa-project.org
 
+I'd like to announce and gather some feedback from the community wrt a
+project that Richard Purdie and I have been working on lately.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1538> 
-======================================================================
-Reported By:                pesalomo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1538
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             11-09-2005 21:01 CET
-Last Modified:              11-10-2005 08:57 CET
-======================================================================
-Summary:                    Latency was better on earlier version
-Description: 
-I don't know what category which is best for this - but I'm comparing Linux
-kernel 2.6.10 and 2.6.14. 
+The overall project goal of the ALSA System on Chip (ASoC) layer is to
+provide better ALSA support for embedded system on chip procesors (e.g.
+pxa2xx, au1x00, iMX, etc) and portable audio codecs. Currently there is
+some support in the kernel for SoC audio, however IMO it has some
+limitations:-
 
-Using I82801DBICH4, version 1.0.10rc1, which is bundled with Linux 2.6.14
-- the performance is much weaker than when using kernel 2.6.10 (don't
-remember the driver version there).
+ o Currently, codec drivers are often tightly coupled to the underlying
+SoC cpu. This is not ideal and leads to code duplication i.e. Linux now
+has 4 different wm8731 drivers for 4 different SoC platforms.
 
-On 2.6.10 I was able to use a buffer size down to 128 bytes, but now the
-lowest I can go is 512. And the sound is still crispy.
-======================================================================
+ o There is no standard method to signal user initiated audio events.
+e.g. Headphone/Mic insertion, Headphone/Mic detection after an insertion
+event. These are quite common events on portable devices and often
+require machine specific code to re route audio, enable amps etc after
+such an event.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 11-10-05 08:57 
-----------------------------------------------------------------------
-The driver's buffer size didn't change.
+ o Current drivers tend to power up the entire codec when playing (or
+recording) audio. This is fine for a PC, but tends to waste a lot of
+power on portable devices. There is also no support for saving power via
+changing codec oversampling rates, bias currents, etc.
 
-What is the output of "aplay -D hw:0 -v --period-size=32 --buffer-size=64
--t raw -f dat /dev/zero"?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-09-05 21:01 pesalomo       New Issue                                    
-11-09-05 21:01 pesalomo       Distribution              => Gentoo Linux    
-11-09-05 21:01 pesalomo       Kernel Version            => 2.6.14          
-11-09-05 21:02 pesalomo       Issue Monitored: pesalomo                    
-11-10-05 08:57 Clemens LadischNote Added: 0006660                          
-======================================================================
+The ASoC layer is designed to address these issues and provide the
+following features :-
+
+ o Codec independence. Allows reuse of codec drivers on other platforms
+and machines.
+
+ o Easy I2S/PCM audio interface setup between codec and SoC. Each SoC
+interface and codec registers it's audio interface capabilities with the
+core and are subsequently matched and configured when the application hw
+params are known.
+  
+ o Codec Dynamic Power Management (DPM). DPM automatically sets the
+codec to it's minimum power state at all times. This includes powering
+up/down internal power blocks depending on the internal codec audio
+routing and any active streams. 
+ 
+ o Pop and click reduction. Pops and clicks can be reduced by powering
+the codec up/down in the correct sequence (including using digital
+mute). ASoC signals the codec when to change power states.
+
+ o Machine specific controls: Allow machines to add specific controls to
+the sound card e.g. volume control for machine speaker amp.
+
+
+To achieve all this, ASoC basically splits an embedded audio system into
+3 components :-
+
+ o Codec driver: The codec driver is platform independent and contains
+audio controls, audio interface capabilities, codec dpm definition and
+codec IO functions.
+
+ o Platform driver: The platform driver contains the audio dma engine
+and audio interface drivers (e.g. I2S, AC97, PCM) for that platform. 
+
+ o Machine driver: The machine driver handles any machine specific
+controls and audio events. i.e. turning on an amp at start of playback.
+
+
+ASoC is still very much work in progress and currently the only
+supported platform is the pxa2xx. Support for other platforms will
+follow soon with the iMX and au1x00 SoC's (as I have both boards). 
+
+Atm, codec drivers exist for:-
+
+ o WM8753
+ o WM8731
+ o WM8750
+ o WM8971
+ o WM9713 (voice interface)
+ o AC97 codec (supported via ac97_codec.c)
+
+and in progress:-
+
+ o UDA1380
+ o WM8772
+
+The current ASoC snapshot (version 0.6) is available at
+http://rpsys.net/openzaurus/patches/alsa/alsa-soc-0.6.patch 
+
+New snapshots will be released weekly. The project will also shortly
+have an online git repository and web page for easier community
+collaboration.
+
+Liam   
 
 
 
