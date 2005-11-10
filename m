@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001542]: Bug tracker does not carry a "lib" or "tracker" category
-Date: Thu, 10 Nov 2005 12:47:09 +0100
-Message-ID: <dbe4840f1a4d53cabba2a22089f9ade7@bugtrack.alsa-project.org>
+Date: Thu, 10 Nov 2005 12:49:17 +0100
+Message-ID: <1d00c166a55685af179bc3912afefeed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DD051CA
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 12:47:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D160A1CA
+	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 12:49:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1542> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             11-10-2005 12:47 CET
-Last Modified:              11-10-2005 12:47 CET
+Last Modified:              11-10-2005 12:49 CET
 ======================================================================
 Summary:                    Bug tracker does not carry a "lib" or "tracker"
 category
@@ -54,10 +54,21 @@ Thanks,
 Diego
 ======================================================================
 
+----------------------------------------------------------------------
+ Flameeyes - 11-10-05 12:49 
+----------------------------------------------------------------------
+Sorry seems like the problem is not there, the problem is that "Switch"
+button does not work on report issue page :|
+Really sorry about this, I though the reporting categories was the same
+for all projects.
+
+Not sure how to close this though.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-10-05 12:47 Flameeyes      New Issue                                    
+11-10-05 12:49 Flameeyes      Note Added: 0006661                          
 ======================================================================
 
 
