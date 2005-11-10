@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001536]: Error during compiling hpetimer.c
-Date: Thu, 10 Nov 2005 16:26:05 +0100
-Message-ID: <f6f5c84d33c27eac30651bdf3697d69c@bugtrack.alsa-project.org>
+From: "D. Hugh Redelmeier" <hugh@mimosa.com>
+Subject: Re: lo10K1 not working on x86_64 ?
+Date: Thu, 10 Nov 2005 12:09:32 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.0511101158510.16661@redshift.mimosa.com>
+References: <20051102212009.6121d6c3@VikingPC.home> <20051103120117.GA27985@skinner.hem.za.org>
+ <20051109141310.69fb39f4@VikingPC.home> <Pine.LNX.4.61.0511091339240.16661@redshift.mimosa.com>
+ <20051109234958.4040a03e@VikingPC.home>
+Reply-To: "D. Hugh Redelmeier" <hugh@mimosa.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EC881DC
-	for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2005 16:26:05 +0100 (MET)
+In-Reply-To: <20051109234958.4040a03e@VikingPC.home>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,108 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Corvus Corax <corvus-ml@cybertrench.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+| From: Corvus Corax <corvus-ml@cybertrench.com>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1536> 
-======================================================================
-Reported By:                spm
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1536
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.14-rc3
-======================================================================
-Date Submitted:             11-08-2005 15:54 CET
-Last Modified:              11-10-2005 16:26 CET
-======================================================================
-Summary:                    Error during compiling hpetimer.c
-Description: 
-This error occurs when trying to make 1.09b driver on my 2.6.14-rc3
-kernel.
+| Am Wed, 9 Nov 2005 13:47:55 -0500 (EST)
+| schrieb "D. Hugh Redelmeier" <hugh@mimosa.com>:
 
-make[1]: Entering directory `/usr/src/linux-2.6.14-rc3'
-  CC [M]  /usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o
-In file included from
-/usr/src/alsa/alsa-driver-1.0.9b/include/adriver.h:677,
-                 from
-/usr/src/alsa/alsa-driver-1.0.9b/include/sound/driver.h:42,
-                 from
-/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.c:22:
-include/linux/pci.h:392: error: parse error before numeric constant
-make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore/hpetimer.o] Error 1
-make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9b/acore] Error 2
+| > See https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1533
 
+| >  You might consider testing HEAD.
+| 
+| Confirmed, the problem seems NOT to occur with ld10k1 compiled from the current
+| CVS HEAD
 
-Any ideas? I have also tried on the development release
-(alsa-driver-1.0.10rc2), and get the same error..
+Great!  Glad to hear that your problem is solved.
 
+My bug fix came from reading a small code fragment.  I never figured
+out the big picture of what the symptoms would be.  I'd like to know
+if the symptoms you encountered were due to the bug I fixed or due to
+some other change between the earlier version you tested and HEAD.
 
-======================================================================
+It would be great if you would test your working version but with the
+file bitops.h reverted to what it was before the fix (version 1.2).
 
-----------------------------------------------------------------------
- rlrevell - 11-10-05 00:34 
-----------------------------------------------------------------------
-Why on Earth would you try to compile an ALSA version that's older than the
-one that comes with kernel 2.6.14-rc3?  Backwards compatibility is one
-thing but forward compatibility would require the ability to predict the
-future...
+I realise that this is asking a lot -- it won't benefit you since you
+already have a working system.  But it should help me understand the
+consequences of the fix.
 
-Just use the ALSA drivers that come with your kernel.
-
-----------------------------------------------------------------------
- spm - 11-10-05 16:26 
-----------------------------------------------------------------------
-Good point...I didnt realize. I am new at this.
-
-I was getting an error accessing ALSA, so someone "knowledgeable" told me
-to install the Dev Release of ALSA to fix my problem. Thats where I
-encountered the problem.
-
-Here is the original error I got (starting VDR):
-
-
-
-ALSA lib confmisc.c:560:(snd_determine_driver) could not open control for
-card 0
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_card_driver
-returned error: No such device or address
-ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_concat
-returned error: No such device or address
-ALSA lib confmisc.c:955:(snd_func_refer) error evaluating name
-ALSA lib conf.c:3479:(_snd_config_evaluate) function snd_func_refer
-returned error: No such device or address
-ALSA lib conf.c:3948:(snd_config_expand) Evaluate error: No such device or
-address
-ALSA lib pcm.c:2090:(snd_pcm_open_noupdate) Unknown PCM default
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-08-05 15:54 spm            New Issue                                    
-11-08-05 15:54 spm            Distribution              => Debian          
-11-08-05 15:54 spm            Kernel Version            => 2.6.14-rc3      
-11-08-05 18:18 Clemens LadischNote Added: 0006629                          
-11-08-05 18:28 tiwai          Note Added: 0006631                          
-11-08-05 18:48 spm            File Added: config.log                       
-11-08-05 18:49 spm            Note Added: 0006638                          
-11-09-05 00:27 spm            Note Edited: 0006638                         
-11-09-05 21:29 spm            Note Added: 0006656                          
-11-10-05 00:34 rlrevell       Note Added: 0006659                          
-11-10-05 16:26 spm            Note Added: 0006665                          
-======================================================================
-
-
+Thanks.
 
 
 -------------------------------------------------------
