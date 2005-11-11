@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0001533]: the *_bit routines are broken for systems with sizeof(long) != 4
-Date: Fri, 11 Nov 2005 00:53:23 +0100
-Message-ID: <a100525a0e765fc55726babfea24d2d9@bugtrack.alsa-project.org>
+Date: Fri, 11 Nov 2005 01:28:22 +0100
+Message-ID: <c97f91042bcfcdf80b3093b941254f09@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52F9A16E
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 00:53:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C5131D1
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 01:28:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1533> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             11-07-2005 22:02 CET
-Last Modified:              11-11-2005 00:53 CET
+Last Modified:              11-11-2005 01:28 CET
 ======================================================================
 Summary:                    the *_bit routines are broken for systems with
 sizeof(long) != 4
@@ -83,12 +83,6 @@ CHANGES:
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-05 13:33 
-----------------------------------------------------------------------
-Thanks.  Merged to CVS.
-BTW, please attach a patch ratner than a file at the next.
-
-----------------------------------------------------------------------
  Hugh - 11-11-05 00:53 
 ----------------------------------------------------------------------
 [Just a note -- no action required.]
@@ -100,6 +94,11 @@ thread with
 http://news.gmane.org/find-root.php?message_id=%3c20051102212009.6121d6c3%40VikingPC.home%3e
 
 [I hope that link is persistent.]
+
+----------------------------------------------------------------------
+ rlrevell - 11-11-05 01:28 
+----------------------------------------------------------------------
+According to the last message in that thread the bug is fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -120,6 +119,7 @@ Date Modified  Username       Field                    Change
 11-11-05 00:53 Hugh           Status                   resolved => feedback
 11-11-05 00:53 Hugh           Resolution               fixed => reopened   
 11-11-05 00:53 Hugh           Note Added: 0006675                          
+11-11-05 01:28 rlrevell       Note Added: 0006676                          
 ======================================================================
 
 
