@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0001533]: the *_bit routines are broken for systems with sizeof(long) != 4
-Date: Fri, 11 Nov 2005 01:28:22 +0100
-Message-ID: <c97f91042bcfcdf80b3093b941254f09@bugtrack.alsa-project.org>
+Date: Fri, 11 Nov 2005 01:29:18 +0100
+Message-ID: <4de04e71bc9083194e0bc9204844982a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C5131D1
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 01:28:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABC871D1
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 01:29:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1533> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   ld10k1
 Reproducibility:            have not tried
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-07-2005 22:02 CET
-Last Modified:              11-11-2005 01:28 CET
+Last Modified:              11-11-2005 01:29 CET
 ======================================================================
 Summary:                    the *_bit routines are broken for systems with
 sizeof(long) != 4
@@ -83,22 +85,14 @@ CHANGES:
 ======================================================================
 
 ----------------------------------------------------------------------
- Hugh - 11-11-05 00:53 
-----------------------------------------------------------------------
-[Just a note -- no action required.]
-
-It turns out that this bug does manifest itself.  See the alsa-devel
-thread with
-  Subject: lo10K1 not working on x86_64 ?
-
-http://news.gmane.org/find-root.php?message_id=%3c20051102212009.6121d6c3%40VikingPC.home%3e
-
-[I hope that link is persistent.]
-
-----------------------------------------------------------------------
  rlrevell - 11-11-05 01:28 
 ----------------------------------------------------------------------
 According to the last message in that thread the bug is fixed.
+
+----------------------------------------------------------------------
+ rlrevell - 11-11-05 01:29 
+----------------------------------------------------------------------
+Reported fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -120,6 +114,9 @@ Date Modified  Username       Field                    Change
 11-11-05 00:53 Hugh           Resolution               fixed => reopened   
 11-11-05 00:53 Hugh           Note Added: 0006675                          
 11-11-05 01:28 rlrevell       Note Added: 0006676                          
+11-11-05 01:29 rlrevell       Status                   feedback => resolved
+11-11-05 01:29 rlrevell       Resolution               reopened => fixed   
+11-11-05 01:29 rlrevell       Note Added: 0006677                          
 ======================================================================
 
 
