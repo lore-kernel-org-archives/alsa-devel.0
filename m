@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001543]: m-audio quattro Sample format non available
-Date: Fri, 11 Nov 2005 07:17:02 +0100
-Message-ID: <e3c47440ef06aafe7cd27f81352d9fe3@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: xxx_t replacement (was:ALSA SoC layer)
+Date: Fri, 11 Nov 2005 10:00:02 +0100 (CET)
+Message-ID: <XFMail.20051111100002.pochini@shiny.it>
+References: <s5h8xvw22jl.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B76FE188
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 07:17:02 +0100 (MET)
+Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD25919C
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 10:00:21 +0100 (MET)
+In-Reply-To: <s5h8xvw22jl.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +20,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1543> 
-======================================================================
-Reported By:                timb
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1543
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               debian
-Kernel Version:             2.4.27, 2.6.x
-======================================================================
-Date Submitted:             11-11-2005 07:17 CET
-Last Modified:              11-11-2005 07:17 CET
-======================================================================
-Summary:                    m-audio quattro Sample format non available
-Description: 
-Using the asound.conf for the quattro from the alsa site, the q4 device
-works for testing aplay and arecord, but q4b gives problems:
+On 10-Nov-2005 Takashi Iwai wrote:
 
-aplay -Dq4b /rough/demo2/floor.wav                  
-Playing WAVE '/rough/demo2/floor.wav' : Signed 16 bit Little Endian, Rate
-44100 Hz, Stereo
-aplay: set_params:887: Channels count non available,
+> I'll merge my big patches to replace xxx_t with struct xxx likely
+> in the next week just after releasing ALSA 1.0.10-final.
+
+Please don't change all the xxxchip_t typedef's in the drivers. They
+help a lot keeping many lines short.
 
 
-arecord -Dq4b -f cd -twav -d 10 /rough/arecordtest.wav
-arecord: set_params:882: Sample format non available
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-11-05 07:17 timb           New Issue                                    
-11-11-05 07:17 timb           Distribution              => debian          
-11-11-05 07:17 timb           Kernel Version            => 2.4.27, 2.6.x   
-======================================================================
-
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
