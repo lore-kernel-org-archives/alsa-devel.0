@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001544]: Crash on missing library in snd_ctl_open_conf
-Date: Fri, 11 Nov 2005 16:25:40 +0100
-Message-ID: <b92319680063d7635ab8ca57a9fed7fd@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: bugtrack question
+Date: Fri, 11 Nov 2005 08:12:43 -0800
+Message-ID: <5bdc1c8b0511110812m316ce31du6e1385506d54503d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A65431C7
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 16:25:40 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+   Is there any way for me to configure the Alsa Mantis system (or
+this list) to send me only the bugtrack entries for my bugs and not
+every bug report entered into Alsa's Bugzilla? Under Account
+Preferences I don't seem to find that option.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1544> 
-======================================================================
-Reported By:                smagoun
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1544
-Category:                   control / hcontrol
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-11-2005 16:25 CET
-Last Modified:              11-11-2005 16:25 CET
-======================================================================
-Summary:                    Crash on missing library in snd_ctl_open_conf
-Description: 
-alsa-lib 1.0.10rc3 crashes in snd_ctl_open_conf while trying to close a DLL
-that was never opened. This patch prevents the dlclose call if the dlopen
-failed.
-======================================================================
+   I'm concerned that when a developer finally gets around to looking
+at one of my reports I will miss it while I throw out 20 others.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-11-05 16:25 smagoun        New Issue                                    
-11-11-05 16:25 smagoun        File Added: control.patch                    
-======================================================================
-
-
+Thanks,
+Mark
 
 
 -------------------------------------------------------
