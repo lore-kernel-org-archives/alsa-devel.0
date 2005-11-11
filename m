@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001546]: REGRESSION: rc2 -> rc3 disables optical out when sending PCM
-Date: Sat, 12 Nov 2005 01:27:49 +0100
-Message-ID: <0a7454c6c28b4bcf414f3a712a050ebc@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: Re: bugtrack question
+Date: Fri, 11 Nov 2005 13:53:16 -0800
+Message-ID: <5bdc1c8b0511111353i242abeb1s518002ee895a52d2@mail.gmail.com>
+References: <5bdc1c8b0511110812m316ce31du6e1385506d54503d@mail.gmail.com>
+	 <s5hbr0rys4i.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7C451BD
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 01:27:49 +0100 (MET)
+In-Reply-To: <s5hbr0rys4i.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +19,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On 11/11/05, Takashi Iwai <tiwai@suse.de> wrote:
+> At Fri, 11 Nov 2005 08:12:43 -0800,
+> Mark Knecht wrote:
+> >
+> > Hi,
+> >    Is there any way for me to configure the Alsa Mantis system (or
+> > this list) to send me only the bugtrack entries for my bugs and not
+> > every bug report entered into Alsa's Bugzilla? Under Account
+> > Preferences I don't seem to find that option.
+>
+> Well, not every bug but only the related bugs are sent to me directly,
+> i.e. bugs reported, answered, or assigned.
+>
+>
+> Takashi
+>
+Thanks Takashi.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1546> 
-======================================================================
-Reported By:                mactalla
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1546
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             
-======================================================================
-Date Submitted:             11-12-2005 01:27 CET
-Last Modified:              11-12-2005 01:27 CET
-======================================================================
-Summary:                    REGRESSION: rc2 -> rc3 disables optical out when
-sending PCM
-Description: 
-Using Turtle Beach Audio Advantage Micro, the 1.0.10_rc2 driver would
-output to the minijack and optical when sending PCM, passthrough would
-also work to send a digital signal through optical.  After upgrading to
-rc3, only digital signals are sent through the optical.  PCM signals are
-sent to the minijack (confirmed with earphones) but the speakers report
-"No Data" coming from the optical.  Downgrading to rc2 fixed the issue.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-12-05 01:27 mactalla       New Issue                                    
-11-12-05 01:27 mactalla       Distribution              => Gentoo          
-======================================================================
-
-
+- Mark
 
 
 -------------------------------------------------------
