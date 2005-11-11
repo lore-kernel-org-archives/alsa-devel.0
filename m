@@ -1,16 +1,21 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: xxx_t replacement (was:ALSA SoC layer)
-Date: Fri, 11 Nov 2005 10:00:02 +0100 (CET)
-Message-ID: <XFMail.20051111100002.pochini@shiny.it>
-References: <s5h8xvw22jl.wl%tiwai@suse.de>
+From: asbjs@stud.ntnu.no (Asbjørn Sæbø)
+Subject: Help: snd_pcm_memmap_begin() and number of channels
+Date: Fri, 11 Nov 2005 10:24:42 +0100
+Message-ID: <20051111092442.GA27281@stud.ntnu.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD25919C
-	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 10:00:21 +0100 (MET)
-In-Reply-To: <s5h8xvw22jl.wl%tiwai@suse.de>
+Received: from royk.itea.ntnu.no (royk.itea.ntnu.no [129.241.190.230])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA2CE1E7
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 10:24:43 +0100 (MET)
+Received: from localhost (localhost [127.0.0.1])
+	by royk.itea.ntnu.no (Postfix) with ESMTP id E5C7E66CBD
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 10:24:42 +0100 (CET)
+Received: from tiger.stud.ntnu.no (tiger.stud.ntnu.no [129.241.56.180])
+	by royk.itea.ntnu.no (Postfix) with ESMTP
+	for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2005 10:24:42 +0100 (CET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,22 +25,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The definition of snd_pcm_mmap_begin():
 
-On 10-Nov-2005 Takashi Iwai wrote:
-
-> I'll merge my big patches to replace xxx_t with struct xxx likely
-> in the next week just after releasing ALSA 1.0.10-final.
-
-Please don't change all the xxxchip_t typedef's in the drivers. They
-help a lot keeping many lines short.
+int snd_pcm_mmap_begin	(   	snd_pcm_t *   	 pcm,
+		const snd_pcm_channel_area_t **  areas,
+		snd_pcm_uframes_t *  	offset,
+		snd_pcm_uframes_t *  	frames
+	)  =09
 
 
---
-Giuliano.
+Am I correct to assume that after this call there is one area for each=20
+of the channels the sound card has been successfully set up for?
+
+Asbj=F8rn
 
 
 -------------------------------------------------------
