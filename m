@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001368]: Feature request - Support for SoundBlaster X-Fi architecture
-Date: Sat, 12 Nov 2005 10:57:03 +0100
-Message-ID: <6c5ed13ab71f8e01e16eca9c24eca2ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
+Date: Sat, 12 Nov 2005 10:58:36 +0100
+Message-ID: <29848747669f6aed1748199ee0ea1e33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF526150
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 10:57:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 290A4150
+	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 10:58:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1368> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
 ======================================================================
-Reported By:                Livino
-Assigned To:                
+Reported By:                moncnam
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1368
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1548
+Category:                   PCI - intel8x0m
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               debian sarge 3.1
+Kernel Version:             2.6.13-rc7
 ======================================================================
-Date Submitted:             08-25-2005 03:26 CEST
-Last Modified:              11-12-2005 10:57 CET
+Date Submitted:             11-12-2005 10:58 CET
+Last Modified:              11-12-2005 10:58 CET
 ======================================================================
-Summary:                    Feature request - Support for SoundBlaster X-Fi
-architecture
+Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
+stream" : inopportune small pauses while playing
 Description: 
-Request for support for Creative's SoundBlaster X-Fi architecture.
-(http://us.creative.com/products/category.asp?category=1&subcategory=208)
-
-X-Fi XtremeMusic support.
- 
-Thanks
+whatever the player i use (alsaplayer, xmms, mplayer) i experience small
+pause while playing (half of a second)
+using mplayer, i can see the following message appearing when the pause
+occur
+<<alsa-play: xrun of at least 0.009 msecs. resetting stream>>
+the playing doesn't stop, it continue well, just a small pause
+i have no other messages in `dmesg` or in syslog
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001327 Creative X-Fi Support - Do you know any...
-======================================================================
-
-----------------------------------------------------------------------
- kazhik - 11-12-05 07:58 
-----------------------------------------------------------------------
-I have "X-Fi Digital Audio", apparently the same as "X-Fi XtremeMusic".
-
-http://jp.creative.com/products/product.asp?category=1&subcategory=208&product=14183
-
-I can donate this card, because I can't use it now. :-(
-
-----------------------------------------------------------------------
- jcdutton - 11-12-05 10:57 
-----------------------------------------------------------------------
-If you want you can donate it to me.
-grep the alsa sources for my email address. it has the word "superbug" in
-it.
-Alternatively, send an email to the alsa-user or alsa-devel list.
-I will then respond with details of where to send it.
-
-I have been informed by creative that this chip is totally different from
-previous ones.
-
-I summize from this that the reverse engineering effort will probably take
-some time to complete.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-25-05 03:26 Livino         New Issue                                    
-08-25-05 20:09 rlrevell       Relationship added       duplicate of 0001327
-08-25-05 20:10 rlrevell       Note Added: 0005944                          
-11-12-05 05:54 kazhik         Note Added: 0006681                          
-11-12-05 05:54 kazhik         Issue Monitored: kazhik                      
-11-12-05 07:05 rlrevell       Note Added: 0006682                          
-11-12-05 07:58 kazhik         Note Added: 0006683                          
-11-12-05 10:57 jcdutton       Note Added: 0006685                          
+11-12-05 10:58 moncnam        New Issue                                    
+11-12-05 10:58 moncnam        Distribution              => debian sarge 3.1
+11-12-05 10:58 moncnam        Kernel Version            => 2.6.13-rc7      
 ======================================================================
 
 
