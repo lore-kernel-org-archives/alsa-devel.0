@@ -1,14 +1,14 @@
-From: "Keara Beil" <beil@tripod.de>
-Subject: Ricardo Really Works Fine
-Date: Sat, 12 Nov 2005 13:50:45 -0500
-Message-ID: <003c01c5e7b9$fd073080$57cea8c0@stoke>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001550]: No volume control
+Date: Sat, 12 Nov 2005 20:01:10 +0100
+Message-ID: <2d9c04329ed5a115ad52eca5a40ba1df@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0039_01C5E790.14312880"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from tripod.de (adsl-208-191-164-241.dsl.hstntx.swbell.net [208.191.164.241])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E86CC18D
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 19:49:40 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E0CB190
+	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 20:01:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Surendra Gudino <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0039_01C5E790.14312880
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1550> 
+======================================================================
+Reported By:                froztbyte
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1550
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE 9.3, Mandrive LE 2005, FC4 and Debian Sarge
+Kernel Version:             2.6.11 (al round)
+======================================================================
+Date Submitted:             11-12-2005 11:31 CET
+Last Modified:              11-12-2005 20:01 CET
+======================================================================
+Summary:                    No volume control
+Description: 
+Under linux I have no hardware volume control of my onboard sound card (SiS
+SI7012 series sound controller. Under WinXP it uses the the CMI9739A Audio
+codec, if that can be of any use to anyone). I can either have my sound
+coming through at full power, or completely muted. I have also tried this
+under OSS and have not succeeded.
+======================================================================
 
-A C V L X V Pm I A e a I rb A L v n A oi L I i a G ze I U t x R an S M ra   A =
-c   3,75  1,22      3,32  http://www.machiruny.com
+----------------------------------------------------------------------
+ rlrevell - 11-12-05 20:01 
+----------------------------------------------------------------------
+Looks like we need to activate softvol for this device.  It should be
+enabled by default with a recent ALSA (1.0.9b or newer).
 
-------=_NextPart_000_0039_01C5E790.14312880
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-12-05 11:31 froztbyte      New Issue                                    
+11-12-05 11:31 froztbyte      Distribution              => SuSE 9.3, Mandrive LE
+2005, FC4 and Debian Sarge
+11-12-05 11:31 froztbyte      Kernel Version            => 2.6.11 (al round)
+11-12-05 20:01 rlrevell       Note Added: 0006689                          
+======================================================================
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<TABLE>
-<TR><TD><FONT face=3D"Courier New">A C V L X V P</FONT></TD><TD><FONT =
-face=3D"Courier New">m I A e a I r</FONT></TD><TD><FONT face=3D"Courier =
-New">b A L v n A o</FONT></TD><TD><FONT face=3D"Courier New">i L I i a G =
-z</FONT></TD><TD><FONT face=3D"Courier New">e I U t x R a</FONT></T=
-D><TD><FONT face=3D"Courier New">n S M ra &nbsp;<BR> A c</FONT></TD><TD><FONT =
-face=3D"Courier New">&nbsp;<BR> &nbsp;3,75 &nbsp;1,22 &nbsp;<BR> &nbsp;<BR> =
-&nbsp;3,32 &nbsp;<BR></FONT></TD><TD width=3D100%></TD></TR></TABLE><A =
-href=3D"http://www.machiruny.com">http://www.machiruny.com</A></BODY></HTML>
-
-------=_NextPart_000_0039_01C5E790.14312880--
 
 
 
