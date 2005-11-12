@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001419]: Input/output jacks mixed up
-Date: Sat, 12 Nov 2005 10:43:50 +0100
-Message-ID: <ae40341689565fd5cb819bce2121d380@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001368]: Feature request - Support for SoundBlaster X-Fi architecture
+Date: Sat, 12 Nov 2005 10:57:03 +0100
+Message-ID: <6c5ed13ab71f8e01e16eca9c24eca2ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F2BA194
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 10:43:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF526150
+	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 10:57:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1419> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1368> 
 ======================================================================
-Reported By:                tom123
-Assigned To:                tiwai
+Reported By:                Livino
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1419
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1368
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE 9.2 Pro
-Kernel Version:             2.6.8
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-14-2005 18:09 CEST
-Last Modified:              11-12-2005 10:43 CET
+Date Submitted:             08-25-2005 03:26 CEST
+Last Modified:              11-12-2005 10:57 CET
 ======================================================================
-Summary:                    Input/output jacks mixed up
+Summary:                    Feature request - Support for SoundBlaster X-Fi
+architecture
 Description: 
-I'm using alsa 1.0.10rc1 for a Shuttle ST20G5 barebone. The mainboard has
-an ULi M1573 southbridge with integrated ALC880 sound. When I play a
-normal 2.0 stereo file, sound is applied at rear jacks "line in" and
-"front". On the front side the "MIC" jack brings out the sound, not the
-"Headphone" jack.
+Request for support for Creative's SoundBlaster X-Fi architecture.
+(http://us.creative.com/products/category.asp?category=1&subcategory=208)
 
-On the rear side are 5 jacks (with explanation from the manual) :
-
-Side-SURR port
-Side-SURR is a stereo line-level output port that accepts a 1/8-inch TRS
-stereo plug.
-
-Line-In port
-Line-In is a stereo line-level input port that accepts a 1/8-inch TRS
-stereo plug. It can be used as a source for digital sound recording, a
-source to be mixed with the output, or both.
-
-Bass/Center port
-Bass/Center-Out is a stereo output port through which the combined signal
-of all internal and external audio sources on the board is output. It can
-be connected to 1/8-inch TRS stereo headphones or to bass/center amplified
-speakers.
-
-Surround-Back port
-Surround-Back is a stereo linelevel output port that accepts a 1/8-inch
-TRS stereo plug.
-
-Front-Out port
-Front-Out is a stereo output port through which the combined signal of all
-internal and external audio sources on the board is output. It can be
-connected to 1/8-inch TRS stereo headphones or to amplified speakers.
-
-So I had expected sound from Front-Out and Bass/Center port at the rear
-side. On the front side sound is expected coming from the headphone jack.
-
-
+X-Fi XtremeMusic support.
+ 
+Thanks
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001327 Creative X-Fi Support - Do you know any...
 ======================================================================
 
 ----------------------------------------------------------------------
- dvlierop - 11-12-05 10:43 
+ kazhik - 11-12-05 07:58 
 ----------------------------------------------------------------------
-The headphone output is still routed to the microphone jack in
-v1.0.10rc3... I'm running FC4 64bit 2.6.13-1.1532_FC4 on my Shuttle
-ST20G5.
+I have "X-Fi Digital Audio", apparently the same as "X-Fi XtremeMusic".
+
+http://jp.creative.com/products/product.asp?category=1&subcategory=208&product=14183
+
+I can donate this card, because I can't use it now. :-(
+
+----------------------------------------------------------------------
+ jcdutton - 11-12-05 10:57 
+----------------------------------------------------------------------
+If you want you can donate it to me.
+grep the alsa sources for my email address. it has the word "superbug" in
+it.
+Alternatively, send an email to the alsa-user or alsa-devel list.
+I will then respond with details of where to send it.
+
+I have been informed by creative that this chip is totally different from
+previous ones.
+
+I summize from this that the reverse engineering effort will probably take
+some time to complete.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-14-05 18:09 tom123         New Issue                                    
-09-14-05 18:09 tom123         Distribution              => SuSE 9.2 Pro    
-09-14-05 18:09 tom123         Kernel Version            => 2.6.8           
-11-12-05 10:43 dvlierop       Note Added: 0006684                          
+08-25-05 03:26 Livino         New Issue                                    
+08-25-05 20:09 rlrevell       Relationship added       duplicate of 0001327
+08-25-05 20:10 rlrevell       Note Added: 0005944                          
+11-12-05 05:54 kazhik         Note Added: 0006681                          
+11-12-05 05:54 kazhik         Issue Monitored: kazhik                      
+11-12-05 07:05 rlrevell       Note Added: 0006682                          
+11-12-05 07:58 kazhik         Note Added: 0006683                          
+11-12-05 10:57 jcdutton       Note Added: 0006685                          
 ======================================================================
 
 
