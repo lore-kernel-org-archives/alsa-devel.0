@@ -1,17 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: 1.0.10rc3 release
-Date: Sat, 12 Nov 2005 14:18:00 +0000
-Message-ID: <20051112141800.42b262c8.pochini@shiny.it>
-References: <Pine.LNX.4.61.0511081101340.9285@tm8103.perex-int.cz>
-	<Pine.LNX.4.58.0511091131250.28985@denise.shiny.it>
+From: Giorgio Padrin <giorgio@mandarinlogiq.org>
+Subject: Re: Audio support for codec Philips UDA1380
+Date: Sat, 12 Nov 2005 17:11:56 +0100
+Message-ID: <200511121711.57270.giorgio@mandarinlogiq.org>
+References: <200511041201.01260.giorgio@mandarinlogiq.org> <17268.30963.131027.711505@ipc1.karo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vsmtp3alice.tin.it (vsmtp3alice.tin.it [212.216.176.143])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C34C15E
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 15:18:17 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.58.0511091131250.28985@denise.shiny.it>
+In-Reply-To: <17268.30963.131027.711505@ipc1.karo>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,46 +19,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@denise.shiny.it>
-Cc: perex@suse.cz, alsa-devel@alsa-project.org
+To: Lothar Wassmann <LW@KARO-electronics.de>
+Cc: alsa-devel@lists.sourceforge.net, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 9 Nov 2005 11:33:55 +0100 (CET)
-Giuliano Pochini <pochini@denise.shiny.it> wrote:
+Hi Lothar,
 
-> 
-> 
-> On Tue, 8 Nov 2005, Jaroslav Kysela wrote:
-> 
-> > 	1.0.10rc3 ALSA packages were released for testing. Hopefully, the
-> > 1.0.10-final release will come soon. For full list of changes, please, see
-> > http://www.alsa-project.org/changes/v1-0-10rc2--v1-0-10rc3.txt .
-> 
-> The pmac driver didn't compile with the CVS version of few days ago. I
-> can't check anything until tomorrow night, sorry.
+Thanks very much for your contribution.
 
-Ok, I have finally had time to check it out. The latest CVS version does not
-compile (pulled just now: Sat Nov 12 14:05:35 UTC 2005):
+=46or clearness, I'd have prefered your email splitted for the two independ=
+ent=20
+threads and codes, PXA2xx i2Sound and UDA1380.
 
-In file included from /home/giu/soft/ad/uuuuuuuuu/alsa-driver/ppc/beep.c:6:
-/home/giu/soft/ad/uuuuuuuuu/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c: In function `snd_pmac_attach_beep':
-/home/giu/soft/ad/uuuuuuuuu/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c:220: warning: implicit declaration of function `input_allocate_device'
-/home/giu/soft/ad/uuuuuuuuu/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c:220: warning: assignment makes pointer from integer without a cast
-/home/giu/soft/ad/uuuuuuuuu/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c:236: error: structure has no member named `cdev'
-/home/giu/soft/ad/uuuuuuuuu/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c:252: warning: implicit declaration of function `input_free_device'
-make[3]: *** [/home/giu/soft/ad/uuuuuuuuu/alsa-driver/ppc/beep.o] Error 1
-make[2]: *** [/home/giu/soft/ad/uuuuuuuuu/alsa-driver/ppc] Error 2
-make[1]: *** [_module_/home/giu/soft/ad/uuuuuuuuu/alsa-driver] Error 2
-make[1]: Leaving directory `/opt/KernelSrc/linux-2.6.13.2'
-make: *** [compile] Error 2
+Alle 11:56, venerd=C3=AC 11 novembre 2005, Lothar Wassmann ha scritto:
+> > Download from: "http://www.mandarinlogiq.org/PXA2xx i2Sound/"
+> This URL is broken and needs to be fixed. :)
+> s/ /%20/
+=2E.. In case your app refuses to do it for you :)
 
+> > Clean write for ALSA and kernel 2.6 with full power optimizations at
+> > subchip level, enabling hw blocks on need. Looking around in the kernel,
+> > this seems to be a novelty among sound drivers, that run commonly in an
+> > all-always-powered-up manner.
+>
+> Is there any reason why you didn't use the pxa2xx-pcm code
+> (sound/arm/pxa2xx-pcm.c) which is already working perfectly with AC97
+> and can be used for I2S without any change.
 
-I didn't find the symbol 'input_allocate_device' in 2.6.1[34] kernel trees.
-What is it supposed to be ?
+=46or clearness: You cited lines from this tread, then speaking of the othe=
+r.
+Now answering: A matter of PXA2xx i2Sound's evolutive history, as now.=20
 
+Giorgio
 
---
-Giuliano.
 
 
 -------------------------------------------------------
