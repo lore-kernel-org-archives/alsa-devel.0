@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001368]: Feature request - Support for SoundBlaster X-Fi architecture
-Date: Sat, 12 Nov 2005 07:58:20 +0100
-Message-ID: <c58836ff8b312576de9a41b09f4390ff@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001547]: Can't compile
+Date: Sat, 12 Nov 2005 09:24:00 +0100
+Message-ID: <8bb3a4e0c48483b30d9a75349af834c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A635C19C
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 07:58:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC0F5139
+	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 09:24:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1368> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1547> 
 ======================================================================
-Reported By:                Livino
+Reported By:                dvlierop
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1368
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - utils
+Issue ID:                   1547
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             08-25-2005 03:26 CEST
-Last Modified:              11-12-2005 07:58 CET
+Date Submitted:             11-12-2005 09:24 CET
+Last Modified:              11-12-2005 09:24 CET
 ======================================================================
-Summary:                    Feature request - Support for SoundBlaster X-Fi
-architecture
+Summary:                    Can't compile
 Description: 
-Request for support for Creative's SoundBlaster X-Fi architecture.
-(http://us.creative.com/products/category.asp?category=1&subcategory=208)
+Compilation exits with error code 1
 
-X-Fi XtremeMusic support.
- 
-Thanks
+System: Shuttle ST20G5 with AMD Athlon 64 3000+ & onboard Realtek ALC880
+
+More specs of this barebone at
+http://eu.shuttle.com/en/DesktopDefault.aspx/tabid-72/170_read-10719/
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 11-12-05 07:05 
-----------------------------------------------------------------------
-Sorry, the ALSA bugtracker has been flaking lately.
-
-No progress on this specific card.  But jcdutton has been making progress
-reverse engineering support for the EMU "prosumer" cards (0404, 1212m,
-etc) and the Audigy 2 ZS PCMCIA.
-
-In order for anything to happen Creative will need to donate a device. 
-I'll ask them for one.  Did you have a specific model in mind?
-
-----------------------------------------------------------------------
- kazhik - 11-12-05 07:58 
-----------------------------------------------------------------------
-I have "X-Fi Digital Audio", apparently the same as "X-Fi XtremeMusic".
-
-http://jp.creative.com/products/product.asp?category=1&subcategory=208&product=14183
-
-I can donate this card, because I can't use it now. :-(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-25-05 03:26 Livino         New Issue                                    
-08-25-05 20:09 rlrevell       Relationship added       duplicate of 0001327
-08-25-05 20:10 rlrevell       Note Added: 0005944                          
-11-12-05 05:54 kazhik         Note Added: 0006681                          
-11-12-05 05:54 kazhik         Issue Monitored: kazhik                      
-11-12-05 07:05 rlrevell       Note Added: 0006682                          
-11-12-05 07:58 kazhik         Note Added: 0006683                          
+11-12-05 09:24 dvlierop       New Issue                                    
 ======================================================================
 
 
