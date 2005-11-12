@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001520]: Soundchip was not detected
-Date: Sat, 12 Nov 2005 19:33:47 +0100
-Message-ID: <02f1003782d1933f9fbc51e771e68bf4@bugtrack.alsa-project.org>
+From: "Keara Beil" <beil@tripod.de>
+Subject: Ricardo Really Works Fine
+Date: Sat, 12 Nov 2005 13:50:45 -0500
+Message-ID: <003c01c5e7b9$fd073080$57cea8c0@stoke>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0039_01C5E790.14312880"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1E5F189
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 19:33:47 +0100 (MET)
+Received: from tripod.de (adsl-208-191-164-241.dsl.hstntx.swbell.net [208.191.164.241])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E86CC18D
+	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 19:49:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,140 +18,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Surendra Gudino <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1520> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1520
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 9.0
-Kernel Version:             2.6.14-rc4
-======================================================================
-Date Submitted:             11-01-2005 10:35 CET
-Last Modified:              11-12-2005 19:33 CET
-======================================================================
-Summary:                    Soundchip was not detected
-Description: 
-I have an HP Omnibook 5700 CTX with some CS423x chip onboard, which is not
-detected by alsaconf. I did not find the ids in cs4236.c so I think the
-Pnp ID's
-must added to this file.
+------=_NextPart_000_0039_01C5E790.14312880
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+A C V L X V Pm I A e a I rb A L v n A oi L I i a G ze I U t x R an S M ra   A =
+c   3,75  1,22      3,32  http://www.machiruny.com
 
-======================================================================
+------=_NextPart_000_0039_01C5E790.14312880
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- Henne - 11-08-05 21:00 
-----------------------------------------------------------------------
-Sure, but I don't know where this patch is.
-Please help.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<TABLE>
+<TR><TD><FONT face=3D"Courier New">A C V L X V P</FONT></TD><TD><FONT =
+face=3D"Courier New">m I A e a I r</FONT></TD><TD><FONT face=3D"Courier =
+New">b A L v n A o</FONT></TD><TD><FONT face=3D"Courier New">i L I i a G =
+z</FONT></TD><TD><FONT face=3D"Courier New">e I U t x R a</FONT></T=
+D><TD><FONT face=3D"Courier New">n S M ra &nbsp;<BR> A c</FONT></TD><TD><FONT =
+face=3D"Courier New">&nbsp;<BR> &nbsp;3,75 &nbsp;1,22 &nbsp;<BR> &nbsp;<BR> =
+&nbsp;3,32 &nbsp;<BR></FONT></TD><TD width=3D100%></TD></TR></TABLE><A =
+href=3D"http://www.machiruny.com">http://www.machiruny.com</A></BODY></HTML>
 
-----------------------------------------------------------------------
- Henne - 11-12-05 19:33 
-----------------------------------------------------------------------
-Okay,
-
-I found, applied and run it. The chip is detected with alsaconf as a
-cs4232 instead cs4236 and changes the modprobe.conf-file.
-
-When I run modprobe snd-cs4232 (slackware 9.0 has no alsa-init-script), I
-got a noise from the speakers and the kernel says:
-
-ALSA (path to) cs4236.c:179: CS4232 WSS PnP manual resources are invalid,
-using 
-auto config
-
-The modules are loaded.
-
-Consulting the /proc - files I got:
-
-
-/proc/ioports
-
-...
-0220-022f : CS4232 SB
-...
-0388-0389 : OPL2/3 (left)
-038a-038b : OPL2/3 (right)
-...
-0534-0537 : CS4231
-...
-
-
-/proc/interrupts
-
-...
-5:     0     XT-PIC CS4231
-...
-
-
-/proc/dma
-
-0: CS4231 - 2
-1: CS4231 - 1
-...
-
-
-In /proc/asound I have a link CS4236 to card0
-
-/proc/asound/cards
-0 [CS4236]: CS4236 - CS4236
-            CS4236 at 0x534, irq 5, dma 1&0
-
-/proc/asound/devices
- 4: [0- 0]: hardware dependent
-16: [0- 0]: digital audio playback
-24: [0- 0]: digital audio capture
- 0: [0 -0]: ctl
-33:       : timer
-
-
-/proc/asound/card0/id
-
-CS4236
-
-
-/proc/asound/card0/pcm0c/info
-
-...
-id: CS4231
-name: CS4236
-...
-
-
-So everything looks fine, but when I start alsamixer I get:
-
-alsamixer: function snd_ctl_open failed for default: No such device
-
-
-When starting aplay (without options) I get:
-
-ALSA lib confmisc.c:672:(snd_func_card_driver) cannot find caro ´0´
-and other "No such device" errors.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-01-05 10:35 Henne          New Issue                                    
-11-01-05 10:35 Henne          Distribution              => Slackware 9.0   
-11-01-05 10:35 Henne          Kernel Version            => 2.6.14-rc4      
-11-08-05 18:48 tiwai          Note Added: 0006637                          
-11-08-05 21:00 Henne          Note Added: 0006643                          
-11-12-05 19:33 Henne          Note Added: 0006688                          
-======================================================================
-
+------=_NextPart_000_0039_01C5E790.14312880--
 
 
 
