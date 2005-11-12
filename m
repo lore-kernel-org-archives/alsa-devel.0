@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001547]: Can't compile
-Date: Sat, 12 Nov 2005 09:24:00 +0100
-Message-ID: <8bb3a4e0c48483b30d9a75349af834c5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001419]: Input/output jacks mixed up
+Date: Sat, 12 Nov 2005 10:43:50 +0100
+Message-ID: <ae40341689565fd5cb819bce2121d380@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC0F5139
-	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 09:24:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F2BA194
+	for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2005 10:43:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,38 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1547> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1419> 
 ======================================================================
-Reported By:                dvlierop
-Assigned To:                
+Reported By:                tom123
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1547
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1419
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               SuSE 9.2 Pro
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             11-12-2005 09:24 CET
-Last Modified:              11-12-2005 09:24 CET
+Date Submitted:             09-14-2005 18:09 CEST
+Last Modified:              11-12-2005 10:43 CET
 ======================================================================
-Summary:                    Can't compile
+Summary:                    Input/output jacks mixed up
 Description: 
-Compilation exits with error code 1
+I'm using alsa 1.0.10rc1 for a Shuttle ST20G5 barebone. The mainboard has
+an ULi M1573 southbridge with integrated ALC880 sound. When I play a
+normal 2.0 stereo file, sound is applied at rear jacks "line in" and
+"front". On the front side the "MIC" jack brings out the sound, not the
+"Headphone" jack.
 
-System: Shuttle ST20G5 with AMD Athlon 64 3000+ & onboard Realtek ALC880
+On the rear side are 5 jacks (with explanation from the manual) :
 
-More specs of this barebone at
-http://eu.shuttle.com/en/DesktopDefault.aspx/tabid-72/170_read-10719/
+Side-SURR port
+Side-SURR is a stereo line-level output port that accepts a 1/8-inch TRS
+stereo plug.
+
+Line-In port
+Line-In is a stereo line-level input port that accepts a 1/8-inch TRS
+stereo plug. It can be used as a source for digital sound recording, a
+source to be mixed with the output, or both.
+
+Bass/Center port
+Bass/Center-Out is a stereo output port through which the combined signal
+of all internal and external audio sources on the board is output. It can
+be connected to 1/8-inch TRS stereo headphones or to bass/center amplified
+speakers.
+
+Surround-Back port
+Surround-Back is a stereo linelevel output port that accepts a 1/8-inch
+TRS stereo plug.
+
+Front-Out port
+Front-Out is a stereo output port through which the combined signal of all
+internal and external audio sources on the board is output. It can be
+connected to 1/8-inch TRS stereo headphones or to amplified speakers.
+
+So I had expected sound from Front-Out and Bass/Center port at the rear
+side. On the front side sound is expected coming from the headphone jack.
+
+
 ======================================================================
+
+----------------------------------------------------------------------
+ dvlierop - 11-12-05 10:43 
+----------------------------------------------------------------------
+The headphone output is still routed to the microphone jack in
+v1.0.10rc3... I'm running FC4 64bit 2.6.13-1.1532_FC4 on my Shuttle
+ST20G5.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-05 09:24 dvlierop       New Issue                                    
+09-14-05 18:09 tom123         New Issue                                    
+09-14-05 18:09 tom123         Distribution              => SuSE 9.2 Pro    
+09-14-05 18:09 tom123         Kernel Version            => 2.6.8           
+11-12-05 10:43 dvlierop       Note Added: 0006684                          
 ======================================================================
 
 
