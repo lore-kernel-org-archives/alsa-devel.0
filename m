@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001551]: No mute switch to mixer channel
-Date: Sun, 13 Nov 2005 13:16:20 +0100
-Message-ID: <03ac3513ce7719a79092e98ecf7e60d7@bugtrack.alsa-project.org>
+Date: Sun, 13 Nov 2005 14:05:26 +0100
+Message-ID: <611144d2f02ba6b0a9f768ca9a0f4e5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B17AF193
-	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2005 13:16:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59D3C161
+	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2005 14:05:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1551> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux 2005.1
 Kernel Version:             2.6.13-gentoo-r3
 ======================================================================
 Date Submitted:             11-13-2005 13:16 CET
-Last Modified:              11-13-2005 13:16 CET
+Last Modified:              11-13-2005 14:05 CET
 ======================================================================
 Summary:                    No mute switch to mixer channel
 Description: 
@@ -52,12 +52,19 @@ channel...The only channel which has the switch is the Headphone...
 I don't know if previous version worked...
 ======================================================================
 
+----------------------------------------------------------------------
+ Shogun - 11-13-05 14:05 
+----------------------------------------------------------------------
+I forgot to mention that this issue is also present in 1.0.8 and in
+1.0.10rc3...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-13-05 13:16 Shogun         New Issue                                    
 11-13-05 13:16 Shogun         Distribution              => Gentoo Linux 2005.1
 11-13-05 13:16 Shogun         Kernel Version            => 2.6.13-gentoo-r3
+11-13-05 14:05 Shogun         Note Added: 0006691                          
 ======================================================================
 
 
