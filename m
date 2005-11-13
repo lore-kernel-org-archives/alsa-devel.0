@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001554]: LADSPA plugin do not work in case of policy NONE. LADSPA plugin usage is not documented propertly.
-Date: Sun, 13 Nov 2005 21:04:33 +0100
-Message-ID: <5132d2e463dfe6fdd1a99854748e36fc@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001555]: LADSPA plugins don't work when locale numerical delimiter is not '.'
+Date: Sun, 13 Nov 2005 21:13:01 +0100
+Message-ID: <9e55a6d75314a48468be3fc60a2ba81c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FB5D193
-	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2005 21:04:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 759D1167
+	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2005 21:13:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,39 +24,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1554> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1555> 
 ======================================================================
 Reported By:                gena2x
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1554
+Issue ID:                   1555
 Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             11-13-2005 21:04 CET
-Last Modified:              11-13-2005 21:04 CET
+Date Submitted:             11-13-2005 21:13 CET
+Last Modified:              11-13-2005 21:13 CET
 ======================================================================
-Summary:                    LADSPA plugin do not work in case of policy NONE.
-LADSPA plugin usage is not documented propertly.
+Summary:                    LADSPA plugins don't work when locale numerical
+delimiter is not '.'
 Description: 
-This bug make impossible to work with single channel of multichannel
-frame.
-So I do not find another clear way to filter high frequences out of my
-subwoofer.
+More intresting problem with LADSPA plugin names. For example name of
+plugin
+'delay0.01s' is 'delay0.01s' in en_US locale and 'delay0,01s' in
+ru_RU.KOI8-R 
+locale. You may check listplugins from ladspa-sdk. 
 
-
+This makes global config in multilangual environment unusable in cases
+there 
+LADSPA plugins needed.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 21:04 gena2x         New Issue                                    
-11-13-05 21:04 gena2x         File Added: patch.localeANDladspa                 
-  
+11-13-05 21:13 gena2x         New Issue                                    
 ======================================================================
 
 
