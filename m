@@ -1,11 +1,13 @@
-From: Peter Plessas <plessas@mur.at>
-Subject: ppc CVS compile error
-Date: Sat, 12 Nov 2005 21:13:00 +0100
-Message-ID: <43764CCC.5010600@mur.at>
+From: Geoff Beasley <songshop@bizmedia.com.au>
+Subject: Intel HDA 82801 control
+Date: Sun, 13 Nov 2005 10:48:21 +0000
+Message-ID: <200511131048.21555.songshop@bizmedia.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +20,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+My Fujitsu laptop has one of these audio interfaces. The problem is that the 
+outputs are shared ports that can be different types ( H'phone,Line out etc) 
+depending on what's attached. Under Winedoze this is obviously software 
+controlled. Question is how to control this behaviour under Alsa. 
 
-Dear List,
+Any advice appreciated,
 
-just did a fresh CVS checkout, configured with:
-./configure --with-sequencer=yes --with-oss=yes 
---with-cards=hdsp,usb-audio,powermac
-
-running make:
-.
-.
-.
-.
-   CC [M]  /usr/local/src/cvs/alsa/alsa-driver/ppc/beep.o
-In file included from /usr/local/src/cvs/alsa/alsa-driver/ppc/beep.c:6:
-/usr/local/src/cvs/alsa/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c: In 
-function 's
-nd_pmac_attach_beep':
-/usr/local/src/cvs/alsa/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c:220: 
-warning: i
-mplicit declaration of function 'input_allocate_device'
-/usr/local/src/cvs/alsa/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c:220: 
-warning: a
-ssignment makes pointer from integer without a cast
-/usr/local/src/cvs/alsa/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c:236: 
-error: 'st
-ruct input_dev' has no member named 'cdev'
-/usr/local/src/cvs/alsa/alsa-driver/ppc/../../alsa-kernel/ppc/beep.c:252: 
-warning: i
-mplicit declaration of function 'input_free_device'
-make[4]: *** [/usr/local/src/cvs/alsa/alsa-driver/ppc/beep.o] Error 1
-make[3]: *** [/usr/local/src/cvs/alsa/alsa-driver/ppc] Error 2
-make[2]: *** [_module_/usr/local/src/cvs/alsa/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.13'
-make: *** [compile] Error 2
-
-
-Any hints?
-
-cheers, Peter
+best
+Geoff. 
 
 
 -------------------------------------------------------
