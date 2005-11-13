@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001552]: Fails to read config file when locale numerical delimiter is not '.'
-Date: Sun, 13 Nov 2005 20:12:49 +0100
-Message-ID: <3d87670d05e6a4101502d7a1c5a57b58@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001553]: LADSPA plugins don't work when locale numerical delimiter is not '.'
+Date: Sun, 13 Nov 2005 20:50:17 +0100
+Message-ID: <d2b3bbb02fb7a1c1ce70170f58e1150e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1A2518E
-	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2005 20:12:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6776D193
+	for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2005 20:50:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,33 +24,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1552> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1553> 
 ======================================================================
 Reported By:                gena2x
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1552
+Issue ID:                   1553
 Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             11-13-2005 20:12 CET
-Last Modified:              11-13-2005 20:12 CET
+Date Submitted:             11-13-2005 20:50 CET
+Last Modified:              11-13-2005 20:50 CET
 ======================================================================
-Summary:                    Fails to read config file when locale numerical
+Summary:                    LADSPA plugins don't work when locale numerical
 delimiter is not '.'
 Description: 
-Real values can not be read in any way from conffile while locale 
-numerical delimiter is not '.'
+More intresting problem with LADSPA plugin names. For example name of
+plugin
+'delay0.01s' is 'delay0.01s' in en_US locale and 'delay0,01s' in
+ru_RU.KOI8-R 
+locale. You may check listplugins from ladspa-sdk. 
+
+This makes global config in multilangual environment unusable in cases
+there 
+LADSPA plugins needed.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 20:12 gena2x         New Issue                                    
+11-13-05 20:50 gena2x         New Issue                                    
 ======================================================================
 
 
