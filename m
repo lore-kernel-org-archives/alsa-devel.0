@@ -1,7 +1,10 @@
-From: MAILER-DAEMON@m69.vnn.vn
-Subject: failure notice
-Date: 13 Nov 2005 08:15:48 -0000
-Message-ID: <E1EbD1q-0006Fb-67@mail.sourceforge.net>
+From: Mail Delivery Subsystem <MAILER-DAEMON@mailhub3.mclink.it>
+Subject: Returned mail: see transcript for details
+Date: Sun, 13 Nov 2005 12:13:42 +0100 (CET)
+Message-ID: <200511131113.jADBDe6a055756@mailhub3.mclink.it>
+Mime-Version: 1.0
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="jADBDe6a055756.1131880422/mailhub3.mclink.it"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,67 +18,54 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi. This is the qmail-send program at m69.vnn.vn.
-I'm afraid I wasn't able to deliver your message to the following addresses.
-This is a permanent error; I've given up. Sorry it didn't work out.
+This is a MIME-encapsulated message
 
-<jim@vdc.com.vn>:
-203.162.0.49 does not like recipient.
-Remote host said: 550 Invalid recipient <jim@vdc.com.vn>
-Giving up on 203.162.0.49.
+--jADBDe6a055756.1131880422/mailhub3.mclink.it
 
---- Below this line is a copy of the message.
+The original message was received at Sun, 13 Nov 2005 12:12:01 +0100 (CET)
+from [222.100.61.78]
+
+   ----- The following addresses had permanent fatal errors -----
+<michael@mclink.it>
+
+   ----- Transcript of session follows -----
+Subject: Usercode not in use
+User michael does not exist or is disabled
+L'utente michael non esiste, o e' disabilitato
+550 5.1.1 <michael@mclink.it>... User unknown
+
+--jADBDe6a055756.1131880422/mailhub3.mclink.it
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; mailhub3.mclink.it
+Arrival-Date: Sun, 13 Nov 2005 12:12:01 +0100 (CET)
+
+Final-Recipient: RFC822; michael@mclink.it
+X-Actual-Recipient: rfc822; michael@mailhub3.mclink.it
+Action: failed
+Status: 5.1.1
+Last-Attempt-Date: Sun, 13 Nov 2005 12:13:42 +0100 (CET)
+
+--jADBDe6a055756.1131880422/mailhub3.mclink.it
+Content-Type: text/rfc822-headers
 
 Return-Path: <alsa-devel@lists.sourceforge.net>
-Received: (qmail 13293 invoked from network); 13 Nov 2005 08:15:48 -0000
-Received: from unknown (HELO m69.vnn.vn) ([127.0.0.1])
-          (envelope-sender <alsa-devel@lists.sourceforge.net>)
-          by m69.vnn.vn (qmail-ldap-1.03) with SMTP
-          for <jim@vdc.com.vn>; 13 Nov 2005 08:15:48 -0000
-Received: (qmail 13073 invoked from network); 13 Nov 2005 08:15:36 -0000
-Received: from unknown (HELO lists.sourceforge.net) ([222.100.61.78])
-          (envelope-sender <alsa-devel@lists.sourceforge.net>)
-          by m69.vnn.vn (qmail-ldap-1.03) with SMTP
-          for <jim@vdc.com.vn>; 13 Nov 2005 08:15:36 -0000
+Received: from lists.sourceforge.net ([222.100.61.78])
+	by mailhub3.mclink.it (8.12.9p2/8.12.3) with ESMTP id jADBC02Y055009
+	for <michael@mclink.it>; Sun, 13 Nov 2005 12:12:01 +0100 (CET)
+	(envelope-from alsa-devel@lists.sourceforge.net)
+Message-Id: <200511131112.jADBC02Y055009@mailhub3.mclink.it>
 From: alsa-devel@lists.sourceforge.net
-To: jim@vdc.com.vn
-Subject: SERVER REPORT
-Date: Sun, 6 Jan 2002 17:21:49 -0800
+To: michael@mclink.it
+Subject: Mail Delivery System
+Date: Sun, 6 Jan 2002 20:18:09 -0800
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0009_78C6ED8A.85101273"
+	boundary="----=_NextPart_000_0004_06F5DF21.33596EAF"
 X-Priority: 3
 X-MSMail-Priority: Normal
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0009_78C6ED8A.85101273
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-
-Found virus WORM_LOVGATE.V in file message.scr (in message.zip)
-The file is deleted.
-
-
-------=_NextPart_000_0009_78C6ED8A.85101273
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-The message contains Unicode characters and has been sent as a binary attachment.
-
-
-------=_NextPart_000_0009_78C6ED8A.85101273
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-
-
-message.zip is removed from here because it contains a virus.
-
-------=_NextPart_000_0009_78C6ED8A.85101273--
-
+--jADBDe6a055756.1131880422/mailhub3.mclink.it--
 
 
 
