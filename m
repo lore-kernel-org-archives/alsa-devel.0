@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001554]: LADSPA plugin do not work in case of policy NONE. LADSPA plugin usage is not documented propertly.
-Date: Mon, 14 Nov 2005 11:32:24 +0100
-Message-ID: <f7563d6afdf08a2c9e94869a4b99c195@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001535]: The sound card is detected. No sound from the speakers or headphones.
+Date: Mon, 14 Nov 2005 11:58:34 +0100
+Message-ID: <08f61f520a423496c806c44317a2fced@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 737691A0
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:32:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C4C319E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:58:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1554> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1535> 
 ======================================================================
-Reported By:                gena2x
-Assigned To:                
+Reported By:                h4ndr3s
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1554
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1535
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             11-13-2005 21:04 CET
-Last Modified:              11-14-2005 11:32 CET
+Date Submitted:             11-08-2005 12:17 CET
+Last Modified:              11-14-2005 11:58 CET
 ======================================================================
-Summary:                    LADSPA plugin do not work in case of policy NONE.
-LADSPA plugin usage is not documented propertly.
+Summary:                    The sound card is detected. No sound from the
+speakers or headphones.
 Description: 
-This bug make impossible to work with single channel of multichannel
-frame.
-So I do not find another clear way to filter high frequences out of my
-subwoofer.
-
-
+I have a Motherboard Intel D915GAV with a sound card Intel HDA onboard,
+chipset Realtek ALC880. The Sound Card is detected, the modules are
+loaded, but no sound come from the speakers or headphones. 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 10:59 
+ jrgns - 11-10-05 16:00 
 ----------------------------------------------------------------------
-Could you redo you patch against the current ALSA CVS tree? The locale
-problem should be fixed.
+I'm still having this problem. Info as follows:
+Distro: Gentoo
+Kernel: 2.6.12-r10
+Hardware: 0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW
+(ICH6 Family) High Definition Audio Controller (rev 04) (This is a Fujitsu
+Siemens Amilo Pro V2040 Laptop)
+Software: ALSA Driver Version 1.0.9b
+
+I tried with various model=xxx options and different combinations of
+channels muted, etc.. No luck
 
 ----------------------------------------------------------------------
- gena2x - 11-14-05 11:32 
+ h4ndr3s - 11-14-05 11:58 
 ----------------------------------------------------------------------
-ok.
+Sorry for not to post in the past few days, but i dont have any time, and i
+only can post from my job. Well, the 3stack-digout its supporting all the
+functions of my card, so in this days i gives you the out from "lspci
+-nv". See you later.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 21:04 gena2x         New Issue                                    
-11-13-05 21:04 gena2x         File Added: patch.localeANDladspa                 
-  
-11-14-05 10:59 perex          Note Added: 0006712                          
-11-14-05 11:32 gena2x         Note Added: 0006719                          
+11-08-05 12:17 h4ndr3s        New Issue                                    
+11-08-05 12:17 h4ndr3s        Distribution              => Slackware       
+11-08-05 12:17 h4ndr3s        Kernel Version            => 2.6.13          
+11-08-05 17:46 tiwai          Note Added: 0006627                          
+11-09-05 12:18 h4ndr3s        Note Added: 0006645                          
+11-09-05 12:24 h4ndr3s        Note Edited: 0006645                         
+11-09-05 13:34 tiwai          Note Added: 0006648                          
+11-09-05 14:22 h4ndr3s        Note Added: 0006653                          
+11-10-05 16:00 jrgns          Note Added: 0006664                          
+11-14-05 11:58 h4ndr3s        Note Added: 0006720                          
 ======================================================================
 
 
