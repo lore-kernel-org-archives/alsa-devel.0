@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001525]: not possible to configure emua0k1
-Date: Mon, 14 Nov 2005 09:49:24 +0100
-Message-ID: <c10e45041c1db986bef132c975dcb1ec@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001488]: alsa-driver CVS 10-21-2005 fails to build with kernel-suse-2.4.21-297
+Date: Mon, 14 Nov 2005 09:52:01 +0100
+Message-ID: <a463aacecb8cbbd1b96ae8d27a2bc7d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 06AAE19D
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 09:49:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1536819D
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 09:52:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,113 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1525> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1488> 
 ======================================================================
-Reported By:                eckjok
+Reported By:                roadrunner
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1525
+Issue ID:                   1488
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               gentoo
-Kernel Version:             2.6.14
-Resolution:                 unable to duplicate
+Distribution:               suse linux
+Kernel Version:             Linux version 2.4.21-297-default (root@i386.suse.de)
+(gcc version 3.3.1 (SuSE Linux)) #1 Sat Jul 23 07:47:3 UTC 20059
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-03-2005 12:04 CET
-Last Modified:              11-14-2005 09:49 CET
+Date Submitted:             10-21-2005 13:34 CEST
+Last Modified:              11-14-2005 09:52 CET
 ======================================================================
-Summary:                    not possible to configure emua0k1
+Summary:                    alsa-driver CVS 10-21-2005 fails to build with
+kernel-suse-2.4.21-297
 Description: 
-with alsa-driver-1.0.10rc2 it is not possible to configure
---with-cards=emu10k1.
-Other cards can be configured( i.e. portman2x4)
+Building alsa-driver CVS 10-21-2005 fails.
+command:
+
+./cvscompile --with-cards=ca0106
+
+output (complete output attached):
+[...]
+gcc -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
+-I/home/erik/archiv/alsa-cvs/alsa-driver/include 
+-I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -DALSA_BUILD
+-nostdinc -iwithprefix include  ac97_codec.c ac97_pcm.c ac97_patch.c
+ac97_proc.c > .depend
+make[2]: Leaving directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ac97'
+make  -C ali5451 fastdep
+make[2]: Entering directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ali5451'
+/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
+updated
+make[2]: Leaving directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ali5451'
+make  -C asihpi fastdep
+make[2]: Entering directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/asihpi'
+/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
+updated
+make[2]: Leaving directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/asihpi'
+make  -C au88x0 fastdep
+make[2]: Entering directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/au88x0'
+/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
+updated
+make[2]: Leaving directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/au88x0'
+make  -C ca0106 fastdep
+make[2]: Entering directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ca0106'
+/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
+updated
+make[2]: *** No rule to make target `ca_midi.c', needed by `fastdep'. 
+Stop.
+make[2]: Leaving directory
+`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ca0106'
+make[1]: *** [_sfdep_ca0106] Error 2
+make[1]: Leaving directory `/home/erik/archiv/alsa-cvs/alsa-driver/pci'
+make: *** [dep] Error 1
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 09:49 
+ roadrunner - 10-25-05 15:27 
 ----------------------------------------------------------------------
-Cannot duplicate with 1.0.10rc3.
+'make clean' did not work, build still failed.
+Manually removing 'alsa-driver/include/linux/device.h' helped.
+Build alsa-driver now works. Thanks for the help.
+
+----------------------------------------------------------------------
+ perex - 11-14-05 09:52 
+----------------------------------------------------------------------
+Appearenly fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-05 12:04 eckjok         New Issue                                    
-11-03-05 12:04 eckjok         Distribution              => gentoo          
-11-03-05 12:04 eckjok         Kernel Version            => 2.6.14          
-11-14-05 09:49 perex          Status                   assigned => resolved
-11-14-05 09:49 perex          Resolution               open => unable to
-duplicate
-11-14-05 09:49 perex          Note Added: 0006695                          
+10-21-05 13:34 roadrunner     New Issue                                    
+10-21-05 13:34 roadrunner     File Added: compile.log                      
+10-21-05 13:34 roadrunner     Distribution              => suse linux      
+10-21-05 13:34 roadrunner     Kernel Version            => Linux version
+2.4.21-297-default (root@i386.suse.de) (gcc version 3.3.1 (SuSE Linux)) #1 Sat
+Jul 23 07:47:3 UTC 20059
+10-21-05 14:53 tiwai          Status                   assigned => resolved
+10-21-05 14:53 tiwai          Resolution               open => fixed       
+10-21-05 14:53 tiwai          Note Added: 0006511                          
+10-25-05 09:33 roadrunner     Status                   resolved => feedback
+10-25-05 09:33 roadrunner     Resolution               fixed => reopened   
+10-25-05 09:33 roadrunner     Note Added: 0006528                          
+10-25-05 12:06 tiwai          Note Added: 0006533                          
+10-25-05 15:27 roadrunner     Note Added: 0006543                          
+11-14-05 09:52 perex          Status                   feedback => resolved
+11-14-05 09:52 perex          Resolution               reopened => fixed   
+11-14-05 09:52 perex          Note Added: 0006697                          
 ======================================================================
 
 
