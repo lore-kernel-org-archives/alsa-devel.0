@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001556]: Fortissimo 4: No Volume Control
-Date: Mon, 14 Nov 2005 13:55:49 +0100
-Message-ID: <41241fa4ac94366be26c443c67be1f91@bugtrack.alsa-project.org>
+Date: Mon, 14 Nov 2005 14:01:02 +0100
+Message-ID: <25d753d5c2b99200ebbfab84d25b4266@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D85651A4
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 13:55:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F03611A4
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 14:01:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux 2005.1
 Kernel Version:             2.6.14-ck1
 ======================================================================
 Date Submitted:             11-13-2005 22:06 CET
-Last Modified:              11-14-2005 13:55 CET
+Last Modified:              11-14-2005 14:01 CET
 ======================================================================
 Summary:                    Fortissimo 4: No Volume Control
 Description: 
@@ -57,18 +57,6 @@ merchant.
 Thank you.
 
 ======================================================================
-
-----------------------------------------------------------------------
- bladus - 11-14-05 13:39 
-----------------------------------------------------------------------
-i hope i did it right when i wrote:
-
-options snd-ice1724 model="sn25p"
-
-in /etc/modules.conf
-
-It didn't work, one problem might be that i use 1.10rc1, i'll try rc3 (but
-i don't think it will work :(
 
 ----------------------------------------------------------------------
  bladus - 11-14-05 13:55 
@@ -95,6 +83,13 @@ snd_mixer_oss: Unknown symbol snd_register_oss_device
 snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
 snd_mixer_oss: Unknown symbol snd_oss_info_register
 
+----------------------------------------------------------------------
+ perex - 11-14-05 14:01 
+----------------------------------------------------------------------
+Perhaps, the line should be 'options snd_ice1724 model="sn25p"'.. The
+driver should respond with 'ice1724: Using board model sn25p' in
+/var/log/messages.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -106,6 +101,7 @@ Date Modified  Username       Field                    Change
 11-14-05 11:02 perex          Status                   new => feedback     
 11-14-05 13:39 bladus         Note Added: 0006722                          
 11-14-05 13:55 bladus         Note Added: 0006723                          
+11-14-05 14:01 perex          Note Added: 0006724                          
 ======================================================================
 
 
