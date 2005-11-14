@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000158]: Device not detected
-Date: Mon, 14 Nov 2005 10:38:35 +0100
-Message-ID: <6dbde930a1d8a1a0202021ff2aa1213f@bugtrack.alsa-project.org>
+Date: Mon, 14 Nov 2005 10:39:18 +0100
+Message-ID: <1f9a2370c0ac33efa51bef45fe2fd8de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CF2A19E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:38:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A8C519E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:39:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=158> 
 ======================================================================
@@ -38,11 +38,11 @@ Priority:                   normal
 Status:                     resolved
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
+Resolution:                 suspended
 Fixed in Version:           
 ======================================================================
 Date Submitted:             03-24-2004 22:02 CET
-Last Modified:              11-14-2005 10:38 CET
+Last Modified:              11-14-2005 10:39 CET
 ======================================================================
 Summary:                    Device not detected
 Description: 
@@ -57,6 +57,20 @@ insmod /lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o
 failed
 
 ======================================================================
+
+----------------------------------------------------------------------
+ stst - 03-24-04 22:06 
+----------------------------------------------------------------------
+Sorry, I forgot to mention that this happens with a Terratec DMX XFire
+1024.
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 09:35 
+----------------------------------------------------------------------
+So I take it the problem is that the message suggests "reloading" the
+driver,
+but this cannot be done because the init routine exits with an error
+status?
 
 ----------------------------------------------------------------------
  jdthood - 09-22-05 15:23 
@@ -85,6 +99,7 @@ init_module: No such device => Device not detected
 11-14-05 10:38 perex          Resolution               open => fixed       
 11-14-05 10:38 perex          Assigned To               => perex           
 11-14-05 10:38 perex          Note Added: 0006710                          
+11-14-05 10:39 perex          Resolution               fixed => suspended  
 ======================================================================
 
 
