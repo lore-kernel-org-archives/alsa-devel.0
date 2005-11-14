@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001549]: Any chance for SPDIF support soon with the ALC880?
-Date: Mon, 14 Nov 2005 11:07:50 +0100
-Message-ID: <d98ae00ab9401668cf91553069627685@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000534]: aplay.1: Does not give default values for options
+Date: Mon, 14 Nov 2005 11:12:06 +0100
+Message-ID: <768d5464e316e3a36c8c8d8893d72a0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 000EA1A0
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:07:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF4921A0
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:12:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1549> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=534> 
 ======================================================================
-Reported By:                dvlierop
+Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1549
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   534
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-12-2005 11:05 CET
-Last Modified:              11-14-2005 11:07 CET
+Date Submitted:             09-24-2004 06:43 CEST
+Last Modified:              11-14-2005 11:12 CET
 ======================================================================
-Summary:                    Any chance for SPDIF support soon with the ALC880?
+Summary:                    aplay.1: Does not give default values for options
 Description: 
-On my Shuttle ST20G5 I don't get any digital output at all so I guess It's
-not supported. Any outlook for SPDIF support? (or is it already included
-and is something wrong with my system?)
-
-Specs: Shuttle ST20G5 barebone with Realtek ALC880, AMD Athlon 64 3000+
+The defaults used if the user doesn't set them with the command line
+options, for say, recording, are not shown on the man page or elsewhere.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 11:07 
+ gjasny - 11-11-05 19:46 
 ----------------------------------------------------------------------
-SPDIF is supported with ALC880. Try these options for snd-hda-codec
-module:
+Hi ALSA team. This is my first attempt to write some documentation. I'm not
+a native speaker, so somebody should correct my punctuation and grammar.
 
-model="5stack-digout"
-model="3stack-digout"
+Thanks,
+Gregor
 
-Please, report also contents from /proc/asound/card0/codec#0 file.
+----------------------------------------------------------------------
+ perex - 11-14-05 11:12 
+----------------------------------------------------------------------
+Thanks. Applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-05 11:05 dvlierop       New Issue                                    
-11-14-05 11:07 perex          Note Added: 0006715                          
-11-14-05 11:07 perex          Assigned To              tiwai => perex      
-11-14-05 11:07 perex          Status                   assigned => feedback
+09-24-04 06:43 jdthood        New Issue                                    
+11-11-05 19:43 gjasny         Issue Monitored: gjasny                      
+11-11-05 19:44 gjasny         File Added: aplay.1.diff                     
+11-11-05 19:46 gjasny         Note Added: 0006679                          
+11-14-05 11:12 perex          Status                   new => resolved     
+11-14-05 11:12 perex          Resolution               open => fixed       
+11-14-05 11:12 perex          Assigned To               => perex           
+11-14-05 11:12 perex          Note Added: 0006717                          
 ======================================================================
 
 
