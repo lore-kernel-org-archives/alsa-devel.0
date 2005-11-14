@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001475]: Support for M Audio Audiophile 192
-Date: Mon, 14 Nov 2005 23:00:43 +0100
-Message-ID: <a3f1e70ccf6a77c5fb9817fa0ba9ee0b@bugtrack.alsa-project.org>
+From: al <al@1-800-inkwell.com>
+Subject: Software Compatibility
+Date: Mon, 14 Nov 2005 23:00:08 +0000 (UTC)
+Message-ID: <8204213849.20051115015657@1-800-inkwell.com>
+Reply-To: al <al@1-800-inkwell.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21F6A1AE
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 23:00:44 +0100 (MET)
+Received: from pool-68-239-16-244.bos.east.verizon.net (pool-68-239-16-244.bos.east.verizon.net [68.239.16.244])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85E4F173
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 23:56:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +19,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+Date: Two, 15 Dec 2005  1:56:57 +0480
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The cheapest and the best OEM software here!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475> 
-======================================================================
-Reported By:                Dazed
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1475
-Category:                   PCI - ice1724
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               FC3
-Kernel Version:             2.6.*
-======================================================================
-Date Submitted:             10-14-2005 13:41 CEST
-Last Modified:              11-14-2005 23:00 CET
-======================================================================
-Summary:                    Support for M Audio Audiophile 192
-Description: 
-Is it possible to add support for the M Audio Audiophile 192 sound card? It
-looks to me like it's based on the ICE1724 chipset. I'd settle for simple
-CD playback for starters. ;-)
-======================================================================
+More info http://Q3Yssg6f2g5x4g1jsahuda5fsas.biolyticim.com/
 
-----------------------------------------------------------------------
- Dazed - 10-14-05 15:05 
-----------------------------------------------------------------------
-I'm no coder, but if there's anything I might do to help, I'm willing to
-try. Images of the card might be helpful, right? I'm in Norway, so lending
-a developer my card might prove difficult, but someone else might be
-willing.
+Check out our pricelist
 
-OSS claims to support the card (there's even a link from the M Audio
-site), even though I haven't had much luck with it myself, and with that
-being open source and all, the OSS code might perhaps give some ponters?
-...But what do I know? (Edit: Not much, apparently, since OSS doesn't seem
-to be Open at all.)
+Special Offers
+Macromedia Dreamweaver MX 2004 + Flash MX 2004 $109.95
+Windows XP Professional with SP2 Full Version + Office 2003 Professional (1 CD Edition) $99.95
+Microsoft Windows XP Pro + Microsoft Office XP Pro $89.95
+Adobe Photoshop 7 + Adobe Premiere 7 + Adobe Illustrator 10 $129.95
 
+Microsoft(C) Windows|R|
+Windows XP Professional With SP2 Full Version $79.95
+Windows XP Professional $69.95
+Windows Millenium $59.95
+Windows NT 4.0 Terminal Server $49.95
+Windows 98 $49.95
+Windows 2000 Professional $59.95
+Windows 2000 Advanced Server $69.95
+Windows 98 Second Edition $49.95
+Windows NT 4.0 Server $49.95
 
+Microsoft|c| Office|R|
+Visio 2003 Professional $69.95
+Office 97 SR2 $49.95
+Office 2003 Professional (1 CD Edition) $89.95
+Office XP Professional $79.95
+Office 2000 Premium Edition PE (2CD) $59.95
 
-----------------------------------------------------------------------
- jorx - 11-14-05 23:00 
-----------------------------------------------------------------------
-I am also requesting a driver for this card. As Dazed states OSS has a
-driver for this card. It is working like anything. ALSA should also have
-one. I hope someone could start with this. I would love to myself, but I
-know way to little to even think about it.
+Microsoft(R) Other
+Visual Studio .NET Architect Edition (8CD) $139.95
+Picture It Premium 9 $59.95
+Encarta Encyclopedia Delux 2004 (3CD) $89.95
+Works 7 $69.95
+Streets and Trips 2004 North America (2CD) $69.95
+Money 2004 $69.95
+Project 2003 Professional $69.95
+SQL Server 2000 Enterprise Edition $69.95
+Plus! XP $59.95
+Exchange 2003 Enterprise Server $69.95
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-14-05 13:41 Dazed          New Issue                                    
-10-14-05 13:41 Dazed          Distribution              => FC3             
-10-14-05 13:41 Dazed          Kernel Version            => 2.6.*           
-10-14-05 13:56 Dazed          Note Added: 0006480                          
-10-14-05 15:05 Dazed          Note Edited: 0006480                         
-11-14-05 23:00 jorx           Note Added: 0006728                          
-======================================================================
+Adobe software for PC
+Creative Suite Standard (3 CD) $129.95
+Photoshop Elements 3.0 Windows $59.95
+Photoshop 7 $69.95
+Photoshop CS with ImageReady CS $99.95
+Creative Suite Premium (5 CD) $149.95
+Premiere 7 $69.95
+PageMaker 7 (2CD) $69.95
+Acrobat 6 Professional $79.95
+Illustrator CS $69.95
+InDesign CS PageMaker Edition (2CD) $69.95
 
+Adobe software for MAC
+Illustrator CS CE $69.95
+InDesign CS $69.95
+LiveMotion 2.0 $69.95
+Photoshop CS $99.95
+Premiere 6.5 $89.95
+Actobat 6.0 Pro $79.95
+After Effects 6 $69.95
 
+Other software for PC
+Norton System Works 2003 $59.95
+Quark Xpress 6 Passport Multilanguage $69.95
+Borland Delphi 7 Enterprise Edition (2CD) $69.95
+FileMaker 7.0 Professional $69.95
+
+Push here http://B9T9rx5w1fmw3fii99ytc94w99r.biolyticim.com/
 
 
 -------------------------------------------------------
