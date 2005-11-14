@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001507]: i tried to download a new audio driver/ codex but doesnt work
-Date: Mon, 14 Nov 2005 09:57:06 +0100
-Message-ID: <95243d11a502a22b4f244b9b76e06997@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001361]: sound choppy when resuming alsa client process
+Date: Mon, 14 Nov 2005 09:58:05 +0100
+Message-ID: <18e02c9eed8fd2ab59384fc8a5ab1636@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7619719D
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 09:57:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B7C219D
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 09:58:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1507> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1361> 
 ======================================================================
-Reported By:                krayziegunts
+Reported By:                mbwardle
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1507
-Category:                   0_compilation problem_!!!
-Reproducibility:            N/A
-Severity:                   major
+Project:                    ALSA - lib
+Issue ID:                   1361
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     feedback
 ======================================================================
-Date Submitted:             10-27-2005 04:05 CEST
-Last Modified:              11-14-2005 09:57 CET
+Date Submitted:             08-23-2005 12:39 CEST
+Last Modified:              11-14-2005 09:58 CET
 ======================================================================
-Summary:                    i tried to download a new audio driver/ codex but
-doesnt work
+Summary:                    sound choppy when resuming alsa client process
 Description: 
-this is a weird issue for me to adress..anyways i reformatted my computer
-not too long ago and when i turned it back on my audio driver wasnt
-working , soooo
-I went in intel website and looked up my motherboard where my audio thing
-is embedded on the motherboard model number is(Intel 2 D845EPT2). I
-downloaded the audio driver found on the site. So when i tried to install
-it, they claim there is no driver and that it doesnt wor...someone help me
-!!!
+If I start an ALSA client process from a terminal, begin playback of a
+song, suspend the process, then resume the process, the playback becomes
+choppy (has many intermittent periods of silence per second).
+
+A possibly related similar problem seems to occur if there is a runaway
+process on the system which starves the ALSA client of CPU time.  Even
+after the client gets a good slice of CPU time, the sound remains choppy.
+
+This issue was originally reported as a bug in Ubuntu Linux
+<http://bugzilla.ubuntu.com/show_bug.cgi?id=13003>.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 09:57 
+ perex - 11-14-05 09:58 
 ----------------------------------------------------------------------
-Please, use the alsa-user@alsa-project.org mailing list for such requests.
-See the ALSA website for subscription details.
+Could you try 1.0.10rc3 alsa-lib package?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-27-05 04:05 krayziegunts   New Issue                                    
-11-14-05 09:57 perex          Status                   assigned => resolved
-11-14-05 09:57 perex          Resolution               open => not an issue
-11-14-05 09:57 perex          Note Added: 0006698                          
+08-23-05 12:39 mbwardle       New Issue                                    
+08-23-05 12:39 mbwardle       File Added: asound.conf                      
+11-14-05 09:58 perex          Note Added: 0006699                          
+11-14-05 09:58 perex          Status                   assigned => feedback
 ======================================================================
 
 
