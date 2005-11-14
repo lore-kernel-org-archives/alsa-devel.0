@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001556]: Fortissimo 4: No Volume Control
-Date: Mon, 14 Nov 2005 14:01:02 +0100
-Message-ID: <25d753d5c2b99200ebbfab84d25b4266@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001381]: No sound on Thinkpad T40p
+Date: Mon, 14 Nov 2005 14:31:17 +0100
+Message-ID: <0804ee213cd61df41ceadf0666f06cdb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F03611A4
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 14:01:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 186A019A
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 14:31:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1381> 
 ======================================================================
-Reported By:                bladus
-Assigned To:                perex
+Reported By:                Soft
+Assigned To:                jdthood
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1556
-Category:                   PCI - ice1724
+Issue ID:                   1381
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo Linux 2005.1
-Kernel Version:             2.6.14-ck1
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-13-2005 22:06 CET
-Last Modified:              11-14-2005 14:01 CET
+Date Submitted:             08-31-2005 09:50 CEST
+Last Modified:              11-14-2005 14:31 CET
 ======================================================================
-Summary:                    Fortissimo 4: No Volume Control
+Summary:                    No sound on Thinkpad T40p
 Description: 
-With the Hercules Fortissimo 4 (Envy24HT) there's no posibillity to control
-the volume.
-It's always at max.
+When attempting to play a sound on a Thinkpad T40p, all sound players
+behave as if playing normally, but no sound comes out of the speakers. 
+This is with Debian Sarge + various package upgrades to testing, with a
+number of kernels from 2.4.27 through 2.6.13-rc6-mm1, alsa-driver
+1.0.8/1.0.9/1.0.10rc1.
 
-Under Windows the card uses the reference drivers from VIA, so maybe you
-can fix that issue.
-I would be very happy if you could send me a response to this issue within
-a week, since when it's not possible i can return the card to the
-merchant.
-
-Thank you.
-
+I have already tried various "tricks", including muting Headphone Jack
+Sense and Line Jack Sense.  Please see the following thread on alsa-user
+mailing-list:
+http://sourceforge.net/mailarchive/forum.php?thread_id=8013709&forum_id=1751
+for more information.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000978 intel8x0 sound does not work on 2.6.10 ...
+has duplicate       0001433 No sound output
 ======================================================================
 
 ----------------------------------------------------------------------
- bladus - 11-14-05 13:55 
+ Soft - 11-13-05 14:21 
 ----------------------------------------------------------------------
-rc3 dont work either.
-But it gives some additional information when i start alsasound
+Correction: alsa-driver 1.0.10rc1 in kernel 2.6.14(-rc2|.2) does seem to
+correct the issue!  I didn't see it at first because "alsaplayer
+/usr/share/sounds/KDE_Beep_Beep.wav" does not beep.  alsaplayer on other
+sound files and mplayer now play audible sound.
 
-ice1724: No matching model found for ID 0x81160100
-ice1724: Invalid EEPROM version 1
-snd_seq_oss: Unknown symbol snd_unregister_oss_device
-snd_seq_oss: Unknown symbol snd_register_oss_device
-snd_seq_oss: Unknown symbol snd_oss_info_register
-snd_mixer_oss: Unknown symbol snd_unregister_oss_device
-snd_mixer_oss: Unknown symbol snd_register_oss_device
-snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
-snd_mixer_oss: Unknown symbol snd_oss_info_register
-snd_pcm_oss: Unknown symbol snd_unregister_oss_device
-snd_pcm_oss: Unknown symbol snd_register_oss_device
-snd_pcm_oss: Unknown symbol snd_mixer_oss_ioctl_card
-snd_pcm_oss: Unknown symbol snd_task_name
-snd_pcm_oss: Unknown symbol snd_oss_info_register
-snd_mixer_oss: Unknown symbol snd_unregister_oss_device
-snd_mixer_oss: Unknown symbol snd_register_oss_device
-snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
-snd_mixer_oss: Unknown symbol snd_oss_info_register
+The problem persists with alsa-driver 1.0.9b (I checked with kernel
+2.6.13).
 
 ----------------------------------------------------------------------
- perex - 11-14-05 14:01 
+ jdthood - 11-14-05 14:31 
 ----------------------------------------------------------------------
-Perhaps, the line should be 'options snd_ice1724 model="sn25p"'.. The
-driver should respond with 'ice1724: Using board model sn25p' in
-/var/log/messages.
+> alsa-driver 1.0.10rc1 in kernel 2.6.14(-rc2|.2) does seem to correct the
+issue!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 22:06 bladus         New Issue                                    
-11-13-05 22:06 bladus         Distribution              => Gentoo Linux 2005.1
-11-13-05 22:06 bladus         Kernel Version            => 2.6.14-ck1      
-11-14-05 11:02 perex          Note Added: 0006713                          
-11-14-05 11:02 perex          Assigned To               => perex           
-11-14-05 11:02 perex          Status                   new => feedback     
-11-14-05 13:39 bladus         Note Added: 0006722                          
-11-14-05 13:55 bladus         Note Added: 0006723                          
-11-14-05 14:01 perex          Note Added: 0006724                          
+08-31-05 09:50 Soft           New Issue                                    
+08-31-05 09:50 Soft           Distribution              => Debian          
+09-17-05 18:48 jdthood        Note Added: 0006251                          
+09-18-05 15:47 Soft           Note Added: 0006272                          
+09-22-05 23:12 Soft           Note Added: 0006361                          
+09-23-05 09:36 jdthood        Note Added: 0006363                          
+09-29-05 12:02 jdthood        Relationship added       related to 0000978  
+09-29-05 12:03 jdthood        Relationship added       has duplicate 0001433
+11-13-05 14:21 Soft           Note Added: 0006692                          
+11-14-05 14:31 jdthood        Status                   new => resolved     
+11-14-05 14:31 jdthood        Resolution               open => fixed       
+11-14-05 14:31 jdthood        Assigned To               => jdthood         
+11-14-05 14:31 jdthood        Note Added: 0006725                          
 ======================================================================
 
 
