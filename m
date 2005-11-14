@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000534]: aplay.1: Does not give default values for options
-Date: Mon, 14 Nov 2005 11:12:06 +0100
-Message-ID: <768d5464e316e3a36c8c8d8893d72a0b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001544]: Crash on missing library in snd_ctl_open_conf
+Date: Mon, 14 Nov 2005 11:18:36 +0100
+Message-ID: <da03239c95511653514cc3b49b8a51a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF4921A0
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:12:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABC5CD4
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:18:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=534> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1544> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                smagoun
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   534
-Category:                   aplay/arecord
+Project:                    ALSA - lib
+Issue ID:                   1544
+Category:                   control / hcontrol
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 06:43 CEST
-Last Modified:              11-14-2005 11:12 CET
+Date Submitted:             11-11-2005 16:25 CET
+Last Modified:              11-14-2005 11:18 CET
 ======================================================================
-Summary:                    aplay.1: Does not give default values for options
+Summary:                    Crash on missing library in snd_ctl_open_conf
 Description: 
-The defaults used if the user doesn't set them with the command line
-options, for say, recording, are not shown on the man page or elsewhere.
+alsa-lib 1.0.10rc3 crashes in snd_ctl_open_conf while trying to close a DLL
+that was never opened. This patch prevents the dlclose call if the dlopen
+failed.
 ======================================================================
 
 ----------------------------------------------------------------------
- gjasny - 11-11-05 19:46 
+ perex - 11-14-05 11:18 
 ----------------------------------------------------------------------
-Hi ALSA team. This is my first attempt to write some documentation. I'm not
-a native speaker, so somebody should correct my punctuation and grammar.
-
-Thanks,
-Gregor
-
-----------------------------------------------------------------------
- perex - 11-14-05 11:12 
-----------------------------------------------------------------------
-Thanks. Applied to CVS.
+Fixed in CVS. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:43 jdthood        New Issue                                    
-11-11-05 19:43 gjasny         Issue Monitored: gjasny                      
-11-11-05 19:44 gjasny         File Added: aplay.1.diff                     
-11-11-05 19:46 gjasny         Note Added: 0006679                          
-11-14-05 11:12 perex          Status                   new => resolved     
-11-14-05 11:12 perex          Resolution               open => fixed       
-11-14-05 11:12 perex          Assigned To               => perex           
-11-14-05 11:12 perex          Note Added: 0006717                          
+11-11-05 16:25 smagoun        New Issue                                    
+11-11-05 16:25 smagoun        File Added: control.patch                    
+11-14-05 11:18 perex          Status                   new => resolved     
+11-14-05 11:18 perex          Resolution               open => fixed       
+11-14-05 11:18 perex          Assigned To               => perex           
+11-14-05 11:18 perex          Note Added: 0006718                          
 ======================================================================
 
 
