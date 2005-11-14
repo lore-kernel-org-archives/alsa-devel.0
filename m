@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000158]: Device not detected
-Date: Mon, 14 Nov 2005 10:39:18 +0100
-Message-ID: <1f9a2370c0ac33efa51bef45fe2fd8de@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001555]: LADSPA plugins don't work when locale numerical delimiter is not '.'
+Date: Mon, 14 Nov 2005 10:41:52 +0100
+Message-ID: <790005be4bfa6306775eef869d46e8d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A8C519E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:39:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32CE919E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:41:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=158> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1555> 
 ======================================================================
-Reported By:                stst
+Reported By:                gena2x
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   158
-Category:                   PCI - cs46xx
+Project:                    ALSA - lib
+Issue ID:                   1555
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 suspended
+Resolution:                 duplicate
+Duplicate:                  1553
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-24-2004 22:02 CET
-Last Modified:              11-14-2005 10:39 CET
+Date Submitted:             11-13-2005 21:13 CET
+Last Modified:              11-14-2005 10:41 CET
 ======================================================================
-Summary:                    Device not detected
+Summary:                    LADSPA plugins don't work when locale numerical
+delimiter is not '.'
 Description: 
-when loading the module it crashes with this errormessage:
-/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
-init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters,
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
-insmod /lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o
-failed
+More intresting problem with LADSPA plugin names. For example name of
+plugin
+'delay0.01s' is 'delay0.01s' in en_US locale and 'delay0,01s' in
+ru_RU.KOI8-R 
+locale. You may check listplugins from ladspa-sdk. 
 
+This makes global config in multilangual environment unusable in cases
+there 
+LADSPA plugins needed.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001553 LADSPA plugins don't work when locale n...
 ======================================================================
 
 ----------------------------------------------------------------------
- stst - 03-24-04 22:06 
+ gena2x - 11-13-05 22:08 
 ----------------------------------------------------------------------
-Sorry, I forgot to mention that this happens with a Terratec DMX XFire
-1024.
+Sorry, just accident with POST.
 
-----------------------------------------------------------------------
- jdthood - 03-19-05 09:35 
-----------------------------------------------------------------------
-So I take it the problem is that the message suggests "reloading" the
-driver,
-but this cannot be done because the init routine exits with an error
-status?
+Dublicate to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1553. 
 
-----------------------------------------------------------------------
- jdthood - 09-22-05 15:23 
-----------------------------------------------------------------------
-Submitter: Were you able to fix the problem?  Are you sure that your sound
-hardware is functioning properly?
-
-----------------------------------------------------------------------
- perex - 11-14-05 10:38 
-----------------------------------------------------------------------
-No response from reporter.
+Remove me.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-04 22:02 stst           New Issue                                    
-03-24-04 22:04 stst           Issue Monitored: stst                        
-03-24-04 22:06 stst           Note Added: 0000702                          
-03-19-05 09:35 jdthood        Note Added: 0004021                          
-09-22-05 15:23 jdthood        Note Added: 0006350                          
-09-22-05 15:23 jdthood        Severity                 crash => major      
-09-22-05 15:23 jdthood        Summary                 
-/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
-init_module: No such device => Device not detected
-11-14-05 10:38 perex          Status                   new => resolved     
-11-14-05 10:38 perex          Resolution               open => fixed       
-11-14-05 10:38 perex          Assigned To               => perex           
-11-14-05 10:38 perex          Note Added: 0006710                          
-11-14-05 10:39 perex          Resolution               fixed => suspended  
+11-13-05 21:13 gena2x         New Issue                                    
+11-13-05 22:08 gena2x         Note Added: 0006693                          
+11-14-05 10:41 perex          Relationship added       duplicate of 0001553
+11-14-05 10:41 perex          Duplicate ID             0 => 1553           
+11-14-05 10:41 perex          Status                   new => resolved     
+11-14-05 10:41 perex          Resolution               open => duplicate   
+11-14-05 10:41 perex          Assigned To               => perex           
 ======================================================================
 
 
