@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001543]: m-audio quattro Sample format non available
-Date: Mon, 14 Nov 2005 12:11:12 +0100
-Message-ID: <7dbc65f8b730662c1ee551261afa3e72@bugtrack.alsa-project.org>
+Date: Mon, 14 Nov 2005 12:10:02 +0100
+Message-ID: <cbaf0a27cc81ab49d0d0f5b84080973d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE4C51A6
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 12:11:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39C32171
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 12:10:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1543> 
 ======================================================================
@@ -35,12 +35,10 @@ Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
 ======================================================================
 Date Submitted:             11-11-2005 07:17 CET
-Last Modified:              11-14-2005 12:11 CET
+Last Modified:              11-14-2005 12:10 CET
 ======================================================================
 Summary:                    m-audio quattro Sample format non available
 Description: 
@@ -59,12 +57,6 @@ arecord: set_params:882: Sample format non available
 
 ======================================================================
 
-----------------------------------------------------------------------
- perex - 11-14-05 12:11 
-----------------------------------------------------------------------
-I don't see your q4b configuration, but you probably don't use the plug
-layer there. Use '-Dplug:q4b' as device for aplay/arecord.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -76,9 +68,6 @@ Date Modified  Username       Field                    Change
 lib
 11-14-05 12:10 perex          Category                 USB - usb-audio => 1_pcm
 - digital audio
-11-14-05 12:11 perex          Status                   assigned => resolved
-11-14-05 12:11 perex          Resolution               open => fixed       
-11-14-05 12:11 perex          Note Added: 0006721                          
 ======================================================================
 
 
