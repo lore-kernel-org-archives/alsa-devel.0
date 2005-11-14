@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000664]: ac97_quirk with SIS 7012 [ALC202] don't permit to have sound from the headphones, only internal speakers work.
-Date: Mon, 14 Nov 2005 15:46:54 +0100
-Message-ID: <18e5b23996d53b14ccca7cdf22ceb0fb@bugtrack.alsa-project.org>
+From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Re: Multi ice1712 .asoundrc problem
+Date: Mon, 14 Nov 2005 17:55:13 +0200
+Message-ID: <20051114155513.GO10146@edu.joroinen.fi>
+References: <E1EbIYV-00019A-4u@localhost.localdomain> <20051113223105.GA4822@localhost.localdomain> <1131923292.27215.1.camel@mindpipe> <20051114003718.GA5041@localhost.localdomain> <1131960635.27215.16.camel@mindpipe> <20051114121701.GA4044@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A5E11BC
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 15:46:56 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20051114121701.GA4044@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,96 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: John Rigg <ad@sound-man.co.uk>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Nov 14, 2005 at 12:17:01PM +0000, John Rigg wrote:
+> On Mon, Nov 14, 2005 at 04:30:34AM -0500, Lee Revell wrote:
+> > On Mon, 2005-11-14 at 00:37 +0000, John Rigg wrote:
+> > > Is there another way, eg. a way to start multi_playback and
+> > > multi_capture devices with a single jackd command?
+> >=20
+> > Yes, for example:
+> >=20
+> > jackd -d alsa -C hw:0,2 -P hw:0,3
+>=20
+> I tried the following:
+>=20
+> jackd -d alsa -C multi_capture -P multi_playback -p 128
+>=20
+> This gives the same poll time out. I tried different values of -p
+> but it just changes the length of the time out.
+>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664> 
-======================================================================
-Reported By:                ignition
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   664
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     confirmed
-Distribution:               GNU/Linux Slackware 10.0
-Kernel Version:             2.4.28
-======================================================================
-Date Submitted:             11-22-2004 18:29 CET
-Last Modified:              11-14-2005 15:46 CET
-======================================================================
-Summary:                    ac97_quirk with SIS 7012 [ALC202] don't permit to
-have sound from the headphones, only internal speakers work.
-Description: 
-module: intel8x0
-card: SiS SI7012
-chip: Realtek ALC202 rev 0
+I was reading jackd alsa-driver source, and found out, that the "poll tim=
+e
+out" messages come from poll() system call while jackd is waiting for dat=
+a
+from alsa.. so the problem is most propably in alsa.. multi plugin?
+=20
+- Pasi K=E4rkk=E4inen
 
-All ok but when I plug a jack from the headphones (or hi-fi system), there
-is no sound.
-And when I plug a jack halfway, I hear mono sound with bad quality from
-internal speaker AND from the headphones.
-======================================================================
-Relations           ID      Résumé
-----------------------------------------------------------------------
-doublon de          0000014 No sound from headphone jack on Acer27*...
-======================================================================
-
-----------------------------------------------------------------------
- dale - 11-12-05 11:41 
-----------------------------------------------------------------------
-So is there a simple solution? Or any way i can help (maybe narrow down the
-problem).  This problem was reported almost 2 years ago and i would really
-like to see it fixed.  I know C and would be happy to help if you can
-point me in the right direction.
-
-Thanks,
-
-Dale
-
-----------------------------------------------------------------------
- ignition - 11-14-05 15:46 
-----------------------------------------------------------------------
-Maybe we must re-enginering the windows'driver or do lobbying ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-22-04 18:29 ignition       New Issue                                    
-11-22-04 18:29 ignition       File Added: report                           
-11-22-04 18:29 ignition       Distribution              => GNU/Linux Slackware
-10.0
-11-22-04 18:29 ignition       Kernel Version            => 2.4.28          
-11-22-04 18:48 tiwai          Relationship added       duplicate of 0000014
-11-22-04 18:48 tiwai          Duplicate ID             0 => 14             
-11-22-04 18:48 tiwai          Status                   new => resolved     
-11-22-04 18:48 tiwai          Resolution               open => duplicate   
-11-22-04 18:48 tiwai          Assigned To               => tiwai           
-11-22-04 18:48 tiwai          Note Added: 0002510                          
-11-22-04 18:51 ignition       Issue Monitored: ignition                    
-11-22-04 18:52 ignition       Issue End Monitor: ignition                    
-12-06-04 14:58 dale           Issue Monitored: dale                        
-01-20-05 18:52 jorge2         Issue Monitored: jorge2                      
-03-23-05 15:41 jdthood        Status                   resolved => feedback
-03-23-05 15:41 jdthood        Resolution               duplicate => reopened
-03-23-05 15:41 jdthood        Note Added: 0004163                          
-06-14-05 21:16 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-07-16-05 16:42 jdthood        Note Added: 0005497                          
-08-02-05 21:21 ignition       Note Added: 0005606                          
-09-15-05 16:12 ignition       Issue Monitored: ignition                    
-09-29-05 12:31 jdthood        Status                   feedback => confirmed
-10-05-05 18:45 tiwai          Note Added: 0006434                          
-11-12-05 11:41 dale           Note Added: 0006686                          
-11-14-05 15:46 ignition       Note Added: 0006726                          
-======================================================================
-
-
+> Starting capture-only using the following works:
+> jackd -d alsa -C multi_capture -p 128
+> Likewise for playback:
+> jackd -d alsa -C multi_playback -p 128
+>=20
+> John
+>=20
+>=20
+> -------------------------------------------------------
+> SF.Net email is sponsored by:
+> Tame your development challenges with Apache's Geronimo App Server. Dow=
+nload
+> it for free - -and be entered to win a 42" plasma tv or your very own
+> Sony(tm)PSP.  Click here to play: http://sourceforge.net/geronimo.php
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
