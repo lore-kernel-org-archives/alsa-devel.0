@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001288]: Current alsa-driver/alsa-kernel CVS 29-7-2005 fails to build.
-Date: Mon, 14 Nov 2005 10:23:08 +0100
-Message-ID: <097a41401d2140f44598590418b7f946@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001256]: surround51: Master Volume control and Mute only have effect on FrontLeft & FrontRight channels.
+Date: Mon, 14 Nov 2005 10:25:13 +0100
+Message-ID: <11e85dab7b803570eae37490e11362c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 987FB19E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:23:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 004C219E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:25:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1288> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1256> 
 ======================================================================
-Reported By:                jcdutton
+Reported By:                Manolo
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1288
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   1256
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             Linux new 2.6.13-rc3-mm1 #2 SMP PREEMPT Thu Jul 28
-23:46:58 BST 2005 i686 Intel(R) Pentium(R) 4 CPU 2.80GHz GenuineIntel GNU/Linux
+Status:                     resolved
+Resolution:                 duplicate
+Duplicate:                  154
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-29-2005 01:09 CEST
-Last Modified:              11-14-2005 10:23 CET
+Date Submitted:             07-13-2005 18:11 CEST
+Last Modified:              11-14-2005 10:25 CET
 ======================================================================
-Summary:                    Current alsa-driver/alsa-kernel CVS 29-7-2005 fails
-to build.
+Summary:                    surround51: Master Volume control and Mute only have
+effect on FrontLeft & FrontRight channels.
 Description: 
-./cvscompile --with-cards=ca0106 --with-debug=basic
-make -C /lib/modules/2.6.13-rc3-mm1/source SUBDIRS=/u/alsacvs/alsa-driver
-O=/lib/modules/2.6.13-rc3-mm1/build modules
-make[1]: Entering directory `/usr/src/linux-2.6.13-rc3-mm1'
-  CC [M]  /u/alsacvs/alsa-driver/acore/memalloc.o
-In file included from /u/alsacvs/alsa-driver/acore/memalloc.c:24:
-/u/alsacvs/alsa-driver/acore/memalloc.inc:4:40: missing binary operator
-before token "("
-make[4]: *** [/u/alsacvs/alsa-driver/acore/memalloc.o] Error 1
-make[3]: *** [/u/alsacvs/alsa-driver/acore] Error 2
-make[2]: *** [_module_/u/alsacvs/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.13-rc3-mm1'
-make: *** [compile] Error 2
+The need for a common Volume Control for the surround51 6 channels is so
+obvious that I must be doing something wrong. Please help!
 
+
+I am newbie here. Is there a search tool to look for bugs/issues?
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000154 Master volume only controls front outpu...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 10:23 
+ rlrevell - 07-13-05 18:51 
 ----------------------------------------------------------------------
-Is this bug also in 1.0.10rc3?
+Yes, the same tool you used to file this bug report.  And yes, this is a
+known bug, I believe it's #164 if you are using the emu10k1 driver.
+
+----------------------------------------------------------------------
+ rlrevell - 07-13-05 18:54 
+----------------------------------------------------------------------
+Sorry, its #154.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-05 01:09 jcdutton       New Issue                                    
-07-29-05 01:09 jcdutton       Kernel Version            => Linux new
-2.6.13-rc3-mm1 #2 SMP PREEMPT Thu Jul 28 23:46:58 BST 2005 i686 Intel(R)
-Pentium(R) 4 CPU 2.80GHz GenuineIntel GNU/Lin
-10-17-05 23:12 roadrunner     Issue Monitored: roadrunner                    
-11-14-05 10:23 perex          Note Added: 0006704                          
-11-14-05 10:23 perex          Status                   assigned => feedback
+07-13-05 18:11 Manolo         New Issue                                    
+07-13-05 18:11 Manolo         Distribution              => Ubuntu          
+07-13-05 18:11 Manolo         Kernel Version            => 2.6.11          
+07-13-05 18:51 rlrevell       Note Added: 0005464                          
+07-13-05 18:54 rlrevell       Note Added: 0005465                          
+07-13-05 18:56 rlrevell       Relationship added       duplicate of 0000154
+07-16-05 17:10 jdthood        Assigned To               => perex           
+07-16-05 17:10 jdthood        Status                   new => acknowledged 
+07-16-05 17:10 jdthood        Resolution               open => duplicate   
+07-16-05 17:10 jdthood        Additional Information Updated                    
+11-14-05 10:24 perex          Project                  ALSA - driver => ALSA -
+lib
+11-14-05 10:24 perex          Category                 1_OTHERS => 2_mixer 
+11-14-05 10:25 perex          Duplicate ID             0 => 154            
+11-14-05 10:25 perex          Status                   acknowledged => resolved
 ======================================================================
 
 
