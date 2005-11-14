@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001555]: LADSPA plugins don't work when locale numerical delimiter is not '.'
-Date: Mon, 14 Nov 2005 10:41:52 +0100
-Message-ID: <790005be4bfa6306775eef869d46e8d3@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001553]: LADSPA plugins don't work when locale numerical delimiter is not '.'
+Date: Mon, 14 Nov 2005 10:50:52 +0100
+Message-ID: <41743b28626d6ce994e05e6c443aa4dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32CE919E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:41:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A793E19E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:50:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,24 +24,23 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1555> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1553> 
 ======================================================================
 Reported By:                gena2x
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1555
+Issue ID:                   1553
 Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Resolution:                 duplicate
-Duplicate:                  1553
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-13-2005 21:13 CET
-Last Modified:              11-14-2005 10:41 CET
+Date Submitted:             11-13-2005 20:50 CET
+Last Modified:              11-14-2005 10:50 CET
 ======================================================================
 Summary:                    LADSPA plugins don't work when locale numerical
 delimiter is not '.'
@@ -58,28 +57,23 @@ LADSPA plugins needed.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001553 LADSPA plugins don't work when locale n...
+has duplicate       0001555 LADSPA plugins don't work when locale n...
 ======================================================================
 
 ----------------------------------------------------------------------
- gena2x - 11-13-05 22:08 
+ perex - 11-14-05 10:50 
 ----------------------------------------------------------------------
-Sorry, just accident with POST.
-
-Dublicate to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1553. 
-
-Remove me.
+I've put your code to ALSA's CVS. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 21:13 gena2x         New Issue                                    
-11-13-05 22:08 gena2x         Note Added: 0006693                          
-11-14-05 10:41 perex          Relationship added       duplicate of 0001553
-11-14-05 10:41 perex          Duplicate ID             0 => 1553           
-11-14-05 10:41 perex          Status                   new => resolved     
-11-14-05 10:41 perex          Resolution               open => duplicate   
-11-14-05 10:41 perex          Assigned To               => perex           
+11-13-05 20:50 gena2x         New Issue                                    
+11-14-05 10:41 perex          Relationship added       has duplicate 0001555
+11-14-05 10:50 perex          Status                   new => resolved     
+11-14-05 10:50 perex          Resolution               open => fixed       
+11-14-05 10:50 perex          Assigned To               => perex           
+11-14-05 10:50 perex          Note Added: 0006711                          
 ======================================================================
 
 
