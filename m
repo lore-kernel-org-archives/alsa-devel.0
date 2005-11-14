@@ -1,13 +1,14 @@
-From: John Rigg <ad@sound-man.co.uk>
-Subject: Re: Multi ice1712 .asoundrc problem
-Date: Mon, 14 Nov 2005 12:17:01 +0000
-Message-ID: <20051114121701.GA4044@localhost.localdomain>
-References: <E1EbIYV-00019A-4u@localhost.localdomain> <20051113223105.GA4822@localhost.localdomain> <1131923292.27215.1.camel@mindpipe> <20051114003718.GA5041@localhost.localdomain> <1131960635.27215.16.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001557]: Sounds play only for a very short time (VT8251, 64-bit)
+Date: Mon, 14 Nov 2005 13:10:31 +0100
+Message-ID: <e868cf2141b2d0618551594be011065d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1131960635.27215.16.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 810051A6
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 13:10:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 14, 2005 at 04:30:34AM -0500, Lee Revell wrote:
-> On Mon, 2005-11-14 at 00:37 +0000, John Rigg wrote:
-> > Is there another way, eg. a way to start multi_playback and
-> > multi_capture devices with a single jackd command?
-> 
-> Yes, for example:
-> 
-> jackd -d alsa -C hw:0,2 -P hw:0,3
 
-I tried the following:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1557> 
+======================================================================
+Reported By:                Dakkus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1557
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10 "Breezy Badger" (64-bit)
+Kernel Version:             2.6.12-9-amd64-generic
+======================================================================
+Date Submitted:             11-14-2005 13:10 CET
+Last Modified:              11-14-2005 13:10 CET
+======================================================================
+Summary:                    Sounds play only for a very short time (VT8251,
+64-bit)
+Description: 
+When playing for example an mp3 file, only a short burst of sound is heard.
+The songs play with correct speed and sound otherwise correct, but sound
+is played only for about one second. If I choose any random part of the
+song (for example with xmms), I hear the same ~1s from that part of the
+song, but then everything's quiet again.
+======================================================================
 
-jackd -d alsa -C multi_capture -P multi_playback -p 128
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-14-05 13:10 Dakkus         New Issue                                    
+11-14-05 13:10 Dakkus         Distribution              => Ubuntu 5.10 "Breezy
+Badger" (64-bit)
+11-14-05 13:10 Dakkus         Kernel Version            =>
+2.6.12-9-amd64-generic
+======================================================================
 
-This gives the same poll time out. I tried different values of -p
-but it just changes the length of the time out.
 
-Starting capture-only using the following works:
-jackd -d alsa -C multi_capture -p 128
-Likewise for playback:
-jackd -d alsa -C multi_playback -p 128
-
-John
 
 
 -------------------------------------------------------
