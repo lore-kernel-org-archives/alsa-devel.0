@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001556]: Fortissimo 4: No Volume Control
-Date: Mon, 14 Nov 2005 11:02:50 +0100
-Message-ID: <2a52dd7195ec69858829405f48e55a1f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001552]: Fails to read config file when locale numerical delimiter is not '.'
+Date: Mon, 14 Nov 2005 11:03:37 +0100
+Message-ID: <47eac9e1011e9d519b54d3a1cf548355@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29FCD143
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:02:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 543AA19E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:03:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1552> 
 ======================================================================
-Reported By:                bladus
+Reported By:                gena2x
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1556
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Issue ID:                   1552
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo Linux 2005.1
-Kernel Version:             2.6.14-ck1
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-13-2005 22:06 CET
-Last Modified:              11-14-2005 11:02 CET
+Date Submitted:             11-13-2005 20:12 CET
+Last Modified:              11-14-2005 11:03 CET
 ======================================================================
-Summary:                    Fortissimo 4: No Volume Control
+Summary:                    Fails to read config file when locale numerical
+delimiter is not '.'
 Description: 
-With the Hercules Fortissimo 4 (Envy24HT) there's no posibillity to control
-the volume.
-It's always at max.
-
-Under Windows the card uses the reference drivers from VIA, so maybe you
-can fix that issue.
-I would be very happy if you could send me a response to this issue within
-a week, since when it's not possible i can return the card to the
-merchant.
-
-Thank you.
-
+Real values can not be read in any way from conffile while locale 
+numerical delimiter is not '.'
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 11:02 
+ perex - 11-14-05 11:03 
 ----------------------------------------------------------------------
-Could you try these module options for the snd-ice1724 module?
-
-model="k8x800"
-model="sn25p"
-
-Perhaps, one of this configuration might work for you.
+Already fixed in ALSA's CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 22:06 bladus         New Issue                                    
-11-13-05 22:06 bladus         Distribution              => Gentoo Linux 2005.1
-11-13-05 22:06 bladus         Kernel Version            => 2.6.14-ck1      
-11-14-05 11:02 perex          Note Added: 0006713                          
-11-14-05 11:02 perex          Assigned To               => perex           
-11-14-05 11:02 perex          Status                   new => feedback     
+11-13-05 20:12 gena2x         New Issue                                    
+11-14-05 11:03 perex          Status                   new => resolved     
+11-14-05 11:03 perex          Resolution               open => fixed       
+11-14-05 11:03 perex          Assigned To               => perex           
+11-14-05 11:03 perex          Note Added: 0006714                          
 ======================================================================
 
 
