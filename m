@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001553]: LADSPA plugins don't work when locale numerical delimiter is not '.'
-Date: Mon, 14 Nov 2005 10:50:52 +0100
-Message-ID: <41743b28626d6ce994e05e6c443aa4dc@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001554]: LADSPA plugin do not work in case of policy NONE. LADSPA plugin usage is not documented propertly.
+Date: Mon, 14 Nov 2005 10:59:20 +0100
+Message-ID: <90ab1d4e7d61b719a2a14b70209a19c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A793E19E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:50:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2CC119E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:59:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1553> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1554> 
 ======================================================================
 Reported By:                gena2x
-Assigned To:                perex
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1553
+Issue ID:                   1554
 Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             11-13-2005 20:50 CET
-Last Modified:              11-14-2005 10:50 CET
+Date Submitted:             11-13-2005 21:04 CET
+Last Modified:              11-14-2005 10:59 CET
 ======================================================================
-Summary:                    LADSPA plugins don't work when locale numerical
-delimiter is not '.'
+Summary:                    LADSPA plugin do not work in case of policy NONE.
+LADSPA plugin usage is not documented propertly.
 Description: 
-More intresting problem with LADSPA plugin names. For example name of
-plugin
-'delay0.01s' is 'delay0.01s' in en_US locale and 'delay0,01s' in
-ru_RU.KOI8-R 
-locale. You may check listplugins from ladspa-sdk. 
+This bug make impossible to work with single channel of multichannel
+frame.
+So I do not find another clear way to filter high frequences out of my
+subwoofer.
 
-This makes global config in multilangual environment unusable in cases
-there 
-LADSPA plugins needed.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001555 LADSPA plugins don't work when locale n...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 10:50 
+ perex - 11-14-05 10:59 
 ----------------------------------------------------------------------
-I've put your code to ALSA's CVS. Thanks.
+Could you redo you patch against the current ALSA CVS tree? The locale
+problem should be fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 20:50 gena2x         New Issue                                    
-11-14-05 10:41 perex          Relationship added       has duplicate 0001555
-11-14-05 10:50 perex          Status                   new => resolved     
-11-14-05 10:50 perex          Resolution               open => fixed       
-11-14-05 10:50 perex          Assigned To               => perex           
-11-14-05 10:50 perex          Note Added: 0006711                          
+11-13-05 21:04 gena2x         New Issue                                    
+11-13-05 21:04 gena2x         File Added: patch.localeANDladspa                 
+  
+11-14-05 10:59 perex          Note Added: 0006712                          
 ======================================================================
 
 
