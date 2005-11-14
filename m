@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000793]: Feature Request SRS
-Date: Mon, 14 Nov 2005 10:32:18 +0100
-Message-ID: <7bdb1d1e27680b4059add9974463fdc7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001242]: echoaudio layla 20 doesn't compile
+Date: Mon, 14 Nov 2005 10:30:40 +0100
+Message-ID: <fb5d9581ee0d68344044225710f9f61f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C83B019E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:32:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4EC019E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:30:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=793> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1242> 
 ======================================================================
-Reported By:                gregh
-Assigned To:                
+Reported By:                hennewou
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   793
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1242
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
+Distribution:               debian
+Kernel Version:             2.4.25
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-08-2005 05:16 CET
-Last Modified:              11-14-2005 10:32 CET
+Date Submitted:             07-08-2005 12:57 CEST
+Last Modified:              11-14-2005 10:30 CET
 ======================================================================
-Summary:                    Feature Request SRS
+Summary:                    echoaudio layla 20 doesn't compile
 Description: 
-Is there a way to use SRS with alsa?
-Is this even the correct forum to post a request?
-I apologise if it's not
+Hi, 
+
+
+I tried to compile alsa-driver for echoaudio layla20:
+
+./configure --with-cards=layla20 --with-sequencer=yes;make;make install
+
+Allthough I see the file pci/echoaudio/layla20.c in the alsa-driver tree,
+I allways get the same error for all latest versions (1.0.9 series):
+
+checking for which soundcards to compile driver for... configure: error:
+Unsupported soundcard layla20
+
+
+Greetings Hendrik
+
 ======================================================================
 
 ----------------------------------------------------------------------
- gregh - 01-08-05 05:17 
+ perex - 11-14-05 10:30 
 ----------------------------------------------------------------------
-I have set thi swith an incorrect category. It sould be request
-
-----------------------------------------------------------------------
- tiwai - 01-13-05 21:14 
-----------------------------------------------------------------------
-Any free library available for SRS?
+Try 1.0.10rc3.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-05 05:16 gregh          New Issue                                    
-01-08-05 05:16 gregh          Kernel Version            => 2.6.10          
-01-08-05 05:17 gregh          Note Added: 0003127                          
-01-13-05 21:14 tiwai          Note Added: 0003204                          
-02-22-05 09:48 perex          Project                  ALSA - driver => ALSA -
-lib
-02-22-05 09:49 perex          Category                 0_compilation problem_!!!
-=> pcm - digital audio
-02-22-05 09:49 perex          Severity                 minor => feature    
-11-14-05 10:32 perex          Assigned To              perex =>            
+07-08-05 12:57 hennewou       New Issue                                    
+07-08-05 12:57 hennewou       Distribution              => debian          
+07-08-05 12:57 hennewou       Kernel Version            => 2.4.25          
+11-14-05 10:30 perex          Status                   assigned => resolved
+11-14-05 10:30 perex          Resolution               open => unable to
+duplicate
+11-14-05 10:30 perex          Note Added: 0006706                          
 ======================================================================
 
 
