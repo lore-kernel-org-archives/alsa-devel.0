@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001488]: alsa-driver CVS 10-21-2005 fails to build with kernel-suse-2.4.21-297
-Date: Mon, 14 Nov 2005 09:52:01 +0100
-Message-ID: <a463aacecb8cbbd1b96ae8d27a2bc7d1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001507]: i tried to download a new audio driver/ codex but doesnt work
+Date: Mon, 14 Nov 2005 09:57:06 +0100
+Message-ID: <95243d11a502a22b4f244b9b76e06997@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1536819D
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 09:52:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7619719D
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 09:57:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,113 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1488> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1507> 
 ======================================================================
-Reported By:                roadrunner
+Reported By:                krayziegunts
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1488
+Issue ID:                   1507
 Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
+Reproducibility:            N/A
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               suse linux
-Kernel Version:             Linux version 2.4.21-297-default (root@i386.suse.de)
-(gcc version 3.3.1 (SuSE Linux)) #1 Sat Jul 23 07:47:3 UTC 20059
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-21-2005 13:34 CEST
-Last Modified:              11-14-2005 09:52 CET
+Date Submitted:             10-27-2005 04:05 CEST
+Last Modified:              11-14-2005 09:57 CET
 ======================================================================
-Summary:                    alsa-driver CVS 10-21-2005 fails to build with
-kernel-suse-2.4.21-297
+Summary:                    i tried to download a new audio driver/ codex but
+doesnt work
 Description: 
-Building alsa-driver CVS 10-21-2005 fails.
-command:
-
-./cvscompile --with-cards=ca0106
-
-output (complete output attached):
-[...]
-gcc -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
--I/home/erik/archiv/alsa-cvs/alsa-driver/include 
--I/lib/modules/2.4.21-297-default/build/include -O2  -DLINUX -DALSA_BUILD
--nostdinc -iwithprefix include  ac97_codec.c ac97_pcm.c ac97_patch.c
-ac97_proc.c > .depend
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ac97'
-make  -C ali5451 fastdep
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ali5451'
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
-updated
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ali5451'
-make  -C asihpi fastdep
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/asihpi'
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
-updated
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/asihpi'
-make  -C au88x0 fastdep
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/au88x0'
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
-updated
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/au88x0'
-make  -C ca0106 fastdep
-make[2]: Entering directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ca0106'
-/home/erik/archiv/alsa-cvs/alsa-driver/include/sndversions.h was not
-updated
-make[2]: *** No rule to make target `ca_midi.c', needed by `fastdep'. 
-Stop.
-make[2]: Leaving directory
-`/home/erik/archiv/alsa-cvs/alsa-driver/pci/ca0106'
-make[1]: *** [_sfdep_ca0106] Error 2
-make[1]: Leaving directory `/home/erik/archiv/alsa-cvs/alsa-driver/pci'
-make: *** [dep] Error 1
-
-
+this is a weird issue for me to adress..anyways i reformatted my computer
+not too long ago and when i turned it back on my audio driver wasnt
+working , soooo
+I went in intel website and looked up my motherboard where my audio thing
+is embedded on the motherboard model number is(Intel 2 D845EPT2). I
+downloaded the audio driver found on the site. So when i tried to install
+it, they claim there is no driver and that it doesnt wor...someone help me
+!!!
 ======================================================================
 
 ----------------------------------------------------------------------
- roadrunner - 10-25-05 15:27 
+ perex - 11-14-05 09:57 
 ----------------------------------------------------------------------
-'make clean' did not work, build still failed.
-Manually removing 'alsa-driver/include/linux/device.h' helped.
-Build alsa-driver now works. Thanks for the help.
-
-----------------------------------------------------------------------
- perex - 11-14-05 09:52 
-----------------------------------------------------------------------
-Appearenly fixed.
+Please, use the alsa-user@alsa-project.org mailing list for such requests.
+See the ALSA website for subscription details.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-05 13:34 roadrunner     New Issue                                    
-10-21-05 13:34 roadrunner     File Added: compile.log                      
-10-21-05 13:34 roadrunner     Distribution              => suse linux      
-10-21-05 13:34 roadrunner     Kernel Version            => Linux version
-2.4.21-297-default (root@i386.suse.de) (gcc version 3.3.1 (SuSE Linux)) #1 Sat
-Jul 23 07:47:3 UTC 20059
-10-21-05 14:53 tiwai          Status                   assigned => resolved
-10-21-05 14:53 tiwai          Resolution               open => fixed       
-10-21-05 14:53 tiwai          Note Added: 0006511                          
-10-25-05 09:33 roadrunner     Status                   resolved => feedback
-10-25-05 09:33 roadrunner     Resolution               fixed => reopened   
-10-25-05 09:33 roadrunner     Note Added: 0006528                          
-10-25-05 12:06 tiwai          Note Added: 0006533                          
-10-25-05 15:27 roadrunner     Note Added: 0006543                          
-11-14-05 09:52 perex          Status                   feedback => resolved
-11-14-05 09:52 perex          Resolution               reopened => fixed   
-11-14-05 09:52 perex          Note Added: 0006697                          
+10-27-05 04:05 krayziegunts   New Issue                                    
+11-14-05 09:57 perex          Status                   assigned => resolved
+11-14-05 09:57 perex          Resolution               open => not an issue
+11-14-05 09:57 perex          Note Added: 0006698                          
 ======================================================================
 
 
