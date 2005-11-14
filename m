@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001552]: Fails to read config file when locale numerical delimiter is not '.'
-Date: Mon, 14 Nov 2005 11:03:37 +0100
-Message-ID: <47eac9e1011e9d519b54d3a1cf548355@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001547]: Can't compile
+Date: Mon, 14 Nov 2005 11:08:36 +0100
+Message-ID: <f4e6d5a88493ce49df639f385308377d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 543AA19E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:03:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 810401A0
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 11:08:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1552> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1547> 
 ======================================================================
-Reported By:                gena2x
+Reported By:                dvlierop
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1552
-Category:                   0_general
+Project:                    ALSA - utils
+Issue ID:                   1547
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-13-2005 20:12 CET
-Last Modified:              11-14-2005 11:03 CET
+Date Submitted:             11-12-2005 09:24 CET
+Last Modified:              11-14-2005 11:08 CET
 ======================================================================
-Summary:                    Fails to read config file when locale numerical
-delimiter is not '.'
+Summary:                    Can't compile
 Description: 
-Real values can not be read in any way from conffile while locale 
-numerical delimiter is not '.'
+Compilation exits with error code 1
+
+System: Shuttle ST20G5 with AMD Athlon 64 3000+ & onboard Realtek ALC880
+
+More specs of this barebone at
+http://eu.shuttle.com/en/DesktopDefault.aspx/tabid-72/170_read-10719/
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 11:03 
+ perex - 11-14-05 11:08 
 ----------------------------------------------------------------------
-Already fixed in ALSA's CVS.
+Upgrade also the alsa-lib package.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 20:12 gena2x         New Issue                                    
-11-14-05 11:03 perex          Status                   new => resolved     
-11-14-05 11:03 perex          Resolution               open => fixed       
-11-14-05 11:03 perex          Assigned To               => perex           
-11-14-05 11:03 perex          Note Added: 0006714                          
+11-12-05 09:24 dvlierop       New Issue                                    
+11-14-05 11:08 perex          Status                   new => resolved     
+11-14-05 11:08 perex          Resolution               open => fixed       
+11-14-05 11:08 perex          Assigned To               => perex           
+11-14-05 11:08 perex          Note Added: 0006716                          
 ======================================================================
 
 
