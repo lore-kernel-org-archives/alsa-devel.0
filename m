@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: John Rigg <ad@sound-man.co.uk>
 Subject: Re: Multi ice1712 .asoundrc problem
-Date: Sun, 13 Nov 2005 18:08:12 -0500
-Message-ID: <1131923292.27215.1.camel@mindpipe>
-References: <E1EbIYV-00019A-4u@localhost.localdomain>
-	 <20051113223105.GA4822@localhost.localdomain>
+Date: Mon, 14 Nov 2005 00:37:18 +0000
+Message-ID: <20051114003718.GA5041@localhost.localdomain>
+References: <E1EbIYV-00019A-4u@localhost.localdomain> <20051113223105.GA4822@localhost.localdomain> <1131923292.27215.1.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051113223105.GA4822@localhost.localdomain>
+Content-Disposition: inline
+In-Reply-To: <1131923292.27215.1.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,22 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: John Rigg <ad@sound-man.co.uk>
+To: Lee Revell <rlrevell@joe-job.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-11-13 at 22:31 +0000, John Rigg wrote:
-> This fails with a poll time out. If I add the -C or -P option to start
-> in capture- or playback-only mode, it starts and runs. 
-> Setup is 2.6.14-rt6 x86_64 SMP kernel (alsa-driver-1.0.10rc1),
-> alsa-lib-1.0-10rc2, jack-0.100.7 + MMAP_COMPLEX patch, 
-> Debian unstable amd64.
+On Sun, Nov 13, 2005 at 06:08:12PM -0500, Lee Revell wrote:
+> On Sun, 2005-11-13 at 22:31 +0000, John Rigg wrote:
+> > This fails with a poll time out. If I add the -C or -P option to start
+> > in capture- or playback-only mode, it starts and runs. 
+> 
+> What happens if you supply both the -P and -C options?  That will give
+> you full duplex without the need to use the asym plugin.
 
-What happens if you supply both the -P and -C options?  That will give
-you full duplex without the need to use the asym plugin.
+Exactly the same poll time out occurs. 
+I have separate multi devices defined for playback and capture. 
+If the number of slave channels is not specified as 12 for capture and 10 
+for playback, neither works. To start both I assumed I'd need to combine them 
+into another multi device - I tried asym as it seemed the only possibility. 
+Is there another way, eg. a way to start multi_playback and
+multi_capture devices with a single jackd command?
 
-Lee
-
+John
 
 
 -------------------------------------------------------
