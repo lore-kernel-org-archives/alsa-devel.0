@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001327]: Creative X-Fi Support - Do you know anything?
-Date: Mon, 14 Nov 2005 09:01:34 +0100
-Message-ID: <e7cb89ff10d7bc3b7088b41a6b1cbdd2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001368]: Feature request - Support for SoundBlaster X-Fi architecture
+Date: Mon, 14 Nov 2005 09:03:50 +0100
+Message-ID: <811be165d5d07ba251280209972721d5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE87119A
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 09:01:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F50019A
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 09:03:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1327> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1368> 
 ======================================================================
-Reported By:                ghost_zero
-Assigned To:                
+Reported By:                Livino
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1327
+Issue ID:                   1368
 Category:                   1_OTHERS
 Reproducibility:            N/A
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-11-2005 00:11 CEST
-Last Modified:              11-14-2005 09:01 CET
+Date Submitted:             08-25-2005 03:26 CEST
+Last Modified:              11-14-2005 09:03 CET
 ======================================================================
-Summary:                    Creative X-Fi Support - Do you know anything?
+Summary:                    Feature request - Support for SoundBlaster X-Fi
+architecture
 Description: 
-Hi,
+Request for support for Creative's SoundBlaster X-Fi architecture.
+(http://us.creative.com/products/category.asp?category=1&subcategory=208)
 
-it is more a question than a feature request and that is about the
-Creative X-Fi Cards... do you know if Creative will release Linux drivers
-or specifications of it?
-If not, will you still support that cards in the future?
-
-Sorry to contact you for that in this way but I didn't find an
-e-mail-address...
+X-Fi XtremeMusic support.
+ 
+Thanks
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001368 Feature request - Support for SoundBlas...
+duplicate of        0001327 Creative X-Fi Support - Do you know any...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-11-05 00:15 
+ jcdutton - 11-12-05 10:57 
 ----------------------------------------------------------------------
-What is "X-Fi"?  It sounds like meaningless Creative marketing speak.
+If you want you can donate it to me.
+grep the alsa sources for my email address. it has the word "superbug" in
+it.
+Alternatively, send an email to the alsa-user or alsa-devel list.
+I will then respond with details of where to send it.
+
+I have been informed by creative that this chip is totally different from
+previous ones.
+
+I summize from this that the reverse engineering effort will probably take
+some time to complete.
 
 ----------------------------------------------------------------------
- ghost_zero - 08-11-05 00:31 
+ perex - 11-14-05 09:03 
 ----------------------------------------------------------------------
-X-Fi are the next generation of sound cards from Creative - don't know how
-good they will really be - and should be out soon...
-Btw. X-Fi stands for eXtreme Fidelity...
-
-Info-Page: http://www.soundblaster.com/products/x-fi/technology/
-
-----------------------------------------------------------------------
- rlrevell - 08-11-05 03:46 
-----------------------------------------------------------------------
-Well, that page is just a bunch of marketing speak so it's impossible to
-tell.
-
-If they continue to pursue the SBLive/Audigy/Audigy2 design, with EAX and
-what not implemented in hardware, we can probably support it.  But there
-seems to be a disturbing trend at Creative to release crap like the
-SBLive! 24 bit that does not have any real hardware acceleration,
-implementing EAX and what not in the drivers.
-
-----------------------------------------------------------------------
- ghost_zero - 08-13-05 00:32 
-----------------------------------------------------------------------
-As usual just time will tell :)
-
-----------------------------------------------------------------------
- pzad - 08-13-05 00:37 
-----------------------------------------------------------------------
-Time will probably tell - never.
+Please, move this discussion to
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1327. This bug is now
+marked as public
+so the access denied problems should go away.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-11-05 00:11 ghost_zero     New Issue                                    
-08-11-05 00:15 rlrevell       Note Added: 0005751                          
-08-11-05 00:31 ghost_zero     Note Added: 0005753                          
-08-11-05 03:46 rlrevell       Note Added: 0005754                          
-08-13-05 00:32 ghost_zero     Note Added: 0005793                          
-08-13-05 00:37 pzad           Note Added: 0005794                          
-08-25-05 20:09 rlrevell       Relationship added       has duplicate 0001368
-11-14-05 09:01 perex          View Status              private => public   
+08-25-05 03:26 Livino         New Issue                                    
+08-25-05 20:09 rlrevell       Relationship added       duplicate of 0001327
+08-25-05 20:10 rlrevell       Note Added: 0005944                          
+11-12-05 05:54 kazhik         Note Added: 0006681                          
+11-12-05 05:54 kazhik         Issue Monitored: kazhik                      
+11-12-05 07:05 rlrevell       Note Added: 0006682                          
+11-12-05 07:58 kazhik         Note Added: 0006683                          
+11-12-05 10:57 jcdutton       Note Added: 0006685                          
+11-14-05 09:03 perex          Duplicate ID             0 => 1327           
+11-14-05 09:03 perex          Status                   new => resolved     
+11-14-05 09:03 perex          Resolution               open => fixed       
+11-14-05 09:03 perex          Assigned To               => perex           
+11-14-05 09:03 perex          Note Added: 0006694                          
 ======================================================================
 
 
