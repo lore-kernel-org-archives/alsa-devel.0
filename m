@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001444]: sb16: unable to compile driver and wrong build order
-Date: Mon, 14 Nov 2005 10:20:28 +0100
-Message-ID: <9b35e4d02496a82d8469cfdc2d706f02@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001256]: surround51: Master Volume control and Mute only have effect on FrontLeft & FrontRight channels.
+Date: Mon, 14 Nov 2005 10:24:54 +0100
+Message-ID: <292bde67b0c622199139f5f4d45d3ec8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E74A119E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:20:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 923CE19E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:24:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1444> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1256> 
 ======================================================================
-Reported By:                slashlos
+Reported By:                Manolo
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1444
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   1256
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             2.4.20-31smp
+Status:                     acknowledged
 ======================================================================
-Date Submitted:             09-23-2005 13:31 CEST
-Last Modified:              11-14-2005 10:20 CET
+Date Submitted:             07-13-2005 18:11 CEST
+Last Modified:              11-14-2005 10:24 CET
 ======================================================================
-Summary:                    sb16: unable to compile driver and wrong build order
+Summary:                    surround51: Master Volume control and Mute only have
+effect on FrontLeft & FrontRight channels.
 Description: 
-this this might be a noob issue, but the order suggested for build should
-be lib, util then driver; it seems driver needs some utils?
+The need for a common Volume Control for the surround51 6 channels is so
+obvious that I must be doing something wrong. Please help!
 
-Anyhow, when trying to build driver, I get this:
 
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/alsa/alsa-driver-1.0.10rc1/include 
--I/lib/modules/2.4.20-31.9smp/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -D__SMP__ -DCONFIG_SMP -DLINUX
--Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include -DMODVERSIONS -include
-/lib/modules/2.4.20-31.9smp/build/include/linux/modversions.h
--I/usr/src/alsa/alsa-driver-1.0.10rc1/alsa-kernel/core/oss
--fno-omit-frame-pointer  -DEXPORT_SYMTAB -c mixer_oss.c
-mixer_oss.c:397: unknown field `unlocked_ioctl' specified in initializer
-mixer_oss.c:397: warning: initialization from incompatible pointer type
-mixer_oss.c:398: unknown field `compat_ioctl' specified in initializer
-make[2]: *** [mixer_oss.o] Error 1
-make[2]: Leaving directory
-`/usr/src/alsa/alsa-driver-1.0.10rc1/acore/oss'
-make[1]: *** [_modsubdir_oss] Error 2
-make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.10rc1/acore'
-make: *** [compile] Error 1
+I am newbie here. Is there a search tool to look for bugs/issues?
 
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000154 Master volume only controls front outpu...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 10:20 
+ rlrevell - 07-13-05 18:51 
 ----------------------------------------------------------------------
-Could you try 1.0.10rc3 packages?
+Yes, the same tool you used to file this bug report.  And yes, this is a
+known bug, I believe it's #164 if you are using the emu10k1 driver.
+
+----------------------------------------------------------------------
+ rlrevell - 07-13-05 18:54 
+----------------------------------------------------------------------
+Sorry, its #154.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-05 13:31 slashlos       New Issue                                    
-09-23-05 13:31 slashlos       Kernel Version            => 2.4.20-31smp    
-10-14-05 03:50 slashlos       Issue Monitored: slashlos                    
-11-14-05 10:20 perex          Note Added: 0006702                          
-11-14-05 10:20 perex          Status                   assigned => feedback
+07-13-05 18:11 Manolo         New Issue                                    
+07-13-05 18:11 Manolo         Distribution              => Ubuntu          
+07-13-05 18:11 Manolo         Kernel Version            => 2.6.11          
+07-13-05 18:51 rlrevell       Note Added: 0005464                          
+07-13-05 18:54 rlrevell       Note Added: 0005465                          
+07-13-05 18:56 rlrevell       Relationship added       duplicate of 0000154
+07-16-05 17:10 jdthood        Assigned To               => perex           
+07-16-05 17:10 jdthood        Status                   new => acknowledged 
+07-16-05 17:10 jdthood        Resolution               open => duplicate   
+07-16-05 17:10 jdthood        Additional Information Updated                    
+11-14-05 10:24 perex          Project                  ALSA - driver => ALSA -
+lib
+11-14-05 10:24 perex          Category                 1_OTHERS => 2_mixer 
 ======================================================================
 
 
