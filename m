@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
-Date: Mon, 14 Nov 2005 10:37:49 +0100
-Message-ID: <5786b2b15456aaf85f1b213cbc1f083f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000158]: Device not detected
+Date: Mon, 14 Nov 2005 10:38:35 +0100
+Message-ID: <6dbde930a1d8a1a0202021ff2aa1213f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC98719E
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:37:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CF2A19E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:38:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=158> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                stst
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   685
+Issue ID:                   158
 Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               debian
-Kernel Version:             2.6.9-nitro4
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-28-2004 14:55 CET
-Last Modified:              11-14-2005 10:37 CET
+Date Submitted:             03-24-2004 22:02 CET
+Last Modified:              11-14-2005 10:38 CET
 ======================================================================
-Summary:                    Doom3 doesn't work with alsa backend
+Summary:                    Device not detected
 Description: 
-Latest doom3 client for linux has alsa support built in but doesn't work
-with my Hercules Fortissimo II (cs4624).
-
-The game show me this error:
-idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-
-dmesg output:
-ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
-ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
-start
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
-"SrcTask_SCB1"
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
-SrcTask_SCB1 rate to 44100
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<SrcTask_SCB1>
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
-"PCMReader_SCB2" (1)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<PCMReader_SCB2>
-ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
-buffer_size(32768)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
-
+when loading the module it crashes with this errormessage:
+/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
+init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
+insmod /lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o
+failed
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 15:20 
+ jdthood - 09-22-05 15:23 
 ----------------------------------------------------------------------
-Does Doom3 work properly with the latest ALSA cs46xx driver?
+Submitter: Were you able to fix the problem?  Are you sure that your sound
+hardware is functioning properly?
 
 ----------------------------------------------------------------------
- perex - 11-14-05 10:37 
+ perex - 11-14-05 10:38 
 ----------------------------------------------------------------------
-No response from user.
+No response from reporter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 14:55 darkbrain      New Issue                                    
-11-28-04 14:55 darkbrain      Distribution              => debian          
-11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
-11-28-04 14:56 darkbrain      Issue Monitored: darkbrain                    
-12-02-04 19:27 tiwai          Note Added: 0002692                          
-03-19-05 16:30 jdthood        Note Added: 0004054                          
-03-19-05 18:19 darkbrain      Note Added: 0004062                          
-09-22-05 15:20 jdthood        Note Added: 0006348                          
-11-14-05 10:37 perex          Status                   new => resolved     
-11-14-05 10:37 perex          Resolution               open => fixed       
-11-14-05 10:37 perex          Assigned To               => perex           
-11-14-05 10:37 perex          Note Added: 0006709                          
+03-24-04 22:02 stst           New Issue                                    
+03-24-04 22:04 stst           Issue Monitored: stst                        
+03-24-04 22:06 stst           Note Added: 0000702                          
+03-19-05 09:35 jdthood        Note Added: 0004021                          
+09-22-05 15:23 jdthood        Note Added: 0006350                          
+09-22-05 15:23 jdthood        Severity                 crash => major      
+09-22-05 15:23 jdthood        Summary                 
+/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
+init_module: No such device => Device not detected
+11-14-05 10:38 perex          Status                   new => resolved     
+11-14-05 10:38 perex          Resolution               open => fixed       
+11-14-05 10:38 perex          Assigned To               => perex           
+11-14-05 10:38 perex          Note Added: 0006710                          
 ======================================================================
 
 
