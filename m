@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001409]: include/linux/pci.h:819: error: syntax error before numeric constant
-Date: Mon, 14 Nov 2005 10:02:08 +0100
-Message-ID: <95ae29a44e933e576e187460e5158f11@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Mon, 14 Nov 2005 10:01:12 +0100
+Message-ID: <64cacd854c1729a3b6b187140522b8f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D22C619D
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:02:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7BAE119D
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 10:01:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,122 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1409> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                Twey
+Reported By:                yafrank
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1409
-Category:                   0_compilation problem_!!!
+Issue ID:                   1023
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.13-homegrown
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             09-09-2005 21:46 CEST
-Last Modified:              11-14-2005 10:02 CET
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              11-14-2005 10:01 CET
 ======================================================================
-Summary:                    include/linux/pci.h:819: error: syntax error before
-numeric constant
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-Compilation dies with:
-make[1]: Entering directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
-  CC [M]  /root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.o
-In file included from
-/root/alsa/alsa-driver-1.0.10rc1/include/adriver.h:737,
-                 from /root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.c:12:
-include/linux/pci.h:819: error: syntax error before numeric constant
-make[4]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.o] Error 1
-make[3]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore] Error 2
-make[2]: *** [_module_/root/alsa/alsa-driver-1.0.10rc1] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
-make: *** [compile] Error 2
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-Applies with --with-cards=all, with-cards=ca0106, and according to the
-notes on report 0001377 (see Additional Information, in case someone
-removes them for being fairly off-topic), also with intel-hda.  Only with
-kernel 2.6.13, though.
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- quetzyg - 09-27-05 12:03 
+ rufusplant - 10-25-05 13:55 
 ----------------------------------------------------------------------
-I've got the same pci.h problem when compiling ALSA 1.0.10-rc1 for a
-HDA-Intel soundcard, but only on 2.6.14-rc* kernels. 2.6.13.* kernels
-don't give me problems.
+Like mmadore, I am running a Creative Vibra 128 (model CT4730) that has an
+EV1938 chip.
 
+I can verify the same problem with recent Linux distributions based on
+2.6.11 and later kernels.  For example, sound worked ok with FC2 and
+Ubuntu 5.04, but now does not work with FC4 and Ubuntu 5.10.
 
+I currently have a dual-boot Ubuntu 5.04 (kernel 2.6.10 alsa 1.0.8) and
+Ubuntu 5.10 (kernel 2.6.12 alsa 1.0.9) system, so I can perform tests to
+compare the two.  Just let me know what I can do to help.  It would be
+nice to get this working again.
 
 ----------------------------------------------------------------------
- perex - 11-14-05 10:02 
+ tiwai - 10-25-05 15:12 
 ----------------------------------------------------------------------
-Could you try with 1.0.10rc3?
+Just try out ALSA 1.0.10rc2 or CVS version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 21:46 Twey           New Issue                                    
-09-09-05 21:46 Twey           Distribution              => Fedora Core 4   
-09-09-05 21:46 Twey           Kernel Version            => 2.6.13-homegrown
-09-09-05 21:46 Twey           Issue Monitored: Twey                        
-09-27-05 12:00 quetzyg        Note Added: 0006405                          
-09-27-05 12:02 quetzyg        Note Edited: 0006405                         
-09-27-05 12:03 quetzyg        Note Edited: 0006405                         
-11-14-05 10:02 perex          Note Added: 0006701                          
-11-14-05 10:02 perex          Status                   assigned => feedback
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
+07-11-05 22:52 gwennou        Note Added: 0005451                          
+09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
+09-01-05 10:51 yafrank        Note Added: 0005995                          
+09-01-05 18:15 tiwai          Note Added: 0005997                          
+09-04-05 02:09 bobcat98       Note Added: 0006034                          
+09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
+10-25-05 13:55 rufusplant     Note Added: 0006539                          
+10-25-05 15:12 tiwai          Note Added: 0006542                          
+11-14-05 10:01 perex          Status                   assigned => feedback
 ======================================================================
 
 
