@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001560]: Right channel not working with CMI9761
-Date: Mon, 14 Nov 2005 22:21:57 +0100
-Message-ID: <52c379b5e84c848d59f93aa365bdc3a6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001327]: Creative X-Fi Support - Do you know anything?
+Date: Mon, 14 Nov 2005 22:21:35 +0100
+Message-ID: <91f2d9512e96d7c7207a23019d5917d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D8BB1AC
-	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 22:21:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEC951AC
+	for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2005 22:21:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1560> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1327> 
 ======================================================================
-Reported By:                NULL
+Reported By:                ghost_zero
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1560
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1327
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10.2 (almost -current)
-Kernel Version:             Linux 2.6.14 (i686)
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-14-2005 22:21 CET
+Date Submitted:             08-11-2005 00:11 CEST
 Last Modified:              11-14-2005 22:21 CET
 ======================================================================
-Summary:                    Right channel not working with CMI9761
+Summary:                    Creative X-Fi Support - Do you know anything?
 Description: 
-Right channel not working with CMI9761 chip in simple stereo mode. I tried
-many different configurations, but works only left channel. Same problem
-with latest ALSA CVS source and even pure OSS in *BSD systems.
+Hi,
 
-Mainboard: ASrock K7Upgrade-880 VIA KT880
-Audio chip: CMedia CMI9761 6 channel AC'97 audio codec
+it is more a question than a feature request and that is about the
+Creative X-Fi Cards... do you know if Creative will release Linux drivers
+or specifications of it?
+If not, will you still support that cards in the future?
 
-Any ideas? Thanks.
+Sorry to contact you for that in this way but I didn't find an
+e-mail-address...
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001368 Feature request - Support for SoundBlas...
+======================================================================
+
+----------------------------------------------------------------------
+ pzad - 08-13-05 00:37 
+----------------------------------------------------------------------
+Time will probably tell - never.
+
+----------------------------------------------------------------------
+ ghost_zero - 11-14-05 22:21 
+----------------------------------------------------------------------
+In Bug 0001368 I read that there might be something going on - you will get
+a card donated, won't you? And you will try to get support through reverse
+engineering, won't you?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-14-05 22:21 NULL           New Issue                                    
-11-14-05 22:21 NULL           Distribution              => Slackware 10.2
-(almost -current)
-11-14-05 22:21 NULL           Kernel Version            => Linux 2.6.14 (i686)
+08-11-05 00:11 ghost_zero     New Issue                                    
+08-11-05 00:15 rlrevell       Note Added: 0005751                          
+08-11-05 00:31 ghost_zero     Note Added: 0005753                          
+08-11-05 03:46 rlrevell       Note Added: 0005754                          
+08-13-05 00:32 ghost_zero     Note Added: 0005793                          
+08-13-05 00:37 pzad           Note Added: 0005794                          
+08-25-05 20:09 rlrevell       Relationship added       has duplicate 0001368
+11-14-05 09:01 perex          View Status              private => public   
+11-14-05 22:21 ghost_zero     Note Added: 0006727                          
 ======================================================================
 
 
