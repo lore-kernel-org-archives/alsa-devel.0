@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001561]: Edirol UA-25 won't run with capture in jack
-Date: Tue, 15 Nov 2005 19:47:22 +0100
-Message-ID: <e4eb8e54ff0f0954af8f2ee08acd1739@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Multi ice1712 .asoundrc problem
+Date: Tue, 15 Nov 2005 14:18:47 -0500
+Message-ID: <1132082328.27215.35.camel@mindpipe>
+References: <E1EbIYV-00019A-4u@localhost.localdomain>
+	 <20051113223105.GA4822@localhost.localdomain>
+	 <1131923292.27215.1.camel@mindpipe>
+	 <20051114003718.GA5041@localhost.localdomain>
+	 <1131960635.27215.16.camel@mindpipe>
+	 <20051114121701.GA4044@localhost.localdomain>
+	 <20051114155513.GO10146@edu.joroinen.fi>
+	 <20051114190647.GA4797@localhost.localdomain>
+	 <20051115151652.GA4404@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB3561A1
-	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2005 19:47:22 +0100 (MET)
+In-Reply-To: <20051115151652.GA4404@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +25,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: John Rigg <ad@sound-man.co.uk>
+Cc: Pasi =?ISO-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2005-11-15 at 15:16 +0000, John Rigg wrote:
+> (unlike jackd, eg. `jackd -d alsa -d -C -i12 -P -o10 hw:0').
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1561> 
-======================================================================
-Reported By:                plekter
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1561
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             11-15-2005 19:47 CET
-Last Modified:              11-15-2005 19:47 CET
-======================================================================
-Summary:                    Edirol UA-25 won't run with capture in jack
-Description: 
-If i run jackd with -P, then it works perfectly. If i use -C or -D, then it
-produces this error:
+I think your jackd syntax is wrong.  The -P and -C arguments are
+supposed to be immediately followed by the capture/playback device.
+Like:
 
-jackd 0.100.0
-Copyright 2001-2005 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
+jackd -d alsa -C hw:0,2 -P hw:0,3 -i12 -o10
 
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:1|hw:1|1024|2|48000|0|0|nomon|swmeter|-|32bit
-control device hw:1
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
-Note: audio device hw:1 doesn't support a 32bit sample format so JACK will
-try a 24bit format instead
-nperiods = 2 for capture
-Note: audio device hw:1 doesn't support a 32bit sample format so JACK will
-try a 24bit format instead
-nperiods = 2 for playback
-ALSA: could not start playback (Broken pipe)
-DRIVER NT: could not start driver
-cannot start driver
-
-In the kernel logs i find
-
-cannot submit datapipe for urb 3, err = -28
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-15-05 19:47 plekter        New Issue                                    
-11-15-05 19:47 plekter        Distribution              => Debian          
-11-15-05 19:47 plekter        Kernel Version            => 2.6.14          
-======================================================================
-
+Lee
 
 
 
