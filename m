@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001556]: Fortissimo 4: No Volume Control
-Date: Tue, 15 Nov 2005 16:37:56 +0100
-Message-ID: <1073495cdc6056880174a69f39b216d2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001558]: snd_pcm_hw_params fails with snd_intel8x0 on fl32, 96kHz streams
+Date: Tue, 15 Nov 2005 17:38:57 +0100
+Message-ID: <a2f9d6ac6c4f6acfa06187c08cfb7c07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 502DB19A
-	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2005 16:37:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E08919A
+	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2005 17:38:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CONFIRMED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1558> 
 ======================================================================
-Reported By:                bladus
-Assigned To:                perex
+Reported By:                bigben
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1556
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Issue ID:                   1558
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo Linux 2005.1
-Kernel Version:             2.6.14-ck1
+Status:                     confirmed
 ======================================================================
-Date Submitted:             11-13-2005 22:06 CET
-Last Modified:              11-15-2005 16:37 CET
+Date Submitted:             11-14-2005 18:30 CET
+Last Modified:              11-15-2005 17:38 CET
 ======================================================================
-Summary:                    Fortissimo 4: No Volume Control
+Summary:                    snd_pcm_hw_params fails with snd_intel8x0 on fl32,
+96kHz streams
 Description: 
-With the Hercules Fortissimo 4 (Envy24HT) there's no posibillity to control
-the volume.
-It's always at max.
+It seems you cannot play fl32, 96kHz streams on a device using the
+snd_intel8x0 driver module (tested on a nforce2 as well as other intel
+chipsets, alsa 1.0.9 and 1.0.10rc2,
+2.6.13 and 2.6.14 kernels). s16l or rates until 95999 Hz work well. Other
+drivers
+(snd_emu10k1 and snd_powermac) seem to work well. Software resampling is
+enabled on the devices (snd_pcm_hw_params_set_rate_resample).
 
-Under Windows the card uses the reference drivers from VIA, so maybe you
-can fix that issue.
-I would be very happy if you could send me a response to this issue within
-a week, since when it's not possible i can return the card to the
-merchant.
-
-Thank you.
-
+The error occurs on snd_pcm_hw_params (alsa doesn't complain on
+snd_pcm_hw_params_set_rate_near or snd_pcm_hw_params_set_format). The
+error code is -22 (invalid argument).
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 14:01 
+ Clemens Ladisch - 11-15-05 17:38 
 ----------------------------------------------------------------------
-Perhaps, the line should be 'options snd_ice1724 model="sn25p"'.. The
-driver should respond with 'ice1724: Using board model sn25p' in
-/var/log/messages.
+Reproducible with "aplay -D plughw:0 -t raw -f FLOAT_LE -c 2 -r 96001 -v
+/dev/zero".
 
-----------------------------------------------------------------------
- bladus - 11-15-05 16:37 
-----------------------------------------------------------------------
-Thanks, i will test it but there's one problem:
-I don't have /var/log/messages, is there any other file where alsa puts
-it's messages?
+This seems to be a problem in the plug plugin which tries to create a rate
+plugin for a non-linear sample format.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 22:06 bladus         New Issue                                    
-11-13-05 22:06 bladus         Distribution              => Gentoo Linux 2005.1
-11-13-05 22:06 bladus         Kernel Version            => 2.6.14-ck1      
-11-14-05 11:02 perex          Note Added: 0006713                          
-11-14-05 11:02 perex          Assigned To               => perex           
-11-14-05 11:02 perex          Status                   new => feedback     
-11-14-05 13:39 bladus         Note Added: 0006722                          
-11-14-05 13:55 bladus         Note Added: 0006723                          
-11-14-05 14:01 perex          Note Added: 0006724                          
-11-15-05 16:37 bladus         Note Added: 0006731                          
+11-14-05 18:30 bigben         New Issue                                    
+11-15-05 17:38 Clemens LadischNote Added: 0006732                          
+11-15-05 17:38 Clemens LadischStatus                   new => confirmed    
+11-15-05 17:38 Clemens LadischCategory                 hw specific configuration
+=> 1_pcm - digital audio
 ======================================================================
 
 
