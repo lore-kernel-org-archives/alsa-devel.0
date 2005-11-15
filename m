@@ -1,16 +1,14 @@
-From: Mark Knecht <markknecht@gmail.com>
-Subject: Re: bugtrack question
-Date: Tue, 15 Nov 2005 10:27:38 -0800
-Message-ID: <5bdc1c8b0511151027v4349e03bx1cd307765e70ab83@mail.gmail.com>
-References: <5bdc1c8b0511110812m316ce31du6e1385506d54503d@mail.gmail.com>
-	 <s5hbr0rys4i.wl%tiwai@suse.de>
-	 <5bdc1c8b0511111353i242abeb1s518002ee895a52d2@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001561]: Edirol UA-25 won't run with capture in jack
+Date: Tue, 15 Nov 2005 19:47:22 +0100
+Message-ID: <e4eb8e54ff0f0954af8f2ee08acd1739@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5bdc1c8b0511111353i242abeb1s518002ee895a52d2@mail.gmail.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB3561A1
+	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2005 19:47:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,40 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-OK. I tried and tried but it still send me all bug reports.
 
-I'll unsubscribe and come back sometime in the future if need be.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1561> 
+======================================================================
+Reported By:                plekter
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1561
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             11-15-2005 19:47 CET
+Last Modified:              11-15-2005 19:47 CET
+======================================================================
+Summary:                    Edirol UA-25 won't run with capture in jack
+Description: 
+If i run jackd with -P, then it works perfectly. If i use -C or -D, then it
+produces this error:
 
-Thanks for all your help!!
+jackd 0.100.0
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
 
-Cheers,
-Mark
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:1|hw:1|1024|2|48000|0|0|nomon|swmeter|-|32bit
+control device hw:1
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+Note: audio device hw:1 doesn't support a 32bit sample format so JACK will
+try a 24bit format instead
+nperiods = 2 for capture
+Note: audio device hw:1 doesn't support a 32bit sample format so JACK will
+try a 24bit format instead
+nperiods = 2 for playback
+ALSA: could not start playback (Broken pipe)
+DRIVER NT: could not start driver
+cannot start driver
 
-On 11/11/05, Mark Knecht <markknecht@gmail.com> wrote:
-> On 11/11/05, Takashi Iwai <tiwai@suse.de> wrote:
-> > At Fri, 11 Nov 2005 08:12:43 -0800,
-> > Mark Knecht wrote:
-> > >
-> > > Hi,
-> > >    Is there any way for me to configure the Alsa Mantis system (or
-> > > this list) to send me only the bugtrack entries for my bugs and not
-> > > every bug report entered into Alsa's Bugzilla? Under Account
-> > > Preferences I don't seem to find that option.
-> >
-> > Well, not every bug but only the related bugs are sent to me directly,
-> > i.e. bugs reported, answered, or assigned.
-> >
-> >
-> > Takashi
-> >
-> Thanks Takashi.
->
-> - Mark
->
+In the kernel logs i find
+
+cannot submit datapipe for urb 3, err = -28
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-15-05 19:47 plekter        New Issue                                    
+11-15-05 19:47 plekter        Distribution              => Debian          
+11-15-05 19:47 plekter        Kernel Version            => 2.6.14          
+======================================================================
+
+
 
 
 -------------------------------------------------------
