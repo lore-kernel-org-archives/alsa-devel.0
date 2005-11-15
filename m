@@ -1,7 +1,10 @@
-From: John Rigg <ad@sound-man.co.uk>
-Subject: ice1712 - cannot set channel count
-Date: Tue, 15 Nov 2005 17:08:52 +0000
-Message-ID: <E1Ec4Ie-0001Da-QO@localhost.localdomain>
+From: Dino Puller <dino@e4a.it>
+Subject: Re: Decibel]
+Date: Tue, 15 Nov 2005 18:59:07 +0100
+Message-ID: <437A21EB.4030107@e4a.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,44 +18,60 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+James Courtier-Dutton wrote:
 
-Sorry to send this to the list and not bugtrack, but the bugtrack system
-won't let me log in.
+>On 14/11/05, Dino Puller <dino@e4a.it> wrote:
+>  
+>
+>>Hi all,
+>>  only a simple  question:  How to obtain min_dB value for my device or
+>>pcm channel? I found the api snd_mixer_selem_get_playback_dB_range but i
+>>didn't understand how to use it. Is it the right api? I've found also
+>>sndo_mixer_io_get_dB i'm a bit confused.
+>>
+>>thanks,
+>>  Dino Puller
+>>
+>>    
+>>
+>
+>Those api commands are not supported yet. The alsa-lib to user
+>application api is there and fixed. The support needs to be added to
+>alsa-driver and some modifications to alsa-lib to make it work. I am
+>working on it.
+>
+>James
+>
+>  
+>
+Ok. Any way i'm doing something very similar to pcm_softvol plugin and i 
+want to make a conversion from linear to dB scale
 
-The channel count on ice1712 cannot be set by jackd to anything except
-maximum, ie. 12 for capture and 10 for playback.
-For example:
-`jackd -d alsa -d -C -i12 -P -o10 hw:0' (equivalent to jackd -d alsa -d hw:0)
-works, but 
-`jackd -d alsa -d -C -i8 hw:0' results in the following message:
-ALSA: cannot set channel count to 8 for capture
+here is the point:
+(taken from pcm_soft_vol.c)
+...
+       svol->min_dB = min_dB;
+       for (i = 1; i < svol->max_val; i++) {
+           double db = svol->min_dB - ((i - 1) * svol->min_dB) / 
+(svol->max_val - 1);
+           double v = (pow(10.0, db / 20.0) * (double)(1 << 
+VOL_SCALE_SHIFT));
+           svol->dB_value[i] = (unsigned short)v;
+       }
+...
 
-This isn't a problem with only one ice1712 card because jackd can run it in 
-duplex mode despite different channel count for capture and playback.
+in this plugin the default min_dB value is -48 but the volume is too 
+low, now witch value should i use? Is there a default value for a pcm 
+channel?
 
-However, this completely disables the use of duplex mode when two or
-more ice1712s are combined using the pcm multi plugin in .asoundrc.
-This requires the slaves channel count to be defined explicitly, eg.
-	slaves.a.pcm hw:0
-	slaves.a.channels 12
-	slaves.b.pcm hw:1
-	slaves.b.channels 12
-This works, but only for capture. Changing the channel count to 10 only works
-for playback. No other numbers work at all, and there doesn't appear to be
-any way of defining different channel counts for capture and playback.
+thanks,
+  Dino Puller
 
-The docs say that channel count can be set to anything up to maximum
-(which is default). They also say that the number of slaves channels in
-multi definition can be set to any number up to maximum.
-I should be able to define one multi device with say 10 slaves channels
-per card, and one set of bindings, and have it work in duplex mode.
 
-Setup is 2.6.14rt6 x86_64 SMP kernel (alsa-driver-1.0.10rc1) with
-alsa-lib-1.0.10-rc2 and jack 0.100.7 with MMAP_COMPLEX patch,
-running on Debian unstable amd64.
 
-John
+
+
+
 
 
 -------------------------------------------------------
