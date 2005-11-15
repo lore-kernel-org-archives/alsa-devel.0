@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: bugtrack question
-Date: Tue, 15 Nov 2005 14:21:42 -0500
-Message-ID: <1132082503.27215.37.camel@mindpipe>
-References: <5bdc1c8b0511110812m316ce31du6e1385506d54503d@mail.gmail.com>
-	 <s5hbr0rys4i.wl%tiwai@suse.de>
-	 <5bdc1c8b0511111353i242abeb1s518002ee895a52d2@mail.gmail.com>
-	 <5bdc1c8b0511151027v4349e03bx1cd307765e70ab83@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001409]: include/linux/pci.h:819: error: syntax error before numeric constant
+Date: Tue, 15 Nov 2005 23:07:33 +0100
+Message-ID: <bd7417fc625ee7ebde4f85dbd28d4225@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5bdc1c8b0511151027v4349e03bx1cd307765e70ab83@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A8C218A
+	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2005 23:07:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,21 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-11-15 at 10:27 -0800, Mark Knecht wrote:
-> OK. I tried and tried but it still send me all bug reports.
-> 
-> I'll unsubscribe and come back sometime in the future if need be.
-> 
-> Thanks for all your help!!
 
-Because all bug reports get cc:ed to alsa-devel.  Additionally, your bug
-reports get mailed to you.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1409> 
+======================================================================
+Reported By:                Twey
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1409
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.13-homegrown
+======================================================================
+Date Submitted:             09-09-2005 21:46 CEST
+Last Modified:              11-15-2005 23:07 CET
+======================================================================
+Summary:                    include/linux/pci.h:819: error: syntax error before
+numeric constant
+Description: 
+Compilation dies with:
+make[1]: Entering directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
+  CC [M]  /root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.o
+In file included from
+/root/alsa/alsa-driver-1.0.10rc1/include/adriver.h:737,
+                 from /root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.c:12:
+include/linux/pci.h:819: error: syntax error before numeric constant
+make[4]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.o] Error 1
+make[3]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore] Error 2
+make[2]: *** [_module_/root/alsa/alsa-driver-1.0.10rc1] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
+make: *** [compile] Error 2
 
-Lee
+Applies with --with-cards=all, with-cards=ca0106, and according to the
+notes on report 0001377 (see Additional Information, in case someone
+removes them for being fairly off-topic), also with intel-hda.  Only with
+kernel 2.6.13, though.
+======================================================================
+
+----------------------------------------------------------------------
+ perex - 11-14-05 10:02 
+----------------------------------------------------------------------
+Could you try with 1.0.10rc3?
+
+----------------------------------------------------------------------
+ quetzyg - 11-15-05 23:07 
+----------------------------------------------------------------------
+I'm already using 1.0.10rc3 and it works just fine :-)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-09-05 21:46 Twey           New Issue                                    
+09-09-05 21:46 Twey           Distribution              => Fedora Core 4   
+09-09-05 21:46 Twey           Kernel Version            => 2.6.13-homegrown
+09-09-05 21:46 Twey           Issue Monitored: Twey                        
+09-27-05 12:00 quetzyg        Note Added: 0006405                          
+09-27-05 12:02 quetzyg        Note Edited: 0006405                         
+09-27-05 12:03 quetzyg        Note Edited: 0006405                         
+11-14-05 10:02 perex          Note Added: 0006701                          
+11-14-05 10:02 perex          Status                   assigned => feedback
+11-15-05 23:07 quetzyg        Note Added: 0006735                          
+======================================================================
+
 
 
 
