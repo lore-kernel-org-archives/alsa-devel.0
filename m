@@ -1,11 +1,14 @@
-From: Dino Puller <dino@e4a.it>
-Subject: Re: Decibel]
-Date: Tue, 15 Nov 2005 18:59:07 +0100
-Message-ID: <437A21EB.4030107@e4a.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001268]: alsa-lib-1.0.9 fails on sparc-linux
+Date: Tue, 15 Nov 2005 19:12:07 +0100
+Message-ID: <530ff9c044eaca07a394d3aa646e5f08@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E25919A
+	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2005 19:12:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,61 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
 
->On 14/11/05, Dino Puller <dino@e4a.it> wrote:
->  
->
->>Hi all,
->>  only a simple  question:  How to obtain min_dB value for my device or
->>pcm channel? I found the api snd_mixer_selem_get_playback_dB_range but i
->>didn't understand how to use it. Is it the right api? I've found also
->>sndo_mixer_io_get_dB i'm a bit confused.
->>
->>thanks,
->>  Dino Puller
->>
->>    
->>
->
->Those api commands are not supported yet. The alsa-lib to user
->application api is there and fixed. The support needs to be added to
->alsa-driver and some modifications to alsa-lib to make it work. I am
->working on it.
->
->James
->
->  
->
-Ok. Any way i'm doing something very similar to pcm_softvol plugin and i 
-want to make a conversion from linear to dB scale
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1268> 
+======================================================================
+Reported By:                eradicator
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1268
+Category:                   0_general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-19-2005 08:31 CEST
+Last Modified:              11-15-2005 19:12 CET
+======================================================================
+Summary:                    alsa-lib-1.0.9 fails on sparc-linux
+Description: 
+After upgrading from alsa-lib-1.0.8 to 1.0.9, sound fails to play on my
+sparc:
 
-here is the point:
-(taken from pcm_soft_vol.c)
-...
-       svol->min_dB = min_dB;
-       for (i = 1; i < svol->max_val; i++) {
-           double db = svol->min_dB - ((i - 1) * svol->min_dB) / 
-(svol->max_val - 1);
-           double v = (pow(10.0, db / 20.0) * (double)(1 << 
-VOL_SCALE_SHIFT));
-           svol->dB_value[i] = (unsigned short)v;
-       }
-...
+$ aplay /usr/kde/3.4/share/sounds/pop.wav 
+ALSA lib pcm_direct.c:689:(snd_pcm_direct_initialize_slave) requested or
+auto-format is not available
+ALSA lib pcm_dmix.c:814:(snd_pcm_dmix_open) unable to initialize slave
+aplay: main:533: audio open error: Invalid argument
 
-in this plugin the default min_dB value is -48 but the volume is too 
-low, now witch value should i use? Is there a default value for a pcm 
-channel?
+The drivers installed are 1.0.9b with the new ioctl compat (need patch
+from bug #1267)
+======================================================================
 
-thanks,
-  Dino Puller
+----------------------------------------------------------------------
+ eradicator - 11-15-05 19:12 
+----------------------------------------------------------------------
+This is fixed with 1.0.10_rc3
 
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-19-05 08:31 eradicator     New Issue                                    
+07-19-05 08:33 eradicator     File Added: aplay.strace                     
+11-15-05 19:12 eradicator     Note Added: 0006733                          
+======================================================================
 
 
 
