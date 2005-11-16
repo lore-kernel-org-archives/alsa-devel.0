@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001561]: Edirol UA-25 won't run with capture in jack
-Date: Wed, 16 Nov 2005 10:04:33 +0100
-Message-ID: <ba11e5af9ade0b221366feb5eb9663a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001457]: Lagged sound
+Date: Wed, 16 Nov 2005 13:05:36 +0100
+Message-ID: <d9fa20023a6ee0ee4d6ab991b7461e8d@85.132.177.35>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14C251AB
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 10:04:34 +0100 (MET)
+Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0421F1B6
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 13:05:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1561> 
+<https://85.132.177.35/alsa-bug/view.php?id=1457> 
 ======================================================================
-Reported By:                plekter
-Assigned To:                Clemens Ladisch
+Reported By:                mouse
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1561
-Category:                   USB - usb-audio
+Issue ID:                   1457
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.14
+Distribution:               ALT Linux
+Kernel Version:             from 2.6.10 to 2.6.12
 ======================================================================
-Date Submitted:             11-15-2005 19:47 CET
-Last Modified:              11-16-2005 10:04 CET
+Date Submitted:             09-25-2005 12:56 CEST
+Last Modified:              11-16-2005 13:05 CET
 ======================================================================
-Summary:                    Edirol UA-25 won't run with capture in jack
+Summary:                    Lagged sound
 Description: 
-If i run jackd with -P, then it works perfectly. If i use -C or -D, then it
-produces this error:
-
-jackd 0.100.0
-Copyright 2001-2005 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:1|hw:1|1024|2|48000|0|0|nomon|swmeter|-|32bit
-control device hw:1
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
-Note: audio device hw:1 doesn't support a 32bit sample format so JACK will
-try a 24bit format instead
-nperiods = 2 for capture
-Note: audio device hw:1 doesn't support a 32bit sample format so JACK will
-try a 24bit format instead
-nperiods = 2 for playback
-ALSA: could not start playback (Broken pipe)
-DRIVER NT: could not start driver
-cannot start driver
-
-In the kernel logs i find
-
-cannot submit datapipe for urb 3, err = -28
-
+Played music a bit lagged and in dmesg I see:
+vortex: IRQ fifo error
 ======================================================================
 
 ----------------------------------------------------------------------
- plekter - 11-16-05 10:04 
+ mouse - 09-25-05 13:00 
 ----------------------------------------------------------------------
-With 2.6.15-rc1 i can not have period sizes larger than 512. The same error
-message appears in the kernel log if i try running jack with -p 1024.
+lspci -vvn:
 
-(cannot submit datapipe for urb 3, err = -28)
+0000:00:0e.0 Class 0401: 12eb:0002 (rev fe)
+        Subsystem: 1092:3003
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (1000ns min, 3000ns max), cache line size 08
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at df000000 (32-bit, non-prefetchable)
+        Region 1: I/O ports at b800 [size=8]
+        Region 2: I/O ports at bc00 [size=8]
+        Capabilities: [dc] Power Management version 1
+                Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Capture still does not work, same error.
+----------------------------------------------------------------------
+ Raymond - 11-16-05 13:05 
+----------------------------------------------------------------------
+What is the southbridge chipset on your motherboard ?
+
+Do your MX300 sharing IRQ with other cards ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-15-05 19:47 plekter        New Issue                                    
-11-15-05 19:47 plekter        Distribution              => Debian          
-11-15-05 19:47 plekter        Kernel Version            => 2.6.14          
-11-15-05 19:57 plekter        Issue Monitored: plekter                     
-11-16-05 10:04 plekter        Note Added: 0006738                          
+09-25-05 12:56 mouse          New Issue                                    
+09-25-05 12:56 mouse          Distribution              => ALT Linux       
+09-25-05 12:56 mouse          Kernel Version            => from 2.6.10 to 2.6.12
+09-25-05 13:00 mouse          Note Added: 0006386                          
+09-25-05 13:00 mouse          File Added: au8830                           
+11-16-05 13:05 Raymond        Note Added: 0006739                          
 ======================================================================
 
 
