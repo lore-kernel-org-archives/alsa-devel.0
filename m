@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Wed, 16 Nov 2005 15:58:53 +0100
-Message-ID: <189e07116a8b5fdedcd08df38c89ee12@bugtrack.alsa-project.org>
+Date: Wed, 16 Nov 2005 16:03:48 +0100
+Message-ID: <6a47f5a2b7a5c1120bcacfff34ec117e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E71911C5
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 15:58:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 804A01C5
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 16:03:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              11-16-2005 15:58 CET
+Last Modified:              11-16-2005 16:03 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,43 +56,6 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- lonerider - 08-24-05 00:55 
-----------------------------------------------------------------------
-Hi friends :)
-
-I just want to add that misnagid is not hallucinating or day-dreaming at
-all. :)  Me too, I have the ASUS A7N8X Deluxe nforce2 mobo. 
-
-I have first installed knoppix on it then switched to gentoo after few
-weeks... I should say, same problem exists and persists in both distros.
-In my opninion this is absolutely not a bug related to FC3. 
-
-By the way, the oss modules provided by nvidia works just fine but
-unfortunately skype and gnome do not like it at all. As far as understarnd
--well, not much- It  does something different than alsa to start the
-hardware.
-
-I noticed this damn buzz effect 6 months ago. Till now I compiled many
-kernels; sometimes I embedded ALSA in the kenel and sometimes I compiled
-it as a module. Nothing changed except one time... 
-
-I was toying with something related to USB in the kernel and
-(unfortunately I can't exactly remember what I did) one of the kernels
-that I compiled with alsa embedded, ceased the noise! At that time I was a
-super-noob and I didn't know about .config file -*sigh*-. As you may
-already have guessed, I lost those kernel settings. :(( Baaah yes yerright
-I'm a dumbass.
-After that, I could never get it working right. It buzzes... To keep my
-sanity and my mind in place I am using crappy oss drivers provided by
-nvidia.
-
-PS: I guess I should thank to pzad for its patience and sincere effort.
-:)
-
-PS of the PS: Err, by the way sorry about my tarzanish english, If I said
-sthg stupid this is not because I mean it for real...
-
-----------------------------------------------------------------------
  misnagid - 11-16-05 15:58 
 ----------------------------------------------------------------------
 Hello Peter,
@@ -100,6 +63,14 @@ Still under FC$, with latest version of ALSA, I cannot get the sound card
 to work.  Have followed all your previous suggestions plus more.  Note
 that instead of a buzzing, I get no sound at all.  It is NOT muted.
 Jerry
+
+----------------------------------------------------------------------
+ misnagid - 11-16-05 16:03 
+----------------------------------------------------------------------
+Peter.
+Meant to say under FC4 the ALSA driver still does not work.
+Jerry
+misnagid@usa.net
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -164,6 +135,7 @@ Date Modified  Username       Field                    Change
 04-22-05 11:04 stransky       Note Added: 0004553                          
 08-24-05 00:55 lonerider      Note Added: 0005921                          
 11-16-05 15:58 misnagid       Note Added: 0006741                          
+11-16-05 16:03 misnagid       Note Added: 0006742                          
 ======================================================================
 
 
