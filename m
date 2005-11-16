@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Wed, 16 Nov 2005 16:10:21 +0100
-Message-ID: <640f571237b56f602fe46797d0282837@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Dmix and non SND_PCM_TYPE_HW slaves
+Date: Wed, 16 Nov 2005 16:14:31 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0511161614090.9655@tm8103.perex-int.cz>
+References: <OFB5C60420.D5C0FB76-ON652570BA.00273D48-652570BA.00273D59@flextronicssoftware.com>
+ <Pine.LNX.4.61.0511150835390.9148@tm8103.perex-int.cz> <s5hek5ixlat.wl%tiwai@suse.de>
+ <Pine.LNX.4.61.0511161523230.9655@tm8103.perex-int.cz> <s5h64qshcjq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A22B61C5
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 16:10:22 +0100 (MET)
+In-Reply-To: <s5h64qshcjq.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,124 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: sameer.kittur@flextronicssoftware.com, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 16 Nov 2005, Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
-======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              11-16-2005 16:10 CET
-======================================================================
-Summary:                    Buzz from ALSA setup
-Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
+> At Wed, 16 Nov 2005 15:24:26 +0100 (CET),
+> Jaroslav Kysela wrote:
+> > 
+> > On Tue, 15 Nov 2005, Takashi Iwai wrote:
+> > 
+> > > At Tue, 15 Nov 2005 08:39:06 +0100 (CET),
+> > > Jaroslav wrote:
+> > > > 
+> > > > On Tue, 15 Nov 2005 sameer.kittur@flextronicssoftware.com wrote:
+> > > > 
+> > > > > Hi all,
+> > > > > 
+> > > > >     Is there a reason why Dmix cannot use a non SND_PCM_TYPE_HW slave? Is
+> > > > > there no way to re-direct the Dmix output to another plugin or an
+> > > > > external I/O or a filter plugin?
+> > > > 
+> > > > It's impossible without massive changes to the dmix code and structure. 
+> > > > Dmix uses too much driver specific things like the PCM timer, passing PCM 
+> > > > device file-descriptor among applications etc. Also, the latency can be 
+> > > > much worse when the dmix plugin will use only SHM ring buffer or so.
+> > > 
+> > > Actually, it's difficult to apply the current dmix model to a
+> > > (user-space) driver without DMA like bluez.  We need to gather the
+> > > data from all clients and send only once to the hardware in such a
+> > > case.  So, the solution with a sound server looks most appropriate.
+> > 
+> > It's not so difficult, but extra double buffering will be added between 
+> > producer and consumer, so the latency increases min. twice.
+> 
+> Hmm, but still this doesn't work well.  Remember that the data chunk
+> once tranferred cannot be modified any longer.  Hence, to get a low
+> latency, the buffer must be sent just before the active update.
+> In the best case, we may have only 2 periods in practice.
+> 
+> This would work if a server process runs in a high task priority, but
+> not for the models with parallel accessses like dmix.
 
-======================================================================
+I meant a daemon with RT priority which will "emulate" DMA.
 
-----------------------------------------------------------------------
- misnagid - 11-16-05 16:03 
-----------------------------------------------------------------------
-Peter.
-Meant to say under FC4 the ALSA driver still does not work.
-Jerry
-misnagid@usa.net
+						Jaroslav
 
-----------------------------------------------------------------------
- pzad - 11-16-05 16:10 
-----------------------------------------------------------------------
-How much memory do you have ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
-12-27-04 21:09 misnagid       Note Added: 0002975                          
-12-27-04 21:31 pzad           Note Added: 0002976                          
-12-27-04 21:47 misnagid       Note Added: 0002977                          
-12-27-04 21:49 misnagid       Note Added: 0002978                          
-12-27-04 22:00 pzad           Note Added: 0002979                          
-12-27-04 22:29 misnagid       Note Added: 0002980                          
-12-27-04 22:54 pzad           Note Added: 0002981                          
-12-27-04 23:15 misnagid       Note Added: 0002982                          
-12-27-04 23:19 misnagid       Note Added: 0002983                          
-12-27-04 23:46 pzad           Note Added: 0002984                          
-12-27-04 23:48 misnagid       Note Added: 0002985                          
-12-28-04 21:13 rlrevell       Note Added: 0002987                          
-01-03-05 00:36 misnagid       Note Added: 0003049                          
-01-03-05 15:10 pzad           Note Added: 0003064                          
-01-09-05 00:27 misnagid       Note Added: 0003132                          
-01-11-05 10:36 pzad           Note Added: 0003141                          
-01-11-05 11:24 misnagid       Note Added: 0003142                          
-01-11-05 23:20 misnagid       Note Added: 0003159                          
-04-22-05 11:04 stransky       Note Added: 0004553                          
-08-24-05 00:55 lonerider      Note Added: 0005921                          
-11-16-05 15:58 misnagid       Note Added: 0006741                          
-11-16-05 16:03 misnagid       Note Added: 0006742                          
-11-16-05 16:10 pzad           Note Added: 0006743                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
