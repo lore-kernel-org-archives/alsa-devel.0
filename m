@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001565]: Compilation problem of src/pcm/pcm_file.c
-Date: Wed, 16 Nov 2005 16:46:38 +0100
-Message-ID: <018773ef59d09fe23958d91e847eaf78@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001566]: The misc.c is reported to have incomplete type with thread_excited.
+Date: Wed, 16 Nov 2005 17:22:01 +0100
+Message-ID: <73db50bf384b05ed8bff3e6721d7e9c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B83C51CC
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 16:46:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0370A1CC
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 17:22:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,36 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1565> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1566> 
 ======================================================================
 Reported By:                croiset
-Assigned To:                
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1565
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1566
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-16-2005 16:46 CET
-Last Modified:              11-16-2005 16:46 CET
+Date Submitted:             11-16-2005 17:22 CET
+Last Modified:              11-16-2005 17:22 CET
 ======================================================================
-Summary:                    Compilation problem of src/pcm/pcm_file.c
+Summary:                    The misc.c is reported to have incomplete type with
+thread_excited.
 Description: 
-there is an error on line 191 of pcm_file.c you must replace it by : 
-n = snd_pcm_frames_to_bytes(pcm, err);
+ kernel :linux-2.4.7-10.
+When I compile the alsa drive on my redhat7.2, it always failed with
+result as below.
 
-The old line was :
-snd_pcm_uframes_t n = snd_pcm_frames_to_bytes(pcm, err);
+results:
+------------------------------------------------------------------------------
+i386-redhat-linux-gcc -D__KERNEL__ -DMODULE=1
+-I/home/redhat/BUILD/alsa-driver-
+1.0.10rc3/include  -I/lib/modules/2.4.7-10/build/include -O2
+-mpreferred-stack-
+boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -
+Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-nostdinc
+ -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.7-10/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=misc   -c -o misc.o misc.c
+In file included from misc.c:77:
+misc.inc:288: field `thread_exited' has incomplete type
+misc.inc: In function `snd_compat_destroy_workqueue_Raba0304c':
+misc.inc:339: warning: implicit declaration of function
+`wait_for_completion_R02032293'
+misc.inc: In function `snd_compat_create_workqueue_R6659e20e':
+misc.inc:387: warning: implicit declaration of function `init_completion'
+make[1]: *** [misc.o] Erreur 1
+make[1]: Quitte le répertoire
+`/home/redhat/BUILD/alsa-driver-1.0.10rc3/acore'
+make: *** [compile] Erreur 1
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-16-05 16:46 croiset        New Issue                                    
+11-16-05 17:22 croiset        New Issue                                    
 ======================================================================
 
 
