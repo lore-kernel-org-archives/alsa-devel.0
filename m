@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001563]: No Sound on Cybersystem S28 (hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...)
-Date: Wed, 16 Nov 2005 06:48:56 +0100
-Message-ID: <c886fa14c3fe5f90c71230a970c35ad2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001561]: Edirol UA-25 won't run with capture in jack
+Date: Wed, 16 Nov 2005 10:04:33 +0100
+Message-ID: <ba11e5af9ade0b221366feb5eb9663a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7372B1AF
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 06:48:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14C251AB
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 10:04:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,183 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1563> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1561> 
 ======================================================================
-Reported By:                mbab
-Assigned To:                tiwai
+Reported By:                plekter
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1563
-Category:                   PCI - hda-intel
+Issue ID:                   1561
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian Unstable (all but the driver)
-Kernel Version:             2.6.14.2
+Distribution:               Debian
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             11-16-2005 06:48 CET
-Last Modified:              11-16-2005 06:48 CET
+Date Submitted:             11-15-2005 19:47 CET
+Last Modified:              11-16-2005 10:04 CET
 ======================================================================
-Summary:                    No Sound on Cybersystem S28 (hda_codec: Unknown
-model for ALC880, trying auto-probe from BIOS...)
+Summary:                    Edirol UA-25 won't run with capture in jack
 Description: 
-I just cannot get any sound from this system. Then I tried the release
-candidate.
-The message sounds as if the problem might not be so severe. I can play
-back, but there is no sound. If I need to provide additional information,
-please contact me. 
+If i run jackd with -P, then it works perfectly. If i use -C or -D, then it
+produces this error:
 
-When using alsamixer i get:
-spike:/tmp# alsamixer
+jackd 0.100.0
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
 
-alsamixer: function snd_mixer_load failed: Invalid argument
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:1|hw:1|1024|2|48000|0|0|nomon|swmeter|-|32bit
+control device hw:1
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+Note: audio device hw:1 doesn't support a 32bit sample format so JACK will
+try a 24bit format instead
+nperiods = 2 for capture
+Note: audio device hw:1 doesn't support a 32bit sample format so JACK will
+try a 24bit format instead
+nperiods = 2 for playback
+ALSA: could not start playback (Broken pipe)
+DRIVER NT: could not start driver
+cannot start driver
 
-I used alsaconf (from debian unstable ALSA configurator version 1.0.9a)
-for
-configuration.
+In the kernel logs i find
 
-
->From dmesg:
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-...
-
-spike:/tmp# lspci
-0000:00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML
-Express Processor to DRAM Controller (rev 03)
-0000:00:01.0 PCI bridge: Intel Corporation Mobile 915GM/PM Express PCI
-Express Root Port (rev 03)
-0000:00:1b.0 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-0000:00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) PCI Express Port 1 (rev 04)
-0000:00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #1 (rev 04)
-0000:00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #2 (rev 04)
-0000:00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #3 (rev 04)
-0000:00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #4 (rev 04)
-0000:00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB2 EHCI Controller (rev 04)
-0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
-d4)
-0000:00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
-Bridge (rev 04)
-0000:00:1f.1 IDE interface: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) IDE Controller (rev 04)
-0000:00:1f.2 IDE interface: Intel Corporation 82801FBM (ICH6M) SATA
-Controller (rev 04)
-0000:00:1f.3 SMBus: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-SMBus Controller (rev 04)
-0000:01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce
-Go 6600] (rev a2)
-0000:02:00.0 Ethernet controller: Marvell Technology Group Ltd. 88E8053
-Gigabit Ethernet Controller (rev 19)
-0000:06:02.0 FireWire (IEEE 1394): Texas Instruments TSB43AB21
-IEEE-1394a-2000 Controller (PHY/Link)
-0000:06:03.0 Network controller: Intel Corporation PRO/Wireless 2200BG
-(rev 05)
-0000:06:04.0 CardBus bridge: Texas Instruments PCI1620 PC Card Controller
-(rev 01)
-0000:06:04.1 CardBus bridge: Texas Instruments PCI1620 PC Card Controller
-(rev 01)
-0000:06:04.2 System peripheral: Texas Instruments PCI1620 Firmware Loading
-Function (rev 01)
-
-spike:/tmp# lsmod
-Module                  Size  Used by
-snd_hda_intel          18704  0
-snd_hda_codec          92544  1 snd_hda_intel
-snd_pcm_oss            55392  0
-snd_mixer_oss          20032  1 snd_pcm_oss
-snd_pcm                97032  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
-snd_timer              26948  1 snd_pcm
-snd                    60132  6
-snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10784  1 snd
-snd_page_alloc         11080  2 snd_hda_intel,snd_pcm
-tun                    11904  1
-af_packet              23624  0
-aes                    29760  1
-nvidia               3700424  14
-rfcomm                 43420  0
-l2cap                  28996  5 rfcomm
-thermal                13384  0
-fan                     4612  0
-button                  6480  0
-ac                      4676  0
-battery                 9412  0
-ipv6                  278848  12
-ipt_LOG                 7040  1
-ipt_limit               2496  1
-ipt_state               1792  1
-ip_conntrack           50064  1 ipt_state
-iptable_filter          2880  1
-ip_tables              22848  4
-ipt_LOG,ipt_limit,ipt_state,iptable_filter
-nls_iso8859_1           3968  1
-nls_cp437               5632  1
-vfat                   14592  1
-fat                    55132  1 vfat
-speedstep_centrino      7764  1
-processor              24444  2 thermal,speedstep_centrino
-cryptoloop              3584  1
-loop                   18440  3 cryptoloop
-cpufreq_powersave       1664  0
-cpufreq_conservative     7268  1
-sbp2                   24580  0
-eth1394                21384  0
-hci_usb                16464  2
-bluetooth              52420  7 rfcomm,l2cap,hci_usb
-ipw2200                76584  0
-joydev                  9920  0
-firmware_class         11136  1 ipw2200
-ieee80211              23816  1 ipw2200
-ieee80211_crypt         5956  1 ieee80211
-yenta_socket           28364  0
-rsrc_nonstatic         14208  1 yenta_socket
-pcmcia_core            44688  2 yenta_socket,rsrc_nonstatic
-ohci1394               37108  0
-ieee1394              104376  3 sbp2,eth1394,ohci1394
-evdev                   9600  0
-irtty_sir               9024  0
-mousedev               12000  1
-sir_dev                20012  1 irtty_sir
-i2c_i801                8908  0
-ehci_hcd               37576  0
-irda                  207484  2 irtty_sir,sir_dev
-i2c_core               23184  1 i2c_i801
-sk98lin               218904  0
-uhci_hcd               34768  0
-rtc                    14200  0
-intel_agp              24156  1
-agpgart                36296  2 nvidia,intel_agp
-crc_ccitt               1984  1 irda
-usbcore               128384  4 hci_usb,ehci_hcd,uhci_hcd
-psmouse                39940  0
-unix                   30128  552
+cannot submit datapipe for urb 3, err = -28
 
 ======================================================================
+
+----------------------------------------------------------------------
+ plekter - 11-16-05 10:04 
+----------------------------------------------------------------------
+With 2.6.15-rc1 i can not have period sizes larger than 512. The same error
+message appears in the kernel log if i try running jack with -p 1024.
+
+(cannot submit datapipe for urb 3, err = -28)
+
+Capture still does not work, same error.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-16-05 06:48 mbab           New Issue                                    
-11-16-05 06:48 mbab           Distribution              => Debian Unstable (all
-but the driver)
-11-16-05 06:48 mbab           Kernel Version            => 2.6.14.2        
+11-15-05 19:47 plekter        New Issue                                    
+11-15-05 19:47 plekter        Distribution              => Debian          
+11-15-05 19:47 plekter        Kernel Version            => 2.6.14          
+11-15-05 19:57 plekter        Issue Monitored: plekter                     
+11-16-05 10:04 plekter        Note Added: 0006738                          
 ======================================================================
 
 
