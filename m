@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Wed, 16 Nov 2005 16:03:48 +0100
-Message-ID: <6a47f5a2b7a5c1120bcacfff34ec117e@bugtrack.alsa-project.org>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: Re: Multi ice1712 .asoundrc problem
+Date: Wed, 16 Nov 2005 15:14:58 +0000
+Message-ID: <20051116151458.GA4454@localhost.localdomain>
+References: <E1EbIYV-00019A-4u@localhost.localdomain> <20051113223105.GA4822@localhost.localdomain> <1131923292.27215.1.camel@mindpipe> <20051114003718.GA5041@localhost.localdomain> <1131960635.27215.16.camel@mindpipe> <20051114121701.GA4044@localhost.localdomain> <20051114155513.GO10146@edu.joroinen.fi> <20051114190647.GA4797@localhost.localdomain> <20051115151652.GA4404@localhost.localdomain> <1132082328.27215.35.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 804A01C5
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 16:03:49 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1132082328.27215.35.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,127 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Nov 15, 2005 at 02:18:47PM -0500, Lee Revell wrote:
+> On Tue, 2005-11-15 at 15:16 +0000, John Rigg wrote:
+> > (unlike jackd, eg. `jackd -d alsa -d -C -i12 -P -o10 hw:0').
+> 
+> I think your jackd syntax is wrong.  The -P and -C arguments are
+> supposed to be immediately followed by the capture/playback device.
+> Like:
+> 
+> jackd -d alsa -C hw:0,2 -P hw:0,3 -i12 -o10
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
-======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              11-16-2005 16:03 CET
-======================================================================
-Summary:                    Buzz from ALSA setup
-Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
+Thanks for the correction. Unfortunately the results with correct syntax
+are exactly the same. Any values other than -i12 and -o10 result
+in `ALSA: cannot set channel count' errors.
+BTW the ice1712 appears to have only hw:0,0 (ie. no subdevices).
 
-======================================================================
-
-----------------------------------------------------------------------
- misnagid - 11-16-05 15:58 
-----------------------------------------------------------------------
-Hello Peter,
-Still under FC$, with latest version of ALSA, I cannot get the sound card
-to work.  Have followed all your previous suggestions plus more.  Note
-that instead of a buzzing, I get no sound at all.  It is NOT muted.
-Jerry
-
-----------------------------------------------------------------------
- misnagid - 11-16-05 16:03 
-----------------------------------------------------------------------
-Peter.
-Meant to say under FC4 the ALSA driver still does not work.
-Jerry
-misnagid@usa.net
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
-12-27-04 21:09 misnagid       Note Added: 0002975                          
-12-27-04 21:31 pzad           Note Added: 0002976                          
-12-27-04 21:47 misnagid       Note Added: 0002977                          
-12-27-04 21:49 misnagid       Note Added: 0002978                          
-12-27-04 22:00 pzad           Note Added: 0002979                          
-12-27-04 22:29 misnagid       Note Added: 0002980                          
-12-27-04 22:54 pzad           Note Added: 0002981                          
-12-27-04 23:15 misnagid       Note Added: 0002982                          
-12-27-04 23:19 misnagid       Note Added: 0002983                          
-12-27-04 23:46 pzad           Note Added: 0002984                          
-12-27-04 23:48 misnagid       Note Added: 0002985                          
-12-28-04 21:13 rlrevell       Note Added: 0002987                          
-01-03-05 00:36 misnagid       Note Added: 0003049                          
-01-03-05 15:10 pzad           Note Added: 0003064                          
-01-09-05 00:27 misnagid       Note Added: 0003132                          
-01-11-05 10:36 pzad           Note Added: 0003141                          
-01-11-05 11:24 misnagid       Note Added: 0003142                          
-01-11-05 23:20 misnagid       Note Added: 0003159                          
-04-22-05 11:04 stransky       Note Added: 0004553                          
-08-24-05 00:55 lonerider      Note Added: 0005921                          
-11-16-05 15:58 misnagid       Note Added: 0006741                          
-11-16-05 16:03 misnagid       Note Added: 0006742                          
-======================================================================
-
-
+John
 
 
 -------------------------------------------------------
