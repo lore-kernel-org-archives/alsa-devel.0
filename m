@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Wed, 16 Nov 2005 06:29:27 +0100
-Message-ID: <ea0465934c4d43f1ec9dea37a25441bd@85.132.177.35>
+Subject: [ALSA - driver 0000322]: oops while removing au8810
+Date: Wed, 16 Nov 2005 06:42:58 +0100
+Message-ID: <260b8f17ae87b89461edbbff694b023c@85.132.177.35>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E18C1AC
-	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 06:29:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BA581AF
+	for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2005 06:42:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,123 +24,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://85.132.177.35/alsa-bug/view.php?id=1138> 
+<https://85.132.177.35/alsa-bug/view.php?id=322> 
 ======================================================================
-Reported By:                penguinparty
+Reported By:                aris
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1138
+Issue ID:                   322
 Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     assigned
-Distribution:               ubuntu 5.04
-Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
+Distribution:               conectiva linux 10 snapshot with custom kernel
+Kernel Version:             2.6.7-rc2
 ======================================================================
-Date Submitted:             05-28-2005 22:22 CEST
-Last Modified:              11-16-2005 06:29 CET
+Date Submitted:             06-02-2004 13:24 CEST
+Last Modified:              11-16-2005 06:42 CET
 ======================================================================
-Summary:                    errors when installing au8820 modules
+Summary:                    oops while removing au8810
 Description: 
-Please see the section additional information for a dump of my dmesg output
-regarding the au8820 module.
+after getting an error on activating IRQ (not sure if this board is
+working)
+and trying to remove module I get an oops. I tryed to dig in but couldn't
+find where exactly it is happening.
+the IRQ error message:
+PCI: Found IRQ 11 for device 0000:00:0b.0
+PCI: Sharing IRQ 11 with 0000:00:01.1
+Vortex: init.... <6>done.
+vortex: IRQ reg error
 
-I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
-kernels. The shipping alsa support under each of these kerenls provies me
-with the same result. I have also tried installing each of these kernels
-without alsa support only CONFIG_SOUND and then installing the
-alsa-drivers 1.0.9rc4a
-
-I get the same result every time I do the modprobe snd-au8820
-
-Using older versions of debian as well as the ubuntu live cd's I am able
-to get this sound card working.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 09-02-05 05:49 
+ Raymond - 09-07-05 14:08 
 ----------------------------------------------------------------------
-Please post the result
+cat /proc/asound/au8810/codec97#0/ac97#0-0+regs
 
-lspci -vvn  (for your au8820)
+Which one are your card ?
 
-cat /proc/asound/au8820/codec97#0/ac97#0-0+regs
+SQ1500
 
-This may help us to find out the left/right channels swap problem for
-other au8820 user
+http://www.watch.impress.co.jp/akiba/hotline/991106/newitem.html#19
 
-Need more feedback from testers with au8810/au8830 on AMD64 and
-au8810/au8820/au8830 on 32 bits machines to test this patch.
+Vortex Advantage
+
+http://www.watch.impress.co.jp/akiba/hotline/990724/newitem.html#28
+
+
 
 ----------------------------------------------------------------------
- Raymond - 11-16-05 06:29 
+ Raymond - 11-16-05 06:42 
 ----------------------------------------------------------------------
-au8820.h
+> 0000:00:0b.0 0401: 12eb:0003 (rev 02)
+>     Subsystem: 12eb:0003
 
-#define VORTEX_MIDI_DATA 0x11000
-#define VORTEX_MIDI_CMD 0x11004	/* Write command / Read status */
+Your card is Aureal Vortex Advantage which do not has digital out (coaxial
+out).
 
-au8810.h/au8830.h
-
-#define VORTEX_MIDI_DATA 0x28800
-#define VORTEX_MIDI_CMD 0x28804	/* Write command / Read status */
-
-port = VORTEX_MIDI_DATA
-cport = VORTEX_MIDI_CMD
-
-Need to fix mpu401_uart.c too !!!
+   /* Enable codec channels 0 and 1. */
+    hwwrite(vortex->mmio, VORTEX_CODEC_EN,
+        hwread(vortex->mmio, VORTEX_CODEC_EN) | 0x00000300);
 
 
-
-mpu401_uart.c
-
-int snd_mpu401_uart_new(snd_card_t * card, int device,
-unsigned short hardware,
-unsigned long port, int integrated,
-int irq, int irq_flags,
-snd_rawmidi_t ** rrawmidi)
-{
-...
-switch (hardware) {
-case MPU401_HW_AUREAL:
-mpu->write = mpu401_write_mmio;
-mpu->read = mpu401_read_mmio;
-break;
-default:
-mpu->write = mpu401_write_port;
-mpu->read = mpu401_read_port;
-break;
-}
-mpu->port = port;
-if (hardware == MPU401_HW_PC98II)
-mpu->cport = port + 2;
-else
-mpu->cport = port + 1;
-
-...
-}
+Only SQ1500 (au8810) has digital out and SDAC.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 22:22 penguinparty   New Issue                                    
-05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
-05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
-and 2.6.10
-05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
-06-08-05 04:41 penguinparty   File Added: typescript                       
-06-08-05 04:43 penguinparty   Note Added: 0004914                          
-08-24-05 10:55 Raymond        Note Added: 0005925                          
-08-24-05 10:58 Raymond        Note Added: 0005926                          
-08-24-05 10:59 Raymond        Note Deleted: 0005926                        
-09-01-05 04:24 penguinparty   File Added: make-typescript                    
-09-01-05 04:25 penguinparty   Note Added: 0005993                          
-09-01-05 05:58 Raymond        Note Added: 0005994                          
-09-02-05 02:49 penguinparty   Note Added: 0006002                          
-09-02-05 05:49 Raymond        Note Added: 0006003                          
-11-16-05 06:29 Raymond        Note Added: 0006736                          
+06-02-04 13:24 aris           New Issue                                    
+06-02-04 13:24 aris           Distribution              => conectiva linux 10
+snapshot with custom kernel
+06-02-04 13:24 aris           Kernel Version            => 2.6.7-rc2       
+06-03-04 17:51 mjander        Note Added: 0001289                          
+06-03-04 17:51 mjander        Note Added: 0001290                          
+06-03-04 17:52 mjander        File Added: aureal-quadfix.patch                  
+ 
+04-12-05 20:45 alien999999999 Issue Monitored: alien999999999                   
+
+08-30-05 12:22 jdthood        Note Added: 0005973                          
+09-06-05 11:03 Raymond        Note Added: 0006043                          
+09-06-05 14:12 aris           Note Added: 0006044                          
+09-06-05 14:32 Raymond        Note Added: 0006045                          
+09-06-05 14:34 Raymond        Note Edited: 0006045                         
+09-06-05 14:58 Raymond        Note Added: 0006046                          
+09-06-05 15:02 Raymond        Note Edited: 0006046                         
+09-07-05 02:22 aris           Note Added: 0006051                          
+09-07-05 03:14 Raymond        Note Added: 0006052                          
+09-07-05 14:08 Raymond        Note Edited: 0006052                         
+11-16-05 06:42 Raymond        Note Added: 0006737                          
 ======================================================================
 
 
