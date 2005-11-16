@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001409]: include/linux/pci.h:819: error: syntax error before numeric constant
-Date: Tue, 15 Nov 2005 23:07:33 +0100
-Message-ID: <bd7417fc625ee7ebde4f85dbd28d4225@bugtrack.alsa-project.org>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: Bug in the generation of IEC958 subframes
+Date: Wed, 16 Nov 2005 01:45:01 +0100
+Message-ID: <20051116004500.GA5622@home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="jRHKVT23PllUwdXP"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A8C218A
-	for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2005 23:07:33 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +15,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1409> 
-======================================================================
-Reported By:                Twey
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1409
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.13-homegrown
-======================================================================
-Date Submitted:             09-09-2005 21:46 CEST
-Last Modified:              11-15-2005 23:07 CET
-======================================================================
-Summary:                    include/linux/pci.h:819: error: syntax error before
-numeric constant
-Description: 
-Compilation dies with:
-make[1]: Entering directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
-  CC [M]  /root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.o
-In file included from
-/root/alsa/alsa-driver-1.0.10rc1/include/adriver.h:737,
-                 from /root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.c:12:
-include/linux/pci.h:819: error: syntax error before numeric constant
-make[4]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore/sgbuf.o] Error 1
-make[3]: *** [/root/alsa/alsa-driver-1.0.10rc1/acore] Error 2
-make[2]: *** [_module_/root/alsa/alsa-driver-1.0.10rc1] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/redhat/BUILD/kernel-2.6.13prep'
-make: *** [compile] Error 2
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Applies with --with-cards=all, with-cards=ca0106, and according to the
-notes on report 0001377 (see Additional Information, in case someone
-removes them for being fairly off-topic), also with intel-hda.  Only with
-kernel 2.6.13, though.
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- perex - 11-14-05 10:02 
-----------------------------------------------------------------------
-Could you try with 1.0.10rc3?
+While working on an ALSA driver for the audio part of em8300-based MPEG 
+decoder boards (Sigma Designs' Hollywood+ boards and Creative Labs' DXR3 
+boards), I think I discovered a bug in the code that generates IEC958 
+subframes from linear samples (iec958 plugin): M and W preambles are 
+swapped, and B preambles should only be used on even subframes. The 
+attached patch fixes this issue.
 
-----------------------------------------------------------------------
- quetzyg - 11-15-05 23:07 
-----------------------------------------------------------------------
-I'm already using 1.0.10rc3 and it works just fine :-)
+Moreover, (using debian's 1.0.9-3 package, I haven't checked with 
+1.0.10rc3), I get segfaults whenever I try to specify the preambles in 
+my ~/.asoundrc file.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-09-05 21:46 Twey           New Issue                                    
-09-09-05 21:46 Twey           Distribution              => Fedora Core 4   
-09-09-05 21:46 Twey           Kernel Version            => 2.6.13-homegrown
-09-09-05 21:46 Twey           Issue Monitored: Twey                        
-09-27-05 12:00 quetzyg        Note Added: 0006405                          
-09-27-05 12:02 quetzyg        Note Edited: 0006405                         
-09-27-05 12:03 quetzyg        Note Edited: 0006405                         
-11-14-05 10:02 perex          Note Added: 0006701                          
-11-14-05 10:02 perex          Status                   assigned => feedback
-11-15-05 23:07 quetzyg        Note Added: 0006735                          
-======================================================================
+(https://bugtrack.alsa-project.org/alsa-bug/ times out, that's why I'm 
+sending this report here.)
 
 
+Cheers,
+
+Nicolas
+
+PS: please CC replies to me, as I don't read the alsa-devel ML.
+
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="alsa-lib.patch"
+
+diff -ruN alsa-lib-1.0.10rc3.orig/src/pcm/pcm_iec958.c alsa-lib-1.0.10rc3/src/pcm/pcm_iec958.c
+--- alsa-lib-1.0.10rc3.orig/src/pcm/pcm_iec958.c	2005-05-24 16:14:35.000000000 +0200
++++ alsa-lib-1.0.10rc3/src/pcm/pcm_iec958.c	2005-11-16 01:35:46.000000000 +0100
+@@ -116,10 +116,10 @@
+ 		data |= 0x80000000;
+ 
+ 	/* Preamble */
+-	if (! iec->counter)
+-		data |= iec->preamble[PREAMBLE_Z];	/* Block start, 'Z' */
+-	else if (! channel)
++	if (channel)
+ 		data |= iec->preamble[PREAMBLE_Y];	/* odd sub frame, 'Y' */
++	else if (! iec->counter)
++		data |= iec->preamble[PREAMBLE_Z];	/* Block start, 'Z' */
+ 	else
+ 		data |= iec->preamble[PREAMBLE_X];	/* even sub frame, 'X' */
+ 
+
+--jRHKVT23PllUwdXP--
 
 
 -------------------------------------------------------
