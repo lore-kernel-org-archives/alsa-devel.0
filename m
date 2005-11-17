@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000057]: Kernel device in bad state after suspend/resume
-Date: Thu, 17 Nov 2005 11:07:00 +0100
-Message-ID: <cb3a074a9a666988733e888f7fddaa37@bugtrack.alsa-project.org>
+From: =?iso-8859-2?B?QWRhbSBUbGGza2E=?= <atlka@pg.gda.pl>
+Subject: Re: Dmix and non SND_PCM_TYPE_HW slaves
+Date: Thu, 17 Nov 2005 11:18:30 +0100
+Message-ID: <op.s0dqw4hqq5yxc3@merlin>
+References: <OFB5C60420.D5C0FB76-ON652570BA.00273D48-652570BA.00273D59@flextronicssoftware.com> <Pine.LNX.4.61.0511150835390.9148@tm8103.perex-int.cz> <s5hek5ixlat.wl%tiwai@suse.de> <Pine.LNX.4.61.0511161523230.9655@tm8103.perex-int.cz> <s5h64qshcjq.wl%tiwai@suse.de> <Pine.LNX.4.61.0511161614090.9655@tm8103.perex-int.cz> <s5h4q6chb0n.wl%tiwai@suse.de> <op.s0chssfcq5yxc3@merlin> <s5hr79gqwnq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; delsp=yes; charset=iso-8859-2
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8C351C5
-	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2005 11:07:00 +0100 (MET)
+In-Reply-To: <s5hr79gqwnq.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +17,124 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Dnia 16-11-2005 o 19:23:37 Takashi Iwai <tiwai@suse.de> napisa=B3:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=57> 
-======================================================================
-Reported By:                daenzer
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   57
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-13-2004 01:55 CET
-Last Modified:              11-17-2005 11:06 CET
-======================================================================
-Summary:                    Kernel device in bad state after suspend/resume
-Description: 
-If a process has the kernel device open during a suspend/resume cycle,
-playing sound fails afterwards with
+> At Wed, 16 Nov 2005 19:03:54 +0100,
+> Adam Tla=B3ka wrote:
+>>
+>> Dnia 16-11-2005 o 16:23:36 Takashi Iwai <tiwai@suse.de> napisa=B3:
+>>
+>> > At Wed, 16 Nov 2005 16:14:31 +0100 (CET),
+>> > Jaroslav Kysela wrote:
+>> >>
+>> >> On Wed, 16 Nov 2005, Takashi Iwai wrote:
+>> >>
+>> >> > At Wed, 16 Nov 2005 15:24:26 +0100 (CET),
+>> >> > Jaroslav Kysela wrote:
+>> >> > >
+>> >> > > On Tue, 15 Nov 2005, Takashi Iwai wrote:
+>> >> > >
+>> >> > > > At Tue, 15 Nov 2005 08:39:06 +0100 (CET),
+>> >> > > > Jaroslav wrote:
+>> >> > > > >
+>> >> > > > > On Tue, 15 Nov 2005 sameer.kittur@flextronicssoftware.com =20
+>> wrote:
+>> >> > > > >
+>> >> > > > > > Hi all,
+>> >> > > > > >
+>> >> > > > > >     Is there a reason why Dmix cannot use a non
+>> >> SND_PCM_TYPE_HW slave? Is
+>> >> > > > > > there no way to re-direct the Dmix output to another plug=
+in
+>> >> or an
+>> >> > > > > > external I/O or a filter plugin?
+>> >> > > > >
+>> >> > > > > It's impossible without massive changes to the dmix code an=
+d
+>> >> structure.
+>> >> > > > > Dmix uses too much driver specific things like the PCM time=
+r,
+>> >> passing PCM
+>> >> > > > > device file-descriptor among applications etc. Also, the
+>> >> latency can be
+>> >> > > > > much worse when the dmix plugin will use only SHM ring buff=
+er
+>> >> or so.
+>> >> > > >
+>> >> > > > Actually, it's difficult to apply the current dmix model to a
+>> >> > > > (user-space) driver without DMA like bluez.  We need to gathe=
+r =20
+>> the
+>> >> > > > data from all clients and send only once to the hardware in =20
+>> such a
+>> >> > > > case.  So, the solution with a sound server looks most
+>> >> appropriate.
+>> >> > >
+>> >> > > It's not so difficult, but extra double buffering will be added
+>> >> between
+>> >> > > producer and consumer, so the latency increases min. twice.
+>> >> >
+>> >> > Hmm, but still this doesn't work well.  Remember that the data =20
+>> chunk
+>> >> > once tranferred cannot be modified any longer.  Hence, to get a l=
+ow
+>> >> > latency, the buffer must be sent just before the active update.
+>> >> > In the best case, we may have only 2 periods in practice.
+>> >> >
+>> >> > This would work if a server process runs in a high task priority,=
+ =20
+>> but
+>> >> > not for the models with parallel accessses like dmix.
+>> >>
+>> >> I meant a daemon with RT priority which will "emulate" DMA.
+>> >
+>> > I see.  Then, surely it's not difficult :)
+>>
+>> Maybe but again problem may rise if we have more RT apps in the system.
+>> If kernel treats all RT apps same way we will have problems anyway.
+>> Only true solution is doing this in the kernel so it knows which laten=
+cy
+>> is needed and can woke up proper app in the proper time.
+>>
+>> Sorry to say that but under high load and while big apps rescheduling =
+is
+>> done
+>> ALSA is doing rather poorly. Without kernel support it can't be resolv=
+ed
+>> and current approach leads to dead end IMHO.
+>
+> The situation wouldn't change even if implemented in the kernel.
+> Basically the RT process must win, regardless of user or kernel space
+> jobs (except for very critical ones like interrupt handling).
 
-pcm_write:1084: write error: File descriptor in bad state
+Thats true and sound card programming or data transfer preparing is a ver=
+y
+critical task if we talking about proper timing. Sometimes it's needed to
+interrupt buffers update kernel function. Of course it is an interrupt =20
+handler
+role. But mixing is a time critical function too.
 
-until the process dies, then it works again.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001442 snapper: no sound after resume
-======================================================================
+> It's just a matter of RT-task priority.
 
-----------------------------------------------------------------------
- Johannes Berg - 10-12-05 21:02 
-----------------------------------------------------------------------
-tiwai, no it did not, all was silent. However, the code in 2.6.14 fixes the
-problem entirely for me.
+Yes and if we will have more RT task we must tune it carefully.:-)
 
-----------------------------------------------------------------------
- daenzer - 11-17-05 11:06 
-----------------------------------------------------------------------
-The behaviour has changed with kernel 2.6.14: I no longer get the write
-error, the process that was playing sound during suspend/resume just
-hangs, apparently in a system call. It can be resumed with kill -STOP;
-kill -CONT or by starting another sound app (via dmix), but playback is
-then distorted (sounds like the frames are played in the wrong order)
-until the PCM device is closed.
+Anyway if this all is done in a lib what about dynamic input/output mode =
+=20
+change.
+Can I switch from 2-speakers to 5.1 speakers or headphone mode or insert
+particular sound filter just using some control panel or app without
+need of restarting or specially recompile my sound app?
 
-Also, after suspend/resume, I have to disable and then re-enable the
-speakers and change the volume(!) before I can hear anything from the
-speakers.
+Is this kind of functionality possible with current model without
+rewritting many applications?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-13-04 01:55 daenzer        New Issue                                    
-02-26-04 19:30 daenzer        Note Added: 0000363                          
-02-26-04 19:39 tiwai          Note Added: 0000364                          
-02-26-04 22:47 daenzer        Note Added: 0000374                          
-05-14-04 15:12 tiwai          Note Added: 0001111                          
-09-29-05 20:55 jdthood        Relationship added       has duplicate 0001442
-09-29-05 23:52 Johannes Berg  Issue Monitored: Johannes Berg                    
-09-29-05 23:59 Johannes Berg  Note Added: 0006427                          
-10-05-05 18:40 tiwai          Note Added: 0006432                          
-10-12-05 21:02 Johannes Berg  Note Added: 0006474                          
-11-17-05 11:06 daenzer        Note Added: 0006748                          
-======================================================================
-
-
+Regards
+--=20
+Adam Tla=B3ka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------
