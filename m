@@ -1,7 +1,7 @@
-From: Delio Brignoli <dbrignoli@audioscience.com>
-Subject: asi cards in ALSA soundcard matrix
-Date: Fri, 18 Nov 2005 10:42:59 +1300
-Message-ID: <437CF963.6070404@audioscience.com>
+From: Dino Puller <dino@e4a.it>
+Subject: Surround example?
+Date: Thu, 17 Nov 2005 22:49:25 +0100
+Message-ID: <437CFAE5.5080908@e4a.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -15,26 +15,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi,
+Hi all,
+    i'd like to code a surround player, but i haven't found any 
+documentation about it, can you give me a link to a tutorial or an 
+example or something?
 
-At some point in the past ASI soundcards have been demoted from being 
-supported to 'possible support', we have posted a bug to the bug 
-tracking system and recently uploaded an xml description for our cards 
-as a drop in replacement for the sound card matrix entry.
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938
-
-Can you help or point me to somebody who can help me fixing it? :-)
-
-thanks
---
-Delio
-
-
+Thanks,
+   Dino Puller
 
 
 
