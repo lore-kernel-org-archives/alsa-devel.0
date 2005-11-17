@@ -1,8 +1,7 @@
 From: Thomas Hood <jdthood@yahoo.co.uk>
-Subject: two warnings about variables that "may be used uninitialized in this
- function"
-Date: Thu, 17 Nov 2005 16:16:09 +0100
-Message-ID: <437C9EB9.5050504@yahoo.co.uk>
+Subject: warning about "assignment from incompatible pointer type"
+Date: Thu, 17 Nov 2005 16:23:29 +0100
+Message-ID: <437CA071.1040500@yahoo.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -19,27 +18,26 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Warning re: alsa-lib-1.0.10/src/mixer/simple_none.c
+Warning re: alsa-lib-1.0.10/src/seq/seq.c
 
-    simple_none.c:1271: warning: 'type' may be used uninitialized in this function
+    seq.c:4438: warning: assignment from incompatible pointer type
 
-Given that base_len may not always write to *type, there may be
-something to this warning.  I haven't looked at it too closely.
+The line in question is
 
+    ev = ep
 
-Warning re:  alsa-lib-1.0.10/src/pcm/pcm_route.c
+where the declarations were
 
-    pcm_route.c:348: warning: 'src' may be used uninitialized in this function
+    snd_seq_event_t *ev
 
-This seems like a bogus warning since the line in question is:
+    char *ep
 
-    const char *src = srcs[srcidx];
+Given that snd_seq_event_t seems to be typedef'ed to unsigned char in seq_event.h,
+it would seem that a cast should suffice to eliminate the warning.
 
-Bogus or not, it would be nice if the code were tweaked so that gcc doesn't
-generate these warnings; or at least if the code were commented with
-"/* gcc generates bogus warning message about this */".
 -- 
 Thomas Hood
+
 
 
 -------------------------------------------------------
