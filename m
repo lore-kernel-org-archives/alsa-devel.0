@@ -1,11 +1,14 @@
-From: Thomas Hood <jdthood@yahoo.co.uk>
-Subject: warning about "assignment from incompatible pointer type"
-Date: Thu, 17 Nov 2005 16:23:29 +0100
-Message-ID: <437CA071.1040500@yahoo.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Thu, 17 Nov 2005 16:31:29 +0100
+Message-ID: <82e0ed7203680bb2cefc19bfb19215f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEA091A2
+	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2005 16:31:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,28 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Warning re: alsa-lib-1.0.10/src/seq/seq.c
 
-    seq.c:4438: warning: assignment from incompatible pointer type
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+======================================================================
+Reported By:                mjsb
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1572
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
+======================================================================
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              11-17-2005 16:31 CET
+======================================================================
+Summary:                    Simultaneous sound from speakers and headphone
+Description: 
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-The line in question is
+======================================================================
 
-    ev = ep
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+======================================================================
 
-where the declarations were
-
-    snd_seq_event_t *ev
-
-    char *ep
-
-Given that snd_seq_event_t seems to be typedef'ed to unsigned char in seq_event.h,
-it would seem that a cast should suffice to eliminate the warning.
-
--- 
-Thomas Hood
 
 
 
