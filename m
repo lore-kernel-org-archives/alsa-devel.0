@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
-Date: Thu, 17 Nov 2005 16:31:29 +0100
-Message-ID: <82e0ed7203680bb2cefc19bfb19215f1@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001573]: Automatically add card number to ipc_key?
+Date: Thu, 17 Nov 2005 17:30:21 +0100
+Message-ID: <6429d83805fc4db9fe6afb1b76a7b0a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEA091A2
-	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2005 16:31:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E90831AA
+	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2005 17:30:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,41 +24,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1573> 
 ======================================================================
-Reported By:                mjsb
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1572
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   1573
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.1.13-gentoo-r3
+Severity:                   feature
+Priority:                   low
+Status:                     new
 ======================================================================
-Date Submitted:             11-17-2005 16:31 CET
-Last Modified:              11-17-2005 16:31 CET
+Date Submitted:             11-17-2005 17:30 CET
+Last Modified:              11-17-2005 17:30 CET
 ======================================================================
-Summary:                    Simultaneous sound from speakers and headphone
+Summary:                    Automatically add card number to ipc_key?
 Description: 
-I cannot ear headphones without having sound from front speakers
-simultaneously.
-Volume of headphones is adjusted by front speakers and when muting front
-speakers also mutes headphones.
-(in MS Windows, inserting headphones automatically disables sound from
-front speakers)
+In Debian bug report 335046 the submitter has two cards and wants to use
+two instances of dmix, one for each.  It would be nice if the ipc_key was
+automatically set to a different value for each card so that the user
+could make use of the standard dmix definition; this feature could be
+controlled with a ipc_key_add_card option.  For this to be compatible with
+the ipc_key_add_uid, the uid could be added after a <<3 shift (assuming
+that there can only be eight sound cards).
 
+Another possibility is some sort of function.  If you have an idea of how
+this could be implemented, please let me know.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-17-05 16:31 mjsb           New Issue                                    
-11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
-11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 17:30 jdthood        New Issue                                    
 ======================================================================
 
 
