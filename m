@@ -1,13 +1,11 @@
-From: =?ISO-2022-JP?B?GyRCSH5GYDtSGyhCIA==?= <berry1017kiss@mail.goo.ne.jp>
-Subject: =?ISO-2022-JP?B?GyRCIXlMNU5BJEdNNyRcIXkbKEI=?=
-Date: Wed, 16 Nov 2005 21:55:37 +0100
-Message-ID: <20051116.2155370196@berry1017kiss-mail.goo.ne.jp>
+From: TAMAS Gergely <dice@mfa.kfki.hu>
+Subject: SB Live 5.1 Digital OEM [SB0220, (c) 2003]
+Date: Thu, 17 Nov 2005 06:31:14 +0100
+Message-ID: <20051117053114.GA1927@felix.mfa.kfki.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hoge (p2121-ipad31funabasi.chiba.ocn.ne.jp [221.189.126.121])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BE9D718C
-	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2005 03:12:37 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +15,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-新規登録に限り無料で、ライブチャットが楽しめます。
-自動課金、ワンクリック課金など、一切ありません。
-無料で遊んで、女の子をGET！！
-http://www.pure-chat-tv.com/in.cgi?id=000000
-生動画でのチャットですので、さくらなどの心配は要りません♪
-安心してご利用できます。
+Hi!
 
+I've got an 'SB Live 5.1 Digital OEM' card, model number 'SB0220',
+(c) 2003.
 
+PCM playing and MIDI (i tested only these) works fine, but alsamixer and
+/proc/asound/cards shows 'unknown' as card type (on kernel 2.6.14,
+included alsa drivers).
 
+If it doesn't do any harm, maybe the following patch could be
+included...
 
+Thanks,
+Gergely
 
-受信拒否はこちらへ
-me623777@members.interq.or.jp
+Signed-off-by: Gergely Tamas <dice@mfa.kfki.hu>
 
-
-
+--- emu10k1/emu10k1_main.c~	2005-11-16 22:08:32.218141000 +0100
++++ emu10k1/emu10k1_main.c	2005-11-16 22:20:24.575285000 +0100
+@@ -748,6 +748,12 @@
+ 	 .emu10k1_chip = 1,
+ 	 .ac97_chip = 1,
+ 	 .sblive51 = 1} ,
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x100a1102,
++	 .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
++	 .id = "Live",
++	 .emu10k1_chip = 1,
++	 .ac97_chip = 1,
++	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
+ 	 .driver = "EMU10K1", .name = "SB Live 5.1", 
+ 	 .id = "Live",
 
 
 -------------------------------------------------------
