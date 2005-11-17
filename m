@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001573]: Automatically add card number to ipc_key?
-Date: Thu, 17 Nov 2005 17:30:21 +0100
-Message-ID: <6429d83805fc4db9fe6afb1b76a7b0a8@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001574]: mpd loops in random manner.
+Date: Thu, 17 Nov 2005 17:45:11 +0100
+Message-ID: <2859910e2d28ae3947b31f440f5feb3b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E90831AA
-	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2005 17:30:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D548A1AA
+	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2005 17:45:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1573> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1574> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                dothebart
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1573
+Issue ID:                   1574
 Category:                   0_general
-Reproducibility:            always
-Severity:                   feature
-Priority:                   low
+Reproducibility:            random
+Severity:                   minor
+Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             11-17-2005 17:30 CET
-Last Modified:              11-17-2005 17:30 CET
+Date Submitted:             11-17-2005 17:45 CET
+Last Modified:              11-17-2005 17:45 CET
 ======================================================================
-Summary:                    Automatically add card number to ipc_key?
+Summary:                    mpd loops in random manner.
 Description: 
-In Debian bug report 335046 the submitter has two cards and wants to use
-two instances of dmix, one for each.  It would be nice if the ipc_key was
-automatically set to a different value for each card so that the user
-could make use of the standard dmix definition; this feature could be
-controlled with a ipc_key_add_card option.  For this to be compatible with
-the ipc_key_add_uid, the uid could be added after a <<3 shift (assuming
-that there can only be eight sound cards).
+happenes once a week. mpd runs and runs, and suddenly, it loops over 3
+seconds or so. Killing mpd and restarting it makes all work fine again.
+While looping it starts consuming all cpu it can get.
+The guys in #mpd told me, that this was an issue of mmap use in lib alsa.
 
-Another possibility is some sort of function.  If you have an idea of how
-this could be implemented, please let me know.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-17-05 17:30 jdthood        New Issue                                    
+11-17-05 17:45 dothebart      New Issue                                    
 ======================================================================
 
 
