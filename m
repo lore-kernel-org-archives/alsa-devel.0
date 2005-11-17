@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001457]: Lagged sound
-Date: Thu, 17 Nov 2005 09:10:26 +0100
-Message-ID: <a2865a86e8e9c27fafb961e697d251f2@85.132.177.35>
+From: Roy Huang <royhuang9@gmail.com>
+Subject: How to compile alsa-lib without libdl?
+Date: Thu, 17 Nov 2005 17:00:43 +0800
+Message-ID: <afe668f90511170100ve7eed36pac3e9ce7141f05d6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_52808_12332638.1132218043253"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5E7B1C5
-	for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2005 09:10:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +15,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_52808_12332638.1132218043253
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://85.132.177.35/alsa-bug/view.php?id=1457> 
-======================================================================
-Reported By:                mouse
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1457
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               ALT Linux
-Kernel Version:             from 2.6.10 to 2.6.12
-======================================================================
-Date Submitted:             09-25-2005 12:56 CEST
-Last Modified:              11-17-2005 09:10 CET
-======================================================================
-Summary:                    Lagged sound
-Description: 
-Played music a bit lagged and in dmesg I see:
-vortex: IRQ fifo error
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- Raymond - 11-16-05 13:05 
-----------------------------------------------------------------------
-What is the southbridge chipset on your motherboard ?
+I am trying to compile alsa-lib to run on uClinux. The library is uClibc an=
+d
+is complied as static too. So uClibc doesn't provide dl functions like
+dlopen, dlclose. But alsa-lib need this function, does anyone has the same
+experience about this? thanks ahead.
 
-Do your MX300 sharing IRQ with other cards ?
+- Roy
 
-----------------------------------------------------------------------
- mouse - 11-17-05 09:10 
-----------------------------------------------------------------------
-0000:00:00.0 Host bridge: Intel Corporation 440BX/ZX/DX - 82443BX/ZX/DX
-Host bridge (rev 02)
-0000:00:02.3 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 02)
+------=_Part_52808_12332638.1132218043253
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-from /proc/interrupts:
-11:     176596          XT-PIC  ide2, ide3, au8830,
-radeon@pci:0000:01:00.0
+Hi, <br>
+<br>
+I am trying to compile alsa-lib to run on uClinux. The library is
+uClibc and is complied as static too. So uClibc doesn't provide dl
+functions like dlopen, dlclose. But alsa-lib need this function, does
+anyone has the same experience about this? thanks ahead.<br>
+<br>
+&nbsp;- Roy<br>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-25-05 12:56 mouse          New Issue                                    
-09-25-05 12:56 mouse          Distribution              => ALT Linux       
-09-25-05 12:56 mouse          Kernel Version            => from 2.6.10 to 2.6.12
-09-25-05 13:00 mouse          Note Added: 0006386                          
-09-25-05 13:00 mouse          File Added: au8830                           
-11-16-05 13:05 Raymond        Note Added: 0006739                          
-11-17-05 09:10 mouse          Note Added: 0006746                          
-======================================================================
-
-
+------=_Part_52808_12332638.1132218043253--
 
 
 -------------------------------------------------------
