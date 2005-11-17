@@ -1,12 +1,11 @@
-From: "Robert Lippmann" <rlippmann@hotmail.com>
-Subject: Re: snd_pcm_open() invalid argument in 1.0.10 (solved)
-Date: Thu, 17 Nov 2005 16:07:31 -0500
-Message-ID: <BAY102-F129B7684F67E2AF3D51A5EB45F0@phx.gbl>
-References: <s5hek5fqzmu.wl%tiwai@suse.de>
+From: Delio Brignoli <dbrignoli@audioscience.com>
+Subject: asi cards in ALSA soundcard matrix
+Date: Fri, 18 Nov 2005 10:42:59 +1300
+Message-ID: <437CF963.6070404@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hek5fqzmu.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello Takashi,
 
->strace would reveal easily the spot in such a case.
->
->I guess it's due to the change of ipc permissions/owner in the default
->dmix.conf.
->
->
->Takashi
+At some point in the past ASI soundcards have been demoted from being 
+supported to 'possible support', we have posted a bug to the bug 
+tracking system and recently uploaded an xml description for our cards 
+as a drop in replacement for the sound card matrix entry.
 
-strace helped me track down the problem.  it appears that the rpm was making 
-a self referring symlink on various conf files (alsa.conf, dmix.conf, etc).
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938
 
-filed a bug with the package maintainer (Atrpms).
+Can you help or point me to somebody who can help me fixing it? :-)
 
--- rob
+thanks
+--
+Delio
+
 
 
 
