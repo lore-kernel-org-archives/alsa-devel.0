@@ -1,11 +1,13 @@
-From: Roy Huang <royhuang9@gmail.com>
-Subject: How to compile alsa-lib without libdl?
-Date: Thu, 17 Nov 2005 17:00:43 +0800
-Message-ID: <afe668f90511170100ve7eed36pac3e9ce7141f05d6@mail.gmail.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Re: xxx_t replacement (was:ALSA SoC layer)
+Date: Thu, 17 Nov 2005 10:03:00 +0100 (CET)
+Message-ID: <XFMail.20051117100300.pochini@shiny.it>
+References: <s5hoe4kqvmk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_52808_12332638.1132218043253"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hoe4kqvmk.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,43 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_52808_12332638.1132218043253
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Hi,
+On 16-Nov-2005 Takashi Iwai wrote:
 
-I am trying to compile alsa-lib to run on uClinux. The library is uClibc an=
-d
-is complied as static too. So uClibc doesn't provide dl functions like
-dlopen, dlclose. But alsa-lib need this function, does anyone has the same
-experience about this? thanks ahead.
+> I'll merge my big patches tomorrow.  Please inform in time if you
+> don't want it...
 
-- Roy
+Yes, please leave echoaudio as is. I have a patch pending already which
+I would like not to redo again. I'll send the xxx_t patch shortly after.
 
-------=_Part_52808_12332638.1132218043253
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Hi, <br>
-<br>
-I am trying to compile alsa-lib to run on uClinux. The library is
-uClibc and is complied as static too. So uClibc doesn't provide dl
-functions like dlopen, dlclose. But alsa-lib need this function, does
-anyone has the same experience about this? thanks ahead.<br>
-<br>
-&nbsp;- Roy<br>
+I'm only waiting for someone which can test these on a Layla 3G:
 
-------=_Part_52808_12332638.1132218043253--
+http://www.webalice.it/g_pochini/ead/alsa-driver-1.0.10.tar.bz2 [2.4MB]
+http://www.webalice.it/g_pochini/ead/alsa-driver-1.0.10.tar.bz2.sig
+ * or *
+http://www.webalice.it/g_pochini/ead/echo_new_fw.patch [10KB]
+http://www.webalice.it/g_pochini/ead/echo_new_fw.patch.sig
+
+and the new firmware:
+
+http://www.webalice.it/g_pochini/ead/alsa-firmware.tar.bz2 [1.6MB]
+http://www.webalice.it/g_pochini/ead/alsa-firmware.tar.bz2.sig
+
+- New firmware fixes pops and clicks with simultaneous MIDI and
+audio I/O. There is now only one DSP firmware image for both
+Gina3G and Layla3G.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
 Register for a JBoss Training Course.  Free Certification Exam
 for All Training Attendees Through End of 2005. For more info visit:
-http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
+http://ads.osdn.com/?ad_id=3D7628&alloc_id=3D16845&op=3Dclick
