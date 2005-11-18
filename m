@@ -1,13 +1,13 @@
-From: Dino Puller <dino@e4a.it>
-Subject: Re: Surround example?
-Date: Fri, 18 Nov 2005 13:10:59 +0100
-Message-ID: <437DC4D3.3050900@e4a.it>
-References: <437CFAE5.5080908@e4a.it>
+From: Delio Brignoli <dbrignoli@audioscience.com>
+Subject: Re: Re: [PATCH] asihpi update
+Date: Sat, 19 Nov 2005 01:21:37 +1300
+Message-ID: <437DC751.6040900@audioscience.com>
+References: <437D1FAE.3000400@audioscience.com>	<s5hy83mp5i1.wl%tiwai@suse.de>	<437DC1ED.6020409@audioscience.com> <s5hr79ep3ih.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <437CFAE5.5080908@e4a.it>
+In-Reply-To: <s5hr79ep3ih.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,27 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dino Puller wrote:
 
-> Hi all,
->    i'd like to code a surround player, but i haven't found any 
-> documentation about it, can you give me a link to a tutorial or an 
-> example or something?
->
-> Thanks,
->   Dino Puller
->
->
-Ok now i've opened my surrond40 device but now what i have to change to 
-my snd_pcm_mmap_begin/snd_pcm_mmap_commit routine? Actully i can hear 
-noise only from front channels.
+Hello Takashi,
 
-bye,
-   Dino
+Takashi Iwai wrote:
+> OK, my concern was the change of alsa-driver/asihpi/Makefile in your
+> last patch.  You added the stuff to generate at compile time there.
+> I'm not against at all to process it _manually_ on your side.
 
+The extra rules in the makefile are to be used by us internally to 
+prepare dist files (and are only triggered when source files are 
+missing) or by customers that want to compile ALSA with bleeding edge 
+code from our CVS rep.
+
+I'm not 100% sure about what you mean with "_manually_".
+if you mean that: I generate code for an ALSA dist from our CVS, then 
+diff, send the patch to alsa-devel. Then it's fine. :)
+
+> Ah, then it might be my fix in alsa-driver tree.
+> HW32 must be u32 (equivalent with unsigned int) on linux kernel.
+> Using long for 32bit is wrong.
+
+I'll look into this one too.
+
+thanks
+--
+Delio
 
 
 -------------------------------------------------------
