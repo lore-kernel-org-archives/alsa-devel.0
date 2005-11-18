@@ -1,13 +1,13 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/pci intel8x0.c,1.226,1.226.2.1
-Date: Fri, 18 Nov 2005 14:39:16 +0100
-Message-ID: <m2zmo2dqij.fsf@vador.mandriva.com>
-References: <E1Ed0x1-0005tj-2D@sc8-pr-cvs1.sourceforge.net>
+From: Dino Puller <dino@e4a.it>
+Subject: Re: Surround example?
+Date: Fri, 18 Nov 2005 14:55:42 +0100
+Message-ID: <437DDD5E.8060405@e4a.it>
+References: <437CFAE5.5080908@e4a.it>	<437DC4D3.3050900@e4a.it> <s5hoe4ip00t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1Ed0x1-0005tj-2D@sc8-pr-cvs1.sourceforge.net> (Jaroslav
-	Kysela's message of "Thu, 17 Nov 2005 23:46:27 -0800")
+In-Reply-To: <s5hoe4ip00t.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,21 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@users.sourceforge.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@users.sourceforge.net> writes:
+Takashi Iwai wrote:
 
-> Modified Files:
->       Tag: v1-0-10-branch
+>At Fri, 18 Nov 2005 13:10:59 +0100,
+>Dino Puller wrote:
+>  
+>
+>>Dino Puller wrote:
+>>
+>>    
+>>
+>>>Hi all,
+>>>   i'd like to code a surround player, but i haven't found any 
+>>>documentation about it, can you give me a link to a tutorial or an 
+>>>example or something?
+>>>
+>>>Thanks,
+>>>  Dino Puller
+>>>
+>>>
+>>>      
+>>>
+>>Ok now i've opened my surrond40 device but now what i have to change to 
+>>my snd_pcm_mmap_begin/snd_pcm_mmap_commit routine? Actully i can hear 
+>>noise only from front channels.
+>>    
+>>
+>
+>Are you using 1.0.10-final?
+>
+>
+>Takashi
+>
+>  
+>
+No  i'm using default alsalib that come with debian sid: 1.0.9
+are there any improvement or issue in 1.0.10 ?
+Anyway i've understand where are memory areas to copy in, but my sound 
+is a lot disturbed. Probably i need to change some parameters with 4 
+channels, but witch?
 
-does this means we can now expect frequent updates of stable branche
-of driver/lib/utils (whereas heavy development happens in TRUNK)?
+Dino
 
-> 	intel8x0.c 
-> Log Message:
-> Summary: intel8x0 - Added swap_hp quirk for Fujitsu-Siemens Celsius H320 [0x10cf:0x12f2]
 
 
 
