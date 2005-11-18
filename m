@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000938]: AudioScience cards supported.
-Date: Fri, 18 Nov 2005 16:57:26 +0100
-Message-ID: <37dafd75f2916602c8481e4778cd9fb8@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001576]: free on invalid pointer
+Date: Fri, 18 Nov 2005 17:01:57 +0100
+Message-ID: <ae415ae14dc159b7dbadfe71d1a3a35c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFB0717E
-	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2005 16:57:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4E0A187
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2005 17:01:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1576> 
 ======================================================================
-Reported By:                eliot
+Reported By:                matled
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   938
-Category:                   soundcard matrix
+Project:                    ALSA - lib
+Issue ID:                   1576
+Category:                   0_general
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-24-2005 04:11 CET
-Last Modified:              11-18-2005 16:57 CET
+Date Submitted:             11-18-2005 16:17 CET
+Last Modified:              11-18-2005 17:01 CET
 ======================================================================
-Summary:                    AudioScience cards supported.
+Summary:                    free on invalid pointer
 Description: 
-AudioScience entries in the matrix should be white (supported).
-
-Driver should be "asihpi" OR "asihpi plus HPI download from
-http://www.audioscience.com"
-
-ASI4215 mentioned twice.
+In src/conf.c the parse_args functions uses free on val even if the pointer
+has not been initialized. My suggestion is either to initialize val with
+NULL or change the error handling to prevent free(val) if parse_arg
+returned a value != 0.
 ======================================================================
 
 ----------------------------------------------------------------------
- dbx - 10-21-05 01:43 
+ tiwai - 11-18-05 17:01 
 ----------------------------------------------------------------------
-21 oct 2005, uploaded file with the new xml card description.
-
-----------------------------------------------------------------------
- tiwai - 11-18-05 16:57 
-----------------------------------------------------------------------
-Fixed.  Thanks.
+Applied to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-05 04:11 eliot          New Issue                                    
-05-12-05 05:53 eliot          Note Added: 0004640                          
-10-21-05 01:42 dbx            File Added: vendor-AudioScience.xml               
-    
-10-21-05 01:43 dbx            Note Added: 0006508                          
-11-18-05 16:57 tiwai          Status                   new => resolved     
-11-18-05 16:57 tiwai          Resolution               open => fixed       
-11-18-05 16:57 tiwai          Assigned To               => tiwai           
-11-18-05 16:57 tiwai          Note Added: 0006751                          
+11-18-05 16:17 matled         New Issue                                    
+11-18-05 16:17 matled         File Added: patch                            
+11-18-05 17:01 tiwai          Status                   new => resolved     
+11-18-05 17:01 tiwai          Resolution               open => fixed       
+11-18-05 17:01 tiwai          Assigned To               => tiwai           
+11-18-05 17:01 tiwai          Note Added: 0006753                          
 ======================================================================
 
 
