@@ -1,15 +1,14 @@
-From: Ismail Donmez <ismail@uludag.org.tr>
-Subject: Re: 1.0.10 patch for 2.6.14 kernel
-Date: Fri, 18 Nov 2005 16:42:04 +0200
-Message-ID: <200511181642.05163.ismail@uludag.org.tr>
-References: <200511181604.49200.ismail@uludag.org.tr> <s5hiruqoxdk.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001576]: free on invalid pointer
+Date: Fri, 18 Nov 2005 16:17:24 +0100
+Message-ID: <976992fad595b22f58c0185258d343c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hiruqoxdk.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD8BF178
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2005 16:17:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,27 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 18 November 2005 16:15, Takashi Iwai wrote:
-> At Fri, 18 Nov 2005 16:04:48 +0200,
->
-> Ismail Donmez wrote:
-> > Is $subject available somewhere?
->
-> No, AFAIK.
->
-> Some changes in alsa-kernel/* are for 2.6.15 and incompatible with
-> 2.6.14.  You have to compile using alsa-driver tree to enable the
-> compatibility wrappers.
->
-> You're free to create such one, though :)
 
-Thanks for the information. I will go with the alsa-driver way :-)
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1576> 
+======================================================================
+Reported By:                matled
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1576
+Category:                   0_general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-18-2005 16:17 CET
+Last Modified:              11-18-2005 16:17 CET
+======================================================================
+Summary:                    free on invalid pointer
+Description: 
+In src/conf.c the parse_args functions uses free on val even if the pointer
+has not been initialized. My suggestion is either to initialize val with
+NULL or change the error handling to prevent free(val) if parse_arg
+returned a value != 0.
+======================================================================
 
-Regards,
-ismail
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-18-05 16:17 matled         New Issue                                    
+11-18-05 16:17 matled         File Added: patch                            
+======================================================================
+
+
 
 
 -------------------------------------------------------
