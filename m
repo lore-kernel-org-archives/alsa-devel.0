@@ -1,17 +1,14 @@
-From: Doctor <emostar@greendiscovery.net>
-Subject: The Ultimate Online Pharmaceutical
-Date: Fri, 18 Nov 2005 07:25:22 -0500
-Message-ID: <7067374025.20051118072522@greendiscovery.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001559]: hang in snd_pcm_drain()
+Date: Fri, 18 Nov 2005 19:08:00 +0100
+Message-ID: <3d576ce5e6e56d5c4c9cc0fcccabfcdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------141B5E455338532"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -1222251208 (203-203-132-66.cable.dynamic.giga.net.tw [203.203.132.66])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 1DB7B187
-	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2005 17:23:41 +0100 (MET)
-Received: from greendiscovery.net (-1217528664 [-1217457024])
-	by 203-203-132-66.cable.dynamic.giga.net.tw (Qmailv1) with ESMTP id F803678BAD
-	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2005 07:25:22 -0500
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BD8D187
+	for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2005 19:08:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,70 +18,131 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------------141B5E455338532
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1559> 
+======================================================================
+Reported By:                Faust3
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1559
+Category:                   CORE - pcm
+Reproducibility:            random
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-14-2005 19:14 CET
+Last Modified:              11-18-2005 19:07 CET
+======================================================================
+Summary:                    hang in snd_pcm_drain()
+Description: 
+MPlayer sometimes hangs during uninit in snd_pcm_drain()
+Sometimes one can play up to 40 files untill it happens, so this is not
+easily reproducable.
+Although I could reproduce it with alsa-lib-1.0.10rc3 and kernel 2.6.15rc1
+and 2.6.14.
+As far as I know it does not happen with 2.6.12. I did not test 2.6.13
 
-Vlajgra $3.3
-Leviitra $3.3
-Cianlis $3.7
-Imitcrex $16.4
-Flomhax $2.2
-Ultrjam $0.78
-Viofxx $4.75
-Ambcien $2.2
-Valkium $0.97 
-Xanagx $1.09
-Somma $3
-Merifdia $2.2  
+Here is some backtrace when pressing ctrl-c (I can redo with debugging
+symbols if needed)
+0xffffe410 in __kernel_vsyscall ()
+(gdb) bt
+#0  0xffffe410 in __kernel_vsyscall ()
+#1  0xb797e0bd in poll () from /lib/tls/i686/cmov/libc.so.6
+#2  0xb7efcca1 in snd_pcm_wait_nocheck () from /usr/lib/libasound.so.2
+#3  0xb7f32a2d in _snd_pcm_dmix_open () from /usr/lib/libasound.so.2
+#4  0xb7efaa9c in snd_pcm_drain () from /usr/lib/libasound.so.2
+#5  0xb7f0c63b in snd_pcm_generic_drain () from /usr/lib/libasound.so.2
+#6  0xb7efaa9c in snd_pcm_drain () from /usr/lib/libasound.so.2
+#7  0xb7f1712e in _snd_pcm_rate_open () from /usr/lib/libasound.so.2
+#8  0xb7efaa9c in snd_pcm_drain () from /usr/lib/libasound.so.2
+#9  0x080cd4a9 in uninit ()
+#10 0x08856ad8 in ?? ()
+#11 0x00000006 in ?? ()
+#12 0xbf9f2148 in ?? ()
+#13 0x081f750c in getch2_disable ()
+#14 0x00000000 in ?? ()
+#15 0x00000000 in ?? ()
+#16 0x08643700 in getch2_buf ()
+#17 0x08072839 in uninit_player ()
+#18 0x00000007 in ?? ()
+#19 0x084dbcc6 in _IO_stdin_used ()
+#20 0x00000e4b in ?? ()
+#21 0xbf9f0efc in ?? ()
+#22 0x00000004 in ?? ()
+#23 0x00000004 in ?? ()
+#24 0x08076959 in main ()
 
+Attaching strace will make it continue.
 
-visit our website
-http://aneertain.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+As far as I can tell the problematic poll is in 
+static unsigned int snd_timer_user_poll(struct file *file, poll_table *
+wait)
 
-___
-Best regards,
-Online Pharmaceuticals
+in sound/core/timer.c in the kernel.
 
-fgfgkkflrpa UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+I don't know if this has any importance but tu->qused in the above
+function is 2, about 2 polls before the hang. During normal playback it
+always seems to be 0 or 1
 
-------------141B5E455338532
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
+It might have also something to do with the many xruns I'm getting with
+some files,
+but I think the xruns are more likely a MPlayer problem.
+The problem does not occure when using oss emulation.
 
-<html>
-<body>
-<b>Vlagqra - $3.3 <br>
-Leovitra - $3.3<br>
-Cialias - $3.7<br>
-Imqitrex - $16.4<br>
-Flkomax - $2.2<br>
-Uldtram - $0.78<br>
-Viboxx - $4.75 <br>
-Amjbien - $2.2<br>
-Vahlium - $0.97 <br>
-Xarnax - $1.09<br>
-Smoma - $3 <br>
-Mveridia - $2.2</b><br>
-<br>
-  <br>
-  <a href="http://aneertain.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV"><strong>visit our website</strong></a><br>
-  <br>
-   <br>
-  Best regards,<br>
-  Online Pharmaceuticals 
-<br>
-   <br>
-fgfgkkflrpa UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</body>
-</html>
+Please tell me if you need additional info or if I should add some debug
+printf/printks etc.
 
-------------141B5E455338532--
+======================================================================
+
+----------------------------------------------------------------------
+ Faust3 - 11-18-05 19:07 
+----------------------------------------------------------------------
+Ok I made a test app available at http://faust3.kilu.de/testcase.tar.gz
+Just run the included ao_alsa_test and it will hang in the
+snd_pcm_drain()
+
+The bug is probably there for some time already. However it was hidden by
+another
+bug that has been fixed in revision 1.15 of alsa-lib/src/timer/timer_hw.c
+Commit message:
+"Summary: Change some timer ioctls due to confliction
+
+Change values of some timer ioctls to avoid confliction with FIO* ioctls.
+Use old ioctls if the timer protocol version doesn't match."
+
+Due to this bug SNDRV_TIMER_IOCTL_STOP never reached sound/core/timer.c
+in alsa-driver.
+Now that the above bug is fixed and SNDRV_TIMER_IOCTL_STOP gets called,
+the poll()
+will hang.
+
+This happens with all alsa driver versions since 1.0.9rc4 (where
+SNDRV_TIMER_VERSION got increased to 2.0.4)
+
+Tell me if you need more info...
+
+Driver snd-intel8x0
+Card: Intel 82801DB-ICH4                                                  
+                                                                          
+                 
+Chip: SigmaTel STAC9750,51
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-14-05 19:14 Faust3         New Issue                                    
+11-14-05 19:33 Faust3         Issue Monitored: Faust3                      
+11-18-05 19:07 Faust3         Note Added: 0006756                          
+======================================================================
 
 
 
