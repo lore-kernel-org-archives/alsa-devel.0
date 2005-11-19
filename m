@@ -1,13 +1,14 @@
-From: Jon <jgrosshart@gmail.com>
-Subject: Re: kernel 2.6.14.x and alsamixer problems
-Date: Sat, 19 Nov 2005 00:12:57 -0500
-Message-ID: <437EB459.80900@gmail.com>
-References: <437EB3E6.6030205@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001577]: No sound in ALSA in linux-2.6.13
+Date: Sat, 19 Nov 2005 08:54:43 +0100
+Message-ID: <ab44d0e77b844cf96f931e17b87636ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <437EB3E6.6030205@gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D62117B
+	for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2005 08:54:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,33 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jon <jgrosshart@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jon wrote:
 
->Greetings all. Ever since I upgraded to linux-2.6.14 and up, I get this
->error when running 'alsamixer'
->
->
->ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
->Volume',0,0,0) appears twice or more
->alsamixer: function snd_mixer_load failed: Invalid argument
->
->
->It does it with alsa-1.0.9 and 1.0.10... I use alsa
->{driver,lib,oss,utils} on my box and leave the kernel sound section
->alone. As soon as I switch back to 2.6.13.4 it plays nice once again
->which is confusing to me...... I'm using the emu10k1 chip (SB Live!
->Value 5.1). Any insight on this matter would be greatly appreciated...
->
->Jon
->
->  
->
-Opps... Sorry. Posted to the wrong list although I have a feeling it
-might eventually need to be here as well.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1577> 
+======================================================================
+Reported By:                mohamed uvais
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1577
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             11-19-2005 08:54 CET
+Last Modified:              11-19-2005 08:54 CET
+======================================================================
+Summary:                    No sound in ALSA in linux-2.6.13
+Description: 
+I am using linux-2.6.13 PXA27x(ARM) ,This is having ALSA,After i installed
+this kernel to my board,I couldn't able to play any music.IF i play the
+any audio file then i could receive the continous print like below,
+    write 4096 bytes(wrote 4096 bytes)
+I have checked the drivers/asound directory also.Its fine.
+Also i gave one printk in the sound/arm/pxa2xx-pcm.c file in irq
+function,After that i received the continuous print of that added one.I
+think the problem is repeated irq & no sound.What is the solution for this
+one.
+Here i attached the drivers/asound directory results.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-19-05 08:54 mohamed uvais  New Issue                                    
+11-19-05 08:54 mohamed uvais  File Added: capture                          
+11-19-05 08:54 mohamed uvais  Kernel Version            => 2.6.13          
+======================================================================
+
+
 
 
 -------------------------------------------------------
