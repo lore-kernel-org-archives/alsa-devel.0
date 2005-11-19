@@ -1,11 +1,14 @@
-From: Alexandr <spiro@demiart.ru>
-Subject: kernel 2.6.14 and alsamixer problems
-Date: Sat, 19 Nov 2005 21:13:59 +0200
-Message-ID: <437F7977.7060902@demiart.ru>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001579]: code.c test uses x86 asm, it should be x86/amd64 only
+Date: Sat, 19 Nov 2005 20:17:40 +0100
+Message-ID: <3b7ef27aff6779c8ed41c9738048118b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2775D168
+	for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2005 20:17:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,25 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello !
 
-I'm update alsa-drivers (-libs, -utils) to 1.0.10 and when use alsamixer
-got next message:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1579> 
+======================================================================
+Reported By:                Flameeyes
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1579
+Category:                   0_general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-19-2005 20:17 CET
+Last Modified:              11-19-2005 20:17 CET
+======================================================================
+Summary:                    code.c test uses x86 asm, it should be x86/amd64
+only
+Description: 
+As per summary, the code.c test can't be built for any other system but x86
+or amd64, as it uses inline asm focused on i386.
 
-bash-3.00# alsamixer
-ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback 
-Volume',0,0,0) appears twice or more
+The attached patch makes it conditional to those arches.
 
-alsamixer: function snd_mixer_load failed: Invalid argument
+HTH,
+Diego
+======================================================================
 
-Early used kernel-module emu10k1 from 2.6.14 work with alsa-libs and 
--utils 1.0.9 (to -10rc2)
-without problems. Now i leave in kernel only soundcore and separate 
-compile driver and other
-from last alsa release.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-19-05 20:17 Flameeyes      New Issue                                    
+11-19-05 20:17 Flameeyes      File Added: alsa-lib-1.0.10-test-ppc.patch        
+           
+======================================================================
 
 
 
