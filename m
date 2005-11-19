@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: kernel 2.6.14.x and alsamixer problems
-Date: Sat, 19 Nov 2005 11:06:37 +0000
-Message-ID: <437F073D.4070906@superbug.co.uk>
-References: <437EB3E6.6030205@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0001578]: Missing .desktop files for echomixer, envy24control and rmedigicontrol
+Date: Sat, 19 Nov 2005 12:13:32 +0100
+Message-ID: <142dea361e686ae682f9bce36310e697@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <437EB3E6.6030205@gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4C9917E
+	for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2005 12:13:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,34 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jon <jgrosshart@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jon wrote:
-> Greetings all. Ever since I upgraded to linux-2.6.14 and up, I get this
-> error when running 'alsamixer'
-> 
-> 
-> ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
-> Volume',0,0,0) appears twice or more
-> alsamixer: function snd_mixer_load failed: Invalid argument
-> 
-> 
-> It does it with alsa-1.0.9 and 1.0.10... I use alsa
-> {driver,lib,oss,utils} on my box and leave the kernel sound section
-> alone. As soon as I switch back to 2.6.13.4 it plays nice once again
-> which is confusing to me...... I'm using the emu10k1 chip (SB Live!
-> Value 5.1). Any insight on this matter would be greatly appreciated...
-> 
-> Jon
-> 
-> 
 
-Does you alsa-lib version match your alsa-driver version.
-Use the troubleshooter on
-http://alsa.opensrc.org/TroubleShooting
-to find out.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1578> 
+======================================================================
+Reported By:                mikma
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   1578
+Category:                   echomixer
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-19-2005 12:13 CET
+Last Modified:              11-19-2005 12:13 CET
+======================================================================
+Summary:                    Missing .desktop files for echomixer, envy24control
+and rmedigicontrol
+Description: 
+I'm forwarding a feature request from a Debian user:
+
+"I've noticed that only .desktop files for the HDSP cards are available
+in the package.
+
+I think that  entries for echomixer, envy24control  and rmedigicontrol
+should be added too."
+
+The original Debian bug report can be found at:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=335485
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-19-05 12:13 mikma          New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
