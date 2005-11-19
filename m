@@ -1,13 +1,11 @@
-From: Nicolas Boullis <nboullis@debian.org>
-Subject: Re: Bug in the generation of IEC958 subframes
-Date: Sat, 19 Nov 2005 01:37:23 +0100
-Message-ID: <20051119003722.GC4230@home>
-References: <20051116004500.GA5622@home> <s5hbr0jqxw6.wl%tiwai@suse.de> <20051117194736.GB3948@home> <s5h64qppw38.wl%tiwai@suse.de>
+From: Jon <jgrosshart@gmail.com>
+Subject: kernel 2.6.14.x and alsamixer problems
+Date: Sat, 19 Nov 2005 00:11:02 -0500
+Message-ID: <437EB3E6.6030205@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h64qppw38.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,22 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 18, 2005 at 08:58:03PM +0100, Takashi Iwai wrote:
-> 
-> Yes, it's preferred.  We may be able to see more details.
-
-OK, I just submitted the gdb backtrace to bug #0001571.
-(To be honnest, the valgring backtrace looks much more informative than 
-the gdb backtrace, as far as I can see...)
+Greetings all. Ever since I upgraded to linux-2.6.14 and up, I get this
+error when running 'alsamixer'
 
 
-Cheers,
+ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
+Volume',0,0,0) appears twice or more
+alsamixer: function snd_mixer_load failed: Invalid argument
 
-Nicolas
+
+It does it with alsa-1.0.9 and 1.0.10... I use alsa
+{driver,lib,oss,utils} on my box and leave the kernel sound section
+alone. As soon as I switch back to 2.6.13.4 it plays nice once again
+which is confusing to me...... I'm using the emu10k1 chip (SB Live!
+Value 5.1). Any insight on this matter would be greatly appreciated...
+
+Jon
 
 
 -------------------------------------------------------
