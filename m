@@ -1,11 +1,13 @@
-From: Alexandr <spiro@demiart.ru>
-Subject: Live! 5.1 detects as [Unknown]
-Date: Sat, 19 Nov 2005 21:19:09 +0200
-Message-ID: <437F7AAD.6050605@demiart.ru>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Live! 5.1 detects as [Unknown]
+Date: Sat, 19 Nov 2005 14:29:51 -0500
+Message-ID: <1132428592.6874.70.camel@mindpipe>
+References: <437F7AAD.6050605@demiart.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <437F7AAD.6050605@demiart.ru>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,22 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alexandr <spiro@demiart.ru>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello !
+On Sat, 2005-11-19 at 21:19 +0200, Alexandr wrote:
+> Hello !
+> 
+> My Live! 5.1 don't detecting with alsa drivers because has other
+> revision - in 1.0.10 add detection for rev.07 of Live! 5.1 Digital (c) 2003,
+> but my card has rev.10.
+> 
+> bash-3.00# bash-3.00# cat /proc/asound/cards
+> 0 [Live           ]: EMU10K1 - SB Live [Unknown]
+>                      SB Live [Unknown] (rev.10, serial:0x80661102) at 
+> 0xd000, irq 5
+> 
+> 
+> Do you can add detect of this card ?!
 
-My Live! 5.1 don't detecting with alsa drivers because has other
-revision - in 1.0.10 add detection for rev.07 of Live! 5.1 Digital (c) 2003,
-but my card has rev.10.
+What is the model number (something like "SB0220" or "SB0350")?  It
+should be on the box or you can get this info from the Windows driver.
 
-bash-3.00# bash-3.00# cat /proc/asound/cards
-0 [Live           ]: EMU10K1 - SB Live [Unknown]
-                     SB Live [Unknown] (rev.10, serial:0x80661102) at 
-0xd000, irq 5
+Lee
 
-
-Do you can add detect of this card ?!
 
 
 -------------------------------------------------------
