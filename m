@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Live! 5.1 detects as [Unknown]
-Date: Sat, 19 Nov 2005 14:29:51 -0500
-Message-ID: <1132428592.6874.70.camel@mindpipe>
-References: <437F7AAD.6050605@demiart.ru>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001580]: Test fixes for GCC4
+Date: Sat, 19 Nov 2005 20:35:16 +0100
+Message-ID: <969c1927a6da799289f7799418a5f807@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <437F7AAD.6050605@demiart.ru>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 897BD174
+	for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2005 20:35:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alexandr <spiro@demiart.ru>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-11-19 at 21:19 +0200, Alexandr wrote:
-> Hello !
-> 
-> My Live! 5.1 don't detecting with alsa drivers because has other
-> revision - in 1.0.10 add detection for rev.07 of Live! 5.1 Digital (c) 2003,
-> but my card has rev.10.
-> 
-> bash-3.00# bash-3.00# cat /proc/asound/cards
-> 0 [Live           ]: EMU10K1 - SB Live [Unknown]
->                      SB Live [Unknown] (rev.10, serial:0x80661102) at 
-> 0xd000, irq 5
-> 
-> 
-> Do you can add detect of this card ?!
 
-What is the model number (something like "SB0220" or "SB0350")?  It
-should be on the box or you can get this info from the Windows driver.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1580> 
+======================================================================
+Reported By:                Flameeyes
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1580
+Category:                   0_general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-19-2005 20:35 CET
+Last Modified:              11-19-2005 20:35 CET
+======================================================================
+Summary:                    Test fixes for GCC4
+Description: 
+code.c, pcm.c and latency.c files has invalid syntax for GCC4, the attached
+patch allows to build them clean.
 
-Lee
+See also bug #0001540 that I filed on the wrong component and I can't
+close myself :|
+
+This patch also fixes pcm.c and latency.c from latest alsa-lib version.
+
+HTH,
+Diego
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-19-05 20:35 Flameeyes      New Issue                                    
+11-19-05 20:35 Flameeyes      File Added: alsa-lib-1.0.10-test-gcc4.patch       
+            
+======================================================================
+
 
 
 
