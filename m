@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001580]: Test fixes for GCC4
-Date: Sat, 19 Nov 2005 20:35:16 +0100
-Message-ID: <969c1927a6da799289f7799418a5f807@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001581]: failure to compile
+Date: Sat, 19 Nov 2005 22:46:48 +0100
+Message-ID: <8cffa925eb23d283f8851552154b76f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 897BD174
-	for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2005 20:35:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBEA818E
+	for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2005 22:46:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,42 +24,41 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1580> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1581> 
 ======================================================================
-Reported By:                Flameeyes
-Assigned To:                
+Reported By:                jan_prins
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1580
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1581
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               slackware 10.2
+Kernel Version:             2.4.31
 ======================================================================
-Date Submitted:             11-19-2005 20:35 CET
-Last Modified:              11-19-2005 20:35 CET
+Date Submitted:             11-19-2005 22:46 CET
+Last Modified:              11-19-2005 22:46 CET
 ======================================================================
-Summary:                    Test fixes for GCC4
+Summary:                    failure to compile
 Description: 
-code.c, pcm.c and latency.c files has invalid syntax for GCC4, the attached
-patch allows to build them clean.
 
-See also bug #0001540 that I filed on the wrong component and I can't
-close myself :|
+alsa-driver version 1.0.10rc2
 
-This patch also fixes pcm.c and latency.c from latest alsa-lib version.
+failure to compile, with a repair that worked for me
 
-HTH,
-Diego
+see upload file for details
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-05 20:35 Flameeyes      New Issue                                    
-11-19-05 20:35 Flameeyes      File Added: alsa-lib-1.0.10-test-gcc4.patch       
-            
+11-19-05 22:46 jan_prins      New Issue                                    
+11-19-05 22:46 jan_prins      File Added: bug.asc                          
+11-19-05 22:46 jan_prins      Distribution              => slackware 10.2  
+11-19-05 22:46 jan_prins      Kernel Version            => 2.4.31          
 ======================================================================
 
 
