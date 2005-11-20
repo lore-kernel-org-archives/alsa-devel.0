@@ -1,17 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: snd_pcm_lib_malloc_pages
-Date: Sun, 20 Nov 2005 23:12:05 +0000
-Message-ID: <1132528326.9292.23.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001540]: alsa-lib make check: code.c does not compile with GCC4
+Date: Mon, 21 Nov 2005 00:58:38 +0100
+Message-ID: <a693dcc287807e63fa599ed42417a43e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8178219C
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 00:12:27 +0100 (MET)
-Received: from bossclass (bossclass [192.168.62.105])
-	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id jAKNC68v030907
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 23:12:13 GMT
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0243D16F
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 00:58:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +21,50 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am trying to write to a driver on the Dreamcast (SH4) - as far as I
-can see there are no ALSA drivers extant for this processor. Does that
-mean I should assume this function is implemented or unimplemented on
-SH? On a scan through the code I can see no obvious reason why it
-wouldn't be working (ie no processor specific code) but there must be
-some degree of processor/bus specific code.
 
-Adrian
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1540> 
+======================================================================
+Reported By:                Flameeyes
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1540
+Category:                   aconnect
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-10-2005 12:40 CET
+Last Modified:              11-21-2005 00:58 CET
+======================================================================
+Summary:                    alsa-lib make check: code.c does not compile with
+GCC4
+Description: 
+test/code.c source file does not compile with GCC4 as it uses casted
+lvalues (that are deprecated in GCC 3.4 and invalid in GCC4).
+The attached patch should solve without problems.
+
+HTH,
+Diego
+======================================================================
+
+----------------------------------------------------------------------
+ Flameeyes - 11-21-05 00:58 
+----------------------------------------------------------------------
+Can someone close this, as I reported it in the right project already?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-10-05 12:40 Flameeyes      New Issue                                    
+11-10-05 12:40 Flameeyes      File Added: alsa-lib-1.0.10_rc3-test.patch        
+           
+11-21-05 00:58 Flameeyes      Note Added: 0006769                          
+======================================================================
+
 
 
 
