@@ -1,12 +1,14 @@
-From: =?windows-1251?B?z9DAytLI18XRysjJIMrT0NE=?= <aftermath@caller.com>
-Subject: =?windows-1251?B?xMvfIMPFzcXQwMvczc7DziDEyNDFytLO0MA=?=
-Date: Sun, 20 Nov 2005 00:17:14 +0000
-Message-ID: <0cc701c5ed67$47a1fc16$67e9bf3a@caller.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Sun, 20 Nov 2005 07:29:58 +0100
+Message-ID: <25adccdddb836bc8191c29e70682bbc0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_3CBEE168.9D0D4141"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1DC418E
+	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 07:29:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,208 +18,127 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_3CBEE168.9D0D4141
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_740B78EC.0C47E870"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+======================================================================
+Reported By:                misnagid
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   749
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              11-20-2005 07:29 CET
+======================================================================
+Summary:                    Buzz from ALSA setup
+Description: 
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
+======================================================================
 
-------=_NextPart_001_0001_740B78EC.0C47E870
-Content-Type: text/plain;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ pzad - 11-16-05 16:10 
+----------------------------------------------------------------------
+How much memory do you have ?
 
- =CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1=20
-=C4=CB=DF =C3=C5=CD=C5=D0=C0=CB=DC=CD=CE=C3=CE =C4=C8=D0=C5=CA=D2=CE=D0=C0=
-=20
-28 =ED=EE=FF=E1=F0=FF - 3 =E4=E5=EA=E0=E1=F0=FF 2005 =E3.=20
+----------------------------------------------------------------------
+ misnagid - 11-20-05 07:29 
+----------------------------------------------------------------------
+everything is the same as before.  no changes at all!!  except using fc4
+now of couirse.
 
-
-=D1=F2=F0=E0=F2=E5=E3=E8=F7=E5=F1=EA=E8=E5 =E7=E0=E4=E0=F7=E8, =EA=EE=F2=EE=
-=F0=FB=E5 =EF=F0=E8=F5=EE=E4=E8=F2=F1=FF =F0=E5=F8=E0=F2=FC =E3=E5=ED=E5=F0=
-=E0=EB=FC=ED=EE=EC=F3 =E4=E8=F0=E5=EA=F2=EE=F0=F3,
-=EE=F2=EB=E8=F7=E0=FE=F2=F1=FF =EF=EE =F1=E2=EE=E5=EC=F3 =F5=E0=F0=E0=EA=F2=
-=E5=F0=F3 =EE=F2 =E7=E0=E4=E0=F7, =F1=F2=EE=FF=F9=E8=F5 =EF=E5=F0=E5=E4 =E4=
-=F0=F3=E3=E8=EC=E8 =F1=EE=F2=F0=F3=E4=ED=E8=EA=E0=EC=E8
-=EA=EE=EC=EF=E0=ED=E8=E8. =C4=EB=FF =EF=F0=E8=ED=FF=F2=E8=FF =F1=F2=F0=E0=
-=F2=E5=E3=E8=F7=E5=F1=EA=E8=F5 =F0=E5=F8=E5=ED=E8=E9 =E2=EE =EC=ED=EE=E3=E8=
-=F5 =F1=EB=F3=F7=E0=FF=F5 =F2=F0=E5=E1=F3=FE=F2=F1=FF
-=EF=F0=E8=ED=F6=E8=EF=E8=E0=EB=FC=ED=EE =E8=ED=FB=E5 =EF=F0=EE=F4=E5=F1=F1=
-=E8=EE=ED=E0=EB=FC=ED=FB=E5 =E7=ED=E0=ED=E8=FF =E8 =ED=E0=E2=FB=EA=E8, =F7=
-=E5=EC =E4=EB=FF =F0=E5=F8=E5=ED=E8=FF =F2=E5=EA=F3=F9=E8=F5
-=F3=EF=F0=E0=E2=EB=E5=ED=F7=E5=F1=EA=E8=F5 =E2=EE=EF=F0=EE=F1=EE=E2.=20
-
-=D6=E5=EB=FC =EA=F3=F0=F1=E0 =EE=F2=F0=E0=E6=E5=ED=E0 =E2 =ED=E0=E7=E2=E0=
-=ED=E8=E8. =C4=E0=ED=ED=FB=E9 =EA=F3=F0=F1 =ED=EE=F1=E8=F2 =E8=F1=EA=EB=FE=
-=F7=E8=F2=E5=EB=FC=ED=EE =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=F3=FE
-=ED=E0=EF=F0=E0=E2=EB=E5=ED=ED=EE=F1=F2=FC =E8 =EF=EE=E7=E2=EE=EB=FF=E5=F2=
- =E3=E5=ED=E5=F0=E0=EB=FC=ED=EE=EC=F3 =E4=E8=F0=E5=EA=F2=EE=F0=F3 =ED=E5 =
-=F2=EE=EB=FC=EA=EE =EE=EF=F2=E8=EC=E8=E7=E8=F0=EE=E2=E0=F2=FC
-=F2=E5=EA=F3=F9=F3=FE =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=FC =EF=F0=E5=E4=EF=
-=F0=E8=FF=F2=E8=FF, =ED=EE =E8 =EE=EF=F0=E5=E4=E5=EB=E8=F2=FC =E4=EE=EB=E3=
-=EE=E2=F0=E5=EC=E5=ED=ED=F3=FE =F1=F2=F0=E0=F2=E5=E3=E8=FE
-=F0=E0=E7=E2=E8=F2=E8=FF =F1=E2=EE=E5=E9 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8=
-.=20
-
-=C4=E0=ED=ED=FB=E9 =EA=F3=F0=F1 =E4=E0=F1=F2 =F0=E5=E0=EB=FC=ED=FB=E5 =EF=
-=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =E8 =EC=E5=F2=EE=
-=E4=E8=EA=E8, =ED=E5=EE=E1=F5=EE=E4=E8=EC=FB=E5
-=E4=EB=FF =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E9 =F0=E0=E1=EE=F2=FB =E3=E5=ED=E5=
-=F0=E0=EB=FC=ED=EE=E3=EE =E4=E8=F0=E5=EA=F2=EE=F0=E0.=20
-
-=CF=F0=EE=E3=F0=E0=EC=EC=E0 =E1=E8=E7=ED=E5=F1-=EA=F3=F0=F1=E0=20
-
- =CA=F2=EE =F2=E0=EA=EE=E9 =E3=E5=ED=E5=F0=E0=EB=FC=ED=FB=E9 =E4=E8=F0=E5=
-=EA=F2=EE=F0? =CF=EE=E7=E8=F6=E8=EE=ED=E8=F0=EE=E2=E0=ED=E8=E5, =EA=E0=F0=
-=FC=E5=F0=E0, =EE=F1=EE=E1=E5=ED=ED=EE=F1=F2=E8
-=EB=E8=F7=ED=EE=E3=EE =F0=E0=E7=E2=E8=F2=E8=FF  =D1=F2=F0=E0=F2=E5=E3=E8=FF=
- =E2=FB=E1=EE=F0=E0 - =C1=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 =E8 =D1=E8=
-=F1=F2=E5=EC=E0 =F1=E1=E0=EB=E0=ED=F1=E8=F0=EE=E2=E0=ED=ED=FB=F5
-=EF=EE=EA=E0=E7=E0=F2=E5=EB=E5=E9  =CE=F1=ED=EE=E2=FB =FD=F4=F4=E5=EA=F2=E8=
-=E2=ED=EE=E9 =F4=E8=ED=E0=ED=F1=EE=E2=EE=E9 =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=
-=F2=E8. =CA=F0=E5=E4=E8=F2=ED=E0=FF =EF=EE=EB=E8=F2=E8=EA=E0
-=EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8 =E8 =E4=E5=E1=E8=F2=EE=F0=F1=EA=E0=FF =E7=
-=E0=E4=EE=EB=E6=E5=ED=ED=EE=F1=F2=FC  =D1=F2=F0=E0=F2=E5=E3=E8=F7=E5=F1=EA=
-=E8=E9 =EC=E0=F0=EA=E5=F2=E8=ED=E3  =CE=F0=E3=E0=ED=E8=E7=E0=F6=E8=EE=ED=ED=
-=EE=E5
-=F3=EF=F0=E0=E2=EB=E5=ED=E8=E5 =E8 =F4=F3=ED=EA=F6=E8=EE=ED=E8=F0=EE=E2=E0=
-=ED=E8=E5 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8. =C2=ED=F3=F2=F0=E5=ED=ED=E8=E9=
- =EA=EE=ED=F2=F0=EE=EB=FC  =D1=EE=E2=F0=E5=EC=E5=ED=ED=E0=FF
-=E4=EE=E3=EE=E2=EE=F0=ED=E0=FF =E8 =EF=F0=E5=F2=E5=ED=E7=E8=EE=ED=ED=E0=FF=
- =F0=E0=E1=EE=F2=E0=20
-
-=CA=E0=E6=E4=FB=E9 =F3=F7=E0=F1=F2=ED=E8=EA =F1=E5=EC=E8=ED=E0=F0=E0 =EF=EE=
-=EB=F3=F7=E8=F2 =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=EE=E5 =EF=EE=F1=EE=E1=E8=E5=
- =E4=EB=FF =F0=E0=E1=EE=F2=FB =ED=E0 =F1=E5=EC=E8=ED=E0=F0=E5.
- =D1=E5=EC=E8=ED=E0=F0 =EF=F0=EE=F5=EE=E4=E8=F2 =E2 =E8=ED=F2=E5=ED=F1=E8=
-=E2=ED=EE=E9 =E8=ED=F2=E5=F0=E0=EA=F2=E8=E2=ED=EE=E9 =F4=EE=F0=EC=E5 =F1 =
-=F0=E0=E7=E1=EE=F0=EE=EC =E1=EE=EB=FC=F8=EE=E3=EE
-=EA=EE=EB=E8=F7=E5=F1=F2=E2=E0 =EF=F0=E8=EC=E5=F0=EE=E2 =E8=E7 =EF=F0=E0=EA=
-=F2=E8=EA=E8 =F0=EE=F1=F1=E8=E9=F1=EA=E8=F5 =E8 =E8=ED=EE=F1=F2=F0=E0=ED=ED=
-=FB=F5 =EA=EE=EC=EF=E0=ED=E8=E9. =D3=F7=E0=F1=F2=ED=E8=EA=E8
-=F1=E5=EC=E8=ED=E0=F0=E0 =E1=F3=E4=F3=F2 =F0=E0=F1=F1=EC=E0=F2=F0=E8=E2=E0=
-=F2=FC =E8 =F0=E5=F8=E0=F2=FC =EA=EE=ED=EA=F0=E5=F2=ED=FB=E5 =F1=E8=F2=F3=
-=E0=F6=E8=E8 =E8=E7 =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=E8
-=F0=E5=E0=EB=FC=ED=FB=F5 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=E9, =F0=E0=E7=E1=E5=
-=F0=F3=F2 =F3=EF=F0=E0=E6=ED=E5=ED=E8=FF =E8 =E2=FB=EF=EE=EB=ED=FF=F2 =EF=
-=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E5 =E7=E0=E4=E0=ED=E8=FF.
-
-
-
-
-=D7=F2=EE=E1=FB =EF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =E8=ED=
-=F4=EE=F0=EC=E0=F6=E8=FE =E8=EB=E8 =EF=F0=EE=E3=F0=E0=EC=EC=F3 =EA=F3=F0=F1=
-=E0,=20
-=EF=EE=E7=E2=EE=ED=E8=F2=E5 =EF=EE =F2=E5=EB. (095) 98O-65-I6
-
-  =20
-------=_NextPart_001_0001_740B78EC.0C47E870
-Content-Type: text/html;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
-<HTML>
-<BODY text=3D#000000 bgColor=3D#ffffff>
-
-<font size=3D"3" face=3D"Times New Roman"><P align=3Dcenter><FONT face=3D=
-Arial><FONT size=3D5><b>=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1=
- <br>
-=C4=CB=DF =C3=C5=CD=C5=D0=C0=CB=DC=CD=CE=C3=CE =C4=C8=D0=C5=CA=D2=CE=D0=C0=
-</b></FONT> <br>
-<b>28 =ED=EE=FF=E1=F0=FF - 3 =E4=E5=EA=E0=E1=F0=FF 2005 =E3.</b> <br>
-</FONT></P>
-
-<P align=3Djustify><FONT face=3DArial>=D1=F2=F0=E0=F2=E5=E3=E8=F7=E5=F1=EA=
-=E8=E5 =E7=E0=E4=E0=F7=E8, =EA=EE=F2=EE=F0=FB=E5 =EF=F0=E8=F5=EE=E4=E8=F2=
-=F1=FF =F0=E5=F8=E0=F2=FC =E3=E5=ED=E5=F0=E0=EB=FC=ED=EE=EC=F3 =E4=E8=F0=E5=
-=EA=F2=EE=F0=F3, =EE=F2=EB=E8=F7=E0=FE=F2=F1=FF =EF=EE =F1=E2=EE=E5=EC=F3=
- =F5=E0=F0=E0=EA=F2=E5=F0=F3 =EE=F2 =E7=E0=E4=E0=F7, =F1=F2=EE=FF=F9=E8=F5=
- =EF=E5=F0=E5=E4 =E4=F0=F3=E3=E8=EC=E8 =F1=EE=F2=F0=F3=E4=ED=E8=EA=E0=EC=E8=
- =EA=EE=EC=EF=E0=ED=E8=E8. =C4=EB=FF =EF=F0=E8=ED=FF=F2=E8=FF =F1=F2=F0=E0=
-=F2=E5=E3=E8=F7=E5=F1=EA=E8=F5 =F0=E5=F8=E5=ED=E8=E9 =E2=EE =EC=ED=EE=E3=E8=
-=F5 =F1=EB=F3=F7=E0=FF=F5 =F2=F0=E5=E1=F3=FE=F2=F1=FF =EF=F0=E8=ED=F6=E8=EF=
-=E8=E0=EB=FC=ED=EE =E8=ED=FB=E5 =EF=F0=EE=F4=E5=F1=F1=E8=EE=ED=E0=EB=FC=ED=
-=FB=E5 =E7=ED=E0=ED=E8=FF =E8 =ED=E0=E2=FB=EA=E8, =F7=E5=EC =E4=EB=FF =F0=
-=E5=F8=E5=ED=E8=FF =F2=E5=EA=F3=F9=E8=F5 =F3=EF=F0=E0=E2=EB=E5=ED=F7=E5=F1=
-=EA=E8=F5 =E2=EE=EF=F0=EE=F1=EE=E2. <br>
-<br>
-<b>=D6=E5=EB=FC =EA=F3=F0=F1=E0</b> =EE=F2=F0=E0=E6=E5=ED=E0 =E2 =ED=E0=E7=
-=E2=E0=ED=E8=E8. =C4=E0=ED=ED=FB=E9 =EA=F3=F0=F1 =ED=EE=F1=E8=F2 =E8=F1=EA=
-=EB=FE=F7=E8=F2=E5=EB=FC=ED=EE =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=F3=FE =ED=E0=
-=EF=F0=E0=E2=EB=E5=ED=ED=EE=F1=F2=FC =E8 =EF=EE=E7=E2=EE=EB=FF=E5=F2 =E3=E5=
-=ED=E5=F0=E0=EB=FC=ED=EE=EC=F3 =E4=E8=F0=E5=EA=F2=EE=F0=F3 =ED=E5 =F2=EE=EB=
-=FC=EA=EE =EE=EF=F2=E8=EC=E8=E7=E8=F0=EE=E2=E0=F2=FC =F2=E5=EA=F3=F9=F3=FE=
- =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=FC =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=FF, =
-=ED=EE =E8 =EE=EF=F0=E5=E4=E5=EB=E8=F2=FC =E4=EE=EB=E3=EE=E2=F0=E5=EC=E5=ED=
-=ED=F3=FE =F1=F2=F0=E0=F2=E5=E3=E8=FE =F0=E0=E7=E2=E8=F2=E8=FF =F1=E2=EE=E5=
-=E9 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8. <br>
-<br>
-=C4=E0=ED=ED=FB=E9 =EA=F3=F0=F1 =E4=E0=F1=F2 =F0=E5=E0=EB=FC=ED=FB=E5 =EF=
-=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =E8 =EC=E5=F2=EE=
-=E4=E8=EA=E8, =ED=E5=EE=E1=F5=EE=E4=E8=EC=FB=E5 =E4=EB=FF =FD=F4=F4=E5=EA=
-=F2=E8=E2=ED=EE=E9 =F0=E0=E1=EE=F2=FB =E3=E5=ED=E5=F0=E0=EB=FC=ED=EE=E3=EE=
- =E4=E8=F0=E5=EA=F2=EE=F0=E0. </P>
-
-<P align=3Dcenter><b><FONT size=3D4>=CF=F0=EE=E3=F0=E0=EC=EC=E0 =E1=E8=E7=
-=ED=E5=F1-=EA=F3=F0=F1=E0 </FONT></b></FONT></P>
-<UL>
-<LI><FONT face=3DArial>=CA=F2=EE =F2=E0=EA=EE=E9 =E3=E5=ED=E5=F0=E0=EB=FC=
-=ED=FB=E9 =E4=E8=F0=E5=EA=F2=EE=F0? =CF=EE=E7=E8=F6=E8=EE=ED=E8=F0=EE=E2=E0=
-=ED=E8=E5, =EA=E0=F0=FC=E5=F0=E0, =EE=F1=EE=E1=E5=ED=ED=EE=F1=F2=E8 =EB=E8=
-=F7=ED=EE=E3=EE =F0=E0=E7=E2=E8=F2=E8=FF </FONT>
-<LI><FONT face=3DArial>=D1=F2=F0=E0=F2=E5=E3=E8=FF =E2=FB=E1=EE=F0=E0 - =C1=
-=FE=E4=E6=E5=F2=E8=F0=EE=E2=E0=ED=E8=E5 =E8 =D1=E8=F1=F2=E5=EC=E0 =F1=E1=E0=
-=EB=E0=ED=F1=E8=F0=EE=E2=E0=ED=ED=FB=F5 =EF=EE=EA=E0=E7=E0=F2=E5=EB=E5=E9=
- </FONT>
-<LI><FONT face=3DArial>=CE=F1=ED=EE=E2=FB =FD=F4=F4=E5=EA=F2=E8=E2=ED=EE=E9=
- =F4=E8=ED=E0=ED=F1=EE=E2=EE=E9 =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=E8. =CA=
-=F0=E5=E4=E8=F2=ED=E0=FF =EF=EE=EB=E8=F2=E8=EA=E0 =EE=F0=E3=E0=ED=E8=E7=E0=
-=F6=E8=E8 =E8 =E4=E5=E1=E8=F2=EE=F0=F1=EA=E0=FF =E7=E0=E4=EE=EB=E6=E5=ED=ED=
-=EE=F1=F2=FC </FONT>
-<LI><FONT face=3DArial>=D1=F2=F0=E0=F2=E5=E3=E8=F7=E5=F1=EA=E8=E9 =EC=E0=F0=
-=EA=E5=F2=E8=ED=E3 </FONT>
-<LI><FONT face=3DArial>=CE=F0=E3=E0=ED=E8=E7=E0=F6=E8=EE=ED=ED=EE=E5 =F3=EF=
-=F0=E0=E2=EB=E5=ED=E8=E5 =E8 =F4=F3=ED=EA=F6=E8=EE=ED=E8=F0=EE=E2=E0=ED=E8=
-=E5 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8. =C2=ED=F3=F2=F0=E5=ED=ED=E8=E9 =EA=
-=EE=ED=F2=F0=EE=EB=FC </FONT>
-<LI><FONT face=3DArial>=D1=EE=E2=F0=E5=EC=E5=ED=ED=E0=FF =E4=EE=E3=EE=E2=EE=
-=F0=ED=E0=FF =E8 =EF=F0=E5=F2=E5=ED=E7=E8=EE=ED=ED=E0=FF =F0=E0=E1=EE=F2=E0=
- <br>
-<br>
-<i>=CA=E0=E6=E4=FB=E9 =F3=F7=E0=F1=F2=ED=E8=EA =F1=E5=EC=E8=ED=E0=F0=E0 =EF=
-=EE=EB=F3=F7=E8=F2 =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=EE=E5 =EF=EE=F1=EE=E1=E8=
-=E5 =E4=EB=FF =F0=E0=E1=EE=F2=FB =ED=E0 =F1=E5=EC=E8=ED=E0=F0=E5.</i> </F=
-ONT></LI></UL>
-<P align=3Djustify><FONT face=3DArial>=D1=E5=EC=E8=ED=E0=F0 =EF=F0=EE=F5=EE=
-=E4=E8=F2 =E2 <b>=E8=ED=F2=E5=ED=F1=E8=E2=ED=EE=E9 =E8=ED=F2=E5=F0=E0=EA=F2=
-=E8=E2=ED=EE=E9 =F4=EE=F0=EC=E5</b> =F1 =F0=E0=E7=E1=EE=F0=EE=EC =E1=EE=EB=
-=FC=F8=EE=E3=EE =EA=EE=EB=E8=F7=E5=F1=F2=E2=E0 =EF=F0=E8=EC=E5=F0=EE=E2 =E8=
-=E7 =EF=F0=E0=EA=F2=E8=EA=E8 =F0=EE=F1=F1=E8=E9=F1=EA=E8=F5 =E8 =E8=ED=EE=
-=F1=F2=F0=E0=ED=ED=FB=F5 =EA=EE=EC=EF=E0=ED=E8=E9. =D3=F7=E0=F1=F2=ED=E8=EA=
-=E8 =F1=E5=EC=E8=ED=E0=F0=E0 =E1=F3=E4=F3=F2 =F0=E0=F1=F1=EC=E0=F2=F0=E8=E2=
-=E0=F2=FC =E8 =F0=E5=F8=E0=F2=FC =EA=EE=ED=EA=F0=E5=F2=ED=FB=E5 =F1=E8=F2=
-=F3=E0=F6=E8=E8 =E8=E7 =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=E8 =F0=E5=E0=EB=FC=
-=ED=FB=F5 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=E9, =F0=E0=E7=E1=E5=F0=F3=F2 <b>=
-<i>=F3=EF=F0=E0=E6=ED=E5=ED=E8=FF</i></b> =E8 =E2=FB=EF=EE=EB=ED=FF=F2 <b=
-><i>=EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=E8=E5 =E7=E0=E4=E0=ED=E8=FF</i></b>. <=
-br>
-<br>
-</P>
-
-<P align=3Dcenter><b>=D7=F2=EE=E1=FB =EF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=
-=EE=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=F6=E8=FE =E8=EB=E8 =EF=F0=EE=E3=F0=E0=
-=EC=EC=F3 =EA=F3=F0=F1=E0, <br>
-=EF=EE=E7=E2=EE=ED=E8=F2=E5 =EF=EE =F2=E5=EB. (095) 98O-65-I6</b></FONT><=
-/P></font>
-</BODY>
-</HTML>
-
-------=_NextPart_001_0001_740B78EC.0C47E870--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+12-26-04 16:44 misnagid       Note Added: 0002937                          
+12-26-04 16:56 pzad           Note Added: 0002938                          
+12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
+12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
+12-26-04 19:44 misnagid       File Added: test.state                       
+12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
+12-26-04 20:09 misnagid       Note Added: 0002947                          
+12-26-04 20:22 pzad           File Added: newtest.state                    
+12-26-04 20:27 pzad           Note Added: 0002948                          
+12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
+12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
+12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
+12-27-04 10:46 pzad           Note Added: 0002958                          
+12-27-04 16:33 misnagid       Note Added: 0002964                          
+12-27-04 16:34 misnagid       File Added: test2.state                      
+12-27-04 16:38 misnagid       Note Added: 0002965                          
+12-27-04 16:45 pzad           Note Added: 0002966                          
+12-27-04 16:58 misnagid       Note Added: 0002967                          
+12-27-04 16:58 misnagid       File Added: test3.state                      
+12-27-04 17:42 misnagid       Note Added: 0002968                          
+12-27-04 17:57 misnagid       Note Added: 0002969                          
+12-27-04 18:16 pzad           Note Added: 0002970                          
+12-27-04 18:43 misnagid       Note Added: 0002971                          
+12-27-04 19:27 misnagid       Note Added: 0002972                          
+12-27-04 21:09 misnagid       Note Added: 0002975                          
+12-27-04 21:31 pzad           Note Added: 0002976                          
+12-27-04 21:47 misnagid       Note Added: 0002977                          
+12-27-04 21:49 misnagid       Note Added: 0002978                          
+12-27-04 22:00 pzad           Note Added: 0002979                          
+12-27-04 22:29 misnagid       Note Added: 0002980                          
+12-27-04 22:54 pzad           Note Added: 0002981                          
+12-27-04 23:15 misnagid       Note Added: 0002982                          
+12-27-04 23:19 misnagid       Note Added: 0002983                          
+12-27-04 23:46 pzad           Note Added: 0002984                          
+12-27-04 23:48 misnagid       Note Added: 0002985                          
+12-28-04 21:13 rlrevell       Note Added: 0002987                          
+01-03-05 00:36 misnagid       Note Added: 0003049                          
+01-03-05 15:10 pzad           Note Added: 0003064                          
+01-09-05 00:27 misnagid       Note Added: 0003132                          
+01-11-05 10:36 pzad           Note Added: 0003141                          
+01-11-05 11:24 misnagid       Note Added: 0003142                          
+01-11-05 23:20 misnagid       Note Added: 0003159                          
+04-22-05 11:04 stransky       Note Added: 0004553                          
+08-24-05 00:55 lonerider      Note Added: 0005921                          
+11-16-05 15:58 misnagid       Note Added: 0006741                          
+11-16-05 16:03 misnagid       Note Added: 0006742                          
+11-16-05 16:10 pzad           Note Added: 0006743                          
+11-20-05 07:29 misnagid       Note Added: 0006763                          
+======================================================================
 
 
 
-------=_NextPart_000_0000_3CBEE168.9D0D4141--
+
+-------------------------------------------------------
+This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
+Register for a JBoss Training Course.  Free Certification Exam
+for All Training Attendees Through End of 2005. For more info visit:
+http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
