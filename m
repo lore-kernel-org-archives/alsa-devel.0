@@ -1,17 +1,17 @@
 From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: fifo_size
-Date: Sun, 20 Nov 2005 20:19:39 +0000
-Message-ID: <1132517980.9292.13.camel@localhost.localdomain>
+Subject: snd_pcm_lib_malloc_pages
+Date: Sun, 20 Nov 2005 23:12:05 +0000
+Message-ID: <1132528326.9292.23.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 34DF319C
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 21:19:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8178219C
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 00:12:27 +0100 (MET)
 Received: from bossclass (bossclass [192.168.62.105])
-	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id jAKKJdvn028984
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 20:19:40 GMT
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id jAKNC68v030907
+	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 23:12:13 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,9 +24,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Is it still the case that this member of the pcm_hardware_t is unused -
-I am scanning through driver code where it has been set and wonder if
-there is a use for it?
+I am trying to write to a driver on the Dreamcast (SH4) - as far as I
+can see there are no ALSA drivers extant for this processor. Does that
+mean I should assume this function is implemented or unimplemented on
+SH? On a scan through the code I can see no obvious reason why it
+wouldn't be working (ie no processor specific code) but there must be
+some degree of processor/bus specific code.
+
+Adrian
 
 
 
