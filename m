@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: 2.6.15-rc1-mm2 -- Bad page state at free_hot_cold_page (in
- process 'aplay', page c18eef30)
-Date: Sun, 20 Nov 2005 13:14:27 -0500
-Message-ID: <1132510467.6874.144.camel@mindpipe>
-References: <a44ae5cd0511192256u20f0e594kc65cbaba108ff06e@mail.gmail.com>
-	 <Pine.LNX.4.61.0511200804500.3938@goblin.wat.veritas.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001584]: Load rises to 100% when dmix is used with ICE1724 (SN25P)
+Date: Sun, 20 Nov 2005 20:33:06 +0100
+Message-ID: <fe2819d9884d3db11321665d9f688f96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0511200804500.3938@goblin.wat.veritas.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8537019C
+	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 20:33:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,49 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hugh Dickins <hugh@veritas.com>
-Cc: Miles Lane <miles.lane@gmail.com>, Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(Added alsa-devel to cc:)
 
-Will this change have any ill effects on older kernels?  If not we
-should fix it in the ALSA tree right?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1584> 
+======================================================================
+Reported By:                mr511
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1584
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             11-20-2005 20:33 CET
+Last Modified:              11-20-2005 20:33 CET
+======================================================================
+Summary:                    Load rises to 100% when dmix is used with ICE1724
+(SN25P)
+Description: 
+ALSA applications using the dmix plugin run at 100% load. Verified with
+aplay, alsaplayer, xine, aoss+mpg123 and several others.
 
-Lee
+Approximately 1/3 of the load appears to be in user space, 2/3 in system
+space.
 
-On Sun, 2005-11-20 at 08:05 +0000, Hugh Dickins wrote:
-> On Sat, 19 Nov 2005, Miles Lane wrote:
-> > [17179671.700000] Bad page state at free_hot_cold_page (in process
-> > 'aplay', page c18eef30)
-> > [17179671.700000] flags:0x80000414 mapping:00000000 mapcount:0 count:0
-> 
-> Please let me know if it's not fixed by:
-> 
-> --- 2.6.15-rc1-mm2/sound/core/memalloc.c	2005-11-12 09:01:28.000000000 +0000
-> +++ linux/sound/core/memalloc.c	2005-11-19 19:03:32.000000000 +0000
-> @@ -197,6 +197,7 @@ void *snd_malloc_pages(size_t size, gfp_
->  
->  	snd_assert(size > 0, return NULL);
->  	snd_assert(gfp_flags != 0, return NULL);
-> +	gfp_flags |= __GFP_COMP;	/* compound page lets parts be mapped */
->  	pg = get_order(size);
->  	if ((res = (void *) __get_free_pages(gfp_flags, pg)) != NULL) {
->  		mark_pages(virt_to_page(res), pg);
-> @@ -241,6 +242,7 @@ static void *snd_malloc_dev_pages(struct
->  	snd_assert(dma != NULL, return NULL);
->  	pg = get_order(size);
->  	gfp_flags = GFP_KERNEL
-> +		| __GFP_COMP	/* compound page lets parts be mapped */
->  		| __GFP_NORETRY /* don't trigger OOM-killer */
->  		| __GFP_NOWARN; /* no stack trace print - this call is non-critical */
->  	res = dma_alloc_coherent(dev, PAGE_SIZE << pg, dma, gfp_flags);
-> -
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-> 
+Re-installing alsa-lib 1.0.8 makes the problem go away.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-20-05 20:33 mr511          New Issue                                    
+======================================================================
+
 
 
 
