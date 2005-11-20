@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 20 Nov 2005 09:16:08 +0100
-Message-ID: <c04b0ec2a17178e9e6e214fbf8217e09@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001582]: hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+Date: Sun, 20 Nov 2005 11:10:12 +0100
+Message-ID: <c7cd0cf8dc4f84f94c939048c9d9ab4a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBEAA14F
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 09:16:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 292BC172
+	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 11:10:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,119 +22,152 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1582> 
 ======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
+Reported By:                fastip
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
+Issue ID:                   1582
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
+Distribution:               Gentoo
+Kernel Version:             Linux solo 2.6.13-gentoo-r3 #3 SMP Wed Oct 12
+16:01:15 CEST 2005 x86_64
 ======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              11-20-2005 09:16 CET
+Date Submitted:             11-20-2005 11:10 CET
+Last Modified:              11-20-2005 11:10 CET
 ======================================================================
-Summary:                    Buzz from ALSA setup
+Summary:                    hda_codec: Unknown model for ALC880, trying
+auto-probe from BIOS...
 Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
+I have a Abit Fatal1ty AA8XE, with intel 925XE + ICH6 chipset and a intel
+HDA, and sound system does not work:
 
+dmesg output:
+
+[...]
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0x9
+hda_codec: num_steps = 0 for NID=0x9
+hda_codec: num_steps = 0 for NID=0x9
+hda_codec: num_steps = 0 for NID=0x9
+[...]
+
+lspci:
+
+00:00.0 Host bridge: Intel Corporation 925X/XE Memory Controller Hub (rev
+0e)
+00:01.0 PCI bridge: Intel Corporation 925X/XE PCI Express Root Port (rev
+0e)
+00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 04)
+00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB UHCI #1 (rev 04)
+00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB UHCI #2 (rev 04)
+00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB UHCI #3 (rev 04)
+00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB UHCI #4 (rev 04)
+00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB2 EHCI Controller (rev 04)
+00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev d4)
+00:1f.0 ISA bridge: Intel Corporation 82801FB/FR (ICH6/ICH6R) LPC
+Interface Bridge (rev 04)
+00:1f.1 IDE interface: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) IDE Controller (rev 04)
+00:1f.2 IDE interface: Intel Corporation 82801FR/FRW (ICH6R/ICH6RW) SATA
+Controller (rev 04)
+00:1f.3 SMBus: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus
+Controller (rev 04)
+01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce 6600]
+(rev a2)
+02:01.0 Ethernet controller: Intel Corporation 82541GI/PI Gigabit Ethernet
+Controller (rev 05)
+02:02.0 FireWire (IEEE 1394): Texas Instruments TSB43AB23 IEEE-1394a-2000
+Controller (PHY/Link)
+02:08.0 Ethernet controller: Intel Corporation 82562ET/EZ/GT/GZ - PRO/100
+VE Ethernet Controller (rev 04)
+
+lspci -vvv -s 00:1b.0 :
+00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 04)
+        Subsystem: ABIT Computer Corp. Unknown device 103e
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size 08
+        Interrupt: pin A routed to IRQ 169
+        Region 0: Memory at fdff8000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+
+cat /proc/asound/cards
+0 [Intel          ]: HDA-Intel - HDA Intel
+                     HDA Intel at 0xfdff8000 irq 169
+
+cat /proc/asound/devices
+ 17: [0- 1]: digital audio playback
+ 25: [0- 1]: digital audio capture
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+  1:       : sequencer
+ 33:       : timer
+
+cat /proc/asound/timers
+G0: system timer : 1000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-0-3: PCM capture 0-0-3 : SLAVE
+P0-1-0: PCM playback 0-1-0 : SLAVE
+P0-1-1: PCM capture 0-1-1 : SLAVE
+
+I've tryed to use module options same as thread:
+ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453
+
+but i think this is not the case of a duplicate thread...
+position_fix=2 and model=3stack options does not work for me!
 ======================================================================
-
-----------------------------------------------------------------------
- misnagid - 11-20-05 07:29 
-----------------------------------------------------------------------
-everything is the same as before.  no changes at all!!  except using fc4
-now of couirse.
-
-----------------------------------------------------------------------
- pzad - 11-20-05 09:16 
-----------------------------------------------------------------------
-How much memory your machine has ? Less than 512 MB or more ?
-In older alsa is bug which affect machines with more than 512 MB RAM an
-Audigy 1,2,..cards.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
-12-27-04 21:09 misnagid       Note Added: 0002975                          
-12-27-04 21:31 pzad           Note Added: 0002976                          
-12-27-04 21:47 misnagid       Note Added: 0002977                          
-12-27-04 21:49 misnagid       Note Added: 0002978                          
-12-27-04 22:00 pzad           Note Added: 0002979                          
-12-27-04 22:29 misnagid       Note Added: 0002980                          
-12-27-04 22:54 pzad           Note Added: 0002981                          
-12-27-04 23:15 misnagid       Note Added: 0002982                          
-12-27-04 23:19 misnagid       Note Added: 0002983                          
-12-27-04 23:46 pzad           Note Added: 0002984                          
-12-27-04 23:48 misnagid       Note Added: 0002985                          
-12-28-04 21:13 rlrevell       Note Added: 0002987                          
-01-03-05 00:36 misnagid       Note Added: 0003049                          
-01-03-05 15:10 pzad           Note Added: 0003064                          
-01-09-05 00:27 misnagid       Note Added: 0003132                          
-01-11-05 10:36 pzad           Note Added: 0003141                          
-01-11-05 11:24 misnagid       Note Added: 0003142                          
-01-11-05 23:20 misnagid       Note Added: 0003159                          
-04-22-05 11:04 stransky       Note Added: 0004553                          
-08-24-05 00:55 lonerider      Note Added: 0005921                          
-11-16-05 15:58 misnagid       Note Added: 0006741                          
-11-16-05 16:03 misnagid       Note Added: 0006742                          
-11-16-05 16:10 pzad           Note Added: 0006743                          
-11-20-05 07:29 misnagid       Note Added: 0006763                          
-11-20-05 09:16 pzad           Note Added: 0006764                          
+11-20-05 11:10 fastip         New Issue                                    
+11-20-05 11:10 fastip         Distribution              => Gentoo          
+11-20-05 11:10 fastip         Kernel Version            => Linux solo
+2.6.13-gentoo-r3 #3 SMP Wed Oct 12 16:01:15 CEST 2005 x86_64
 ======================================================================
 
 
