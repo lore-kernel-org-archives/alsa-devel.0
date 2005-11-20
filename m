@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001583]: pcm_file.c compilation fails during lib make install using gcc 2.95.4
-Date: Sun, 20 Nov 2005 16:14:23 +0100
-Message-ID: <211737589d96a57b96745d8c479e00b1@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: PM suspend on !PME card
+Date: Sun, 20 Nov 2005 17:34:01 +0000
+Message-ID: <20051120173401.249b9a70.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20F8118E
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 16:14:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +15,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1583> 
-======================================================================
-Reported By:                DavidB
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1583
-Category:                   0_general
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-20-2005 16:14 CET
-Last Modified:              11-20-2005 16:14 CET
-======================================================================
-Summary:                    pcm_file.c compilation fails during lib make install
-using gcc 2.95.4
-Description: 
-Version 1.0.10 of library obtained on 2005-11-21 ("stable" on that date),
-compiled with gcc 2.95.4 (still the recommended compiler for 2.4 kernels;
-see Documentation/Changes in the kernel tree), fails as follows during
-"make install":
+These cards:
 
- gcc-2.95 -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g -O2
--c pcm_file.c -Wp,-MD,.deps/pcm_file.TPlo  -fPIC -DPIC -o
-.libs/pcm_file.o
-pcm_file.c: In function `snd_pcm_file_forward':
-pcm_file.c:191: parse error before `n'
-make[2]: *** [pcm_file.lo] Error 1
+0001:10:14.0 Multimedia controller: Motorola DSP56361 Digital Signal Processor (rev 01)
+        Subsystem: Echo Digital Audio Corporation 3G
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 192, cache line size 08
+        Interrupt: pin A routed to IRQ 54
+        Region 0: Memory at 80200000 (32-bit, non-prefetchable) [size=1M]
 
-The failure occurs because the relevant line is not valid C; a declaration
-is introduced after a non-declaration statement in a block:
+0001:10:15.0 Multimedia controller: Motorola DSP56361 Digital Signal Processor
+        Subsystem: Echo Digital Audio Corporation Gina24 rev.1
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 192, cache line size 08
+        Interrupt: pin A routed to IRQ 58
+        Region 0: Memory at 80100000 (32-bit, non-prefetchable) [size=1M]
 
-	if (err > 0) {
-		file->appl_ptr = (file->appl_ptr + err) % file->wbuf_size;
-		snd_pcm_uframes_t n = snd_pcm_frames_to_bytes(pcm, err);
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-20-05 16:14 DavidB         New Issue                                    
-11-20-05 16:14 DavidB         File Added: pcm_file.c.diff                    
-======================================================================
+do not export PM informations. Nonetheless they can be put is a low-power
+state (the driver already does it in pci_driver.remove()). The driver can
+reinitialize them, but any internal state of the cards is lost. I can write
+the suspend and resume trigger callbacks if they're useful. Are they ?
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
