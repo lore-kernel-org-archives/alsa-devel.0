@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 20 Nov 2005 07:29:58 +0100
-Message-ID: <25adccdddb836bc8191c29e70682bbc0@bugtrack.alsa-project.org>
+Date: Sun, 20 Nov 2005 09:16:08 +0100
+Message-ID: <c04b0ec2a17178e9e6e214fbf8217e09@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1DC418E
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 07:29:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBEAA14F
+	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 09:16:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              11-20-2005 07:29 CET
+Last Modified:              11-20-2005 09:16 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,15 +56,17 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-16-05 16:10 
-----------------------------------------------------------------------
-How much memory do you have ?
-
-----------------------------------------------------------------------
  misnagid - 11-20-05 07:29 
 ----------------------------------------------------------------------
 everything is the same as before.  no changes at all!!  except using fc4
 now of couirse.
+
+----------------------------------------------------------------------
+ pzad - 11-20-05 09:16 
+----------------------------------------------------------------------
+How much memory your machine has ? Less than 512 MB or more ?
+In older alsa is bug which affect machines with more than 512 MB RAM an
+Audigy 1,2,..cards.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -132,6 +134,7 @@ Date Modified  Username       Field                    Change
 11-16-05 16:03 misnagid       Note Added: 0006742                          
 11-16-05 16:10 pzad           Note Added: 0006743                          
 11-20-05 07:29 misnagid       Note Added: 0006763                          
+11-20-05 09:16 pzad           Note Added: 0006764                          
 ======================================================================
 
 
