@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001565]: Compilation problem of src/pcm/pcm_file.c
-Date: Sun, 20 Nov 2005 15:11:55 +0100
-Message-ID: <bc1b8daea809ad63bb118536cb3c1fce@bugtrack.alsa-project.org>
+Date: Sun, 20 Nov 2005 15:12:10 +0100
+Message-ID: <883ee0d569847b0dd5697ef460d6cc20@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4655198
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 15:11:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6062F197
+	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 15:12:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1565> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
 Date Submitted:             11-16-2005 16:46 CET
-Last Modified:              11-20-2005 15:11 CET
+Last Modified:              11-20-2005 15:12 CET
 ======================================================================
 Summary:                    Compilation problem of src/pcm/pcm_file.c
 Description: 
@@ -67,6 +67,7 @@ Date Modified  Username       Field                    Change
 11-20-05 15:11 Clemens LadischResolution               open => fixed       
 11-20-05 15:11 Clemens LadischAssigned To               => Clemens Ladisch 
 11-20-05 15:11 Clemens LadischNote Added: 0006767                          
+11-20-05 15:12 Clemens LadischStatus                   resolved => closed  
 ======================================================================
 
 
