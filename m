@@ -1,11 +1,13 @@
-From: Sascha Sommer <saschasommer@freenet.de>
-Subject: [PATCH] abort snd_pcm_dmix_drain when state is SND_PCM_STATE_XRUN
-Date: Sun, 20 Nov 2005 02:17:19 +0100
-Message-ID: <200511200217.20070.saschasommer@freenet.de>
+From: Jon <jgrosshart@gmail.com>
+Subject: Re: kernel 2.6.14.x and alsamixer problems
+Date: Sat, 19 Nov 2005 23:16:10 -0500
+Message-ID: <437FF88A.5070502@gmail.com>
+References: <437EB3E6.6030205@gmail.com> <437F073D.4070906@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_g68fDue8KV8noZ6"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <437F073D.4070906@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,58 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_g68fDue8KV8noZ6
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+James Courtier-Dutton wrote:
 
-Hi,
-this is a fix for bug 0001559.
-Unlike my first guesses the real problem is not in the kernel driver but in 
-alsa-lib. Whenever the current dmix status is xrun and snd_pcm_dmix_drain 
-gets called the process will hang forever in the poll function. The reason is 
-that poll gets called even though the timer already stopped.
-As described in the bugtracking system this bug was not noticable with alsa 
-versions that used the old IOCTLS because the SNDRV_TIMER_IOCTL_STOP ioctl 
-never reached the timer kernel module.
-
-Attached patch fixes this problem for alsa-lib 1.0.10 by simply calling  
-snd_pcm_dmix_drop when snd_pcm_dmix_drain gets called in the state
-SND_PCM_STATE_XRUN.
-
-Regards
-
-Sascha 
-
---Boundary-00=_g68fDue8KV8noZ6
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="alsa-lib-1.0.10-dmix-drain-xrun.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="alsa-lib-1.0.10-dmix-drain-xrun.patch"
-
---- src/pcm/pcm_dmix.c.org	2005-11-20 01:51:04.000000000 +0100
-+++ src/pcm/pcm_dmix.c	2005-11-20 01:53:41.000000000 +0100
-@@ -532,6 +532,12 @@
- 			return 0;
- 		}
- 	}
-+
-+	if (dmix->state == SND_PCM_STATE_XRUN) {
-+		snd_pcm_dmix_drop(pcm);
-+		return 0;
-+	}
-+
- 	stop_threshold = pcm->stop_threshold;
- 	if (pcm->stop_threshold > pcm->buffer_size)
- 		pcm->stop_threshold = pcm->buffer_size;
-
---Boundary-00=_g68fDue8KV8noZ6--
+> Jon wrote:
+>
+>> Greetings all. Ever since I upgraded to linux-2.6.14 and up, I get this
+>> error when running 'alsamixer'
+>>
+>>
+>> ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
+>> Volume',0,0,0) appears twice or more
+>> alsamixer: function snd_mixer_load failed: Invalid argument
+>>
+>>
+>> It does it with alsa-1.0.9 and 1.0.10... I use alsa
+>> {driver,lib,oss,utils} on my box and leave the kernel sound section
+>> alone. As soon as I switch back to 2.6.13.4 it plays nice once again
+>> which is confusing to me...... I'm using the emu10k1 chip (SB Live!
+>> Value 5.1). Any insight on this matter would be greatly appreciated...
+>>
+>> Jon
+>>
+>>
+>
+> Does you alsa-lib version match your alsa-driver version.
+> Use the troubleshooter on
+> http://alsa.opensrc.org/TroubleShooting
+> to find out.
+>
+Yes, I'm always carefull to run matching versions. As soon as I upgraded 
+to the 2.6.14 kernel, this started happening. I hadn'nt even touched my 
+alsa packages, except alsa-driver ofcourse. I used the same version but 
+just compiled the new modules against the new kernel. I've found other 
+people having the same problem on the web, but the posts ussually go 
+unanswered... :-(
 
 
 -------------------------------------------------------
