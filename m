@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001581]: failure to compile
-Date: Sun, 20 Nov 2005 15:55:22 +0100
-Message-ID: <4868fa831e06848f615541452e6fe848@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001583]: pcm_file.c compilation fails during lib make install using gcc 2.95.4
+Date: Sun, 20 Nov 2005 16:14:23 +0100
+Message-ID: <211737589d96a57b96745d8c479e00b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A668129
-	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 15:55:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20F8118E
+	for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2005 16:14:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1581> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1583> 
 ======================================================================
-Reported By:                jan_prins
-Assigned To:                perex
+Reported By:                DavidB
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1581
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   1583
+Category:                   0_general
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               slackware 10.2
-Kernel Version:             2.4.31
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             11-19-2005 22:46 CET
-Last Modified:              11-20-2005 15:55 CET
+Date Submitted:             11-20-2005 16:14 CET
+Last Modified:              11-20-2005 16:14 CET
 ======================================================================
-Summary:                    failure to compile
+Summary:                    pcm_file.c compilation fails during lib make install
+using gcc 2.95.4
 Description: 
+Version 1.0.10 of library obtained on 2005-11-21 ("stable" on that date),
+compiled with gcc 2.95.4 (still the recommended compiler for 2.4 kernels;
+see Documentation/Changes in the kernel tree), fails as follows during
+"make install":
 
-alsa-driver version 1.0.10rc2
+ gcc-2.95 -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g -O2
+-c pcm_file.c -Wp,-MD,.deps/pcm_file.TPlo  -fPIC -DPIC -o
+.libs/pcm_file.o
+pcm_file.c: In function `snd_pcm_file_forward':
+pcm_file.c:191: parse error before `n'
+make[2]: *** [pcm_file.lo] Error 1
 
-failure to compile, with a repair that worked for me
+The failure occurs because the relevant line is not valid C; a declaration
+is introduced after a non-declaration statement in a block:
 
-see upload file for details
+	if (err > 0) {
+		file->appl_ptr = (file->appl_ptr + err) % file->wbuf_size;
+		snd_pcm_uframes_t n = snd_pcm_frames_to_bytes(pcm, err);
+
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 11-20-05 15:55 
-----------------------------------------------------------------------
-already fixed in 1.0.10
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-05 22:46 jan_prins      New Issue                                    
-11-19-05 22:46 jan_prins      File Added: bug.asc                          
-11-19-05 22:46 jan_prins      Distribution              => slackware 10.2  
-11-19-05 22:46 jan_prins      Kernel Version            => 2.4.31          
-11-20-05 15:55 Clemens LadischStatus                   assigned => resolved
-11-20-05 15:55 Clemens LadischResolution               open => fixed       
-11-20-05 15:55 Clemens LadischNote Added: 0006768                          
+11-20-05 16:14 DavidB         New Issue                                    
+11-20-05 16:14 DavidB         File Added: pcm_file.c.diff                    
 ======================================================================
 
 
