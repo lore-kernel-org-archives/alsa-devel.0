@@ -1,17 +1,14 @@
-From: Hugh Dickins <hugh@veritas.com>
-Subject: Re: 2.6.15-rc1-mm2 -- Bad page state at free_hot_cold_page (in
- process 'aplay', page c18eef30)
-Date: Mon, 21 Nov 2005 16:51:14 +0000 (GMT)
-Message-ID: <Pine.LNX.4.61.0511211634440.16632@goblin.wat.veritas.com>
-References: <a44ae5cd0511192256u20f0e594kc65cbaba108ff06e@mail.gmail.com>
- <Pine.LNX.4.61.0511200804500.3938@goblin.wat.veritas.com>
- <1132510467.6874.144.camel@mindpipe> <Pine.LNX.4.61.0511201915530.8619@goblin.wat.veritas.com>
- <s5hlkzinrq5.wl%tiwai@suse.de> <Pine.LNX.4.61.0511211507160.15988@goblin.wat.veritas.com>
- <20051121155239.GC21032@flint.arm.linux.org.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Mon, 21 Nov 2005 17:45:09 +0100
+Message-ID: <df088d2b544046954745aab8f5e20f9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20051121155239.GC21032@flint.arm.linux.org.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BBCA116
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 17:45:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,32 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Russell King <rmk+lkml@arm.linux.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, Lee Revell <rlrevell@joe-job.com>, Miles Lane <miles.lane@gmail.com>, Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 21 Nov 2005, Russell King wrote:
-> 
-> Does this mean that in arch/arm/mm/consistent.c, we should also set
-> __GFP_COMP ?  Should we be doing that today?
 
-No, I don't believe so.  I notice there's use of PageReserved and page
-count manipulation in there, which we may well want to rationalize in
-a later phase, perhaps replacing by __GFP_COMP then; but I don't see
-any need to change what you're doing at this stage.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+======================================================================
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1585
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+======================================================================
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              11-21-2005 17:45 CET
+======================================================================
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
+Description: 
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-Looking again, to see why you even thought you might need to change:
-the vital thing you're doing (aside from the PageReserved, which is
-becoming irrelevant), which is missing from the regular high-order
-allocation, is the set_page_count(page, 1).  That's why you don't
-need to change: the problems I was writing of come from when the
-0-order page count goes down to 0.
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
 
-Makes me wonder whether there could be a useful halfway stage to
-compound pages, whether it would help for the page allocator to
-set those counts to 1 generally.
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
 
-Hugh
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+======================================================================
+
+
 
 
 -------------------------------------------------------
