@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
-Date: Tue, 22 Nov 2005 00:31:56 +0100
-Message-ID: <6330ffff69e94929afe216de7cafb1d8@bugtrack.alsa-project.org>
+Date: Tue, 22 Nov 2005 00:31:30 +0100
+Message-ID: <79d3434afb6e7c03a6c6263bdf1748ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 369E619C
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 00:31:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D7C319C
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 00:31:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
 ======================================================================
 Reported By:                moncnam
-Assigned To:                
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1548
@@ -55,14 +55,6 @@ i have no other messages in `dmesg` or in syslog
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 11-21-05 23:56 
-----------------------------------------------------------------------
-I guess you are about sound driver 'intel8x0' and not about 'intel8x0m'
-(modem driver). If so it should be in 'intel8x0' category.
-
-The error message reports about underruns and likely it results pauses.
-
-----------------------------------------------------------------------
  moncnam - 11-22-05 00:04 
 ----------------------------------------------------------------------
 my system do use the 'intel8x0m'
@@ -88,7 +80,6 @@ Date Modified  Username       Field                    Change
 11-21-05 23:56 sashak         Note Added: 0006779                          
 11-22-05 00:04 moncnam        Note Added: 0006781                          
 11-22-05 00:31 sashak         Note Added: 0006783                          
-11-22-05 00:31 sashak         Assigned To              sashak =>           
 ======================================================================
 
 
