@@ -1,13 +1,14 @@
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: [PATCH 12/11] unpaged: fix sound Bad page states
-Date: Mon, 21 Nov 2005 12:41:05 -0800
-Message-ID: <20051121124105.1bf8090d.akpm@osdl.org>
-References: <Pine.LNX.4.61.0511211801070.17464@goblin.wat.veritas.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001584]: Load rises to 100% when dmix is used with ICE1724 (SN25P)
+Date: Mon, 21 Nov 2005 21:43:17 +0100
+Message-ID: <58d089906383123ef334f33c25d11495@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0511211801070.17464@goblin.wat.veritas.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B69BA18B
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 21:43:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,18 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hugh Dickins <hugh@veritas.com>
-Cc: tiwai@suse.de, rmk+lkml@arm.linux.org.uk, wli@holomorphy.com, davem@davemloft.net, torvalds@osdl.org, nickpiggin@yahoo.com.au, airlied@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hugh Dickins <hugh@veritas.com> wrote:
->
->   arch/sparc/kernel/ioport.c |    2 +-
->   arch/sparc64/kernel/sbus.c |    2 +-
->   sound/core/memalloc.c      |    2 ++
->   3 files changed, 4 insertions(+), 2 deletions(-)
 
-So with this, do you think everything is in place for a mainline merge?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1584> 
+======================================================================
+Reported By:                mr511
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1584
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             11-20-2005 20:33 CET
+Last Modified:              11-21-2005 21:43 CET
+======================================================================
+Summary:                    Load rises to 100% when dmix is used with ICE1724
+(SN25P)
+Description: 
+ALSA applications using the dmix plugin run at 100% load. Verified with
+aplay, alsaplayer, xine, aoss+mpg123 and several others.
+
+Approximately 1/3 of the load appears to be in user space, 2/3 in system
+space.
+
+Re-installing alsa-lib 1.0.8 makes the problem go away.
+======================================================================
+
+----------------------------------------------------------------------
+ mr511 - 11-21-05 14:37 
+----------------------------------------------------------------------
+One more note: when using alsaplayer, the following system calls are
+repeated again and again:
+
+read(5, "", 16)                         = 0
+poll([{fd=5, events=POLLIN|POLLERR|POLLNVAL, revents=POLLIN}], 1, -1) = 1
+ioctl(4, 0xc0844123, 0x825f298)         = 0
+ioctl(4, 0xc0844123, 0x825f298)         = 0
+ioctl(4, 0xc0844123, 0x825f298)         = 0
+ioctl(4, 0xc0844123, 0x825f298)         = 0
+
+The ioctl appears to be SNDRV_PCM_IOCTL_SYNC_PTR.
+
+----------------------------------------------------------------------
+ mr511 - 11-21-05 21:43 
+----------------------------------------------------------------------
+More observations: Behavior depends on the kernel version. With 2.6.12,
+everything works fine. With 2.6.14, the load rises.
+
+In the earlier note, fd=5 is /dev/snd/timer, so maybe it's a timer
+problem. In the worst case, the poll loop is executed approximately
+8000...10000 times per second. The kernel is configured with
+CONFIG_HZ=250, in case that matters.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-20-05 20:33 mr511          New Issue                                    
+11-21-05 14:37 mr511          Note Added: 0006771                          
+11-21-05 21:43 mr511          Note Added: 0006777                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
