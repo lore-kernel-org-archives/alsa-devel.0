@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001540]: alsa-lib make check: code.c does not compile with GCC4
-Date: Mon, 21 Nov 2005 00:58:38 +0100
-Message-ID: <a693dcc287807e63fa599ed42417a43e@bugtrack.alsa-project.org>
+From: "Rosabel Bobbitt" <bobi@atc-enviro.com>
+Subject: Re: Roger Really Works
+Date: Sun, 20 Nov 2005 19:38:22 -0500
+Message-ID: <001601c5ee33$e012d300$52caa8c0@wrath>
+Reply-To: "Rosabel Bobbitt" <bobi@atc-enviro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0013_01C5EE09.F73CCB00"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0243D16F
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 00:58:38 +0100 (MET)
+Received: from atc-enviro.com (host-69-145-222-75.gdj-co.client.bresnan.net [69.145.222.75])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9E91018E
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 01:38:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +19,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Yen Cullinan <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1540> 
-======================================================================
-Reported By:                Flameeyes
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1540
-Category:                   aconnect
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-10-2005 12:40 CET
-Last Modified:              11-21-2005 00:58 CET
-======================================================================
-Summary:                    alsa-lib make check: code.c does not compile with
-GCC4
-Description: 
-test/code.c source file does not compile with GCC4 as it uses casted
-lvalues (that are deprecated in GCC 3.4 and invalid in GCC4).
-The attached patch should solve without problems.
+------=_NextPart_000_0013_01C5EE09.F73CCB00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-HTH,
-Diego
-======================================================================
+ P
+X
+V
+L
+C
+V
+A
+r
+a
+I
+e
+I
+A
+m
+o
+n
+A
+v
+A
+L
+b
+z
+a
+G
+i
+L
+I
+i
+a
+x
+R
+t
+I
+U
+e
+c
+ A
+ra
+S
+M
+n
+ 3,35
+ 3,70
+ 1,20
+ http://www.farmermi.amesopene.com
 
-----------------------------------------------------------------------
- Flameeyes - 11-21-05 00:58 
-----------------------------------------------------------------------
-Can someone close this, as I reported it in the right project already?
+------=_NextPart_000_0013_01C5EE09.F73CCB00
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-10-05 12:40 Flameeyes      New Issue                                    
-11-10-05 12:40 Flameeyes      File Added: alsa-lib-1.0.10_rc3-test.patch        
-           
-11-21-05 00:58 Flameeyes      Note Added: 0006769                          
-======================================================================
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV style=3D"MARGIN-RIGHT: 0px; FLOAT: left;"><FONT face=3DCourier =
+size=3D3>P<BR>X<BR>V<BR>L<BR>C<BR>V<BR>A</FONT></DIV>
+<DIV style=3D"BORDER-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier =
+size=3D3>r<BR>a<BR>I<BR>e<BR>I<BR>A<BR>m</FONT></DIV>
+<DIV style=3D"PADDING-LEFT: 0px; FLOAT: left;"><FONT face=3DCourier =
+size=3D3>o<BR>n<BR>A<BR>v<BR>A<BR>L<BR>b</FONT></DIV>
+<DIV style=3D"BORDER-LEFT: 0px; FLOAT: left;"><FONT face=3DCourier =
+size=3D3>z<BR>a<BR>G<BR>i<BR>L<BR>I<BR>i</FONT></DIV>
+<DIV style=3D"BORDER: 0px; FLOAT: left;"><FONT face=3DCourier =
+size=3D3>a<BR>x<BR>R<BR>t<BR>I<BR>U<BR>e</FONT></DIV>
+<DIV style=3D"BORDER-LEFT: 0px; FLOAT: left;"><FONT face=3DCourier =
+size=3D3>c<BR>&nbsp;<BR>A<BR>ra<BR>S<BR>M<BR>n</FONT></DIV>
+<DIV style=3D"PADDING-RIGHT: 0px; FLOAT: left;"><FONT face=3DCourier =
+size=3D3>&nbsp;<BR>&nbsp;<BR>&nbsp;3,35<BR>&nbsp;<BR>&nbsp;3,70<BR>&n=
+bsp;1,20<BR>&nbsp;</FONT></DIV><DIV style=3D"CLEAR: both;">&nbsp;</DIV><A =
+href=3D"http://www.farmermi.amesopene.com"><FONT size=3D3>http://ww=
+w.farmermi.amesopene.com</FONT></A></BODY></HTML>
 
+------=_NextPart_000_0013_01C5EE09.F73CCB00--
 
 
 
