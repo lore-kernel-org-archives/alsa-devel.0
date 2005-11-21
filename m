@@ -1,44 +1,28 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Terratec DMX6fire control signal
-Date: Mon, 21 Nov 2005 22:55:56 +0000
-Message-ID: <200511212255.56749.gineera@aspect135.co.uk>
-References: <200511211515.38896.gineera@aspect135.co.uk>
+From: Hugh Dickins <hugh@veritas.com>
+Subject: Re: [PATCH 12/11] unpaged: fix sound Bad page states
+Date: Mon, 21 Nov 2005 22:40:30 +0000 (GMT)
+Message-ID: <Pine.LNX.4.61.0511212240060.21223@goblin.wat.veritas.com>
+References: <Pine.LNX.4.61.0511211801070.17464@goblin.wat.veritas.com>
+ <20051121124105.1bf8090d.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200511211515.38896.gineera@aspect135.co.uk>
-Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751190AbVKUWrW@vger.kernel.org>
+In-Reply-To: <20051121124105.1bf8090d.akpm@osdl.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: tiwai@suse.de, rmk+lkml@arm.linux.org.uk, wli@holomorphy.com, davem@davemloft.net, torvalds@osdl.org, nickpiggin@yahoo.com.au, airlied@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 21 November 2005 15:15, I wrote:
-> I have been working on some patches for the Terratec DMX6fire.  The control
-> signal 'Front Digital Input Switch' in alsamixer acts in reverse.  Is it
-> better to rename it the opposite logic (which in this case might be
-> 'Internal Digital Input Switch') or reverse its action in the route that
-> the control connects to the hardware?
+On Mon, 21 Nov 2005, Andrew Morton wrote:
+> Hugh Dickins <hugh@veritas.com> wrote:
+> >
+> >   arch/sparc/kernel/ioport.c |    2 +-
+> >   arch/sparc64/kernel/sbus.c |    2 +-
+> >   sound/core/memalloc.c      |    2 ++
+> >   3 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> So with this, do you think everything is in place for a mainline merge?
 
-....Or the invert parameter could be set when the control is created, I just 
-noticed?  It seems to do the job.
+Yes, I believe so: thanks.
 
- Alan
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
-Register for a JBoss Training Course.  Free Certification Exam
-for All Training Attendees Through End of 2005. For more info visit:
-http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
+Hugh
