@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Mon, 21 Nov 2005 17:45:09 +0100
-Message-ID: <df088d2b544046954745aab8f5e20f9e@bugtrack.alsa-project.org>
+From: Dino Puller <dino@e4a.it>
+Subject: Re: Surround example?
+Date: Mon, 21 Nov 2005 17:57:50 +0100
+Message-ID: <4381FC8E.8060404@e4a.it>
+References: <437EEFB6.6010801@e4a.it> <s5hr79anvrt.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BBCA116
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 17:45:09 +0100 (MET)
+In-Reply-To: <s5hr79anvrt.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +17,137 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
-======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
-======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              11-21-2005 17:45 CET
-======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
-Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+>At Sat, 19 Nov 2005 10:26:14 +0100,
+>Dino Puller wrote:
+>  
+>
+>>
+>>-------- Original Message --------
+>>Subject: 	Re: [Alsa-devel] Surround example?
+>>Date: 	Sat, 19 Nov 2005 10:25:34 +0100
+>>From: 	Dino Puller <dino@e4a.it>
+>>To: 	Takashi Iwai <tiwai@suse.de>
+>>References: 	<437CFAE5.5080908@e4a.it> <437DC4D3.3050900@e4a.it> 
+>><s5hoe4ip00t.wl%tiwai@suse.de> <437DDD5E.8060405@e4a.it> 
+>><s5hlkzmoxxm.wl%tiwai@suse.de>
+>>
+>>
+>>
+>>Takashi Iwai wrote:
+>>
+>>    
+>>
+>>>At Fri, 18 Nov 2005 14:55:42 +0100,
+>>>Dino Puller wrote:
+>>> 
+>>>
+>>>      
+>>>
+>>>>Takashi Iwai wrote:
+>>>>
+>>>>   
+>>>>
+>>>>        
+>>>>
+>>>>>At Fri, 18 Nov 2005 13:10:59 +0100,
+>>>>>Dino Puller wrote:
+>>>>>
+>>>>>
+>>>>>     
+>>>>>
+>>>>>          
+>>>>>
+>>>>>>Dino Puller wrote:
+>>>>>>
+>>>>>>  
+>>>>>>
+>>>>>>       
+>>>>>>
+>>>>>>            
+>>>>>>
+>>>>>>>Hi all,
+>>>>>>> i'd like to code a surround player, but i haven't found any 
+>>>>>>>documentation about it, can you give me a link to a tutorial or an 
+>>>>>>>example or something?
+>>>>>>>
+>>>>>>>Thanks,
+>>>>>>>Dino Puller
+>>>>>>>
+>>>>>>>
+>>>>>>>    
+>>>>>>>
+>>>>>>>         
+>>>>>>>
+>>>>>>>              
+>>>>>>>
+>>>>>>Ok now i've opened my surrond40 device but now what i have to change to 
+>>>>>>my snd_pcm_mmap_begin/snd_pcm_mmap_commit routine? Actully i can hear 
+>>>>>>noise only from front channels.
+>>>>>>  
+>>>>>>
+>>>>>>       
+>>>>>>
+>>>>>>            
+>>>>>>
+>>>>>Are you using 1.0.10-final?
+>>>>>
+>>>>>
+>>>>>Takashi
+>>>>>
+>>>>>
+>>>>>
+>>>>>     
+>>>>>
+>>>>>          
+>>>>>
+>>>>No  i'm using default alsalib that come with debian sid: 1.0.9
+>>>>are there any improvement or issue in 1.0.10 ?
+>>>>   
+>>>>
+>>>>        
+>>>>
+>>>Yes.
+>>>
+>>>
+>>>Takashi
+>>>
+>>>
+>>> 
+>>>
+>>>      
+>>>
+>>Hmm i'm looking to pcm.c example but when i lunch
+>>#./pcm -Dsurround40 -c4 -mdirect_interleaved
+>>I obtain:
+>>
+>>Access type not available for playback: Invalid argument
+>>Setting of hwparams failed: Invalid argument
+>>    
+>>
+>
+>WORKSFORME.  Which driver?
+>
+>
+>Takashi
+>  
+>
+I'm using an Herculess Fortissimo II with a cs46xx driver.
+Anyway i was looking for an example/documentation.
+I've found that pcm.c is not correct for a mmaped play in surround mode: 
+we have to setting the device with SND_PCM_ACCESS_MMAP_COMPLEX flag and 
+pcm.c doesn't do it. For the remaining code pcm.c is right and nothing 
+change from 2 channels to 4 ones in terms of main loop.
+I've found how alsa works, thanks.
+Ah direct_loop (always in pcm.c) doesn't use the parameter areas, why 
+not to clean it out?
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
-
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-======================================================================
+bye,
+   Dino
 
 
 
