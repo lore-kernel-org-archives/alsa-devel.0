@@ -1,13 +1,14 @@
-From: Andrew Gaydenko <a@gaydenko.com>
-Subject: SPDIF-out bit depth
-Date: Tue, 22 Nov 2005 02:17:25 +0300
-Message-ID: <200511220217.25747@goldspace.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001483]: PCM.C errors: Using modem drivers.
+Date: Tue, 22 Nov 2005 00:24:42 +0100
+Message-ID: <e504f979bbcde9de7671844f4021b13f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="koi8-r"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DB1219C
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 00:24:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,23 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-Is there a way to determine SPDIF-out bit depth during a playing back?
+The following issue has been ASSIGNED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1483> 
+======================================================================
+Reported By:                GPLed
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1483
+Category:                   0_general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             10-18-2005 13:01 CEST
+Last Modified:              11-22-2005 00:24 CET
+======================================================================
+Summary:                    PCM.C errors: Using modem drivers.
+Description: 
+snd-intel-8x0m driver. I have successfully loaded the driver and ran
+slmodemd --alsa but it gives me the following output:
 
-I have tried to play a 96KHz/24bit file: JACK server was started with 96KHz/32bit,
-aqualung player was used for playing back. 'iecset -x' dump out shows byte 1 of
-channel status as '0x00'. In accordance with AES3-2003 document, it means "no more
-rather 20bit". I'd want to have and see 24bit depth :-)
+error: mixer setup: attach hw:1 error: No such file or directory
+ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM modem:1
+definition (id: modem, value: cards.pcm.modem)
+error: alsa setup: cannot open playback device 'modem:1': Invalid
+argument
+error: cannot setup device `modem:1'
 
-The ICE1724 driver is in use.
+Some other people also get the very same problem on FC4. Is there anything
+that can be done? Please help.
+======================================================================
 
-What have I missed?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-18-05 13:01 GPLed          New Issue                                    
+11-22-05 00:24 sashak         Status                   new => assigned     
+11-22-05 00:24 sashak         Assigned To               => sashak          
+======================================================================
 
-Andrew
+
 
 
 -------------------------------------------------------
