@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001583]: pcm_file.c compilation fails during lib make install using gcc 2.95.4
-Date: Mon, 21 Nov 2005 08:43:05 +0100
-Message-ID: <862779739aff0700063e522c3aa08dbb@bugtrack.alsa-project.org>
+Date: Mon, 21 Nov 2005 08:43:41 +0100
+Message-ID: <5371283cafdea2eaf4177ea5afd79053@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CBD516D
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 08:43:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7557D16D
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 08:43:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001565.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1583> 
 ======================================================================
@@ -35,7 +35,9 @@ Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-20-2005 16:14 CET
 Last Modified:              11-21-2005 08:43 CET
@@ -74,6 +76,7 @@ Date Modified  Username       Field                    Change
 11-20-05 16:14 DavidB         New Issue                                    
 11-20-05 16:14 DavidB         File Added: pcm_file.c.diff                    
 11-21-05 08:43 Clemens LadischRelationship added       duplicate of 0001565
+11-21-05 08:43 Clemens LadischStatus                   new => closed       
 ======================================================================
 
 
