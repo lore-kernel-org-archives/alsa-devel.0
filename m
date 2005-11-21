@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001483]: PCM.C errors: Using modem drivers.
-Date: Tue, 22 Nov 2005 00:24:42 +0100
-Message-ID: <e504f979bbcde9de7671844f4021b13f@bugtrack.alsa-project.org>
+Date: Tue, 22 Nov 2005 00:26:45 +0100
+Message-ID: <7a023ba5fdb5a1b7a9b689722d930cbe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DB1219C
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 00:24:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3612E19C
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 00:26:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1483> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             10-18-2005 13:01 CEST
-Last Modified:              11-22-2005 00:24 CET
+Last Modified:              11-22-2005 00:26 CET
 ======================================================================
 Summary:                    PCM.C errors: Using modem drivers.
 Description: 
@@ -56,12 +56,19 @@ Some other people also get the very same problem on FC4. Is there anything
 that can be done? Please help.
 ======================================================================
 
+----------------------------------------------------------------------
+ sashak - 11-22-05 00:26 
+----------------------------------------------------------------------
+It is likely not updated configuration on FC4. Which card/driver you are
+using and which version of alsa-lib?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-18-05 13:01 GPLed          New Issue                                    
 11-22-05 00:24 sashak         Status                   new => assigned     
 11-22-05 00:24 sashak         Assigned To               => sashak          
+11-22-05 00:26 sashak         Note Added: 0006782                          
 ======================================================================
 
 
