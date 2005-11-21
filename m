@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001483]: PCM.C errors: Using modem drivers.
-Date: Tue, 22 Nov 2005 00:26:45 +0100
-Message-ID: <7a023ba5fdb5a1b7a9b689722d930cbe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
+Date: Tue, 22 Nov 2005 00:31:56 +0100
+Message-ID: <6330ffff69e94929afe216de7cafb1d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3612E19C
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 00:26:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 369E619C
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 00:31:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1483> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
 ======================================================================
-Reported By:                GPLed
-Assigned To:                sashak
+Reported By:                moncnam
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1483
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   1548
+Category:                   PCI - intel8x0m
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
+Distribution:               debian sarge 3.1
+Kernel Version:             2.6.13-rc7
 ======================================================================
-Date Submitted:             10-18-2005 13:01 CEST
-Last Modified:              11-22-2005 00:26 CET
+Date Submitted:             11-12-2005 10:58 CET
+Last Modified:              11-22-2005 00:31 CET
 ======================================================================
-Summary:                    PCM.C errors: Using modem drivers.
+Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
+stream" : inopportune small pauses while playing
 Description: 
-snd-intel-8x0m driver. I have successfully loaded the driver and ran
-slmodemd --alsa but it gives me the following output:
-
-error: mixer setup: attach hw:1 error: No such file or directory
-ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM modem:1
-definition (id: modem, value: cards.pcm.modem)
-error: alsa setup: cannot open playback device 'modem:1': Invalid
-argument
-error: cannot setup device `modem:1'
-
-Some other people also get the very same problem on FC4. Is there anything
-that can be done? Please help.
+whatever the player i use (alsaplayer, xmms, mplayer) i experience small
+pause while playing (half of a second)
+using mplayer, i can see the following message appearing when the pause
+occur
+<<alsa-play: xrun of at least 0.009 msecs. resetting stream>>
+the playing doesn't stop, it continue well, just a small pause
+i have no other messages in `dmesg` or in syslog
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 11-22-05 00:26 
+ sashak - 11-21-05 23:56 
 ----------------------------------------------------------------------
-It is likely not updated configuration on FC4. Which card/driver you are
-using and which version of alsa-lib?
+I guess you are about sound driver 'intel8x0' and not about 'intel8x0m'
+(modem driver). If so it should be in 'intel8x0' category.
+
+The error message reports about underruns and likely it results pauses.
+
+----------------------------------------------------------------------
+ moncnam - 11-22-05 00:04 
+----------------------------------------------------------------------
+my system do use the 'intel8x0m'
+i thought it was a module above the 'intel8x0'
+i confirm that my sound doesn't come out from my modem
+do you think i have to repost my question in the other category ?
+(in order to know what an underrun is, and how to fight against it)
+
+----------------------------------------------------------------------
+ sashak - 11-22-05 00:31 
+----------------------------------------------------------------------
+Underrun happens then driver's playback audio buffer becomes empty before
+next portion of samples were written. In many cases it is triggered by
+external event like system overload (it is possible if you play huge
+movies on slow cpu) or intencive io operations.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-18-05 13:01 GPLed          New Issue                                    
-11-22-05 00:24 sashak         Status                   new => assigned     
-11-22-05 00:24 sashak         Assigned To               => sashak          
-11-22-05 00:26 sashak         Note Added: 0006782                          
+11-12-05 10:58 moncnam        New Issue                                    
+11-12-05 10:58 moncnam        Distribution              => debian sarge 3.1
+11-12-05 10:58 moncnam        Kernel Version            => 2.6.13-rc7      
+11-21-05 23:56 sashak         Note Added: 0006779                          
+11-22-05 00:04 moncnam        Note Added: 0006781                          
+11-22-05 00:31 sashak         Note Added: 0006783                          
+11-22-05 00:31 sashak         Assigned To              sashak =>           
 ======================================================================
 
 
