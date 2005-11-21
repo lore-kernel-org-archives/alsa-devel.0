@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001559]: hang in snd_pcm_drain()
-Date: Mon, 21 Nov 2005 19:49:40 +0100
-Message-ID: <5ecb79e568f374eaaa5ae84822c00030@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Mon, 21 Nov 2005 19:53:42 +0100
+Message-ID: <fd1ee031087881e11f4b1e7d02d57766@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9828F135
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 19:49:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FDFE135
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 19:53:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,137 +22,121 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1559> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
 ======================================================================
-Reported By:                Faust3
-Assigned To:                rlrevell
+Reported By:                misnagid
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1559
-Category:                   CORE - pcm
-Reproducibility:            random
+Issue ID:                   749
+Category:                   PCI - emu10k1
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-14-2005 19:14 CET
-Last Modified:              11-21-2005 19:49 CET
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              11-21-2005 19:53 CET
 ======================================================================
-Summary:                    hang in snd_pcm_drain()
+Summary:                    Buzz from ALSA setup
 Description: 
-MPlayer sometimes hangs during uninit in snd_pcm_drain()
-Sometimes one can play up to 40 files untill it happens, so this is not
-easily reproducable.
-Although I could reproduce it with alsa-lib-1.0.10rc3 and kernel 2.6.15rc1
-and 2.6.14.
-As far as I know it does not happen with 2.6.12. I did not test 2.6.13
-
-Here is some backtrace when pressing ctrl-c (I can redo with debugging
-symbols if needed)
-0xffffe410 in __kernel_vsyscall ()
-(gdb) bt
-#0  0xffffe410 in __kernel_vsyscall ()
-#1  0xb797e0bd in poll () from /lib/tls/i686/cmov/libc.so.6
-#2  0xb7efcca1 in snd_pcm_wait_nocheck () from /usr/lib/libasound.so.2
-#3  0xb7f32a2d in _snd_pcm_dmix_open () from /usr/lib/libasound.so.2
-#4  0xb7efaa9c in snd_pcm_drain () from /usr/lib/libasound.so.2
-#5  0xb7f0c63b in snd_pcm_generic_drain () from /usr/lib/libasound.so.2
-#6  0xb7efaa9c in snd_pcm_drain () from /usr/lib/libasound.so.2
-#7  0xb7f1712e in _snd_pcm_rate_open () from /usr/lib/libasound.so.2
-#8  0xb7efaa9c in snd_pcm_drain () from /usr/lib/libasound.so.2
-#9  0x080cd4a9 in uninit ()
-#10 0x08856ad8 in ?? ()
-#11 0x00000006 in ?? ()
-#12 0xbf9f2148 in ?? ()
-#13 0x081f750c in getch2_disable ()
-#14 0x00000000 in ?? ()
-#15 0x00000000 in ?? ()
-#16 0x08643700 in getch2_buf ()
-#17 0x08072839 in uninit_player ()
-#18 0x00000007 in ?? ()
-#19 0x084dbcc6 in _IO_stdin_used ()
-#20 0x00000e4b in ?? ()
-#21 0xbf9f0efc in ?? ()
-#22 0x00000004 in ?? ()
-#23 0x00000004 in ?? ()
-#24 0x08076959 in main ()
-
-Attaching strace will make it continue.
-
-As far as I can tell the problematic poll is in 
-static unsigned int snd_timer_user_poll(struct file *file, poll_table *
-wait)
-
-in sound/core/timer.c in the kernel.
-
-I don't know if this has any importance but tu->qused in the above
-function is 2, about 2 polls before the hang. During normal playback it
-always seems to be 0 or 1
-
-It might have also something to do with the many xruns I'm getting with
-some files,
-but I think the xruns are more likely a MPlayer problem.
-The problem does not occure when using oss emulation.
-
-Please tell me if you need additional info or if I should add some debug
-printf/printks etc.
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Faust3 - 11-18-05 19:07 
+ misnagid - 11-20-05 13:23 
 ----------------------------------------------------------------------
-Ok I made a test app available at http://faust3.kilu.de/testcase.tar.gz
-Just run the included ao_alsa_test and it will hang in the
-snd_pcm_drain()
-
-The bug is probably there for some time already. However it was hidden by
-another
-bug that has been fixed in revision 1.15 of alsa-lib/src/timer/timer_hw.c
-Commit message:
-"Summary: Change some timer ioctls due to confliction
-
-Change values of some timer ioctls to avoid confliction with FIO* ioctls.
-Use old ioctls if the timer protocol version doesn't match."
-
-Due to this bug SNDRV_TIMER_IOCTL_STOP never reached sound/core/timer.c
-in alsa-driver.
-Now that the above bug is fixed and SNDRV_TIMER_IOCTL_STOP gets called,
-the poll()
-will hang.
-
-This happens with all alsa driver versions since 1.0.9rc4 (where
-SNDRV_TIMER_VERSION got increased to 2.0.4)
-
-Tell me if you need more info...
-
-Driver snd-intel8x0
-Card: Intel 82801DB-ICH4                                                  
-                                                                          
-                 
-Chip: SigmaTel STAC9750,51
+Hi,
+I am using the very latest ALSA version.  Yes, I am using more than 512 MB
+Ram.  I use generally 1, 2, or 4 GB but I am using the latest drivers
+though.
 
 ----------------------------------------------------------------------
- rlrevell - 11-21-05 19:49 
+ rlrevell - 11-21-05 19:53 
 ----------------------------------------------------------------------
-Fixed in CVS.
+What is the output of "cat /proc/asound/version"?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-14-05 19:14 Faust3         New Issue                                    
-11-14-05 19:33 Faust3         Issue Monitored: Faust3                      
-11-18-05 19:07 Faust3         Note Added: 0006756                          
-11-21-05 19:49 rlrevell       Status                   new => resolved     
-11-21-05 19:49 rlrevell       Resolution               open => fixed       
-11-21-05 19:49 rlrevell       Assigned To               => rlrevell        
-11-21-05 19:49 rlrevell       Note Added: 0006773                          
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+12-26-04 16:44 misnagid       Note Added: 0002937                          
+12-26-04 16:56 pzad           Note Added: 0002938                          
+12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
+12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
+12-26-04 19:44 misnagid       File Added: test.state                       
+12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
+12-26-04 20:09 misnagid       Note Added: 0002947                          
+12-26-04 20:22 pzad           File Added: newtest.state                    
+12-26-04 20:27 pzad           Note Added: 0002948                          
+12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
+12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
+12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
+12-27-04 10:46 pzad           Note Added: 0002958                          
+12-27-04 16:33 misnagid       Note Added: 0002964                          
+12-27-04 16:34 misnagid       File Added: test2.state                      
+12-27-04 16:38 misnagid       Note Added: 0002965                          
+12-27-04 16:45 pzad           Note Added: 0002966                          
+12-27-04 16:58 misnagid       Note Added: 0002967                          
+12-27-04 16:58 misnagid       File Added: test3.state                      
+12-27-04 17:42 misnagid       Note Added: 0002968                          
+12-27-04 17:57 misnagid       Note Added: 0002969                          
+12-27-04 18:16 pzad           Note Added: 0002970                          
+12-27-04 18:43 misnagid       Note Added: 0002971                          
+12-27-04 19:27 misnagid       Note Added: 0002972                          
+12-27-04 21:09 misnagid       Note Added: 0002975                          
+12-27-04 21:31 pzad           Note Added: 0002976                          
+12-27-04 21:47 misnagid       Note Added: 0002977                          
+12-27-04 21:49 misnagid       Note Added: 0002978                          
+12-27-04 22:00 pzad           Note Added: 0002979                          
+12-27-04 22:29 misnagid       Note Added: 0002980                          
+12-27-04 22:54 pzad           Note Added: 0002981                          
+12-27-04 23:15 misnagid       Note Added: 0002982                          
+12-27-04 23:19 misnagid       Note Added: 0002983                          
+12-27-04 23:46 pzad           Note Added: 0002984                          
+12-27-04 23:48 misnagid       Note Added: 0002985                          
+12-28-04 21:13 rlrevell       Note Added: 0002987                          
+01-03-05 00:36 misnagid       Note Added: 0003049                          
+01-03-05 15:10 pzad           Note Added: 0003064                          
+01-09-05 00:27 misnagid       Note Added: 0003132                          
+01-11-05 10:36 pzad           Note Added: 0003141                          
+01-11-05 11:24 misnagid       Note Added: 0003142                          
+01-11-05 23:20 misnagid       Note Added: 0003159                          
+04-22-05 11:04 stransky       Note Added: 0004553                          
+08-24-05 00:55 lonerider      Note Added: 0005921                          
+11-16-05 15:58 misnagid       Note Added: 0006741                          
+11-16-05 16:03 misnagid       Note Added: 0006742                          
+11-16-05 16:10 pzad           Note Added: 0006743                          
+11-20-05 07:29 misnagid       Note Added: 0006763                          
+11-20-05 09:16 pzad           Note Added: 0006764                          
+11-20-05 13:23 misnagid       Note Added: 0006766                          
+11-21-05 19:53 rlrevell       Note Added: 0006774                          
 ======================================================================
 
 
