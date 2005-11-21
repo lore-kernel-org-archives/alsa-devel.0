@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
-Date: Mon, 21 Nov 2005 23:50:39 +0100
-Message-ID: <b19f5cb606d97b22573e8a07404b813a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
+Date: Mon, 21 Nov 2005 23:56:55 +0100
+Message-ID: <9183e8077208a7f4d8de898c45af8eae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A08816A
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 23:50:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7E4C19C
+	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 23:56:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=509> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
 ======================================================================
-Reported By:                gbilotta
+Reported By:                moncnam
 Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   509
+Issue ID:                   1548
 Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   major
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian GNU/Linux Testing
-Kernel Version:             2.6.7
+Distribution:               debian sarge 3.1
+Kernel Version:             2.6.13-rc7
 ======================================================================
-Date Submitted:             09-20-2004 19:20 CEST
-Last Modified:              11-21-2005 23:50 CET
+Date Submitted:             11-12-2005 10:58 CET
+Last Modified:              11-21-2005 23:56 CET
 ======================================================================
-Summary:                    Conexant Moden "not ready"
+Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
+stream" : inopportune small pauses while playing
 Description: 
-modprobing for snd_intel8x0m gives the following error:
-
-MC'97 1 converters and GPIO not ready (0xff00)
+whatever the player i use (alsaplayer, xmms, mplayer) i experience small
+pause while playing (half of a second)
+using mplayer, i can see the following message appearing when the pause
+occur
+<<alsa-play: xrun of at least 0.009 msecs. resetting stream>>
+the playing doesn't stop, it continue well, just a small pause
+i have no other messages in `dmesg` or in syslog
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000857 intel8x0m does not work on asus a3n laptop
-related to          0000890 no dialtone with modem &amp; strange lo...
-======================================================================
 
 ----------------------------------------------------------------------
- alonbl - 11-19-05 10:32 
+ sashak - 11-21-05 23:56 
 ----------------------------------------------------------------------
-Hello,
-Just wanted to know if a solution is on the way...
-I have Conexant modem with intel8x0m... And can't use it without
-proprietary binary drivers. ALSA is the best available solution!!!
+I guess you are about sound driver 'intel8x0' and not about 'intel8x0m'
+(modem driver). If so it should be in 'intel8x0' category.
 
-----------------------------------------------------------------------
- sashak - 11-21-05 23:50 
-----------------------------------------------------------------------
-No news here, unfortunately.
-
-Sasha.
+The error message reports about underruns and likely it results pauses.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-20-04 19:20 gbilotta       New Issue                                    
-09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
-09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux
-Testing
-09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
-09-20-04 19:21 gbilotta       File Added: lspci.out                        
-09-20-04 22:23 sashak         Note Added: 0001795                          
-09-22-04 00:24 gbilotta       Note Added: 0001809                          
-09-22-04 02:16 sashak         Note Added: 0001810                          
-09-22-04 13:52 gbilotta       Note Added: 0001812                          
-09-22-04 13:53 gbilotta       File Added: test.out                         
-09-22-04 19:53 sashak         Note Added: 0001818                          
-09-23-04 14:33 gbilotta       Note Added: 0001826                          
-09-23-04 14:33 gbilotta       File Added: cat_regs                         
-09-23-04 14:34 gbilotta       File Added: cat_regs2                        
-09-24-04 03:07 sashak         Note Added: 0001853                          
-09-24-04 13:30 gbilotta       Note Added: 0001880                          
-09-24-04 13:32 gbilotta       Note Added: 0001881                          
-09-24-04 22:45 sashak         Note Added: 0001905                          
-03-02-05 14:12 perex          Relationship added       related to 0000857  
-03-02-05 15:17 perex          Relationship added       related to 0000890  
-08-30-05 12:26 jdthood        Severity                 block => major      
-11-19-05 10:32 alonbl         Note Added: 0006762                          
-11-21-05 23:50 sashak         Note Added: 0006778                          
+11-12-05 10:58 moncnam        New Issue                                    
+11-12-05 10:58 moncnam        Distribution              => debian sarge 3.1
+11-12-05 10:58 moncnam        Kernel Version            => 2.6.13-rc7      
+11-21-05 23:56 sashak         Note Added: 0006779                          
 ======================================================================
 
 
