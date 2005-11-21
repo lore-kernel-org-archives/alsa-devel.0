@@ -1,72 +1,31 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: ALSA driver 1.10.0 and Linux 2.4.32 - a few problems
-Date: Mon, 21 Nov 2005 21:33:01 +0000 (GMT)
-Message-ID: <20051121213301.53090.qmail@web52914.mail.yahoo.com>
-References: <1132600550.29178.78.camel@mindpipe>
+From: William Lee Irwin III <wli@holomorphy.com>
+Subject: Re: [PATCH 12/11] unpaged: fix sound Bad page states
+Date: Mon, 21 Nov 2005 13:57:10 -0800
+Message-ID: <20051121215710.GR6916@holomorphy.com>
+References: <Pine.LNX.4.61.0511211801070.17464@goblin.wat.veritas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1132600550.29178.78.camel@mindpipe>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751116AbVKUWCO@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0511211801070.17464@goblin.wat.veritas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hugh Dickins <hugh@veritas.com>
+Cc: Andrew Morton <akpm@osdl.org>, Takashi Iwai <tiwai@suse.de>, Russell King <rmk+lkml@arm.linux.org.uk>, "David S. Miller" <davem@davemloft.net>, Linus Torvalds <torvalds@osdl.org>, Nick Piggin <nickpiggin@yahoo.com.au>, Dave Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---- Lee Revell <rlrevell@joe-job.com> wrote:
-> This is not a backtrace.  Run winecfg under gdb and when it segfaults d=
-o
-> "thread apply all bt".
+On Mon, Nov 21, 2005 at 06:12:38PM +0000, Hugh Dickins wrote:
+> Earlier I unifdefed PageCompound, so that snd_pcm_mmap_control_nopage
+> and others can give out a 0-order component of a higher-order page,
+> which won't be mistakenly freed when zap_pte_range unmaps it.  But
+> many Bad page states reported a PG_reserved was freed after all: I had
+> missed that we need to say __GFP_COMP to get compound page behaviour.
+> Some of these higher-order pages are allocated by snd_malloc_pages, some
+> by snd_malloc_dev_pages; or if SBUS, by sbus_alloc_consistent - but that
+> has no gfp arg, so add __GFP_COMP into its sparc32/64 implementations.
+> I'm still rather puzzled that DRM seems not to need a similar change.
+> Signed-off-by: Hugh Dickins <hugh@veritas.com>
 
-No it isn't. But wine is more complicated than the average application. w=
-inecfg is actually a
-shell script that invokes a shared object winecfg.exe.so via the wine exe=
-cutable:
-
-$ gdb wine
-GNU gdb 6.3
-Copyright 2004 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you =
-are
-welcome to change it and/or distribute copies of it under certain conditi=
-ons.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for detail=
-s.
-This GDB was configured as "i686-pc-linux-gnu"...Using host libthread_db =
-library
-"/lib/libthread_db.so.1".
-
-(gdb) run winecfg.exe
-Starting program: /usr/local/bin/wine winecfg.exe
-[Thread debugging using libthread_db enabled]
-[New Thread -1209985792 (LWP 12422)]
-[New Thread -1209988176 (LWP 12425)]
-[Thread -1209988176 (LWP 12425) exited]
-Cannot find user-level thread for LWP 12422: generic error
-(gdb)=20
-
-Cheers,
-Chris
+Acked-by: William Irwin <wli@holomorphy.com>
 
 
-
-	=09
-___________________________________________________________=20
-Yahoo! Model Search 2005 - Find the next catwalk superstars - http://uk.n=
-ews.yahoo.com/hot/model-search/
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
-Register for a JBoss Training Course.  Free Certification Exam
-for All Training Attendees Through End of 2005. For more info visit:
-http://ads.osdn.com/?ad_id=3D7628&alloc_id=3D16845&op=3Dclick
+-- wli
