@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001584]: Load rises to 100% when dmix is used with ICE1724 (SN25P)
-Date: Mon, 21 Nov 2005 21:43:17 +0100
-Message-ID: <58d089906383123ef334f33c25d11495@bugtrack.alsa-project.org>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: ALSA driver 1.10.0 and Linux 2.4.32 - a few problems
+Date: Mon, 21 Nov 2005 21:33:01 +0000 (GMT)
+Message-ID: <20051121213301.53090.qmail@web52914.mail.yahoo.com>
+References: <1132600550.29178.78.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B69BA18B
-	for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2005 21:43:17 +0100 (MET)
+In-Reply-To: <1132600550.29178.78.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +17,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--- Lee Revell <rlrevell@joe-job.com> wrote:
+> This is not a backtrace.  Run winecfg under gdb and when it segfaults d=
+o
+> "thread apply all bt".
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1584> 
-======================================================================
-Reported By:                mr511
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1584
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             11-20-2005 20:33 CET
-Last Modified:              11-21-2005 21:43 CET
-======================================================================
-Summary:                    Load rises to 100% when dmix is used with ICE1724
-(SN25P)
-Description: 
-ALSA applications using the dmix plugin run at 100% load. Verified with
-aplay, alsaplayer, xine, aoss+mpg123 and several others.
+No it isn't. But wine is more complicated than the average application. w=
+inecfg is actually a
+shell script that invokes a shared object winecfg.exe.so via the wine exe=
+cutable:
 
-Approximately 1/3 of the load appears to be in user space, 2/3 in system
-space.
+$ gdb wine
+GNU gdb 6.3
+Copyright 2004 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you =
+are
+welcome to change it and/or distribute copies of it under certain conditi=
+ons.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for detail=
+s.
+This GDB was configured as "i686-pc-linux-gnu"...Using host libthread_db =
+library
+"/lib/libthread_db.so.1".
 
-Re-installing alsa-lib 1.0.8 makes the problem go away.
-======================================================================
+(gdb) run winecfg.exe
+Starting program: /usr/local/bin/wine winecfg.exe
+[Thread debugging using libthread_db enabled]
+[New Thread -1209985792 (LWP 12422)]
+[New Thread -1209988176 (LWP 12425)]
+[Thread -1209988176 (LWP 12425) exited]
+Cannot find user-level thread for LWP 12422: generic error
+(gdb)=20
 
-----------------------------------------------------------------------
- mr511 - 11-21-05 14:37 
-----------------------------------------------------------------------
-One more note: when using alsaplayer, the following system calls are
-repeated again and again:
-
-read(5, "", 16)                         = 0
-poll([{fd=5, events=POLLIN|POLLERR|POLLNVAL, revents=POLLIN}], 1, -1) = 1
-ioctl(4, 0xc0844123, 0x825f298)         = 0
-ioctl(4, 0xc0844123, 0x825f298)         = 0
-ioctl(4, 0xc0844123, 0x825f298)         = 0
-ioctl(4, 0xc0844123, 0x825f298)         = 0
-
-The ioctl appears to be SNDRV_PCM_IOCTL_SYNC_PTR.
-
-----------------------------------------------------------------------
- mr511 - 11-21-05 21:43 
-----------------------------------------------------------------------
-More observations: Behavior depends on the kernel version. With 2.6.12,
-everything works fine. With 2.6.14, the load rises.
-
-In the earlier note, fd=5 is /dev/snd/timer, so maybe it's a timer
-problem. In the worst case, the poll loop is executed approximately
-8000...10000 times per second. The kernel is configured with
-CONFIG_HZ=250, in case that matters.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-20-05 20:33 mr511          New Issue                                    
-11-21-05 14:37 mr511          Note Added: 0006771                          
-11-21-05 21:43 mr511          Note Added: 0006777                          
-======================================================================
+Cheers,
+Chris
 
 
+
+	=09
+___________________________________________________________=20
+Yahoo! Model Search 2005 - Find the next catwalk superstars - http://uk.n=
+ews.yahoo.com/hot/model-search/
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
 Register for a JBoss Training Course.  Free Certification Exam
 for All Training Attendees Through End of 2005. For more info visit:
-http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
+http://ads.osdn.com/?ad_id=3D7628&alloc_id=3D16845&op=3Dclick
