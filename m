@@ -1,159 +1,48 @@
-From: Dino Puller <dino@e4a.it>
-Subject: Re: Surround example?
-Date: Mon, 21 Nov 2005 17:57:50 +0100
-Message-ID: <4381FC8E.8060404@e4a.it>
-References: <437EEFB6.6010801@e4a.it> <s5hr79anvrt.wl%tiwai@suse.de>
+From: Hugh Dickins <hugh@veritas.com>
+Subject: Re: 2.6.15-rc1-mm2 -- Bad page state at free_hot_cold_page (in
+ process 'aplay', page c18eef30)
+Date: Mon, 21 Nov 2005 17:09:07 +0000 (GMT)
+Message-ID: <Pine.LNX.4.61.0511211651270.16632@goblin.wat.veritas.com>
+References: <a44ae5cd0511192256u20f0e594kc65cbaba108ff06e@mail.gmail.com>
+ <Pine.LNX.4.61.0511200804500.3938@goblin.wat.veritas.com>
+ <1132510467.6874.144.camel@mindpipe> <Pine.LNX.4.61.0511201915530.8619@goblin.wat.veritas.com>
+ <s5hlkzinrq5.wl%tiwai@suse.de> <Pine.LNX.4.61.0511211507160.15988@goblin.wat.veritas.com>
+ <s5h8xvinfg7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr79anvrt.wl%tiwai@suse.de>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932351AbVKURJG@vger.kernel.org>
+In-Reply-To: <s5h8xvinfg7.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, Miles Lane <miles.lane@gmail.com>, Andrew Morton <akpm@osdl.org>, Linus Torvalds <torvalds@osdl.org>, Christoph Hellwig <hch@infradead.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On Mon, 21 Nov 2005, Takashi Iwai wrote:
+> 
+> Now another question arises:  Which is the recommended method for
+> mmapping RAM pages, vma nopage callback or remap_pfn_range()?
+> 
+> IIRC, in the ealier versions, the former was recommended because
+> remap_page_range() with page-reserve was regarded as a hack.
 
->At Sat, 19 Nov 2005 10:26:14 +0100,
->Dino Puller wrote:
->  
->
->>
->>-------- Original Message --------
->>Subject: 	Re: [Alsa-devel] Surround example?
->>Date: 	Sat, 19 Nov 2005 10:25:34 +0100
->>From: 	Dino Puller <dino@e4a.it>
->>To: 	Takashi Iwai <tiwai@suse.de>
->>References: 	<437CFAE5.5080908@e4a.it> <437DC4D3.3050900@e4a.it> 
->><s5hoe4ip00t.wl%tiwai@suse.de> <437DDD5E.8060405@e4a.it> 
->><s5hlkzmoxxm.wl%tiwai@suse.de>
->>
->>
->>
->>Takashi Iwai wrote:
->>
->>    
->>
->>>At Fri, 18 Nov 2005 14:55:42 +0100,
->>>Dino Puller wrote:
->>> 
->>>
->>>      
->>>
->>>>Takashi Iwai wrote:
->>>>
->>>>   
->>>>
->>>>        
->>>>
->>>>>At Fri, 18 Nov 2005 13:10:59 +0100,
->>>>>Dino Puller wrote:
->>>>>
->>>>>
->>>>>     
->>>>>
->>>>>          
->>>>>
->>>>>>Dino Puller wrote:
->>>>>>
->>>>>>  
->>>>>>
->>>>>>       
->>>>>>
->>>>>>            
->>>>>>
->>>>>>>Hi all,
->>>>>>> i'd like to code a surround player, but i haven't found any 
->>>>>>>documentation about it, can you give me a link to a tutorial or an 
->>>>>>>example or something?
->>>>>>>
->>>>>>>Thanks,
->>>>>>>Dino Puller
->>>>>>>
->>>>>>>
->>>>>>>    
->>>>>>>
->>>>>>>         
->>>>>>>
->>>>>>>              
->>>>>>>
->>>>>>Ok now i've opened my surrond40 device but now what i have to change to 
->>>>>>my snd_pcm_mmap_begin/snd_pcm_mmap_commit routine? Actully i can hear 
->>>>>>noise only from front channels.
->>>>>>  
->>>>>>
->>>>>>       
->>>>>>
->>>>>>            
->>>>>>
->>>>>Are you using 1.0.10-final?
->>>>>
->>>>>
->>>>>Takashi
->>>>>
->>>>>
->>>>>
->>>>>     
->>>>>
->>>>>          
->>>>>
->>>>No  i'm using default alsalib that come with debian sid: 1.0.9
->>>>are there any improvement or issue in 1.0.10 ?
->>>>   
->>>>
->>>>        
->>>>
->>>Yes.
->>>
->>>
->>>Takashi
->>>
->>>
->>> 
->>>
->>>      
->>>
->>Hmm i'm looking to pcm.c example but when i lunch
->>#./pcm -Dsurround40 -c4 -mdirect_interleaved
->>I obtain:
->>
->>Access type not available for playback: Invalid argument
->>Setting of hwparams failed: Invalid argument
->>    
->>
->
->WORKSFORME.  Which driver?
->
->
->Takashi
->  
->
-I'm using an Herculess Fortissimo II with a cs46xx driver.
-Anyway i was looking for an example/documentation.
-I've found that pcm.c is not correct for a mmaped play in surround mode: 
-we have to setting the device with SND_PCM_ACCESS_MMAP_COMPLEX flag and 
-pcm.c doesn't do it. For the remaining code pcm.c is right and nothing 
-change from 2 channels to 4 ones in terms of main loop.
-I've found how alsa works, thanks.
-Ah direct_loop (always in pcm.c) doesn't use the parameter areas, why 
-not to clean it out?
+I do believe Linus (CC'ed so he can defend himself from my slanders)
+saw it that way for a long while.  I believe he did, and still does,
+think it more correct to work through the intended vm_operations_struct
+methods.  But has relented a little down the years, and now accepts
+that remap_pfn_range is here to stay (as much as anything stays).
 
-bye,
-   Dino
+> But, looking through these changes, I feel that remap_pfn_range() is
+> better (easier and stabler) than vma nopage...
 
+I'm not going to make a recommendation: whatever suits you best.
 
+It does sometimes look like people converted from remap_pfn_range
+to nopage, just because they felt under pressure to do so.
 
+It is curious that your snd_pcm_mmap_status_nopage seems to have been
+affected and nothing else (I'd expected trouble in DRM but no sign).
 
--------------------------------------------------------
-This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
-Register for a JBoss Training Course.  Free Certification Exam
-for All Training Attendees Through End of 2005. For more info visit:
-http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
+I've CC'ed hch also, he did have some pungent views on how you ought
+better to go about this.
+
+Hugh
