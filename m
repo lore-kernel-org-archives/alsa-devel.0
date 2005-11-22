@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001589]: broken support for a SB450 Azalia since (including) 1.0.9b
-Date: Tue, 22 Nov 2005 18:27:22 +0100
-Message-ID: <094b863919ded50af90c12238cd47b32@bugtrack.alsa-project.org>
+Date: Tue, 22 Nov 2005 18:36:09 +0100
+Message-ID: <130fce5e27bb744bc1287d161a4aa09d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7F0818A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 18:27:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4136E19E
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 18:36:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandriva Linux
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             11-22-2005 18:17 CET
-Last Modified:              11-22-2005 18:27 CET
+Last Modified:              11-22-2005 18:36 CET
 ======================================================================
 Summary:                    broken support for a SB450 Azalia since (including)
 1.0.9b
@@ -74,16 +74,16 @@ configuration (maybe no support for ALC880 codec?)
 ======================================================================
 
 ----------------------------------------------------------------------
- tvignaud - 11-22-05 18:20 
-----------------------------------------------------------------------
-oops, i wanted to imply: "First, note that "product version" 1.0.10 isn't
-availlable in the bug form".
-
-----------------------------------------------------------------------
  tvignaud - 11-22-05 18:27 
 ----------------------------------------------------------------------
 i've doblechecked, Marcin made a mistake: of course, the device id is
 0x437b
+
+----------------------------------------------------------------------
+ tvignaud - 11-22-05 18:36 
+----------------------------------------------------------------------
+this bug might be similar to
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1563
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +93,7 @@ Date Modified  Username       Field                    Change
 11-22-05 18:17 tvignaud       Kernel Version            => 2.6.12          
 11-22-05 18:20 tvignaud       Note Added: 0006790                          
 11-22-05 18:27 tvignaud       Note Added: 0006791                          
+11-22-05 18:36 tvignaud       Note Added: 0006792                          
 ======================================================================
 
 
