@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001591]: dmix not enabled for snd-ice1724
-Date: Tue, 22 Nov 2005 21:14:55 +0100
-Message-ID: <457da8f9b0a0494e3a272d2238a65f30@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001590]: Not able to record with c46xx on IBM T20
+Date: Tue, 22 Nov 2005 21:14:12 +0100
+Message-ID: <4ad675cb9bad22445ab8d90c97d7f735@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF6241AF
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:14:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A709B1AF
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:14:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,721 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1591> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1590> 
 ======================================================================
-Reported By:                AdamW
-Assigned To:                perex
+Reported By:                mayouan
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1591
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
+Project:                    ALSA - driver
+Issue ID:                   1590
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.14-3
 ======================================================================
-Date Submitted:             11-22-2005 21:14 CET
+Date Submitted:             11-22-2005 20:35 CET
 Last Modified:              11-22-2005 21:14 CET
 ======================================================================
-Summary:                    dmix not enabled for snd-ice1724
+Summary:                    Not able to record with c46xx on IBM T20
 Description: 
-Upstream default ALSA config files in /usr/share/alsa/cards/ now seem to
-enable dmix by default for most drivers, but not snd-ice1724. I have tried
-to enable dmix for snd-ice1724 by editing
-/usr/share/alsa/cards/ICE1724.conf and adding the section which seems to
-enable dmix on other cards - I copied and pasted it from ENS1371.conf,
-with the obvious change of ENS1371 to ICE1724 - but then sound playback no
-longer worked. mplayer would give these errors:
+Hi.
 
-ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave) requested or
-auto-format is not available
-ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
-alsa-init: playback open error: Invalid argument
-Could not open/initialize audio device -> no sound.
+I am not able to record with my T20 and alsa cs46xx
+driver. Playback works fine, the alsa mixer works as
+expected and i can hear the sound from the mic in the
+speakers.
 
-So, a few questions. Is dmix not being enabled by default intentional,
-perhaps due to bugs with ice1724's support for dmix? Was my attempt to
-turn it on performed wrong, or does the problem lie elsewhere? Thanks.
+But when i try to record does the recording program
+outputs an empty file (exept for a tiny wave-header).
+Most programs does not give any error message.
 
-Please note I am using ALSA 1.1.0, this version was not available on the
-'product version' list when I reported this bug. I have already mentioned
-this to Mandriva's ALSA packager, Thierry Vignaud; he suggested I should
-report it upstream.
+Ecasound gives me a message when stoping the recording:
+Warning: DBC_ENSURE failed - "is_running() == false",
+eca-control-base.cpp, 276.-
+
+Accordinng to Kai Vehmanen does this mean that alsa
+does not release the lock on the soundcard when user is
+aborting. That is likely the case.
+
+Trying to record with Ardour leavs the computer not
+responding at all.
+
+I can not find anything in my error-logs telling that
+alsa have loaded correctly nor does alsaconf give me
+any error messages.
 ======================================================================
+
+----------------------------------------------------------------------
+ mayouan - 11-22-05 21:02 
+----------------------------------------------------------------------
+lsmod:
+Module                  Size  Used by
+snd_cs46xx             88584  0 
+gameport               14984  2 snd_cs46xx
+snd_rawmidi            24832  1 snd_cs46xx
+snd_seq_device          8684  1 snd_rawmidi
+snd_ac97_codec         98556  1 snd_cs46xx
+snd_ac97_bus            2080  1 snd_ac97_codec
+snd_pcm_oss            55040  0 
+snd_mixer_oss          19744  1 snd_pcm_oss
+snd_pcm                92200  3 snd_cs46xx,snd_ac97_codec,snd_pcm_oss
+snd_timer              24644  1 snd_pcm
+snd                    55620  8
+snd_cs46xx,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+snd_page_alloc         10888  2 snd_cs46xx,snd_pcm
+soundcore               9696  1 snd
+ipv6                  266400  17 
+apm                    20748  1 
+af_packet              22504  2 
+pcmcia                 40604  4 
+firmware_class         10464  1 pcmcia
+nls_iso8859_1           3904  1 
+nls_cp437               5568  1 
+vfat                   13856  1 
+fat                    54140  1 vfat
+md_mod                 67024  0 
+8139cp                 21824  0 
+8139too                27968  0 
+i2c_piix4               8752  0 
+mii                     5504  2 8139cp,8139too
+i2c_core               22096  1 i2c_piix4
+pci_hotplug            28468  0 
+uhci_hcd               33296  0 
+usbcore               124544  2 uhci_hcd
+intel_agp              24124  1 
+agpgart                35592  1 intel_agp
+floppy                 62564  0 
+yenta_socket           28268  5 
+rsrc_nonstatic         14144  1 yenta_socket
+pcmcia_core            42960  3 pcmcia,yenta_socket,rsrc_nonstatic
+irtty_sir               8640  0 
+sir_dev                18796  1 irtty_sir
+irda                  199996  2 irtty_sir,sir_dev
+crc_ccitt               1920  1 irda
+parport_pc             36804  0 
+parport                37064  1 parport_pc
+pcspkr                  3360  0 
+joydev                  9856  0 
+ide_cd                 43556  0 
+cdrom                  40896  1 ide_cd
+unix                   27856  444 
+ext2                   71272  2 
+mbcache                 9252  1 ext2
+ide_disk               18720  5 
+ide_generic             1152  0 [permanent]
+generic                 4292  0 [permanent]
+piix                   10404  0 [permanent]
+ide_core              131452  5 ide_cd,ide_disk,ide_generic,generic,piix
+evdev                   9536  0 
+mousedev               11520  2 
+psmouse                39492  0 
+fbcon                  41696  0 
+tileblit                2240  1 fbcon
+font                    7968  1 fbcon
+bitblit                 5728  1 fbcon
+
+
+lspci:
+0000:00:00.0 Host bridge: Intel Corporation 440BX/ZX/DX - 82443BX/ZX/DX
+Host bridge (rev 03)
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR+ FastB2B-
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort+ >SERR- <PERR-
+	Latency: 64
+	Region 0: Memory at f8000000 (32-bit, prefetchable) [size=64M]
+	Capabilities: <available only to root>
+
+0000:00:01.0 PCI bridge: Intel Corporation 440BX/ZX/DX - 82443BX/ZX/DX AGP
+bridge (rev 03) (prog-if 00 [Normal decode])
+	Control: I/O+ Mem+ BusMaster+ SpecCycle+ MemWINV+ VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap- 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 128
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=64
+	I/O behind bridge: 0000f000-00000fff
+	Memory behind bridge: f0000000-f7ffffff
+	Prefetchable memory behind bridge: 18000000-180fffff
+	BridgeCtl: Parity- SERR- NoISA+ VGA+ MAbort- >Reset- FastB2B+
+
+0000:00:02.0 CardBus bridge: Texas Instruments PCI1450 (rev 03)
+	Subsystem: IBM Thinkpad T20
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 168, Cache Line Size: 0x08 (32 bytes)
+	Interrupt: pin A routed to IRQ 11
+	Region 0: Memory at 50000000 (32-bit, non-prefetchable) [size=4K]
+	Bus: primary=00, secondary=02, subordinate=05, sec-latency=176
+	Memory window 0: 10000000-11fff000 (prefetchable)
+	Memory window 1: 12000000-13fff000
+	I/O window 0: 00001400-000014ff
+	I/O window 1: 00002000-000020ff
+	BridgeCtl: Parity- SERR- ISA- VGA- MAbort- >Reset- 16bInt- PostWrite+
+	16-bit legacy interface ports at 0001
+
+0000:00:02.1 CardBus bridge: Texas Instruments PCI1450 (rev 03)
+	Subsystem: IBM Thinkpad T20
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 168, Cache Line Size: 0x08 (32 bytes)
+	Interrupt: pin B routed to IRQ 11
+	Region 0: Memory at 50100000 (32-bit, non-prefetchable) [size=4K]
+	Bus: primary=00, secondary=06, subordinate=09, sec-latency=176
+	Memory window 0: 14000000-15fff000 (prefetchable)
+	Memory window 1: 16000000-17fff000
+	I/O window 0: 00002400-000024ff
+	I/O window 1: 00002800-000028ff
+	BridgeCtl: Parity- SERR- ISA- VGA- MAbort- >Reset+ 16bInt+ PostWrite+
+	16-bit legacy interface ports at 0001
+
+0000:00:03.0 Communication controller: Agere Systems WinModem 56k (rev
+01)
+	Subsystem: AMBIT Microsystem Corp. Lucent Win Modem
+	Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Interrupt: pin A routed to IRQ 11
+	Region 0: Memory at e8101000 (32-bit, non-prefetchable) [size=256]
+	Region 1: I/O ports at 1c00 [size=8]
+	Region 2: I/O ports at 1800 [size=256]
+	Capabilities: <available only to root>
+
+0000:00:05.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
+[CrystalClear SoundFusion Audio Accelerator] (rev 01)
+	Subsystem: IBM: Unknown device 0153
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 64 (1000ns min, 6000ns max)
+	Interrupt: pin A routed to IRQ 11
+	Region 0: Memory at e8100000 (32-bit, non-prefetchable) [size=4K]
+	Region 1: Memory at e8000000 (32-bit, non-prefetchable) [size=1M]
+	Capabilities: <available only to root>
+
+0000:00:07.0 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ISA (rev 02)
+	Control: I/O+ Mem+ BusMaster+ SpecCycle+ MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 0
+
+0000:00:07.1 IDE interface: Intel Corporation 82371AB/EB/MB PIIX4 IDE (rev
+01) (prog-if 80 [Master])
+	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 64
+	Region 4: I/O ports at 1c10 [size=16]
+
+0000:00:07.2 USB Controller: Intel Corporation 82371AB/EB/MB PIIX4 USB
+(rev 01) (prog-if 00 [UHCI])
+	Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 64
+	Interrupt: pin D routed to IRQ 11
+	Region 4: I/O ports at 1c20 [size=32]
+
+0000:00:07.3 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 03)
+	Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Interrupt: pin ? routed to IRQ 9
+
+0000:01:00.0 VGA compatible controller: S3 Inc. 86C270-294 Savage/IX-MV
+(rev 11) (prog-if 00 [VGA])
+	Subsystem: IBM ThinkPad T20
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap+ 66MHz+ UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 64 (1000ns min, 63750ns max), Cache Line Size: 0x08 (32 bytes)
+	Interrupt: pin A routed to IRQ 11
+	Region 0: Memory at f0000000 (32-bit, non-prefetchable) [size=128M]
+	Expansion ROM at 18000000 [disabled] [size=64K]
+	Capabilities: <available only to root>
+
+0000:02:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139C+ (rev 10)
+	Subsystem: Realtek Semiconductor Co., Ltd. RT8139
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+	Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort-
+<MAbort- >SERR- <PERR-
+	Latency: 64 (8000ns min, 16000ns max)
+	Interrupt: pin A routed to IRQ 11
+	Region 0: I/O ports at 1400 [size=256]
+	Region 1: Memory at 12000000 (32-bit, non-prefetchable) [size=512]
+	Capabilities: <available only to root>
+
+johan@huozi:~$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
+08:13:09 2005 UTC).
+
+johan@huozi:~$ cat /proc/asound/cards
+0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
+                     Sound Fusion CS46xx at 0xe8100000/0xe8000000, irq 11
+
+johan@huozi:~$ cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: Cirrus Logic CS4297A rev 4
+
+Capabilities     : -headphone out-
+DAC resolution   : 20-bit
+ADC resolution   : 18-bit
+3D enhancement   : Crystal Semi 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +20dB [+20dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : on
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 AMAP DSA=0
+Extended status  :
+SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+Enabled
+
+----------------------------------------------------------------------
+ mayouan - 11-22-05 21:14 
+----------------------------------------------------------------------
+asound.state:
+state.CS46xx {
+	control.1 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Master Playback Switch'
+		value true
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 63'
+		iface MIXER
+		name 'Master Playback Volume'
+		value.0 49
+		value.1 49
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Headphone Playback Switch'
+		value true
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Headphone Playback Volume'
+		value.0 23
+		value.1 23
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Master Mono Playback Switch'
+		value false
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Master Mono Playback Volume'
+		value 26
+	}
+	control.7 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'PC Speaker Playback Switch'
+		value true
+	}
+	control.8 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 15'
+		iface MIXER
+		name 'PC Speaker Playback Volume'
+		value 10
+	}
+	control.9 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Phone Playback Switch'
+		value false
+	}
+	control.10 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Phone Playback Volume'
+		value 16
+	}
+	control.11 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Mic Playback Switch'
+		value true
+	}
+	control.12 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Mic Playback Volume'
+		value 21
+	}
+	control.13 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Mic Boost (+20dB)'
+		value true
+	}
+	control.14 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Line Playback Switch'
+		value true
+	}
+	control.15 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Line Playback Volume'
+		value.0 26
+		value.1 27
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'CD Playback Switch'
+		value true
+	}
+	control.17 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'CD Playback Volume'
+		value.0 26
+		value.1 26
+	}
+	control.18 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Video Playback Switch'
+		value false
+	}
+	control.19 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Video Playback Volume'
+		value.0 12
+		value.1 9
+	}
+	control.20 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Aux Playback Switch'
+		value true
+	}
+	control.21 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Aux Playback Volume'
+		value.0 24
+		value.1 24
+	}
+	control.22 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'PCM Playback Switch'
+		value true
+	}
+	control.23 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		iface MIXER
+		name 'PCM Playback Volume'
+		value.0 28
+		value.1 28
+	}
+	control.24 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 2
+		comment.item.0 Mic
+		comment.item.1 CD
+		comment.item.2 Video
+		comment.item.3 Aux
+		comment.item.4 Line
+		comment.item.5 Mix
+		comment.item.6 'Mix Mono'
+		comment.item.7 Phone
+		iface MIXER
+		name 'Capture Source'
+		value.0 CD
+		value.1 CD
+	}
+	control.25 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Capture Switch'
+		value true
+	}
+	control.26 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 15'
+		iface MIXER
+		name 'Capture Volume'
+		value.0 14
+		value.1 14
+	}
+	control.27 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name '3D Control - Switch'
+		value true
+	}
+	control.28 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Mix
+		comment.item.1 Mic
+		iface MIXER
+		name 'Mono Output Select'
+		value Mix
+	}
+	control.29 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Mic1
+		comment.item.1 Mic2
+		iface MIXER
+		name 'Mic Select'
+		value Mic1
+	}
+	control.30 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 15'
+		iface MIXER
+		name '3D Control - Center'
+		value 12
+	}
+	control.31 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 15'
+		iface MIXER
+		name '3D Control - Depth'
+		value 12
+	}
+	control.32 {
+		comment.access read
+		comment.type IEC958
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Playback Con Mask'
+		value
+'0fff000f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+	}
+	control.33 {
+		comment.access read
+		comment.type IEC958
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Playback Pro Mask'
+		value
+cf00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+	}
+	control.34 {
+		comment.access 'read write'
+		comment.type IEC958
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Playback Default'
+		value
+'0082000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+	}
+	control.35 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Playback Switch'
+		value true
+	}
+	control.36 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'External Amplifier'
+		value true
+	}
+	control.37 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 32767'
+		iface MIXER
+		name 'DAC Volume'
+		value.0 29490
+		value.1 29490
+	}
+	control.38 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 32767'
+		iface MIXER
+		name 'ADC Volume'
+		value.0 32767
+		value.1 31456
+	}
+	control.39 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'ADC Capture Switch'
+		value false
+	}
+	control.40 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'DAC Capture Switch'
+		value false
+	}
+	control.41 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Output Switch'
+		value true
+	}
+	control.42 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'IEC958 Input Switch'
+		value true
+	}
+	control.43 {
+		comment.access 'read write'
+		comment.type IEC958
+		comment.count 1
+		iface PCM
+		device 2
+		name 'IEC958 Playback Default'
+		value
+'0000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+	}
+	control.44 {
+		comment.access read
+		comment.type IEC958
+		comment.count 1
+		iface PCM
+		device 2
+		name 'IEC958 Playback Mask'
+		value
+ffff00ff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+	}
+	control.45 {
+		comment.access 'read write'
+		comment.type IEC958
+		comment.count 1
+		iface PCM
+		device 2
+		name 'IEC958 Playback PCM Stream'
+		value
+'0082000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+	}
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 21:14 AdamW          New Issue                                    
+11-22-05 20:35 mayouan        New Issue                                    
+11-22-05 20:35 mayouan        Distribution              => Debian          
+11-22-05 20:35 mayouan        Kernel Version            => 2.6.14-3        
+11-22-05 21:02 mayouan        Note Added: 0006797                          
+11-22-05 21:14 mayouan        Note Added: 0006798                          
 ======================================================================
 
 
