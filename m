@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
-Date: Tue, 22 Nov 2005 19:29:32 +0100
-Message-ID: <48c2d41e1b654a985b311b329d8778d1@bugtrack.alsa-project.org>
+Date: Tue, 22 Nov 2005 19:28:32 +0100
+Message-ID: <13b5ce750059c9fd15fe6c4325345a62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A66601B7
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:29:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA0161B0
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:28:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001453 has been removed as a DUPLICATE OF the following issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
 ======================================================================
@@ -103,71 +103,8 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 has duplicate       0001563 No Sound on Cybersystem S28 (hda_codec:...
 has duplicate       0001582 hda_codec: Unknown model for ALC880, tr...
+has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-07-05 17:50 
-----------------------------------------------------------------------
-Try to pass the module option "model=3stack".  This is the configuration
-for systems with 3 jacks.  There are also, 5stack, 3stack-digout,
-5stack-digout and w810.
-
-Please show the output of lspci -nv (needed for the sound entry only), and
-suitable configuration for your machine.  The PCI "subsystem" IDs should
-be listed in patch_realtek.c with the corresponding model.
-
-----------------------------------------------------------------------
- theoneandonlysm - 01-08-05 02:21 
-----------------------------------------------------------------------
-Great! Sound output works after passing model="3stack" or "5stack"; the
-5stack option matches my device.
-
-However, even after turning all the volumes up to 100, the sound output is
-relatively soft, and I can hear a faint buzz in the background.(Actually,
-turning up the headphone volume has no effect, I used the "front"
-control). Also, the audio port on the front of my machine does not output
-any sound.
-
-lspci -nv:
-00:1b.0 Class 0403: 8086:2668 (rev 03)
-        Subsystem: 103c:2a09
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cfdb8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] #10 [0091]
-
-I am running in kde 3.3.2 with aRts enabled. Is there any other
-information I can provide?
-
-
-
-----------------------------------------------------------------------
- tiwai - 01-13-05 20:49 
-----------------------------------------------------------------------
-Maybe the connection of headphone is different from the predefined one.
-Anyway I'll add your device to 5stack model as a temporary solution.
-
-Could you check whether surround outputs and line/mic inputs work as
-expected?
-
-I'm not sure what's wrong with the volume.  Basically there are no many
-volume controls for this output route...
-
-----------------------------------------------------------------------
- theoneandonlysm - 03-20-05 21:00 
-----------------------------------------------------------------------
-Using drivers 1.0.9rc1 solves a lot of issues. Thanks!
-
-Sound output is much more crisp and volume control works for "front" and
-"side" controls. Also, the problem from the cvs versions causing knotify
-to hang is no longer present.
-
-However, KDE (kmix) still identifies the "main" audio control as the
-headphone slider, which has no effect on changing the volume. Furthermore,
-the headphone jack at the front of my computer still doesn't produce any
-sound output
 
 ----------------------------------------------------------------------
  tiwai - 03-29-05 19:00 
@@ -201,7 +138,6 @@ Date Modified  Username       Field                    Change
 11-22-05 19:28 rlrevell       Resolution               open => fixed       
 11-22-05 19:28 rlrevell       Assigned To               => rlrevell        
 11-22-05 19:28 rlrevell       Note Added: 0006796                          
-11-22-05 19:29 rlrevell       Relationship deleted     has duplicate 0001453
 ======================================================================
 
 
