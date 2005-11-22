@@ -1,18 +1,14 @@
-From: "Faithe Vineyard" <faitheivineyar@klingeruk.co.uk>
-Subject: Steve It Works Amazing
-Date: Tue, 22 Nov 2005 10:29:25 -0500
-Message-ID: <005b01c5ef79$84eaf880$8195a8c0@recapture>
-Reply-To: "Faithe Vineyard" <faitheivineyar@klingeruk.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001588]: alsa1.0.10 driver compilation error in adriver.h
+Date: Tue, 22 Nov 2005 17:28:37 +0100
+Message-ID: <e1c1f7364c6de62b80c2a3b79d3cff80@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DB4A197
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 16:29:49 +0100 (MET)
-Received: from klingeruk.co.uk (61-229-194-147.dynamic.hinet.net [61.229.194.147])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id BC8716EE41
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 16:29:39 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 101CD185
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 17:28:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,28 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benita Robards <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Good day, 
 
-As a right purchaser we give you necessary info and our product innovation 
-from time to time.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1588> 
+======================================================================
+Reported By:                alanmann
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1588
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.4.99
+======================================================================
+Date Submitted:             11-22-2005 15:30 CET
+Last Modified:              11-22-2005 17:28 CET
+======================================================================
+Summary:                    alsa1.0.10 driver compilation error in adriver.h
+Description: 
+Mainstream alsa1.0.10 downloaded this morning. Make fails in adriver.h
+lines 675-713 (added since 1.0.9b); the syntax is wrong?  Has this already
+been noticed and fixed?
 
-Our records indicate that you may be in need of a refill.
+The section is below:-
 
-We make a thousand and one excuses for troubling you. Our products at low 
-cost are ready-for-service and our highly qualified staff will give support 
-to you. 
+static inline unsigned int jiffies_to_msecs(const unsigned long j)
+{
+#ifndef HAVE_VARIABLE_HZ
+	#if HZ <= 1000 && !(1000 % HZ)
+		return (1000 / HZ) * j;
+	#elif HZ > 1000 && !(HZ % 1000)
+		return (j + (HZ / 1000) - 1)/(HZ / 1000);
+	#else
+		return (j * 1000) / HZ;
+	#endif
+#else
+	if (HZ <= 1000 && !(1000 % HZ))
+		return (1000 / HZ) * j;
+	else if (HZ > 1000 && !(HZ % 1000))
+		return (j + (HZ / 1000) - 1)/(HZ / 1000);
+	else
+		return (j * 1000) / HZ;
+#endif
+}
+static inline unsigned long msecs_to_jiffies(const unsigned int m)
+{
+	if (m > jiffies_to_msecs(MAX_JIFFY_OFFSET))
+		return MAX_JIFFY_OFFSET;
+#ifndef HAVE_VARIABLE_HZ
+	#if HZ <= 1000 && !(1000 % HZ)
+		return (m + (1000 / HZ) - 1) / (1000 / HZ);
+	#elif HZ > 1000 && !(HZ % 1000)
+		return m * (HZ / 1000);
+	#else
+		return (m * HZ + 999) / 1000;
+	#endif
+#else
+	if (HZ <= 1000 && !(1000 % HZ))
+		return (m + (1000 / HZ) - 1) / (1000 / HZ);
+	else if (HZ > 1000 && !(HZ % 1000))
+		return m * (HZ / 1000);
+	else
+		return (m * HZ + 999) / 1000;
+#endif
 
-It is great opportunity to save money and time. 
-Please browse the URL listed below to see our special offer:
+======================================================================
 
-http://www.overallnn.pereptono.com
+----------------------------------------------------------------------
+ Clemens Ladisch - 11-22-05 17:28 
+----------------------------------------------------------------------
+Kernel 2.4.99 doesn't exist.  Which distribution are you using?
 
-Yours Respectfully,
-Faithe Vineyard
-	Support Centre
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-22-05 15:30 alanmann       New Issue                                    
+11-22-05 15:30 alanmann       Kernel Version            => 2.4.99          
+11-22-05 17:28 Clemens LadischNote Added: 0006788                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
