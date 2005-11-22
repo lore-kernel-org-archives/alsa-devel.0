@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Tue, 22 Nov 2005 07:54:36 +0100
-Message-ID: <06327b9061925ade7888752fee2ad332@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001554]: LADSPA plugin do not work in case of policy NONE. LADSPA plugin usage is not documented propertly.
+Date: Tue, 22 Nov 2005 09:01:39 +0100
+Message-ID: <dc6dd24512264f783182a4d364229571@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2070D19E
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 07:54:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB4F219E
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 09:01:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1554> 
 ======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
+Reported By:                gena2x
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
+Project:                    ALSA - lib
+Issue ID:                   1554
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Status:                     new
 ======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              11-22-2005 07:54 CET
+Date Submitted:             11-13-2005 21:04 CET
+Last Modified:              11-22-2005 09:01 CET
 ======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
+Summary:                    LADSPA plugin do not work in case of policy NONE.
+LADSPA plugin usage is not documented propertly.
 Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+This bug make impossible to work with single channel of multichannel
+frame.
+So I do not find another clear way to filter high frequences out of my
+subwoofer.
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
-
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 11-22-05 07:54 
+ jdthood - 11-21-05 18:31 
 ----------------------------------------------------------------------
-This is probably a bug that has been fixed in ALSA 1.0.10 and since
-2.6.15rc1.
+>  Could you redo you patch against the current ALSA CVS tree?
 
-(rc1 and rc2 came before the release)
+> ok
+
+Just reminding you that this needs to be done.
+
+----------------------------------------------------------------------
+ perex - 11-22-05 09:01 
+----------------------------------------------------------------------
+From: Gennadiy Kupava <gena2x@mail.spbnit.ru>
+
+I have modem dial-up at home (Just afraid to connect to something more
+speedy, I know that Internet will eat 90% of my time). At work I have no
+access to protocols other than http and ftp.
+So I spend quarter of day to suck sown alsa from cvs (of course playing
+chess).
+Then I got FTBFS, my mood was broken by following message:
+gcc -shared  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o
+.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o
+.libs/shmarea.o .libs/userfile.o .libs/names.o -Wl,--whole-archive
+control/.libs/libcontrol.a mixer/.libs/libmixer.a pcm/.libs/libpcm.a
+rawmidi/.libs/librawmidi.a timer/.libs/libtimer.a hwdep/.libs/libhwdep.a
+seq/.libs/libseq.a instr/.libs/libinstr.a compat/.libs/libcompat.a
+alisp/.libs/libalisp.a -Wl,--no-whole-archive  -lm -ldl -lpthread
+-Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
+snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
+/usr/bin/ld: failed to set dynamic section sizes: Bad value
+I know only bit about versioned symbols, so this need futher
+investigation to just compile alsa-lib.
+I found function snd_pcm_hw_params_get_buffer_size_max. It is in some
+maroses. Then I try to go in simple way - apply debian patches for
+1.0.9-1.0.10rc. That was wrong way... I'll beat it at this weekend.
+
+I have another free saturday(at least), so plan to spend it on polishing
+patch (there _is_ thing to polish - it is written to just work) (if get
+rid of compile error).
+
+Also I think, that there is nothing need to speed up. So... Just do not
+think that I will leave patch which can give great pleasure of be merged
+to kernel.
+
+So, i`ll write to BTS at/just after next weekend about progress, ok?
+
+Hr.. I read my post and find that due to my English I use word 'I' too
+many times...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+11-13-05 21:04 gena2x         New Issue                                    
+11-13-05 21:04 gena2x         File Added: patch.localeANDladspa                 
+  
+11-14-05 10:59 perex          Note Added: 0006712                          
+11-14-05 11:32 gena2x         Note Added: 0006719                          
+11-21-05 18:31 jdthood        Note Added: 0006772                          
+11-22-05 09:01 perex          Note Added: 0006786                          
 ======================================================================
 
 
