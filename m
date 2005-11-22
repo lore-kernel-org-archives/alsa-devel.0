@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
-Date: Tue, 22 Nov 2005 19:15:56 +0100
-Message-ID: <325206c0b5234b954971eacd61ff235a@bugtrack.alsa-project.org>
+Date: Tue, 22 Nov 2005 19:18:05 +0100
+Message-ID: <96fab2f3b2c1701c90c1cfb93757e194@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1166A1AF
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:15:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8324C1AF
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:18:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001563 has been set as DUPLICATE OF the following issue.
+The issue 0001582 has been set as DUPLICATE OF the following issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
 ======================================================================
@@ -100,6 +100,7 @@ RTL-8139/8139C/8139C+ (rev 10)
 Relationships       ID      Summary
 ----------------------------------------------------------------------
 has duplicate       0001563 No Sound on Cybersystem S28 (hda_codec:...
+has duplicate       0001582 hda_codec: Unknown model for ALC880, tr...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -187,6 +188,7 @@ Date Modified  Username       Field                    Change
 03-20-05 21:00 theoneandonlysmNote Added: 0004100                          
 03-29-05 19:00 tiwai          Note Added: 0004253                          
 11-22-05 19:15 rlrevell       Relationship added       has duplicate 0001563
+11-22-05 19:18 rlrevell       Relationship added       has duplicate 0001582
 ======================================================================
 
 
