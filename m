@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001563]: No Sound on Cybersystem S28 (hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...)
-Date: Tue, 22 Nov 2005 19:32:01 +0100
-Message-ID: <404af24860a704c488ad790acd43429e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
+Date: Tue, 22 Nov 2005 19:32:04 +0100
+Message-ID: <a1a6c284eb3a97e5fa795dba9317cf58@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 172171B4
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:32:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AA841B4
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:32:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,221 +22,186 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UNset as DUPLICATE OF issue 0000790.
+The issue 0001563 has been removed as a DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1563> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
 ======================================================================
-Reported By:                mbab
-Assigned To:                tiwai
+Reported By:                theoneandonlysm
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1563
-Category:                   PCI - hda-intel
+Issue ID:                   790
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian Unstable (all but the driver)
-Kernel Version:             2.6.14.2
+Status:                     resolved
+Distribution:               Slackware 10 (-current)
+Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-16-2005 06:48 CET
-Last Modified:              11-22-2005 19:32 CET
+Date Submitted:             01-07-2005 01:38 CET
+Last Modified:              11-22-2005 19:28 CET
 ======================================================================
-Summary:                    No Sound on Cybersystem S28 (hda_codec: Unknown
-model for ALC880, trying auto-probe from BIOS...)
+Summary:                    no sound with azx driver in Realtek integrated sound
+chip
 Description: 
-I just cannot get any sound from this system. Then I tried the release
-candidate.
-The message sounds as if the problem might not be so severe. I can play
-back, but there is no sound. If I need to provide additional information,
-please contact me. 
+Using the CVS checkout on 01/05/05 at 8:00 EDT, I compiled the alsa drivers
+with kernel 2.6.10 . Running alsaconf (provided by slackware), it was able
+to detect the azx module as the correct driver and modified by
+/etc/modprobe.conf as needed. Although alsamixer and kmix show all the
+channels and devices for the sound chip, I get no sound output.
 
-When using alsamixer i get:
-spike:/tmp# alsamixer
+Dmesg states:
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA /home/sandeep/alsa_cvs/alsa-driver/pci/azx/patch_realtek.c:953:
+hda_codec: Unknown model for ALC880
 
-alsamixer: function snd_mixer_load failed: Invalid argument
+I'm guessing there is just something specifically not included in the
+driver needed by this chip.
 
-I used alsaconf (from debian unstable ALSA configurator version 1.0.9a)
-for
-configuration.
-
-
->From dmesg:
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-...
-
-spike:/tmp# lspci
-0000:00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML
-Express Processor to DRAM Controller (rev 03)
-0000:00:01.0 PCI bridge: Intel Corporation Mobile 915GM/PM Express PCI
-Express Root Port (rev 03)
-0000:00:1b.0 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-0000:00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) PCI Express Port 1 (rev 04)
-0000:00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #1 (rev 04)
-0000:00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #2 (rev 04)
-0000:00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #3 (rev 04)
-0000:00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #4 (rev 04)
-0000:00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB2 EHCI Controller (rev 04)
-0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
-d4)
-0000:00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
-Bridge (rev 04)
-0000:00:1f.1 IDE interface: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) IDE Controller (rev 04)
-0000:00:1f.2 IDE interface: Intel Corporation 82801FBM (ICH6M) SATA
-Controller (rev 04)
-0000:00:1f.3 SMBus: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-SMBus Controller (rev 04)
-0000:01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce
-Go 6600] (rev a2)
-0000:02:00.0 Ethernet controller: Marvell Technology Group Ltd. 88E8053
-Gigabit Ethernet Controller (rev 19)
-0000:06:02.0 FireWire (IEEE 1394): Texas Instruments TSB43AB21
-IEEE-1394a-2000 Controller (PHY/Link)
-0000:06:03.0 Network controller: Intel Corporation PRO/Wireless 2200BG
-(rev 05)
-0000:06:04.0 CardBus bridge: Texas Instruments PCI1620 PC Card Controller
-(rev 01)
-0000:06:04.1 CardBus bridge: Texas Instruments PCI1620 PC Card Controller
-(rev 01)
-0000:06:04.2 System peripheral: Texas Instruments PCI1620 Firmware Loading
-Function (rev 01)
-
-spike:/tmp# lsmod
+lsmod:
 Module                  Size  Used by
-snd_hda_intel          18704  0
-snd_hda_codec          92544  1 snd_hda_intel
-snd_pcm_oss            55392  0
-snd_mixer_oss          20032  1 snd_pcm_oss
-snd_pcm                97032  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
-snd_timer              26948  1 snd_pcm
-snd                    60132  6
-snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10784  1 snd
-snd_page_alloc         11080  2 snd_hda_intel,snd_pcm
-tun                    11904  1
-af_packet              23624  0
-aes                    29760  1
-nvidia               3700424  14
-rfcomm                 43420  0
-l2cap                  28996  5 rfcomm
-thermal                13384  0
-fan                     4612  0
-button                  6480  0
-ac                      4676  0
-battery                 9412  0
-ipv6                  278848  12
-ipt_LOG                 7040  1
-ipt_limit               2496  1
-ipt_state               1792  1
-ip_conntrack           50064  1 ipt_state
-iptable_filter          2880  1
-ip_tables              22848  4
-ipt_LOG,ipt_limit,ipt_state,iptable_filter
-nls_iso8859_1           3968  1
-nls_cp437               5632  1
-vfat                   14592  1
-fat                    55132  1 vfat
-speedstep_centrino      7764  1
-processor              24444  2 thermal,speedstep_centrino
-cryptoloop              3584  1
-loop                   18440  3 cryptoloop
-cpufreq_powersave       1664  0
-cpufreq_conservative     7268  1
-sbp2                   24580  0
-eth1394                21384  0
-hci_usb                16464  2
-bluetooth              52420  7 rfcomm,l2cap,hci_usb
-ipw2200                76584  0
-joydev                  9920  0
-firmware_class         11136  1 ipw2200
-ieee80211              23816  1 ipw2200
-ieee80211_crypt         5956  1 ieee80211
-yenta_socket           28364  0
-rsrc_nonstatic         14208  1 yenta_socket
-pcmcia_core            44688  2 yenta_socket,rsrc_nonstatic
-ohci1394               37108  0
-ieee1394              104376  3 sbp2,eth1394,ohci1394
-evdev                   9600  0
-irtty_sir               9024  0
-mousedev               12000  1
-sir_dev                20012  1 irtty_sir
-i2c_i801                8908  0
-ehci_hcd               37576  0
-irda                  207484  2 irtty_sir,sir_dev
-i2c_core               23184  1 i2c_i801
-sk98lin               218904  0
-uhci_hcd               34768  0
-rtc                    14200  0
-intel_agp              24156  1
-agpgart                36296  2 nvidia,intel_agp
-crc_ccitt               1984  1 irda
-usbcore               128384  4 hci_usb,ehci_hcd,uhci_hcd
-psmouse                39940  0
-unix                   30128  552
+snd_pcm_oss            59168  0
+snd_mixer_oss          19840  1 snd_pcm_oss
+snd_azx                12640  2
+snd_hda_codec          46208  1 snd_azx
+snd_pcm                96260  4 snd_pcm_oss,snd_azx,snd_hda_codec
+snd_timer              23556  1 snd_pcm
+snd                    58628  9
+snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8452  2 snd_azx,snd_pcm
+
+lspci:
+00:00.0 Host bridge: Intel Corp.: Unknown device 2580 (rev 04)
+00:02.0 VGA compatible controller: Intel Corp.: Unknown device 2582 (rev
+04)
+00:02.1 Display controller: Intel Corp.: Unknown device 2782 (rev 04)
+00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 03)
+00:1c.0 PCI bridge: Intel Corp. I/O Controller Hub PCI Express Port 0 (rev
+03)
+00:1d.0 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.1 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.2 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.3 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.7 USB Controller: Intel Corp. I/O Controller Hub USB2 (rev 03)
+00:1e.0 PCI bridge: Intel Corp. 82801BA/CA/DB/EB/ER Hub interface to PCI
+Bridge (rev d3)
+00:1f.0 ISA bridge: Intel Corp. I/O Controller Hub LPC (rev 03)
+00:1f.1 IDE interface: Intel Corp. I/O Controller Hub PATA (rev 03)
+00:1f.2 IDE interface: Intel Corp. I/O Controller Hub SATA cc=ide (rev
+03)
+00:1f.3 SMBus: Intel Corp. I/O Controller Hub SMBus (rev 03)
+02:01.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
+Controller (rev 80)
+02:02.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139C+ (rev 10)
 
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001589 broken support for a SB450 Azalia since...
+has duplicate       0001582 hda_codec: Unknown model for ALC880, tr...
 ======================================================================
 
 ----------------------------------------------------------------------
- mbab - 11-18-05 06:49 
+ tiwai - 01-07-05 17:50 
 ----------------------------------------------------------------------
-I just tried with 1.0.10 Release.
-The problem looks exactly the same. Playback works but no sound. Cannot
-open Mixer. Kernel-Messages the same.
+Try to pass the module option "model=3stack".  This is the configuration
+for systems with 3 jacks.  There are also, 5stack, 3stack-digout,
+5stack-digout and w810.
+
+Please show the output of lspci -nv (needed for the sound entry only), and
+suitable configuration for your machine.  The PCI "subsystem" IDs should
+be listed in patch_realtek.c with the corresponding model.
 
 ----------------------------------------------------------------------
- tiwai - 11-18-05 17:00 
+ theoneandonlysm - 01-08-05 02:21 
 ----------------------------------------------------------------------
-Did you try different model option values?  See ALSA-Configuration.txt.
+Great! Sound output works after passing model="3stack" or "5stack"; the
+5stack option matches my device.
+
+However, even after turning all the volumes up to 100, the sound output is
+relatively soft, and I can hear a faint buzz in the background.(Actually,
+turning up the headphone volume has no effect, I used the "front"
+control). Also, the audio port on the front of my machine does not output
+any sound.
+
+lspci -nv:
+00:1b.0 Class 0403: 8086:2668 (rev 03)
+        Subsystem: 103c:2a09
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cfdb8000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
+
+I am running in kde 3.3.2 with aRts enabled. Is there any other
+information I can provide?
+
+
 
 ----------------------------------------------------------------------
- mbab - 11-18-05 19:49 
+ tiwai - 01-13-05 20:49 
 ----------------------------------------------------------------------
-I didnt notice that file before. I tried all of them now. No avail though.
-The kernel messages didnt seem to change much. (Maybe the number of
-"num_steps" messages varied, but I didnt check that.)
-In every case the mixer didnt work and i got no sound while playing back.
-:o(
+Maybe the connection of headphone is different from the predefined one.
+Anyway I'll add your device to 5stack model as a temporary solution.
+
+Could you check whether surround outputs and line/mic inputs work as
+expected?
+
+I'm not sure what's wrong with the volume.  Basically there are no many
+volume controls for this output route...
 
 ----------------------------------------------------------------------
- tvignaud - 11-22-05 18:36 
+ theoneandonlysm - 03-20-05 21:00 
 ----------------------------------------------------------------------
-this bug looks like
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1589
+Using drivers 1.0.9rc1 solves a lot of issues. Thanks!
+
+Sound output is much more crisp and volume control works for "front" and
+"side" controls. Also, the problem from the cvs versions causing knotify
+to hang is no longer present.
+
+However, KDE (kmix) still identifies the "main" audio control as the
+headphone slider, which has no effect on changing the volume. Furthermore,
+the headphone jack at the front of my computer still doesn't produce any
+sound output
+
+----------------------------------------------------------------------
+ tiwai - 03-29-05 19:00 
+----------------------------------------------------------------------
+It's a bug of kmix.
+
+Unmute and raise "Front" volume.
+
+----------------------------------------------------------------------
+ rlrevell - 11-22-05 19:28 
+----------------------------------------------------------------------
+User reports problem fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-16-05 06:48 mbab           New Issue                                    
-11-16-05 06:48 mbab           Distribution              => Debian Unstable (all
-but the driver)
-11-16-05 06:48 mbab           Kernel Version            => 2.6.14.2        
-11-18-05 06:49 mbab           Note Added: 0006750                          
-11-18-05 17:00 tiwai          Note Added: 0006752                          
-11-18-05 19:49 mbab           Note Added: 0006757                          
-11-22-05 18:36 tvignaud       Note Added: 0006793                          
-11-22-05 19:08 rlrevell       Relationship added       has duplicate 0001589
-11-22-05 19:15 rlrevell       Relationship added       duplicate of 0000790
-11-22-05 19:32 rlrevell       Relationship deleted     duplicate of 0000790
+01-07-05 01:38 theoneandonlysmNew Issue                                    
+01-07-05 01:38 theoneandonlysmDistribution              => Slackware 10
+(-current)
+01-07-05 01:38 theoneandonlysmKernel Version            => 2.6.10          
+01-07-05 17:50 tiwai          Note Added: 0003102                          
+01-08-05 02:20 theoneandonlysmNote Added: 0003126                          
+01-08-05 02:21 theoneandonlysmNote Edited: 0003126                         
+01-13-05 20:49 tiwai          Note Added: 0003202                          
+03-20-05 21:00 theoneandonlysmNote Added: 0004100                          
+03-29-05 19:00 tiwai          Note Added: 0004253                          
+11-22-05 19:15 rlrevell       Relationship added       has duplicate 0001563
+11-22-05 19:18 rlrevell       Relationship added       has duplicate 0001582
+11-22-05 19:19 rlrevell       Relationship added       has duplicate 0001453
+11-22-05 19:28 rlrevell       Status                   new => resolved     
+11-22-05 19:28 rlrevell       Resolution               open => fixed       
+11-22-05 19:28 rlrevell       Assigned To               => rlrevell        
+11-22-05 19:28 rlrevell       Note Added: 0006796                          
+11-22-05 19:29 rlrevell       Relationship deleted     has duplicate 0001453
+11-22-05 19:32 rlrevell       Relationship deleted     has duplicate 0001563
 ======================================================================
 
 
