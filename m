@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
-Date: Tue, 22 Nov 2005 19:19:42 +0100
-Message-ID: <baa9a9df10765a84866d428f3a49b579@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
+Date: Tue, 22 Nov 2005 19:24:05 +0100
+Message-ID: <956201aa1d7b61e4131057fc53f3c8b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59BD31AA
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:19:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 255F61B0
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:24:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,175 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001453 has been set as DUPLICATE OF the following issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
 ======================================================================
-Reported By:                theoneandonlysm
-Assigned To:                
+Reported By:                jwiegley
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   790
-Category:                   PCI - azx
+Issue ID:                   1064
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10 (-current)
-Kernel Version:             2.6.10
+Status:                     resolved
+Distribution:               Debian-pure64
+Kernel Version:             2.6.12-rc2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-07-2005 01:38 CET
-Last Modified:              03-29-2005 19:00 CEST
+Date Submitted:             04-18-2005 20:42 CEST
+Last Modified:              11-22-2005 19:24 CET
 ======================================================================
-Summary:                    no sound with azx driver in Realtek integrated sound
-chip
+Summary:                    snd_hda_intel does not recognize acl880 sound chip
 Description: 
-Using the CVS checkout on 01/05/05 at 8:00 EDT, I compiled the alsa drivers
-with kernel 2.6.10 . Running alsaconf (provided by slackware), it was able
-to detect the azx module as the correct driver and modified by
-/etc/modprobe.conf as needed. Although alsamixer and kmix show all the
-channels and devices for the sound chip, I get no sound output.
+I bought a Shuttle ST20G5 box. Sound doesn't get detected or
+seem to work with manual load.
 
-Dmesg states:
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA /home/sandeep/alsa_cvs/alsa-driver/pci/azx/patch_realtek.c:953:
-hda_codec: Unknown model for ALC880
+chipset:
+  ATI Xpress 200 northbridge
+  ULI 1573 southbridge
 
-I'm guessing there is just something specifically not included in the
-driver needed by this chip.
+The documentation says the sound is:
+  Realtek ALC880
 
-lsmod:
-Module                  Size  Used by
-snd_pcm_oss            59168  0
-snd_mixer_oss          19840  1 snd_pcm_oss
-snd_azx                12640  2
-snd_hda_codec          46208  1 snd_azx
-snd_pcm                96260  4 snd_pcm_oss,snd_azx,snd_hda_codec
-snd_timer              23556  1 snd_pcm
-snd                    58628  9
-snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8452  2 snd_azx,snd_pcm
-
-lspci:
-00:00.0 Host bridge: Intel Corp.: Unknown device 2580 (rev 04)
-00:02.0 VGA compatible controller: Intel Corp.: Unknown device 2582 (rev
-04)
-00:02.1 Display controller: Intel Corp.: Unknown device 2782 (rev 04)
-00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 03)
-00:1c.0 PCI bridge: Intel Corp. I/O Controller Hub PCI Express Port 0 (rev
-03)
-00:1d.0 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.1 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.2 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.3 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.7 USB Controller: Intel Corp. I/O Controller Hub USB2 (rev 03)
-00:1e.0 PCI bridge: Intel Corp. 82801BA/CA/DB/EB/ER Hub interface to PCI
-Bridge (rev d3)
-00:1f.0 ISA bridge: Intel Corp. I/O Controller Hub LPC (rev 03)
-00:1f.1 IDE interface: Intel Corp. I/O Controller Hub PATA (rev 03)
-00:1f.2 IDE interface: Intel Corp. I/O Controller Hub SATA cc=ide (rev
-03)
-00:1f.3 SMBus: Intel Corp. I/O Controller Hub SMBus (rev 03)
-02:01.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
-Controller (rev 80)
-02:02.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139C+ (rev 10)
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001563 No Sound on Cybersystem S28 (hda_codec:...
-has duplicate       0001582 hda_codec: Unknown model for ALC880, tr...
-has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
+alsaconf detects nothing
+manually loading snd_hda_intel also doesn't print anything in the
+log files; though it does seem to load all the snd stuff just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 17:50 
+ hubs - 08-25-05 14:59 
 ----------------------------------------------------------------------
-Try to pass the module option "model=3stack".  This is the configuration
-for systems with 3 jacks.  There are also, 5stack, 3stack-digout,
-5stack-digout and w810.
+Thank you tiwai. For the scratch, both 1 and 2 values worked.
+Regarding the model, I chose 6stack which made the jack in front work. But
+I don't have 6 jacks in rear. I have 3 jacks in back and 2 in front. I
+don't care, the sound is now really good ;)
 
-Please show the output of lspci -nv (needed for the sound entry only), and
-suitable configuration for your machine.  The PCI "subsystem" IDs should
-be listed in patch_realtek.c with the corresponding model.
-
-----------------------------------------------------------------------
- theoneandonlysm - 01-08-05 02:21 
-----------------------------------------------------------------------
-Great! Sound output works after passing model="3stack" or "5stack"; the
-5stack option matches my device.
-
-However, even after turning all the volumes up to 100, the sound output is
-relatively soft, and I can hear a faint buzz in the background.(Actually,
-turning up the headphone volume has no effect, I used the "front"
-control). Also, the audio port on the front of my machine does not output
-any sound.
-
-lspci -nv:
-00:1b.0 Class 0403: 8086:2668 (rev 03)
-        Subsystem: 103c:2a09
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cfdb8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] #10 [0091]
-
-I am running in kde 3.3.2 with aRts enabled. Is there any other
-information I can provide?
-
-
+For my information, has the patched azx driver been useful for you?
+Thanks again
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 20:49 
+ rlrevell - 11-22-05 19:24 
 ----------------------------------------------------------------------
-Maybe the connection of headphone is different from the predefined one.
-Anyway I'll add your device to 5stack model as a temporary solution.
-
-Could you check whether surround outputs and line/mic inputs work as
-expected?
-
-I'm not sure what's wrong with the volume.  Basically there are no many
-volume controls for this output route...
-
-----------------------------------------------------------------------
- theoneandonlysm - 03-20-05 21:00 
-----------------------------------------------------------------------
-Using drivers 1.0.9rc1 solves a lot of issues. Thanks!
-
-Sound output is much more crisp and volume control works for "front" and
-"side" controls. Also, the problem from the cvs versions causing knotify
-to hang is no longer present.
-
-However, KDE (kmix) still identifies the "main" audio control as the
-headphone slider, which has no effect on changing the volume. Furthermore,
-the headphone jack at the front of my computer still doesn't produce any
-sound output
-
-----------------------------------------------------------------------
- tiwai - 03-29-05 19:00 
-----------------------------------------------------------------------
-It's a bug of kmix.
-
-Unmute and raise "Front" volume.
+Reporter says bug is fixed
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-05 01:38 theoneandonlysmNew Issue                                    
-01-07-05 01:38 theoneandonlysmDistribution              => Slackware 10
-(-current)
-01-07-05 01:38 theoneandonlysmKernel Version            => 2.6.10          
-01-07-05 17:50 tiwai          Note Added: 0003102                          
-01-08-05 02:20 theoneandonlysmNote Added: 0003126                          
-01-08-05 02:21 theoneandonlysmNote Edited: 0003126                         
-01-13-05 20:49 tiwai          Note Added: 0003202                          
-03-20-05 21:00 theoneandonlysmNote Added: 0004100                          
-03-29-05 19:00 tiwai          Note Added: 0004253                          
-11-22-05 19:15 rlrevell       Relationship added       has duplicate 0001563
-11-22-05 19:18 rlrevell       Relationship added       has duplicate 0001582
-11-22-05 19:19 rlrevell       Relationship added       has duplicate 0001453
+04-18-05 20:42 jwiegley       New Issue                                    
+04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
+04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
+04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
+04-19-05 17:34 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 17:38 tiwai          Note Added: 0004523                          
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+06-12-05 20:52 jwiegley       Note Added: 0005001                          
+06-15-05 14:39 tiwai          Note Added: 0005026                          
+07-04-05 23:27 Christoph      Issue Monitored: Christoph                    
+07-04-05 23:39 Christoph      Note Added: 0005388                          
+07-08-05 12:03 tiwai          Note Added: 0005413                          
+07-08-05 17:04 Christoph      Note Added: 0005433                          
+08-12-05 18:11 Ballbreaker    Issue End Monitor: Ballbreaker                    
+08-23-05 14:40 hubs           Note Added: 0005905                          
+08-23-05 14:40 hubs           Issue Monitored: hubs                        
+08-25-05 11:57 hubs           Note Added: 0005938                          
+08-25-05 12:15 tiwai          Note Added: 0005939                          
+08-25-05 14:59 hubs           Note Added: 0005940                          
+11-22-05 19:24 rlrevell       Status                   new => resolved     
+11-22-05 19:24 rlrevell       Resolution               open => fixed       
+11-22-05 19:24 rlrevell       Assigned To               => rlrevell        
+11-22-05 19:24 rlrevell       Note Added: 0006795                          
 ======================================================================
 
 
