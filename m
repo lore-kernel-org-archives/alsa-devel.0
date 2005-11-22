@@ -1,14 +1,14 @@
-From: "Mahine Fett" <mahi@gehh.ge.com>
-Subject: Re: Eddie Works Wonder
-Date: Tue, 22 Nov 2005 14:05:30 -0500
-Message-ID: <000601c5ef97$b4a8f900$eab3a8c0@horseflesh>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001590]: Not able to record with c46xx on IBM T20
+Date: Tue, 22 Nov 2005 20:35:22 +0100
+Message-ID: <a20268642a57d5db1ecbc3c6470c6748@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0003_01C5EF6D.CBD2F100"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gehh.ge.com (61-216-17-165.dynamic.hinet.net [61.216.17.165])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2352919F
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 20:05:44 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D615F19F
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 20:35:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,94 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Friedhelm Mento <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0003_01C5EF6D.CBD2F100
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1590> 
+======================================================================
+Reported By:                mayouan
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1590
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.14-3
+======================================================================
+Date Submitted:             11-22-2005 20:35 CET
+Last Modified:              11-22-2005 20:35 CET
+======================================================================
+Summary:                    Not able to record with c46xx on IBM T20
+Description: 
+Hi.
 
- A
-C
-V
-L
-V
-X
-P
-m
-I
-A
-e
-I
-a
-r
-b
-A
-L
-v
-A
-n
-o
-i
-L
-I
-i
-G
-a
-z
-e
-I
-U
-t
-R
-x
-a
-n
-S
-M
-ra
-A
- c
- 3,70
- 1,20
- 3,35
- http://www.dormancyly.movinint.com
+I am not able to record with my T20 and alsa cs46xx
+driver. Playback works fine, the alsa mixer works as
+expected and i can hear the sound from the mic in the
+speakers.
 
-------=_NextPart_000_0003_01C5EF6D.CBD2F100
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+But when i try to record does the recording program
+outputs an empty file (exept for a tiny wave-header).
+Most programs does not give any error message.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"BORDER-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>A<BR>C<BR>V<BR>L<BR>V<BR>X<BR>P</FONT></DIV>
-<DIV style=3D"PADDING-LEFT: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>m<BR>I<BR>A<BR>e<BR>I<BR>a<BR>r</FONT></DIV>
-<DIV style=3D"BORDER-COLOR: #FFFFFF; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>b<BR>A<BR>L<BR>v<BR>A<BR>n<BR>o</FONT></DIV>
-<DIV style=3D"WORD-SPACING: normal; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>i<BR>L<BR>I<BR>i<BR>G<BR>a<BR>z</FONT></DIV>
-<DIV style=3D"MARGIN-TOP: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>e<BR>I<BR>U<BR>t<BR>R<BR>x<BR>a</FONT></DIV>
-<DIV style=3D"PADDING-RIGHT: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>n<BR>S<BR>M<BR>ra<BR>A<BR>&nbsp;<BR>c</FONT></DIV>
-<DIV style=3D"PADDING-LEFT: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>&nbsp;<BR>&nbsp;3,70<BR>&nbsp;1,20<BR>&nbsp;<BR>&nbsp;3,35<BR=
->&nbsp;<BR>&nbsp;</FONT></DIV><DIV style=3D"CLEAR: both;">&nbsp;</DIV><A =
-href=3D"http://www.dormancyly.movinint.com"><FONT size=3D3>http://www=
-dormancyly.movinint.com</FONT></A></BODY></HTML>
+Ecasound gives me a message when stoping the recording:
+Warning: DBC_ENSURE failed - "is_running() == false",
+eca-control-base.cpp, 276.-
 
-------=_NextPart_000_0003_01C5EF6D.CBD2F100--
+Accordinng to Kai Vehmanen does this mean that alsa
+does not release the lock on the soundcard when user is
+aborting. That is likely the case.
+
+Trying to record with Ardour leavs the computer not
+responding at all.
+
+I can not find anything in my error-logs telling that
+alsa have loaded correctly nor does alsaconf give me
+any error messages.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-22-05 20:35 mayouan        New Issue                                    
+11-22-05 20:35 mayouan        Distribution              => Debian          
+11-22-05 20:35 mayouan        Kernel Version            => 2.6.14-3        
+======================================================================
+
 
 
 
