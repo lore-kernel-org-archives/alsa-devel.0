@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001590]: Not able to record with c46xx on IBM T20
-Date: Tue, 22 Nov 2005 22:47:03 +0100
-Message-ID: <fffc21fe49de0031bb7161f7a180d87c@bugtrack.alsa-project.org>
+Date: Tue, 22 Nov 2005 23:18:32 +0100
+Message-ID: <491d04ab39099a370f9e67a1e46f19e6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39BDD1B1
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 22:47:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2504E1B4
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 23:18:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.14-3
 ======================================================================
 Date Submitted:             11-22-2005 20:35 CET
-Last Modified:              11-22-2005 22:47 CET
+Last Modified:              11-22-2005 23:18 CET
 ======================================================================
 Summary:                    Not able to record with c46xx on IBM T20
 Description: 
@@ -72,19 +72,20 @@ any error messages.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 11-22-05 21:22 
-----------------------------------------------------------------------
-Wrong mixer settings.  You have "Capture Source" set to CD which is wrong -
-set it to "Mic".  Also you have "ADC Capture Switch" disabled, it needs to
-be enabled.
-
-----------------------------------------------------------------------
  mayouan - 11-22-05 22:47 
 ----------------------------------------------------------------------
 This does confuse me. I uploaded a screenshot of my alsamixer.
 The sound state was placed in /var/lib/alsa/asound.state
 
 isn't it a contradiction?
+
+----------------------------------------------------------------------
+ mayouan - 11-22-05 23:18 
+----------------------------------------------------------------------
+terrebly sorry i do not know when the asound.state is updated but did
+reboot my computer and uploaded the current one.
+
+i do still have the same problems with recording.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +98,8 @@ Date Modified  Username       Field                    Change
 11-22-05 21:22 rlrevell       Note Added: 0006799                          
 11-22-05 22:45 mayouan        File Added: Screenshot.png                    
 11-22-05 22:47 mayouan        Note Added: 0006806                          
+11-22-05 23:13 mayouan        File Added: asound.state                     
+11-22-05 23:18 mayouan        Note Added: 0006807                          
 ======================================================================
 
 
