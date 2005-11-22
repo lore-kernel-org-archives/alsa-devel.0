@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001582]: hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-Date: Tue, 22 Nov 2005 21:43:36 +0100
-Message-ID: <3922ffde31b6fac21d47da46c08d2a53@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001522]: unable to mute line in while recording(capturing) line in.
+Date: Tue, 22 Nov 2005 21:45:18 +0100
+Message-ID: <a6e40f25ed77f768e1bcc6049a125b07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 023741B8
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:43:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA9401B8
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:45:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,163 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1582> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1522> 
 ======================================================================
-Reported By:                fastip
-Assigned To:                tiwai
+Reported By:                penguinz
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1582
-Category:                   PCI - hda-intel
+Issue ID:                   1522
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             Linux solo 2.6.13-gentoo-r3 #3 SMP Wed Oct 12
-16:01:15 CEST 2005 x86_64
+Status:                     new
+Distribution:               Ubuntu 5.10(Breezy)
+Kernel Version:             2.6.12-9-k7
 ======================================================================
-Date Submitted:             11-20-2005 11:10 CET
-Last Modified:              11-22-2005 21:43 CET
+Date Submitted:             11-01-2005 16:00 CET
+Last Modified:              11-22-2005 21:45 CET
 ======================================================================
-Summary:                    hda_codec: Unknown model for ALC880, trying
-auto-probe from BIOS...
+Summary:                    unable to mute line in while recording(capturing)
+line in.
 Description: 
-I have a Abit Fatal1ty AA8XE, with intel 925XE + ICH6 chipset and a intel
-HDA, and sound system does not work:
-
-dmesg output:
-
-[...]
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-[...]
-
-lspci:
-
-00:00.0 Host bridge: Intel Corporation 925X/XE Memory Controller Hub (rev
-0e)
-00:01.0 PCI bridge: Intel Corporation 925X/XE PCI Express Root Port (rev
-0e)
-00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #1 (rev 04)
-00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #2 (rev 04)
-00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #3 (rev 04)
-00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #4 (rev 04)
-00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB2 EHCI Controller (rev 04)
-00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev d4)
-00:1f.0 ISA bridge: Intel Corporation 82801FB/FR (ICH6/ICH6R) LPC
-Interface Bridge (rev 04)
-00:1f.1 IDE interface: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) IDE Controller (rev 04)
-00:1f.2 IDE interface: Intel Corporation 82801FR/FRW (ICH6R/ICH6RW) SATA
-Controller (rev 04)
-00:1f.3 SMBus: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus
-Controller (rev 04)
-01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce 6600]
-(rev a2)
-02:01.0 Ethernet controller: Intel Corporation 82541GI/PI Gigabit Ethernet
-Controller (rev 05)
-02:02.0 FireWire (IEEE 1394): Texas Instruments TSB43AB23 IEEE-1394a-2000
-Controller (PHY/Link)
-02:08.0 Ethernet controller: Intel Corporation 82562ET/EZ/GT/GZ - PRO/100
-VE Ethernet Controller (rev 04)
-
-lspci -vvv -s 00:1b.0 :
-00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-        Subsystem: ABIT Computer Corp. Unknown device 103e
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 08
-        Interrupt: pin A routed to IRQ 169
-        Region 0: Memory at fdff8000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-
-cat /proc/asound/cards
-0 [Intel          ]: HDA-Intel - HDA Intel
-                     HDA Intel at 0xfdff8000 irq 169
-
-cat /proc/asound/devices
- 17: [0- 1]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
-  1:       : sequencer
- 33:       : timer
-
-cat /proc/asound/timers
-G0: system timer : 1000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-P0-1-0: PCM playback 0-1-0 : SLAVE
-P0-1-1: PCM capture 0-1-1 : SLAVE
-
-I've tryed to use module options same as thread:
- https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453
-
-but i think this is not the case of a duplicate thread...
-position_fix=2 and model=3stack options does not work for me!
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000790 no sound with azx driver in Realtek int...
+Unable to mute line in while recording line in. I have a Mythtv system
+runing, and since the upgrade from Ubuntu 5.04(Warty) to Ubuntu
+5.10(Breezy) I can not mute line in. I tried it on my desktop machine and
+get the same results, but also duel boots back into 5.04 so I can test it
+both ways.
 ======================================================================
 
 ----------------------------------------------------------------------
- mbab - 11-22-05 21:43 
+ penguinz - 11-22-05 21:26 
 ----------------------------------------------------------------------
-This looks like the problem i am having. Sound hardware seems to be the
-same too.
+Also a problem while using Skype software. The mic input has the same
+problem. Nothing worse than hearing yourself talk though the headset :)
+
+----------------------------------------------------------------------
+ pzad - 11-22-05 21:45 
+----------------------------------------------------------------------
+Set capture on "Capture" and your source ("Line In" or "Mic").
+Changing (mute) Line In (or Mic) volume can not affect recorded signal -
+this will change only playback volume (if you have SB Live). Make sure,
+you have set "Wave Capture" to 0.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-20-05 11:10 fastip         New Issue                                    
-11-20-05 11:10 fastip         Distribution              => Gentoo          
-11-20-05 11:10 fastip         Kernel Version            => Linux solo
-2.6.13-gentoo-r3 #3 SMP Wed Oct 12 16:01:15 CEST 2005 x86_64
-11-22-05 19:18 rlrevell       Relationship added       duplicate of 0000790
-11-22-05 21:42 mbab           Issue Monitored: mbab                        
-11-22-05 21:43 mbab           Note Added: 0006802                          
+11-01-05 16:00 penguinz       New Issue                                    
+11-01-05 16:00 penguinz       Distribution              => Ubuntu 5.10(Breezy)
+11-01-05 16:00 penguinz       Kernel Version            => 2.6.12-9-k7     
+11-22-05 21:26 penguinz       Note Added: 0006800                          
+11-22-05 21:45 pzad           Note Added: 0006803                          
 ======================================================================
 
 
