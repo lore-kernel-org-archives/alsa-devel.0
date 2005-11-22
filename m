@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001591]: dmix not enabled for snd-ice1724
-Date: Tue, 22 Nov 2005 22:06:42 +0100
-Message-ID: <d2a660d221c644be1eb4899478737198@bugtrack.alsa-project.org>
+Date: Tue, 22 Nov 2005 22:04:53 +0100
+Message-ID: <a6fcb959474abeb5ef90bf4545d70d85@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F09B419E
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 22:06:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F9971B8
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 22:04:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             11-22-2005 21:14 CET
-Last Modified:              11-22-2005 22:06 CET
+Last Modified:              11-22-2005 22:04 CET
 ======================================================================
 Summary:                    dmix not enabled for snd-ice1724
 Description: 
@@ -67,6 +67,22 @@ report it upstream.
 ======================================================================
 
 ----------------------------------------------------------------------
+ rlrevell - 11-22-05 21:38 
+----------------------------------------------------------------------
+Because dmix defaults to S16_LE which your hardware does not support.  Try
+adding the slave.format S32_LE line to ICE1724.conf so the dmix section
+looks like:
+
+        playback.pcm {
+                type plug
+                slave.pcm {
+                        @func concat
+                        strings [ "dmix:" $CARD ] 
+                }
+add this --->   slave.format S32_LE
+        }
+
+----------------------------------------------------------------------
  AdamW - 11-22-05 22:04 
 ----------------------------------------------------------------------
 OK, that makes music work without errors, but dmix still doesn't appear to
@@ -74,19 +90,12 @@ work properly - I can't play more than one thing at once. I will attach
 the modified ICE1724.conf file so you can see if anything's missing.
 Thanks for the pointer.
 
-----------------------------------------------------------------------
- AdamW - 11-22-05 22:06 
-----------------------------------------------------------------------
-Modified ICE1724.conf attempting to enable dmix. Playback works but dmix
-does not seem to.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-22-05 21:14 AdamW          New Issue                                    
 11-22-05 21:38 rlrevell       Note Added: 0006801                          
 11-22-05 22:04 AdamW          Note Added: 0006804                          
-11-22-05 22:06 AdamW          Note Added: 0006805                          
 ======================================================================
 
 
