@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001522]: unable to mute line in while recording(capturing) line in.
-Date: Tue, 22 Nov 2005 21:26:52 +0100
-Message-ID: <835c7b7b9a3e940bade14539069d16ec@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001591]: dmix not enabled for snd-ice1724
+Date: Tue, 22 Nov 2005 21:38:55 +0100
+Message-ID: <7bbceeee98b692b07e5b64a78381a803@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DDEB1B9
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:26:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8B021B8
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:38:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1522> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1591> 
 ======================================================================
-Reported By:                penguinz
-Assigned To:                
+Reported By:                AdamW
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1522
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Issue ID:                   1591
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10(Breezy)
-Kernel Version:             2.6.12-9-k7
+Status:                     assigned
 ======================================================================
-Date Submitted:             11-01-2005 16:00 CET
-Last Modified:              11-22-2005 21:26 CET
+Date Submitted:             11-22-2005 21:14 CET
+Last Modified:              11-22-2005 21:38 CET
 ======================================================================
-Summary:                    unable to mute line in while recording(capturing)
-line in.
+Summary:                    dmix not enabled for snd-ice1724
 Description: 
-Unable to mute line in while recording line in. I have a Mythtv system
-runing, and since the upgrade from Ubuntu 5.04(Warty) to Ubuntu
-5.10(Breezy) I can not mute line in. I tried it on my desktop machine and
-get the same results, but also duel boots back into 5.04 so I can test it
-both ways.
+Upstream default ALSA config files in /usr/share/alsa/cards/ now seem to
+enable dmix by default for most drivers, but not snd-ice1724. I have tried
+to enable dmix for snd-ice1724 by editing
+/usr/share/alsa/cards/ICE1724.conf and adding the section which seems to
+enable dmix on other cards - I copied and pasted it from ENS1371.conf,
+with the obvious change of ENS1371 to ICE1724 - but then sound playback no
+longer worked. mplayer would give these errors:
+
+ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave) requested or
+auto-format is not available
+ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
+alsa-init: playback open error: Invalid argument
+Could not open/initialize audio device -> no sound.
+
+So, a few questions. Is dmix not being enabled by default intentional,
+perhaps due to bugs with ice1724's support for dmix? Was my attempt to
+turn it on performed wrong, or does the problem lie elsewhere? Thanks.
+
+Please note I am using ALSA 1.1.0, this version was not available on the
+'product version' list when I reported this bug. I have already mentioned
+this to Mandriva's ALSA packager, Thierry Vignaud; he suggested I should
+report it upstream.
 ======================================================================
 
 ----------------------------------------------------------------------
- penguinz - 11-22-05 21:26 
+ rlrevell - 11-22-05 21:38 
 ----------------------------------------------------------------------
-Also a problem while using Skype software. The mic input has the same
-problem. Nothing worse than hearing yourself talk though the headset :)
+Because dmix defaults to S16_LE which your hardware does not support.  Try
+adding the slave.format S32_LE line to ICE1724.conf so the dmix section
+looks like:
+
+        playback.pcm {
+                type plug
+                slave.pcm {
+                        @func concat
+                        strings [ "dmix:" $CARD ] 
+                }
+add this --->   slave.format S32_LE
+        }
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-01-05 16:00 penguinz       New Issue                                    
-11-01-05 16:00 penguinz       Distribution              => Ubuntu 5.10(Breezy)
-11-01-05 16:00 penguinz       Kernel Version            => 2.6.12-9-k7     
-11-22-05 21:26 penguinz       Note Added: 0006800                          
+11-22-05 21:14 AdamW          New Issue                                    
+11-22-05 21:38 rlrevell       Note Added: 0006801                          
 ======================================================================
 
 
