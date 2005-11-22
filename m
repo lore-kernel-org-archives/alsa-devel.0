@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001589]: broken support for a SB450 Azalia since (including) 1.0.9b
-Date: Tue, 22 Nov 2005 18:17:47 +0100
-Message-ID: <4cb3d166e563b3573d1bb9fe17ed1923@bugtrack.alsa-project.org>
+Date: Tue, 22 Nov 2005 18:20:33 +0100
+Message-ID: <755b6bfc4fc2eaf55166be59b860df1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C52718A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 18:17:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 116D618A
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 18:20:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1589> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Mandriva Linux
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             11-22-2005 18:17 CET
-Last Modified:              11-22-2005 18:17 CET
+Last Modified:              11-22-2005 18:20 CET
 ======================================================================
 Summary:                    broken support for a SB450 Azalia since (including)
 1.0.9b
@@ -73,12 +73,19 @@ with alsa-drivers-1.0.9, it was impssible to get sound with any mixer
 configuration (maybe no support for ALC880 codec?)
 ======================================================================
 
+----------------------------------------------------------------------
+ tvignaud - 11-22-05 18:20 
+----------------------------------------------------------------------
+oops, i wanted to imply: "First, note that "product version" 1.0.10 isn't
+availlable in the bug form".
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-22-05 18:17 tvignaud       New Issue                                    
 11-22-05 18:17 tvignaud       Distribution              => Mandriva Linux  
 11-22-05 18:17 tvignaud       Kernel Version            => 2.6.12          
+11-22-05 18:20 tvignaud       Note Added: 0006790                          
 ======================================================================
 
 
