@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001591]: dmix not enabled for snd-ice1724
-Date: Tue, 22 Nov 2005 21:38:55 +0100
-Message-ID: <7bbceeee98b692b07e5b64a78381a803@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001582]: hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+Date: Tue, 22 Nov 2005 21:43:36 +0100
+Message-ID: <3922ffde31b6fac21d47da46c08d2a53@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8B021B8
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:38:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 023741B8
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:43:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,163 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1591> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1582> 
 ======================================================================
-Reported By:                AdamW
-Assigned To:                perex
+Reported By:                fastip
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1591
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1582
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             Linux solo 2.6.13-gentoo-r3 #3 SMP Wed Oct 12
+16:01:15 CEST 2005 x86_64
 ======================================================================
-Date Submitted:             11-22-2005 21:14 CET
-Last Modified:              11-22-2005 21:38 CET
+Date Submitted:             11-20-2005 11:10 CET
+Last Modified:              11-22-2005 21:43 CET
 ======================================================================
-Summary:                    dmix not enabled for snd-ice1724
+Summary:                    hda_codec: Unknown model for ALC880, trying
+auto-probe from BIOS...
 Description: 
-Upstream default ALSA config files in /usr/share/alsa/cards/ now seem to
-enable dmix by default for most drivers, but not snd-ice1724. I have tried
-to enable dmix for snd-ice1724 by editing
-/usr/share/alsa/cards/ICE1724.conf and adding the section which seems to
-enable dmix on other cards - I copied and pasted it from ENS1371.conf,
-with the obvious change of ENS1371 to ICE1724 - but then sound playback no
-longer worked. mplayer would give these errors:
+I have a Abit Fatal1ty AA8XE, with intel 925XE + ICH6 chipset and a intel
+HDA, and sound system does not work:
 
-ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave) requested or
-auto-format is not available
-ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
-alsa-init: playback open error: Invalid argument
-Could not open/initialize audio device -> no sound.
+dmesg output:
 
-So, a few questions. Is dmix not being enabled by default intentional,
-perhaps due to bugs with ice1724's support for dmix? Was my attempt to
-turn it on performed wrong, or does the problem lie elsewhere? Thanks.
+[...]
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0x9
+hda_codec: num_steps = 0 for NID=0x9
+hda_codec: num_steps = 0 for NID=0x9
+hda_codec: num_steps = 0 for NID=0x9
+[...]
 
-Please note I am using ALSA 1.1.0, this version was not available on the
-'product version' list when I reported this bug. I have already mentioned
-this to Mandriva's ALSA packager, Thierry Vignaud; he suggested I should
-report it upstream.
+lspci:
+
+00:00.0 Host bridge: Intel Corporation 925X/XE Memory Controller Hub (rev
+0e)
+00:01.0 PCI bridge: Intel Corporation 925X/XE PCI Express Root Port (rev
+0e)
+00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 04)
+00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB UHCI #1 (rev 04)
+00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB UHCI #2 (rev 04)
+00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB UHCI #3 (rev 04)
+00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB UHCI #4 (rev 04)
+00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) USB2 EHCI Controller (rev 04)
+00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev d4)
+00:1f.0 ISA bridge: Intel Corporation 82801FB/FR (ICH6/ICH6R) LPC
+Interface Bridge (rev 04)
+00:1f.1 IDE interface: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) IDE Controller (rev 04)
+00:1f.2 IDE interface: Intel Corporation 82801FR/FRW (ICH6R/ICH6RW) SATA
+Controller (rev 04)
+00:1f.3 SMBus: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus
+Controller (rev 04)
+01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce 6600]
+(rev a2)
+02:01.0 Ethernet controller: Intel Corporation 82541GI/PI Gigabit Ethernet
+Controller (rev 05)
+02:02.0 FireWire (IEEE 1394): Texas Instruments TSB43AB23 IEEE-1394a-2000
+Controller (PHY/Link)
+02:08.0 Ethernet controller: Intel Corporation 82562ET/EZ/GT/GZ - PRO/100
+VE Ethernet Controller (rev 04)
+
+lspci -vvv -s 00:1b.0 :
+00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 04)
+        Subsystem: ABIT Computer Corp. Unknown device 103e
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size 08
+        Interrupt: pin A routed to IRQ 169
+        Region 0: Memory at fdff8000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+
+cat /proc/asound/cards
+0 [Intel          ]: HDA-Intel - HDA Intel
+                     HDA Intel at 0xfdff8000 irq 169
+
+cat /proc/asound/devices
+ 17: [0- 1]: digital audio playback
+ 25: [0- 1]: digital audio capture
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+  1:       : sequencer
+ 33:       : timer
+
+cat /proc/asound/timers
+G0: system timer : 1000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-0-3: PCM capture 0-0-3 : SLAVE
+P0-1-0: PCM playback 0-1-0 : SLAVE
+P0-1-1: PCM capture 0-1-1 : SLAVE
+
+I've tryed to use module options same as thread:
+ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453
+
+but i think this is not the case of a duplicate thread...
+position_fix=2 and model=3stack options does not work for me!
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000790 no sound with azx driver in Realtek int...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 11-22-05 21:38 
+ mbab - 11-22-05 21:43 
 ----------------------------------------------------------------------
-Because dmix defaults to S16_LE which your hardware does not support.  Try
-adding the slave.format S32_LE line to ICE1724.conf so the dmix section
-looks like:
-
-        playback.pcm {
-                type plug
-                slave.pcm {
-                        @func concat
-                        strings [ "dmix:" $CARD ] 
-                }
-add this --->   slave.format S32_LE
-        }
+This looks like the problem i am having. Sound hardware seems to be the
+same too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 21:14 AdamW          New Issue                                    
-11-22-05 21:38 rlrevell       Note Added: 0006801                          
+11-20-05 11:10 fastip         New Issue                                    
+11-20-05 11:10 fastip         Distribution              => Gentoo          
+11-20-05 11:10 fastip         Kernel Version            => Linux solo
+2.6.13-gentoo-r3 #3 SMP Wed Oct 12 16:01:15 CEST 2005 x86_64
+11-22-05 19:18 rlrevell       Relationship added       duplicate of 0000790
+11-22-05 21:42 mbab           Issue Monitored: mbab                        
+11-22-05 21:43 mbab           Note Added: 0006802                          
 ======================================================================
 
 
