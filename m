@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001453]: 2.6.14-rc2 "Unknown model for ALC880"
-Date: Tue, 22 Nov 2005 19:29:28 +0100
-Message-ID: <22610ff107873ddd5e6095681b7f7f6a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
+Date: Tue, 22 Nov 2005 19:29:32 +0100
+Message-ID: <48c2d41e1b654a985b311b329d8778d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C3BC1B4
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:29:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A66601B7
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 19:29:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,352 +22,186 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UNset as DUPLICATE OF issue 0000790.
+The issue 0001453 has been removed as a DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
 ======================================================================
-Reported By:                honschu
-Assigned To:                tiwai
+Reported By:                theoneandonlysm
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1453
-Category:                   PCI - hda-intel
+Issue ID:                   790
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sarge
-Kernel Version:             2.6.14-rc2
+Status:                     resolved
+Distribution:               Slackware 10 (-current)
+Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2005 17:22 CEST
-Last Modified:              11-22-2005 19:29 CET
+Date Submitted:             01-07-2005 01:38 CET
+Last Modified:              11-22-2005 19:28 CET
 ======================================================================
-Summary:                    2.6.14-rc2 "Unknown model for ALC880"
+Summary:                    no sound with azx driver in Realtek integrated sound
+chip
 Description: 
-I have a Aopen i915Gm-HFS Motherboard with intel-hda chipset.
-Sound output (input not) works in kernel 2.6.12.
+Using the CVS checkout on 01/05/05 at 8:00 EDT, I compiled the alsa drivers
+with kernel 2.6.10 . Running alsaconf (provided by slackware), it was able
+to detect the azx module as the correct driver and modified by
+/etc/modprobe.conf as needed. Although alsamixer and kmix show all the
+channels and devices for the sound chip, I get no sound output.
 
-For Kernel 2.6.14-rc2 I get error on boottime (see below)
+Dmesg states:
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA /home/sandeep/alsa_cvs/alsa-driver/pci/azx/patch_realtek.c:953:
+hda_codec: Unknown model for ALC880
 
-If you want me to do tests, feel free to ask.
+I'm guessing there is just something specifically not included in the
+driver needed by this chip.
 
-[...]
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-[...]
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
+lsmod:
+Module                  Size  Used by
+snd_pcm_oss            59168  0
+snd_mixer_oss          19840  1 snd_pcm_oss
+snd_azx                12640  2
+snd_hda_codec          46208  1 snd_azx
+snd_pcm                96260  4 snd_pcm_oss,snd_azx,snd_hda_codec
+snd_timer              23556  1 snd_pcm
+snd                    58628  9
+snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8452  2 snd_azx,snd_pcm
+
+lspci:
+00:00.0 Host bridge: Intel Corp.: Unknown device 2580 (rev 04)
+00:02.0 VGA compatible controller: Intel Corp.: Unknown device 2582 (rev
+04)
+00:02.1 Display controller: Intel Corp.: Unknown device 2782 (rev 04)
+00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 03)
+00:1c.0 PCI bridge: Intel Corp. I/O Controller Hub PCI Express Port 0 (rev
+03)
+00:1d.0 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.1 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.2 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.3 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.7 USB Controller: Intel Corp. I/O Controller Hub USB2 (rev 03)
+00:1e.0 PCI bridge: Intel Corp. 82801BA/CA/DB/EB/ER Hub interface to PCI
+Bridge (rev d3)
+00:1f.0 ISA bridge: Intel Corp. I/O Controller Hub LPC (rev 03)
+00:1f.1 IDE interface: Intel Corp. I/O Controller Hub PATA (rev 03)
+00:1f.2 IDE interface: Intel Corp. I/O Controller Hub SATA cc=ide (rev
+03)
+00:1f.3 SMBus: Intel Corp. I/O Controller Hub SMBus (rev 03)
+02:01.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
+Controller (rev 80)
+02:02.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139C+ (rev 10)
 
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
+has duplicate       0001563 No Sound on Cybersystem S28 (hda_codec:...
+has duplicate       0001582 hda_codec: Unknown model for ALC880, tr...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-05-05 18:34 
+ tiwai - 01-07-05 17:50 
 ----------------------------------------------------------------------
-Try to pass "model=3stack" module option.
+Try to pass the module option "model=3stack".  This is the configuration
+for systems with 3 jacks.  There are also, 5stack, 3stack-digout,
+5stack-digout and w810.
 
-But the warning messages are weird.  They correspond to an ADC and the CD
-volume.
+Please show the output of lspci -nv (needed for the sound entry only), and
+suitable configuration for your machine.  The PCI "subsystem" IDs should
+be listed in patch_realtek.c with the corresponding model.
 
 ----------------------------------------------------------------------
- honschu - 10-10-05 18:35 
+ theoneandonlysm - 01-08-05 02:21 
 ----------------------------------------------------------------------
-With "model=3stack" the module loads and I can play sound. But sometimes I
-think that it doesn't play sound as a accurate stream: It seems to me that
-songs sometimes jump forward or reward for some microsecounds.
+Great! Sound output works after passing model="3stack" or "5stack"; the
+5stack option matches my device.
 
+However, even after turning all the volumes up to 100, the sound output is
+relatively soft, and I can hear a faint buzz in the background.(Actually,
+turning up the headphone volume has no effect, I used the "front"
+control). Also, the audio port on the front of my machine does not output
+any sound.
 
-***************************************
-***************************************
-
-$ cat /etc/modprobe.d/sound 
-alias snd-card-0 snd-hda-intel
-options snd-hda-intel index=0 model=3stack
-
-***************************************
-***************************************
-
-$ cat /proc/asound/timers 
-G0: system timer : 4000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-
-***************************************
-***************************************
-
-$ cat /proc/asound/cards 
-0 [Intel          ]: HDA-Intel - HDA Intel
-                     HDA Intel at 0xd0540000 irq 18
-
-***************************************
-***************************************
-
-$ cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
-08:13:09 2005 UTC).
-
-***************************************
-***************************************
-$ lspci 
-0000:00:00.0 Host bridge: Intel Corp. Mobile Memory Controller Hub (rev 
-03)
-0000:00:02.0 VGA compatible controller: Intel Corp. Mobile Graphics 
-Controller (rev 03)
-0000:00:02.1 Display controller: Intel Corp. Mobile Graphics Controller 
-(rev 03)
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High 
-Definition Audio Controller (rev 04)
-0000:00:1c.0 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) 
-PCI Express Port 1 (rev 04)
-0000:00:1c.1 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) 
-PCI Express Port 2 (rev 04)
-0000:00:1c.2 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) 
-PCI Express Port 3 (rev 04)
-0000:00:1c.3 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) 
-PCI Express Port 4 (rev 04)
-0000:00:1d.0 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 
-Family) USB UHCI #1 (rev 04)
-0000:00:1d.1 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 
-Family) USB UHCI #2 (rev 04)
-0000:00:1d.2 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 
-Family) USB UHCI #3 (rev 04)
-0000:00:1d.3 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 
-Family) USB UHCI #4 (rev 04)
-0000:00:1d.7 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 
-Family) USB2 EHCI Controller (rev 04)
-0000:00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev d4)
-0000:00:1f.0 ISA bridge: Intel Corp. 82801FBM (ICH6M) LPC Interface 
-Bridge (rev 04)
-0000:00:1f.1 IDE interface: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 
-Family) IDE Controller (rev 04)
-0000:00:1f.3 SMBus: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) 
-SMBus Controller (rev 04)
-0000:02:00.0 Ethernet controller: Marvell Technology Group Ltd.: Unknown 
-device 4362 (rev 19)
-0000:03:00.0 Ethernet controller: Marvell Technology Group Ltd.: Unknown 
-device 4362 (rev 19)
-0000:05:03.0 FireWire (IEEE 1394): Lucent Microelectronics FW323 (rev 
-61)
-0000:05:04.0 Multimedia video controller: Brooktree Corporation Bt878 
-Video Capture (rev 11)
-0000:05:04.1 Multimedia controller: Brooktree Corporation Bt878 Audio 
-Capture (rev 11)
-
-***************************************
-***************************************
-
-$lspci -nv
-
-0000:00:00.0 0600: 8086:2590 (rev 03)
-        Subsystem: a0a0:2580
-        Flags: bus master, fast devsel, latency 0
-        Capabilities: <available only to root>
-
-0000:00:02.0 0300: 8086:2592 (rev 03)
-        Subsystem: a0a0:0554
+lspci -nv:
+00:1b.0 Class 0403: 8086:2668 (rev 03)
+        Subsystem: 103c:2a09
         Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at d0400000 (32-bit, non-prefetchable) [size=512K]
-        I/O ports at e000 [size=8]
-        Memory at c0000000 (32-bit, prefetchable) [size=256M]
-        Memory at d0500000 (32-bit, non-prefetchable) [size=256K]
-        Capabilities: <available only to root>
+        Memory at cfdb8000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
 
-0000:00:02.1 0380: 8086:2792 (rev 03)
-        Subsystem: a0a0:0554
-        Flags: bus master, fast devsel, latency 0
-        Memory at d0480000 (32-bit, non-prefetchable) [size=512K]
-        Capabilities: <available only to root>
-
-0000:00:1b.0 0403: 8086:2668 (rev 04)
-        Subsystem: a0a0:0560
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at d0540000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: <available only to root>
-
-0000:00:1c.0 0604: 8086:2660 (rev 04)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-        Memory behind bridge: 00000000-000fffff
-        Prefetchable memory behind bridge:
-0000000000000000-0000000000000000
-        Capabilities: <available only to root>
-
-0000:00:1c.1 0604: 8086:2662 (rev 04)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
-        I/O behind bridge: 0000c000-0000cfff
-        Memory behind bridge: d0000000-d00fffff
-        Capabilities: <available only to root>
-
-0000:00:1c.2 0604: 8086:2664 (rev 04)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
-        I/O behind bridge: 0000d000-0000dfff
-        Memory behind bridge: d0100000-d01fffff
-        Capabilities: <available only to root>
-
-0000:00:1c.3 0604: 8086:2666 (rev 04)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=04, subordinate=04, sec-latency=0
-        Memory behind bridge: 00000000-000fffff
-        Prefetchable memory behind bridge:
-0000000000000000-0000000000000000
-        Capabilities: <available only to root>
-
-0000:00:1d.0 0c03: 8086:2658 (rev 04)
-        Subsystem: a0a0:2658
-        Flags: bus master, medium devsel, latency 0, IRQ 23
-        I/O ports at e100 [size=32]
-
-0000:00:1d.1 0c03: 8086:2659 (rev 04)
-        Subsystem: a0a0:2659
-        Flags: bus master, medium devsel, latency 0, IRQ 19
-        I/O ports at e200 [size=32]
-
-0000:00:1d.2 0c03: 8086:265a (rev 04)
-        Subsystem: a0a0:265a
-        Flags: bus master, medium devsel, latency 0, IRQ 18
-        I/O ports at e300 [size=32]
-
-0000:00:1d.3 0c03: 8086:265b (rev 04)
-        Subsystem: a0a0:265b
-        Flags: bus master, medium devsel, latency 0, IRQ 16
-        I/O ports at e400 [size=32]
-
-0000:00:1d.7 0c03: 8086:265c (rev 04) (prog-if 20)
-        Subsystem: a0a0:0553
-        Flags: bus master, medium devsel, latency 0, IRQ 23
-        Memory at d0544000 (32-bit, non-prefetchable) [size=1K]
-        Capabilities: <available only to root>
-
-0000:00:1e.0 0604: 8086:2448 (rev d4) (prog-if 01)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=05, subordinate=05, sec-latency=32
-        Memory behind bridge: d0200000-d02fffff
-        Prefetchable memory behind bridge:
-00000000d0300000-00000000d0300000
-        Capabilities: <available only to root>
-
-0000:00:1f.0 0601: 8086:2641 (rev 04)
-        Subsystem: 8086:2641
-        Flags: bus master, medium devsel, latency 0
-
-0000:00:1f.1 0101: 8086:266f (rev 04) (prog-if 8a [Master SecP PriP])
-        Subsystem: a0a0:266f
-        Flags: bus master, medium devsel, latency 0, IRQ 18
-        I/O ports at <unassigned>
-        I/O ports at <unassigned>
-        I/O ports at <unassigned>
-        I/O ports at <unassigned>
-        I/O ports at f000 [size=16]
-
-0000:00:1f.3 0c05: 8086:266a (rev 04)
-        Subsystem: a0a0:266a
-        Flags: medium devsel, IRQ 5
-        I/O ports at 5000 [size=32]
-
-0000:02:00.0 0200: 11ab:4362 (rev 19)
-        Subsystem: a0a0:0506
-        Flags: bus master, fast devsel, latency 0, IRQ 17
-        Memory at d0020000 (64-bit, non-prefetchable) [size=16K]
-        I/O ports at c000 [size=256]
-        Capabilities: <available only to root>
-
-0000:03:00.0 0200: 11ab:4362 (rev 19)
-        Subsystem: a0a0:0506
-        Flags: bus master, fast devsel, latency 0, IRQ 18
-        Memory at d0120000 (64-bit, non-prefetchable) [size=16K]
-        I/O ports at d000 [size=256]
-        Capabilities: <available only to root>
-
-0000:05:03.0 0c00: 11c1:5811 (rev 61) (prog-if 10)
-        Subsystem: a0a0:030a
-        Flags: bus master, medium devsel, latency 32, IRQ 20
-        Memory at d0200000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: <available only to root>
-
-0000:05:04.0 0400: 109e:036e (rev 11)
-        Subsystem: 0070:13eb
-        Flags: bus master, medium devsel, latency 32, IRQ 16
-        Memory at d0300000 (32-bit, prefetchable) [size=4K]
-        Capabilities: <available only to root>
-
-0000:05:04.1 0480: 109e:0878 (rev 11)
-        Subsystem: 0070:13eb
-        Flags: bus master, medium devsel, latency 32, IRQ 16
-        Memory at d0301000 (32-bit, prefetchable) [size=4K]
-        Capabilities: <available only to root>
+I am running in kde 3.3.2 with aRts enabled. Is there any other
+information I can provide?
 
 
-***************************************
-***************************************
 
 ----------------------------------------------------------------------
- tiwai - 10-11-05 16:29 
+ tiwai - 01-13-05 20:49 
 ----------------------------------------------------------------------
-Try to pass position_fix=2 option additionally.
+Maybe the connection of headphone is different from the predefined one.
+Anyway I'll add your device to 5stack model as a temporary solution.
+
+Could you check whether surround outputs and line/mic inputs work as
+expected?
+
+I'm not sure what's wrong with the volume.  Basically there are no many
+volume controls for this output route...
 
 ----------------------------------------------------------------------
- honschu - 10-14-05 13:17 
+ theoneandonlysm - 03-20-05 21:00 
 ----------------------------------------------------------------------
-yes, that does the trick. Thanks!
-Will this be setup up automatically in a future release of the module?
+Using drivers 1.0.9rc1 solves a lot of issues. Thanks!
+
+Sound output is much more crisp and volume control works for "front" and
+"side" controls. Also, the problem from the cvs versions causing knotify
+to hang is no longer present.
+
+However, KDE (kmix) still identifies the "main" audio control as the
+headphone slider, which has no effect on changing the volume. Furthermore,
+the headphone jack at the front of my computer still doesn't produce any
+sound output
+
+----------------------------------------------------------------------
+ tiwai - 03-29-05 19:00 
+----------------------------------------------------------------------
+It's a bug of kmix.
+
+Unmute and raise "Front" volume.
+
+----------------------------------------------------------------------
+ rlrevell - 11-22-05 19:28 
+----------------------------------------------------------------------
+User reports problem fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 17:22 honschu        New Issue                                    
-09-24-05 17:22 honschu        Distribution              => Debian sarge    
-09-24-05 17:22 honschu        Kernel Version            => 2.6.14-rc2      
-09-24-05 22:06 rlrevell       Relationship added       duplicate of 0001429
-10-05-05 18:34 tiwai          Note Added: 0006430                          
-10-10-05 18:35 honschu        Note Added: 0006449                          
-10-11-05 16:29 tiwai          Note Added: 0006452                          
-10-14-05 13:17 honschu        Note Added: 0006479                          
-11-22-05 19:19 rlrevell       Relationship added       duplicate of 0000790
-11-22-05 19:29 rlrevell       Relationship deleted     duplicate of 0000790
+01-07-05 01:38 theoneandonlysmNew Issue                                    
+01-07-05 01:38 theoneandonlysmDistribution              => Slackware 10
+(-current)
+01-07-05 01:38 theoneandonlysmKernel Version            => 2.6.10          
+01-07-05 17:50 tiwai          Note Added: 0003102                          
+01-08-05 02:20 theoneandonlysmNote Added: 0003126                          
+01-08-05 02:21 theoneandonlysmNote Edited: 0003126                         
+01-13-05 20:49 tiwai          Note Added: 0003202                          
+03-20-05 21:00 theoneandonlysmNote Added: 0004100                          
+03-29-05 19:00 tiwai          Note Added: 0004253                          
+11-22-05 19:15 rlrevell       Relationship added       has duplicate 0001563
+11-22-05 19:18 rlrevell       Relationship added       has duplicate 0001582
+11-22-05 19:19 rlrevell       Relationship added       has duplicate 0001453
+11-22-05 19:28 rlrevell       Status                   new => resolved     
+11-22-05 19:28 rlrevell       Resolution               open => fixed       
+11-22-05 19:28 rlrevell       Assigned To               => rlrevell        
+11-22-05 19:28 rlrevell       Note Added: 0006796                          
+11-22-05 19:29 rlrevell       Relationship deleted     has duplicate 0001453
 ======================================================================
 
 
