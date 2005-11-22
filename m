@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001591]: dmix not enabled for snd-ice1724
-Date: Tue, 22 Nov 2005 22:04:53 +0100
-Message-ID: <a6fcb959474abeb5ef90bf4545d70d85@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001590]: Not able to record with c46xx on IBM T20
+Date: Tue, 22 Nov 2005 22:47:03 +0100
+Message-ID: <fffc21fe49de0031bb7161f7a180d87c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F9971B8
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 22:04:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39BDD1B1
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 22:47:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1591> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1590> 
 ======================================================================
-Reported By:                AdamW
-Assigned To:                perex
+Reported By:                mayouan
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1591
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
+Project:                    ALSA - driver
+Issue ID:                   1590
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.14-3
 ======================================================================
-Date Submitted:             11-22-2005 21:14 CET
-Last Modified:              11-22-2005 22:04 CET
+Date Submitted:             11-22-2005 20:35 CET
+Last Modified:              11-22-2005 22:47 CET
 ======================================================================
-Summary:                    dmix not enabled for snd-ice1724
+Summary:                    Not able to record with c46xx on IBM T20
 Description: 
-Upstream default ALSA config files in /usr/share/alsa/cards/ now seem to
-enable dmix by default for most drivers, but not snd-ice1724. I have tried
-to enable dmix for snd-ice1724 by editing
-/usr/share/alsa/cards/ICE1724.conf and adding the section which seems to
-enable dmix on other cards - I copied and pasted it from ENS1371.conf,
-with the obvious change of ENS1371 to ICE1724 - but then sound playback no
-longer worked. mplayer would give these errors:
+Hi.
 
-ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave) requested or
-auto-format is not available
-ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
-alsa-init: playback open error: Invalid argument
-Could not open/initialize audio device -> no sound.
+I am not able to record with my T20 and alsa cs46xx
+driver. Playback works fine, the alsa mixer works as
+expected and i can hear the sound from the mic in the
+speakers.
 
-So, a few questions. Is dmix not being enabled by default intentional,
-perhaps due to bugs with ice1724's support for dmix? Was my attempt to
-turn it on performed wrong, or does the problem lie elsewhere? Thanks.
+But when i try to record does the recording program
+outputs an empty file (exept for a tiny wave-header).
+Most programs does not give any error message.
 
-Please note I am using ALSA 1.1.0, this version was not available on the
-'product version' list when I reported this bug. I have already mentioned
-this to Mandriva's ALSA packager, Thierry Vignaud; he suggested I should
-report it upstream.
+Ecasound gives me a message when stoping the recording:
+Warning: DBC_ENSURE failed - "is_running() == false",
+eca-control-base.cpp, 276.-
+
+Accordinng to Kai Vehmanen does this mean that alsa
+does not release the lock on the soundcard when user is
+aborting. That is likely the case.
+
+Trying to record with Ardour leavs the computer not
+responding at all.
+
+I can not find anything in my error-logs telling that
+alsa have loaded correctly nor does alsaconf give me
+any error messages.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 11-22-05 21:38 
+ rlrevell - 11-22-05 21:22 
 ----------------------------------------------------------------------
-Because dmix defaults to S16_LE which your hardware does not support.  Try
-adding the slave.format S32_LE line to ICE1724.conf so the dmix section
-looks like:
-
-        playback.pcm {
-                type plug
-                slave.pcm {
-                        @func concat
-                        strings [ "dmix:" $CARD ] 
-                }
-add this --->   slave.format S32_LE
-        }
+Wrong mixer settings.  You have "Capture Source" set to CD which is wrong -
+set it to "Mic".  Also you have "ADC Capture Switch" disabled, it needs to
+be enabled.
 
 ----------------------------------------------------------------------
- AdamW - 11-22-05 22:04 
+ mayouan - 11-22-05 22:47 
 ----------------------------------------------------------------------
-OK, that makes music work without errors, but dmix still doesn't appear to
-work properly - I can't play more than one thing at once. I will attach
-the modified ICE1724.conf file so you can see if anything's missing.
-Thanks for the pointer.
+This does confuse me. I uploaded a screenshot of my alsamixer.
+The sound state was placed in /var/lib/alsa/asound.state
+
+isn't it a contradiction?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 21:14 AdamW          New Issue                                    
-11-22-05 21:38 rlrevell       Note Added: 0006801                          
-11-22-05 22:04 AdamW          Note Added: 0006804                          
+11-22-05 20:35 mayouan        New Issue                                    
+11-22-05 20:35 mayouan        Distribution              => Debian          
+11-22-05 20:35 mayouan        Kernel Version            => 2.6.14-3        
+11-22-05 21:02 mayouan        Note Added: 0006797                          
+11-22-05 21:14 mayouan        Note Added: 0006798                          
+11-22-05 21:22 rlrevell       Note Added: 0006799                          
+11-22-05 22:45 mayouan        File Added: Screenshot.png                    
+11-22-05 22:47 mayouan        Note Added: 0006806                          
 ======================================================================
 
 
