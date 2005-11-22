@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001590]: Not able to record with c46xx on IBM T20
-Date: Tue, 22 Nov 2005 23:18:32 +0100
-Message-ID: <491d04ab39099a370f9e67a1e46f19e6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001592]: SPDIF-out bit depth is truncated
+Date: Tue, 22 Nov 2005 23:52:22 +0100
+Message-ID: <ec3e22990a07a81905e96d6430858c90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2504E1B4
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 23:18:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D58591B5
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 23:52:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1590> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1592> 
 ======================================================================
-Reported By:                mayouan
+Reported By:                anli
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1590
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
+Issue ID:                   1592
+Category:                   PCI - ice1724
+Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.14-3
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-22-2005 20:35 CET
-Last Modified:              11-22-2005 23:18 CET
+Date Submitted:             11-22-2005 23:52 CET
+Last Modified:              11-22-2005 23:52 CET
 ======================================================================
-Summary:                    Not able to record with c46xx on IBM T20
+Summary:                    SPDIF-out bit depth is truncated
 Description: 
-Hi.
+I have tried to play back 96KHz/24bit file this way:
 
-I am not able to record with my T20 and alsa cs46xx
-driver. Playback works fine, the alsa mixer works as
-expected and i can hear the sound from the mic in the
-speakers.
+# aplay -Dplug:spdif 96x24.wav
+Playing WAVE '96x24.wav' : Signed 24 bit Little Endian in 3bytes, Rate
+96000 Hz, Stereo
 
-But when i try to record does the recording program
-outputs an empty file (exept for a tiny wave-header).
-Most programs does not give any error message.
+During playing back I have got first four bytes of SPDIF channel status:
 
-Ecasound gives me a message when stoping the recording:
-Warning: DBC_ENSURE failed - "is_running() == false",
-eca-control-base.cpp, 276.-
+iecset -x
+AES0=0x00,AES1=0x02,AES2=0x00,AES3=0x05
 
-Accordinng to Kai Vehmanen does this mean that alsa
-does not release the lock on the soundcard when user is
-aborting. That is likely the case.
+Byte AES2 has '0x00' value, which, in accordance with AES3-2003 document,
+means: "Maximum audio sample word length is 20 bits (default). Use of
+auxiliary sample bits not defined". You see, bit depth is truncated.
 
-Trying to record with Ardour leavs the computer not
-responding at all.
+The same result was got with JACK server started at 96KHz/32bit.
 
-I can not find anything in my error-logs telling that
-alsa have loaded correctly nor does alsaconf give me
-any error messages.
+P.S. I'm not sure which the issue category to select. I use ice1724 driver
+(v.1.0.10). 
+
 ======================================================================
-
-----------------------------------------------------------------------
- mayouan - 11-22-05 22:47 
-----------------------------------------------------------------------
-This does confuse me. I uploaded a screenshot of my alsamixer.
-The sound state was placed in /var/lib/alsa/asound.state
-
-isn't it a contradiction?
-
-----------------------------------------------------------------------
- mayouan - 11-22-05 23:18 
-----------------------------------------------------------------------
-terrebly sorry i do not know when the asound.state is updated but did
-reboot my computer and uploaded the current one.
-
-i do still have the same problems with recording.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 20:35 mayouan        New Issue                                    
-11-22-05 20:35 mayouan        Distribution              => Debian          
-11-22-05 20:35 mayouan        Kernel Version            => 2.6.14-3        
-11-22-05 21:02 mayouan        Note Added: 0006797                          
-11-22-05 21:14 mayouan        Note Added: 0006798                          
-11-22-05 21:22 rlrevell       Note Added: 0006799                          
-11-22-05 22:45 mayouan        File Added: Screenshot.png                    
-11-22-05 22:47 mayouan        Note Added: 0006806                          
-11-22-05 23:13 mayouan        File Added: asound.state                     
-11-22-05 23:18 mayouan        Note Added: 0006807                          
+11-22-05 23:52 anli           New Issue                                    
 ======================================================================
 
 
