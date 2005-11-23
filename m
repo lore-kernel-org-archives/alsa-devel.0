@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001579]: code.c test uses x86 asm, it should be x86/amd64 only
-Date: Wed, 23 Nov 2005 17:34:25 +0100
-Message-ID: <e5174b358daf420db528275790f8c9ac@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001578]: Missing .desktop files for echomixer, envy24control and rmedigicontrol
+Date: Wed, 23 Nov 2005 17:32:27 +0100
+Message-ID: <f420b73f415f9cfb67cde5f2458b856c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E055176
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:34:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00BE2155
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:32:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1579> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1578> 
 ======================================================================
-Reported By:                Flameeyes
+Reported By:                mikma
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1579
-Category:                   0_general
+Project:                    ALSA - tools
+Issue ID:                   1578
+Category:                   echomixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             11-19-2005 20:17 CET
-Last Modified:              11-23-2005 17:34 CET
+Date Submitted:             11-19-2005 12:13 CET
+Last Modified:              11-23-2005 17:32 CET
 ======================================================================
-Summary:                    code.c test uses x86 asm, it should be x86/amd64
-only
+Summary:                    Missing .desktop files for echomixer, envy24control
+and rmedigicontrol
 Description: 
-As per summary, the code.c test can't be built for any other system but x86
-or amd64, as it uses inline asm focused on i386.
+I'm forwarding a feature request from a Debian user:
 
-The attached patch makes it conditional to those arches.
+"I've noticed that only .desktop files for the HDSP cards are available
+in the package.
 
-HTH,
-Diego
+I think that  entries for echomixer, envy24control  and rmedigicontrol
+should be added too."
+
+The original Debian bug report can be found at:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=335485
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-05 17:34 
+ tiwai - 11-23-05 17:32 
 ----------------------------------------------------------------------
-It's easier just to remove code from check_PROGRAMS.  It's nothing but a
-test code for dmix, and shouldn't be used as "check".
+Patches please :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-05 20:17 Flameeyes      New Issue                                    
-11-19-05 20:17 Flameeyes      File Added: alsa-lib-1.0.10-test-ppc.patch        
-           
-11-23-05 17:34 tiwai          Note Added: 0006817                          
+11-19-05 12:13 mikma          New Issue                                    
+11-23-05 17:32 tiwai          Note Added: 0006816                          
 ======================================================================
 
 
