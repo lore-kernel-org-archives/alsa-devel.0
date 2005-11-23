@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001049]: No sound at all
-Date: Wed, 23 Nov 2005 21:20:56 +0100
-Message-ID: <00c787ae5f10b604a16c9e65b01ce09a@bugtrack.alsa-project.org>
+From: postmaster@shutterfly.com
+Subject: Delivery Status Notification (Failure)
+Date: Wed, 23 Nov 2005 12:37:21 -0800
+Message-ID: <pXrWdKE3s00008fe3@franklin.corp.shutterfly.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="9B095B5ADSN=_01C5E74C126DFDFA00029396franklin.corp.sh"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C0FC16E
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 21:20:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +15,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a MIME-formatted message.  
+Portions of this message may be unreadable without a MIME-capable mail program.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1049> 
-======================================================================
-Reported By:                DF5JT
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1049
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.770_FC3 #1 Thu Feb 24 14:00:06 EST 2005
-i686 i686 i386 GNU/Linux
-======================================================================
-Date Submitted:             04-13-2005 11:25 CEST
-Last Modified:              11-23-2005 21:20 CET
-======================================================================
-Summary:                    No sound at all
-Description: 
-00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 04)
-        Subsystem: Rioworks: Unknown device 203d
-        Flags: bus master, fast devsel, latency 0, IRQ 10
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+--9B095B5ADSN=_01C5E74C126DFDFA00029396franklin.corp.sh
+Content-Type: text/plain; charset=unicode-1-1-utf-7
+
+This is an automatically generated Delivery Status Notification.
+
+Delivery to the following recipients failed.
+
+       avi@shutterfly.com
 
 
 
-======================================================================
 
-----------------------------------------------------------------------
- tiwai - 04-19-05 17:52 
-----------------------------------------------------------------------
-Try to pass model=5stack-digout module option to snd-hda-intel module.
+--9B095B5ADSN=_01C5E74C126DFDFA00029396franklin.corp.sh
+Content-Type: message/delivery-status
 
-----------------------------------------------------------------------
- rlrevell - 11-23-05 21:20 
-----------------------------------------------------------------------
-Any improvement in later ALSA releases?
+Reporting-MTA: dns;franklin.corp.shutterfly.com
+Received-From-MTA: dns;europa.corp.shutterfly.com
+Arrival-Date: Wed, 23 Nov 2005 12:37:21 -0800
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-13-05 11:25 DF5JT          New Issue                                    
-04-13-05 11:25 DF5JT          Distribution              => Fedora Core 3   
-04-13-05 11:25 DF5JT          Kernel Version            => 2.6.10-1.770_FC3 #1
-Thu Feb 24 14:00:06 EST 2005 i686 i686 i386 GNU/Linux
-04-13-05 11:25 DF5JT          Issue Monitored: DF5JT                       
-04-13-05 16:34 tiwai          Note Added: 0004469                          
-04-13-05 16:52 DF5JT          Note Added: 0004470                          
-04-13-05 17:19 tiwai          Note Added: 0004473                          
-04-15-05 12:08 DF5JT          Note Added: 0004497                          
-04-15-05 12:38 stransky       Note Added: 0004498                          
-04-15-05 14:09 DF5JT          Note Added: 0004499                          
-04-19-05 17:52 tiwai          Note Added: 0004529                          
-04-19-05 17:55 tiwai          Category                 PCI - azx => PCI -
-hda-intel
-06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
-08-12-05 18:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
-11-23-05 21:20 rlrevell       Note Added: 0006834                          
-======================================================================
+Final-Recipient: rfc822;avi@shutterfly.com
+Action: failed
+Status: 5.1.1
+
+--9B095B5ADSN=_01C5E74C126DFDFA00029396franklin.corp.sh
+Content-Type: message/rfc822
+
+Received: from europa.corp.shutterfly.com ([10.2.1.126]) by franklin.corp.shutterfly.com with Microsoft SMTPSVC(6.0.3790.1830);
+	 Wed, 23 Nov 2005 12:37:21 -0800
+Received: from mail02.shutterfly.com ([172.16.200.102])
+	by europa.corp.shutterfly.com (MailFrontier 4.1.6.6829)
+	with SMTP; Wed, 23 Nov 2005 12:37:21 -0800
+Received: from shutterfly.com ([IP=200.139.165.132]) by eSafe SMTP Relay 1132609085; Wed Nov 23 12:38:02 2005
+From: alsa-devel@lists.sf.net
+To: avi@shutterfly.com
+Subject: pescaria por kilo
+Date: Wed, 23 Nov 2005 18:37:18 -0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="04541826"
+X-Mlf-Threat: nothreat
+X-Mlf-Threat-Detailed: nothreat;none;none
+Return-Path: alsa-devel@lists.sf.net
+Message-ID: <FRANKLINIuPHDXE2sCR00007cbb@franklin.corp.shutterfly.com>
+X-OriginalArrivalTime: 23 Nov 2005 20:37:21.0021 (UTC) FILETIME=[B3E5CAD0:01C5F06D]
+
+--04541826
+Content-Type: text/plain;
+	charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Medical Labs Exames!!!
+
+--04541826--
 
 
+--9B095B5ADSN=_01C5E74C126DFDFA00029396franklin.corp.sh--
 
 
 -------------------------------------------------------
