@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001582]: hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-Date: Wed, 23 Nov 2005 20:20:25 +0100
-Message-ID: <0dc2c4d96d3cffe580804d3bfb19581f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001453]: 2.6.14-rc2 "Unknown model for ALC880"
+Date: Wed, 23 Nov 2005 20:24:26 +0100
+Message-ID: <97e0959394562c5b0d40e52bad284c1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CDA921B4
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:20:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0F8D1B4
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:24:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,169 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1582> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453> 
 ======================================================================
-Reported By:                fastip
+Reported By:                honschu
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1582
+Issue ID:                   1453
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             Linux solo 2.6.13-gentoo-r3 #3 SMP Wed Oct 12
-16:01:15 CEST 2005 x86_64
+Distribution:               Debian sarge
+Kernel Version:             2.6.14-rc2
 ======================================================================
-Date Submitted:             11-20-2005 11:10 CET
-Last Modified:              11-23-2005 20:20 CET
+Date Submitted:             09-24-2005 17:22 CEST
+Last Modified:              11-23-2005 20:24 CET
 ======================================================================
-Summary:                    hda_codec: Unknown model for ALC880, trying
-auto-probe from BIOS...
+Summary:                    2.6.14-rc2 "Unknown model for ALC880"
 Description: 
-I have a Abit Fatal1ty AA8XE, with intel 925XE + ICH6 chipset and a intel
-HDA, and sound system does not work:
+I have a Aopen i915Gm-HFS Motherboard with intel-hda chipset.
+Sound output (input not) works in kernel 2.6.12.
 
-dmesg output:
+For Kernel 2.6.14-rc2 I get error on boottime (see below)
+
+If you want me to do tests, feel free to ask.
 
 [...]
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
 hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
 hda_codec: num_steps = 0 for NID=0x8
 hda_codec: num_steps = 0 for NID=0x8
 hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
-hda_codec: num_steps = 0 for NID=0x9
+[...]
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+[...]
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0xb
+hda_codec: num_steps = 0 for NID=0x8
+hda_codec: num_steps = 0 for NID=0x8
 [...]
 
-lspci:
-
-00:00.0 Host bridge: Intel Corporation 925X/XE Memory Controller Hub (rev
-0e)
-00:01.0 PCI bridge: Intel Corporation 925X/XE PCI Express Root Port (rev
-0e)
-00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #1 (rev 04)
-00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #2 (rev 04)
-00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #3 (rev 04)
-00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #4 (rev 04)
-00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB2 EHCI Controller (rev 04)
-00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev d4)
-00:1f.0 ISA bridge: Intel Corporation 82801FB/FR (ICH6/ICH6R) LPC
-Interface Bridge (rev 04)
-00:1f.1 IDE interface: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) IDE Controller (rev 04)
-00:1f.2 IDE interface: Intel Corporation 82801FR/FRW (ICH6R/ICH6RW) SATA
-Controller (rev 04)
-00:1f.3 SMBus: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus
-Controller (rev 04)
-01:00.0 VGA compatible controller: nVidia Corporation NV43 [GeForce 6600]
-(rev a2)
-02:01.0 Ethernet controller: Intel Corporation 82541GI/PI Gigabit Ethernet
-Controller (rev 05)
-02:02.0 FireWire (IEEE 1394): Texas Instruments TSB43AB23 IEEE-1394a-2000
-Controller (PHY/Link)
-02:08.0 Ethernet controller: Intel Corporation 82562ET/EZ/GT/GZ - PRO/100
-VE Ethernet Controller (rev 04)
-
-lspci -vvv -s 00:1b.0 :
-00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-        Subsystem: ABIT Computer Corp. Unknown device 103e
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 08
-        Interrupt: pin A routed to IRQ 169
-        Region 0: Memory at fdff8000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-
-cat /proc/asound/cards
-0 [Intel          ]: HDA-Intel - HDA Intel
-                     HDA Intel at 0xfdff8000 irq 169
-
-cat /proc/asound/devices
- 17: [0- 1]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
-  1:       : sequencer
- 33:       : timer
-
-cat /proc/asound/timers
-G0: system timer : 1000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-P0-1-0: PCM playback 0-1-0 : SLAVE
-P0-1-1: PCM capture 0-1-1 : SLAVE
-
-I've tryed to use module options same as thread:
- https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453
-
-but i think this is not the case of a duplicate thread...
-position_fix=2 and model=3stack options does not work for me!
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0000790 no sound with azx driver in Realtek int...
+duplicate of        0001429 hda_codec: Unknown model for ALC880
 ======================================================================
 
 ----------------------------------------------------------------------
- mbab - 11-22-05 21:43 
+ honschu - 10-14-05 13:17 
 ----------------------------------------------------------------------
-This looks like the problem i am having. Sound hardware seems to be the
-same too.
+yes, that does the trick. Thanks!
+Will this be setup up automatically in a future release of the module?
 
 ----------------------------------------------------------------------
- rlrevell - 11-23-05 20:20 
+ rlrevell - 11-23-05 20:24 
 ----------------------------------------------------------------------
-Fixed in CVS.  See the patch from bug #1563.
+Re: the "unknown model" and "num_steps = 0 for NID" errors, see the patch
+in bug #1563.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-20-05 11:10 fastip         New Issue                                    
-11-20-05 11:10 fastip         Distribution              => Gentoo          
-11-20-05 11:10 fastip         Kernel Version            => Linux solo
-2.6.13-gentoo-r3 #3 SMP Wed Oct 12 16:01:15 CEST 2005 x86_64
-11-22-05 19:18 rlrevell       Relationship added       duplicate of 0000790
-11-22-05 21:42 mbab           Issue Monitored: mbab                        
-11-22-05 21:43 mbab           Note Added: 0006802                          
-11-23-05 20:20 rlrevell       Note Added: 0006825                          
+09-24-05 17:22 honschu        New Issue                                    
+09-24-05 17:22 honschu        Distribution              => Debian sarge    
+09-24-05 17:22 honschu        Kernel Version            => 2.6.14-rc2      
+09-24-05 22:06 rlrevell       Relationship added       duplicate of 0001429
+10-05-05 18:34 tiwai          Note Added: 0006430                          
+10-10-05 18:35 honschu        Note Added: 0006449                          
+10-11-05 16:29 tiwai          Note Added: 0006452                          
+10-14-05 13:17 honschu        Note Added: 0006479                          
+11-22-05 19:19 rlrevell       Relationship added       duplicate of 0000790
+11-22-05 19:29 rlrevell       Relationship deleted     duplicate of 0000790
+11-22-05 21:41 mbab           Issue Monitored: mbab                        
+11-23-05 20:24 rlrevell       Note Added: 0006826                          
 ======================================================================
 
 
