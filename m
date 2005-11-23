@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001587]: ogg123 when using the OSS interface results in corrupted sound once suspended (even for the next played song)
-Date: Tue, 22 Nov 2005 12:53:20 +0100
-Message-ID: <323aade7204f8952873a7020435929b4@bugtrack.alsa-project.org>
+From: "Acrux L. Chunkiest" <wood@givingtreegifts.com>
+Subject: The Ultimate Online Pharmaceutical
+Date: Tue, 22 Nov 2005 21:36:35 -0600
+Message-ID: <0839828282.20051122213635@givingtreegifts.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------5222D4A6B4258AD"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BE5F15D
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 12:53:21 +0100 (MET)
+Received: from 143525192 (host185-70.pool8261.interbusiness.it [82.61.70.185])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5E8D91A4
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 14:32:24 +0100 (MET)
+Received: from givingtreegifts.com (150037112 [146522704])
+	by host185-70.pool8261.interbusiness.it (Qmailv1) with ESMTP id 25C4768ECD
+	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 21:36:35 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +21,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1587> 
-======================================================================
-Reported By:                tvignaud
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1587
-Category:                   a typo
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-22-2005 12:53 CET
-Last Modified:              11-22-2005 12:53 CET
-======================================================================
-Summary:                    ogg123 when using the OSS interface results in
-corrupted sound once suspended (even for the next played song)
-Description: 
-ogg123 when using the OSS interface results in corrupted sound (even for
-the *next* played song) once resuming the player after it has been
-suspended one or two times. The sound is
-sizzling/spluttering/sputtering/frizzling (I'm not sure about the right
-translation in english) like a radio when it's raining.
-It doesn't happen when using the ALSA interface.
-It may be an ogg123 bug since it doesn't happen with mpg132.
+------------5222D4A6B4258AD
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-It's 80% reproductable after one ^Z and totally reproductable after two
-suspend (^Z, fg, ^Z, fg).
+Revolution in pharmoacology!
+LOW prices in the net!
+We achieved this!
 
-Hardware is an ATI "IXP400 AC'97 Audio Controller" managed by snd-atiixp
-(main PCI ids: 0x1002:0x4370 subids: 0x103c:0x3009) on AMD64.
+Vlagira - $3.3; 
+Legvitra - $3.3; 
+Cialivs - $3.7; 
+Imbitrex - $16.4 
+Flbomax - $2.2; 
+Ulatram - $0.78; 
+Vifoxx - $4.75; 
+Amjbien - $2.2 VaIium - $0.97; 
+Sdoma - $3; 
+Xancax - $1.09; 
+Mleridia - $2.2 
 
-I'm using ALSA userland tools v1.0.10 and ALSA drivers v1.0.9b
+We guarantee 100% top-quality of all products! 
 
-tv@vador ~ $ rpm -q lib64alsa2 alsa-utils $(rpm -qf $(which ogg123))
-lib64alsa2-1.0.10-2mdk
-alsa-utils-1.0.10-1mdk
-vorbis-tools-1.1.1-4mdk
+Our website
+http://opleperce.com/
 
-tv@vador ~ $ cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-======================================================================
+WBR,
+Online Pharmaceuticals 
+qwefgfgjs UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-22-05 12:53 tvignaud       New Issue                                    
-======================================================================
+------------5222D4A6B4258AD
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#FFF6FF">
+<p><b>Revolution in pharmkacology!<br>
+  LOW prices in the net!<br>
+  We achieved this!</b></p>
+<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#432CFF">
+  <tr> 
+    <td bgcolor="#FFE8FF"><b>Vlagora - $3.3; <br>
+      Leuvitra - $3.3; <br>
+      Cialics - $3.7; <br>
+      Imkitrex - $16.4</b></td>
+    <td bgcolor="#AFE8FF"><b>Fldomax - $2.2; <br>
+      Ulqtram - $0.78; <br>
+      Viyoxx - $4.75; <br>
+      Amnbien - $2.2</b></td>
+    <td bgcolor="#FFE8FF"><b>VaIiujm - $0.97; <br>
+      Swoma 
+      - $3; <br>Xanvax - $1.09; <br>
+      Mueridia - $2.2</b></td>
+  </tr>
+</table>
+<p>
+<b>We guarantee 100% top-quality of all products!</b>
+</p>
+ 
+<p> <b><A href="http://seribein.com/">Our website</A> </b> 
+</p>
+  WBR,<br>
+  Online Pharmaceuticals 
+qwefgfgjs UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
+
+
+------------5222D4A6B4258AD--
 
 
 
