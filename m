@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001592]: SPDIF-out bit depth is truncated
-Date: Tue, 22 Nov 2005 23:52:22 +0100
-Message-ID: <ec3e22990a07a81905e96d6430858c90@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] sound/: possible cleanups
+Date: Wed, 23 Nov 2005 01:44:06 +0100
+Message-ID: <20051123004406.GF3963__10746.929041534$1132706800$gmane$org@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D58591B5
-	for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2005 23:52:22 +0100 (MET)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id ACBB9185
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 01:44:06 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch contains the following possible cleanups:
+- core/init.c: make the needlessly global snd_generic_device_release()
+  static
+- pci/hda/hda_proc.c should #include "hda_local.h" for including the
+  prototype of it's global function snd_hda_codec_proc_new()
+- core/rawmidi.c: make the needlessly global and EXPORT_SYMBOL'ed
+  function snd_rawmidi_info() static
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1592> 
-======================================================================
-Reported By:                anli
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1592
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             11-22-2005 23:52 CET
-Last Modified:              11-22-2005 23:52 CET
-======================================================================
-Summary:                    SPDIF-out bit depth is truncated
-Description: 
-I have tried to play back 96KHz/24bit file this way:
 
-# aplay -Dplug:spdif 96x24.wav
-Playing WAVE '96x24.wav' : Signed 24 bit Little Endian in 3bytes, Rate
-96000 Hz, Stereo
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-During playing back I have got first four bytes of SPDIF channel status:
+---
 
-iecset -x
-AES0=0x00,AES1=0x02,AES2=0x00,AES3=0x05
+ sound/core/init.c        |    2 +-
+ sound/core/rawmidi.c     |    4 ++--
+ sound/pci/hda/hda_proc.c |    1 +
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-Byte AES2 has '0x00' value, which, in accordance with AES3-2003 document,
-means: "Maximum audio sample word length is 20 bits (default). Use of
-auxiliary sample bits not defined". You see, bit depth is truncated.
-
-The same result was got with JACK server started at 96KHz/32bit.
-
-P.S. I'm not sure which the issue category to select. I use ice1724 driver
-(v.1.0.10). 
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-22-05 23:52 anli           New Issue                                    
-======================================================================
-
+--- linux-2.6.15-rc1-mm2-full/sound/core/rawmidi.c.old	2005-11-22 22:37:15.000000000 +0100
++++ linux-2.6.15-rc1-mm2-full/sound/core/rawmidi.c	2005-11-22 22:37:45.000000000 +0100
+@@ -528,7 +528,8 @@
+ 	return err;
+ }
+ 
+-int snd_rawmidi_info(snd_rawmidi_substream_t *substream, snd_rawmidi_info_t *info)
++static int snd_rawmidi_info(snd_rawmidi_substream_t *substream,
++			    snd_rawmidi_info_t *info)
+ {
+ 	snd_rawmidi_t *rmidi;
+ 	
+@@ -1672,7 +1673,6 @@
+ EXPORT_SYMBOL(snd_rawmidi_transmit);
+ EXPORT_SYMBOL(snd_rawmidi_new);
+ EXPORT_SYMBOL(snd_rawmidi_set_ops);
+-EXPORT_SYMBOL(snd_rawmidi_info);
+ EXPORT_SYMBOL(snd_rawmidi_info_select);
+ EXPORT_SYMBOL(snd_rawmidi_kernel_open);
+ EXPORT_SYMBOL(snd_rawmidi_kernel_release);
+--- linux-2.6.15-rc1-mm2-full/sound/core/init.c.old	2005-11-22 22:38:41.000000000 +0100
++++ linux-2.6.15-rc1-mm2-full/sound/core/init.c	2005-11-22 22:39:09.000000000 +0100
+@@ -694,7 +694,7 @@
+ 	},
+ };
+ 
+-void snd_generic_device_release(struct device *dev)
++static void snd_generic_device_release(struct device *dev)
+ {
+ }
+ 
+--- linux-2.6.15-rc1-mm2-full/sound/pci/hda/hda_proc.c.old	2005-11-22 22:41:36.000000000 +0100
++++ linux-2.6.15-rc1-mm2-full/sound/pci/hda/hda_proc.c	2005-11-22 22:41:48.000000000 +0100
+@@ -26,6 +26,7 @@
+ #include <linux/pci.h>
+ #include <sound/core.h>
+ #include "hda_codec.h"
++#include "hda_local.h"
+ 
+ static const char *get_wid_type_name(unsigned int wid_value)
+ {
 
 
 
