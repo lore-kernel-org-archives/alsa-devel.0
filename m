@@ -1,17 +1,11 @@
-From: "Bobbins A. Kroner" <galexand@glennsmithvaldez.com>
-Subject: The Ultimate Online Pharmaceutical
-Date: Wed, 23 Nov 2005 21:29:32 -0600
-Message-ID: <4099908332.20051123212932@glennsmithvaldez.com>
+From: Romain Beauxis <toots@rastageeks.org>
+Subject: ac97 8 channels, software mixing and dshare
+Date: Wed, 23 Nov 2005 15:15:45 +0100
+Message-ID: <200511231515.45106.toots@rastageeks.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------CABB697AA52A090"
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_RmHhDBKjUQYInQh"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 150502672 (wiley-405-9295.roadrunner.nf.net [205.251.126.113])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D4BF1174
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 14:25:19 +0100 (MET)
-Received: from glennsmithvaldez.com (149448856 [149227912])
-	by wiley-405-9295.roadrunner.nf.net (Qmailv1) with ESMTP id DAF972D905
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 21:29:32 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,71 +15,135 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
-------------CABB697AA52A090
-Content-Type: text/plain
+--Boundary-00=_RmHhDBKjUQYInQh
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Live happy! Live healthy! Live long!
-With our pharmmacy.
+	Hi all!
 
-Vlagjra - $3.3; Ledvitra - $3.3; Cialims - $3.7; Imoitrex - $16.4 
-Fliomax - $2.2; Ulatram - $0.78; Viooxx - $4.75; Amubien - $2.2 
-VaIiuvm - $0.97; Sxoma - $3; Xansax - $1.09; Mceridia - $2.2 
+I've recently got a new mother borad, with a intel8x0 ac97 internal chipset.
+This chipset is pretty raw, and does not handle hardware mixing neither seperate rear, front etc.. outputs.
 
-If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice.
+The only way to reach rear and others channels is to open the card in 6 channels mode and then split those channels.
 
-Visit our website
-http://aturdice.com
+I've managed to get a working configuration with rear, front and center.
+But my card is 8 channels capable, but the alsamixer only allows selection for 2, 4 and 6 channels, and aplay segfault when I try to open the card with 8 channels.
 
-WBR,
-Online Pharmaceuticals 
-fgfgkkflrpa UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+Also, one of my application -- xdtv -- crashes with this configuration. My hint is this is because it looks for a 2 channels default card while it is in 6 channels, because I get:
+snd_pcm_hw_params_set_channels: Argument invalide
+zsh: floating point exception  xdtv
 
-------------CABB697AA52A090
-Content-Type: text/html
+Then I've searched on the documentation, and found that this would be possible with dshare, but dshare needs to be connected to hw, and hw is allready connected to dmix...
+
+My questions would be:
+-- Is the 8 channels ac97 output available in alsa
+-- Can I set up a proper 2 channels device from a 6 channels dmix device? 
+
+
+My audiochip is:
+0000:00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio Controller (rev a2)
+0000:00:04.0 0401: 10de:0059 (rev a2)
+
+And my .asoundrc is attached..
+
+Thank for your answer  and keep up the good work!
+
+
+Romain
+-- 
+If you are the big tree,
+We are the small axe,
+Ready to cut you down,
+Sharpen to cut you down...
+
+--Boundary-00=_RmHhDBKjUQYInQh
+Content-Type: text/plain;
+  charset="us-ascii";
+  name=".asoundrc"
 Content-Transfer-Encoding: 7bit
-
-<HTML>
-<BODY bgcolor="#F0F0FF">
-<b> 
-<p>Live happy! Live healthy! Live long!<br>
-  With our pharmxacy.</p>
-</b> 
-<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#0000FF">
-  <tr> 
-    <td bgcolor="#F500FF"><b>Vlagqra - $3.3; Lemvitra 
-      - $3.3; Cialixs - $3.7; Imvitrex - $16.4</b></td>
-  </tr>
-  <tr> 
-    <td bgcolor="#C400FF"><b>Flyomax - $2.2; Ulttram 
-      - $0.78; Viloxx - $4.75; Amcbien - $2.2</b></td>
-  </tr>
-  <tr> 
-    <td bgcolor="#F500FF"><b>VaIiusm - $0.97; Scoma 
-      - $3; Xanyax - $1.09; Mjeridia - $2.2</b></td>
-  </tr>
-</table>
-<p>If you compare the cost and services of our competitors, you will see that 
-  we give you much more… for less. Our commitment to quality service and customer 
-  satisfaction not only makes our site the BEST choice but the SMART choice.</p>
- <p>
-  <b><A href="http://aturdice.com">Visit our website</A>
-  </b>
-  </p>
-  WBR,<br>
-  Online Pharmaceuticals
-fgfgkkflrpa UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</BODY>
-</HTML>
+Content-Disposition: attachment;
+	filename=".asoundrc"
 
 
-------------CABB697AA52A090--
+pcm.dshare {
+    type dmix
+    ipc_key 2048
+    slave {
+        pcm "hw:0"
+        rate 48000
+	period_size 1096
+	buffer_size 3384
+	period_time 24000
+	buffer_time 70000
+        channels 6 #segfault if set to 8
+    }
+    bindings {
+        0 0
+        1 1
+        2 2
+        3 3
+	4 4
+	5 5
+# 	6 6
+# 	7 7
+    }
+}
 
+pcm.dsnoop0 {
+ type dsnoop;
+ ipc_key 13758;
+ slave.pcm "hw:0"
+ }
+
+pcm.!front {
+    type plug
+    slave {
+        pcm "dshare"
+        channels 6
+    }
+    ttable.0.0 1
+    ttable.1.1 1
+}
+
+pcm.!center {
+    type plug
+    slave {
+        pcm "dshare"
+        channels 6
+    }
+    ttable.0.2 1
+    ttable.1.3 1
+}
+
+pcm.!rear {
+    type plug
+    slave {
+        pcm "dshare"
+        channels 6
+    }
+    ttable.0.4 1
+    ttable.1.5 1
+}
+
+pcm.!default {
+ type asym
+ capture.pcm "dsnoop0"
+ playback.pcm "front"
+ }
+
+ ctl.!default {
+ type hw
+ card 0
+ }
+
+
+
+--Boundary-00=_RmHhDBKjUQYInQh--
 
 
 
