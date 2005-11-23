@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001590]: Not able to record with c46xx on IBM T20
-Date: Wed, 23 Nov 2005 17:22:20 +0100
-Message-ID: <e356e8b7f6819e70ef117aebbac2bb92@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001538]: Latency was better on earlier version
+Date: Wed, 23 Nov 2005 17:23:21 +0100
+Message-ID: <a8c39542f77e062aa241dee60ee932cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C5F21AE
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:22:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E91651AE
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:23:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,92 +24,116 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1590> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1538> 
 ======================================================================
-Reported By:                mayouan
+Reported By:                pesalomo
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1590
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
-Severity:                   minor
+Issue ID:                   1538
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian
-Kernel Version:             2.6.14-3
-Resolution:                 fixed
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.14
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-22-2005 20:35 CET
-Last Modified:              11-23-2005 17:22 CET
+Date Submitted:             11-09-2005 21:01 CET
+Last Modified:              11-23-2005 17:23 CET
 ======================================================================
-Summary:                    Not able to record with c46xx on IBM T20
+Summary:                    Latency was better on earlier version
 Description: 
-Hi.
+I don't know what category which is best for this - but I'm comparing Linux
+kernel 2.6.10 and 2.6.14. 
 
-I am not able to record with my T20 and alsa cs46xx
-driver. Playback works fine, the alsa mixer works as
-expected and i can hear the sound from the mic in the
-speakers.
+Using I82801DBICH4, version 1.0.10rc1, which is bundled with Linux 2.6.14
+- the performance is much weaker than when using kernel 2.6.10 (don't
+remember the driver version there).
 
-But when i try to record does the recording program
-outputs an empty file (exept for a tiny wave-header).
-Most programs does not give any error message.
-
-Ecasound gives me a message when stoping the recording:
-Warning: DBC_ENSURE failed - "is_running() == false",
-eca-control-base.cpp, 276.-
-
-Accordinng to Kai Vehmanen does this mean that alsa
-does not release the lock on the soundcard when user is
-aborting. That is likely the case.
-
-Trying to record with Ardour leavs the computer not
-responding at all.
-
-I can not find anything in my error-logs telling that
-alsa have loaded correctly nor does alsaconf give me
-any error messages.
+On 2.6.10 I was able to use a buffer size down to 128 bytes, but now the
+lowest I can go is 512. And the sound is still crispy.
 ======================================================================
 
 ----------------------------------------------------------------------
- mayouan - 11-22-05 22:47 
+ pesalomo - 11-10-05 21:55 
 ----------------------------------------------------------------------
-This does confuse me. I uploaded a screenshot of my alsamixer.
-The sound state was placed in /var/lib/alsa/asound.state
+aplay -D hw:0 -v --period-size=32 --buffer-size=64 -t raw -f dat /dev/zero
+Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Hardware PCM card 0 'Intel 82801DB-ICH4' device 0 subdevice 0
 
-isn't it a contradiction?
+Its setup is:
+stream       : PLAYBACK
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 16
+buffer_size  : 64
+period_size  : 32
+period_time  : 666
+tick_time    : 4000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 32
+xfer_align   : 32
+start_threshold  : 64
+stop_threshold   : 64
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+underrun!!! (at least 8.179 ms long)
+Status:
+state       : XRUN
+trigger_time: 1131656091.89497000
+tstamp      : 1131656091.97657000
+delay       : 0
+avail       : 64
+avail_max   : 64
+underrun!!! (at least 18.193 ms long)
+Status:
+state       : XRUN
+trigger_time: 1131656091.113515000
+tstamp      : 1131656091.131707000
+delay       : 0
+avail       : 64
+avail_max   : 64
+underrun!!! (at least 0.243 ms long)
 
 ----------------------------------------------------------------------
- mayouan - 11-22-05 23:23 
+ pesalomo - 11-22-05 16:18 
 ----------------------------------------------------------------------
-terrebly sorry i do not know when the asound.state is updated but did
-reboot my computer and things started to work as expectet.
+OK.. I withdraw this.. The reason for the difference was because of a
+kernel parameter Timer frequency. (Under CPU type and features). A
+recently added parameter?
 
-this solved my issue.
+I've set this to 1000 Hz and then it's perfect.
 
-THANK YOU!
+Sorry for false alarm.
 
-
+Peter
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 20:35 mayouan        New Issue                                    
-11-22-05 20:35 mayouan        Distribution              => Debian          
-11-22-05 20:35 mayouan        Kernel Version            => 2.6.14-3        
-11-22-05 21:02 mayouan        Note Added: 0006797                          
-11-22-05 21:14 mayouan        Note Added: 0006798                          
-11-22-05 21:22 rlrevell       Note Added: 0006799                          
-11-22-05 22:45 mayouan        File Added: Screenshot.png                    
-11-22-05 22:47 mayouan        Note Added: 0006806                          
-11-22-05 23:13 mayouan        File Added: asound.state                     
-11-22-05 23:18 mayouan        Note Added: 0006807                          
-11-22-05 23:23 mayouan        Note Edited: 0006807                         
-11-23-05 17:22 tiwai          Status                   new => resolved     
-11-23-05 17:22 tiwai          Resolution               open => fixed       
-11-23-05 17:22 tiwai          Assigned To               => tiwai           
+11-09-05 21:01 pesalomo       New Issue                                    
+11-09-05 21:01 pesalomo       Distribution              => Gentoo Linux    
+11-09-05 21:01 pesalomo       Kernel Version            => 2.6.14          
+11-09-05 21:02 pesalomo       Issue Monitored: pesalomo                    
+11-10-05 08:57 Clemens LadischNote Added: 0006660                          
+11-10-05 19:11 pesalomo       Note Added: 0006668                          
+11-10-05 21:11 Clemens LadischNote Added: 0006671                          
+11-10-05 21:55 pesalomo       Note Added: 0006673                          
+11-22-05 16:18 pesalomo       Note Added: 0006787                          
+11-23-05 17:23 tiwai          Status                   new => resolved     
+11-23-05 17:23 tiwai          Resolution               open => not an issue
+11-23-05 17:23 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
