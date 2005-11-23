@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001453]: 2.6.14-rc2 "Unknown model for ALC880"
-Date: Wed, 23 Nov 2005 20:24:26 +0100
-Message-ID: <97e0959394562c5b0d40e52bad284c1a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001460]: no sound on Clevo 400a
+Date: Wed, 23 Nov 2005 20:31:31 +0100
+Message-ID: <0a8c3c3148ad5a300fb1f08af3641bc7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0F8D1B4
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:24:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CCAD1B4
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:31:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,113 +22,116 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as DUPLICATE OF issue 0001563.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1453> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1460> 
 ======================================================================
-Reported By:                honschu
+Reported By:                imre
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1453
+Issue ID:                   1460
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian sarge
-Kernel Version:             2.6.14-rc2
+Distribution:               Debian sid
+Kernel Version:             2.6.14-rc2-git5
 ======================================================================
-Date Submitted:             09-24-2005 17:22 CEST
-Last Modified:              11-23-2005 20:24 CET
+Date Submitted:             09-26-2005 16:02 CEST
+Last Modified:              11-23-2005 20:31 CET
 ======================================================================
-Summary:                    2.6.14-rc2 "Unknown model for ALC880"
+Summary:                    no sound on Clevo 400a
 Description: 
-I have a Aopen i915Gm-HFS Motherboard with intel-hda chipset.
-Sound output (input not) works in kernel 2.6.12.
+On my Clevo M400A the integrated soundcard doesn't work. When starting
+alsa
+the kernel logs the following:
 
-For Kernel 2.6.14-rc2 I get error on boottime (see below)
-
-If you want me to do tests, feel free to ask.
-
-[...]
+hda_codec: num_steps = 0 for NID=0xb
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 50
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA sound/pci/hda/hda_intel.c:624: codec_mask = 0x3
 hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
 hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-[...]
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0xb
-hda_codec: num_steps = 0 for NID=0x8
-hda_codec: num_steps = 0 for NID=0x8
-[...]
 
+and the last message is printed several times
+
+Maybe this is the same issue that was reported in #1316
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
 duplicate of        0001429 hda_codec: Unknown model for ALC880
+duplicate of        0001563 No Sound on Cybersystem S28 (hda_codec:...
 ======================================================================
 
 ----------------------------------------------------------------------
- honschu - 10-14-05 13:17 
+ drlizau - 10-10-05 12:21 
 ----------------------------------------------------------------------
-yes, that does the trick. Thanks!
-Will this be setup up automatically in a future release of the module?
+I seem to have the same trouble with the same version of this controller in
+an Itbox Sonoma C240.
+
+00:1b.0 0403 Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition 
+Audio Controller 04 00 CLEVO/KAPOK Computer 5401
+
+Running Alsa 1.0.9b on a 2.6.12 Debian machine.
+
+tiwai seems to have access to a series of model codes which can be tried
+on the modprobe line.
+can you point me to a copy of this list, as i would be quite happy to try
+any combination to get this operational?
 
 ----------------------------------------------------------------------
- rlrevell - 11-23-05 20:24 
+ tiwai - 10-11-05 16:33 
 ----------------------------------------------------------------------
-Re: the "unknown model" and "num_steps = 0 for NID" errors, see the patch
-in bug #1563.
+First of all, please elaborate what you mean "doesn't work".
+
+The num_steps are harmless unless you access to the corresponding node
+(i.e. try to adjust CD volume).  It seems that the device has no CD and no
+corresponding ADC nodes.
+
+As you can see in the log, the BIOS is broken.  Pass model=3stack option,
+for example, to specify the model to use.
+
+----------------------------------------------------------------------
+ drlizau - 10-18-05 07:52 
+----------------------------------------------------------------------
+'doesn't work'
+alsaconf identifies card and configures it
+no sound is heard whether kscd playing a cd or xmms playing an ogg file
+(alsa-oss is installed) out of headphones, speakers, line out. Mute on or
+off, no difference.
+everything says it should work, but no sound is produced
+
+kernel finds the device
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> Link [LNKA] -> GSI 7 (level, low)
+-> IRQ 7
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+
+but there is no mention of hda_codec or ALSA in the kernel log
+
+rmmod snd_hda_intel
+modprobe snd_hda_intel model=3stack
+
+still gives no sound
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-05 17:22 honschu        New Issue                                    
-09-24-05 17:22 honschu        Distribution              => Debian sarge    
-09-24-05 17:22 honschu        Kernel Version            => 2.6.14-rc2      
-09-24-05 22:06 rlrevell       Relationship added       duplicate of 0001429
-10-05-05 18:34 tiwai          Note Added: 0006430                          
-10-10-05 18:35 honschu        Note Added: 0006449                          
-10-11-05 16:29 tiwai          Note Added: 0006452                          
-10-14-05 13:17 honschu        Note Added: 0006479                          
-11-22-05 19:19 rlrevell       Relationship added       duplicate of 0000790
-11-22-05 19:29 rlrevell       Relationship deleted     duplicate of 0000790
-11-22-05 21:41 mbab           Issue Monitored: mbab                        
-11-23-05 20:24 rlrevell       Note Added: 0006826                          
+09-26-05 16:02 imre           New Issue                                    
+09-26-05 16:02 imre           Distribution              => Debian sid      
+09-26-05 16:02 imre           Kernel Version            => 2.6.14-rc2-git5 
+09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
+10-10-05 12:21 drlizau        Note Added: 0006448                          
+10-10-05 12:24 drlizau        Issue Monitored: drlizau                     
+10-11-05 16:33 tiwai          Note Added: 0006453                          
+10-13-05 11:43 drlizau        Note Added: 0006476                          
+10-18-05 07:52 drlizau        Note Edited: 0006476                         
+11-23-05 20:31 rlrevell       Relationship added       duplicate of 0001563
 ======================================================================
 
 
