@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001592]: SPDIF-out bit depth is truncated
-Date: Wed, 23 Nov 2005 20:58:36 +0100
-Message-ID: <809dd94f674c4e5c6b9bf1ebe9df27f8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001049]: No sound at all
+Date: Wed, 23 Nov 2005 21:20:56 +0100
+Message-ID: <00c787ae5f10b604a16c9e65b01ce09a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4401316E
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:58:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C0FC16E
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 21:20:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1592> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1049> 
 ======================================================================
-Reported By:                anli
+Reported By:                DF5JT
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1592
-Category:                   PCI - ice1724
+Issue ID:                   1049
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.770_FC3 #1 Thu Feb 24 14:00:06 EST 2005
+i686 i686 i386 GNU/Linux
 ======================================================================
-Date Submitted:             11-22-2005 23:52 CET
-Last Modified:              11-23-2005 20:58 CET
+Date Submitted:             04-13-2005 11:25 CEST
+Last Modified:              11-23-2005 21:20 CET
 ======================================================================
-Summary:                    SPDIF-out bit depth is truncated
+Summary:                    No sound at all
 Description: 
-I have tried to play back 96KHz/24bit file this way:
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
+        Subsystem: Rioworks: Unknown device 203d
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-# aplay -Dplug:spdif 96x24.wav
-Playing WAVE '96x24.wav' : Signed 24 bit Little Endian in 3bytes, Rate
-96000 Hz, Stereo
 
-During playing back I have got first four bytes of SPDIF channel status:
-
-iecset -x
-AES0=0x00,AES1=0x02,AES2=0x00,AES3=0x05
-
-Byte AES2 has '0x00' value, which, in accordance with AES3-2003 document,
-means: "Maximum audio sample word length is 20 bits (default). Use of
-auxiliary sample bits not defined". You see, bit depth is truncated.
-
-The same result was got with JACK server started at 96KHz/32bit.
-
-P.S. I'm not sure which the issue category to select. I use ice1724 driver
-(v.1.0.10). 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-05 17:21 
+ tiwai - 04-19-05 17:52 
 ----------------------------------------------------------------------
-Pass proper AES* parameters together with PCM spdif open.
+Try to pass model=5stack-digout module option to snd-hda-intel module.
 
 ----------------------------------------------------------------------
- anli - 11-23-05 20:58 
+ rlrevell - 11-23-05 21:20 
 ----------------------------------------------------------------------
-Takashi,
-
-I'm not sure I understand the way a user (i.e. me) can pass AES
-psrsmeters. Have you some starting points? Or - is your note for the
-driver developers?
+Any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 23:52 anli           New Issue                                    
-11-23-05 17:21 tiwai          Note Added: 0006813                          
-11-23-05 20:58 anli           Note Added: 0006833                          
+04-13-05 11:25 DF5JT          New Issue                                    
+04-13-05 11:25 DF5JT          Distribution              => Fedora Core 3   
+04-13-05 11:25 DF5JT          Kernel Version            => 2.6.10-1.770_FC3 #1
+Thu Feb 24 14:00:06 EST 2005 i686 i686 i386 GNU/Linux
+04-13-05 11:25 DF5JT          Issue Monitored: DF5JT                       
+04-13-05 16:34 tiwai          Note Added: 0004469                          
+04-13-05 16:52 DF5JT          Note Added: 0004470                          
+04-13-05 17:19 tiwai          Note Added: 0004473                          
+04-15-05 12:08 DF5JT          Note Added: 0004497                          
+04-15-05 12:38 stransky       Note Added: 0004498                          
+04-15-05 14:09 DF5JT          Note Added: 0004499                          
+04-19-05 17:52 tiwai          Note Added: 0004529                          
+04-19-05 17:55 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+08-12-05 18:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
+11-23-05 21:20 rlrevell       Note Added: 0006834                          
 ======================================================================
 
 
