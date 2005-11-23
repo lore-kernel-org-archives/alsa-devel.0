@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001571]: Segfaults when trying to specify the preamble values (iec958 plugin)
-Date: Wed, 23 Nov 2005 17:46:49 +0100
-Message-ID: <5ac737ec3b3e352ee47e9c71d6fdfd10@bugtrack.alsa-project.org>
+Date: Wed, 23 Nov 2005 17:45:13 +0100
+Message-ID: <526677800cd6f3ab333348457ddf83ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0F1F176
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:46:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F771176
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:45:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1571> 
 ======================================================================
 Reported By:                nboullis
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
 Issue ID:                   1571
@@ -35,12 +35,10 @@ Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
 Date Submitted:             11-17-2005 01:51 CET
-Last Modified:              11-23-2005 17:46 CET
+Last Modified:              11-23-2005 17:45 CET
 ======================================================================
 Summary:                    Segfaults when trying to specify the preamble values
 (iec958 plugin)
@@ -78,14 +76,39 @@ Hope this helps.
 ======================================================================
 
 ----------------------------------------------------------------------
+ nboullis - 11-19-05 01:35 
+----------------------------------------------------------------------
+As asked by Takashi Iwai, I just re-did the same experiment within gdb;
+here is the backtrace:
+
+#0  0xb6f5b0b7 in snd_config_iterator_first () from
+/usr/lib/libasound.so.2
+#1  0xb6fb23dc in _snd_pcm_iec958_open () from /usr/lib/libasound.so.2
+#2  0xb6f75a37 in snd_async_handler_get_pcm () from
+/usr/lib/libasound.so.2
+#3  0xb6f763ab in snd_pcm_open_slave () from /usr/lib/libasound.so.2
+#4  0xb6f960f5 in _snd_pcm_plug_open () from /usr/lib/libasound.so.2
+#5  0xb6f75a37 in snd_async_handler_get_pcm () from
+/usr/lib/libasound.so.2
+#6  0xb6f7604e in snd_async_handler_get_pcm () from
+/usr/lib/libasound.so.2
+#7  0xb6f76107 in snd_pcm_open () from /usr/lib/libasound.so.2
+#8  0xb7001e19 in alsa_open () from /usr/lib/xmms/Output/libALSA.so
+#9  0xb70019d2 in alsa_open () from /usr/lib/xmms/Output/libALSA.so
+#10 0xb6ebe46a in get_iplugin_info () from
+/usr/lib/xmms/Input/libmpg123.so
+#11 0xb7d8fb63 in start_thread () from /lib/tls/libpthread.so.0
+#12 0xb7bfa18a in clone () from /lib/tls/libc.so.6
+
+(I have lost my 1.0.10 build, so this is with debian's 1.0.9-3 (with my
+preamble patch applied).
+
+If it is usefull, I can do it again with a clean 1.0.10 ou CVS HEAD build.
+
+----------------------------------------------------------------------
  tiwai - 11-23-05 17:45 
 ----------------------------------------------------------------------
 OK it's a typo.  The patch is attached.
-
-----------------------------------------------------------------------
- tiwai - 11-23-05 17:46 
-----------------------------------------------------------------------
-Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,12 +118,6 @@ Date Modified  Username       Field                    Change
 11-17-05 01:53 nboullis       Issue Monitored: nboullis                    
 11-19-05 01:35 nboullis       Note Added: 0006760                          
 11-23-05 17:45 tiwai          Note Added: 0006820                          
-11-23-05 17:45 tiwai          File Added: iec958-segfault-fix.diff              
-     
-11-23-05 17:46 tiwai          Status                   new => resolved     
-11-23-05 17:46 tiwai          Resolution               open => fixed       
-11-23-05 17:46 tiwai          Assigned To               => tiwai           
-11-23-05 17:46 tiwai          Note Added: 0006821                          
 ======================================================================
 
 
