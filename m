@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001578]: Missing .desktop files for echomixer, envy24control and rmedigicontrol
-Date: Wed, 23 Nov 2005 17:32:27 +0100
-Message-ID: <f420b73f415f9cfb67cde5f2458b856c@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001579]: code.c test uses x86 asm, it should be x86/amd64 only
+Date: Wed, 23 Nov 2005 17:36:09 +0100
+Message-ID: <edf5a6496fea9d50d8feb47c4f7f5e12@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00BE2155
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:32:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 553E9176
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:36:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1578> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1579> 
 ======================================================================
-Reported By:                mikma
-Assigned To:                
+Reported By:                Flameeyes
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1578
-Category:                   echomixer
+Project:                    ALSA - lib
+Issue ID:                   1579
+Category:                   0_general
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-19-2005 12:13 CET
-Last Modified:              11-23-2005 17:32 CET
+Date Submitted:             11-19-2005 20:17 CET
+Last Modified:              11-23-2005 17:36 CET
 ======================================================================
-Summary:                    Missing .desktop files for echomixer, envy24control
-and rmedigicontrol
+Summary:                    code.c test uses x86 asm, it should be x86/amd64
+only
 Description: 
-I'm forwarding a feature request from a Debian user:
+As per summary, the code.c test can't be built for any other system but x86
+or amd64, as it uses inline asm focused on i386.
 
-"I've noticed that only .desktop files for the HDSP cards are available
-in the package.
+The attached patch makes it conditional to those arches.
 
-I think that  entries for echomixer, envy24control  and rmedigicontrol
-should be added too."
-
-The original Debian bug report can be found at:
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=335485
-
+HTH,
+Diego
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-05 17:32 
+ tiwai - 11-23-05 17:34 
 ----------------------------------------------------------------------
-Patches please :)
+It's easier just to remove code from check_PROGRAMS.  It's nothing but a
+test code for dmix, and shouldn't be used as "check".
+
+----------------------------------------------------------------------
+ tiwai - 11-23-05 17:36 
+----------------------------------------------------------------------
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-05 12:13 mikma          New Issue                                    
-11-23-05 17:32 tiwai          Note Added: 0006816                          
+11-19-05 20:17 Flameeyes      New Issue                                    
+11-19-05 20:17 Flameeyes      File Added: alsa-lib-1.0.10-test-ppc.patch        
+           
+11-23-05 17:34 tiwai          Note Added: 0006817                          
+11-23-05 17:36 tiwai          Status                   new => resolved     
+11-23-05 17:36 tiwai          Resolution               open => fixed       
+11-23-05 17:36 tiwai          Assigned To               => tiwai           
+11-23-05 17:36 tiwai          Note Added: 0006818                          
 ======================================================================
 
 
