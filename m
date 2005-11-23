@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001588]: alsa1.0.10 driver compilation error in adriver.h
-Date: Wed, 23 Nov 2005 08:15:58 +0100
-Message-ID: <aa97c6b8d82de8df4ef092ffc288da94@bugtrack.alsa-project.org>
+Date: Wed, 23 Nov 2005 12:52:38 +0100
+Message-ID: <171b7dcce4a341c746bbebeb986b8485@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC63B190
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 08:15:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 916BD19E
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 12:52:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.99
 ======================================================================
 Date Submitted:             11-22-2005 15:30 CET
-Last Modified:              11-23-2005 08:15 CET
+Last Modified:              11-23-2005 12:52 CET
 ======================================================================
 Summary:                    alsa1.0.10 driver compilation error in adriver.h
 Description: 
@@ -93,20 +93,20 @@ static inline unsigned long msecs_to_jiffies(const unsigned int m)
 ======================================================================
 
 ----------------------------------------------------------------------
- alanmann - 11-22-05 20:01 
-----------------------------------------------------------------------
-Sorry, I meant 2.4.21-99 kernel! Suse 9.0.
-But anyway the 1.0.10 code section above is faulty surely?
-Changing the syntax removes compiler problem.
-
-
-
-----------------------------------------------------------------------
  Clemens Ladisch - 11-23-05 08:15 
 ----------------------------------------------------------------------
 The code that doesn't detect the HAVE_VARIABLE_HZ symbol is faulty.
 
 Could you grep the kernel headers for it to see where it's defined?
+
+----------------------------------------------------------------------
+ alanmann - 11-23-05 12:52 
+----------------------------------------------------------------------
+Forgive me if I'm mistaken, but I think this suggestion is going in the
+wrong direction.  Make fails with syntax errors, no mention of
+HAVE_VARIABLE_HZ, rather complaints about '('s; surely brakets are missing
+in the first #if.. line in the above section, and '#' preceeds some lines
+and not other similar ones?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,6 +118,7 @@ Date Modified  Username       Field                    Change
 11-22-05 18:08 alanmann       Note Edited: 0006789                         
 11-22-05 20:01 alanmann       Note Edited: 0006789                         
 11-23-05 08:15 Clemens LadischNote Added: 0006808                          
+11-23-05 12:52 alanmann       Note Added: 0006809                          
 ======================================================================
 
 
