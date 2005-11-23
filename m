@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001587]: ogg123 when using the OSS interface results in corrupted sound once suspended (even for the next played song)
-Date: Wed, 23 Nov 2005 17:26:44 +0100
-Message-ID: <b266f37fcaf2661404a82582c5964a18@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001510]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to control volume by master channel, PCM and headphones work
+Date: Wed, 23 Nov 2005 17:31:16 +0100
+Message-ID: <8d44a3b460d27db68fe270e1eabb350b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FA601AE
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:26:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24AE81B1
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:31:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,85 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1587> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1510> 
 ======================================================================
-Reported By:                tvignaud
-Assigned To:                
+Reported By:                wiktorw
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1587
-Category:                   a typo
+Project:                    ALSA - driver
+Issue ID:                   1510
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               Gentoo 2005.1
+Kernel Version:             2.6.13-gentoo-r4
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-22-2005 12:53 CET
-Last Modified:              11-23-2005 17:26 CET
+Date Submitted:             10-28-2005 17:54 CEST
+Last Modified:              11-23-2005 17:31 CET
 ======================================================================
-Summary:                    ogg123 when using the OSS interface results in
-corrupted sound once suspended (even for the next played song)
+Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't allow to
+control volume by master channel, PCM and headphones work
 Description: 
-ogg123 when using the OSS interface results in corrupted sound (even for
-the *next* played song) once resuming the player after it has been
-suspended one or two times. The sound is
-sizzling/spluttering/sputtering/frizzling (I'm not sure about the right
-translation in english) like a radio when it's raining.
-It doesn't happen when using the ALSA interface.
-It may be an ogg123 bug since it doesn't happen with mpg132.
+On my Acer Aspire 5002LM laptop I have the following problem:
+- Master channel does not control volume level (no matter if I slide it or
+mute)
+- PCM channel works
+- Headphone/PCM-2 channel works
 
-It's 80% reproductable after one ^Z and totally reproductable after two
-suspend (^Z, fg, ^Z, fg).
+The Master/PCM/Headphone channels are for the "SiS SI7012 (Alsa Mixer)"
+device, while Volume/PCM/PCM-2 channels are for the "Realtek ALC203 rev 0
+(OSS Mixer)" device. They do the same thing: Master/Volume control in
+gnome-volume-control applet doesn't change the volume level.
 
-Hardware is an ATI "IXP400 AC'97 Audio Controller" managed by snd-atiixp
-(main PCI ids: 0x1002:0x4370 subids: 0x103c:0x3009) on AMD64.
+At first I thought that this problem is software-related, but in fact it
+isn't. Now I have tested several things and all give me the same result. I
+also suspect that not only I have such problems, althought the original
+posters might not be aware of it. See here for the original discussion:
 
-I'm using ALSA userland tools v1.0.10 and ALSA drivers v1.0.9b
+http://forums.gentoo.org/viewtopic-t-387739.html
 
-tv@vador ~ $ rpm -q lib64alsa2 alsa-utils $(rpm -qf $(which ogg123))
-lib64alsa2-1.0.10-2mdk
-alsa-utils-1.0.10-1mdk
-vorbis-tools-1.1.1-4mdk
-
-tv@vador ~ $ cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-05 17:26 
+ garfungiloops - 11-20-05 11:41 
 ----------------------------------------------------------------------
-It's rather a problem of ogg123.
+Since I have cmedia codec, softvol has fixed the problem for me.
+
+----------------------------------------------------------------------
+ tiwai - 11-23-05 17:31 
+----------------------------------------------------------------------
+Closing this bug since the original reporter found a solution.
+
+If a similar problem happens with a _different_ codec, please open another
+bug report.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 12:53 tvignaud       New Issue                                    
-11-23-05 17:26 tiwai          Note Added: 0006814                          
+10-28-05 17:54 wiktorw        New Issue                                    
+10-28-05 17:54 wiktorw        Distribution              => Gentoo 2005.1   
+10-28-05 17:54 wiktorw        Kernel Version            => 2.6.13-gentoo-r4
+10-30-05 09:35 garfungiloops  Note Added: 0006573                          
+10-30-05 09:36 garfungiloops  Issue Monitored: garfungiloops                    
+11-08-05 08:44 mrblur         Note Added: 0006619                          
+11-08-05 17:45 tiwai          Note Added: 0006626                          
+11-08-05 19:37 garfungiloops  Note Added: 0006640                          
+11-08-05 19:41 garfungiloops  Note Added: 0006641                          
+11-09-05 15:23 wiktorw        Note Added: 0006654                          
+11-09-05 15:27 wiktorw        Note Added: 0006655                          
+11-12-05 11:33 froztbyte      Issue Monitored: froztbyte                    
+11-17-05 13:25 mrblur         Issue Monitored: mrblur                      
+11-20-05 11:41 garfungiloops  Note Added: 0006765                          
+11-23-05 17:31 tiwai          Status                   new => resolved     
+11-23-05 17:31 tiwai          Resolution               open => not an issue
+11-23-05 17:31 tiwai          Assigned To               => tiwai           
+11-23-05 17:31 tiwai          Note Added: 0006815                          
 ======================================================================
 
 
