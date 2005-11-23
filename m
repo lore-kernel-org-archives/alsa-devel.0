@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
-Date: Wed, 23 Nov 2005 20:30:12 +0100
-Message-ID: <25662fd56901f73ddf38626cff2c4dff@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001594]: 'playback.pcm {' missing from PMacToonie.conf
+Date: Wed, 23 Nov 2005 20:32:19 +0100
+Message-ID: <b2c9ff45e2feaed9e72f3fa1c5ce2302@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D2091B4
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:30:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1914A1B8
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:32:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1594> 
 ======================================================================
-Reported By:                crimsunkg
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1429
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   1594
+Category:                   hw specific configuration
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-8-686
+Status:                     new
 ======================================================================
-Date Submitted:             09-17-2005 00:54 CEST
-Last Modified:              11-23-2005 20:30 CET
+Date Submitted:             11-23-2005 20:30 CET
+Last Modified:              11-23-2005 20:32 CET
 ======================================================================
-Summary:                    hda_codec: Unknown model for ALC880
+Summary:                    'playback.pcm {' missing from PMacToonie.conf
 Description: 
-Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
+The submitter of Debian bug report 340478 reports that there is a line
+missing from conf/cards/PMacToonie.conf.  The file contains the following
+invalid block:
 
-Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
+# default with dmix+softvol & dsnoop
+PMacToonie.pcm.default {
+        @args [ CARD ]
+        @args.CARD {
+                type string
+        }
+        type asym
+                type plug
+                slave.pcm {
+                        type softvol
+                        slave.pcm {
+                                @func concat
+                                strings [ "dmix:CARD=" $CARD ",FORMAT=S16"
+]
+                        }
+                        control {
+                                name "PCM Playback Volume"
+                                card $CARD
+                        }
+                }
+        }
+        capture.pcm {
+                type plug
+                slave.pcm {
+                        @func concat
+                        strings [ "dsnoop:CARD=" $CARD ",FORMAT=S16" ]
+                }
+        }
+}
 
-Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
-hda_codec does not recognize the model with the ALC880 codec
-(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
 
-''lspci -nvv'' output is at
-http://bugzilla.ubuntu.com/attachment.cgi?id=3848
+The resulting error is:
+
+ALSA lib conf.c:1596:(snd_config_load1) :51:1:Unexpected }
+
+The user says that adding
+
+    playback.pcm {
+
+fixes the problem.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
-has duplicate       0001316 can't run mixer to adjusting volumes / ...
-has duplicate       0001460 no sound on Clevo 400a
-======================================================================
 
 ----------------------------------------------------------------------
- crimsunkg - 09-24-05 20:55 
+ jdthood - 11-23-05 20:32 
 ----------------------------------------------------------------------
-This issue is duplicated in bug #1453.
+The submitter provided this patch:
 
-----------------------------------------------------------------------
- rlrevell - 11-23-05 20:30 
-----------------------------------------------------------------------
-Possibly fixed in CVS.  See the patch from bug #1563.
+--- PMacToonie.conf.original	2005-11-23 19:04:34.000000000 +0100
++++ PMacToonie.conf	2005-11-23 19:04:34.000000000 +0100
+@@ -28,6 +28,7 @@
+ 		type string
+ 	}
+ 	type asym
++	playback.pcm {
+ 		type plug
+ 		slave.pcm {
+ 			type softvol
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-17-05 00:54 crimsunkg      New Issue                                    
-09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
-09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
-09-24-05 20:55 crimsunkg      Note Added: 0006377                          
-09-24-05 22:06 rlrevell       Relationship added       has duplicate 0001453
-09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001316
-09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001460
-11-23-05 20:30 rlrevell       Note Added: 0006827                          
+11-23-05 20:30 jdthood        New Issue                                    
+11-23-05 20:32 jdthood        Note Added: 0006828                          
 ======================================================================
 
 
