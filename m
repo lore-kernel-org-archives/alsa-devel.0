@@ -1,18 +1,17 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: RE: [ALSA - driver 0001563]: No Sound on
-	CybersystemS28 (hda_codec: Unknown model for ALC880, trying auto-probe from
-	BIOS...)
-Date: Wed, 23 Nov 2005 01:04:07 -0500
-Message-ID: <1132725848.10453.1.camel@mindpipe>
-References: <D4DBC33C8102AB409C7F44B414D99438015BAB13@bjsmsx402.ccr.corp.intel.com>
+From: Doctor <rhg@gotzauto.com>
+Subject: The Ultimate Online Pharmaceutical
+Date: Wed, 23 Nov 2005 14:54:45 -0600
+Message-ID: <3788352410.20051123145445@gotzauto.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------179FDA4EE2BACB5"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 346B2190
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 07:04:18 +0100 (MET)
-In-Reply-To: <D4DBC33C8102AB409C7F44B414D99438015BAB13@bjsmsx402.ccr.corp.intel.com>
+Received: from -202074904 (acs-24-154-188-120.zoominternet.net [24.154.188.120])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7F550190
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 07:52:41 +0100 (MET)
+Received: from gotzauto.com (-205308800 [-204942512])
+	by acs-24-154-188-120.zoominternet.net (Qmailv1) with ESMTP id CBB461AB81
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 14:54:45 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +21,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Yang, Libin" <libin.yang@intel.com>
-Cc: bugtrack@alsa-project.org, alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-11-23 at 13:55 +0800, Yang, Libin wrote:
-> Here is the patch file for 1.0.10. 
-> 
-> The problem is that in the patch_realtek.c file, it should use
-> alc880_idx_to_dac() function in the first 'for' loop, not
-> alc880_dac_to_idx() in function alc880_auto_fill_dac_nids().
-> 
-> Thanks. 
+This is a multi-part message in MIME format.
 
-Thank you!
+------------179FDA4EE2BACB5
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Please provide a Signed-Off-By line with your name and email address,
-for example:
+Vlasgra $3.3
+Leviftra $3.3
+Ciavlis $3.7
+Imitkrex $16.4
+Flomzax $2.2
+Ultrvam $0.78
+Viozxx $4.75
+Ambtien $2.2
+Valcium $0.97 
+Xananx $1.09
+Soyma $3
+Meriddia $2.2  
 
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-This is Linux kernel submission policy.
+visit our website
+http://andastaz.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
-Lee
+___
+Best regards,
+Online Pharmaceuticals
+
+qwefgfgjs UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------179FDA4EE2BACB5
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+<b>Vlagpra - $3.3 <br>
+Lewvitra - $3.3<br>
+Cialigs - $3.7<br>
+Imoitrex - $16.4<br>
+Flyomax - $2.2<br>
+Ulstram - $0.78<br>
+Vifoxx - $4.75 <br>
+Ambbien - $2.2<br>
+Vaflium - $0.97 <br>
+Xahnax - $1.09<br>
+Sfoma - $3 <br>
+Mperidia - $2.2</b><br>
+<br>
+  <br>
+  <a href="http://andastaz.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV"><strong>visit our website</strong></a><br>
+  <br>
+   <br>
+  Best regards,<br>
+  Online Pharmaceuticals 
+<br>
+   <br>
+qwefgfgjs UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</body>
+</html>
+
+------------179FDA4EE2BACB5--
+
 
 
 
