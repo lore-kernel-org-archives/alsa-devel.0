@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001593]: au88x0 wt synth
-Date: Wed, 23 Nov 2005 20:54:42 +0100
-Message-ID: <0e359045bec02b305e1edb0e7762f84e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001592]: SPDIF-out bit depth is truncated
+Date: Wed, 23 Nov 2005 20:58:36 +0100
+Message-ID: <809dd94f674c4e5c6b9bf1ebe9df27f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E7A016E
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:54:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4401316E
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:58:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1592> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                anli
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1593
-Category:                   PCI - au88x0
+Issue ID:                   1592
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-23-2005 17:16 CET
-Last Modified:              11-23-2005 20:54 CET
+Date Submitted:             11-22-2005 23:52 CET
+Last Modified:              11-23-2005 20:58 CET
 ======================================================================
-Summary:                    au88x0 wt synth
+Summary:                    SPDIF-out bit depth is truncated
 Description: 
-After applied the patch as described in 
+I have tried to play back 96KHz/24bit file this way:
 
-http://article.gmane.org/gmane.linux.alsa.devel/27095
+# aplay -Dplug:spdif 96x24.wav
+Playing WAVE '96x24.wav' : Signed 24 bit Little Endian in 3bytes, Rate
+96000 Hz, Stereo
 
-Sound (like a monster roaring) is heard when using aplay through device 3
-of au8830 with the mono files from alsa-utils-1.0.10/speaker-test/samples
+During playing back I have got first four bytes of SPDIF channel status:
 
-The sound repeat 7 times and stop.
+iecset -x
+AES0=0x00,AES1=0x02,AES2=0x00,AES3=0x05
 
-Refer to the strace, 
+Byte AES2 has '0x00' value, which, in accordance with AES3-2003 document,
+means: "Maximum audio sample word length is 20 bits (default). Use of
+auxiliary sample bits not defined". You see, bit depth is truncated.
 
-Do the DMA transfer occur when using hw:0,3 ?
+The same result was got with JACK server started at 96KHz/32bit.
 
-
+P.S. I'm not sure which the issue category to select. I use ice1724 driver
+(v.1.0.10). 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- mjander - 11-23-05 20:54 
+ tiwai - 11-23-05 17:21 
 ----------------------------------------------------------------------
-The WT Engine (device 3) did never work. I'm working on a major driver
-rework in order to make the WT work correctly, basically unifying the ADB
-and WT DMA handling routines. I can't tell when I will finish, but I'm
-advancing steadily.
+Pass proper AES* parameters together with PCM spdif open.
 
-Best Regards,
-Manuel
+----------------------------------------------------------------------
+ anli - 11-23-05 20:58 
+----------------------------------------------------------------------
+Takashi,
+
+I'm not sure I understand the way a user (i.e. me) can pass AES
+psrsmeters. Have you some starting points? Or - is your note for the
+driver developers?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-05 17:16 Raymond        New Issue                                    
-11-23-05 17:16 Raymond        Distribution              => Fedora Core 1   
-11-23-05 17:16 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-11-23-05 20:54 mjander        Note Added: 0006832                          
+11-22-05 23:52 anli           New Issue                                    
+11-23-05 17:21 tiwai          Note Added: 0006813                          
+11-23-05 20:58 anli           Note Added: 0006833                          
 ======================================================================
 
 
