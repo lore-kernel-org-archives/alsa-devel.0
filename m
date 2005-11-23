@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001592]: SPDIF-out bit depth is truncated
-Date: Wed, 23 Nov 2005 17:21:41 +0100
-Message-ID: <bcafc0ed44216fed8818b8e582210332@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001590]: Not able to record with c46xx on IBM T20
+Date: Wed, 23 Nov 2005 17:22:20 +0100
+Message-ID: <e356e8b7f6819e70ef117aebbac2bb92@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E8F41AE
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:21:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C5F21AE
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 17:22:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1592> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1590> 
 ======================================================================
-Reported By:                anli
-Assigned To:                
+Reported By:                mayouan
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1592
-Category:                   PCI - ice1724
-Reproducibility:            always
+Issue ID:                   1590
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             2.6.14-3
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-22-2005 23:52 CET
-Last Modified:              11-23-2005 17:21 CET
+Date Submitted:             11-22-2005 20:35 CET
+Last Modified:              11-23-2005 17:22 CET
 ======================================================================
-Summary:                    SPDIF-out bit depth is truncated
+Summary:                    Not able to record with c46xx on IBM T20
 Description: 
-I have tried to play back 96KHz/24bit file this way:
+Hi.
 
-# aplay -Dplug:spdif 96x24.wav
-Playing WAVE '96x24.wav' : Signed 24 bit Little Endian in 3bytes, Rate
-96000 Hz, Stereo
+I am not able to record with my T20 and alsa cs46xx
+driver. Playback works fine, the alsa mixer works as
+expected and i can hear the sound from the mic in the
+speakers.
 
-During playing back I have got first four bytes of SPDIF channel status:
+But when i try to record does the recording program
+outputs an empty file (exept for a tiny wave-header).
+Most programs does not give any error message.
 
-iecset -x
-AES0=0x00,AES1=0x02,AES2=0x00,AES3=0x05
+Ecasound gives me a message when stoping the recording:
+Warning: DBC_ENSURE failed - "is_running() == false",
+eca-control-base.cpp, 276.-
 
-Byte AES2 has '0x00' value, which, in accordance with AES3-2003 document,
-means: "Maximum audio sample word length is 20 bits (default). Use of
-auxiliary sample bits not defined". You see, bit depth is truncated.
+Accordinng to Kai Vehmanen does this mean that alsa
+does not release the lock on the soundcard when user is
+aborting. That is likely the case.
 
-The same result was got with JACK server started at 96KHz/32bit.
+Trying to record with Ardour leavs the computer not
+responding at all.
 
-P.S. I'm not sure which the issue category to select. I use ice1724 driver
-(v.1.0.10). 
-
+I can not find anything in my error-logs telling that
+alsa have loaded correctly nor does alsaconf give me
+any error messages.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-05 17:21 
+ mayouan - 11-22-05 22:47 
 ----------------------------------------------------------------------
-Pass proper AES* parameters together with PCM spdif open.
+This does confuse me. I uploaded a screenshot of my alsamixer.
+The sound state was placed in /var/lib/alsa/asound.state
+
+isn't it a contradiction?
+
+----------------------------------------------------------------------
+ mayouan - 11-22-05 23:23 
+----------------------------------------------------------------------
+terrebly sorry i do not know when the asound.state is updated but did
+reboot my computer and things started to work as expectet.
+
+this solved my issue.
+
+THANK YOU!
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 23:52 anli           New Issue                                    
-11-23-05 17:21 tiwai          Note Added: 0006813                          
+11-22-05 20:35 mayouan        New Issue                                    
+11-22-05 20:35 mayouan        Distribution              => Debian          
+11-22-05 20:35 mayouan        Kernel Version            => 2.6.14-3        
+11-22-05 21:02 mayouan        Note Added: 0006797                          
+11-22-05 21:14 mayouan        Note Added: 0006798                          
+11-22-05 21:22 rlrevell       Note Added: 0006799                          
+11-22-05 22:45 mayouan        File Added: Screenshot.png                    
+11-22-05 22:47 mayouan        Note Added: 0006806                          
+11-22-05 23:13 mayouan        File Added: asound.state                     
+11-22-05 23:18 mayouan        Note Added: 0006807                          
+11-22-05 23:23 mayouan        Note Edited: 0006807                         
+11-23-05 17:22 tiwai          Status                   new => resolved     
+11-23-05 17:22 tiwai          Resolution               open => fixed       
+11-23-05 17:22 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
