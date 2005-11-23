@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001316]: can't run mixer to adjusting volumes / no sound
-Date: Wed, 23 Nov 2005 20:33:55 +0100
-Message-ID: <db4dbb72db7efb852940f0104232e68b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000230]: sound is bad when dma is enabled
+Date: Wed, 23 Nov 2005 20:43:32 +0100
+Message-ID: <2e7d4a46e55299908cf304291a8520bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10EAA1BA
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:33:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E832B1BA
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 20:43:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,130 +22,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1316> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=230> 
 ======================================================================
-Reported By:                boris
-Assigned To:                tiwai
+Reported By:                Hetfield
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1316
-Category:                   PCI - hda-intel
+Issue ID:                   230
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian stable
-Kernel Version:             2.6.13-rc5-git3
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.x
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-06-2005 11:11 CEST
-Last Modified:              11-23-2005 20:33 CET
+Date Submitted:             04-23-2004 18:55 CEST
+Last Modified:              11-23-2005 20:43 CET
 ======================================================================
-Summary:                    can't run mixer to adjusting volumes / no sound
+Summary:                    sound is bad when dma is enabled
 Description: 
-When I try to run alsamixer it fails with:
-alsamixer: function snd_mixer_load failed: Invalid argument
+when dma is enabled for my harddisk sound is so bad
 
-running ogg123 seems to work ...
+0000:00:0b.0 Multimedia audio controller: Ensoniq ES1370 [AudioPCI] (rev
+01)
+        Subsystem: Unknown device 4942:4c4c
+        Flags: bus master, slow devsel, latency 248, IRQ 10
+        I/O ports at b000
 
-running aumix over oss-emu only shows a view controls 
-which have no effect -> no sound
+i setted latency to 248 but i tried lots of values, nothing changed.
+interrupts are not shared.
+disabling dma make sound clean.
 
-This happened with 2.6.13-rc[3,5]-git?.
-2.6.12-rc5-git8 (for example) works. 
+with 2.6.x only...2.4.x works so good.
+i tred with 2.6 integrated or external libs too, as module o builtin.
+nothing changes.
 
-HW: Aopen 915gmm-hfs.
+how to fix that? should i disable busmaster or change devsel value? how?
+
+
+
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
-======================================================================
 
 ----------------------------------------------------------------------
- imre - 09-05-05 13:48 
+ Hetfield - 11-01-05 19:06 
 ----------------------------------------------------------------------
-I've got the same problem, no sound.
-Kernel version: 2.6.13-git4
-alsa version: v1.0.10rc1
-hardware: Clevo M400A
-root@eridanus:~# alsamixer 
+seems now i got it **pretty** fixed.
 
-alsamixer: function snd_mixer_load failed: Invalid argument
+what i did:
+1) updated kernel to 2.6.14-git4
+2) setted 100Hz instead of 250
+3) setted latency to 0x40 (64) instead of old 0x20 (32)
+4) disabled pci 2.1 in my bios.
 
-root@eridanus:~# cat /dev/snd/controlC0
-cat: /dev/snd/controlC0: File descriptor in bad state
-root@eridanus:~# 
-
-lspci -vvn
-
-0000:00:1b.0 0403: 8086:2668 (rev 04)
-        Subsystem: 1558:04a0
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size: 0x08 (32 bytes)
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at c0000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] #10 [0091]
-
-dmesg:
-ALSA sound/pci/hda/hda_intel.c:1074: azx_pcm_prepare: bufsize=0xc030,
-fragsize=0x6018, format=0x11
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x7,
-stream=0x1, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x7,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_intel.c:1074: azx_pcm_prepare: bufsize=0x10000,
-fragsize=0x1000, format=0x4011
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x6,
-stream=0x5, channel=0, format=0x4011
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xfffe,
-stream=0x5, channel=0, format=0x4011
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x1,
-stream=0x5, channel=0, format=0x4011
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xffff,
-stream=0x5, channel=0, format=0x4011
-hda_codec: num_steps = 0 for NID=0xb
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xfffe,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x1,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xffff,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x6,
-stream=0x0, channel=0, format=0x0
-hda_codec: num_steps = 0 for NID=0xb
-
-The kernel version 2.6.12-rc5-git8 works, with a low quality sound.
+you can mark as closed
 
 ----------------------------------------------------------------------
- rlrevell - 11-23-05 20:33 
+ rlrevell - 11-23-05 20:43 
 ----------------------------------------------------------------------
-Possibly fixed in CVS.  See the patch from bug #1563.
+Seems to have been a hardware problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-06-05 11:11 boris          New Issue                                    
-08-06-05 11:11 boris          Distribution              => Debian stable   
-08-06-05 11:11 boris          Kernel Version            => 2.6.13-rc5-git3 
-08-17-05 15:39 boris          Note Added: 0005837                          
-08-18-05 10:41 pshou          Issue Monitored: pshou                       
-09-05-05 13:18 imre           Issue Monitored: imre                        
-09-05-05 13:48 imre           Note Added: 0006040                          
-09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
-11-23-05 20:33 rlrevell       Note Added: 0006829                          
+04-23-04 18:55 Hetfield       New Issue                                    
+04-23-04 18:55 Hetfield       Kernel Version            => 2.6.x           
+04-24-04 14:10 perex          Note Added: 0000924                          
+04-24-04 14:10 perex          Severity                 major => tweak      
+04-24-04 14:10 perex          Description Updated                          
+04-25-04 11:00 Hetfield       Note Added: 0000937                          
+02-23-05 13:34 Hetfield       Note Added: 0003710                          
+07-03-05 13:50 Hetfield       Note Added: 0005375                          
+11-01-05 19:06 Hetfield       Note Added: 0006598                          
+11-23-05 20:43 rlrevell       Status                   new => resolved     
+11-23-05 20:43 rlrevell       Resolution               open => not an issue
+11-23-05 20:43 rlrevell       Assigned To               => rlrevell        
+11-23-05 20:43 rlrevell       Note Added: 0006830                          
 ======================================================================
 
 
