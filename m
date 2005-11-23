@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001460]: no sound on Clevo 400a
-Date: Wed, 23 Nov 2005 21:38:05 +0100
-Message-ID: <36d80127dd5341e3a729e7f7fae424a6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001049]: No sound at all
+Date: Wed, 23 Nov 2005 21:49:32 +0100
+Message-ID: <f93215df80a455becd7f05d41e1f4816@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC748183
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 21:38:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4996C1A4
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 21:49:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,123 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1460> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1049> 
 ======================================================================
-Reported By:                imre
-Assigned To:                tiwai
+Reported By:                DF5JT
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1460
+Issue ID:                   1049
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.14-rc2-git5
+Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.770_FC3 #1 Thu Feb 24 14:00:06 EST 2005
+i686 i686 i386 GNU/Linux
 ======================================================================
-Date Submitted:             09-26-2005 16:02 CEST
-Last Modified:              11-23-2005 21:38 CET
+Date Submitted:             04-13-2005 11:25 CEST
+Last Modified:              11-23-2005 21:49 CET
 ======================================================================
-Summary:                    no sound on Clevo 400a
+Summary:                    No sound at all
 Description: 
-On my Clevo M400A the integrated soundcard doesn't work. When starting
-alsa
-the kernel logs the following:
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
+        Subsystem: Rioworks: Unknown device 203d
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-hda_codec: num_steps = 0 for NID=0xb
-ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 50
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_intel.c:624: codec_mask = 0x3
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
 
-and the last message is printed several times
 
-Maybe this is the same issue that was reported in #1316
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
-duplicate of        0001563 No Sound on Cybersystem S28 (hda_codec:...
 ======================================================================
 
 ----------------------------------------------------------------------
- drlizau - 10-18-05 07:52 
+ rlrevell - 11-23-05 21:20 
 ----------------------------------------------------------------------
-'doesn't work'
-alsaconf identifies card and configures it
-no sound is heard whether kscd playing a cd or xmms playing an ogg file
-(alsa-oss is installed) out of headphones, speakers, line out. Mute on or
-off, no difference.
-everything says it should work, but no sound is produced
-
-kernel finds the device
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> Link [LNKA] -> GSI 7 (level, low)
--> IRQ 7
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-
-but there is no mention of hda_codec or ALSA in the kernel log
-
-rmmod snd_hda_intel
-modprobe snd_hda_intel model=3stack
-
-still gives no sound
-
-
+Any improvement in later ALSA releases?
 
 ----------------------------------------------------------------------
- imre - 11-23-05 21:38 
+ rlrevell - 11-23-05 21:49 
 ----------------------------------------------------------------------
-Applied the patch in issue #1563 on 2.6.15-rc2
-Some errors gone, but news accours.
-alsamixer works now, but still no sound.
-
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 58
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_intel.c:630: codec_mask = 0x3
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-
-ALSA sound/pci/hda/hda_intel.c:1091: azx_pcm_prepare: bufsize=0x10000,
-fragsize=0x1000, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x6,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x2,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x5,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x3,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x4,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x2,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x5,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x3,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x4,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x6,
-stream=0x0, channel=0, format=0x0
+Try tiwai's suggestion as well as newer ALSA release
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-05 16:02 imre           New Issue                                    
-09-26-05 16:02 imre           Distribution              => Debian sid      
-09-26-05 16:02 imre           Kernel Version            => 2.6.14-rc2-git5 
-09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
-10-10-05 12:21 drlizau        Note Added: 0006448                          
-10-10-05 12:24 drlizau        Issue Monitored: drlizau                     
-10-11-05 16:33 tiwai          Note Added: 0006453                          
-10-13-05 11:43 drlizau        Note Added: 0006476                          
-10-18-05 07:52 drlizau        Note Edited: 0006476                         
-11-23-05 20:31 rlrevell       Relationship added       duplicate of 0001563
-11-23-05 21:38 imre           Note Added: 0006835                          
+04-13-05 11:25 DF5JT          New Issue                                    
+04-13-05 11:25 DF5JT          Distribution              => Fedora Core 3   
+04-13-05 11:25 DF5JT          Kernel Version            => 2.6.10-1.770_FC3 #1
+Thu Feb 24 14:00:06 EST 2005 i686 i686 i386 GNU/Linux
+04-13-05 11:25 DF5JT          Issue Monitored: DF5JT                       
+04-13-05 16:34 tiwai          Note Added: 0004469                          
+04-13-05 16:52 DF5JT          Note Added: 0004470                          
+04-13-05 17:19 tiwai          Note Added: 0004473                          
+04-15-05 12:08 DF5JT          Note Added: 0004497                          
+04-15-05 12:38 stransky       Note Added: 0004498                          
+04-15-05 14:09 DF5JT          Note Added: 0004499                          
+04-19-05 17:52 tiwai          Note Added: 0004529                          
+04-19-05 17:55 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+08-12-05 18:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
+11-23-05 21:20 rlrevell       Note Added: 0006834                          
+11-23-05 21:49 rlrevell       Note Added: 0006836                          
+11-23-05 21:49 rlrevell       Status                   new => feedback     
 ======================================================================
 
 
