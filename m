@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
-Date: Thu, 24 Nov 2005 03:35:40 +0100
-Message-ID: <9ed825e279fa3210bcf7e5fd1ed06e32@bugtrack.alsa-project.org>
+Date: Thu, 24 Nov 2005 03:41:26 +0100
+Message-ID: <a1f25b3e877ac952c26525fe9de754e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5A8C1BC
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 03:35:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC4FA1BC
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 03:41:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian 3 testing/unstable hybrid
 Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
 ======================================================================
 Date Submitted:             11-24-2005 03:35 CET
-Last Modified:              11-24-2005 03:35 CET
+Last Modified:              11-24-2005 03:41 CET
 ======================================================================
 Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
 included)
@@ -76,6 +76,13 @@ difference in operation. Also, I don't know the SB0xxx model (can't remove
 the card and look at it at the moment either).
 ======================================================================
 
+----------------------------------------------------------------------
+ khampf - 11-24-05 03:41 
+----------------------------------------------------------------------
+One thing I didn't mention. With the standard driver this card got detected
+as "Audigy 2 Value [Unknown]" and the mixers looked ok ... but it was
+impossible to get sound out of it even if it looked allright.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -84,6 +91,8 @@ Date Modified  Username       Field                    Change
 testing/unstable hybrid
 11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
 (-ckX+swsusp2+bootsplash)
+11-24-05 03:39 khampf         Issue Monitored: khampf                      
+11-24-05 03:41 khampf         Note Added: 0006837                          
 ======================================================================
 
 
