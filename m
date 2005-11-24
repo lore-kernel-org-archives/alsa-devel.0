@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
-Date: Thu, 24 Nov 2005 03:41:26 +0100
-Message-ID: <a1f25b3e877ac952c26525fe9de754e4@bugtrack.alsa-project.org>
+From: Sasha Khapyorsky <sashakh@gmail.com>
+Subject: Re: Modem support for ICH6 based laptop?
+Date: Thu, 24 Nov 2005 05:01:16 +0200
+Message-ID: <20051124030116.GB6056@tecr>
+References: <1132791202.32481.22.camel@SillyPuddy.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC4FA1BC
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 03:41:26 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1132791202.32481.22.camel@SillyPuddy.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Josh Green <josh@resonance.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On 16:13 Wed 23 Nov     , Josh Green wrote:
+> I have an ASUS Z71V based laptop which has an Intel HDA sound system
+> (uses snd-hda-intel).  This laptop also has a modem, which I have heard
+> referred to as an ICH intel modem, but I'm not sure of the details.
+> I've tried loading the snd-intel8x0m module, but it doesn't seem to do
+> anything (no additional sound cards, output, etc).  I didn't find any
+> matches when looking through the list of PCI IDs in the intel8x0m.c
+> file.  Any ideas if this driver supports this modem, or could be made to
+> support it? 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
-======================================================================
-Reported By:                khampf
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1595
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian 3 testing/unstable hybrid
-Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
-======================================================================
-Date Submitted:             11-24-2005 03:35 CET
-Last Modified:              11-24-2005 03:41 CET
-======================================================================
-Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
-included)
-Description: 
-I recently bought me a Creative Audigy 4 and was surprised it didn't work
-at all ... I noticed it wasn't detected and made it detectable and copied
-the settings from Audigy 4 Pro. I have to click the "Audigy Analog/Digital
-Output switch" switch to make it work. Front/Center, Mic works, however I
-have no idea about wether SPDIF is ok or not (I have no devices). It might
-be that a lot of functionality is missing still but it's a start.
+Not intel8x0m, there is HDA (High Definition Audio, or Azalia) bus and
+modem, the driver is 'hda-intel'. Is your modem supported or not depends
+on which kind of modem (modem codec) you have. Drop us content of file
+'/proc/asound/card0/codec#1' and we will know answer.
 
-First, output of "$ lspci -vn | grep -1 0401"
-0000:02:09.0 0401: 1102:0008
-        Subsystem: 1102:1021
+BTW. http://linmodems.technion.ac.il and discuss@linmodes.org list are
+useful places for "which modem driver" questions (codec#1 identification
+will be needed anyway).
 
-Then, using "modprobe emu10k1 sumsystem=xxxxxx" does not work at all for
-me, doesn't get the interrupt up and errors about probe failing.
-
-So I added did this to my kernel sound/pci/emu10k1/emu10k1_main.c:
-
-	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
-	 .driver = "Audigy2", .name = "Audigy 4 [A400?]", 
-	 .id = "Audigy2",
-	 .emu10k2_chip = 1,
-	 .ca0102_chip = 1,
-	 /*.ca0151_chip = 1, */
-	 /*.spk71 = 1,	*/
-	 /*.spdif_bug = 1,*/
-	 .ac97_chip = 1} ,
-
-I left those commented out as I've tried the options and noticed no
-difference in operation. Also, I don't know the SB0xxx model (can't remove
-the card and look at it at the moment either).
-======================================================================
-
-----------------------------------------------------------------------
- khampf - 11-24-05 03:41 
-----------------------------------------------------------------------
-One thing I didn't mention. With the standard driver this card got detected
-as "Audigy 2 Value [Unknown]" and the mixers looked ok ... but it was
-impossible to get sound out of it even if it looked allright.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-24-05 03:35 khampf         New Issue                                    
-11-24-05 03:35 khampf         Distribution              => Debian 3
-testing/unstable hybrid
-11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
-(-ckX+swsusp2+bootsplash)
-11-24-05 03:39 khampf         Issue Monitored: khampf                      
-11-24-05 03:41 khampf         Note Added: 0006837                          
-======================================================================
-
-
+Sasha.
 
 
 -------------------------------------------------------
