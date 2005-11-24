@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 24 Nov 2005 17:18:55 -0000
-Message-ID: <E1EfL1u-0007xX-Py@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001458]: hda - High frequency noise in background and muting when changing volume
+Date: Thu, 24 Nov 2005 20:36:54 +0100
+Message-ID: <aeb83f7c117ac219874a48a21a6eb0ae@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDEBA186
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 20:36:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1458> 
+======================================================================
+Reported By:                andres
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1458
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               ubuntu breezy badger
+Kernel Version:              2.6.12-9-386
+======================================================================
+Date Submitted:             09-25-2005 16:07 CEST
+Last Modified:              11-24-2005 20:36 CET
+======================================================================
+Summary:                    hda - High frequency noise in background and muting
+when changing volume
+Description: 
+When i play sound i hear a high (constant) frequency beep additionally to
+what i intend to play. I also tried to set position_fix=[0,1,2] and model,
+but that didnt help (for both, related?, problems)
+If i change volume via alsamixer no sound can be heard anymore till i
+unload and load the snd_hda_intel module.
 
---- Original message follows.
+Thanks for helping
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+Andres
 
-The original message is over 5k.  Message truncated to 1K.
+======================================================================
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.247>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta206.mail.re2.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO cmjetxy.net) (64.251.132.84)
-  by mta206.mail.re2.yahoo.com with SMTP; Thu, 24 Nov 2005 09:18:55 -0800
-From: alsa-devel@lists.sourceforge.net
-To: certificate@yahoo.com
-Date: Thu, 24 Nov 2005 17:10:37 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <fdca20cefaba.7cae@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===c5be4e21367.a8a0a75aa"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+----------------------------------------------------------------------
+ andres - 09-28-05 10:12 
+----------------------------------------------------------------------
+If you need any additional information, say it, i will give them as soon as
+i can.
 
---===c5be4e21367.a8a0a75aa
+----------------------------------------------------------------------
+ marcel - 11-24-05 20:36 
+----------------------------------------------------------------------
+I have the same problem with my notebook(Samsung M50). It seems to have a
+"AD1986A" Chip.
+It does not occur if i use multichannel sound, like speaker-test
+-Dplug:surround51 -c6, or any other value for -c except 2.
+The notebook also contains an media player, which boots up in 10secs when
+pressing a special key, so that you need not boot another operating system
+for just watching a video or something like that. According to the
+documentation, this is based on linux kernel 2.4.21 and alsa 1.0.9
+(http://www.zaigen.co.kr/support/open_source.html). Sound works fine with
+this media player, so samsung seems to have solved this problem?! Or is
+ist because kernel version 2.4?!
+I am using gentoo, kernel 2.6.14-r2 and alsa 1.0.10.
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-25-05 16:07 andres         New Issue                                    
+09-25-05 16:07 andres         Distribution              => ubuntu breezy badger
+09-25-05 16:07 andres         Kernel Version            =>  2.6.12-9-386   
+09-25-05 16:12 andres         Issue Monitored: andres                      
+09-28-05 10:12 andres         Note Added: 0006407                          
+09-28-05 10:12 andres         Note Added: 0006408                          
+09-28-05 13:30 andres         Note Deleted: 0006408                        
+10-18-05 11:22 cartman        Issue Monitored: cartman                     
+11-24-05 20:36 marcel         Note Added: 0006844                          
+======================================================================
 
-plz read and check ...
-cyaaaaaaa
---===c5be4e21367.a8a0a75aa
-Content-Type: application/octet-s
-*** MESSAGE TRUNCATED ***
 
 
 
