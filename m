@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001460]: no sound on Clevo 400a
-Date: Thu, 24 Nov 2005 18:18:25 +0100
-Message-ID: <b3910773d50025dab0763d75b9e839f4@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 24 Nov 2005 17:18:55 -0000
+Message-ID: <E1EfL1u-0007xX-Py@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50FEC1C2
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 18:18:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,112 +12,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1460> 
-======================================================================
-Reported By:                imre
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1460
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.14-rc2-git5
-======================================================================
-Date Submitted:             09-26-2005 16:02 CEST
-Last Modified:              11-24-2005 18:18 CET
-======================================================================
-Summary:                    no sound on Clevo 400a
-Description: 
-On my Clevo M400A the integrated soundcard doesn't work. When starting
-alsa
-the kernel logs the following:
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-hda_codec: num_steps = 0 for NID=0xb
-ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 50
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_intel.c:624: codec_mask = 0x3
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
+--- Original message follows.
 
-and the last message is printed several times
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-Maybe this is the same issue that was reported in #1316
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
-duplicate of        0001563 No Sound on Cybersystem S28 (hda_codec:...
-======================================================================
+The original message is over 5k.  Message truncated to 1K.
 
-----------------------------------------------------------------------
- imre - 11-23-05 21:38 
-----------------------------------------------------------------------
-Applied the patch in issue #1563 on 2.6.15-rc2
-Some errors gone, but news accours.
-alsamixer works now, but still no sound.
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.247>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta206.mail.re2.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO cmjetxy.net) (64.251.132.84)
+  by mta206.mail.re2.yahoo.com with SMTP; Thu, 24 Nov 2005 09:18:55 -0800
+From: alsa-devel@lists.sourceforge.net
+To: certificate@yahoo.com
+Date: Thu, 24 Nov 2005 17:10:37 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <fdca20cefaba.7cae@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===c5be4e21367.a8a0a75aa"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 58
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_intel.c:630: codec_mask = 0x3
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+--===c5be4e21367.a8a0a75aa
 
-ALSA sound/pci/hda/hda_intel.c:1091: azx_pcm_prepare: bufsize=0x10000,
-fragsize=0x1000, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x6,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x2,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x5,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x3,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x4,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x2,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x5,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x3,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x4,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x6,
-stream=0x0, channel=0, format=0x0
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-----------------------------------------------------------------------
- imre - 11-24-05 18:18 
-----------------------------------------------------------------------
-I recompiled my kernel with the latest alsa-cvs.
-I works now. Thanks for all help.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-26-05 16:02 imre           New Issue                                    
-09-26-05 16:02 imre           Distribution              => Debian sid      
-09-26-05 16:02 imre           Kernel Version            => 2.6.14-rc2-git5 
-09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
-10-10-05 12:21 drlizau        Note Added: 0006448                          
-10-10-05 12:24 drlizau        Issue Monitored: drlizau                     
-10-11-05 16:33 tiwai          Note Added: 0006453                          
-10-13-05 11:43 drlizau        Note Added: 0006476                          
-10-18-05 07:52 drlizau        Note Edited: 0006476                         
-11-23-05 20:31 rlrevell       Relationship added       duplicate of 0001563
-11-23-05 21:38 imre           Note Added: 0006835                          
-11-24-05 18:18 imre           Note Added: 0006843                          
-======================================================================
-
+plz read and check ...
+cyaaaaaaa
+--===c5be4e21367.a8a0a75aa
+Content-Type: application/octet-s
+*** MESSAGE TRUNCATED ***
 
 
 
