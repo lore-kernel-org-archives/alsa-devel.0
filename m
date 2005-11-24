@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
-Date: Thu, 24 Nov 2005 21:54:36 +0100
-Message-ID: <ee9c9814cb5a31324fe5ca90f1087948@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Envy24control with DMX6fire 'digital in' patch
+Date: Thu, 24 Nov 2005 22:57:34 +0000
+Message-ID: <200511242257.34121.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_eVkhDiGjILmw/BN"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4725417E
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 21:54:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,95 +15,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
-======================================================================
-Reported By:                khampf
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1595
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian 3 testing/unstable hybrid
-Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
-======================================================================
-Date Submitted:             11-24-2005 03:35 CET
-Last Modified:              11-24-2005 21:54 CET
-======================================================================
-Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
-included)
-Description: 
-I recently bought me a Creative Audigy 4 and was surprised it didn't work
-at all ... I noticed it wasn't detected and made it detectable and copied
-the settings from Audigy 4 Pro. I have to click the "Audigy Analog/Digital
-Output switch" switch to make it work. Front/Center, Mic works, however I
-have no idea about wether SPDIF is ok or not (I have no devices). It might
-be that a lot of functionality is missing still but it's a start.
+--Boundary-00=_eVkhDiGjILmw/BN
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-First, output of "$ lspci -vn | grep -1 0401"
-0000:02:09.0 0401: 1102:0008
-        Subsystem: 1102:1021
+Here is the first of my patches to envy24control.  Apart from a simple typo 
+fix, I took the liberty of renaming the screen controls to make them clearer, 
+as the DMX6fire front box uses 'Digital' rather than 'S/PDIF', and the 
+on-board SPDIF input is only suitable for CD input.
 
-Then, using "modprobe emu10k1 sumsystem=xxxxxx" does not work at all for
-me, doesn't get the interrupt up and errors about probe failing.
+Summary: Fix envy24control digital input on Terratec DMX6fire
 
-So I added did this to my kernel sound/pci/emu10k1/emu10k1_main.c:
+This patch fixes typo in hardware.c that prevented front digital inputs being 
+selected on the Terratec DMX6fire.  Also renames the digital input controls 
+for greater clarity with this card.
 
-	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
-	 .driver = "Audigy2", .name = "Audigy 4 [A400?]", 
-	 .id = "Audigy2",
-	 .emu10k2_chip = 1,
-	 .ca0102_chip = 1,
-	 /*.ca0151_chip = 1, */
-	 /*.spk71 = 1,	*/
-	 /*.spdif_bug = 1,*/
-	 .ac97_chip = 1} ,
+Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
 
-I left those commented out as I've tried the options and noticed no
-difference in operation. Also, I don't know the SB0xxx model (can't remove
-the card and look at it at the moment either).
-======================================================================
+--Boundary-00=_eVkhDiGjILmw/BN
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="e24c-1.0.10-AHmod1.4d.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="e24c-1.0.10-AHmod1.4d.patch"
 
-----------------------------------------------------------------------
- khampf - 11-24-05 03:41 
-----------------------------------------------------------------------
-One thing I didn't mention. With the standard driver this card got detected
-as "Audigy 2 Value [Unknown]" and the mixers looked ok ... but it was
-impossible to get sound out of it even if it looked allright.
+diff -ru envy24control/envy24control.c Aenvy24control/envy24control.c
+--- envy24control/envy24control.c	2005-08-04 17:01:10.000000000 +0100
++++ Aenvy24control/envy24control.c	2005-11-24 22:03:54.000000000 +0000
+@@ -1165,7 +1165,7 @@
+ 	if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DELTADIO2496) || (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE))
+ 		hide = 0;
+ 
+-	frame = gtk_frame_new("S/PDIF Input");
++	frame = gtk_frame_new("Digital Input");
+ 	gtk_widget_show(frame);
+ 	gtk_box_pack_start(GTK_BOX(box), frame, FALSE, TRUE, 0);
+ 	gtk_container_set_border_width(GTK_CONTAINER(frame), 6);
+@@ -1208,7 +1208,7 @@
+         if( card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
+                 hide = 0;
+ 
+-        frame = gtk_frame_new("S/PDIF On/Off");
++        frame = gtk_frame_new("Digital Select");
+         gtk_widget_show(frame);
+         gtk_box_pack_start(GTK_BOX(box), frame, FALSE, TRUE, 0);
+         gtk_container_set_border_width(GTK_CONTAINER(frame), 6);
+@@ -1218,7 +1218,7 @@
+         gtk_container_add(GTK_CONTAINER(frame), vbox);
+         gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+ 
+-        radiobutton = gtk_radio_button_new_with_label(group, "On");
++        radiobutton = gtk_radio_button_new_with_label(group, "Front Digital");
+         hw_spdif_switch_on_radio = radiobutton;
+         group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton));
+         gtk_widget_show(radiobutton);
+@@ -1227,7 +1227,7 @@
+                           (GtkSignalFunc)spdif_on_off_toggled,
+                           (gpointer)"On");
+ 
+-        radiobutton = gtk_radio_button_new_with_label(group, "Off");
++        radiobutton = gtk_radio_button_new_with_label(group, "Internal CD");
+         hw_spdif_switch_off_radio = radiobutton;
+         group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton));
+         gtk_widget_show(radiobutton);
+diff -ru envy24control/hardware.c Aenvy24control/hardware.c
+--- envy24control/hardware.c	2004-04-16 14:09:35.000000000 +0100
++++ Aenvy24control/hardware.c	2005-11-24 21:01:31.000000000 +0000
+@@ -734,10 +734,10 @@
+         if (!is_active(togglebutton))
+                 return;
+         if (!strcmp(str, "On"))
+-                snd_ctl_elem_value_set_boolean(spdif_input, 0, 1);
++                snd_ctl_elem_value_set_boolean(spdif_on_off, 0, 1);
+         else
+-                snd_ctl_elem_value_set_boolean(spdif_input, 0, 0);
+-        if ((err = snd_ctl_elem_write(ctl, spdif_input)) < 0)
++                snd_ctl_elem_value_set_boolean(spdif_on_off, 0, 0);
++        if ((err = snd_ctl_elem_write(ctl, spdif_on_off)) < 0)
+                 g_print("Unable to write S/PDIF on/off switch: %s\n", snd_strerror(err));
+ }
 
-----------------------------------------------------------------------
- jcdutton - 11-24-05 21:54 
-----------------------------------------------------------------------
-In your above patch, if you change
-.ca0102_chip = 1,
-to
-.ca0108_chip = 1,
-
-
-Does it still work?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-24-05 03:35 khampf         New Issue                                    
-11-24-05 03:35 khampf         Distribution              => Debian 3
-testing/unstable hybrid
-11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
-(-ckX+swsusp2+bootsplash)
-11-24-05 03:39 khampf         Issue Monitored: khampf                      
-11-24-05 03:41 khampf         Note Added: 0006837                          
-11-24-05 21:54 jcdutton       Note Added: 0006845                          
-======================================================================
-
+--Boundary-00=_eVkhDiGjILmw/BN--
 
 
 
