@@ -1,15 +1,14 @@
-From: "Parwiz Alto" <altoparw@intelnet.f2g.net>
-Subject: Re: Ron Good for you
-Date: Wed, 23 Nov 2005 21:31:49 -0500
-Message-ID: <005701c5f09f$3899d880$40b4a8c0@Hungarian>
-Reply-To: "Parwiz Alto" <altoparw@intelnet.f2g.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
+Date: Thu, 24 Nov 2005 03:35:40 +0100
+Message-ID: <9ed825e279fa3210bcf7e5fd1ed06e32@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0054_01C5F075.4FC3D080"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from intelnet.f2g.net (u15-195.grapesc.cz [82.100.15.195])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B0214D0
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 03:31:51 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5A8C1BC
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 03:35:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,94 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nebojsa Bothwell <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0054_01C5F075.4FC3D080
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
+======================================================================
+Reported By:                khampf
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1595
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian 3 testing/unstable hybrid
+Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
+======================================================================
+Date Submitted:             11-24-2005 03:35 CET
+Last Modified:              11-24-2005 03:35 CET
+======================================================================
+Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
+included)
+Description: 
+I recently bought me a Creative Audigy 4 and was surprised it didn't work
+at all ... I noticed it wasn't detected and made it detectable and copied
+the settings from Audigy 4 Pro. I have to click the "Audigy Analog/Digital
+Output switch" switch to make it work. Front/Center, Mic works, however I
+have no idea about wether SPDIF is ok or not (I have no devices). It might
+be that a lot of functionality is missing still but it's a start.
 
- V
-X
-A
-C
-V
-L
-P
-I
-a
-m
-I
-A
-e
-r
-A
-n
-b
-A
-L
-v
-o
-G
-a
-i
-L
-I
-i
-z
-R
-x
-e
-I
-U
-t
-a
-A
- n
-S
-M
-ra
-c
- 3,35
- 3,70
- 1,20
- http://www.dissimulatere.rinwarder.com
+First, output of "$ lspci -vn | grep -1 0401"
+0000:02:09.0 0401: 1102:0008
+        Subsystem: 1102:1021
 
-------=_NextPart_000_0054_01C5F075.4FC3D080
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Then, using "modprobe emu10k1 sumsystem=xxxxxx" does not work at all for
+me, doesn't get the interrupt up and errors about probe failing.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"BORDER-LEFT: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>V<BR>X<BR>A<BR>C<BR>V<BR>L<BR>P</FONT></DIV>
-<DIV style=3D"MARGIN-LEFT: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>I<BR>a<BR>m<BR>I<BR>A<BR>e<BR>r</FONT></DIV>
-<DIV style=3D"BORDER-LEFT: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>A<BR>n<BR>b<BR>A<BR>L<BR>v<BR>o</FONT></DIV>
-<DIV style=3D"BORDER-BOTTOM-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>G<BR>a<BR>i<BR>L<BR>I<BR>i<BR>z</FONT></DIV>
-<DIV style=3D"BORDER-BOTTOM-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>R<BR>x<BR>e<BR>I<BR>U<BR>t<BR>a</FONT></DIV>
-<DIV style=3D"BORDER-COLOR: #FFFFFF; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>A<BR>&nbsp;<BR>n<BR>S<BR>M<BR>ra<BR>c</FONT></DIV>
-<DIV style=3D"BORDER-LEFT-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>&nbsp;3,35<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;3,70<BR>&nbsp;1,20<BR>&n=
-bsp;<BR>&nbsp;</FONT></DIV><DIV style=3D"CLEAR: both;">&nbsp;</DIV><A =
-href=3D"http://www.dissimulatere.rinwarder.com"><FONT size=3D3>http://w=
-ww.dissimulatere.rinwarder.com</FONT></A></BODY></HTML>
+So I added did this to my kernel sound/pci/emu10k1/emu10k1_main.c:
 
-------=_NextPart_000_0054_01C5F075.4FC3D080--
+	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
+	 .driver = "Audigy2", .name = "Audigy 4 [A400?]", 
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1,
+	 /*.ca0151_chip = 1, */
+	 /*.spk71 = 1,	*/
+	 /*.spdif_bug = 1,*/
+	 .ac97_chip = 1} ,
+
+I left those commented out as I've tried the options and noticed no
+difference in operation. Also, I don't know the SB0xxx model (can't remove
+the card and look at it at the moment either).
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-24-05 03:35 khampf         New Issue                                    
+11-24-05 03:35 khampf         Distribution              => Debian 3
+testing/unstable hybrid
+11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
+(-ckX+swsusp2+bootsplash)
+======================================================================
+
 
 
 
