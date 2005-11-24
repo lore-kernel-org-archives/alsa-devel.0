@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Wed, 23 Nov 2005 13:50:03 +0100
-Message-ID: <6910a188046c347eb98eb233b85bd20c@bugtrack.alsa-project.org>
+From: "Bobbins A. Kroner" <galexand@glennsmithvaldez.com>
+Subject: The Ultimate Online Pharmaceutical
+Date: Wed, 23 Nov 2005 21:29:32 -0600
+Message-ID: <4099908332.20051123212932@glennsmithvaldez.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------CABB697AA52A090"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 67CDC19E
-	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 13:50:03 +0100 (MET)
+Received: from 150502672 (wiley-405-9295.roadrunner.nf.net [205.251.126.113])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D4BF1174
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 14:25:19 +0100 (MET)
+Received: from glennsmithvaldez.com (149448856 [149227912])
+	by wiley-405-9295.roadrunner.nf.net (Qmailv1) with ESMTP id DAF972D905
+	for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2005 21:29:32 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,128 +21,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
-======================================================================
-Reported By:                penguinparty
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1138
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               ubuntu 5.04
-Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
-======================================================================
-Date Submitted:             05-28-2005 22:22 CEST
-Last Modified:              11-23-2005 13:50 CET
-======================================================================
-Summary:                    errors when installing au8820 modules
-Description: 
-Please see the section additional information for a dump of my dmesg output
-regarding the au8820 module.
+------------CABB697AA52A090
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
-kernels. The shipping alsa support under each of these kerenls provies me
-with the same result. I have also tried installing each of these kernels
-without alsa support only CONFIG_SOUND and then installing the
-alsa-drivers 1.0.9rc4a
+Live happy! Live healthy! Live long!
+With our pharmmacy.
 
-I get the same result every time I do the modprobe snd-au8820
+Vlagjra - $3.3; Ledvitra - $3.3; Cialims - $3.7; Imoitrex - $16.4 
+Fliomax - $2.2; Ulatram - $0.78; Viooxx - $4.75; Amubien - $2.2 
+VaIiuvm - $0.97; Sxoma - $3; Xansax - $1.09; Mceridia - $2.2 
 
-Using older versions of debian as well as the ubuntu live cd's I am able
-to get this sound card working.
-======================================================================
+If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice.
 
-----------------------------------------------------------------------
- Raymond - 11-16-05 06:29 
-----------------------------------------------------------------------
-au8820.h
+Visit our website
+http://aturdice.com
 
-#define VORTEX_MIDI_DATA 0x11000
-#define VORTEX_MIDI_CMD 0x11004	/* Write command / Read status */
+WBR,
+Online Pharmaceuticals 
+fgfgkkflrpa UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
-au8810.h/au8830.h
+------------CABB697AA52A090
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
 
-#define VORTEX_MIDI_DATA 0x28800
-#define VORTEX_MIDI_CMD 0x28804	/* Write command / Read status */
+<HTML>
+<BODY bgcolor="#F0F0FF">
+<b> 
+<p>Live happy! Live healthy! Live long!<br>
+  With our pharmxacy.</p>
+</b> 
+<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#0000FF">
+  <tr> 
+    <td bgcolor="#F500FF"><b>Vlagqra - $3.3; Lemvitra 
+      - $3.3; Cialixs - $3.7; Imvitrex - $16.4</b></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#C400FF"><b>Flyomax - $2.2; Ulttram 
+      - $0.78; Viloxx - $4.75; Amcbien - $2.2</b></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#F500FF"><b>VaIiusm - $0.97; Scoma 
+      - $3; Xanyax - $1.09; Mjeridia - $2.2</b></td>
+  </tr>
+</table>
+<p>If you compare the cost and services of our competitors, you will see that 
+  we give you much more… for less. Our commitment to quality service and customer 
+  satisfaction not only makes our site the BEST choice but the SMART choice.</p>
+ <p>
+  <b><A href="http://aturdice.com">Visit our website</A>
+  </b>
+  </p>
+  WBR,<br>
+  Online Pharmaceuticals
+fgfgkkflrpa UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
 
-port = VORTEX_MIDI_DATA
-cport = VORTEX_MIDI_CMD
 
-Need to fix mpu401_uart.c too !!!
-
-
-
-mpu401_uart.c
-
-int snd_mpu401_uart_new(snd_card_t * card, int device,
-unsigned short hardware,
-unsigned long port, int integrated,
-int irq, int irq_flags,
-snd_rawmidi_t ** rrawmidi)
-{
-...
-switch (hardware) {
-case MPU401_HW_AUREAL:
-mpu->write = mpu401_write_mmio;
-mpu->read = mpu401_read_mmio;
-break;
-default:
-mpu->write = mpu401_write_port;
-mpu->read = mpu401_read_port;
-break;
-}
-mpu->port = port;
-if (hardware == MPU401_HW_PC98II)
-mpu->cport = port + 2;
-else
-mpu->cport = port + 1;
-
-...
-}
-
-----------------------------------------------------------------------
- Raymond - 11-23-05 13:50 
-----------------------------------------------------------------------
-Why do the driver use chip->io instead of chip->mmio in card->longname?
-
-au88x0.c
-
-	chip->io = pci_resource_start(pci, 0);
-
-	sprintf(card->longname, "%s at 0x%lx irq %i",
-		card->shortname, chip->io, chip->irq);
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-28-05 22:22 penguinparty   New Issue                                    
-05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
-05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
-and 2.6.10
-05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
-06-08-05 04:41 penguinparty   File Added: typescript                       
-06-08-05 04:43 penguinparty   Note Added: 0004914                          
-08-24-05 10:55 Raymond        Note Added: 0005925                          
-08-24-05 10:58 Raymond        Note Added: 0005926                          
-08-24-05 10:59 Raymond        Note Deleted: 0005926                        
-09-01-05 04:24 penguinparty   File Added: make-typescript                    
-09-01-05 04:25 penguinparty   Note Added: 0005993                          
-09-01-05 05:58 Raymond        Note Added: 0005994                          
-09-02-05 02:49 penguinparty   Note Added: 0006002                          
-09-02-05 05:49 Raymond        Note Added: 0006003                          
-11-16-05 06:29 Raymond        Note Added: 0006736                          
-11-23-05 13:50 Raymond        Note Added: 0006810                          
-======================================================================
+------------CABB697AA52A090--
 
 
 
