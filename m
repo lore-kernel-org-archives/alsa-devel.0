@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Thu, 24 Nov 2005 12:14:55 +0100
-Message-ID: <6bfbb2242277d72c1e631387b5d893d6@bugtrack.alsa-project.org>
+Date: Thu, 24 Nov 2005 12:15:00 +0100
+Message-ID: <fa7e31c0291fedfb247d789334a5b3b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C26F1B8
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 12:14:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 641981B8
+	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 12:15:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -302,6 +302,13 @@ Tried again. Get sound without the high pitched noise with passing model
 3stack-digout or 5stack-digout and position_fix=1. The sound still
 dissapears after chaning a volume setting, though.
 
+----------------------------------------------------------------------
+ jrgns - 11-24-05 12:14 
+----------------------------------------------------------------------
+Tried again. Get sound without the high pitched noise with passing model
+3stack-digout or 5stack-digout and position_fix=1. The sound still
+dissapears after chaning a volume setting, though.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -309,6 +316,7 @@ Date Modified  Username       Field                    Change
 11-24-05 11:26 jrgns          Distribution              => Gentoo          
 11-24-05 11:26 jrgns          Kernel Version            => 2.6.14-rc2      
 11-24-05 12:14 jrgns          Note Added: 0006840                          
+11-24-05 12:14 jrgns          Note Added: 0006841                          
 ======================================================================
 
 
