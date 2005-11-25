@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001593]: au88x0 wt synth
-Date: Fri, 25 Nov 2005 07:57:57 +0100
-Message-ID: <42824896d338f3038afcfffb8da7e749@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
+Date: Fri, 25 Nov 2005 08:22:02 +0100
+Message-ID: <99365774e6e18ab904ddb070f3aee08c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BB521A2
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 07:57:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DD951A2
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 08:22:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,174 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
 ======================================================================
-Reported By:                Raymond
+Reported By:                Osiris
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1593
+Issue ID:                   1025
 Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Distribution:               Debian
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             11-23-2005 17:16 CET
-Last Modified:              11-25-2005 07:57 CET
+Date Submitted:             03-30-2005 22:50 CEST
+Last Modified:              11-25-2005 08:22 CET
 ======================================================================
-Summary:                    au88x0 wt synth
+Summary:                    kernel panic when trying to load module snd-au8830
 Description: 
-After applied the patch as described in 
-
-http://article.gmane.org/gmane.linux.alsa.devel/27095
-
-Sound (like a monster roaring) is heard when using aplay through device 3
-of au8830 with the mono files from alsa-utils-1.0.10/speaker-test/samples
-
-The sound repeat 7 times and stop.
-
-Refer to the strace, 
-
-Do the DMA transfer occur when using hw:0,3 ?
-
-
+kernel panic occurs on boot when system tries to load kernel module for
+Aureal Vortex 2. The same thing happens when driver is compiled into
+kernel, not module
 
 ======================================================================
 
 ----------------------------------------------------------------------
- mjander - 11-23-05 20:54 
+ Raymond - 08-24-05 11:04 
 ----------------------------------------------------------------------
-The WT Engine (device 3) did never work. I'm working on a major driver
-rework in order to make the WT work correctly, basically unifying the ADB
-and WT DMA handling routines. I can't tell when I will finish, but I'm
-advancing steadily.
+Have you try alien999999999 's alsa-changes.tar.bz2 ?
 
-Best Regards,
-Manuel
+If not,  would you please try the patch diff11.diff (against
+alsa-driver-1.0.9b) at
+
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948 
+
+
+void __iomem *mmio;
+
+should be used instead of
+
+unsigned long __iomem *mmio;
+
+in snd_vortex_t for architecture independent (32-bits and 64-bits)
+
+We need feedback from au8810/au8830 user in testing the Equalizer, MPU401,
+Gameport, .... on 64 bits platform.
 
 ----------------------------------------------------------------------
- Raymond - 11-25-05 07:57 
+ Raymond - 11-25-05 08:22 
 ----------------------------------------------------------------------
-aplay -D hw:0,0 alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav
-Playing WAVE 'alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav' :
-Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+It seem that the au88x0 registers can be access through I/O ports (BAR1) in
+additonal to MMIO (BAR0)
 
-dmesg
-
-vortex: pointer = 0x80
-vortex: pointer = 0x101c
-vortex: pointer = 0x101c
-vortex: pointer = 0x2000
-vortex: pointer = 0x2000
-vortex: pointer = 0x3008
-vortex: pointer = 0x3008
-vortex: pointer = 0x4010
-vortex: pointer = 0x4010
-vortex: pointer = 0x5018
-vortex: pointer = 0x5018
-vortex: pointer = 0x6020
-vortex: pointer = 0x6020
-vortex: pointer = 0x7004
-vortex: pointer = 0x7004
-vortex: pointer = 0x800c
-vortex: pointer = 0x800c
-vortex: pointer = 0x9014
-vortex: pointer = 0x9014
-vortex: pointer = 0xa01c
-vortex: pointer = 0xa01c
-vortex: pointer = 0xb000
-vortex: pointer = 0xb000
-vortex: pointer = 0x8
-vortex: pointer = 0x8
-vortex: pointer = 0x1010
-vortex: pointer = 0x1010
-vortex: pointer = 0x2018
-vortex: pointer = 0x2018
-vortex: pointer = 0x3020
-vortex: pointer = 0x3020
-vortex: pointer = 0x4004
-vortex: pointer = 0x4004
-vortex: pointer = 0x500c
-vortex: pointer = 0x500c
-vortex: pointer = 0x6014
-vortex: pointer = 0x6038
-vortex: pointer = 0x701c
-vortex: pointer = 0x7040
-vortex: pointer = 0x8000
-vortex: pointer = 0x8000
-vortex: pointer = 0x9008
-vortex: pointer = 0x9008
-vortex: pointer = 0xa010
-vortex: pointer = 0xb018
-vortex: pointer = 0x20
-vortex: pointer = 0x1004
-vortex: pointer = 0x200c
-vortex: pointer = 0x3014
-vortex: pointer = 0x401c
-vortex: pointer = 0x5000
-vortex: pointer = 0x6008
-vortex: pointer = 0x7010
-vortex: pointer = 0x8018
-vortex: pointer = 0x9020
-vortex: pointer = 0xa004
+vortex->bar1 = pci_resource_start(pci, 1);
 
 
-aplay -D hw:0,3 alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav
-Playing WAVE 'alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav' :
-Signed 16 bit Little Endian, Rate 48000 Hz, Mono
-aplay: pcm_write:1222: write error: Input/output error
 
-dmesg
+outl(offset,vortex->bar1); 
+inl(vortex->bar1+4);
 
-vortex: WT PARM3: 0
-vortex: WT GMODE: ffffffff
-vortex: WT GMODE 2 : fffffffe
-vortex: wt start 0
-vortex: pointer = 0x0
-vortex: pointer = 0x8
-vortex: pointer = 0x10
-vortex: pointer = 0x18
-vortex: pointer = 0x20
-vortex: pointer = 0x4
-vortex: pointer = 0xc
-vortex: pointer = 0x14
-vortex: pointer = 0x1c
-vortex: pointer = 0x0
-vortex: pointer = 0x8
-vortex: pointer = 0x10
-vortex: pointer = 0x18
-vortex: pointer = 0x20
-vortex: pointer = 0x4
-vortex: pointer = 0xc
-vortex: pointer = 0x14
-vortex: pointer = 0x1c
-vortex: pointer = 0x0
-vortex: pointer = 0x8
-vortex: pointer = 0x10
-vortex: pointer = 0x18
-vortex: pointer = 0x20
-vortex: pointer = 0x4
-vortex: pointer = 0xc
-vortex: pointer = 0x14
-vortex: pointer = 0x1c
-vortex: pointer = 0x0
-vortex: pointer = 0x8
-vortex: wt stop 0
-vortex: WT PARM3: cff1c810
-vortex: WT GMODE: ffffffff
-vortex: WT GMODE 2 : fffffffe
+is equivalent to
+
+readl(vortex->mmio+offset)  
+
+
+
+and
+
+
+
+outl(offset,vortex->bar1); 
+outl(value,vortex->bar1+4);
+
+is equivalent to
+
+writel(value,vortex->mmio+offset)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-05 17:16 Raymond        New Issue                                    
-11-23-05 17:16 Raymond        Distribution              => Fedora Core 1   
-11-23-05 17:16 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-11-23-05 20:54 mjander        Note Added: 0006832                          
-11-25-05 07:57 Raymond        Note Added: 0006847                          
+03-30-05 22:50 Osiris         New Issue                                    
+03-30-05 22:50 Osiris         Distribution              => Debian          
+03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
+03-31-05 11:34 mjander        Note Added: 0004278                          
+04-03-05 21:16 Osiris         Note Added: 0004320                          
+04-04-05 10:19 alien999999999 Issue Monitored: alien999999999                   
+
+04-04-05 11:00 alien999999999 File Added: alsa-changes.tar.bz2                  
+ 
+04-04-05 11:00 alien999999999 Note Added: 0004325                          
+08-24-05 11:04 Raymond        Note Added: 0005927                          
+11-25-05 08:22 Raymond        Note Added: 0006848                          
 ======================================================================
 
 
