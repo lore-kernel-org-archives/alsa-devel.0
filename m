@@ -1,13 +1,14 @@
-From: Sasha Khapyorsky <sashakh@gmail.com>
-Subject: Re: Modem support for ICH6 based laptop?
-Date: Fri, 25 Nov 2005 15:13:37 +0200
-Message-ID: <20051125131337.GA14453@tecr>
-References: <1132791202.32481.22.camel@SillyPuddy.localdomain> <20051124030116.GB6056@tecr> <1132913421.10774.32.camel@SillyPuddy.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001598]: TeamSpeak works with kernel mode OSS emulation but not with AOSS wrapper
+Date: Fri, 25 Nov 2005 14:10:14 +0100
+Message-ID: <9a5c8be7f450ad5ab934bbdc939a057e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1132913421.10774.32.camel@SillyPuddy.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C8CC1CA
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 14:10:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,24 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Josh Green <josh@resonance.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02:10 Fri 25 Nov     , Josh Green wrote:
-> 
-> $ cat /proc/asound/card0/codec#1
-> 
-> Codec: Generic 14f1 ID 2bfa
-> Address: 1
-> Vendor Id: 0x14f12bfa
-> Subsystem Id: 0x0
-> Revision Id: 0x90000
 
-It is Conexant's (0x14f1) HDA modem codec. Unfortunately it is
-unsupported.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1598> 
+======================================================================
+Reported By:                kyromaster
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1598
+Category:                   CORE OSS - pcm
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-25-2005 14:10 CET
+Last Modified:              11-25-2005 14:10 CET
+======================================================================
+Summary:                    TeamSpeak works with kernel mode OSS emulation but
+not with AOSS wrapper
+Description: 
+At first this is a device independant issue. I looked at some forums and
+tested it on several sound devices.
+TeamSpeak works fine with the kernel OSS emulation on my system. But when
+I use the AOSS wrapper to run it beside games which use ALSA (which is the
+most common use of TeamSpeak) sound recording/output doesn´t work any
+more. There´s a "test mode" in TS where you can hear yourself, when I
+enable it I can´t hear anything.
+Please fix this as it´s very important for all Linux gamers.
+======================================================================
 
-Sasha.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-25-05 14:10 kyromaster     New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
