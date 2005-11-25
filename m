@@ -1,18 +1,14 @@
-From: "Matej Kilbourne" <kilbomatej@furmanite.de>
-Subject: Re: Christophers Time to know
-Date: Fri, 25 Nov 2005 01:53:53 -0500
-Message-ID: <005001c5f18c$ff3f9680$44d9a8c0@tittlebat>
-Reply-To: "Matej Kilbourne" <kilbomatej@furmanite.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001593]: au88x0 wt synth
+Date: Fri, 25 Nov 2005 07:57:57 +0100
+Message-ID: <42824896d338f3038afcfffb8da7e749@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_004D_01C5F163.16698E80"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE0561B8
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 07:54:02 +0100 (MET)
-Received: from furmanite.de (unknown [211.222.251.173])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 8B55C761A0
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 07:54:00 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BB521A2
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 07:57:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +18,182 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Cicero Juergens <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_004D_01C5F163.16698E80
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1593
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
+======================================================================
+Date Submitted:             11-23-2005 17:16 CET
+Last Modified:              11-25-2005 07:57 CET
+======================================================================
+Summary:                    au88x0 wt synth
+Description: 
+After applied the patch as described in 
 
- Le  VA  Am Xa  CI   VI   
- vitra  LIUM Now $  bien nax  ALIS Now $   AGRA Now $   
- 1.23       3.67   3.32   
- plus many other -   Get detailed information    
- > Fast  > Total  > Best  > Easy  > Home   
- Sh Co Pr Or De  
- ipping nfidentiality ices dering livery    
+http://article.gmane.org/gmane.linux.alsa.devel/27095
 
-------=_NextPart_000_004D_01C5F163.16698E80
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Sound (like a monster roaring) is heard when using aplay through device 3
+of au8830 with the mono files from alsa-utils-1.0.10/speaker-test/samples
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"BORDER-WIDTH: 0px; FLOAT: left;"><FONT size=3D3 =
-face=3DCourier>Le<BR><B>VA</B><BR>Am<BR>Xa<BR><B>CI</B><BR><B>VI</B><=
-/FONT></DIV>
-<DIV style=3D"PADDING-RIGHT: 0px; FLOAT: left;"><FONT size=3D3 =
-face=3DCourier>vitra<BR><B>LIUM Now $</B><BR>bien<BR>nax<BR><B>ALIS Now =
-$</B><BR><B>AGRA Now $</B></FONT></DIV>
-<DIV style=3D"PADDING-RIGHT: 0px; FLOAT: left;"><FONT size=3D3 =
-face=3DCourier>&nbsp;<BR><B>1.23</B><BR>&nbsp;<BR>&nbsp;<BR><B>3.67</B><B=
-R><B>3.32</B></FONT></DIV>
-<DIV style=3D"MARGIN-RIGHT: 0px; CLEAR: both;">&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D3>plus many other - <A href=3D"http://www.=
-tesseraeir.oneverad.com"><FONT face=3DArial size=3D3>Get detailed =
-information</FONT></A></FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"MARGIN-RIGHT: 0px; FLOAT: left;"><FONT size=3D3 color=3D#9A3600 =
-face=3DCourier>&gt; Fast&nbsp;<BR>&gt; Total&nbsp;<BR>&gt; Best&nbsp;<BR>&gt; =
-Easy&nbsp;<BR>&gt; Home&nbsp;</FONT></DIV>
-<DIV style=3D"BORDER-TOP-WIDTH: 0px; FLOAT: left;"><FONT size=3D3 =
-color=3D#9A3600 face=3DCourier>Sh<BR>Co<BR>Pr<BR>Or<BR>De</FONT></DIV>
-<DIV style=3D"BORDER-LEFT: 0px; FLOAT: left;"><FONT size=3D3 color=3D#9A3600 =
-face=3DCourier>ipping<BR>nfidentiality<BR>ices<BR>dering<BR>livery</FONT>=
-</DIV></BODY></HTML>
+The sound repeat 7 times and stop.
 
-------=_NextPart_000_004D_01C5F163.16698E80--
+Refer to the strace, 
+
+Do the DMA transfer occur when using hw:0,3 ?
+
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ mjander - 11-23-05 20:54 
+----------------------------------------------------------------------
+The WT Engine (device 3) did never work. I'm working on a major driver
+rework in order to make the WT work correctly, basically unifying the ADB
+and WT DMA handling routines. I can't tell when I will finish, but I'm
+advancing steadily.
+
+Best Regards,
+Manuel
+
+----------------------------------------------------------------------
+ Raymond - 11-25-05 07:57 
+----------------------------------------------------------------------
+aplay -D hw:0,0 alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav
+Playing WAVE 'alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav' :
+Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+
+dmesg
+
+vortex: pointer = 0x80
+vortex: pointer = 0x101c
+vortex: pointer = 0x101c
+vortex: pointer = 0x2000
+vortex: pointer = 0x2000
+vortex: pointer = 0x3008
+vortex: pointer = 0x3008
+vortex: pointer = 0x4010
+vortex: pointer = 0x4010
+vortex: pointer = 0x5018
+vortex: pointer = 0x5018
+vortex: pointer = 0x6020
+vortex: pointer = 0x6020
+vortex: pointer = 0x7004
+vortex: pointer = 0x7004
+vortex: pointer = 0x800c
+vortex: pointer = 0x800c
+vortex: pointer = 0x9014
+vortex: pointer = 0x9014
+vortex: pointer = 0xa01c
+vortex: pointer = 0xa01c
+vortex: pointer = 0xb000
+vortex: pointer = 0xb000
+vortex: pointer = 0x8
+vortex: pointer = 0x8
+vortex: pointer = 0x1010
+vortex: pointer = 0x1010
+vortex: pointer = 0x2018
+vortex: pointer = 0x2018
+vortex: pointer = 0x3020
+vortex: pointer = 0x3020
+vortex: pointer = 0x4004
+vortex: pointer = 0x4004
+vortex: pointer = 0x500c
+vortex: pointer = 0x500c
+vortex: pointer = 0x6014
+vortex: pointer = 0x6038
+vortex: pointer = 0x701c
+vortex: pointer = 0x7040
+vortex: pointer = 0x8000
+vortex: pointer = 0x8000
+vortex: pointer = 0x9008
+vortex: pointer = 0x9008
+vortex: pointer = 0xa010
+vortex: pointer = 0xb018
+vortex: pointer = 0x20
+vortex: pointer = 0x1004
+vortex: pointer = 0x200c
+vortex: pointer = 0x3014
+vortex: pointer = 0x401c
+vortex: pointer = 0x5000
+vortex: pointer = 0x6008
+vortex: pointer = 0x7010
+vortex: pointer = 0x8018
+vortex: pointer = 0x9020
+vortex: pointer = 0xa004
+
+
+aplay -D hw:0,3 alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav
+Playing WAVE 'alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav' :
+Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+aplay: pcm_write:1222: write error: Input/output error
+
+dmesg
+
+vortex: WT PARM3: 0
+vortex: WT GMODE: ffffffff
+vortex: WT GMODE 2 : fffffffe
+vortex: wt start 0
+vortex: pointer = 0x0
+vortex: pointer = 0x8
+vortex: pointer = 0x10
+vortex: pointer = 0x18
+vortex: pointer = 0x20
+vortex: pointer = 0x4
+vortex: pointer = 0xc
+vortex: pointer = 0x14
+vortex: pointer = 0x1c
+vortex: pointer = 0x0
+vortex: pointer = 0x8
+vortex: pointer = 0x10
+vortex: pointer = 0x18
+vortex: pointer = 0x20
+vortex: pointer = 0x4
+vortex: pointer = 0xc
+vortex: pointer = 0x14
+vortex: pointer = 0x1c
+vortex: pointer = 0x0
+vortex: pointer = 0x8
+vortex: pointer = 0x10
+vortex: pointer = 0x18
+vortex: pointer = 0x20
+vortex: pointer = 0x4
+vortex: pointer = 0xc
+vortex: pointer = 0x14
+vortex: pointer = 0x1c
+vortex: pointer = 0x0
+vortex: pointer = 0x8
+vortex: wt stop 0
+vortex: WT PARM3: cff1c810
+vortex: WT GMODE: ffffffff
+vortex: WT GMODE 2 : fffffffe
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-23-05 17:16 Raymond        New Issue                                    
+11-23-05 17:16 Raymond        Distribution              => Fedora Core 1   
+11-23-05 17:16 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+11-23-05 20:54 mjander        Note Added: 0006832                          
+11-25-05 07:57 Raymond        Note Added: 0006847                          
+======================================================================
+
 
 
 
