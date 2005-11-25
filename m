@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001588]: alsa1.0.10 driver compilation error in adriver.h
-Date: Thu, 24 Nov 2005 23:43:52 +0100
-Message-ID: <d0aefe2b334904a9ff3783b29e242b46@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001597]: alsamixer does not work
+Date: Fri, 25 Nov 2005 04:19:46 +0100
+Message-ID: <636ebef9513576d374dc4db0ab3bd5f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 535A01C1
-	for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2005 23:43:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D8EF1C1
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 04:19:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,101 +22,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1588> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1597> 
 ======================================================================
-Reported By:                alanmann
-Assigned To:                perex
+Reported By:                lanewhoy
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1588
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   1597
+Category:                   simple mixer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.4.99
+Status:                     new
 ======================================================================
-Date Submitted:             11-22-2005 15:30 CET
-Last Modified:              11-24-2005 23:43 CET
+Date Submitted:             11-25-2005 04:19 CET
+Last Modified:              11-25-2005 04:19 CET
 ======================================================================
-Summary:                    alsa1.0.10 driver compilation error in adriver.h
+Summary:                    alsamixer does not work
 Description: 
-Mainstream alsa1.0.10 downloaded this morning. Make fails in adriver.h
-lines 675-713 (added since 1.0.9b); the syntax is wrong?  Has this already
-been noticed and fixed?
+Any attempt to run a alsamixer or alsactl fails with the error:
 
-The section is below:-
-
-static inline unsigned int jiffies_to_msecs(const unsigned long j)
-{
-#ifndef HAVE_VARIABLE_HZ
-	#if HZ <= 1000 && !(1000 % HZ)
-		return (1000 / HZ) * j;
-	#elif HZ > 1000 && !(HZ % 1000)
-		return (j + (HZ / 1000) - 1)/(HZ / 1000);
-	#else
-		return (j * 1000) / HZ;
-	#endif
-#else
-	if (HZ <= 1000 && !(1000 % HZ))
-		return (1000 / HZ) * j;
-	else if (HZ > 1000 && !(HZ % 1000))
-		return (j + (HZ / 1000) - 1)/(HZ / 1000);
-	else
-		return (j * 1000) / HZ;
-#endif
-}
-static inline unsigned long msecs_to_jiffies(const unsigned int m)
-{
-	if (m > jiffies_to_msecs(MAX_JIFFY_OFFSET))
-		return MAX_JIFFY_OFFSET;
-#ifndef HAVE_VARIABLE_HZ
-	#if HZ <= 1000 && !(1000 % HZ)
-		return (m + (1000 / HZ) - 1) / (1000 / HZ);
-	#elif HZ > 1000 && !(HZ % 1000)
-		return m * (HZ / 1000);
-	#else
-		return (m * HZ + 999) / 1000;
-	#endif
-#else
-	if (HZ <= 1000 && !(1000 % HZ))
-		return (m + (1000 / HZ) - 1) / (1000 / HZ);
-	else if (HZ > 1000 && !(HZ % 1000))
-		return m * (HZ / 1000);
-	else
-		return (m * HZ + 999) / 1000;
-#endif
+ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
+Volume',0,140733193388032,46909632806912) appears twice or more
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-23-05 17:20 
-----------------------------------------------------------------------
-The older version caused errors on other kernels without variable HZ.
-The uploaded patch should fix the problem.
-
-----------------------------------------------------------------------
- alanmann - 11-24-05 23:43 
-----------------------------------------------------------------------
-The patch seemed to do the trick, thanks.  Compile successful.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 15:30 alanmann       New Issue                                    
-11-22-05 15:30 alanmann       Kernel Version            => 2.4.99          
-11-22-05 17:28 Clemens LadischNote Added: 0006788                          
-11-22-05 18:06 alanmann       Note Added: 0006789                          
-11-22-05 18:08 alanmann       Note Edited: 0006789                         
-11-22-05 20:01 alanmann       Note Edited: 0006789                         
-11-23-05 08:15 Clemens LadischNote Added: 0006808                          
-11-23-05 12:52 alanmann       Note Added: 0006809                          
-11-23-05 17:20 tiwai          Note Added: 0006812                          
-11-23-05 17:20 tiwai          File Added: suse-2.4-fix.diff                    
-11-24-05 23:43 alanmann       Note Added: 0006846                          
+11-25-05 04:19 lanewhoy       New Issue                                    
 ======================================================================
 
 
