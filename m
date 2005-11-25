@@ -1,12 +1,18 @@
-From: Tyler Knott <tknott@gmail.com>
-Subject: The EMU 0404 soundcard and the Audigy driver...
-Date: Thu, 24 Nov 2005 22:31:27 -0600
-Message-ID: <ea4102e90511242031w2fb02dbcqfa0da72db999ddcd@mail.gmail.com>
+From: "Matej Kilbourne" <kilbomatej@furmanite.de>
+Subject: Re: Christophers Time to know
+Date: Fri, 25 Nov 2005 01:53:53 -0500
+Message-ID: <005001c5f18c$ff3f9680$44d9a8c0@tittlebat>
+Reply-To: "Matej Kilbourne" <kilbomatej@furmanite.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_004D_01C5F163.16698E80"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE0561B8
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 07:54:02 +0100 (MET)
+Received: from furmanite.de (unknown [211.222.251.173])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 8B55C761A0
+	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 07:54:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,33 +22,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Cicero Juergens <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm not quiet sure whether to post this here or on the alsa-user
-mailing list, but seeing as this information is more usefule to the
-development of than use of ALSA I decided to put it here.
+This is a multi-part message in MIME format.
 
-I have an EMU 0404 soundcard and I just tried the patch below (adapted
-from the one suggested at
-http://article.gmane.org/gmane.linux.alsa.devel/22204) to try and get
-the EMU10k1/Audigy driver to work with this card.  It does recognize
-it, but I don't get any sound (not that I expected to anyways).  Mixer
-settings do not seem to have any affect (and curiously none of the
-channels, except for the Tone channel, are muteable).
+------=_NextPart_000_004D_01C5F163.16698E80
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----PATCH---- (not a real diff-generated patch)
-alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c (@ about line 750)
-  =09 .emu10k2_chip =3D 1,
-  =09 .ca0102_chip =3D 1,
-  =09 .ac97_chip =3D 1} ,
- + =09{.vendor =3D 0x1102, .device =3D 0x0004, .subsystem =3D 0x40021102,
- + =09 .driver =3D "Audigy", .name =3D "E-MU 0404 [4002]",
- + =09 .id =3D "0404",
- + =09 .emu10k2_chip =3D 1} ,
-  =09{.vendor =3D 0x1102, .device =3D 0x0004,
-  =09 .driver =3D "Audigy", .name =3D "Audigy 1 [Unknown]",
-  =09 .id =3D "Audigy",
+ Le  VA  Am Xa  CI   VI   
+ vitra  LIUM Now $  bien nax  ALIS Now $   AGRA Now $   
+ 1.23       3.67   3.32   
+ plus many other -   Get detailed information    
+ > Fast  > Total  > Best  > Easy  > Home   
+ Sh Co Pr Or De  
+ ipping nfidentiality ices dering livery    
+
+------=_NextPart_000_004D_01C5F163.16698E80
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV style=3D"BORDER-WIDTH: 0px; FLOAT: left;"><FONT size=3D3 =
+face=3DCourier>Le<BR><B>VA</B><BR>Am<BR>Xa<BR><B>CI</B><BR><B>VI</B><=
+/FONT></DIV>
+<DIV style=3D"PADDING-RIGHT: 0px; FLOAT: left;"><FONT size=3D3 =
+face=3DCourier>vitra<BR><B>LIUM Now $</B><BR>bien<BR>nax<BR><B>ALIS Now =
+$</B><BR><B>AGRA Now $</B></FONT></DIV>
+<DIV style=3D"PADDING-RIGHT: 0px; FLOAT: left;"><FONT size=3D3 =
+face=3DCourier>&nbsp;<BR><B>1.23</B><BR>&nbsp;<BR>&nbsp;<BR><B>3.67</B><B=
+R><B>3.32</B></FONT></DIV>
+<DIV style=3D"MARGIN-RIGHT: 0px; CLEAR: both;">&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D3>plus many other - <A href=3D"http://www.=
+tesseraeir.oneverad.com"><FONT face=3DArial size=3D3>Get detailed =
+information</FONT></A></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV style=3D"MARGIN-RIGHT: 0px; FLOAT: left;"><FONT size=3D3 color=3D#9A3600 =
+face=3DCourier>&gt; Fast&nbsp;<BR>&gt; Total&nbsp;<BR>&gt; Best&nbsp;<BR>&gt; =
+Easy&nbsp;<BR>&gt; Home&nbsp;</FONT></DIV>
+<DIV style=3D"BORDER-TOP-WIDTH: 0px; FLOAT: left;"><FONT size=3D3 =
+color=3D#9A3600 face=3DCourier>Sh<BR>Co<BR>Pr<BR>Or<BR>De</FONT></DIV>
+<DIV style=3D"BORDER-LEFT: 0px; FLOAT: left;"><FONT size=3D3 color=3D#9A3600 =
+face=3DCourier>ipping<BR>nfidentiality<BR>ices<BR>dering<BR>livery</FONT>=
+</DIV></BODY></HTML>
+
+------=_NextPart_000_004D_01C5F163.16698E80--
+
 
 
 -------------------------------------------------------
