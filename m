@@ -1,17 +1,10 @@
-From: "Slag E. Rhubarb" <bertil@gracedayspa.com>
-Subject: Penis Launcher
-Date: Fri, 25 Nov 2005 22:44:37 -0600
-Message-ID: <5829576864.20051125224437@gracedayspa.com>
+From: "sam javor" <zekthedeadcow@hotmail.com>
+Subject: need a driver written for Aardvark Q10
+Date: Fri, 25 Nov 2005 11:01:52 -0500
+Message-ID: <BAY101-F18343C753F3B12C9E5AA08BD570@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------5C916A61856425A"
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -189696448 (84-122-146-222.onocable.ono.com [84.122.146.222])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 453FB1C9
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 15:40:09 +0100 (MET)
-Received: from gracedayspa.com (-146173872 [-189176664])
-	by 84-122-146-222.onocable.ono.com (Qmailv1) with ESMTP id 9A4FDCA736
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 22:44:37 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,39 +14,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+HI!  I'm the maintainer the Aardvark Support Group website 
+http://asg.hopto.org and I really need an alsa driver for atleast the Q10.  
+Feature wise it is like the M-Audio Delta1010 just with preamps, Hi-Z 
+inputs, and a few other things and origionally retailed for $700-$1000.  
+Aardvark went out of business about a year ago and left all the owners in 
+the cold.
 
-------------5C916A61856425A
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+I can supply a card to test on (though I would like it back as I only have 
+one :) )   However, no source code was released.
 
-The best toolkit for fixing your erection: Vikagra, Ciialis, Leviutra and more! 
-Sweet price of OUR SITE
-http://spensog.com
+Would anyone be interested?  ....Or is there a drummers guide to driver 
+writing? ...or am I out of luck? :)
 
-qwefgfgjs UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-------------5C916A61856425A
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-The best toolkit for fixing your erection: Viragra, Cifalis, Levimtra and more!
-<br>
-Sweet price of <a href="http://spensog.com">OUR SITE</a>
-<br>
-<br>
-qwefgfgjs UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</body>
-</html>
-
-
-------------5C916A61856425A--
-
+peace
+Sam Javor
 
 
 
