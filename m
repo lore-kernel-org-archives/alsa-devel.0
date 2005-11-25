@@ -1,13 +1,15 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: alsa-driver in the kernel
-Date: Fri, 25 Nov 2005 20:36:31 +0000
-Message-ID: <438775CF.4060300@superbug.co.uk>
-References: <438761DD.3090009@brend.org>
+From: Jon Grosshart <jgrosshart@gmail.com>
+Subject: Re: kernel 2.6.14.x and alsamixer problems
+Date: Fri, 25 Nov 2005 17:09:51 -0500
+Message-ID: <9cf823c60511251409u49de1bd2u5621e54cedbe72f4@mail.gmail.com>
+References: <437EB3E6.6030205@gmail.com> <437F073D.4070906@superbug.co.uk>
+	 <437FF88A.5070502@gmail.com> <43805484.70902@superbug.co.uk>
+	 <9cf823c60511212148o2fa440b7vb3b151c97b1a78db@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_20700_3759803.1132956591758"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <438761DD.3090009@brend.org>
+In-Reply-To: <9cf823c60511212148o2fa440b7vb3b151c97b1a78db@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +19,523 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Ganzhorn <shutdown@brend.org>
+To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Peter Ganzhorn wrote:
-> Hi there,
-> 
-> there are several hints on how to update the in-kernel alsa driver with 
-> the alsa driver one can download from alsa-project.org, but I had no 
-> luck at all updating kernel 2.6.14.3 with alsa 1.0.10 - it seems that 
-> there is something missing in the kernel, but there is nothing more 
-> mentioned to do in the howtos.
-> 
+------=_Part_20700_3759803.1132956591758
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Why are you even trying to do this?
-The easiest way is to make all ALSA modules, and then just install 
-alsa-driver from alsa-project.org.
+On 11/22/05, Jon Grosshart <jgrosshart@gmail.com> wrote:
+>
+> On 11/20/05, James Courtier-Dutton <James@superbug.co.uk> wrote:
+> >
+> > Jon wrote:
+> > > James Courtier-Dutton wrote:
+> > >
+> > >> Jon wrote:
+> > >>
+> > >>> Greetings all. Ever since I upgraded to linux-2.6.14 and up, I get
+> > this
+> > >>> error when running 'alsamixer'
+> > >>>
+> > >>>
+> > >>> ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front
+> > Playback
+> > >>> Volume',0,0,0) appears twice or more
+> > >>> alsamixer: function snd_mixer_load failed: Invalid argument
+> > >>>
+> > >>>
+> > >>> It does it with alsa-1.0.9 and 1.0.10... I use alsa
+> > >>> {driver,lib,oss,utils} on my box and leave the kernel sound section
+> > >>> alone. As soon as I switch back to 2.6.13.4 it plays nice once agai=
+n
+> > >>> which is confusing to me...... I'm using the emu10k1 chip (SB Live!
+> > >>> Value 5.1). Any insight on this matter would be greatly
+> > appreciated...
+> > >>>
+> > >>> Jon
+> > >>>
+> > >>>
+> > >>
+> > >> Does you alsa-lib version match your alsa-driver version.
+> > >> Use the troubleshooter on
+> > >> http://alsa.opensrc.org/TroubleShooting
+> > >> to find out.
+> > >>
+> > > Yes, I'm always carefull to run matching versions. As soon as I
+> > upgraded
+> > > to the 2.6.14 kernel, this started happening. I hadn'nt even touched
+> > my
+> > > alsa packages, except alsa-driver ofcourse. I used the same version
+> > but
+> > > just compiled the new modules against the new kernel. I've found othe=
+r
+> > > people having the same problem on the web, but the posts ussually go
+> > > unanswered... :-(
+> > >
+> >
+> > Can you post the output from the troubleshooting steps here please.
+> >
+> >
+>
+> I sure can.. Sorry about that. Here is the output from aadebug
+>
+>
+> [root@jaguar ~/Desktop] ./aadebug
+> ALSA Audio Debug v0.1.0 - Tue Nov 22 00:29:54 EST 2005
+> http://alsa.opensrc.org/index.php?page=3Daadebug
+> http://www.gnu.org/licenses/gpl.txt
+>
+> Kernel ----------------------------------------------------
+> Linux jaguar 2.6.14.2 #1 SMP Wed Nov 16 15:38:45 EST 2005 i686 Intel(R)
+> Pentium(R) 4 CPU 3.00GHz GenuineIntel GNU/Linux
+>
+> Loaded Modules --------------------------------------------
+> snd_pcm_oss            48544  0
+> snd_mixer_oss          17664  2 snd_pcm_oss
+> snd_emu10k1           117412  1
+> snd_rawmidi            21408  1 snd_emu10k1
+> snd_seq_device          7948  2 snd_emu10k1,snd_rawmidi
+> snd_ac97_codec         91936  1 snd_emu10k1
+> snd_pcm                81412  3 snd_pcm_oss,snd_emu10k1,snd_ac97_codec
+> snd_timer              22148  2 snd_emu10k1,snd_pcm
+> snd_ac97_bus            2816  1 snd_ac97_codec
+> snd_page_alloc          9352  2 snd_emu10k1,snd_pcm
+> snd_util_mem            4352  1 snd_emu10k1
+> snd_hwdep               7968  1 snd_emu10k1
+> snd                    49124  9
+> snd_pcm_oss,snd_mixer_oss,snd_emu10k1,snd_rawmidi,snd_seq_device,snd_ac97=
+_codec,snd_pcm,snd_timer,snd_hwdep
+>
+> Proc Config -----------------------------------------------
+> CONFIG_SOUND=3Dm
+> # CONFIG_SND is not set
+> # CONFIG_SOUND_PRIME is not set
+>
+> Modprobe Conf ---------------------------------------------
+> alias snd-card-0 snd-emu10k1
+> alias sound-slot-0 snd-emu10k1
+>
+> Proc Asound -----------------------------------------------
+> Advanced Linux Sound Architecture Driver Version 1.0.10.
+> Compiled on Nov 18 2005 for kernel 2.6.14.2 (SMP).
+> 0 [Live           ]: EMU10K1 - SB Live [Unknown]
+>                      SB Live [Unknown] (rev.10, serial:0x80661102) at
+> 0xdda0, irq 21
+>   4: [0- 0]: hardware dependent
+>   8: [0- 0]: raw midi
+>  19: [0- 3]: digital audio playback
+>  18: [0- 2]: digital audio playback
+>  26: [0- 2]: digital audio capture
+>  25: [0- 1]: digital audio capture
+>  16: [0- 0]: digital audio playback
+>  24: [0- 0]: digital audio capture
+>   0: [0- 0]: ctl
+>  33:       : timer
+> 00-00: EMU10K1 (FX8010)
+> 00-00: emu10k1 : ADC Capture/Standard PCM Playback : playback 32 : captur=
+e
+> 1
+> 00-01: emu10k1 mic : Mic Capture : capture 1
+> 00-02: emu10k1 efx : Multichannel Capture/PT Playback : playback 8 :
+> capture 1
+> 00-03: emu10k1 : Multichannel Playback : playback 1
+> cat: /proc/asound/seq/clients: No such file or directory
+>
+> Dev Snd ---------------------------------------------------
+> controlC0  midiC0D0  pcmC0D0p  pcmC0D2c  pcmC0D3p
+> hwC0D0     pcmC0D0c  pcmC0D1c  pcmC0D2p  timer
+>
+> CPU -------------------------------------------------------
+> model name      : Intel(R) Pentium(R) 4 CPU 3.00GHz
+> cpu MHz         : 2992.835
+> model name      : Intel(R) Pentium(R) 4 CPU 3.00GHz
+> cpu MHz         : 2992.835
+>
+> RAM -------------------------------------------------------
+> MemTotal:       514840 kB
+> SwapTotal:     1020116 kB
+>
+> Hardware --------------------------------------------------
+> 00:00.0 Host bridge: Intel Corporation 82875P/E7210 Memory Controller Hub
+> (rev 02)
+> 02:02.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
+> 0a)
+>
+>
+>
+> Now, I still have sound... Somewhat.... It comes out the back two speaker=
+s
+> but not the front two. I can use the gnome sound control to atleast get i=
+t
+> to where I can hear something... I just can't open alsamixer and tweak it
+> out...
+> From the Troubleshooting list:
+>
+>
+> 1.) I am using alsa-driver and not the built-in kernel modules
+>
+> 2.) [root@jaguar ~/Desktop] cat /proc/asound/version
+> Advanced Linux Sound Architecture Driver Version 1.0.10.
+> Compiled on Nov 18 2005 for kernel 2.6.14.2 (SMP).
+>
+> 3.) [root@jaguar ~/Desktop] grep VERSION_STR /usr/include/alsa/version.h
+> #define SND_LIB_VERSION_STR     "1.0.10"
+>
+> 4.) [root@jaguar ~/Desktop] cat /proc/asound/cards
+> 0 [Live           ]: EMU10K1 - SB Live [Unknown]
+>                      SB Live [Unknown] (rev.10, serial:0x80661102) at
+> 0xdda0, irq 21
+>
+>       [root@jaguar ~/Desktop] lspci | egrep audio
+> 02:02.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
+> 0a)
+>
+>
+> 5.) [root@jaguar ~/Desktop] alsamixer
+> ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
+> Volume',0,0,0) appears twice or more
+>
+> alsamixer: function snd_mixer_load failed: Invalid argument
+>
+> 6.) I hate to admit it, but I ussually only run as root. From step 6 and
+> beyond, it seems pretty trivial to do.
+>
+>
+>
+> Let me know if there is anything else I can provide and thank you James
+> for your help. I really do apprecieate it...
+>
+>
 
-If you really have to, just use git.
-Get the 2.6.14.3 git tree, and then pull the alsa git into it. It will 
-merge it all nicely for you.
+Well, I did some more testing and here's what I came up with. I rolled back
+to 2.6.13.4, deleted /etc/asound.state, reran alsoconf and I have no
+problems now, with alsa-{lib,utils,oss,driver} 1.0.{9 ,10}.. Using
+2.6.14.xwith alsa-{lib,utils,oss,driver}
+1.0.{9 ,10} it gives me the same error with simple_none.c when I run
+alsamixer. If that's not a problem with the kernel then I don't what is...
 
-James
+I don't get it. Looks like I'll be sticking with 2.6.13.4 for the time
+being... Hopefully someone here is still investigating the matter because
+I'm not the only one it's happening to. Granted, most similar errors I've
+found on google have to do with simple.c and not simple_none.c.... I'm sure
+if I new C a little bit better I could find the offending line and fix it
+myself before I compile alsa-lib... Maybe... I don't know...
+
+I'll still check back here from time to time in anticipation... :-) Thanks
+again for your help James.
+
+------=_Part_20700_3759803.1132956591758
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+<br><br><div><span class=3D"gmail_quote">On 11/22/05, <b class=3D"gmail_sen=
+dername">Jon Grosshart</b> &lt;<a href=3D"mailto:jgrosshart@gmail.com">jgro=
+sshart@gmail.com</a>&gt; wrote:</span><blockquote class=3D"gmail_quote" sty=
+le=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex;=
+ padding-left: 1ex;">
+<div><span class=3D"e" id=3D"q_107b6841932f3a51_0">On 11/20/05, <b class=3D=
+"gmail_sendername">James Courtier-Dutton</b> &lt;<a href=3D"mailto:James@su=
+perbug.co.uk" target=3D"_blank" onclick=3D"return top.js.OpenExtLink(window=
+,event,this)">
+James@superbug.co.uk</a>&gt; wrote:<div><span class=3D"gmail_quote"></span>=
+<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
+204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+Jon wrote:<br>&gt; James Courtier-Dutton wrote:<br>&gt;<br>&gt;&gt; Jon wro=
+te:<br>&gt;&gt;<br>&gt;&gt;&gt; Greetings all. Ever since I upgraded to lin=
+ux-2.6.14 and up, I get this<br>&gt;&gt;&gt; error when running 'alsamixer'
+<br>&gt;&gt;&gt;<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; ALSA lib simple_none.c:121=
+6:(simple_add1) helem (MIXER,'Front Playback<br>&gt;&gt;&gt; Volume',0,0,0)=
+ appears twice or more<br>&gt;&gt;&gt; alsamixer: function snd_mixer_load f=
+ailed: Invalid argument
+<br>&gt;&gt;&gt;<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; It does it with alsa-1.0.9=
+ and 1.0.10... I use alsa<br>&gt;&gt;&gt; {driver,lib,oss,utils} on my box =
+and leave the kernel sound section<br>&gt;&gt;&gt; alone. As soon as I swit=
+ch back to=20
+<a href=3D"http://2.6.13.4" target=3D"_blank" onclick=3D"return top.js.Open=
+ExtLink(window,event,this)">2.6.13.4</a> it plays nice once again<br>&gt;&g=
+t;&gt; which is confusing to me...... I'm using the emu10k1 chip (SB Live!<=
+br>
+&gt;&gt;&gt; Value 5.1). Any insight on this matter would be greatly apprec=
+iated...
+<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; Jon<br>&gt;&gt;&gt;<br>&gt;&gt;&gt;<br>&gt=
+;&gt;<br>&gt;&gt; Does you alsa-lib version match your alsa-driver version.=
+<br>&gt;&gt; Use the troubleshooter on<br>&gt;&gt; <a href=3D"http://alsa.o=
+pensrc.org/TroubleShooting" target=3D"_blank" onclick=3D"return top.js.Open=
+ExtLink(window,event,this)">
+
+http://alsa.opensrc.org/TroubleShooting</a><br>&gt;&gt; to find out.<br>&gt=
+;&gt;<br>&gt; Yes, I'm always carefull to run matching versions. As soon as=
+ I upgraded<br>&gt; to the 2.6.14 kernel, this started happening. I hadn'nt=
+ even touched my
+<br>&gt; alsa packages, except alsa-driver ofcourse. I used the same versio=
+n but<br>&gt; just compiled the new modules against the new kernel. I've fo=
+und other<br>&gt; people having the same problem on the web, but the posts =
+ussually go
+<br>&gt; unanswered... :-(<br>&gt;<br><br>Can you post the output from the =
+troubleshooting steps here please.<br><br></blockquote></div><br>
+<br></span></div>
+I sure can.. Sorry about that. Here is the output from aadebug<br>
+
+<br>
+
+<br>
+
+[root@jaguar ~/Desktop] ./aadebug<br>
+
+ALSA Audio Debug v0.1.0 - Tue Nov 22 00:29:54 EST 2005<br>
+
+<a href=3D"http://alsa.opensrc.org/index.php?page=3Daadebug" target=3D"_bla=
+nk" onclick=3D"return top.js.OpenExtLink(window,event,this)">http://alsa.op=
+ensrc.org/index.php?page=3Daadebug</a><br>
+
+<a href=3D"http://www.gnu.org/licenses/gpl.txt" target=3D"_blank" onclick=
+=3D"return top.js.OpenExtLink(window,event,this)">http://www.gnu.org/licens=
+es/gpl.txt</a><br>
+
+<br>
+
+Kernel ----------------------------------------------------<br>
+
+Linux jaguar <a href=3D"http://2.6.14.2" target=3D"_blank" onclick=3D"retur=
+n top.js.OpenExtLink(window,event,this)">2.6.14.2</a> #1 SMP Wed Nov 16 15:=
+38:45 EST 2005 i686 Intel(R) Pentium(R) 4 CPU 3.00GHz GenuineIntel GNU/Linu=
+x
+<br>
+
+<br>
+
+Loaded Modules --------------------------------------------<br>
+
+snd_pcm_oss&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 48544&nbsp; 0<br>
+
+snd_mixer_oss&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 17664&n=
+bsp; 2 snd_pcm_oss<br>
+
+snd_emu10k1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 117=
+412&nbsp; 1<br>
+
+snd_rawmidi&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; 21408&nbsp; 1 snd_emu10k1<br>
+
+snd_seq_device&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7948&n=
+bsp; 2 snd_emu10k1,snd_rawmidi<br>
+
+snd_ac97_codec&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 91936&nbsp; =
+1 snd_emu10k1<br>
+snd_pcm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;
+81412&nbsp; 3 snd_pcm_oss,snd_emu10k1,snd_ac97_codec<br>
+
+snd_timer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; 22148&nbsp; 2 snd_emu10k1,snd_pcm<br>
+
+snd_ac97_bus&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp; 2816&nbsp; 1 snd_ac97_codec<br>
+
+snd_page_alloc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9352&n=
+bsp; 2 snd_emu10k1,snd_pcm<br>
+
+snd_util_mem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp; 4352&nbsp; 1 snd_emu10k1<br>
+
+snd_hwdep&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp; 7968&nbsp; 1 snd_emu10k1<br>
+snd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+49124&nbsp; 9
+snd_pcm_oss,snd_mixer_oss,snd_emu10k1,snd_rawmidi,snd_seq_device,snd_ac97_c=
+odec,snd_pcm,snd_timer,snd_hwdep<br>
+
+<br>
+
+Proc Config -----------------------------------------------<br>
+
+CONFIG_SOUND=3Dm<br>
+
+# CONFIG_SND is not set<br>
+
+# CONFIG_SOUND_PRIME is not set<br>
+
+<br>
+
+Modprobe Conf ---------------------------------------------<br>
+
+alias snd-card-0 snd-emu10k1<br>
+
+alias sound-slot-0 snd-emu10k1<br>
+
+<br>
+
+Proc Asound -----------------------------------------------<br>
+
+Advanced Linux Sound Architecture Driver Version 1.0.10.<br>
+
+Compiled on Nov 18 2005 for kernel <a href=3D"http://2.6.14.2" target=3D"_b=
+lank" onclick=3D"return top.js.OpenExtLink(window,event,this)">2.6.14.2</a>=
+ (SMP).<br>
+
+0 [Live&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]: EMU1=
+0K1 - SB Live [Unknown]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SB Live [Unknown] (rev.10, serial:0x80661102) at 0xdda0, irq 21<br>
+
+&nbsp; 4: [0- 0]: hardware dependent<br>
+
+&nbsp; 8: [0- 0]: raw midi<br>
+
+&nbsp;19: [0- 3]: digital audio playback<br>
+
+&nbsp;18: [0- 2]: digital audio playback<br>
+
+&nbsp;26: [0- 2]: digital audio capture<br>
+
+&nbsp;25: [0- 1]: digital audio capture<br>
+
+&nbsp;16: [0- 0]: digital audio playback<br>
+
+&nbsp;24: [0- 0]: digital audio capture<br>
+
+&nbsp; 0: [0- 0]: ctl<br>
+
+&nbsp;33:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : timer<br>
+
+00-00: EMU10K1 (FX8010)<br>
+
+00-00: emu10k1 : ADC Capture/Standard PCM Playback : playback 32 : capture =
+1<br>
+
+00-01: emu10k1 mic : Mic Capture : capture 1<br>
+
+00-02: emu10k1 efx : Multichannel Capture/PT Playback : playback 8 : captur=
+e 1<br>
+
+00-03: emu10k1 : Multichannel Playback : playback 1<br>
+
+cat: /proc/asound/seq/clients: No such file or directory<br>
+
+<br>
+
+Dev Snd ---------------------------------------------------<br>
+
+controlC0&nbsp; midiC0D0&nbsp; pcmC0D0p&nbsp; pcmC0D2c&nbsp; pcmC0D3p<br>
+
+hwC0D0&nbsp;&nbsp;&nbsp;&nbsp; pcmC0D0c&nbsp; pcmC0D1c&nbsp; pcmC0D2p&nbsp;=
+ timer<br>
+
+<br>
+
+CPU -------------------------------------------------------<br>
+
+model name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Intel(R) Pentium(R) 4 CPU 3.00GH=
+z<br>
+
+cpu MHz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 2992.835<br>
+
+model name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : Intel(R) Pentium(R) 4 CPU 3.00GH=
+z<br>
+
+cpu MHz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : 2992.835<br>
+
+<br>
+
+RAM -------------------------------------------------------<br>
+
+MemTotal:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 514840 kB<br>
+
+SwapTotal:&nbsp;&nbsp;&nbsp;&nbsp; 1020116 kB<br>
+
+<br>
+
+Hardware --------------------------------------------------<br>
+
+00:00.0 Host bridge: Intel Corporation 82875P/E7210 Memory Controller Hub (=
+rev 02)<br>
+
+02:02.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 0a=
+)<br>
+
+<br>
+
+<br>
+
+<br>
+Now, I still have sound... Somewhat.... It comes out the back two
+speakers but not the front two. I can use the gnome sound control to
+atleast get it to where I can hear something... I just can't open
+alsamixer and tweak it out...<br>
+>From the Troubleshooting list:<br>
+<br>
+<br>
+1.) I am using alsa-driver and not the built-in kernel modules<br>
+<br>
+2.) [root@jaguar ~/Desktop] cat /proc/asound/version<br>
+Advanced Linux Sound Architecture Driver Version 1.0.10.<br>
+Compiled on Nov 18 2005 for kernel <a href=3D"http://2.6.14.2" target=3D"_b=
+lank" onclick=3D"return top.js.OpenExtLink(window,event,this)">2.6.14.2</a>=
+ (SMP).<br>
+<br>
+3.) [root@jaguar ~/Desktop] grep VERSION_STR /usr/include/alsa/version.h<br=
+>
+#define SND_LIB_VERSION_STR&nbsp;&nbsp;&nbsp;&nbsp; &quot;1.0.10&quot;<br>
+<br>
+4.)  [root@jaguar ~/Desktop] cat /proc/asound/cards<br>
+0 [Live&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]: EMU1=
+0K1 - SB Live [Unknown]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SB Live [Unknown] (rev.10, serial:0x80661102) at 0xdda0, irq 21<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [root@jaguar ~/Desktop] lspci | egrep audio<=
+br>
+02:02.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 0a=
+)<br>
+<br>
+<br>
+5.) [root@jaguar ~/Desktop] alsamixer<span class=3D"q"><br>
+ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback Volu=
+me',0,0,0) appears twice or more<br>
+<br>
+alsamixer: function snd_mixer_load failed: Invalid argument<br>
+<br></span>
+6.) I hate to admit it, but I ussually only run as root. From step 6 and be=
+yond, it seems pretty trivial to do.<br>
+<br>
+<br>
+<br>
+Let me know if there is anything else I can provide and thank you James for=
+ your help. I really do apprecieate it...<br>
+<br>
+
+</blockquote></div><br>
+<br>
+Well, I did some more testing and here's what I came up with. I rolled
+back to <a href=3D"http://2.6.13.4">2.6.13.4</a>, deleted /etc/asound.state=
+, reran alsoconf and I have
+no problems now, with alsa-{lib,utils,oss,driver} 1.0.{9 ,10}.. Using
+2.6.14.x with alsa-{lib,utils,oss,driver} 1.0.{9 ,10} it gives me the
+same error with simple_none.c when I run alsamixer. If that's not a
+problem with the kernel then I don't what is...<br>
+<br>
+I don't get it. Looks like I'll be sticking with <a href=3D"http://2.6.13.4=
+">2.6.13.4</a> for the time
+being... Hopefully someone here is still investigating the matter
+because I'm not the only one it's happening to. Granted, most similar
+errors I've found on google have to do with simple.c and not
+simple_none.c.... I'm sure if I new C a little bit better I could find
+the offending line and fix it myself before I compile alsa-lib...
+Maybe... I don't know...<br>
+<br>
+I'll still check back here from time to time in anticipation... :-) Thanks =
+again for your help James.<br>
+
+------=_Part_20700_3759803.1132956591758--
 
 
 -------------------------------------------------------
