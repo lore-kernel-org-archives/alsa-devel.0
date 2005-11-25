@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001597]: alsamixer does not work
-Date: Fri, 25 Nov 2005 04:19:46 +0100
-Message-ID: <636ebef9513576d374dc4db0ab3bd5f1@bugtrack.alsa-project.org>
+From: Tyler Knott <tknott@gmail.com>
+Subject: The EMU 0404 soundcard and the Audigy driver...
+Date: Thu, 24 Nov 2005 22:31:27 -0600
+Message-ID: <ea4102e90511242031w2fb02dbcqfa0da72db999ddcd@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D8EF1C1
-	for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2005 04:19:46 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,44 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I'm not quiet sure whether to post this here or on the alsa-user
+mailing list, but seeing as this information is more usefule to the
+development of than use of ALSA I decided to put it here.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1597> 
-======================================================================
-Reported By:                lanewhoy
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1597
-Category:                   simple mixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-25-2005 04:19 CET
-Last Modified:              11-25-2005 04:19 CET
-======================================================================
-Summary:                    alsamixer does not work
-Description: 
-Any attempt to run a alsamixer or alsactl fails with the error:
+I have an EMU 0404 soundcard and I just tried the patch below (adapted
+from the one suggested at
+http://article.gmane.org/gmane.linux.alsa.devel/22204) to try and get
+the EMU10k1/Audigy driver to work with this card.  It does recognize
+it, but I don't get any sound (not that I expected to anyways).  Mixer
+settings do not seem to have any affect (and curiously none of the
+channels, except for the Tone channel, are muteable).
 
-ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
-Volume',0,140733193388032,46909632806912) appears twice or more
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-25-05 04:19 lanewhoy       New Issue                                    
-======================================================================
-
-
+----PATCH---- (not a real diff-generated patch)
+alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c (@ about line 750)
+  =09 .emu10k2_chip =3D 1,
+  =09 .ca0102_chip =3D 1,
+  =09 .ac97_chip =3D 1} ,
+ + =09{.vendor =3D 0x1102, .device =3D 0x0004, .subsystem =3D 0x40021102,
+ + =09 .driver =3D "Audigy", .name =3D "E-MU 0404 [4002]",
+ + =09 .id =3D "0404",
+ + =09 .emu10k2_chip =3D 1} ,
+  =09{.vendor =3D 0x1102, .device =3D 0x0004,
+  =09 .driver =3D "Audigy", .name =3D "Audigy 1 [Unknown]",
+  =09 .id =3D "Audigy",
 
 
 -------------------------------------------------------
