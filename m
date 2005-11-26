@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001600]: On a Shuttle SD11G5 the audio card is recognized but does not work.
-Date: Sat, 26 Nov 2005 02:59:32 +0100
-Message-ID: <2e10e1f53e21b5239700687db70cb3ea@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: kernel 2.6.14.x and alsamixer problems
+Date: Fri, 25 Nov 2005 21:35:54 -0500
+Message-ID: <1132972554.7393.11.camel@mindpipe>
+References: <437EB3E6.6030205@gmail.com> <437F073D.4070906@superbug.co.uk>
+	 <437FF88A.5070502@gmail.com> <43805484.70902@superbug.co.uk>
+	 <9cf823c60511212148o2fa440b7vb3b151c97b1a78db@mail.gmail.com>
+	 <9cf823c60511251409u49de1bd2u5621e54cedbe72f4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6FE0E1DC
-	for <alsa-devel@alsa-project.org>; Sat, 26 Nov 2005 02:59:32 +0100 (MET)
+In-Reply-To: <9cf823c60511251409u49de1bd2u5621e54cedbe72f4@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +20,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jon Grosshart <jgrosshart@gmail.com>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2005-11-25 at 17:09 -0500, Jon Grosshart wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1600> 
-======================================================================
-Reported By:                bolmsted
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1600
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             11-26-2005 02:59 CET
-Last Modified:              11-26-2005 02:59 CET
-======================================================================
-Summary:                    On a Shuttle SD11G5 the audio card is recognized but
-does not work.
-Description: 
+Try this patch:
 
-I have a Shuttle SD11G5 with a builtin Creative Labs Sound Blaster Live!
-24-bit EAX 7.1.
+--- /home/rlrevell/cvs/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c~     2005-11-05 16:25:13.000000000 -0500
++++ /home/rlrevell/cvs/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c      2005-11-25 15:28:47.000000000 -0500
+@@ -752,9 +752,16 @@
+         .emu10k1_chip = 1,
+         .ac97_chip = 1,
+         .sblive51 = 1} ,
++       /* Tested by Alexandr 25th Nov 2005 */
++       {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80661102,
++        .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
++        .id = "Live",
++        .emu10k1_chip = 1,
++        .ac97_chip = 1,
++        .sblive51 = 1} ,
+        /* Tested by Thomas Zehetbauer 27th Aug 2005 */
+        {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80651102,
+-        .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
++        .driver = "EMU10K1", .name = "SB Live 5.1 [SB0222]", 
+         .id = "Live",
+         .emu10k1_chip = 1,
+         .ac97_chip = 1,
 
-The alsa driver does not recognize the serial number and defaults to
-Unknown. The unknown state fails to play any audio.
-
-I added the following to fix the problem:
-
-         /* Shuttle XPC SD11G5 which has an onboard Creative Labs Sound
-Blaster Live! 24-bit EAX
-          * high-definition 7.1 audio processor".
-          */
-         { .serial = 0x30411297,
-           .name   = "Shuttle XPC SD11G5 [SD11G5]",
-           .gpio_type = 1,
-           .i2c_adc = 1 } ,
-
-
-This was added to "ca0106_chip_details" structure in ca0106_main.c.
-
-It fixed the problem and the sound works great.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-26-05 02:59 bolmsted       New Issue                                    
-======================================================================
 
 
 
