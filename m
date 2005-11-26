@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Packages to build for userland
-Date: Sat, 26 Nov 2005 16:18:15 +0000
-Message-ID: <43888AC7.3060207@superbug.co.uk>
-References: <1133020862.19648.1.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001601]: Surround
+Date: Sat, 26 Nov 2005 17:57:42 +0100
+Message-ID: <3d3c1770fae00ceb045cb6abc6870e60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1133020862.19648.1.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B78941D9
+	for <alsa-devel@alsa-project.org>; Sat, 26 Nov 2005 17:57:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Adrian McMenamin wrote:
-> Building an alsa driver for SH -- wondering which packages I need for a
-> minimum userland to test my driver. What do the various packages do and
-> what is the *absolute minimum* I need to test the system?
-> 
 
-You need the kernel modules, so alsa-driver.
-You need alsa-lib (libasound), so alsa-lib
-You probably want a basic mixer app, and probably a speaker-test app, so 
-alsa-utils.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1601> 
+======================================================================
+Reported By:                das-me
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1601
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.14.3
+======================================================================
+Date Submitted:             11-26-2005 17:57 CET
+Last Modified:              11-26-2005 17:57 CET
+======================================================================
+Summary:                    Surround
+Description: 
+Hello,
 
-Summary:
-alsa-driver, alsa-lib, alsa-utils.
+I whis, that you can please add LFE and Center support for the cmipi
+module.
 
-James
+I can't use LFE and the Center channel and alsamixer don't show me this
+both.
+
+I use the Terratec Aureon 5.1 Fun soundcard.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-26-05 17:57 das-me         New Issue                                    
+11-26-05 17:57 das-me         Kernel Version            => 2.6.14.3        
+======================================================================
+
 
 
 
