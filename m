@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000664]: ac97_quirk with SIS 7012 [ALC202] don't permit to have sound from the headphones, only internal speakers work.
-Date: Sat, 26 Nov 2005 20:12:08 +0100
-Message-ID: <b69ebbfdd8946e8c11257051803e5484@bugtrack.alsa-project.org>
+From: Jon Grosshart <jgrosshart@gmail.com>
+Subject: Re: kernel 2.6.14.x and alsamixer problems
+Date: Sat, 26 Nov 2005 14:19:04 -0500
+Message-ID: <9cf823c60511261119j1e73a94cq1838239557527d00@mail.gmail.com>
+References: <437EB3E6.6030205@gmail.com> <437F073D.4070906@superbug.co.uk>
+	 <437FF88A.5070502@gmail.com> <43805484.70902@superbug.co.uk>
+	 <9cf823c60511212148o2fa440b7vb3b151c97b1a78db@mail.gmail.com>
+	 <9cf823c60511251409u49de1bd2u5621e54cedbe72f4@mail.gmail.com>
+	 <1132972554.7393.11.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_23601_19697659.1133032744880"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F2401E7
-	for <alsa-devel@alsa-project.org>; Sat, 26 Nov 2005 20:12:08 +0100 (MET)
+In-Reply-To: <1132972554.7393.11.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,91 +21,116 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_23601_19697659.1133032744880
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664> 
-======================================================================
-Reported By:                ignition
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   664
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     confirmed
-Distribution:               GNU/Linux Slackware 10.0
-Kernel Version:             2.4.28
-======================================================================
-Date Submitted:             11-22-2004 18:29 CET
-Last Modified:              11-26-2005 20:12 CET
-======================================================================
-Summary:                    ac97_quirk with SIS 7012 [ALC202] don't permit to
-have sound from the headphones, only internal speakers work.
-Description: 
-module: intel8x0
-card: SiS SI7012
-chip: Realtek ALC202 rev 0
+On 11/25/05, Lee Revell <rlrevell@joe-job.com> wrote:
+>
+> On Fri, 2005-11-25 at 17:09 -0500, Jon Grosshart wrote:
+>
+> Try this patch:
+>
+> --- /home/rlrevell/cvs/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c~
+> 2005-11-05 16:25:13.000000000 -0500
+> +++
+> /home/rlrevell/cvs/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c      2005-=
+11-25
+> 15:28:47.000000000 -0500
+> @@ -752,9 +752,16 @@
+>          .emu10k1_chip =3D 1,
+>          .ac97_chip =3D 1,
+>          .sblive51 =3D 1} ,
+> +       /* Tested by Alexandr 25th Nov 2005 */
+> +       {.vendor =3D 0x1102, .device =3D 0x0002, .subsystem =3D 0x8066110=
+2,
+> +        .driver =3D "EMU10K1", .name =3D "SB Live 5.1 [SB0220]",
+> +        .id =3D "Live",
+> +        .emu10k1_chip =3D 1,
+> +        .ac97_chip =3D 1,
+> +        .sblive51 =3D 1} ,
+>         /* Tested by Thomas Zehetbauer 27th Aug 2005 */
+>         {.vendor =3D 0x1102, .device =3D 0x0002, .subsystem =3D 0x8065110=
+2,
+> -        .driver =3D "EMU10K1", .name =3D "SB Live 5.1 [SB0220]",
+> +        .driver =3D "EMU10K1", .name =3D "SB Live 5.1 [SB0222]",
+>          .id =3D "Live",
+>          .emu10k1_chip =3D 1,
+>          .ac97_chip =3D 1,
+>
+>
+>
+>
+Well, I tried that just for grins but no joy. I even compiled ALL alsa
+packages against the modified C file just incase lib and utils used it.. It
+doesn't seem (to me) that this is a driver problem or a problem with my car=
+d
+not being identified correctly. As near as I can tell, that just adds SB022=
+2
+to the index list of cards and possibly corrects a subsystem ID for SB0220.
+Thanks tho. I appreciate any effort given. I still get that error when
+running alsamixer tho.
 
-All ok but when I plug a jack from the headphones (or hi-fi system), there
-is no sound.
-And when I plug a jack halfway, I hear mono sound with bad quality from
-internal speaker AND from the headphones.
-======================================================================
-Relations           ID      Résumé
-----------------------------------------------------------------------
-doublon de          0000014 No sound from headphone jack on Acer27*...
-======================================================================
+Now, I haven't tried using the kernel modules yet. I don't see how that wil=
+l
+do anything as alsa-driver uses the same kernel source to build it's
+modules... :-) Any further thought is most welcome.
 
-----------------------------------------------------------------------
- ignition - 11-14-05 15:46 
-----------------------------------------------------------------------
-Maybe we must re-enginering the windows'driver or do lobbying ?
+------=_Part_23601_19697659.1133032744880
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- ignition - 11-26-05 20:12 
-----------------------------------------------------------------------
-Is it possibe that "SiS SI7012 Realtek ALC203 rev 0" works and not "SiS
-SI7012 Realtek ALC202 rev 0" ?
+<br><div><span class=3D"gmail_quote">On 11/25/05, <b class=3D"gmail_sendern=
+ame">Lee Revell</b> &lt;<a href=3D"mailto:rlrevell@joe-job.com">rlrevell@jo=
+e-job.com</a>&gt; wrote:</span><blockquote class=3D"gmail_quote" style=3D"b=
+order-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; paddin=
+g-left: 1ex;">
+On Fri, 2005-11-25 at 17:09 -0500, Jon Grosshart wrote:<br><br>Try this pat=
+ch:<br><br>--- /home/rlrevell/cvs/alsa/alsa-kernel/pci/emu10k1/emu10k1_main=
+.c~&nbsp;&nbsp;&nbsp;&nbsp; 2005-11-05 16:25:13.000000000 -0500<br>+++ /hom=
+e/rlrevell/cvs/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;2005-11-25 15:28:
+47.000000000 -0500<br>@@ -752,9 +752,16 @@<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp; .emu10k1_chip =3D 1,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp; .ac97_chip =3D 1,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; .sblive51 =3D 1} ,<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*=
+ Tested by Alexandr 25th Nov 2005 */<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p; {.vendor =3D 0x1102, .device =3D 0x0002, .subsystem =3D 0x80661102,
+<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.driver =3D &quot;EMU1=
+0K1&quot;, .name =3D &quot;SB Live 5.1 [SB0220]&quot;,<br>+&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.id =3D &quot;Live&quot;,<br>+&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.emu10k1_chip =3D 1,<br>+&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.ac97_chip =3D 1,<br>+&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;.sblive51 =3D 1} ,<br>&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;/* Tested by Thomas Zehetbauer 27th Aug 2005 */
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{.vendor =3D 0x1102, .d=
+evice =3D 0x0002, .subsystem =3D 0x80651102,<br>-&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;.driver =3D &quot;EMU10K1&quot;, .name =3D &quot;SB L=
+ive 5.1 [SB0220]&quot;,<br>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;.driver =3D &quot;EMU10K1&quot;, .name =3D &quot;SB Live=20
+5.1 [SB0222]&quot;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .id=
+ =3D &quot;Live&quot;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+.emu10k1_chip =3D 1,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .a=
+c97_chip =3D 1,<br><br><br><br></blockquote></div><br>
+Well, I tried that just for grins but no joy. I even compiled ALL alsa
+packages against the modified C file just incase lib and utils used
+it.. It doesn't seem (to me) that this is a driver problem or a problem
+with my card not being identified correctly. As near as I can tell,
+that just adds SB0222 to the index list of cards and possibly corrects
+a subsystem ID for SB0220. Thanks tho. I appreciate any effort given. I
+still get that error when running alsamixer tho.<br>
+<br>
+Now, I haven't tried using the kernel modules yet. I don't see how that
+will do anything as alsa-driver uses the same kernel source to build
+it's modules... :-) Any further thought is most welcome.<br>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-22-04 18:29 ignition       New Issue                                    
-11-22-04 18:29 ignition       File Added: report                           
-11-22-04 18:29 ignition       Distribution              => GNU/Linux Slackware
-10.0
-11-22-04 18:29 ignition       Kernel Version            => 2.4.28          
-11-22-04 18:48 tiwai          Relationship added       duplicate of 0000014
-11-22-04 18:48 tiwai          Duplicate ID             0 => 14             
-11-22-04 18:48 tiwai          Status                   new => resolved     
-11-22-04 18:48 tiwai          Resolution               open => duplicate   
-11-22-04 18:48 tiwai          Assigned To               => tiwai           
-11-22-04 18:48 tiwai          Note Added: 0002510                          
-11-22-04 18:51 ignition       Issue Monitored: ignition                    
-11-22-04 18:52 ignition       Issue End Monitor: ignition                    
-12-06-04 14:58 dale           Issue Monitored: dale                        
-01-20-05 18:52 jorge2         Issue Monitored: jorge2                      
-03-23-05 15:41 jdthood        Status                   resolved => feedback
-03-23-05 15:41 jdthood        Resolution               duplicate => reopened
-03-23-05 15:41 jdthood        Note Added: 0004163                          
-06-14-05 21:16 graf_eichbaum  Issue Monitored: graf_eichbaum                    
-07-16-05 16:42 jdthood        Note Added: 0005497                          
-08-02-05 21:21 ignition       Note Added: 0005606                          
-09-15-05 16:12 ignition       Issue Monitored: ignition                    
-09-29-05 12:31 jdthood        Status                   feedback => confirmed
-10-05-05 18:45 tiwai          Note Added: 0006434                          
-11-12-05 11:41 dale           Note Added: 0006686                          
-11-14-05 15:46 ignition       Note Added: 0006726                          
-11-26-05 20:12 ignition       Note Added: 0006849                          
-======================================================================
-
-
+------=_Part_23601_19697659.1133032744880--
 
 
 -------------------------------------------------------
