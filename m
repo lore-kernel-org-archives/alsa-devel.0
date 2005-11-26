@@ -1,11 +1,13 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Packages to build for userland
-Date: Sat, 26 Nov 2005 16:01:02 +0000
-Message-ID: <1133020862.19648.1.camel@localhost.localdomain>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Packages to build for userland
+Date: Sat, 26 Nov 2005 16:18:15 +0000
+Message-ID: <43888AC7.3060207@superbug.co.uk>
+References: <1133020862.19648.1.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1133020862.19648.1.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,12 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Building an alsa driver for SH -- wondering which packages I need for a
-minimum userland to test my driver. What do the various packages do and
-what is the *absolute minimum* I need to test the system?
+Adrian McMenamin wrote:
+> Building an alsa driver for SH -- wondering which packages I need for a
+> minimum userland to test my driver. What do the various packages do and
+> what is the *absolute minimum* I need to test the system?
+> 
+
+You need the kernel modules, so alsa-driver.
+You need alsa-lib (libasound), so alsa-lib
+You probably want a basic mixer app, and probably a speaker-test app, so 
+alsa-utils.
+
+Summary:
+alsa-driver, alsa-lib, alsa-utils.
+
+James
 
 
 
