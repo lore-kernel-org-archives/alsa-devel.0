@@ -1,11 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Cross compiling alsa-lib
-Date: Sun, 27 Nov 2005 18:31:43 +0000
-Message-ID: <1133116303.8952.6.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001604]: alsa-utils compilation dies - undefined reference to `snd_mixer_selem_get_capture_dB'
+Date: Sun, 27 Nov 2005 19:39:48 +0100
+Message-ID: <3b4316cfa5a62194e365745752be0472@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23B481A0
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2005 19:39:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,51 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is failing due to (seemingly) a missing type definition in
-pcm_ladspa.c.
 
-I am trying to compile this against uclibc rather than glibc... does
-anyone know what the issue is and how to fix it?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1604> 
+======================================================================
+Reported By:                Twey
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1604
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.14-1.1637_FC4
+======================================================================
+Date Submitted:             11-27-2005 19:39 CET
+Last Modified:              11-27-2005 19:39 CET
+======================================================================
+Summary:                    alsa-utils compilation dies - undefined reference to
+`snd_mixer_selem_get_capture_dB'
+Description: 
+Compilation of alsamixer dies.  Full errors attached.  Note that the output
+given here is using gcc32, but gcc4 gives the same errors.
+======================================================================
 
-Adrian
-
-
-if /bin/sh ../../libtool
---mode=compile /home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-uclibc-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include    -g -O2 -MT pcm_ladspa.lo -MD -MP -MF ".deps/pcm_ladspa.Tpo" \
-  -c -o pcm_ladspa.lo `test -f 'pcm_ladspa.c' || echo './'`pcm_ladspa.c;
-\
-then mv -f ".deps/pcm_ladspa.Tpo" ".deps/pcm_ladspa.Plo"; \
-else rm -f ".deps/pcm_ladspa.Tpo"; exit 1; \
-fi
- /home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-uclibc-gcc
--DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g -O2 -MT
-pcm_ladspa.lo -MD -MP -MF .deps/pcm_ladspa.Tpo -c pcm_ladspa.c  -fPIC
--DPIC -o .libs/pcm_ladspa.o
-pcm_ladspa.c:31:21: wordexp.h: No such file or directory
-In file included from pcm_plugin.h:22,
-                 from pcm_ladspa.c:34:
-../../include/iatomic.h:1017:2: warning: #warning "Atomic operations are
-not supported on this architecture."
-pcm_ladspa.c: In function `snd_pcm_ladspa_look_for_plugin':
-pcm_ladspa.c:818: error: `wordexp_t' undeclared (first use in this
-function)
-pcm_ladspa.c:818: error: (Each undeclared identifier is reported only
-once
-pcm_ladspa.c:818: error: for each function it appears in.)
-pcm_ladspa.c:818: error: parse error before "we"
-pcm_ladspa.c:825: error: `we' undeclared (first use in this function)
-pcm_ladspa.c:825: error: `WRDE_NOCMD' undeclared (first use in this
-function)
-pcm_ladspa.c:827: error: `WRDE_NOSPACE' undeclared (first use in this
-function)
-make[2]: *** [pcm_ladspa.lo] Error 1
-make[2]: Leaving directory `/home/adrian/alsa-lib-1.0.10/src/pcm'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/home/adrian/alsa-lib-1.0.10/src'
-make: *** [all-recursive] Error 1
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-27-05 19:39 Twey           New Issue                                    
+11-27-05 19:39 Twey           Distribution              => Fedora Core 4   
+11-27-05 19:39 Twey           Kernel Version            => 2.6.14-1.1637_FC4
+======================================================================
 
 
 
