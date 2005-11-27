@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sun, 27 Nov 2005 17:31:33 +0100
-Message-ID: <44e23a39e22a4eb81de7028ba6192877@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001599]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't handle master volume, uses headphone channel instead
+Date: Sun, 27 Nov 2005 18:47:44 +0100
+Message-ID: <bac08c4a4a360c520f5a4404ec6a0490@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 478E51CD
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2005 17:31:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B9F61C2
+	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2005 18:47:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,195 +24,140 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1599> 
 ======================================================================
-Reported By:                Demosthenes
+Reported By:                wiktorw
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
+Issue ID:                   1599
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
+Distribution:               Gentoo 2005.1
+Kernel Version:             2.6.14-r2 (2.6.14.3)
 ======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              11-27-2005 17:31 CET
+Date Submitted:             11-25-2005 17:40 CET
+Last Modified:              11-27-2005 18:47 CET
 ======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
+Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't handle
+master volume, uses headphone channel instead
 Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+In the Issue #1510 tiwai wrote:
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
+> Closing this bug since the original reporter found a solution.
 
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
+Sorry but the mentioned solution to the problem is not optimal.
+In fact, this would only hide the original problem.
 
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
 
-I would be very happy to give any further information needed.
+There is some quirk in the handling of SiS SI7012 by ALSA drivers and/or
+ALSA libs. The master channel never changes the volume level. But somehow
+the "Headphone" channel does similar work.
+
+I know that there were some serious changes and tweaks wrt headphones
+handling on this chipset. They are described in the following issues:
+
+* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664
+* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486
+* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
+* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162
+
+
+
+I managed to run Windows XP on this machine in order to test if the
+problem
+manifests itself there. In short: no. I took some screenshots to document
+what I've done. You can find them here:
+
+http://ics.p.lodz.pl/~wiktorw/alsa-problem/
+
+Comments to the pictures:
+
+1) I turned on all possible playback volume controls
+2) That's how the full volume panel looks like
+
+   NOTE: there is no headphone volume control
+
+3a) If I slide the master volume control, the volume in the internal
+speakers
+    changes, the same is with the wave volume control.
+
+   NOTE: if I plug the headphones, the volume also changes
+   NOTE: looks like the internat speakers and headphones might be
+         connected / linked by the manufacturer, inside the machine
+
+
+I tested my volume problem under Ubuntu 5.04 and Knoppix 4.02.
+Can't tell the driver/kernel versions (haven't written them down),
+but from simple tests (including "alsamixer") the problem is the same.
+At least it's consistent :-/
+
+
+I also upgraded the kernel in my Gentoo installation to the 2.6.14-r2
+(the official 2.6.14.3) version, and also upgraded the following
+packages:
+
+media-sound/alsa-headers-1.0.10_rc3
+media-libs/alsa-lib-1.0.10_rc3
+media-sound/alsa-utils-1.0.10_rc3
+
+IIRC, this kernel contains alsa-drivers-1.0.10_rc3 so everything should
+be
+in sync. However, the problem remains.
+
+The following screenshots demonstrates my Linux settings:
+
+4) I turned on all possible volume tracks
+5) That's how the full volume control applet looks like
+6a) If I slide the Headphone or PCM track, volume changes.
+    Master track does nothing.
+
+7) I have to set the PCM as a default track for the volume applet, in
+order
+   to get any volume change using the speaker applet in the system tray. 
+
+8) Changing the volume using the speaker slider (in the lower right
+corner)
+9a) One can see that PCM and a speaker slider are the same.
+    If I select the Master track for the applet, the volume doesn't
+change.
+
+A) The same issue hits the console alsamixer.
+B) If I change the Headphone or PCM track, volume changes.
+   Master track still does nothing.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tinez - 10-24-05 22:38 
+ wiktorw - 11-27-05 18:47 
 ----------------------------------------------------------------------
-I'm an owner of Prodigy 7.1 LT If I there's anything I can do to help -
-mail me, I'll try to do my best. I hope someone will notice this issue and
-make a decent driver finally. Still counting on you guys, I'm really sick
-of my SB Live :(
+Hmmmmm.
 
-----------------------------------------------------------------------
- drfindley - 11-27-05 17:31 
-----------------------------------------------------------------------
-Thanks to the patches posted here, I can get this card to work.  I was
-wondering though if these patches are planned to enter into the standard
-ALSA release.  Builing from CVS is fun, but just plain working is nice
-too.
+Today I recompiled the 2.6.14-r3 kernel and I've taken the opportunity to
+disable ALSA in-kernel drivers. So I've installed out-of-kernel
+alsa-driver
+instead (1.0.10_rc3) and I must say that the problem has gone.
 
-Also I have a hard time getting the sound card to play at the right
-frequencies, causing my video to sound all messed up.  Playing a video at
-48000hz, it sounds like chipmunks. I rate the card to 48000, and it still
-sounds odd.  When I rate lock it to 44100, it sounds more normal, but it
-is noticebly slow, as voices and such sound a little too deep.  Does
-anyone know how to overcome these issues?
+I don't have the "Headphone" track anymore, and the "Master" track works
+exactly as it should. That's a really good puzzle for me...
+
+Anyway, this bug can be closed. I'm sorry that I bothered you for so
+long.
+I'll let you know on the next kernel upgrade if there is any difference
+for me with in- and out-of-kernel alsa-driver.
+
+Please close the bug, resolution INVALID.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-05-08-05 19:09 Demosthenes    Note Added: 0004612                          
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 20:08 ungod          Note Added: 0004614                          
-05-08-05 20:18 Demosthenes    Note Added: 0004615                          
-05-08-05 20:23 ungod          Note Added: 0004616                          
-05-08-05 20:27 ungod          Note Added: 0004617                          
-05-08-05 20:37 Demosthenes    Note Added: 0004618                          
-05-09-05 01:01 ungod          Note Added: 0004620                          
-05-09-05 13:15 Demosthenes    Note Added: 0004624                          
-05-09-05 14:49 ungod          Note Added: 0004625                          
-05-09-05 15:03 Demosthenes    Note Added: 0004626                          
-05-10-05 09:36 ungod          Note Added: 0004632                          
-05-10-05 15:50 Demosthenes    Note Added: 0004633                          
-05-14-05 15:18 Demosthenes    Note Added: 0004658                          
-05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
-06-14-05 16:02 baesyspem      Note Added: 0005018                          
-06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
-06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
-06-14-05 18:30 Demosthenes    Note Added: 0005019                          
-06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
-06-14-05 21:26 ungod          Note Added: 0005020                          
-06-14-05 21:27 ungod          Note Edited: 0005020                         
-06-29-05 18:30 Demosthenes    Note Added: 0005307                          
-06-30-05 01:03 ungod          Note Added: 0005321                          
-06-30-05 01:08 ungod          Issue Monitored: ungod                       
-06-30-05 01:46 baesyspem      Note Added: 0005322                          
-06-30-05 02:27 Demosthenes    Note Added: 0005323                          
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
-06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
-06-30-05 21:21 ungod          Note Added: 0005328                          
-07-01-05 14:25 baesyspem      Note Added: 0005333                          
-07-01-05 16:09 baesyspem      Note Added: 0005335                          
-07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
-         
-07-01-05 20:43 ungod          Note Added: 0005339                          
-07-01-05 22:08 Demosthenes    Note Added: 0005341                          
-07-01-05 22:46 ungod          Note Added: 0005342                          
-07-01-05 23:09 Demosthenes    Note Added: 0005344                          
-07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
-07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
-07-02-05 03:29 ungod          Note Added: 0005350                          
-07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
-07-02-05 03:37 ungod          Note Edited: 0005350                         
-07-02-05 16:50 Demosthenes    Note Added: 0005353                          
-07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
-07-02-05 18:27 ungod          Note Added: 0005354                          
-07-02-05 18:36 Demosthenes    Note Added: 0005355                          
-07-02-05 20:20 ungod          Note Added: 0005358                          
-07-02-05 20:59 Demosthenes    Note Added: 0005359                          
-07-02-05 21:43 ungod          File Added: peak.tar.gz                      
-07-02-05 21:44 ungod          Note Added: 0005360                          
-07-02-05 22:30 Demosthenes    Note Added: 0005362                          
-07-03-05 00:21 ungod          Note Added: 0005363                          
-07-03-05 01:49 Demosthenes    Note Added: 0005364                          
-07-03-05 01:55 ungod          Note Added: 0005365                          
-07-03-05 02:46 Demosthenes    Note Added: 0005366                          
-07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
-07-03-05 03:18 Demosthenes    Note Added: 0005367                          
-07-03-05 03:21 Demosthenes    Note Edited: 0005367                         
-07-03-05 11:35 ungod          File Added: aureon-prodigy71lt-fix3.diff          
-         
-07-03-05 11:47 ungod          Note Added: 0005373                          
-07-03-05 15:29 Demosthenes    Note Added: 0005377                          
-07-03-05 17:06 ungod          Note Added: 0005379                          
-07-04-05 14:34 miljan         Issue Monitored: miljan                      
-07-04-05 14:35 miljan         Issue End Monitor: miljan                    
-07-04-05 14:35 miljan         Issue Monitored: miljan                      
-07-06-05 19:19 Demosthenes    Note Added: 0005392                          
-07-08-05 22:52 ungod          Note Added: 0005437                          
-07-13-05 03:57 ungod          Note Added: 0005457                          
-07-13-05 03:58 ungod          File Added: gpio.tar.gz                      
-07-13-05 04:12 Demosthenes    Note Added: 0005458                          
-07-13-05 04:24 ungod          Note Added: 0005459                          
-07-13-05 04:28 Demosthenes    Note Added: 0005460                          
-07-13-05 04:46 ungod          Note Added: 0005461                          
-07-13-05 04:57 Demosthenes    Note Added: 0005462                          
-07-13-05 04:59 Demosthenes    Note Added: 0005463                          
-07-13-05 05:00 Demosthenes    Note Edited: 0005463                         
-07-13-05 19:39 Demosthenes    Note Added: 0005466                          
-07-14-05 13:19 ungod          Note Added: 0005472                          
-07-14-05 13:31 Demosthenes    Note Added: 0005473                          
-07-14-05 13:54 Demosthenes    Note Added: 0005474                          
-07-15-05 15:08 ungod          Note Added: 0005481                          
-07-15-05 15:17 Demosthenes    Note Added: 0005482                          
-07-15-05 15:23 Demosthenes    Note Edited: 0005474                         
-07-20-05 18:01 darins         Issue Monitored: darins                      
-07-20-05 19:07 darins         Note Added: 0005534                          
-07-20-05 20:56 Demosthenes    Note Added: 0005535                          
-07-20-05 21:04 Demosthenes    Note Edited: 0005535                         
-07-21-05 01:25 darins         Note Added: 0005537                          
-07-21-05 02:01 Demosthenes    Note Added: 0005538                          
-07-21-05 02:16 Demosthenes    Note Edited: 0004618                         
-07-21-05 02:17 Demosthenes    Note Edited: 0004618                         
-07-21-05 21:06 baesyspem      Note Added: 0005542                          
-07-22-05 02:28 ungod          Note Added: 0005543                          
-07-22-05 10:41 BDE            Issue Monitored: BDE                         
-07-22-05 10:53 BDE            Note Added: 0005546                          
-09-09-05 17:13 baesyspem      Note Added: 0006101                          
-09-15-05 23:32 Demosthenes    Note Added: 0006227                          
-09-19-05 17:48 darins         Note Added: 0006295                          
-10-24-05 21:57 tinez          Issue Monitored: tinez                       
-10-24-05 22:38 tinez          Note Added: 0006524                          
-11-17-05 18:32 baesyspem      Issue Monitored: baesyspem                    
-11-25-05 20:34 moffa          Issue Monitored: moffa                       
-11-27-05 17:27 drfindley      Issue Monitored: drfindley                    
-11-27-05 17:31 drfindley      Note Added: 0006851                          
+11-25-05 17:40 wiktorw        New Issue                                    
+11-25-05 17:40 wiktorw        Distribution              => Gentoo 2005.1   
+11-25-05 17:40 wiktorw        Kernel Version            => 2.6.14-r2 (2.6.14.3)
+11-27-05 18:47 wiktorw        Note Added: 0006852                          
 ======================================================================
 
 
