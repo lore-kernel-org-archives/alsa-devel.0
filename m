@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001604]: alsa-utils compilation dies - undefined reference to `snd_mixer_selem_get_capture_dB'
-Date: Sun, 27 Nov 2005 19:39:48 +0100
-Message-ID: <3b4316cfa5a62194e365745752be0472@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: John Rigg <ad@sound-man.co.uk>
+Subject: envy24control word clock error
+Date: Sun, 27 Nov 2005 19:24:50 +0000
+Message-ID: <E1EgS8o-0001CV-7k@localhost.localdomain>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23B481A0
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2005 19:39:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +12,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+When I start envy24control from xterm I get an endless stream of
+"Unable to determine wordclock status: No such file or directory" and
+"Unable to read word clock sync selection: No such file or directory" error
+messages.
+These don't stop until I shut down envy24control. The same occurs regardless
+of what clock source I set in the GUI, or whether I link my two Delta1010s 
+with SPDIF or wordclock in/out. It's the same with -c0, -c1 or both launched
+from separate xterms.
+The messages appear to come from master_clock_status_timeout_callback()
+in envy24control/hardware.c (lines 160-175).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1604> 
-======================================================================
-Reported By:                Twey
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1604
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.14-1.1637_FC4
-======================================================================
-Date Submitted:             11-27-2005 19:39 CET
-Last Modified:              11-27-2005 19:39 CET
-======================================================================
-Summary:                    alsa-utils compilation dies - undefined reference to
-`snd_mixer_selem_get_capture_dB'
-Description: 
-Compilation of alsamixer dies.  Full errors attached.  Note that the output
-given here is using gcc32, but gcc4 gives the same errors.
-======================================================================
+This is with alsa-tools-1.0.10 (also happens with rc2), alsa-lib-1.0.10,
+kernel 2.6.14-rt20 x86_64 SMP (alsa 1.0.10rc1 drivers).
+Anyone got any ideas?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-27-05 19:39 Twey           New Issue                                    
-11-27-05 19:39 Twey           Distribution              => Fedora Core 4   
-11-27-05 19:39 Twey           Kernel Version            => 2.6.14-1.1637_FC4
-======================================================================
-
-
+John
 
 
 -------------------------------------------------------
