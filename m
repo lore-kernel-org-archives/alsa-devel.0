@@ -1,14 +1,10 @@
-From: "Colbert Olivier" <colbert@adamsbank.com>
-Subject: Julio well, try it
-Date: Sun, 27 Nov 2005 01:00:19 -0500
-Message-ID: <000901c5f317$d8619b80$ec55a8c0@bechamel>
+From: Nicolas Mailhot <nicolas.mailhot@laposte.net>
+Subject: M-Audio revolution 5.1 support ?
+Date: Sun, 27 Nov 2005 11:34:33 +0100
+Message-ID: <1133087675.20490.21.camel@rousalka.dyndns.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0006_01C5F2ED.EF8B9380"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-OtZgocfNgCMdfm0zJpVJ"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from adamsbank.com (h178.165.140.67.ip.alltel.net [67.140.165.178])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7905C1E9
-	for <alsa-devel@alsa-project.org>; Sun, 27 Nov 2005 07:00:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +14,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marjorie Wotton <alsa-devel@alsa-project.org>
+To: perex@suse.cz
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0006_01C5F2ED.EF8B9380
-Content-Type: text/plain;
-	charset="us-ascii"
+--=-OtZgocfNgCMdfm0zJpVJ
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-ALCPVVXmeIrAIabvAoLAniiLzIGaetIaURxnraScMA    3,70  1,20 3,35  =
-http://www.disdainex.unidenti.com
-he was driven forth from the light of day, and henceforth Woe be to us, that =
-we should have fought and belabored ourselves live near each other. The Eagle =
-built her nest in the branches 
+Hi,
 
+I asked ten days ago on advice for alsa-supported hardware on
+alsa-users. People told me to get a Revo, and in the course of the
+discussion someone pointed out the 5.1 had slightly better codecs than
+the 7.1. Since it was also cheaper, I have no need of 7.1 sound (5.1 is
+plenty enough for me) I took this one.
 
-------=_NextPart_000_0006_01C5F2ED.EF8B9380
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Now much to my grief it appears the revo 5.1 is not supported (what's
+the point of asking on alsa lists if I end up with the same problems as
+doing random buys?). Since I have this hardware now and changing it
+would cost almost as much as buying a used hammerfall in the first place
+(my preferred choice, but people told me the rme was "too much") can I
+do some tests on my setup to help the revo getting alsa support ?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV> </DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"BORDER-RIGHT-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>A<BR>L<BR>C<BR>P<BR>V<BR>V<BR>X</FONT></DIV><DIV style=3D"MAR=
-GIN-RIGHT: 0px; FLOAT: left;"><FONT face=3DCourier size=3D3>m<BR>e<BR=
->I<BR>r<BR>A<BR>I<BR>a</FONT></DIV><DIV style=3D"MARGIN-BOTTOM: 0px; FLOAT: =
-left;"><FONT face=3DCourier size=3D3>b<BR>v<BR>A<BR>o<BR>L<BR>A<BR>n<=
-/FONT></DIV><DIV style=3D"BORDER-LEFT: 0px; FLOAT: left;"><FONT =
-face=3DCourier size=3D3>i<BR>i<BR>L<BR>z<BR>I<BR>G<BR>a</FONT></DIV><DIV =
-style=3D"BORDER-LEFT-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier =
-size=3D3>e<BR>t<BR>I<BR>a<BR>U<BR>R<BR>x</FONT></DIV><DIV style=3D"B=
-ORDER-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier size=3D3>n<BR>=
-ra<BR>S<BR>c<BR>M<BR>A<BR>&nbsp;</FONT></DIV><DIV style=3D"BORDER-BOTTOM-=
-WIDTH: 0px; FLOAT: left;"><FONT face=3DCourier size=3D3>&nbsp;<BR>&nbs=
-p;<BR>&nbsp;3,70<BR>&nbsp;<BR>&nbsp;1,20<BR>&nbsp;3,35<BR>&nbsp;</FONT></=
-DIV><DIV style=3D"CLEAR: both;">&nbsp;</DIV><A href=3D"http://www.disda=
-inex.unidenti.com"><FONT size=3D3>http://www.disdainex.unidenti.com</FONT></A>
-<DIV>&nbsp;</DIV>
-<DIV> he was driven forth from the light of day, and henceforth Woe be to us, =
-that we should have fought and belabored ourselves live near each other. The =
-Eagle built her nest in the branches </DIV>
-</BODY></HTML>
+Regards,
 
-------=_NextPart_000_0006_01C5F2ED.EF8B9380--
+--=20
+Nicolas Mailhot
+
+--=-OtZgocfNgCMdfm0zJpVJ
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iEYEABECAAYFAkOJi7gACgkQI2bVKDsp8g037ACg7Y3RRLzO5XsNVHSNmvNvWyQ+
+/hkAoJb3D7OWU+TgwE/fJxR+yH7rIm1j
+=yntt
+-----END PGP SIGNATURE-----
+
+--=-OtZgocfNgCMdfm0zJpVJ--
 
 
 
