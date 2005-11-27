@@ -1,10 +1,7 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Where to put code for a new ioctl.
-Date: Sun, 27 Nov 2005 11:10:53 +0000
-Message-ID: <4389943D.20100@superbug.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 27 Nov 2005 02:11:31 -0000
+Message-ID: <E1EgLeN-0005l2-3u@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,23 +12,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am looking at alsa-lib.
-./src/control/control_hw.c is there the actual ioctl call goes.
-./src/control/control.c calls the routine in control_hw.c
-./src/control/hcontrol.c calls the routine in control.c
-./src/mixer/simple_none.c handles the call from the user app, it then 
-calls ??? hcontrol.c or control.c ?
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-So, my question is, if I have to write code between the user apps 
-request and the ioctl. The purpose of the code is to take the request 
-from the user, and then encapsulate it in the ioctl specific format, and 
-then call the ioctl. Do I implement this encapsulating code in control.c 
-or hcontrol.c ?
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-James
+--- Original message follows.
+
+Return-Path: <alsa-devel@lists.sourceforge.net>
+
+The original message is over 5k.  Message truncated to 1K.
+
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.224>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta258.mail.mud.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO sgqgrb.net) (64.251.132.84)
+  by mta258.mail.mud.yahoo.com with SMTP; Sat, 26 Nov 2005 18:11:31 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Sun, 27 Nov 2005 02:00:26 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <d40ae.eaacd55b4e45f@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=====1e5c16f15fedc4dc"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
+
+--=====1e5c16f15fedc4dc
+
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--=====1e5c16f15fedc4dc
+Content-Type: application/octet-stream; name=mailtext.zip
+Content-T
+*** MESSAGE TRUNCATED ***
+
 
 
 -------------------------------------------------------
