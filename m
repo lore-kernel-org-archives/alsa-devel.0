@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000227]: Audigy 2 ZS ACPI suspend (S3) problem
-Date: Mon, 28 Nov 2005 18:39:53 +0100
-Message-ID: <3d0b0efed72db58d74df9e3557868273@bugtrack.alsa-project.org>
+Date: Mon, 28 Nov 2005 18:49:42 +0100
+Message-ID: <93d834422fc243e5908ccb5c6da83904@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7AC613A
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 18:39:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D614F1DA
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 18:49:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=227> 
 ======================================================================
 Reported By:                kanthak
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   227
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     confirmed
+Status:                     resolved
 Distribution:               debian/sarge
 Kernel Version:             2.6.4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-20-2004 23:46 CEST
-Last Modified:              11-28-2005 18:39 CET
+Last Modified:              11-28-2005 18:49 CET
 ======================================================================
 Summary:                    Audigy 2 ZS ACPI suspend (S3) problem
 Description: 
@@ -63,15 +65,15 @@ to stylon@gmx.de for more details.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-03-05 19:58 
-----------------------------------------------------------------------
-I still don't see any suspend/resume routines in the emu10k1 driver.
-
-----------------------------------------------------------------------
  msc - 11-28-05 18:39 
 ----------------------------------------------------------------------
 is there suspend/resume code planned? cause my sblive 5.1 dont work after
 resume anymore. no output thru analog or spdif wires.
+
+----------------------------------------------------------------------
+ tiwai - 11-28-05 18:49 
+----------------------------------------------------------------------
+CVS version supports PM.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +87,10 @@ Date Modified  Username       Field                    Change
 04-03-05 19:58 jdthood        Description Updated                          
 04-03-05 19:58 jdthood        Additional Information Updated                    
 11-28-05 18:39 msc            Note Added: 0006861                          
+11-28-05 18:49 tiwai          Status                   confirmed => resolved
+11-28-05 18:49 tiwai          Resolution               open => fixed       
+11-28-05 18:49 tiwai          Assigned To               => tiwai           
+11-28-05 18:49 tiwai          Note Added: 0006862                          
 ======================================================================
 
 
