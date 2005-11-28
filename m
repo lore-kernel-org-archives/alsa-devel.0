@@ -1,20 +1,14 @@
-From: "Adrian McMenamin" <adrian@mcmen.demon.co.uk>
-Subject: Re: Cross compiling alsa-lib
-Date: Mon, 28 Nov 2005 17:27:16 -0000 (GMT)
-Message-ID: <45600.217.150.108.178.1133198836.squirrel@81.1.74.166>
-References: <1133116303.8952.6.camel@localhost.localdomain>
-    <s5hpsolkoon.wl%tiwai@suse.de>
-    <Pine.LNX.4.61.0511281250100.9343@tm8103.perex-int.cz>
-    <s5hlkz9kmvj.wl%tiwai@suse.de>
-    <Pine.LNX.4.61.0511281304480.9343@tm8103.perex-int.cz>
-    <s5hirucly7d.wl%tiwai@suse.de> <s5hhd9wly5k.wl%tiwai@suse.de>
-    <43287.217.150.108.178.1133198006.squirrel@81.1.74.166>
-    <s5h7jaslm9n.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001455]: emu10k1: PCM through digital out cuts off after playing AC3
+Date: Mon, 28 Nov 2005 18:28:24 +0100
+Message-ID: <c857fa11dc9c5bba39fdc84f4e9dd877@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7jaslm9n.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35E8E1DA
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 18:28:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,29 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 28 November, 2005 5:23 pm, Takashi Iwai wrote:
-> At Mon, 28 Nov 2005 17:13:26 -0000 (GMT),
-> Adrian McMenamin wrote:
->>
->> On Mon, 28 November, 2005 1:06 pm, Takashi Iwai wrote:
->> >>
->> > Oh I found that you already fixed conf.c :)
->> >
->> If it has been "fixed" why won't it compile?
->
-> Look at "conf.c".  pcm_ladspa.c isn't fixed yet.
->
-OK, I understand
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1455> 
+======================================================================
+Reported By:                eradicator
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1455
+Category:                   PCI - emu10k1
+Reproducibility:            sometimes
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             09-25-2005 11:45 CEST
+Last Modified:              11-28-2005 18:28 CET
+======================================================================
+Summary:                    emu10k1: PCM through digital out cuts off after
+playing AC3
+Description: 
+I first noticed this back around 1.0.0 and possibly back in the 0.9.x as
+well, but I can't quite remember if it ever worked for me.  I've had the
+problem on x86 and x86_64 with sblive, sblive5.1, audigy, and audigy2
+cards using the livedrive and livedrive2 (both coax and optical digital
+out).
+
+The problem is that raw PCM out works sometimes, but not others.  Using
+the ac3 passthrough still works when playing a movie through mplayer/xine,
+but after the movie finishes, PCM is not output.  The first time I noticed
+this, I was able to workaround the broblem by disabling raw pcm output (so
+it's definitely not a problem with my sound system), but now neither raw
+nor processed will output via coax or optical outs through the livedrive. 
+I can still hear the audio fine through the analog out.  Additionally, I
+can play AC3 just fine through mplayer or xine.  Rebooting does not
+correct the situation.
+======================================================================
+
+----------------------------------------------------------------------
+ msc - 11-28-05 18:28 
+----------------------------------------------------------------------
+i have noticed sometimes the same. But an "alsactl restore" with previously
+saved mixer file will remove the problem. 
+
+but if i use suspend to ram (s3) the sblive doesn't output something after
+wake up. neither analog nor spdif will output something. only after
+hard-reset it worked again.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-25-05 11:45 eradicator     New Issue                                    
+09-25-05 11:45 eradicator     Distribution              => Gentoo          
+09-25-05 11:45 eradicator     Kernel Version            => 2.6.13          
+11-28-05 18:28 msc            Note Added: 0006860                          
+======================================================================
+
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
-les
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=3D7637&alloc_id=3D16865&op=3Dclick
+http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
