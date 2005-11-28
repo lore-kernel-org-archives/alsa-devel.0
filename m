@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001604]: alsa-utils compilation dies - undefined reference to `snd_mixer_selem_get_capture_dB'
-Date: Mon, 28 Nov 2005 19:11:18 +0100
-Message-ID: <13d6cb73a4b3af1b4393d04e046d44e5@bugtrack.alsa-project.org>
+Date: Mon, 28 Nov 2005 19:13:17 +0100
+Message-ID: <28c16f5a07fce57337ea005aeef5481c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55BB91DA
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 19:11:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51B1B13D
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 19:13:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.14-1.1637_FC4
 ======================================================================
 Date Submitted:             11-27-2005 19:39 CET
-Last Modified:              11-28-2005 19:11 CET
+Last Modified:              11-28-2005 19:13 CET
 ======================================================================
 Summary:                    alsa-utils compilation dies - undefined reference to
 `snd_mixer_selem_get_capture_dB'
@@ -50,15 +50,15 @@ given here is using gcc32, but gcc4 gives the same errors.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-28-05 18:56 
-----------------------------------------------------------------------
-You likely have an older version of libasound.so.
-
-----------------------------------------------------------------------
  Twey - 11-28-05 19:11 
 ----------------------------------------------------------------------
 I would hope not, being as I compiled and installed alsa-lib directly
 previous to trying alsa-utils.
+
+----------------------------------------------------------------------
+ tiwai - 11-28-05 19:13 
+----------------------------------------------------------------------
+Did you install to the correct directory?  IIRC, FC4 has libasound in /lib.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -68,6 +68,7 @@ Date Modified  Username       Field                    Change
 11-27-05 19:39 Twey           Kernel Version            => 2.6.14-1.1637_FC4
 11-28-05 18:56 tiwai          Note Added: 0006866                          
 11-28-05 19:11 Twey           Note Added: 0006867                          
+11-28-05 19:13 tiwai          Note Added: 0006868                          
 ======================================================================
 
 
