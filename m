@@ -1,15 +1,14 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: Where to put code for a new ioctl.
-Date: Mon, 28 Nov 2005 19:33:05 +0000
-Message-ID: <1133206386.3369.17.camel@localhost.localdomain>
-References: <4389943D.20100@superbug.co.uk> <s5hoe45knec.wl%tiwai@suse.de>
-	 <Pine.LNX.4.61.0511281251250.9343@tm8103.perex-int.cz>
-	 <438B52DB.4070606@superbug.co.uk>  <s5hmzjok2dv.wl%tiwai@suse.de>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: Re: envy24control word clock error
+Date: Mon, 28 Nov 2005 20:04:50 +0000
+Message-ID: <20051128200450.GA4458@localhost.localdomain>
+References: <E1EgS8o-0001CV-7k@localhost.localdomain> <s5h64qclm29.wl%tiwai@suse.de> <20051128180500.GH10146@edu.joroinen.fi> <s5hzmnok597.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hmzjok2dv.wl%tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <s5hzmnok597.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,29 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-11-28 at 20:18 +0100, Takashi Iwai wrote:
-> 
-> Also, (4) isn't too easy in some cases.  It's not always logarithmic
-> linear.  For example, some ac97 codecs have +gain, and it's not the
-> same curve as the attenuation.  In addition, some codecs have a linear
-> volume.  This has to be converted to log.
-> 
-> 
+On Mon, Nov 28, 2005 at 07:16:04PM +0100, Takashi Iwai wrote:
+> At Mon, 28 Nov 2005 20:05:00 +0200,
+> Pasi K=E4rkk=E4inen wrote:
+> >=20
+> > On Mon, Nov 28, 2005 at 06:27:42PM +0100, Takashi Iwai wrote:
+> > > At Sun, 27 Nov 2005 19:24:50 +0000,
+> > > John Rigg wrote:
+> > > >=20
+> > > > When I start envy24control from xterm I get an endless stream of
+> > > > "Unable to determine wordclock status: No such file or directory"=
+ and
+> > > > "Unable to read word clock sync selection: No such file or direct=
+ory" error
+> > > > messages.
+> > >=20
+> > > Try the patch below.
+> >=20
+> > That patch fixes the problem for me! (Debian sid/unstable,=20
+> > alsa-tools-gui 1.0.10-1)
+>=20
+> Thanks for confirmation.  I applied it to CVS, too.
+>=20
+>=20
+> Takashi
 
-To further complicate things, some codecs can even have their gain step
-size altered. e.g. gain/attenuation for some volumes can be either in
-0.75 or 1.5 dB steps.
+Just for further confirmation, it works here too. Now I can sync word
+clocks :)
 
-Liam
-
+Thanks,
+John
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
+les
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+http://ads.osdn.com/?ad_id=3D7637&alloc_id=3D16865&op=3Dclick
