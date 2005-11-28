@@ -1,14 +1,14 @@
-From: Eric Shattow <lucent@gmail.com>
-Subject: Re: envy24control word clock error
-Date: Mon, 28 Nov 2005 01:26:36 -0600
-Message-ID: <2c746f620511272326t5a36425cqa4c4bc8623ca3454@mail.gmail.com>
-References: <E1EgS8o-0001CV-7k@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000521]: Jack + Alsa not working in full duplex, works with OSS, griffin imic
+Date: Mon, 28 Nov 2005 09:54:36 +0100
+Message-ID: <8e7707ce2a4244600b1f2da33a5074ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1EgS8o-0001CV-7k@localhost.localdomain>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 912491A2
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 09:54:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: John Rigg <ad@sound-man.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/27/05, John Rigg <ad@sound-man.co.uk> wrote:
-> When I start envy24control from xterm I get an endless stream of
-> "Unable to determine wordclock status: No such file or directory" and
-> "Unable to read word clock sync selection: No such file or directory" err=
-or
-> messages.
-> These don't stop until I shut down envy24control. The same occurs regardl=
-ess
-> of what clock source I set in the GUI, or whether I link my two Delta1010=
-s
-> with SPDIF or wordclock in/out. It's the same with -c0, -c1 or both launc=
-hed
-> from separate xterms.
-> The messages appear to come from master_clock_status_timeout_callback()
-> in envy24control/hardware.c (lines 160-175).
->
-> This is with alsa-tools-1.0.10 (also happens with rc2), alsa-lib-1.0.10,
-> kernel 2.6.14-rt20 x86_64 SMP (alsa 1.0.10rc1 drivers).
-> Anyone got any ideas?
->
-> John
->
->
-> -------------------------------------------------------
-> This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
-les
-> for problems?  Stop!  Download the new AJAX search engine that makes
-> searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-> http://ads.osdn.com/?ad_id=3D7637&alloc_id=3D16865&op=3Dclick
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
 
-No ideas, however I will confirm this is also happening in my Delta
-1010 setup / amd64 hardware.  Driver is 1.0.10rc3, Debian "etch"
-GNU/Linux OS, 2.6.14 kernel. The envy24control progam spits out an
-endless stream of the same wordclock error messages.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=521> 
+======================================================================
+Reported By:                LokiDavison
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   521
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.4.22-28mm.2mdk
+======================================================================
+Date Submitted:             09-21-2004 21:06 CEST
+Last Modified:              11-28-2005 09:54 CET
+======================================================================
+Summary:                    Jack + Alsa not working in full duplex, works with
+OSS, griffin imic
+Description: 
+Jack works with the OSS audio driver in full duplex but only works simplex
+with alsa driver. The alsa driver works full duplex when used with alsa
+apps. 100% reproducable. This is using a griffin imic with the
+snd-usb-audio module tested on 2.6 and 2.4 kernels. All jack versions
+including 0.99. I'm often on LAD irc if you want more info.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000758 Full duplex is not working in OSS emula...
+======================================================================
 
- Eric
+----------------------------------------------------------------------
+ jdthood - 09-14-05 15:49 
+----------------------------------------------------------------------
+> Jack works with the OSS audio driver in full duplex but only works
+simplex with alsa driver.
+
+Has this problem been fixed?
+
+----------------------------------------------------------------------
+ croiset - 11-28-05 09:54 
+----------------------------------------------------------------------
+I made the test last week with the release 1.0.10rc1, it works in simplex
+not in full duplex like in alsa 1.05 or alsa 1.06a.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-21-04 21:06 LokiDavison    New Issue                                    
+09-21-04 21:06 LokiDavison    Distribution              => Mandrake        
+09-21-04 21:06 LokiDavison    Kernel Version            => 2.4.22-28mm.2mdk
+10-08-04 18:32 ryanpg         Issue Monitored: ryanpg                      
+10-08-04 18:40 ryanpg         Note Added: 0002055                          
+09-14-05 15:49 jdthood        Note Added: 0006160                          
+09-14-05 16:16 jdthood        Relationship added       related to 0000758  
+11-28-05 09:54 croiset        Note Added: 0006854                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
