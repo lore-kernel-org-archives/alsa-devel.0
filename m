@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001455]: emu10k1: PCM through digital out cuts off after playing AC3
-Date: Mon, 28 Nov 2005 18:28:24 +0100
-Message-ID: <c857fa11dc9c5bba39fdc84f4e9dd877@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000227]: Audigy 2 ZS ACPI suspend (S3) problem
+Date: Mon, 28 Nov 2005 18:39:53 +0100
+Message-ID: <3d0b0efed72db58d74df9e3557868273@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35E8E1DA
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 18:28:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7AC613A
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 18:39:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1455> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=227> 
 ======================================================================
-Reported By:                eradicator
+Reported By:                kanthak
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1455
+Issue ID:                   227
 Category:                   PCI - emu10k1
-Reproducibility:            sometimes
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.13
+Status:                     confirmed
+Distribution:               debian/sarge
+Kernel Version:             2.6.4
 ======================================================================
-Date Submitted:             09-25-2005 11:45 CEST
-Last Modified:              11-28-2005 18:28 CET
+Date Submitted:             04-20-2004 23:46 CEST
+Last Modified:              11-28-2005 18:39 CET
 ======================================================================
-Summary:                    emu10k1: PCM through digital out cuts off after
-playing AC3
+Summary:                    Audigy 2 ZS ACPI suspend (S3) problem
 Description: 
-I first noticed this back around 1.0.0 and possibly back in the 0.9.x as
-well, but I can't quite remember if it ever worked for me.  I've had the
-problem on x86 and x86_64 with sblive, sblive5.1, audigy, and audigy2
-cards using the livedrive and livedrive2 (both coax and optical digital
-out).
+I want an Audigy 2 ZS to work together with kernel 2.6.x
+ACPI suspend (s3). On resume it says that AC'97 does not
+respond:
 
-The problem is that raw PCM out works sometimes, but not others.  Using
-the ac3 passthrough still works when playing a movie through mplayer/xine,
-but after the movie finishes, PCM is not output.  The first time I noticed
-this, I was able to workaround the broblem by disabling raw pcm output (so
-it's definitely not a problem with my sound system), but now neither raw
-nor processed will output via coax or optical outs through the livedrive. 
-I can still hear the audio fine through the analog out.  Additionally, I
-can play AC3 just fine through mplayer or xine.  Rebooting does not
-correct the situation.
+...
+PCI: Enabling device 0000:02:02.0 (0000 -> 0001)
+PCI: Setting latency timer of device 0000:02:02.0 to 64
+ALSA sound/pci/ac97/ac97_codec.c:1749: AC'97 0 does not respond - RESET
+ALSA sound/pci/ac97/ac97_codec.c:1757: AC'97 0 access is not valid
+[0xffffffff], removing mixer.
+EMU10K1_Audigy: probe of 0000:02:02.0 failed with error -5
+
+Everything else in the system works together perfectly
+with ACPI S3. Mainboard is a gigabyte 6IEML. Send mail
+to stylon@gmx.de for more details.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- msc - 11-28-05 18:28 
+ jdthood - 04-03-05 19:58 
 ----------------------------------------------------------------------
-i have noticed sometimes the same. But an "alsactl restore" with previously
-saved mixer file will remove the problem. 
+I still don't see any suspend/resume routines in the emu10k1 driver.
 
-but if i use suspend to ram (s3) the sblive doesn't output something after
-wake up. neither analog nor spdif will output something. only after
-hard-reset it worked again.
+----------------------------------------------------------------------
+ msc - 11-28-05 18:39 
+----------------------------------------------------------------------
+is there suspend/resume code planned? cause my sblive 5.1 dont work after
+resume anymore. no output thru analog or spdif wires.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-05 11:45 eradicator     New Issue                                    
-09-25-05 11:45 eradicator     Distribution              => Gentoo          
-09-25-05 11:45 eradicator     Kernel Version            => 2.6.13          
-11-28-05 18:28 msc            Note Added: 0006860                          
+04-20-04 23:46 kanthak        New Issue                                    
+04-20-04 23:46 kanthak        Distribution              => debian/sarge    
+04-20-04 23:46 kanthak        Kernel Version            => 2.6.4           
+04-23-04 17:35 tiwai          Note Added: 0000909                          
+04-03-05 19:58 jdthood        Note Added: 0004314                          
+04-03-05 19:58 jdthood        Status                   new => confirmed    
+04-03-05 19:58 jdthood        Description Updated                          
+04-03-05 19:58 jdthood        Additional Information Updated                    
+11-28-05 18:39 msc            Note Added: 0006861                          
 ======================================================================
 
 
