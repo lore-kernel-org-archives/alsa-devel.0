@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001604]: alsa-utils compilation dies - undefined reference to `snd_mixer_selem_get_capture_dB'
-Date: Mon, 28 Nov 2005 19:39:29 +0100
-Message-ID: <7cb4acdf0946d4dacb854eba70ad6a42@bugtrack.alsa-project.org>
+From: "Gerard Bras" <gerard@akorri.com>
+Subject: RE: [Alsa-user] [RFC] Zero-conf ALSA
+Date: Mon, 28 Nov 2005 13:47:57 -0500
+Message-ID: <82203B41DB693143BF87B02410185DA625096D@kauri.akorri.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 135761F6
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 19:39:29 +0100 (MET)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +17,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1604> 
-======================================================================
-Reported By:                Twey
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1604
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.14-1.1637_FC4
-======================================================================
-Date Submitted:             11-27-2005 19:39 CET
-Last Modified:              11-28-2005 19:39 CET
-======================================================================
-Summary:                    alsa-utils compilation dies - undefined reference to
-`snd_mixer_selem_get_capture_dB'
-Description: 
-Compilation of alsamixer dies.  Full errors attached.  Note that the output
-given here is using gcc32, but gcc4 gives the same errors.
-======================================================================
 
-----------------------------------------------------------------------
- tiwai - 11-28-05 19:13 
-----------------------------------------------------------------------
-Did you install to the correct directory?  IIRC, FC4 has libasound in /lib.
+-----Original Message-----
+From: alsa-user-admin@lists.sourceforge.net
+[mailto:alsa-user-admin@lists.sourceforge.net] On Behalf Of Lee Revell
+Sent: Wednesday, November 23, 2005 11:04 PM
+To: alsa-devel
+Cc: ALSA user list
+Subject: [Alsa-user] [RFC] Zero-conf ALSA
 
-----------------------------------------------------------------------
- Twey - 11-28-05 19:39 
-----------------------------------------------------------------------
-It may not be obvious here, as I mentioned it in the "build" field -- the
-"version" field being a <select> box only going up to 1.0.9 -- but I was
-trying to compile 1.0.10.
+I would like to gather a list of the work remaining to be done to
+achieve "zero-conf" ALSA.  With the increasing maturity of dmix and
+softvol we are very close to this goal, and should be able to provide
+basic soundcard functionality that users expect (mixing, volume control,
+and OSS emulation) without requiring them to delve into cryptic config
+files.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-27-05 19:39 Twey           New Issue                                    
-11-27-05 19:39 Twey           Distribution              => Fedora Core 4   
-11-27-05 19:39 Twey           Kernel Version            => 2.6.14-1.1637_FC4
-11-28-05 18:56 tiwai          Note Added: 0006866                          
-11-28-05 19:11 Twey           Note Added: 0006867                          
-11-28-05 19:13 tiwai          Note Added: 0006868                          
-11-28-05 19:39 Twey           Note Added: 0006869                          
-======================================================================
+I propose to open a tracking bug in the ALSA BTS to gather all reports
+of end users having to modify the config to get a working setup.  AFAICT
+the remaining problems are:
 
+  1. Devices which require dmix and/or softvol but are lacking the
+required=20
+     entries in the /usr/share/alsa/cards/ file.
+  2. User-space OSS emulation over dmix requires period and the buffer
+sizes=20
+     to be set to powers of two.
+
+#1 can only be solved by gathering user reports.
+
+Can #2 be solved by having dmix prefer power of two period/buffer sizes
+for the slave hw PCM by default?  AFAICT this should work unless an ALSA
+app has opened the device first and set an incompatible buffer size.
+
+Are there currently any other cases where an end user would have to
+create a custom ALSA config to enable basic functionality?
+
+Greetings Lee,
+
+In the first category, support for iCE1724 boards is barely functional.
+I know they are oddballs with no master gain control, They have some
+other oddities/capabilities too, but that's another issue.  I've yet to
+see a release of alsa or applications based on it work right with this
+board.  Even in the brand, spanny, new SuSE 10.0 it give me errors when
+I try to start alsa, though it seems to work just the same. In prior
+releases I had to chuck and just use OSS, in spite of all its
+limitations, jeust to be able to listen to all those CPs I ripped one by
+one.
+
+If there is anything I can do to help straighten this situation out, I'd
+be more than happy to do so, but I prorbely need a poiter in the right
+direction.  I'm a professional programmer, but sork so many hours these
+days that I really haven't had the time  (or the urge) to go diving into
+the alsacode by nyself.  And yet I'd rather light a candle than curse
+the darkness.
+
+Cheers,
+Gerard
 
 
 
