@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000521]: Jack + Alsa not working in full duplex, works with OSS, griffin imic
-Date: Mon, 28 Nov 2005 10:32:50 +0100
-Message-ID: <9460d1a213c3b5a576e702471c835299@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001605]: Sixpack 5.1 can not record with cs46xx
+Date: Mon, 28 Nov 2005 10:52:39 +0100
+Message-ID: <b4c15bb2e1e7e9ee9cb341b09333812f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73A4B1A2
-	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 10:32:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BC0E146
+	for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2005 10:52:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=521> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1605> 
 ======================================================================
-Reported By:                LokiDavison
-Assigned To:                Clemens Ladisch
+Reported By:                shadowfox
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   521
-Category:                   USB - usb-audio
+Issue ID:                   1605
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.4.22-28mm.2mdk
+Status:                     new
+Distribution:               Mandriva 10.2
+Kernel Version:             2.6.11-6mdk
 ======================================================================
-Date Submitted:             09-21-2004 21:06 CEST
-Last Modified:              11-28-2005 10:32 CET
+Date Submitted:             11-28-2005 10:52 CET
+Last Modified:              11-28-2005 10:52 CET
 ======================================================================
-Summary:                    Jack + Alsa not working in full duplex, works with
-OSS, griffin imic
+Summary:                    Sixpack 5.1 can not record with cs46xx
 Description: 
-Jack works with the OSS audio driver in full duplex but only works simplex
-with alsa driver. The alsa driver works full duplex when used with alsa
-apps. 100% reproducable. This is using a griffin imic with the
-snd-usb-audio module tested on 2.6 and 2.4 kernels. All jack versions
-including 0.99. I'm often on LAD irc if you want more info.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000758 Full duplex is not working in OSS emula...
-======================================================================
 
-----------------------------------------------------------------------
- Clemens Ladisch - 11-28-05 10:24 
-----------------------------------------------------------------------
-What are Jack's command line parameter and its error messages?
 
-----------------------------------------------------------------------
- croiset - 11-28-05 10:32 
-----------------------------------------------------------------------
-I didn't test with jack but directly with an oss recorder. This in relation
-ship with the bug 758 where you have the detailed description of the test.
+I have a Terratec Sixpack 5.1 soundcard using module cs46xx of ALSA
+1.0.10.
+I can neither record my voice by gnome recorder nor talk to others through
+Skype
+although I can hear my sound from my speaks with a microphone.
+The record function of my card is out of work.
+But everything is OK in my ms windows system.
+Thanks
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 21:06 LokiDavison    New Issue                                    
-09-21-04 21:06 LokiDavison    Distribution              => Mandrake        
-09-21-04 21:06 LokiDavison    Kernel Version            => 2.4.22-28mm.2mdk
-10-08-04 18:32 ryanpg         Issue Monitored: ryanpg                      
-10-08-04 18:40 ryanpg         Note Added: 0002055                          
-09-14-05 15:49 jdthood        Note Added: 0006160                          
-09-14-05 16:16 jdthood        Relationship added       related to 0000758  
-11-28-05 09:54 croiset        Note Added: 0006854                          
-11-28-05 10:24 Clemens LadischNote Added: 0006855                          
-11-28-05 10:32 croiset        Note Added: 0006856                          
+11-28-05 10:52 shadowfox      New Issue                                    
+11-28-05 10:52 shadowfox      File Added: asound.state                     
+11-28-05 10:52 shadowfox      Distribution              => Mandriva 10.2   
+11-28-05 10:52 shadowfox      Kernel Version            => 2.6.11-6mdk     
 ======================================================================
 
 
