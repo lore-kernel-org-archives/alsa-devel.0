@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001534]: Mixer channel problems
-Date: Tue, 29 Nov 2005 09:22:20 +0100
-Message-ID: <84a9522c2e010eca44b680e3ec28ac0a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000521]: Jack + Alsa not working in full duplex, works with OSS, griffin imic
+Date: Tue, 29 Nov 2005 10:14:26 +0100
+Message-ID: <6dd22998e4082e997c8f9cfcb71d5eb5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FD8C150
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2005 09:22:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10F371AE
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2005 10:14:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1534> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=521> 
 ======================================================================
-Reported By:                mrblur
-Assigned To:                
+Reported By:                LokiDavison
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1534
-Category:                   PCI - intel8x0
+Issue ID:                   521
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.14
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.4.22-28mm.2mdk
 ======================================================================
-Date Submitted:             11-08-2005 08:41 CET
-Last Modified:              11-29-2005 09:22 CET
+Date Submitted:             09-21-2004 21:06 CEST
+Last Modified:              11-29-2005 10:14 CET
 ======================================================================
-Summary:                    Mixer channel problems
+Summary:                    Jack + Alsa not working in full duplex, works with
+OSS, griffin imic
 Description: 
-I'm using Acer AS5002WLMi with SiS 7012 soundcard. It works quite good,
-but... unfortunately if I would like to change sound volume I have to do
-it on headphones channel, master channel stereo/mona are not working.
+Jack works with the OSS audio driver in full duplex but only works simplex
+with alsa driver. The alsa driver works full duplex when used with alsa
+apps. 100% reproducable. This is using a griffin imic with the
+snd-usb-audio module tested on 2.6 and 2.4 kernels. All jack versions
+including 0.99. I'm often on LAD irc if you want more info.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000758 Full duplex is not working in OSS emula...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-28-05 18:51 
+ LokiDavison - 11-28-05 11:17 
 ----------------------------------------------------------------------
-Try ac97_quirk=hp_only option for snd-intel8x0 module.
+I now have a new machine and no longer a laptop so don't use my usb card
+any more. I've previously tried many different jack params, including low
+buffer size and high number of interrupts per period. If you want more
+info i can provide full details on lad irc irc.freenode.org #lad 
+
+Loki
 
 ----------------------------------------------------------------------
- mrblur - 11-29-05 09:22 
+ LokiDavison - 11-29-05 10:14 
 ----------------------------------------------------------------------
-Still nothing... Additionally when added this option there was no sound at
-all... (?)
+Just tested on my new machine with jack and my griffin imic, kernel
+2.6.12-12.mm.2mdk (mandriva multimedia thing not sure what patches are
+included) 
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1
+
+running jack with no probs full duplex. Frames/Period 128, periods/buffer
+3. Overall latency, 8ms. Haven't tried with lower options. No x runs yet,
+but i've only run it for half an hour.
+
+This suggests either something has fixed or it was a problem with some
+laptop hardware.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-08-05 08:41 mrblur         New Issue                                    
-11-08-05 08:41 mrblur         Kernel Version            => 2.6.14          
-11-08-05 17:48 tiwai          Note Added: 0006628                          
-11-28-05 13:48 mrblur         Note Added: 0006859                          
-11-28-05 18:51 tiwai          Note Added: 0006863                          
-11-29-05 09:22 mrblur         Note Added: 0006871                          
+09-21-04 21:06 LokiDavison    New Issue                                    
+09-21-04 21:06 LokiDavison    Distribution              => Mandrake        
+09-21-04 21:06 LokiDavison    Kernel Version            => 2.4.22-28mm.2mdk
+10-08-04 18:32 ryanpg         Issue Monitored: ryanpg                      
+10-08-04 18:40 ryanpg         Note Added: 0002055                          
+09-14-05 15:49 jdthood        Note Added: 0006160                          
+09-14-05 16:16 jdthood        Relationship added       related to 0000758  
+11-28-05 09:54 croiset        Note Added: 0006854                          
+11-28-05 10:24 Clemens LadischNote Added: 0006855                          
+11-28-05 10:32 croiset        Note Added: 0006856                          
+11-28-05 11:17 LokiDavison    Note Added: 0006858                          
+11-29-05 10:14 LokiDavison    Note Added: 0006872                          
 ======================================================================
 
 
