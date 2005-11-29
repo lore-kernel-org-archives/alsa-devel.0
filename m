@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001605]: Sixpack 5.1 can not record with cs46xx
-Date: Tue, 29 Nov 2005 14:56:12 +0100
-Message-ID: <f4390f9a25029b4068160e45d7d1e35a@bugtrack.alsa-project.org>
+From: Matt Porter <mporter@embeddedalley.com>
+Subject: [PATCH] Fix HDA probe_mask default
+Date: Tue, 29 Nov 2005 07:39:31 -0700
+Message-ID: <20051129073931.A17707@cox.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79176169
-	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2005 14:56:12 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+The probe_mask module parameter comment notes that the intended
+default is -1. Fix it to be so, otherwise all codecs are skipped
+and init fails.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1605> 
-======================================================================
-Reported By:                shadowfox
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1605
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Mandriva 10.2
-Kernel Version:             2.6.11-6mdk
-======================================================================
-Date Submitted:             11-28-2005 10:52 CET
-Last Modified:              11-29-2005 14:56 CET
-======================================================================
-Summary:                    Sixpack 5.1 can not record with cs46xx
-Description: 
+Signed-off-by: Matt Porter <mporter@embeddedalley.com>
 
-
-I have a Terratec Sixpack 5.1 soundcard using module cs46xx of ALSA
-1.0.10.
-I can neither record my voice by gnome recorder nor talk to others through
-Skype
-although I can hear my sound from my speaks with a microphone.
-The record function of my card is out of work.
-But everything is OK in my ms windows system.
-Thanks
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-28-05 18:52 
-----------------------------------------------------------------------
-Turn 'ADC Capture Switch' on, too.
-
-----------------------------------------------------------------------
- shadowfox - 11-29-05 14:56 
-----------------------------------------------------------------------
-It is solved.
-Btw I am not sure  that some of functions of items mean.
-Dose anything offer more infos in detail about this?
-Thanks a lot.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-28-05 10:52 shadowfox      New Issue                                    
-11-28-05 10:52 shadowfox      File Added: asound.state                     
-11-28-05 10:52 shadowfox      Distribution              => Mandriva 10.2   
-11-28-05 10:52 shadowfox      Kernel Version            => 2.6.11-6mdk     
-11-28-05 10:56 shadowfox      Note Added: 0006857                          
-11-28-05 18:52 tiwai          Note Added: 0006864                          
-11-29-05 14:56 shadowfox      Note Added: 0006873                          
-======================================================================
-
-
+Index: alsa-kernel/pci/hda/hda_intel.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/hda_intel.c,v
+retrieving revision 1.32
+diff -u -r1.32 hda_intel.c
+--- alsa-kernel/pci/hda/hda_intel.c	24 Nov 2005 16:03:40 -0000	1.32
++++ alsa-kernel/pci/hda/hda_intel.c	29 Nov 2005 14:34:17 -0000
+@@ -52,7 +52,7 @@
+ static char *id = SNDRV_DEFAULT_STR1;
+ static char *model;
+ static int position_fix;
+-static int probe_mask;
++static int probe_mask = -1;
+ 
+ module_param(index, int, 0444);
+ MODULE_PARM_DESC(index, "Index value for Intel HD audio interface.");
 
 
 -------------------------------------------------------
