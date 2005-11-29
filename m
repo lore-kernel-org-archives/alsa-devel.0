@@ -1,8 +1,22 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 29 Nov 2005 02:21:08 -0000
-Message-ID: <E1Egv7M-0006oH-2g@mail.sourceforge.net>
+From: "Waldemar Leclaire" <waldeoleclaire@gwwholesale.com>
+Subject: Re: mover Medds
+Date: Mon, 28 Nov 2005 23:42:26 -0500
+Message-ID: <000001c5f49f$4c4561c0$aad8a8c0@ruffianism>
+Reply-To: "Waldemar Leclaire" <waldeoleclaire@gwwholesale.com>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C5F475.636F59C0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 545C7192
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2005 05:42:43 +0100 (MET)
+Received: from gwwholesale.com (unknown [203.113.171.4])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id CB904957F2
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2005 05:42:36 +0100 (MET)
+Received: from [192.168.216.170] (helo=ruffianism)
+	by gwwholesale.com
+	id TVhGyQ-dDCqNL-dR
+	for alsa-devel@alsa-project.org
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,53 +26,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Aku Benson <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
-
-<admin@yahoo.com>:
-This address no longer accepts mail.
-
---- Original message follows.
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.94.225.139>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta359.mail.scd.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO fjetxy.net) (64.251.132.84)
-  by mta359.mail.scd.yahoo.com with SMTP; Mon, 28 Nov 2005 18:21:08 -0800
-From: alsa-devel@lists.sourceforge.net
-To: Etu3FxI@yahoo.com
-Date: Tue, 29 Nov 2005 02:19:40 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-X-MSMail-Priority: Normal
-Message-ID: <2f0f7.554ac34cdf@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="==620fdbdb7a2.b739401c9d3f"
-Content-Transfer-Encoding: 7bit
 This is a multi-part message in MIME format.
 
---==620fdbdb7a2.b739401c9d3f
+------=_NextPart_000_0001_01C5F475.636F59C0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+Hello,
+Since you're a big customer we occasionally send you a piece of news and
+propositions.
+=20
+Our logs indicate that you perhaps have necessity in a supplement.
+=20
+We expect you to re-read a wide choice list of the meds we offer, small
+prices and the best customer service.=20
+If anything, you may place an order and review the products we have at
+present or just look through the issue by clicking the link below:
+=20
+http://www.outrode.apidovar.com <http://www.outrode.apidovar.com>=20
+=20
+Sincerely Yours, Waldemar Leclaire Customer service department=20
 
-plz read and check ...
-cyaaaaaaa
---==620fdbdb7a2.b739401c9d3f
-Content-
-*** MESSAGE TRUNCATED ***
+------=_NextPart_000_0001_01C5F475.636F59C0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial>Hello,<BR>
+Since you're a big customer we occasionally send you a piece of news and =
+propositions.</FONT></DIV>
+<DIV><FONT face=3DArial>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial>Our logs indicate that you perhaps have =
+necessity in a supplement.</FONT></DIV>
+<DIV><FONT face=3DArial>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial>We expect you to re-read a wide choice list of =
+the meds we offer,=20
+small prices and the best customer service. <BR> If anything, you may =
+place an=20
+order and review the products we have at present or just look through =
+the=20
+issue by clicking the link below:</FONT></DIV>
+<DIV><FONT face=3DArial>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial><A =
+href=3D"http://www.outrode.apidovar.com"><FONT =
+face=3DArial>http://www.outrode.apidovar.com</FONT></A></FONT></DIV>
+<DIV><FONT face=3DArial>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial>Sincerely Yours, Waldemar Leclaire 	Customer service =
+department </FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C5F475.636F59C0--
+
+
 
 
 
