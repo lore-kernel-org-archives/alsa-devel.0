@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Where to put code for a new ioctl.
-Date: Tue, 29 Nov 2005 08:55:54 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0511290853340.10328@tm8103.perex-int.cz>
-References: <4389943D.20100@superbug.co.uk> <s5hoe45knec.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0511281251250.9343@tm8103.perex-int.cz> <438B52DB.4070606@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001534]: Mixer channel problems
+Date: Tue, 29 Nov 2005 09:22:20 +0100
+Message-ID: <84a9522c2e010eca44b680e3ec28ac0a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <438B52DB.4070606@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FD8C150
+	for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2005 09:22:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,26 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 28 Nov 2005, James Courtier-Dutton wrote:
 
-> I can't see step (3) being achievable without a ioctl.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1534> 
+======================================================================
+Reported By:                mrblur
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1534
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             11-08-2005 08:41 CET
+Last Modified:              11-29-2005 09:22 CET
+======================================================================
+Summary:                    Mixer channel problems
+Description: 
+I'm using Acer AS5002WLMi with SiS 7012 soundcard. It works quite good,
+but... unfortunately if I would like to change sound volume I have to do
+it on headphones channel, master channel stereo/mona are not working.
+======================================================================
 
-I see. You should check the vendor/subvendor/codec and other IDs from the 
-driver and then choose the proper conversion table / expression in 
-alsa-lib. I added the 'components' field to the control info structure 
-some time ago exactly for this purpose. If some identification is missing, 
-it should be added to the lowlevel driver.
+----------------------------------------------------------------------
+ tiwai - 11-28-05 18:51 
+----------------------------------------------------------------------
+Try ac97_quirk=hp_only option for snd-intel8x0 module.
 
-						Jaroslav
+----------------------------------------------------------------------
+ mrblur - 11-29-05 09:22 
+----------------------------------------------------------------------
+Still nothing... Additionally when added this option there was no sound at
+all... (?)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-08-05 08:41 mrblur         New Issue                                    
+11-08-05 08:41 mrblur         Kernel Version            => 2.6.14          
+11-08-05 17:48 tiwai          Note Added: 0006628                          
+11-28-05 13:48 mrblur         Note Added: 0006859                          
+11-28-05 18:51 tiwai          Note Added: 0006863                          
+11-29-05 09:22 mrblur         Note Added: 0006871                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
