@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Wed, 30 Nov 2005 15:57:31 +0100
-Message-ID: <efc2beda205e7816b64ee3e96202986a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
+Date: Wed, 30 Nov 2005 16:44:57 +0100
+Message-ID: <956fb536b896a814c72bceedbaa34d5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3C95196
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 15:57:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FD43192
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 16:44:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
 ======================================================================
-Reported By:                gflash
-Assigned To:                jcdutton
+Reported By:                dvalin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   927
-Category:                   1_OTHERS
+Issue ID:                   1607
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Mandriva Linux (cooker)
+Kernel Version:             2.6.14.3 (vanilla)
 ======================================================================
-Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              11-30-2005 15:57 CET
+Date Submitted:             11-30-2005 16:44 CET
+Last Modified:              11-30-2005 16:44 CET
 ======================================================================
-Summary:                    Support for Creative SB Audigy 2 ZS Notebook
+Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
+sample rates than 48000 and 96000
 Description: 
-Is this PCMCIA Souncard supported or will it be supported in the next time?
-I haven't heard any positive reports yet...
+This seems to be same bug as 1050 which seems to be resolved for Audigy 2
+NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
+Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
+the SB Audigy2 ZS pcmcia card).
 
-Thank you!
+Also when changing sample rate to 48000 or 96000 the sound chops every now
+and then.
 ======================================================================
-
-----------------------------------------------------------------------
- buckvitulli - 10-31-05 00:55 
-----------------------------------------------------------------------
-Outstanding work, I appreciate your efforts.
-
-----------------------------------------------------------------------
- bubbleguuum - 11-30-05 15:57 
-----------------------------------------------------------------------
-What's the status of the the driver for this card ? Does the CVS work at
-least partially ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-20-05 08:53 gflash         New Issue                                    
-02-20-05 12:32 jcdutton       Note Added: 0003673                          
-02-20-05 14:06 gflash         Note Added: 0003674                          
-02-20-05 14:39 jcdutton       Note Added: 0003675                          
-02-20-05 14:47 jcdutton       Note Edited: 0003675                         
-07-25-05 17:43 dale           Note Added: 0005564                          
-07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
-08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
-10-30-05 21:08 jcdutton       Note Added: 0006577                          
-10-31-05 00:55 buckvitulli    Note Added: 0006578                          
-10-31-05 12:43 jcdutton       Status                   new => assigned     
-10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
-11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
+11-30-05 16:44 dvalin         New Issue                                    
+11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
+(cooker)
+11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
 ======================================================================
 
 
