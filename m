@@ -1,22 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Cross compiling alsa-lib
-Date: Wed, 30 Nov 2005 20:14:26 +0000
-Message-ID: <1133381667.9033.0.camel@localhost.localdomain>
-References: <1133116303.8952.6.camel@localhost.localdomain>
-	 <s5hpsolkoon.wl%tiwai@suse.de>
-	 <Pine.LNX.4.61.0511281250100.9343@tm8103.perex-int.cz>
-	 <s5hlkz9kmvj.wl%tiwai@suse.de>
-	 <Pine.LNX.4.61.0511281304480.9343@tm8103.perex-int.cz>
-	 <s5hirucly7d.wl%tiwai@suse.de> <s5hhd9wly5k.wl%tiwai@suse.de>
-	 <43287.217.150.108.178.1133198006.squirrel@81.1.74.166>
-	 <s5h7jaslm9n.wl%tiwai@suse.de>
-	 <45600.217.150.108.178.1133198836.squirrel@81.1.74.166>
-	 <s5hveybiicl.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001586]: bluetooth for VOiP
+Date: Wed, 30 Nov 2005 22:57:15 +0100
+Message-ID: <eb0247ad1492210f5435b0bab0c93205@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hveybiicl.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53C45176
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 22:57:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,32 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-11-29 at 16:28 +0100, Takashi Iwai wrote:
-> At Mon, 28 Nov 2005 17:27:16 -0000 (GMT),
-> Adrian McMenamin wrote:
-> > 
-> > On Mon, 28 November, 2005 5:23 pm, Takashi Iwai wrote:
-> > > At Mon, 28 Nov 2005 17:13:26 -0000 (GMT),
-> > > Adrian McMenamin wrote:
-> > >>
-> > >> On Mon, 28 November, 2005 1:06 pm, Takashi Iwai wrote:
-> > >> >>
-> > >> > Oh I found that you already fixed conf.c :)
-> > >> >
-> > >> If it has been "fixed" why won't it compile?
-> > >
-> > > Look at "conf.c".  pcm_ladspa.c isn't fixed yet.
-> > >
-> > OK, I understand
-> 
-> I fixed for pcm_ladspa.c now.  Try the CVS version later.
-> 
-I got a patch from the uclibc list which fixed ladspa.c but
-unfortunately failed on another file later in the build
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1586> 
+======================================================================
+Reported By:                clay1905
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1586
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-22-2005 06:54 CET
+Last Modified:              11-30-2005 22:57 CET
+======================================================================
+Summary:                    bluetooth for VOiP
+Description: 
+Newbie asks is it possible to arrange for using a bluetooth headset in
+conjunction with ALSA? I would prefer to use bluetooth for VOiP
+telephony.
+
+======================================================================
+
+----------------------------------------------------------------------
+ gjasny - 11-30-05 22:57 
+----------------------------------------------------------------------
+Hi,
+
+there is an external project for bluetooth audio:
+http://bluetooth-alsa.sourceforge.net/
+
+I hope this works for you.
+
+Gregor
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-22-05 06:54 clay1905       New Issue                                    
+11-30-05 22:53 gjasny         Issue Monitored: gjasny                      
+11-30-05 22:57 gjasny         Note Added: 0006880                          
+======================================================================
+
 
 
 
