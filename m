@@ -1,14 +1,14 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: [ANNOUNCE] ASoC 0.8
-Date: Wed, 30 Nov 2005 22:50:55 +0000
-Message-ID: <1133391055.3314.175.camel@localhost.localdomain>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: More on compiling alsa-lib with uclibc
+Date: Wed, 30 Nov 2005 23:06:53 +0000
+Message-ID: <1133392013.9033.5.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from orlando.wolfsonmicro.main (webmail.wolfsonmicro.com [212.20.225.142])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58DDD17A
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 23:50:49 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8A48A17A
+	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 00:06:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,26 +18,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, uClibc@uclibc.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA SoC Layer 0.8 has now been released and is available here
-http://www.rpsys.net/openzaurus/patches/alsa/.
+I have worked through the source files patching them as I go, but now
+have a linker problem (this is a ia32 to sh4 cross compile). I will post
+a patch shortly to both lists that fixes all the compile problems - but
+not this linker issue...
 
-Changes from 0.7:-
+Can someone offer me guidance as to what is wrong below?
 
-  o ASoC is now a bus interface. Allows easier codec matching.
-  o Moved all control (i2c) code out of code drivers.
-  o Fixed OSS emulation bug (e.g. madplayer)
-  o Added PM for pxa2xx platform
-  o Machine level kcontrols
-  o Machine level DPM widgets.
-  o Added support for Corgi and Tosa PDA's
 
-More information about ASoC is available here
-http://www.rpsys.net/openzaurus/patches/alsa/asoc.html
+fi
+/bin/sh ../libtool
+--mode=link /home/adrian/buildroot/build_sh4/staging_dir/sh4-linux-uclibc/bin/gcc  -g -O2   -o aserver  aserver.o ../src/libasound.la
+mkdir .libs
+/home/adrian/buildroot/build_sh4/staging_dir/sh4-linux-uclibc/bin/gcc -g
+-O2 -o aserver aserver.o  ../src/.libs/libasound.a -lm -ldl -lpthread
+/home/adrian/buildroot/build_sh4/staging_dir/sh4-linux-uclibc/bin/../lib/gcc/sh4-linux-uclibc/3.4.2/../../../../sh4-linux-uclibc/bin/ld: cannot find -lpthread
+collect2: ld returned 1 exit status
+make[1]: *** [aserver] Error 1
+make[1]: Leaving directory `/home/adrian/alsa-lib-1.0.10/aserver'
+make: *** [all-recursive] Error 1
 
-Liam
 
 
 
