@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001608]: SB Audigy 2 ZS Video Editor won't work with usb2
-Date: Wed, 30 Nov 2005 17:21:38 +0100
-Message-ID: <4ba954ab8bd07aaa4ab360e502f8c32c@bugtrack.alsa-project.org>
+Date: Wed, 30 Nov 2005 17:43:09 +0100
+Message-ID: <0fdc66e5cf27ad325e0d65ac8f5f89a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0471192
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 17:21:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C825192
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 17:43:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1608> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Mandriva Linux (cooker)
 Kernel Version:             2.6.14.3
 ======================================================================
 Date Submitted:             11-30-2005 17:21 CET
-Last Modified:              11-30-2005 17:21 CET
+Last Modified:              11-30-2005 17:43 CET
 ======================================================================
 Summary:                    SB Audigy 2 ZS Video Editor won't work with usb2
 Description: 
@@ -52,6 +52,14 @@ With version 1.0.10rc2 it won't freeze, but the sound will just chop a
 *LOT*, when updating to 1.0.10 it just froze
 ======================================================================
 
+----------------------------------------------------------------------
+ dvalin - 11-30-05 17:43 
+----------------------------------------------------------------------
+Tried to add the usbid for the card to the driver at same places as
+audigy2nx, resulting in this error:
+/home/peroyvind/alsa-driver-1.0.10/usb/usbaudio.c:1239: 3:1:3: cannot get
+freq at ep 0x2
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -59,6 +67,7 @@ Date Modified  Username       Field                    Change
 11-30-05 17:21 dvalin         Distribution              => Mandriva Linux
 (cooker)
 11-30-05 17:21 dvalin         Kernel Version            => 2.6.14.3        
+11-30-05 17:43 dvalin         Note Added: 0006879                          
 ======================================================================
 
 
