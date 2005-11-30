@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Wed, 30 Nov 2005 17:08:13 +0100
-Message-ID: <ca989222485a0992ecc5edd2322a1b0d@bugtrack.alsa-project.org>
+Date: Wed, 30 Nov 2005 17:07:01 +0100
+Message-ID: <b7cf0afb53d6f2130b35485f1725f2d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE63D192
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 17:08:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D514E192
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 17:07:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandriva Linux (cooker)
 Kernel Version:             2.6.14.3 (vanilla)
 ======================================================================
 Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              11-30-2005 17:08 CET
+Last Modified:              11-30-2005 17:07 CET
 ======================================================================
 Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
 sample rates than 48000 and 96000
@@ -55,7 +55,7 @@ and then.
 ======================================================================
 
 ----------------------------------------------------------------------
- dvalin - 11-30-05 17:08 
+ dvalin - 11-30-05 17:07 
 ----------------------------------------------------------------------
 This patch should "fix"(hack) the problem the same way as for audigy2 nx
 
@@ -67,10 +67,6 @@ Date Modified  Username       Field                    Change
 (cooker)
 11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
 11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
 ======================================================================
 
 
