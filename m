@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 30 Nov 2005 00:28:29 -0000
-Message-ID: <E1EhFpr-0006aV-0J@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001593]: au88x0 wt synth
+Date: Wed, 30 Nov 2005 08:48:13 +0100
+Message-ID: <8c324fae0a93e596e59ce799cbb6d2e2@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21ACA195
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 08:48:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,53 +18,178 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1593
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
+======================================================================
+Date Submitted:             11-23-2005 17:16 CET
+Last Modified:              11-30-2005 08:48 CET
+======================================================================
+Summary:                    au88x0 wt synth
+Description: 
+After applied the patch as described in 
 
---- Original message follows.
+http://article.gmane.org/gmane.linux.alsa.devel/27095
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+Sound (like a monster roaring) is heard when using aplay through device 3
+of au8830 with the mono files from alsa-utils-1.0.10/speaker-test/samples
 
-The original message is over 5k.  Message truncated to 1K.
+The sound repeat 7 times and stop.
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.249>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta175.mail.scd.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO xlwvkbjce.net) (64.251.132.84)
-  by mta175.mail.scd.yahoo.com with SMTP; Tue, 29 Nov 2005 16:28:29 -0800
-From: alsa-devel@lists.sourceforge.net
-To: x-Recipient@yahoo.com
-Date: Wed, 30 Nov 2005 00:25:04 GMT
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <a02eae2.a467961f@firvqg.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="6703f0fde911d.b3"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+Refer to the strace, 
 
---6703f0fde911d.b3
+Do the DMA transfer occur when using hw:0,3 ?
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-plz read and check ...
-cyaaaaaaa
---6703f0fde911d.b3
-Content-Type: application/octet-stream; name=mailtext.zip
-Content-Tr
-*** MESSAGE TRUNCATED ***
+
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 11-25-05 07:57 
+----------------------------------------------------------------------
+aplay -D hw:0,0 alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav
+Playing WAVE 'alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav' :
+Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+
+dmesg
+
+vortex: pointer = 0x80
+vortex: pointer = 0x101c
+vortex: pointer = 0x101c
+vortex: pointer = 0x2000
+vortex: pointer = 0x2000
+vortex: pointer = 0x3008
+vortex: pointer = 0x3008
+vortex: pointer = 0x4010
+vortex: pointer = 0x4010
+vortex: pointer = 0x5018
+vortex: pointer = 0x5018
+vortex: pointer = 0x6020
+vortex: pointer = 0x6020
+vortex: pointer = 0x7004
+vortex: pointer = 0x7004
+vortex: pointer = 0x800c
+vortex: pointer = 0x800c
+vortex: pointer = 0x9014
+vortex: pointer = 0x9014
+vortex: pointer = 0xa01c
+vortex: pointer = 0xa01c
+vortex: pointer = 0xb000
+vortex: pointer = 0xb000
+vortex: pointer = 0x8
+vortex: pointer = 0x8
+vortex: pointer = 0x1010
+vortex: pointer = 0x1010
+vortex: pointer = 0x2018
+vortex: pointer = 0x2018
+vortex: pointer = 0x3020
+vortex: pointer = 0x3020
+vortex: pointer = 0x4004
+vortex: pointer = 0x4004
+vortex: pointer = 0x500c
+vortex: pointer = 0x500c
+vortex: pointer = 0x6014
+vortex: pointer = 0x6038
+vortex: pointer = 0x701c
+vortex: pointer = 0x7040
+vortex: pointer = 0x8000
+vortex: pointer = 0x8000
+vortex: pointer = 0x9008
+vortex: pointer = 0x9008
+vortex: pointer = 0xa010
+vortex: pointer = 0xb018
+vortex: pointer = 0x20
+vortex: pointer = 0x1004
+vortex: pointer = 0x200c
+vortex: pointer = 0x3014
+vortex: pointer = 0x401c
+vortex: pointer = 0x5000
+vortex: pointer = 0x6008
+vortex: pointer = 0x7010
+vortex: pointer = 0x8018
+vortex: pointer = 0x9020
+vortex: pointer = 0xa004
+
+
+aplay -D hw:0,3 alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav
+Playing WAVE 'alsa-utils-1.0.10/speaker-test/samples/Front_Center.wav' :
+Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+aplay: pcm_write:1222: write error: Input/output error
+
+dmesg
+
+vortex: WT PARM3: 0
+vortex: WT GMODE: ffffffff
+vortex: WT GMODE 2 : fffffffe
+vortex: wt start 0
+vortex: pointer = 0x0
+vortex: pointer = 0x8
+vortex: pointer = 0x10
+vortex: pointer = 0x18
+vortex: pointer = 0x20
+vortex: pointer = 0x4
+vortex: pointer = 0xc
+vortex: pointer = 0x14
+vortex: pointer = 0x1c
+vortex: pointer = 0x0
+vortex: pointer = 0x8
+vortex: pointer = 0x10
+vortex: pointer = 0x18
+vortex: pointer = 0x20
+vortex: pointer = 0x4
+vortex: pointer = 0xc
+vortex: pointer = 0x14
+vortex: pointer = 0x1c
+vortex: pointer = 0x0
+vortex: pointer = 0x8
+vortex: pointer = 0x10
+vortex: pointer = 0x18
+vortex: pointer = 0x20
+vortex: pointer = 0x4
+vortex: pointer = 0xc
+vortex: pointer = 0x14
+vortex: pointer = 0x1c
+vortex: pointer = 0x0
+vortex: pointer = 0x8
+vortex: wt stop 0
+vortex: WT PARM3: cff1c810
+vortex: WT GMODE: ffffffff
+vortex: WT GMODE 2 : fffffffe
+
+----------------------------------------------------------------------
+ Raymond - 11-30-05 08:48 
+----------------------------------------------------------------------
+There is most likely another bug in vortex_fifo_setwtvalid(vortex_t *
+vortex, int fifo, int en)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-23-05 17:16 Raymond        New Issue                                    
+11-23-05 17:16 Raymond        Distribution              => Fedora Core 1   
+11-23-05 17:16 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+11-23-05 20:54 mjander        Note Added: 0006832                          
+11-25-05 07:57 Raymond        Note Added: 0006847                          
+11-30-05 08:48 Raymond        Note Added: 0006875                          
+======================================================================
+
 
 
 
