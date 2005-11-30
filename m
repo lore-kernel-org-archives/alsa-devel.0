@@ -1,8 +1,22 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 30 Nov 2005 17:12:05 -0000
-Message-ID: <E1EhVV5-0006Yz-Ke@mail.sourceforge.net>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Cross compiling alsa-lib
+Date: Wed, 30 Nov 2005 20:14:26 +0000
+Message-ID: <1133381667.9033.0.camel@localhost.localdomain>
+References: <1133116303.8952.6.camel@localhost.localdomain>
+	 <s5hpsolkoon.wl%tiwai@suse.de>
+	 <Pine.LNX.4.61.0511281250100.9343@tm8103.perex-int.cz>
+	 <s5hlkz9kmvj.wl%tiwai@suse.de>
+	 <Pine.LNX.4.61.0511281304480.9343@tm8103.perex-int.cz>
+	 <s5hirucly7d.wl%tiwai@suse.de> <s5hhd9wly5k.wl%tiwai@suse.de>
+	 <43287.217.150.108.178.1133198006.squirrel@81.1.74.166>
+	 <s5h7jaslm9n.wl%tiwai@suse.de>
+	 <45600.217.150.108.178.1133198836.squirrel@81.1.74.166>
+	 <s5hveybiicl.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hveybiicl.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +26,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
-
-<admin@yahoo.com>:
-This address no longer accepts mail.
-
---- Original message follows.
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.238>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta151.mail.scd.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO qpxabw.net) (64.251.132.84)
-  by mta151.mail.scd.yahoo.com with SMTP; Wed, 30 Nov 2005 09:12:05 -0800
-From: alsa-devel@lists.sourceforge.net
-To: zfreemailer@yahoo.com
-Date: Wed, 30 Nov 2005 16:48:13 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <637c5c7a4328fac3d86@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b6a9ec.36aeb7a042e8d7dec"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
-
---b6a9ec.36aeb7a042e8d7dec
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---b6a9ec.36aeb7a042e8d7dec
-Content-Type: application/octet-s
-*** MESSAGE TRUNCATED ***
+On Tue, 2005-11-29 at 16:28 +0100, Takashi Iwai wrote:
+> At Mon, 28 Nov 2005 17:27:16 -0000 (GMT),
+> Adrian McMenamin wrote:
+> > 
+> > On Mon, 28 November, 2005 5:23 pm, Takashi Iwai wrote:
+> > > At Mon, 28 Nov 2005 17:13:26 -0000 (GMT),
+> > > Adrian McMenamin wrote:
+> > >>
+> > >> On Mon, 28 November, 2005 1:06 pm, Takashi Iwai wrote:
+> > >> >>
+> > >> > Oh I found that you already fixed conf.c :)
+> > >> >
+> > >> If it has been "fixed" why won't it compile?
+> > >
+> > > Look at "conf.c".  pcm_ladspa.c isn't fixed yet.
+> > >
+> > OK, I understand
+> 
+> I fixed for pcm_ladspa.c now.  Try the CVS version later.
+> 
+I got a patch from the uclibc list which fixed ladspa.c but
+unfortunately failed on another file later in the build
 
 
 
