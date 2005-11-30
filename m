@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001586]: bluetooth for VOiP
-Date: Wed, 30 Nov 2005 22:57:15 +0100
-Message-ID: <eb0247ad1492210f5435b0bab0c93205@bugtrack.alsa-project.org>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: [ANNOUNCE] ASoC 0.8
+Date: Wed, 30 Nov 2005 22:50:55 +0000
+Message-ID: <1133391055.3314.175.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53C45176
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 22:57:15 +0100 (MET)
+Received: from orlando.wolfsonmicro.main (webmail.wolfsonmicro.com [212.20.225.142])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58DDD17A
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 23:50:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,55 +21,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+ALSA SoC Layer 0.8 has now been released and is available here
+http://www.rpsys.net/openzaurus/patches/alsa/.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1586> 
-======================================================================
-Reported By:                clay1905
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1586
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             11-22-2005 06:54 CET
-Last Modified:              11-30-2005 22:57 CET
-======================================================================
-Summary:                    bluetooth for VOiP
-Description: 
-Newbie asks is it possible to arrange for using a bluetooth headset in
-conjunction with ALSA? I would prefer to use bluetooth for VOiP
-telephony.
+Changes from 0.7:-
 
-======================================================================
+  o ASoC is now a bus interface. Allows easier codec matching.
+  o Moved all control (i2c) code out of code drivers.
+  o Fixed OSS emulation bug (e.g. madplayer)
+  o Added PM for pxa2xx platform
+  o Machine level kcontrols
+  o Machine level DPM widgets.
+  o Added support for Corgi and Tosa PDA's
 
-----------------------------------------------------------------------
- gjasny - 11-30-05 22:57 
-----------------------------------------------------------------------
-Hi,
+More information about ASoC is available here
+http://www.rpsys.net/openzaurus/patches/alsa/asoc.html
 
-there is an external project for bluetooth audio:
-http://bluetooth-alsa.sourceforge.net/
-
-I hope this works for you.
-
-Gregor
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-22-05 06:54 clay1905       New Issue                                    
-11-30-05 22:53 gjasny         Issue Monitored: gjasny                      
-11-30-05 22:57 gjasny         Note Added: 0006880                          
-======================================================================
-
+Liam
 
 
 
