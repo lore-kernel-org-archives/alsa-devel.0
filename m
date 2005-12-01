@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001594]: 'playback.pcm {' missing from PMacToonie.conf
-Date: Thu, 1 Dec 2005 16:30:22 +0100
-Message-ID: <bc2d503443ff6d4c1b714c4b1af7bde1@bugtrack.alsa-project.org>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: ASoC Roadmap
+Date: Thu, 01 Dec 2005 16:54:42 +0000
+Message-ID: <1133456082.3450.112.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AEAEE18F
-	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 16:30:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,105 +15,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Giorgio Padrin <giorgio@mandarinlogiq.org>, Richard Purdie <rpurdie@rpsys.net>
 List-Id: alsa-devel@alsa-project.org
 
+I'm putting together a road map of what I think is needed in ASoC before
+we can look at submitting to alsa-kernel. I'd like to hear any feedback
+from the community wrt to anything that I'm missing. I'm aiming to
+submit the core code with support for the pxa2xx platform and Zaurus
+machines at around Xmas time.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1594> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1594
-Category:                   hw specific configuration
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-23-2005 20:30 CET
-Last Modified:              12-01-2005 16:30 CET
-======================================================================
-Summary:                    'playback.pcm {' missing from PMacToonie.conf
-Description: 
-The submitter of Debian bug report 340478 reports that there is a line
-missing from conf/cards/PMacToonie.conf.  The file contains the following
-invalid block:
+We currently have support in 0.8 (released yesterday) for:-
 
-# default with dmix+softvol & dsnoop
-PMacToonie.pcm.default {
-        @args [ CARD ]
-        @args.CARD {
-                type string
-        }
-        type asym
-                type plug
-                slave.pcm {
-                        type softvol
-                        slave.pcm {
-                                @func concat
-                                strings [ "dmix:CARD=" $CARD ",FORMAT=S16"
-]
-                        }
-                        control {
-                                name "PCM Playback Volume"
-                                card $CARD
-                        }
-                }
-        }
-        capture.pcm {
-                type plug
-                slave.pcm {
-                        @func concat
-                        strings [ "dsnoop:CARD=" $CARD ",FORMAT=S16" ]
-                }
-        }
-}
+ o Codec <--> SoC audio interface enumeration
+ o Codec <--> SoC hw format, speed and chn matching
+ o ASoC bus interface.
+ o Codec Dynamic Power Management (DPM)
+ o Machine DPM
+ o ASoC PM
+ o Support for machine kcontrols.
 
+This currently gives us working ALSA and OSS emulation playback and
+capture on the pxa2xx platform.
 
-The resulting error is:
+I think we are still in need of:-
 
-ALSA lib conf.c:1596:(snd_config_load1) :51:1:Unexpected }
+ o Support for user generated audio events, (i.e. headphone insertion
+event to user space)
+ o Support for codec generated events. e.g. Jack insertion type
+detection (hp or mic) 
+ o Move from xxx_t types
+ o Support for codec quirks (e.g. some codecs require the i2s bus to run
+constantly, even when no audio is played)
+ o Move i2c control code into codec driver, with machine layer
+responsible for setting i2c device address.
+ o Better support for 3 wire control.
+ o More Testing  
+ o Cleanup
 
-The user says that adding
+Oh, I think documentation would be nice as well.
 
-    playback.pcm {
+After xmas, I'll be adding:-
 
-fixes the problem.
-======================================================================
+ o Support for other SoC's (i.e. au1x00, iMX)
+ o Changing oversampling rates, mic bias for better power consumption.
+ o Time division multiplexing support (for i2s, pcm ports). 
 
-----------------------------------------------------------------------
- jdthood - 11-23-05 20:32 
-----------------------------------------------------------------------
-The submitter provided this patch:
-
---- PMacToonie.conf.original	2005-11-23 19:04:34.000000000 +0100
-+++ PMacToonie.conf	2005-11-23 19:04:34.000000000 +0100
-@@ -28,6 +28,7 @@
- 		type string
- 	}
- 	type asym
-+	playback.pcm {
- 		type plug
- 		slave.pcm {
- 			type softvol
-
-----------------------------------------------------------------------
- jdthood - 12-01-05 16:30 
-----------------------------------------------------------------------
-Has this been applied?  It's an obviously correct patch.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-23-05 20:30 jdthood        New Issue                                    
-11-23-05 20:32 jdthood        Note Added: 0006828                          
-12-01-05 16:30 jdthood        Note Added: 0006885                          
-======================================================================
-
+Liam
 
 
 
