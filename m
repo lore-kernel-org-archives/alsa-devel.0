@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001606]: cs4281 dmix oss does not work
-Date: Wed, 30 Nov 2005 12:44:38 +0100
-Message-ID: <ba7277db316fcfba5b4f044aad857cef@bugtrack.alsa-project.org>
+From: "Torturer I. Polyester" <mmcclell@glassz.com>
+Subject: Pharmaceutical revolution
+Date: Wed, 30 Nov 2005 19:30:26 -0600
+Message-ID: <7978873081.20051130193026@glassz.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------7DCF09EE2ED7A7A"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44B63152
-	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 12:44:38 +0100 (MET)
+Received: from 146894656 (170.175.102-84.rev.gaoland.net [84.102.175.170])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2B331195
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 12:25:29 +0100 (MET)
+Received: from glassz.com (146111576 [146908680])
+	by 170.175.102-84.rev.gaoland.net (Qmailv1) with ESMTP id 39354E4929
+	for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2005 19:30:26 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,182 +21,97 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1606> 
-======================================================================
-Reported By:                bogdan
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1606
-Category:                   PCI - cs4281
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo 2005.1 and Ubuntu 5.10 (both with newest
-updates)
-Kernel Version:             2.6.14, 2.6.13, 2.6.14
-======================================================================
-Date Submitted:             11-30-2005 12:44 CET
-Last Modified:              11-30-2005 12:44 CET
-======================================================================
-Summary:                    cs4281 dmix oss does not work
-Description: 
-hi,
+------------7DCF09EE2ED7A7A
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-issue is exactly the same on all distros i tested - primarily tested with
-gentoo 2005.1/linux-2.6.14/alsa1.0.10rc1 and
-ubuntu5.10/linux-2.6.12/alsa1.0.9 (exactly the same issue)
-firstly things that work fine:
-1. alsa dmix works perfect without any modifications (without asoundrc
-files), regardless what I do.
-2. oss emulation also works perfect(/dev/dsp) without any modifications
+Welcome to our Internet Pharjmacy
+We offer a wide selection of the
+most popular medicines online!
+FAST shipping, LOW prices and
+Toll-free customer support! 
 
-what does not work:
-it does not work when I would like to have multiple oss programs sending
-to /dev/dsp - aka dmix oss (when I introduce the asoundrc script). I use
-the following script for this:
+If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
+Vlagjra - $3.3 
+Leovitra - $3.3
+Cialijs - $3.7
+Imnitrex - $16.4 Flomax - $2.2
+Ulntram - $0.78
+Viyoxx - $4.75 
+Amtbien - $2.2 VaIium - $0.97 
+Sooma - $3
+Xanrax - $1.09
+Mleridia - $2.2 
+* we offer a money-back guarantee in case the product doesn't work for you or you may be somehow dissatisfied by its performance 
+* we've efficiently streamlined our service, letting you buy from us in a very discreet, non-embarrassing and hassle-free manner  
 
-pcm.cs4281 {
-type hw
-card 0
-}
+The new, easy way to order your prescriuptions! 
+Visit our website
+http://beingsav.com
 
-ctl.cs4281 {
-type hw
-card 0
-}
+With best regards,
+Online Pharmaceuticals
 
-pcm.dsp0 {
-type plug
-slave.pcm "ossmix"
-}
+fedfewwsc UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
-ctl.mixer0 {
-type hw
-card 0
-}
+------------7DCF09EE2ED7A7A
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
 
-pcm.ossmix {
-type dmix
-ipc_key 1024
-ipc_perm 0660
-slave {
-pcm cs4281
-period_time 0
-period_size 1024
-buffer_size 8192
-}
+<HTML>
+<BODY bgcolor="#FFF6FF">
+<p><b><font color="#FF6664">Welcome to our Internet Pharpmacy<br>
+  We offer a wide selection of the<br>
+  most popular medicines online!<br>
+  FAST shipping, LOW prices and<br>
+  Toll-free customer support! </font></b></p>
+<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#FF66CC">
+  <tr bgcolor="#FFF0CC"> 
+    <td colspan="3">If you compare the cost and services of our competitors, you 
+      will see that we give you much more… for less. Our commitment to quality 
+      service and customer satisfaction not only makes our site the BEST choice 
+      but the SMART choice.</td>
+  </tr>
+  <tr bgcolor="#C4C4FF"> 
+    <td bgcolor="#FFDECC"><b>Vlagfra - $3.3 <br>
+      Letvitra - $3.3<br>
+      Cialies - $3.7<br>
+      Imuitrex - $16.4</b></td>
+    <td bgcolor="#FFBACC"><b>Flnomax - $2.2<br>
+      Ulmtram - $0.78<br>
+      Vixoxx - $4.75 <br>
+      Amrbien - $2.2</b></td>
+    <td bgcolor="#FFDECC"><b>VaIiuum - $0.97 <br>
+      Smoma - $3<br>
+      Xanhax - $1.09<br>
+      Moeridia - $2.2</b></td>
+  </tr>
+  <tr bgcolor="#FFC0FF"> 
+    <td colspan="3">* we offer a money-back guarantee in case the product doesn't 
+      work for you or you may be somehow dissatisfied by its performance <br>
+      * we've efficiently streamlined our service, letting you buy from us in 
+      a very discreet, non-embarrassing and hassle-free manner </td>
+  </tr>
+</table>
+<br>
+<b>The new, easy way to order your prescriptions!</b> 
+<p><b><A href="http://beingsav.com">Visit our website</A> 
+</b></p>
+With best regards,<br>
+Online Pharmaceuticals
+<br>
+<br>
+fedfewwsc UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
 
-bindings {
-0 0
-1 1
-}
-}
 
-now to test I use mpg123. Here is the output - quite interesting:
-
-voynix mp3 # aoss mpg123 -vv /root/mp3/01\ -\ Cos\ optymistycznego   
-High Performance MPEG 1.0/2.0/2.5 Audio Player for Layer 1, 2 and 3.
-Version 0.59s-r9 (2000/Oct/27). Written and copyrights by Michael Hipp.
-Uses code from various people. See 'README' for more!
-THIS SOFTWARE COMES WITH ABSOLUTELY NO WARRANTY! USE AT YOUR OWN RISK!
-
-Audio capabilities:
-        |  s16  |  u16  |  u8   |  s8   | ulaw  | alaw  |
- --------------------------------------------------------
-  8000  |   M   |   M   |   M   |   M   |   M   |   M   |
- 11025  |   M   |   M   |   M   |   M   |   M   |   M   |
- 12000  |   M   |   M   |   M   |   M   |   M   |   M   |
- 16000  |       |       |       |       |       |       |
- 22050  |       |       |       |       |       |       |
- 24000  |       |       |       |       |       |       |
- 32000  |       |       |       |       |       |       |
- 44100  |       |       |       |       |       |       |
- 48000  |       |       |       |       |       |       |
-
-Title  : Co&#156; optymistycznego             Artist: Kasia Kowalska
-Album  : Czek&#185;j&#185;c na...                  Year  : 1996
-Comment:                                 Genre : Rock
-
-Directory: /root/mp3/
-Playing MPEG stream from 01 - Cos optymistycznego ...
-Found new ID3 Header
-MPEG 1.0, Layer: III, Freq: 44100, mode: Stereo, modext: 0, BPF : 626
-Channels: 2, copyright: No, original: Yes, CRC: No, emphasis: 0.
-Bitrate: 192 Kbits/s, Extension value: 0
-Audio: 4:1 conversion, rate: 11025, encoding: signed 16 bit, channels: 1
-Frame#   349 [ 7334], Time: 00:09.11 [03:11.58], Bitrate 192
-
-as you see after we introduce the asoundrc script then the output gets
-converted to rate 11025 and Mono. mpg123 sees reduced quality of the card
-under /dev/dsp - see the table above. Voice is extremely bad quality and
-garbled and playing 4xnormal speed. not enjoyable at all :-)
-
-as comparision - the same but without dmix asoundrc:
-voynix ~ # aoss mpg123 -vv /root/mp3/01\ -\ Cos\ optymistycznego 
-High Performance MPEG 1.0/2.0/2.5 Audio Player for Layer 1, 2 and 3.
-Version 0.59s-r9 (2000/Oct/27). Written and copyrights by Michael Hipp.
-Uses code from various people. See 'README' for more!
-THIS SOFTWARE COMES WITH ABSOLUTELY NO WARRANTY! USE AT YOUR OWN RISK!
-
-Audio capabilities:
-        |  s16  |  u16  |  u8   |  s8   | ulaw  | alaw  |
- --------------------------------------------------------
-  8000  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
- 11025  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
- 12000  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
- 16000  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
- 22050  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
- 24000  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
- 32000  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
- 44100  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
- 48000  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |  M/S  |
-
-Title  : Co optymistycznego             Artist: Kasia Kowalska
-Album  : Czek&#185;j&#185;c na...                  Year  : 1996
-Comment:                                 Genre : Rock
-
-Directory: /root/mp3/
-Playing MPEG stream from 01 - Cos optymistycznego ...
-Found new ID3 Header
-MPEG 1.0, Layer: III, Freq: 44100, mode: Stereo, modext: 0, BPF : 626
-Channels: 2, copyright: No, original: Yes, CRC: No, emphasis: 0.
-Bitrate: 192 Kbits/s, Extension value: 0
-Audio: 1:1 conversion, rate: 44100, encoding: signed 16 bit, channels: 2
-Frame#   356 [ 7327], Time: 00:09.29 [03:11.39], Bitrate 192
-[0:09] Decoding of 01 - Cos optymistycznego finished.
-
-all fine, still /dev/dsp gets locked for only one program (which is
-normal)
-
-As I said above I had exactly the same issue on different linux2.6
-distros. Also I tested the asoundrc script above (without modifications!)
-in different laptop - ibm x31 with snd-intel8x0 and dmix oss was working
-perfect! (several copies of mpg123 running at the same time)
-
-- That is why I suspect issue is related to the driver for cs4281.
-
-Hope you can do sth about it - would be nice to have this feature working
-also for cirrus logic 4281 card... Of course I can help you with any tests
-you would require.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-30-05 12:44 bogdan         New Issue                                    
-11-30-05 12:44 bogdan         Distribution              => Gentoo 2005.1 and
-Ubuntu 5.10 (both with newest updates)
-11-30-05 12:44 bogdan         Kernel Version            => 2.6.14, 2.6.13,
-2.6.14
-======================================================================
+------------7DCF09EE2ED7A7A--
 
 
 
