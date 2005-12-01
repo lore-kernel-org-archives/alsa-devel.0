@@ -1,11 +1,15 @@
-From: Pieter-Jan Malfait <pieterjan.malfait@gmail.com>
-Subject: M-Audio Revolution 5.1 Support
-Date: Thu, 1 Dec 2005 14:32:36 +0000 (UTC)
-Message-ID: <loom.20051201T152934-108@post.gmane.org>
+From: Giorgio Padrin <giorgio@mandarinlogiq.org>
+Subject: Re: [ANNOUNCE] ASoC 0.8
+Date: Thu, 1 Dec 2005 17:13:22 +0100
+Message-ID: <200512011713.22073.giorgio@mandarinlogiq.org>
+References: <1133391055.3314.175.camel@localhost.localdomain> <s5hbr01ggrt.wl%tiwai@suse.de> <1133440911.3450.72.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1133440911.3450.72.camel@localhost.localdomain>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,20 +19,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Richard Purdie <rpurdie@rpsys.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello,
+Alle 13:41, gioved=C3=AC 1 dicembre 2005, Liam Girdwood ha scritto:
+> o Codec drivers for WM8731, WM8750, WM8753, WM8971, UDA1338 (from
+> Giorgio)
 
-i've read on a couple of sites that the M-Audio Revolution 5.1 is not supported
-by   the alsa driver, however some of these sites were over a year old.. Is it
-currently supported or will it be in the near future ?
+I'm not aware of such a project I'm working at the moment. :-)
+It's an open possibility, depending on ASoC evolution.
 
-thank you
-
-kind regards,
-PJ
-
+Giorgio
 
 
 -------------------------------------------------------
