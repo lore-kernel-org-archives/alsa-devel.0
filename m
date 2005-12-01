@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Thu, 1 Dec 2005 18:15:02 +0100
-Message-ID: <385c4ebdeb311ca51a741c1ff94d0107@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001594]: 'playback.pcm {' missing from PMacToonie.conf
+Date: Thu, 1 Dec 2005 16:30:22 +0100
+Message-ID: <bc2d503443ff6d4c1b714c4b1af7bde1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DADF6195
-	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 18:15:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AEAEE18F
+	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 16:30:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,97 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1594> 
 ======================================================================
-Reported By:                dvalin
-Assigned To:                Clemens Ladisch
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
+Project:                    ALSA - lib
+Issue ID:                   1594
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
+Status:                     new
 ======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              12-01-2005 18:15 CET
+Date Submitted:             11-23-2005 20:30 CET
+Last Modified:              12-01-2005 16:30 CET
 ======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
+Summary:                    'playback.pcm {' missing from PMacToonie.conf
 Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
+The submitter of Debian bug report 340478 reports that there is a line
+missing from conf/cards/PMacToonie.conf.  The file contains the following
+invalid block:
 
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
+# default with dmix+softvol & dsnoop
+PMacToonie.pcm.default {
+        @args [ CARD ]
+        @args.CARD {
+                type string
+        }
+        type asym
+                type plug
+                slave.pcm {
+                        type softvol
+                        slave.pcm {
+                                @func concat
+                                strings [ "dmix:CARD=" $CARD ",FORMAT=S16"
+]
+                        }
+                        control {
+                                name "PCM Playback Volume"
+                                card $CARD
+                        }
+                }
+        }
+        capture.pcm {
+                type plug
+                slave.pcm {
+                        @func concat
+                        strings [ "dsnoop:CARD=" $CARD ",FORMAT=S16" ]
+                }
+        }
+}
+
+
+The resulting error is:
+
+ALSA lib conf.c:1596:(snd_config_load1) :51:1:Unexpected }
+
+The user says that adding
+
+    playback.pcm {
+
+fixes the problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 12-01-05 16:58 
+ jdthood - 11-23-05 20:32 
 ----------------------------------------------------------------------
-Please show the output of "lsusb -b" for this device.
+The submitter provided this patch:
+
+--- PMacToonie.conf.original	2005-11-23 19:04:34.000000000 +0100
++++ PMacToonie.conf	2005-11-23 19:04:34.000000000 +0100
+@@ -28,6 +28,7 @@
+ 		type string
+ 	}
+ 	type asym
++	playback.pcm {
+ 		type plug
+ 		slave.pcm {
+ 			type softvol
 
 ----------------------------------------------------------------------
- dvalin - 12-01-05 18:15 
+ jdthood - 12-01-05 16:30 
 ----------------------------------------------------------------------
-Bus 002 Device 001: ID 0000:0000
-Bus 001 Device 004: ID 041e:3070 Creative Technology, Ltd
-Bus 001 Device 003: ID 041e:3061 Creative Technology, Ltd
-Bus 001 Device 002: ID 041e:3050 Creative Technology, Ltd
-Bus 001 Device 001: ID 0000:0000
-
-Here ya go, as implied by the patch, 041e:3061 is the dsp device&#248;
+Has this been applied?  It's an obviously correct patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-12-01-05 16:58 Clemens LadischNote Added: 0006886                          
-12-01-05 18:15 dvalin         Note Added: 0006887                          
+11-23-05 20:30 jdthood        New Issue                                    
+11-23-05 20:32 jdthood        Note Added: 0006828                          
+12-01-05 16:30 jdthood        Note Added: 0006885                          
 ======================================================================
 
 
