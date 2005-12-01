@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Thu, 1 Dec 2005 03:13:24 +0100
-Message-ID: <cd9c7ffd10112913d95d791c9a0838a8@bugtrack.alsa-project.org>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: [ANNOUNCE] ASoC 0.8
+Date: Thu, 01 Dec 2005 09:26:18 +0000
+Message-ID: <1133429178.3450.4.camel@localhost.localdomain>
+References: <1133391055.3314.175.camel@localhost.localdomain>
+	 <200512010054.24583.ismail@uludag.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C41F176
-	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 03:13:24 +0100 (MET)
+Received: from orlando.wolfsonmicro.main (webmail.wolfsonmicro.com [212.20.225.142])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09E5217C
+	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 10:26:10 +0100 (MET)
+In-Reply-To: <200512010054.24583.ismail@uludag.org.tr>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +21,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Ismail Donmez <ismail@uludag.org.tr>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2005-12-01 at 00:54 +0200, Ismail Donmez wrote:
+> Thursday 01 December 2005 00:50 tarihinde =C5=9Funlar=C4=B1 yazm=C4=B1=C5=
+=9Ft=C4=B1n=C4=B1z:
+> [...]
+>=20
+> > More information about ASoC is available here
+> > http://www.rpsys.net/openzaurus/patches/alsa/asoc.html
+>=20
+> URL is 404.
+>=20
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
-======================================================================
-Reported By:                dvalin
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
-======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              12-01-2005 03:13 CET
-======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
-Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
+Apologies, it was late when I posted last night.
 
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
-======================================================================
+Correct URL is :-
 
-----------------------------------------------------------------------
- dvalin - 11-30-05 17:22 
-----------------------------------------------------------------------
-This patch should "fix"(hack) the problem the same way as for audigy2 nx
+http://www.rpsys.net/openzaurus/patches/alsa/info.html
 
-Sound is still chopping.. (in usb1.2 mode, usb2 won't work - see bug 1608)
-
-
-
-----------------------------------------------------------------------
- dvalin - 12-01-05 03:13 
-----------------------------------------------------------------------
-Oh, btw. the card isn't listed in the ALSA Soundcard Matrix at all, please
-add
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-======================================================================
+Liam
 
 
 
