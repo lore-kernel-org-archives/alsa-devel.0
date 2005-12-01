@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Thu, 1 Dec 2005 16:58:22 +0100
-Message-ID: <9472c37d81511aaa0700d6fe29193731@bugtrack.alsa-project.org>
+Date: Thu, 1 Dec 2005 18:15:02 +0100
+Message-ID: <385c4ebdeb311ca51a741c1ff94d0107@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D16318F
-	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 16:58:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DADF6195
+	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 18:15:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandriva Linux (cooker)
 Kernel Version:             2.6.14.3 (vanilla)
 ======================================================================
 Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              12-01-2005 16:58 CET
+Last Modified:              12-01-2005 18:15 CET
 ======================================================================
 Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
 sample rates than 48000 and 96000
@@ -55,15 +55,20 @@ and then.
 ======================================================================
 
 ----------------------------------------------------------------------
- dvalin - 12-01-05 03:13 
-----------------------------------------------------------------------
-Oh, btw. the card isn't listed in the ALSA Soundcard Matrix at all, please
-add
-
-----------------------------------------------------------------------
  Clemens Ladisch - 12-01-05 16:58 
 ----------------------------------------------------------------------
 Please show the output of "lsusb -b" for this device.
+
+----------------------------------------------------------------------
+ dvalin - 12-01-05 18:15 
+----------------------------------------------------------------------
+Bus 002 Device 001: ID 0000:0000
+Bus 001 Device 004: ID 041e:3070 Creative Technology, Ltd
+Bus 001 Device 003: ID 041e:3061 Creative Technology, Ltd
+Bus 001 Device 002: ID 041e:3050 Creative Technology, Ltd
+Bus 001 Device 001: ID 0000:0000
+
+Here ya go, as implied by the patch, 041e:3061 is the dsp device&#248;
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +86,7 @@ alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch
 11-30-05 17:22 dvalin         Note Edited: 0006878                         
 12-01-05 03:13 dvalin         Note Added: 0006882                          
 12-01-05 16:58 Clemens LadischNote Added: 0006886                          
+12-01-05 18:15 dvalin         Note Added: 0006887                          
 ======================================================================
 
 
