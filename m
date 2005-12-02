@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001610]: Capture Source Select sets incorrectly
-Date: Thu, 1 Dec 2005 22:29:19 +0100
-Message-ID: <453c8dceb75b5b89f82321cf59f07158@bugtrack.alsa-project.org>
+From: "Ken Smith" <kens@kensnet.org>
+Subject: Flame Risk FM801 Problem
+Date: Fri, 2 Dec 2005 10:07:17 -0000
+Message-ID: <000201c5f728$2cdcd670$190010ac@kensmw2kp>
+Reply-To: <kens@kensnet.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2771C194
-	for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2005 22:29:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +17,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Apologies in advance I know this is a dev list - if you have any ideas =
+on
+this I'd be very grateful...
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1610> 
-======================================================================
-Reported By:                psa
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1610
-Category:                   simple mixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             12-01-2005 22:29 CET
-Last Modified:              12-01-2005 22:29 CET
-======================================================================
-Summary:                    Capture Source Select sets incorrectly
-Description: 
-Simple mixer sets AC97 MX1A incorrectly: only left channel is updated.
-Reason: capabilities include 'cswitch-joined', while in reality it's not
-joined.
-This is caused by a feature bug in src/mixer/simple_none.c in
-selem_update() in capture joined analyses. SM_CAP_CSWITCH_JOIN is reset if
-CTL_CAPTURE_ROUTE or CTL_CAPTURE_SWITCH has more than one channels, but
-not if CTL_CAPTURE_SOURCE has more than one channels, as it should since
-SM_CAP_CSWITCH_JOIN is used in _snd_mixer_selem_set_switch() (called
-indirctly by snd_mixer_selem_set_capture_switch() called by amixer (or
-alsamixer)). If SM_CAP_CSWITCH_JOIN is set in
-_snd_mixer_selem_set_switch() channel is always set to 0. When tying to
-set right channel nothing is done since sw mask has 1 only for chnnel 1,
-but for channel 0.
+I have a problem with an FM801 on an FC3 system. It won't play any sound
+files. The driver is loaded and all the faders are maxed out in =
+alsamixer. I
+can hear a slight 'tick' in the speakers when I mute and unmute the mic
+channel. The FM801 driver has been around a while so I guess is fairly
+mature. The system is an upgrade from FC1 so has gone 2.4 to 2.6.12. The
+FM801 didn't work in FC1 either.
 
-Fix: in selem_update() add to the condition for reseting
-SM_CAP_CSWITCH_JOIN, CTL_CAPTURE_SOURCE.
-diff (also enclosed):
+Has anyone got any ideas who could help. I tried the alsa-users &
+linux-audio lists - no replies. I must have missed something... Is there =
+a
+test program that I could use to hose sound data at the driver to test =
+it?
+Or is there a test program that can drive the card directly to prove =
+whether
+it works. Audacity hangs playing a .wav file. lspci & lsmod look right. =
+The
+speakers work. Nothing is holding on to /dev/dsp. {is that the right
+device?} It=92s the only sound device in the system. The card has been =
+swapped
+out, I'm tempted to try an alternative make of card but I suspect that's =
+not
+the problem. alsa is at 1.0.9 but the alsa firmware is 1.0.8 both are =
+the
+ccrma FC3 APT build. Is that significant?
 
--------------------------------------------------------------------
-*** simple_none.c.myorg Fri Nov 25 02:21:54 2005
---- simple_none.c       Thu Dec  1 23:13:54 2005
-***************
-*** 768,774 ****
-        if (cchannels > 1) {
-                if (simple->ctls[CTL_CAPTURE_ROUTE].elem ||
-                    (simple->ctls[CTL_CAPTURE_SWITCH].elem &&
-!                    simple->ctls[CTL_CAPTURE_SWITCH].values > 1)) {
-                        caps &= ~SM_CAP_CSWITCH_JOIN;
-                }
-                if (simple->ctls[CTL_CAPTURE_VOLUME].elem &&
---- 768,776 ----
-        if (cchannels > 1) {
-                if (simple->ctls[CTL_CAPTURE_ROUTE].elem ||
-                    (simple->ctls[CTL_CAPTURE_SWITCH].elem &&
-!                    simple->ctls[CTL_CAPTURE_SWITCH].values > 1) ||
-!                   (simple->ctls[CTL_CAPTURE_SOURCE].elem &&
-!                    simple->ctls[CTL_CAPTURE_SOURCE].values > 1)) {
-                        caps &= ~SM_CAP_CSWITCH_JOIN;
-                }
-                if (simple->ctls[CTL_CAPTURE_VOLUME].elem &&
----------------------------------------------------------------------
 
-======================================================================
+Any help or pointers most welcome...
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-01-05 22:29 psa            New Issue                                    
-12-01-05 22:29 psa            File Added: simple_none.c.diff                    
-======================================================================
+Thanks in advance
+=A0
+Ken
 
+
+--=20
+No virus found in this outgoing message.
+Checked by AVG Free Edition.
+Version: 7.1.362 / Virus Database: 267.13.10/190 - Release Date: =
+01/12/2005
+=20
 
 
 
