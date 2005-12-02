@@ -1,8 +1,15 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 2 Dec 2005 11:30:47 -0000
-Message-ID: <E1Ei97s-0005yX-SY@mail.sourceforge.net>
+From: "Ken Smith" <kens@kensnet.org>
+Subject: RE: Flame Risk FM801 Problem
+Date: Fri, 2 Dec 2005 11:49:07 -0000
+Message-ID: <000b01c5f736$66d8b520$190010ac@kensmw2kp>
+References: <Pine.LNX.4.61.0512021115060.10151@tm8103.perex-int.cz>
+Reply-To: <kens@kensnet.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="windows-1250"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.61.0512021115060.10151@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,50 +22,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<server-certs@yahoo.com>:
-This user doesn't have a yahoo.com account (server-certs@yahoo.com) [-15]
+> 
+> Try toggle all IEC958 controls especially if you have input monitor one.
+> 
+> 						Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SUSE Labs
 
 
---- Original message follows.
+Thank you that fixed it. Here is the setting from alsamixer
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
 
-The original message is over 5k.  Message truncated to 1K.
+Card: ForteMedia FM801-AU
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=216.155.197.131>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta199.mail.dcn.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO yliwxoy.net) (64.251.132.84)
-  by mta199.mail.dcn.yahoo.com with SMTP; Fri, 02 Dec 2005 03:28:59 -0800
-From: alsa-devel@lists.sourceforge.net
-To: claudia_stevesmith@yahoo.com
-Date: Fri, 02 Dec 2005 11:21:45 UTC
-Subject: hi,_ive_a_new_mail_address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <0beba018.0d0b70157@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="dea059f6c79c5e86b1ec.4"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+Chip: Wolfson WM9701A
+View: [Playback] Capture  All
 
---dea059f6c79c5e86b1ec.4
+Item: IEC958 Raw Data [Off]
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+Very grateful
 
-plz read and check ...
-cyaaaaaaa
---dea059f6c79c5e86b1ec.4
-Content-Type: application/octe
-*** MESSAGE TRUNCATED ***
+Ken
+
+
+
+-- 
+No virus found in this outgoing message.
+Checked by AVG Free Edition.
+Version: 7.1.362 / Virus Database: 267.13.10/190 - Release Date: 01/12/2005
+ 
 
 
 
