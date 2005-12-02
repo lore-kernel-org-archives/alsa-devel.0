@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000931]: Wish for M-Audio Revolution 5.1 Support
-Date: Fri, 2 Dec 2005 11:54:05 +0100
-Message-ID: <f92a37383026165b811e67319bb9b578@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: M-Audio Revolution 5.1 Support
+Date: Fri, 2 Dec 2005 11:54:41 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0512021154130.10151@tm8103.perex-int.cz>
+References: <loom.20051201T152934-108@post.gmane.org> <loom.20051201T211819-384@post.gmane.org>
+ <loom.20051202T111059-222@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D17B186
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 11:54:05 +0100 (MET)
+In-Reply-To: <loom.20051202T111059-222@post.gmane.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Pieter-Jan Malfait <pieterjan.malfait@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2 Dec 2005, Pieter-Jan Malfait wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=931> 
-======================================================================
-Reported By:                Thinky
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   931
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             02-22-2005 10:40 CET
-Last Modified:              12-02-2005 11:54 CET
-======================================================================
-Summary:                    Wish for M-Audio Revolution 5.1 Support
-Description: 
-Could you add support for that soundcard?
-I hope parts of the ice1724/12 driver can be reused so that it is not a
-too hard task.
-======================================================================
+> Revo 5.1 to be supported by the ALSA driver?
 
-----------------------------------------------------------------------
- Thinky - 03-02-05 17:40 
-----------------------------------------------------------------------
-I thought I could ask M-Audio for the details so I can avoid the work :).
-The initial reaction has been positive and I gave them your (perex) mail
-address and Clemens Ladisch's. I hope that was OK.
+See https://bugtrack.alsa-project.org/alsa-bug/view.php?id=931 if you can 
+provide hardware details.
 
-----------------------------------------------------------------------
- perex - 12-02-05 11:54 
-----------------------------------------------------------------------
-You need to download Envy24 datasheet and datasheets for AKM chips. Then
-look for GPIO pins (Envy24) and three wire communication pins (AKM).
-Basically, we need to know how are chips connected together.
+						Jaroslav
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-22-05 10:40 Thinky         New Issue                                    
-02-22-05 10:40 Thinky         Distribution              => Debian unstable 
-02-22-05 10:40 Thinky         Kernel Version            => 2.6.10          
-02-22-05 10:53 perex          Note Added: 0003696                          
-02-27-05 17:42 Thinky         Note Added: 0003742                          
-03-02-05 17:40 Thinky         Note Added: 0003780                          
-12-02-05 11:54 perex          Note Added: 0006888                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
