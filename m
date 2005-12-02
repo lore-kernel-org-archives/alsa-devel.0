@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001611]: PCM to spdif blocked(any AC95), mic to spdif (in ALC650/655/850)
-Date: Fri, 2 Dec 2005 16:49:30 +0100
-Message-ID: <385f1b3dc8b5fd56f9ef41241a3d9879@bugtrack.alsa-project.org>
+Date: Fri, 2 Dec 2005 17:39:44 +0100
+Message-ID: <5194186d20102d688febfbd8628f94aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 156E8160
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 16:49:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4388A159
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 17:39:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1611> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-02-2005 16:49 CET
-Last Modified:              12-02-2005 16:49 CET
+Last Modified:              12-02-2005 17:39 CET
 ======================================================================
 Summary:                    PCM to spdif blocked(any AC95), mic to spdif (in
 ALC650/655/850)
@@ -154,11 +154,32 @@ alc655_enum),
 
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 12-02-05 17:39 
+----------------------------------------------------------------------
+1. Please make a unified diff against the latest ALSA version.
+
+2. Note that the SPDIF output is supposed to be "spdif" PCM.  If this PCM
+is selected, the dxs 3 is selected automagically.  Output to SPDIF though
+the default PCM is a side-effect, and not guaranteed to work always.
+
+3. It's wrong to toggle AC97 register bit in spdif_put callback.  It
+conflicts with "IEC958 Playback Switch".
+
+4. "IEC958 Analog Playback" is nonsense.  It's identical with "Capture
+Source" control.
+
+5. It's correct to restrict the output sample rates to
+chip->ac97->rates[AC97_RATES_SPDIF] because the IEC958 itself supports
+only limited sample rates (regardless what source you use).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-02-05 16:49 psa            New Issue                                    
 12-02-05 16:49 psa            File Added: via82xx.c.diff                    
+12-02-05 16:51 psa            File Added: ac97_patch.c.diff                    
+12-02-05 17:39 tiwai          Note Added: 0006897                          
 ======================================================================
 
 
