@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001610]: Capture Source Select sets incorrectly
-Date: Fri, 2 Dec 2005 14:41:36 +0100
-Message-ID: <aeea5039909ea2ed964096a6666d8dc1@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001195]: alsa-lib 1.0.9 crashes artsd
+Date: Fri, 2 Dec 2005 14:45:23 +0100
+Message-ID: <3b7f4151fd920b9474f468e1affde8f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B28616A
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 14:41:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B915016A
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 14:45:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,89 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1610> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1195> 
 ======================================================================
-Reported By:                psa
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1610
-Category:                   simple mixer
-Reproducibility:            always
+Issue ID:                   1195
+Category:                   0_general
+Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             12-01-2005 22:29 CET
-Last Modified:              12-02-2005 14:41 CET
+Date Submitted:             06-15-2005 17:21 CEST
+Last Modified:              12-02-2005 14:45 CET
 ======================================================================
-Summary:                    Capture Source Select sets incorrectly
+Summary:                    alsa-lib 1.0.9 crashes artsd
 Description: 
-Simple mixer sets AC97 MX1A incorrectly: only left channel is updated.
-Reason: capabilities include 'cswitch-joined', while in reality it's not
-joined.
-This is caused by a feature bug in src/mixer/simple_none.c in
-selem_update() in capture joined analyses. SM_CAP_CSWITCH_JOIN is reset if
-CTL_CAPTURE_ROUTE or CTL_CAPTURE_SWITCH has more than one channels, but
-not if CTL_CAPTURE_SOURCE has more than one channels, as it should since
-SM_CAP_CSWITCH_JOIN is used in _snd_mixer_selem_set_switch() (called
-indirctly by snd_mixer_selem_set_capture_switch() called by amixer (or
-alsamixer)). If SM_CAP_CSWITCH_JOIN is set in
-_snd_mixer_selem_set_switch() channel is always set to 0. When tying to
-set right channel nothing is done since sw mask has 1 only for chnnel 1,
-but for channel 0.
+The submitter of Debian bug report #312577 says that after upgrading his
+ALSA library to 1.0.9 his artsd process crashes after a number of hours.
 
-Fix: in selem_update() add to the condition for reseting
-SM_CAP_CSWITCH_JOIN, CTL_CAPTURE_SOURCE.
-diff (also enclosed):
-
--------------------------------------------------------------------
-*** simple_none.c.myorg Fri Nov 25 02:21:54 2005
---- simple_none.c       Thu Dec  1 23:13:54 2005
-***************
-*** 768,774 ****
-        if (cchannels > 1) {
-                if (simple->ctls[CTL_CAPTURE_ROUTE].elem ||
-                    (simple->ctls[CTL_CAPTURE_SWITCH].elem &&
-!                    simple->ctls[CTL_CAPTURE_SWITCH].values > 1)) {
-                        caps &= ~SM_CAP_CSWITCH_JOIN;
-                }
-                if (simple->ctls[CTL_CAPTURE_VOLUME].elem &&
---- 768,776 ----
-        if (cchannels > 1) {
-                if (simple->ctls[CTL_CAPTURE_ROUTE].elem ||
-                    (simple->ctls[CTL_CAPTURE_SWITCH].elem &&
-!                    simple->ctls[CTL_CAPTURE_SWITCH].values > 1) ||
-!                   (simple->ctls[CTL_CAPTURE_SOURCE].elem &&
-!                    simple->ctls[CTL_CAPTURE_SOURCE].values > 1)) {
-                        caps &= ~SM_CAP_CSWITCH_JOIN;
-                }
-                if (simple->ctls[CTL_CAPTURE_VOLUME].elem &&
----------------------------------------------------------------------
-
+The submitter provided a backtrace which I attach (artsd.crash).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-02-05 14:41 
+ jdthood - 12-01-05 16:28 
 ----------------------------------------------------------------------
-Nice catch.  Applied to CVS tree.
+Has there been any progress on this?
 
-The copyright is LGPL, as found in the source code and COPYRIGHT.
-The credit is usually recorded in the CVS changelog.
+----------------------------------------------------------------------
+ tiwai - 12-02-05 14:45 
+----------------------------------------------------------------------
+I hope yes.  The dmix code in 1.0.10 is pretty different from 1.0.9.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-01-05 22:29 psa            New Issue                                    
-12-01-05 22:29 psa            File Added: simple_none.c.diff                    
-12-02-05 14:41 tiwai          Status                   new => resolved     
-12-02-05 14:41 tiwai          Resolution               open => fixed       
-12-02-05 14:41 tiwai          Assigned To               => tiwai           
-12-02-05 14:41 tiwai          Note Added: 0006889                          
+06-15-05 17:21 jdthood        New Issue                                    
+06-15-05 17:21 jdthood        File Added: artsd.crash                      
+06-15-05 17:52 tiwai          Note Added: 0005038                          
+06-15-05 17:58 pzad           Note Added: 0005039                          
+06-15-05 18:17 tiwai          Note Added: 0005040                          
+06-15-05 18:24 jdthood        Note Added: 0005041                          
+06-15-05 19:47 tiwai          Note Added: 0005042                          
+06-15-05 19:47 tiwai          File Added: dmix-boundary-fix.diff                
+   
+06-17-05 08:54 jdthood        Note Added: 0005064                          
+06-17-05 14:24 tiwai          Note Added: 0005070                          
+12-01-05 16:28 jdthood        Note Added: 0006883                          
+12-02-05 14:45 tiwai          Note Added: 0006891                          
 ======================================================================
 
 
