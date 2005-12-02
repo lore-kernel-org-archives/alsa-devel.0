@@ -1,14 +1,13 @@
-From: =?ISO-8859-2?Q?Piotr_Tajdu=B6?= <aegis@op.pl>
-Subject: Equalizer for emu10k1
-Date: Fri, 02 Dec 2005 20:19:48 +0100
-Message-ID: <43909E54.20503@op.pl>
+From: Brad Zawacki <brad.zawacki@gmail.com>
+Subject: snd-usb-audio SB Live External
+Date: Fri, 2 Dec 2005 15:33:46 -0500
+Message-ID: <a9618660512021233m53bf9ffxf98d0d370a3329b6@mail.gmail.com>
+Reply-To: zawackib@umich.edu
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp3.poczta.onet.pl (smtp3.poczta.onet.pl [213.180.130.29])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DA81169
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 20:15:56 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,17 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have written equalizer for emu10k1, maybe it will be usefull for somebo=
-dy.
-http://gadrael.w.interia.pl/eq10.asm
-I tested this only on Audigy...
+Hello,
 
-Piotr Tajdu=B6
+I recently got a soundblaster Live External usb soundcard to use with
+my laptop (Windows), but I'm also curious what use I can make of it in
+Linux.
+
+I've loaded it up using the snd-usb-audio module on alsa 1.0.10 with
+some success.  Alsamixer shows PCM output and PCM capture and I can
+get stereo sound to play.
+
+I'm wonder if there is any possibility of getting the spdif output on
+this box working?
+
+I'd be interested in working on code for this, but I haven't ever done
+anything on kernel modules, so I don't really know how to start, or
+even if I'm barking up the wrong tree trying to get this card's spdif
+working.
 
 
+Any direction offered would be terrific.
+
+Thanks,
+BZ
 
 
 -------------------------------------------------------
