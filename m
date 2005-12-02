@@ -1,12 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Flame Risk FM801 Problem
-Date: Fri, 2 Dec 2005 11:15:34 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0512021115060.10151@tm8103.perex-int.cz>
-References: <000201c5f728$2cdcd670$190010ac@kensmw2kp>
+From: Pieter-Jan Malfait <pieterjan.malfait@gmail.com>
+Subject: Re: M-Audio Revolution 5.1 Support
+Date: Fri, 2 Dec 2005 10:20:27 +0000 (UTC)
+Message-ID: <loom.20051202T111059-222@post.gmane.org>
+References: <loom.20051201T152934-108@post.gmane.org> <loom.20051201T211819-384@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <000201c5f728$2cdcd670$190010ac@kensmw2kp>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,23 +16,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ken Smith <kens@kensnet.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2 Dec 2005, Ken Smith wrote:
+Hi,
 
-> Apologies in advance I know this is a dev list - if you have any ideas on
-> this I'd be very grateful...
+> I hope that someone will be able to add ALSA support for this great card. I'm
+> willing to help in this effort (by testing or coding).
+> 
 
-Try toggle all IEC958 controls especially if you have input monitor one.
+I just purchased a M-Audio Revolution 5.1 (before i read about the support
+issues) to use mainly for digital output from my MythTV box to my amplifier. 
+Pity it isn't supported in ALSA, i'm also willing to contribute to the
+development in the form of testing rather than coding (i'm a java j2ee
+programmer, no experience whatever at writing drivers..).
 
-						Jaroslav
+> Currently, I'm forced to use free-version of OSS drivers:
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+That's good news as i thought that the Revo 5.1 just wasn't supported on Linux. 
+I've considered trading the Revo 5.1 for the Revo 7.1. Would that be a good
+decision or should i stick to using the OSS drivers for now and waiting for the
+Revo 5.1 to be supported by the ALSA driver?
+
+thank you very much for your response!
+
+kind regards,
+PJ
+
+
+
 
 
 -------------------------------------------------------
