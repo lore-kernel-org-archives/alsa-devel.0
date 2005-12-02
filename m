@@ -1,17 +1,14 @@
-From: "Dignitary D. Proven" <rhanson@gilesanderson.com>
-Subject: Pharmaceutical revolution
-Date: Fri, 02 Dec 2005 20:11:24 -0600
-Message-ID: <9689782313.20051202201124@gilesanderson.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001610]: Capture Source Select sets incorrectly
+Date: Fri, 2 Dec 2005 14:41:36 +0100
+Message-ID: <aeea5039909ea2ed964096a6666d8dc1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------A4F5E21D1035C4B"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 146144704 (spr1-bexl2-6-0-cust130.asfd.broadband.ntl.com [80.2.216.130])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 25B26192
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 13:06:13 +0100 (MET)
-Received: from gilesanderson.com (144358184 [145467496])
-	by spr1-bexl2-6-0-cust130.asfd.broadband.ntl.com (Qmailv1) with ESMTP id 80D323332D
-	for <alsa-devel@alsa-project.org>; Fri, 02 Dec 2005 20:11:24 -0600
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B28616A
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 14:41:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,79 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------------A4F5E21D1035C4B
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1610> 
+======================================================================
+Reported By:                psa
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1610
+Category:                   simple mixer
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             12-01-2005 22:29 CET
+Last Modified:              12-02-2005 14:41 CET
+======================================================================
+Summary:                    Capture Source Select sets incorrectly
+Description: 
+Simple mixer sets AC97 MX1A incorrectly: only left channel is updated.
+Reason: capabilities include 'cswitch-joined', while in reality it's not
+joined.
+This is caused by a feature bug in src/mixer/simple_none.c in
+selem_update() in capture joined analyses. SM_CAP_CSWITCH_JOIN is reset if
+CTL_CAPTURE_ROUTE or CTL_CAPTURE_SWITCH has more than one channels, but
+not if CTL_CAPTURE_SOURCE has more than one channels, as it should since
+SM_CAP_CSWITCH_JOIN is used in _snd_mixer_selem_set_switch() (called
+indirctly by snd_mixer_selem_set_capture_switch() called by amixer (or
+alsamixer)). If SM_CAP_CSWITCH_JOIN is set in
+_snd_mixer_selem_set_switch() channel is always set to 0. When tying to
+set right channel nothing is done since sw mask has 1 only for chnnel 1,
+but for channel 0.
 
-Revolution in pharmbacology!
-LOW prices in the net!
-We achieved this!
+Fix: in selem_update() add to the condition for reseting
+SM_CAP_CSWITCH_JOIN, CTL_CAPTURE_SOURCE.
+diff (also enclosed):
 
-Vlagara - $3.3; 
-Lekvitra - $3.3; 
-Cialies - $3.7; 
-Imxitrex - $16.4 
-Flhomax - $2.2; 
-Ulqtram - $0.78; 
-Viqoxx - $4.75; 
-Amnbien - $2.2 VaIium - $0.97; 
-Sboma - $3; 
-Xanwax - $1.09; 
-Mqeridia - $2.2 
+-------------------------------------------------------------------
+*** simple_none.c.myorg Fri Nov 25 02:21:54 2005
+--- simple_none.c       Thu Dec  1 23:13:54 2005
+***************
+*** 768,774 ****
+        if (cchannels > 1) {
+                if (simple->ctls[CTL_CAPTURE_ROUTE].elem ||
+                    (simple->ctls[CTL_CAPTURE_SWITCH].elem &&
+!                    simple->ctls[CTL_CAPTURE_SWITCH].values > 1)) {
+                        caps &= ~SM_CAP_CSWITCH_JOIN;
+                }
+                if (simple->ctls[CTL_CAPTURE_VOLUME].elem &&
+--- 768,776 ----
+        if (cchannels > 1) {
+                if (simple->ctls[CTL_CAPTURE_ROUTE].elem ||
+                    (simple->ctls[CTL_CAPTURE_SWITCH].elem &&
+!                    simple->ctls[CTL_CAPTURE_SWITCH].values > 1) ||
+!                   (simple->ctls[CTL_CAPTURE_SOURCE].elem &&
+!                    simple->ctls[CTL_CAPTURE_SOURCE].values > 1)) {
+                        caps &= ~SM_CAP_CSWITCH_JOIN;
+                }
+                if (simple->ctls[CTL_CAPTURE_VOLUME].elem &&
+---------------------------------------------------------------------
 
-We guarantee 100% top-quality of all products! 
+======================================================================
 
-Our website
-http://topulove.com
+----------------------------------------------------------------------
+ tiwai - 12-02-05 14:41 
+----------------------------------------------------------------------
+Nice catch.  Applied to CVS tree.
 
-WBR,
-Online Pharmaceuticals 
-fedfewwsc UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+The copyright is LGPL, as found in the source code and COPYRIGHT.
+The credit is usually recorded in the CVS changelog.
 
-------------A4F5E21D1035C4B
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<HTML>
-<BODY bgcolor="#FFF6FF">
-<p><b>Revolution in pharmdacology!<br>
-  LOW prices in the net!<br>
-  We achieved this!</b></p>
-<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#432CFF">
-  <tr> 
-    <td bgcolor="#FFE8FF"><b>Vlagrra - $3.3; <br>
-      Leuvitra - $3.3; <br>
-      Cialiys - $3.7; <br>
-      Imtitrex - $16.4</b></td>
-    <td bgcolor="#AFE8FF"><b>Flxomax - $2.2; <br>
-      Ulytram - $0.78; <br>
-      Visoxx - $4.75; <br>
-      Ampbien - $2.2</b></td>
-    <td bgcolor="#FFE8FF"><b>VaIiutm - $0.97; <br>
-      Suoma 
-      - $3; <br>Xaniax - $1.09; <br>
-      Mkeridia - $2.2</b></td>
-  </tr>
-</table>
-<p>
-<b>We guarantee 100% top-quality of all products!</b>
-</p>
- 
-<p> <b><A href="http://topulove.com">Our website</A> </b> 
-</p>
-  WBR,<br>
-  Online Pharmaceuticals 
-fedfewwsc UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</BODY>
-</HTML>
-
-
-------------A4F5E21D1035C4B--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-01-05 22:29 psa            New Issue                                    
+12-01-05 22:29 psa            File Added: simple_none.c.diff                    
+12-02-05 14:41 tiwai          Status                   new => resolved     
+12-02-05 14:41 tiwai          Resolution               open => fixed       
+12-02-05 14:41 tiwai          Assigned To               => tiwai           
+12-02-05 14:41 tiwai          Note Added: 0006889                          
+======================================================================
 
 
 
