@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001594]: 'playback.pcm {' missing from PMacToonie.conf
-Date: Fri, 2 Dec 2005 14:44:22 +0100
-Message-ID: <b2e5ed2cb2689fb8fed1c1b3f1572028@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001604]: alsa-utils compilation dies - undefined reference to `snd_mixer_selem_get_capture_dB'
+Date: Fri, 2 Dec 2005 14:48:30 +0100
+Message-ID: <ed1197f7393dbdf8a7161b5bd04dc720@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10B7516A
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 14:44:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FBB416A
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 14:48:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,94 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1594> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1604> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                Twey
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1594
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Issue ID:                   1604
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.14-1.1637_FC4
 ======================================================================
-Date Submitted:             11-23-2005 20:30 CET
-Last Modified:              12-02-2005 14:44 CET
+Date Submitted:             11-27-2005 19:39 CET
+Last Modified:              12-02-2005 14:48 CET
 ======================================================================
-Summary:                    'playback.pcm {' missing from PMacToonie.conf
+Summary:                    alsa-utils compilation dies - undefined reference to
+`snd_mixer_selem_get_capture_dB'
 Description: 
-The submitter of Debian bug report 340478 reports that there is a line
-missing from conf/cards/PMacToonie.conf.  The file contains the following
-invalid block:
-
-# default with dmix+softvol & dsnoop
-PMacToonie.pcm.default {
-        @args [ CARD ]
-        @args.CARD {
-                type string
-        }
-        type asym
-                type plug
-                slave.pcm {
-                        type softvol
-                        slave.pcm {
-                                @func concat
-                                strings [ "dmix:CARD=" $CARD ",FORMAT=S16"
-]
-                        }
-                        control {
-                                name "PCM Playback Volume"
-                                card $CARD
-                        }
-                }
-        }
-        capture.pcm {
-                type plug
-                slave.pcm {
-                        @func concat
-                        strings [ "dsnoop:CARD=" $CARD ",FORMAT=S16" ]
-                }
-        }
-}
-
-
-The resulting error is:
-
-ALSA lib conf.c:1596:(snd_config_load1) :51:1:Unexpected }
-
-The user says that adding
-
-    playback.pcm {
-
-fixes the problem.
+Compilation of alsamixer dies.  Full errors attached.  Note that the output
+given here is using gcc32, but gcc4 gives the same errors.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-01-05 16:30 
+ Twey - 11-28-05 19:39 
 ----------------------------------------------------------------------
-Has this been applied?  It's an obviously correct patch.
+It may not be obvious here, as I mentioned it in the "build" field -- the
+"version" field being a <select> box only going up to 1.0.9 -- but I was
+trying to compile 1.0.10.
 
 ----------------------------------------------------------------------
- tiwai - 12-02-05 14:44 
+ tiwai - 12-02-05 14:48 
 ----------------------------------------------------------------------
-Applied now.  Thanks.
+Did you really look at /lib whether _another_ libasound.so.* exists?  This
+conflicts with the one you installed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-05 20:30 jdthood        New Issue                                    
-11-23-05 20:32 jdthood        Note Added: 0006828                          
-12-01-05 16:30 jdthood        Note Added: 0006885                          
-12-02-05 14:44 tiwai          Status                   new => resolved     
-12-02-05 14:44 tiwai          Resolution               open => fixed       
-12-02-05 14:44 tiwai          Assigned To               => tiwai           
-12-02-05 14:44 tiwai          Note Added: 0006890                          
+11-27-05 19:39 Twey           New Issue                                    
+11-27-05 19:39 Twey           Distribution              => Fedora Core 4   
+11-27-05 19:39 Twey           Kernel Version            => 2.6.14-1.1637_FC4
+11-28-05 18:56 tiwai          Note Added: 0006866                          
+11-28-05 19:11 Twey           Note Added: 0006867                          
+11-28-05 19:13 tiwai          Note Added: 0006868                          
+11-28-05 19:39 Twey           Note Added: 0006869                          
+12-02-05 14:48 tiwai          Note Added: 0006893                          
 ======================================================================
 
 
