@@ -1,13 +1,11 @@
-From: David Peroutka <david.peroutka@seznam.cz>
-Subject: Re: Re: M-Audio Revolution 5.1 Support
-Date: Fri, 02 Dec 2005 21:52:49 +0100
-Message-ID: <4390B421.9030304@seznam.cz>
-References: <loom.20051201T152934-108@post.gmane.org>	<loom.20051201T211819-384@post.gmane.org> <s5h1x0vhib0.wl%tiwai@suse.de>
+From: Ivan Baldo <ibaldo@adinet.com.uy>
+Subject: snd-via82xx dxs_support=5 works but uses 3 by default.
+Date: Thu, 01 Dec 2005 22:25:37 -0200
+Message-ID: <438F9481.8060907@adinet.com.uy>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------070300000206050409080404"
+ boundary="------------010004090705060206090009"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1x0vhib0.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,226 +15,134 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------070300000206050409080404
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+--------------010004090705060206090009
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-> At Thu, 1 Dec 2005 20:19:28 +0000 (UTC),
-> David Peroutka wrote:
-> 
->>Pieter-Jan Malfait <pieterjan.malfait <at> gmail.com> writes:
->>
->>
->>>hello,
->>>
->>>i've read on a couple of sites that the M-Audio Revolution 5.1 is not supported
->>>by   the alsa driver, however some of these sites were over a year old.. Is it
->>>currently supported or will it be in the near future ?
->>>
->>>thank you
->>>
->>>kind regards,
->>>PJ
->>>
->>>-------------------------------------------------------
->>>This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
->>>for problems?  Stop!  Download the new AJAX search engine that makes
->>>searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
->>>http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
->>>
->>
->>Hello,
->>
->>unfortunately, the Revolution 5.1 is currently not supported in ALSA; only
->>Revolution 7.1 is supported. Both cards are based on VIA Envy 24HT controller,
->>but there are some notable differences between the two models:
->>
->>The front two output channels of the Revolution 7.1 use AKM AK4381 stereo DAC,
->>the remaining 5.1 channels use AKM AK4355.  Analog audio is sampled with the
->>AKM AK5380 ADC.
->>
->>The Revolution 5.1 uses different codecs.  All output channels use AKM AK4358
->>(8-ch DAC, 24/192). Inputs are sampled by AKM AK5365 (24/96).  Also, the
->>Revolution 5.1 has a dedicated headphone output.
->>
->>Also note, that the DAC used in Revolution 5.1 is the same as in Juli@, which
->>is already supported in ALSA (ice1724).
->>
->>I've also tried a kernel patch, that is supposed to add support for the M-Audio
->>Revolution 5.1:
->>
->>http://www.mph.eclipse.co.uk/pub/linux/patches/ice1712_revo.patch
->>
->>but it does not work for me; apparently the driver failed to setup the output
->>codec, so I can only hear some strange dizzling sounds, coming out at full
->>volume :)
-> 
-> Takashi Iwai wrote:
-> 
-> This patch can't work because the codecs are different.
-> 
-> The most important question for the support of this new board is which
-> connection is used on it.  Assume that it's using the same protocol as
-> revo 7.1, we still need to know the clock, in, out, chip-select pins.
-> You can check this by yourself with help of an electronic tool (or
-> good eyes) by tracing the pin connections between VT1724 and codec
-> chip.
-> 
-> The patch below is a shot in the dark (to ALSA CVS version!)
-> If this doesn't work, first try a different value in
-> akm_revo51_priv.caddr (e.g. 2 or 0).  If still doesn't work, try
-> .cs_addr = VT1724_REVO_CS0 | VT1724_REVO_CS1.
-> If stil doesn't work... try different combinations of clock, data and
-> cs bits.
-> 
-> 
-> Takashi
+    Hello.
+    Well, my kernel told me to try dxs_support=5 and read 
+ALSA-Configuration, which I did.
+    It works and sounds good, I verified it is working with 44100 with 
+hw_params of all 4 subdevices (only 1 opened and it says 44100 with 
+dxs_support=5 and 48000 with dxs_support=0 or 3).
+    I will not try to be smart and better send you all the output of 
+lspci -nv without striping anything.
+    Thanks for everything and if you need something else from me don't 
+hesitate.
 
-Hi Takashi,
+P.s.: vanilla 2.4.14.3 kernel (only NVidia module as an extra).
 
-I've found the working values for akm_revo51_priv:
 
-.caddr = 2,
-.cs_addr = 0,
+-- 
+Ivan Baldo - ibaldo@adinet.com.uy - http://ibaldo.codigolibre.net/
+ICQ 10215364 - Phone/FAX (598) (2) 613 3223.
+Caldas 1781, Malvin, Montevideo, Uruguay, South America, planet Earth.
+In favour of world peace and freedom, against U.S.A. and allies!!!
+Alternatives: ibaldo@codigolibre.net - http://go.to/ibaldo
 
-The card now plays music very nicely.  I've attached a patch against 
-alsa-driver-1.0.10 for other users. Note that you must adjust first two 
-mixer controls named "DAC" controling volume of the left and right front 
-channels.
 
-Now, the only missing piece (for me :) is a volume control for headphone 
-output. Any idea how to add it?
-
-I do really appreciate your help and outstanding work of alsa team as whole.
-
-Thanks!
-
---
-David
-
---------------070300000206050409080404
+--------------010004090705060206090009
 Content-Type: text/plain;
- name="revo51.diff"
+ name="lspci_nv.via.txt"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="revo51.diff"
+ filename="lspci_nv.via.txt"
 
---- revo.c.orig	2005-10-06 14:48:54.000000000 +0200
-+++ revo.c	2005-12-02 21:46:20.000000000 +0100
-@@ -47,6 +47,7 @@
-  */
- static void revo_set_rate_val(akm4xxx_t *ak, unsigned int rate)
- {
-+	printk(KERN_DEBUG "revo_set_rate_val: rate=%d\n", rate);
- 	unsigned char old, tmp, dfs;
- 	int reg, shift;
- 
-@@ -61,7 +62,7 @@
- 	else
- 		dfs = 0;
- 
--	if (ak->type == SND_AK4355) {
-+	if (ak->type == SND_AK4355 || ak->type == SND_AK4358) {
- 		reg = 2;
- 		shift = 4;
- 	} else {
-@@ -128,6 +129,26 @@
- 	.mask_flags = 0,
- };
- 
-+static akm4xxx_t akm_revo51 __devinitdata = {
-+	.type = SND_AK4358,
-+	.num_dacs = 6,
-+	.ops = {
-+		.set_rate_val = revo_set_rate_val
-+	}
-+};
-+
-+static struct snd_ak4xxx_private akm_revo51_priv __devinitdata = {
-+	.caddr = 2,
-+	.cif = 0,
-+	.data_mask = VT1724_REVO_CDOUT,
-+	.clk_mask = VT1724_REVO_CCLK,
-+	.cs_mask = VT1724_REVO_CS0 | VT1724_REVO_CS1 | VT1724_REVO_CS2,
-+	.cs_addr = 0,
-+	.cs_none = VT1724_REVO_CS0 | VT1724_REVO_CS1 | VT1724_REVO_CS2,
-+	.add_flags = VT1724_REVO_CCLK, /* high at init */
-+	.mask_flags = 0,
-+};
-+
- static int __devinit revo_init(ice1712_t *ice)
- {
- 	akm4xxx_t *ak;
-@@ -138,21 +159,24 @@
- 	case VT1724_SUBDEVICE_REVOLUTION71:
- 		ice->num_total_dacs = 8;
- 		ice->num_total_adcs = 2;
-+		ice->gpio.i2s_mclk_changed = revo_i2s_mclk_changed;
-+		break;
-+	case VT1724_SUBDEVICE_REVOLUTION51:
-+		ice->num_total_dacs = 6;
-+		ice->num_total_adcs = 2;
- 		break;
- 	default:
- 		snd_BUG();
- 		return -EINVAL;
- 	}
- 
--	ice->gpio.i2s_mclk_changed = revo_i2s_mclk_changed;
--
- 	/* second stage of initialization, analog parts and others */
- 	ak = ice->akm = kcalloc(2, sizeof(akm4xxx_t), GFP_KERNEL);
- 	if (! ak)
- 		return -ENOMEM;
--	ice->akm_codecs = 2;
- 	switch (ice->eeprom.subvendor) {
- 	case VT1724_SUBDEVICE_REVOLUTION71:
-+		ice->akm_codecs = 2;
- 		if ((err = snd_ice1712_akm4xxx_init(ak, &akm_revo_front, &akm_revo_front_priv, ice)) < 0)
- 			return err;
- 		if ((err = snd_ice1712_akm4xxx_init(ak + 1, &akm_revo_surround, &akm_revo_surround_priv, ice)) < 0)
-@@ -160,6 +184,13 @@
- 		/* unmute all codecs */
- 		snd_ice1712_gpio_write_bits(ice, VT1724_REVO_MUTE, VT1724_REVO_MUTE);
- 		break;
-+	case VT1724_SUBDEVICE_REVOLUTION51:
-+		ice->akm_codecs = 1;
-+		if ((err = snd_ice1712_akm4xxx_init(ak, &akm_revo51, &akm_revo51_priv, ice)) < 0)
-+			return err;
-+		/* unmute all codecs - needed! */
-+		snd_ice1712_gpio_write_bits(ice, VT1724_REVO_MUTE, VT1724_REVO_MUTE);
-+		break;
- 	}
- 
- 	return 0;
-@@ -172,6 +203,7 @@
- 
- 	switch (ice->eeprom.subvendor) {
- 	case VT1724_SUBDEVICE_REVOLUTION71:
-+	case VT1724_SUBDEVICE_REVOLUTION51:
- 		err = snd_ice1712_akm4xxx_build_controls(ice);
- 		if (err < 0)
- 			return err;
-@@ -188,5 +220,12 @@
- 		.chip_init = revo_init,
- 		.build_controls = revo_add_controls,
- 	},
-+	{
-+		.subvendor = VT1724_SUBDEVICE_REVOLUTION51,
-+		.name = "M Audio Revolution-5.1",
-+		.model = "revo51",
-+		.chip_init = revo_init,
-+		.build_controls = revo_add_controls,
-+	},
- 	{ } /* terminator */
- };
+0000:00:00.0 0600: 1106:3189 (rev 80)
+	Subsystem: 1849:3189
+	Flags: bus master, 66MHz, medium devsel, latency 8
+	Memory at e0000000 (32-bit, prefetchable) [size=256M]
+	Capabilities: [80] AGP version 3.5
+	Capabilities: [c0] Power Management version 2
 
---------------070300000206050409080404--
+0000:00:01.0 0604: 1106:b198
+	Flags: bus master, 66MHz, medium devsel, latency 0
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	Memory behind bridge: dde00000-dfefffff
+	Prefetchable memory behind bridge: cdd00000-ddcfffff
+	Capabilities: [80] Power Management version 2
+
+0000:00:0f.0 0104: 1106:3149 (rev 80)
+	Subsystem: 1849:3149
+	Flags: bus master, medium devsel, latency 32, IRQ 169
+	I/O ports at ec00 [size=8]
+	I/O ports at e800 [size=4]
+	I/O ports at e400 [size=8]
+	I/O ports at e000 [size=4]
+	I/O ports at dc00 [size=16]
+	I/O ports at d800 [size=256]
+	Capabilities: [c0] Power Management version 2
+
+0000:00:0f.1 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
+	Subsystem: 1849:0571
+	Flags: bus master, medium devsel, latency 32, IRQ 169
+	I/O ports at fc00 [size=16]
+	Capabilities: [c0] Power Management version 2
+
+0000:00:10.0 0c03: 1106:3038 (rev 81)
+	Subsystem: 1849:3038
+	Flags: bus master, medium devsel, latency 32, IRQ 177
+	I/O ports at c800 [size=32]
+	Capabilities: [80] Power Management version 2
+
+0000:00:10.1 0c03: 1106:3038 (rev 81)
+	Subsystem: 1849:3038
+	Flags: bus master, medium devsel, latency 32, IRQ 177
+	I/O ports at cc00 [size=32]
+	Capabilities: [80] Power Management version 2
+
+0000:00:10.2 0c03: 1106:3038 (rev 81)
+	Subsystem: 1849:3038
+	Flags: bus master, medium devsel, latency 32, IRQ 177
+	I/O ports at d000 [size=32]
+	Capabilities: [80] Power Management version 2
+
+0000:00:10.3 0c03: 1106:3038 (rev 81)
+	Subsystem: 1849:3038
+	Flags: bus master, medium devsel, latency 32, IRQ 177
+	I/O ports at d400 [size=32]
+	Capabilities: [80] Power Management version 2
+
+0000:00:10.4 0c03: 1106:3104 (rev 86) (prog-if 20)
+	Subsystem: 1849:3104
+	Flags: bus master, medium devsel, latency 32, IRQ 177
+	Memory at dfffbe00 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [80] Power Management version 2
+
+0000:00:11.0 0601: 1106:3227
+	Subsystem: 1849:3227
+	Flags: bus master, stepping, medium devsel, latency 0
+	Capabilities: [c0] Power Management version 2
+
+0000:00:11.5 0401: 1106:3059 (rev 60)
+	Subsystem: 1849:9761
+	Flags: medium devsel, IRQ 193
+	I/O ports at c400 [size=256]
+	Capabilities: [c0] Power Management version 2
+
+0000:00:12.0 0200: 1106:3065 (rev 78)
+	Subsystem: 1849:3065
+	Flags: bus master, medium devsel, latency 32, IRQ 185
+	I/O ports at c000 [size=256]
+	Memory at dfffbd00 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [40] Power Management version 2
+
+0000:01:00.0 0300: 10de:0322 (rev a1)
+	Subsystem: 1682:1351
+	Flags: bus master, 66MHz, medium devsel, latency 248, IRQ 201
+	Memory at de000000 (32-bit, non-prefetchable) [size=16M]
+	Memory at d0000000 (32-bit, prefetchable) [size=128M]
+	Expansion ROM at dfee0000 [disabled] [size=128K]
+	Capabilities: [60] Power Management version 2
+	Capabilities: [44] AGP version 3.0
+
+
+--------------010004090705060206090009--
+
 
 
 -------------------------------------------------------
