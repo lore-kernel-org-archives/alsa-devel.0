@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001195]: alsa-lib 1.0.9 crashes artsd
-Date: Fri, 2 Dec 2005 14:45:23 +0100
-Message-ID: <3b7f4151fd920b9474f468e1affde8f9@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001594]: 'playback.pcm {' missing from PMacToonie.conf
+Date: Fri, 2 Dec 2005 14:44:22 +0100
+Message-ID: <b2e5ed2cb2689fb8fed1c1b3f1572028@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B915016A
-	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 14:45:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10B7516A
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 14:44:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1195> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1594> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1195
-Category:                   0_general
-Reproducibility:            sometimes
-Severity:                   major
+Issue ID:                   1594
+Category:                   hw specific configuration
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-15-2005 17:21 CEST
-Last Modified:              12-02-2005 14:45 CET
+Date Submitted:             11-23-2005 20:30 CET
+Last Modified:              12-02-2005 14:44 CET
 ======================================================================
-Summary:                    alsa-lib 1.0.9 crashes artsd
+Summary:                    'playback.pcm {' missing from PMacToonie.conf
 Description: 
-The submitter of Debian bug report #312577 says that after upgrading his
-ALSA library to 1.0.9 his artsd process crashes after a number of hours.
+The submitter of Debian bug report 340478 reports that there is a line
+missing from conf/cards/PMacToonie.conf.  The file contains the following
+invalid block:
 
-The submitter provided a backtrace which I attach (artsd.crash).
+# default with dmix+softvol & dsnoop
+PMacToonie.pcm.default {
+        @args [ CARD ]
+        @args.CARD {
+                type string
+        }
+        type asym
+                type plug
+                slave.pcm {
+                        type softvol
+                        slave.pcm {
+                                @func concat
+                                strings [ "dmix:CARD=" $CARD ",FORMAT=S16"
+]
+                        }
+                        control {
+                                name "PCM Playback Volume"
+                                card $CARD
+                        }
+                }
+        }
+        capture.pcm {
+                type plug
+                slave.pcm {
+                        @func concat
+                        strings [ "dsnoop:CARD=" $CARD ",FORMAT=S16" ]
+                }
+        }
+}
+
+
+The resulting error is:
+
+ALSA lib conf.c:1596:(snd_config_load1) :51:1:Unexpected }
+
+The user says that adding
+
+    playback.pcm {
+
+fixes the problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-01-05 16:28 
+ jdthood - 12-01-05 16:30 
 ----------------------------------------------------------------------
-Has there been any progress on this?
+Has this been applied?  It's an obviously correct patch.
 
 ----------------------------------------------------------------------
- tiwai - 12-02-05 14:45 
+ tiwai - 12-02-05 14:44 
 ----------------------------------------------------------------------
-I hope yes.  The dmix code in 1.0.10 is pretty different from 1.0.9.
+Applied now.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-05 17:21 jdthood        New Issue                                    
-06-15-05 17:21 jdthood        File Added: artsd.crash                      
-06-15-05 17:52 tiwai          Note Added: 0005038                          
-06-15-05 17:58 pzad           Note Added: 0005039                          
-06-15-05 18:17 tiwai          Note Added: 0005040                          
-06-15-05 18:24 jdthood        Note Added: 0005041                          
-06-15-05 19:47 tiwai          Note Added: 0005042                          
-06-15-05 19:47 tiwai          File Added: dmix-boundary-fix.diff                
-   
-06-17-05 08:54 jdthood        Note Added: 0005064                          
-06-17-05 14:24 tiwai          Note Added: 0005070                          
-12-01-05 16:28 jdthood        Note Added: 0006883                          
-12-02-05 14:45 tiwai          Note Added: 0006891                          
+11-23-05 20:30 jdthood        New Issue                                    
+11-23-05 20:32 jdthood        Note Added: 0006828                          
+12-01-05 16:30 jdthood        Note Added: 0006885                          
+12-02-05 14:44 tiwai          Status                   new => resolved     
+12-02-05 14:44 tiwai          Resolution               open => fixed       
+12-02-05 14:44 tiwai          Assigned To               => tiwai           
+12-02-05 14:44 tiwai          Note Added: 0006890                          
 ======================================================================
 
 
