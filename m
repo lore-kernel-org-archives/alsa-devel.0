@@ -1,12 +1,14 @@
-From: Pieter-Jan Malfait <pieterjan.malfait@gmail.com>
-Subject: Re: M-Audio Revolution 5.1 Support
-Date: Fri, 2 Dec 2005 10:20:27 +0000 (UTC)
-Message-ID: <loom.20051202T111059-222@post.gmane.org>
-References: <loom.20051201T152934-108@post.gmane.org> <loom.20051201T211819-384@post.gmane.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000931]: Wish for M-Audio Revolution 5.1 Support
+Date: Fri, 2 Dec 2005 11:54:05 +0100
+Message-ID: <f92a37383026165b811e67319bb9b578@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D17B186
+	for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2005 11:54:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,33 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-> I hope that someone will be able to add ALSA support for this great card. I'm
-> willing to help in this effort (by testing or coding).
-> 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=931> 
+======================================================================
+Reported By:                Thinky
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   931
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             02-22-2005 10:40 CET
+Last Modified:              12-02-2005 11:54 CET
+======================================================================
+Summary:                    Wish for M-Audio Revolution 5.1 Support
+Description: 
+Could you add support for that soundcard?
+I hope parts of the ice1724/12 driver can be reused so that it is not a
+too hard task.
+======================================================================
 
-I just purchased a M-Audio Revolution 5.1 (before i read about the support
-issues) to use mainly for digital output from my MythTV box to my amplifier. 
-Pity it isn't supported in ALSA, i'm also willing to contribute to the
-development in the form of testing rather than coding (i'm a java j2ee
-programmer, no experience whatever at writing drivers..).
+----------------------------------------------------------------------
+ Thinky - 03-02-05 17:40 
+----------------------------------------------------------------------
+I thought I could ask M-Audio for the details so I can avoid the work :).
+The initial reaction has been positive and I gave them your (perex) mail
+address and Clemens Ladisch's. I hope that was OK.
 
-> Currently, I'm forced to use free-version of OSS drivers:
+----------------------------------------------------------------------
+ perex - 12-02-05 11:54 
+----------------------------------------------------------------------
+You need to download Envy24 datasheet and datasheets for AKM chips. Then
+look for GPIO pins (Envy24) and three wire communication pins (AKM).
+Basically, we need to know how are chips connected together.
 
-That's good news as i thought that the Revo 5.1 just wasn't supported on Linux. 
-I've considered trading the Revo 5.1 for the Revo 7.1. Would that be a good
-decision or should i stick to using the OSS drivers for now and waiting for the
-Revo 5.1 to be supported by the ALSA driver?
-
-thank you very much for your response!
-
-kind regards,
-PJ
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-22-05 10:40 Thinky         New Issue                                    
+02-22-05 10:40 Thinky         Distribution              => Debian unstable 
+02-22-05 10:40 Thinky         Kernel Version            => 2.6.10          
+02-22-05 10:53 perex          Note Added: 0003696                          
+02-27-05 17:42 Thinky         Note Added: 0003742                          
+03-02-05 17:40 Thinky         Note Added: 0003780                          
+12-02-05 11:54 perex          Note Added: 0006888                          
+======================================================================
 
 
 
