@@ -1,13 +1,13 @@
-From: Sergei Steshenko <steshenko_sergei@list.ru>
+From: Nicolas Mailhot <nicolas.mailhot@laposte.net>
 Subject: Re: Revo 7.1 setup ?
-Date: Sat, 3 Dec 2005 21:21:22 +0200
-Message-ID: <20051203212122.13f4e6b5@athlon.home.net>
+Date: Sat, 03 Dec 2005 20:26:18 +0100
+Message-ID: <1133637981.4274.9.camel@rousalka.dyndns.org>
 References: <1133636889.4274.7.camel@rousalka.dyndns.org>
+	 <20051203212122.13f4e6b5@athlon.home.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-UcQ6GHJ9SrguC8j50mcT"
 Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <1133636889.4274.7.camel@rousalka.dyndns.org>
+In-Reply-To: <20051203212122.13f4e6b5@athlon.home.net>
 Sender: alsa-user-admin@lists.sourceforge.net
 Errors-To: alsa-user-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
@@ -17,46 +17,40 @@ List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
 	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: nicolas.mailhot@laposte.net
+To: Sergei Steshenko <steshenko_sergei@list.ru>
 Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Have you played with settings using 'alsamixer' ?
 
-I have never tried digital out, so I can't be more specific.
+--=-UcQ6GHJ9SrguC8j50mcT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 03 Dec 2005 20:08:03 +0100
-Nicolas Mailhot <nicolas.mailhot@laposte.net> wrote:
+Le samedi 03 d=C3=A9cembre 2005 =C3=A0 21:21 +0200, Sergei Steshenko a =C3=
+=A9crit :
+> Have you played with settings using 'alsamixer' ?
 
-> Hi,
-> 
-> I'm trying to setup a revo 7.1 in digital out mode (will do 5.1 analog
-> whenever I receive Y cables).
-> 
-> After much googling the best asoundrc setting I found is :
-> 
-> pcm.!default {
->         type plug
->         slave.pcm "spdif"
-> }
-> 
-> (no it's not in the wiki nor anywhere else, I had to merge two different
-> suggestions in messages separated by months to get any sound on this
-> card).
-> 
-> Problem is :
-> 1. apps complain someone blocks accesses (probably means some dmixing is
-> in order ?)
-> 2. I'm hearing stuttering when I manage to kick esd from the card.
-> 3. I don't seem able to control sound anywhere in the gnome mixer
-> 
-> Can anyone help me ? I've already spend hours on this, and I'm still not
-> able to play a CD decently with what is supposed to be a well-supported
-> alsa card.
-> 
-> 
-> -- 
-> Nicolas Mailhot
+First thing I did.
+Alsamixer seems useless in digital out with this card.
+
+--=20
+Nicolas Mailhot
+
+--=-UcQ6GHJ9SrguC8j50mcT
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iEYEABECAAYFAkOR8VoACgkQI2bVKDsp8g2jUgCeO8ysWsybaGdffahf2ONqvaL5
+x8UAoIMyQW+bSs8SSUPRxjgazx8xmTEW
+=HKjR
+-----END PGP SIGNATURE-----
+
+--=-UcQ6GHJ9SrguC8j50mcT--
+
 
 
 -------------------------------------------------------
