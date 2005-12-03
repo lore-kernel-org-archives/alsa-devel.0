@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001614]: KDE does not support Alsa system
-Date: Sat, 3 Dec 2005 14:18:41 +0100
-Message-ID: <acbf2ec6ec81a0bd51437ced33f0903e@bugtrack.alsa-project.org>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: multi_pcm poll timeout error
+Date: Sat, 3 Dec 2005 15:23:18 +0000
+Message-ID: <20051203152318.GA4386@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC6E816F
-	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2005 14:18:41 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>, Achim_Kuntz <achim.kuntz@gmx.net>, Lee Revell <rlrevell@joe-job.com>
 List-Id: alsa-devel@alsa-project.org
 
+The pcm_multi plugin doesn't work currently with jackd in duplex mode. 
+It's OK for either capture or playback with multi cards, but a poll time out
+occurs in duplex mode. Several users have experienced this problem with
+multiple ice1712 and RME cards.
+After some testing I found the following:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1614> 
-======================================================================
-Reported By:                imamdxl8805
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1614
-Category:                   ISA - opl3sa2
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             12-03-2005 14:18 CET
-Last Modified:              12-03-2005 14:18 CET
-======================================================================
-Summary:                    KDE does not support Alsa system
-Description: 
-Dear Alsa Project Team,
+alsa-lib-1.0.8 works
+alsa-lib-1.0.9rc1 onwards gives poll time out
 
-Iam a regular linux user.
-I have a soundcard named: Yamaha opl3-sa2
-When i installed linux version 2.2 redhat 7 I have configurated my sound
-card with redhat's (sndconfig) sound configuration program.
-But When I Installed Redhat Linux 8 Kernel version 2.4.xx. then sndconfig
-sound card configuration program could not configure me sound card
-properly.
-Then I Installed Alsa sound card driver. After Installation My sound card
-configurated properly.
-But KDE sound system ARTS could not play my sound card.
-Then I tested alsa driver with XMMS player with OSS plugien.
+These were both tested with a recent version of jackd (0.100.7 with
+MMAP_COMPLEX patch) on Debian 3.1.
+Don't know if it's relevant, but this appears to be about the time 
+pcm_generic.h was added.
 
-The Main Problem is that KDE ARTS sound system could not work properly.
-Example when I Enable KDE sound system and click Test Sound Button Then no
-sound
-is heared and when I Select the driver Alsa also no sound is heared.
-
-please dear team solve this problem by sending mail to me
-
-MD.IMAM HOSSAIN
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-03-05 14:18 imamdxl8805    New Issue                                    
-======================================================================
-
-
+John
 
 
 -------------------------------------------------------
