@@ -1,10 +1,9 @@
-From: Ivan Baldo <ibaldo@adinet.com.uy>
-Subject: snd-via82xx dxs_support=5 works but uses 3 by default.
-Date: Thu, 01 Dec 2005 22:25:37 -0200
-Message-ID: <438F9481.8060907@adinet.com.uy>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: alsa-lib cross build against uclibc
+Date: Sat, 03 Dec 2005 00:53:42 +0000
+Message-ID: <1133571222.11438.2.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------010004090705060206090009"
+Content-Type: multipart/mixed; boundary="=-+IUpaflyBl42dowCXDt1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,133 +14,259 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, uclibc@uclibc.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010004090705060206090009
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+
+--=-+IUpaflyBl42dowCXDt1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-    Hello.
-    Well, my kernel told me to try dxs_support=5 and read 
-ALSA-Configuration, which I did.
-    It works and sounds good, I verified it is working with 44100 with 
-hw_params of all 4 subdevices (only 1 opened and it says 44100 with 
-dxs_support=5 and 48000 with dxs_support=0 or 3).
-    I will not try to be smart and better send you all the output of 
-lspci -nv without striping anything.
-    Thanks for everything and if you need something else from me don't 
-hesitate.
+I couldn't build the CVS sources against uclibc - the compile would not
+work at all.
 
-P.s.: vanilla 2.4.14.3 kernel (only NVidia module as an extra).
+But I have now been successfully able to patch and build the files. The
+patch is attached.
 
+Apologies if the format is a bit messed up.
 
--- 
-Ivan Baldo - ibaldo@adinet.com.uy - http://ibaldo.codigolibre.net/
-ICQ 10215364 - Phone/FAX (598) (2) 613 3223.
-Caldas 1781, Malvin, Montevideo, Uruguay, South America, planet Earth.
-In favour of world peace and freedom, against U.S.A. and allies!!!
-Alternatives: ibaldo@codigolibre.net - http://go.to/ibaldo
-
-
---------------010004090705060206090009
-Content-Type: text/plain;
- name="lspci_nv.via.txt"
+--=-+IUpaflyBl42dowCXDt1
+Content-Disposition: attachment; filename=alsa-lib.uclibc.patch.final
+Content-Type: text/plain; name=alsa-lib.uclibc.patch.final; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="lspci_nv.via.txt"
 
-0000:00:00.0 0600: 1106:3189 (rev 80)
-	Subsystem: 1849:3189
-	Flags: bus master, 66MHz, medium devsel, latency 8
-	Memory at e0000000 (32-bit, prefetchable) [size=256M]
-	Capabilities: [80] AGP version 3.5
-	Capabilities: [c0] Power Management version 2
+--- old/include/alsa-symbols.h	2005-05-06 15:06:09.000000000 +0100
++++ alsa-lib-1.0.10/include/alsa-symbols.h	2005-12-02 23:21:50.000000000 +0000
+@@ -26,8 +26,12 @@
+ #define USE_VERSIONED_SYMBOLS
+ #endif
+ 
++#ifdef USE_VERSIONED_SYMBOLS
+ #define INTERNAL_CONCAT2_2(Pre, Post) Pre##Post
+ #define INTERNAL(Name) INTERNAL_CONCAT2_2(__, Name)
++#else
++#define INTERNAL(Name) Name
++#endif
+ 
+ #ifdef __powerpc64__
+ # define symbol_version(real, name, version) 			\
+--- old/src/userfile.c	2005-05-24 15:14:29.000000000 +0100
++++ alsa-lib-1.0.10/src/userfile.c	2005-12-02 23:30:49.000000000 +0000
+@@ -20,7 +20,11 @@
+   
+ #include <string.h>
+ #include <errno.h>
++#ifdef HAS_WORDEXP
+ #include <wordexp.h>
++#else
++#include <glob.h>
++#endif
+ #include <assert.h>
+ 
+ /**
+@@ -34,9 +38,9 @@
+  */
+ int snd_user_file(const char *file, char **result)
+ {
+-	wordexp_t we;
+ 	int err;
+-	
++#ifdef HAS_WORDEXP
++	wordexp_t we;
+ 	assert(file && result);
+ 	err = wordexp(file, &we, WRDE_NOCMD);
+ 	switch (err) {
+@@ -54,5 +58,24 @@
+ 	if (*result == NULL)
+ 		return -ENOMEM;
+ 	wordfree(&we);
++#else
++	glob_t globbuf;
++	err = glob(file, 0, NULL, &globbuf);
++	switch (err) {
++	case GLOB_NOSPACE:
++		return -ENOMEM;
++	case 0:
++		if (globbuf.gl_pathc == 1)
++			break;
++		/* Fall through */
++	default:
++		globfree(&globbuf);
++		return -EINVAL;
++	}
++	*result = strdup(globbuf.gl_pathv[0]);
++	if (*result == NULL)
++		return -ENOMEM;
++	globfree(&globbuf);
++#endif
+ 	return 0;
+ }
+--- old/include/alsa-symbols.h	2005-05-06 15:06:09.000000000 +0100
++++ alsa-lib-1.0.10/include/alsa-symbols.h	2005-12-02 23:21:50.000000000 +0000
+@@ -26,8 +26,12 @@
+ #define USE_VERSIONED_SYMBOLS
+ #endif
+ 
++#ifdef USE_VERSIONED_SYMBOLS
+ #define INTERNAL_CONCAT2_2(Pre, Post) Pre##Post
+ #define INTERNAL(Name) INTERNAL_CONCAT2_2(__, Name)
++#else
++#define INTERNAL(Name) Name
++#endif
+ 
+ #ifdef __powerpc64__
+ # define symbol_version(real, name, version) 			\
+--- src/userfile.c	2005-05-24 15:14:29.000000000 +0100
++++ /home/adrian/alsa-lib-1.0.10/src/userfile.c	2005-12-02 23:30:49.000000000 +0000
+@@ -20,7 +20,11 @@
+   
+ #include <string.h>
+ #include <errno.h>
++#ifdef HAS_WORDEXP
+ #include <wordexp.h>
++#else
++#include <glob.h>
++#endif
+ #include <assert.h>
+ 
+ /**
+@@ -34,9 +38,9 @@
+  */
+ int snd_user_file(const char *file, char **result)
+ {
+-	wordexp_t we;
+ 	int err;
+-	
++#ifdef HAS_WORDEXP
++	wordexp_t we;
+ 	assert(file && result);
+ 	err = wordexp(file, &we, WRDE_NOCMD);
+ 	switch (err) {
+@@ -54,5 +58,24 @@
+ 	if (*result == NULL)
+ 		return -ENOMEM;
+ 	wordfree(&we);
++#else
++	glob_t globbuf;
++	err = glob(file, 0, NULL, &globbuf);
++	switch (err) {
++	case GLOB_NOSPACE:
++		return -ENOMEM;
++	case 0:
++		if (globbuf.gl_pathc == 1)
++			break;
++		/* Fall through */
++	default:
++		globfree(&globbuf);
++		return -EINVAL;
++	}
++	*result = strdup(globbuf.gl_pathv[0]);
++	if (*result == NULL)
++		return -ENOMEM;
++	globfree(&globbuf);
++#endif
+ 	return 0;
+ }
+--- old/src/conf.c	2005-10-12 17:08:53.000000000 +0100
++++ alsa-lib-1.0.10/src/conf.c	2005-12-02 23:21:50.000000000 +0000
+@@ -415,7 +415,11 @@
+ 
+ 
+ #include <stdarg.h>
++#ifdef HAS_WORDEXP
+ #include <wordexp.h>
++#else
++#include <glob.h>
++#endif
+ #include <dlfcn.h>
+ #include <limits.h>
+ #include <sys/stat.h>
+--- old/src/alisp/alisp.c	2005-01-19 13:56:31.000000000 +0000
++++ alsa-lib-1.0.10/src/alisp/alisp.c	2005-12-02 23:21:50.000000000 +0000
+@@ -30,7 +30,11 @@
+ #include <ctype.h>
+ #include <math.h>
+ #include <err.h>
++#ifdef HAS_WORDEXP
+ #include <wordexp.h>
++#else
++#include <glob.h>
++#endif
+ 
+ #define alisp_seq_iterator alisp_object
+ 
+--- old/src/pcm/pcm_ladspa.c	2005-11-14 09:50:29.000000000 +0000
++++ alsa-lib-1.0.10/src/pcm/pcm_ladspa.c	2005-12-02 23:24:17.000000000 +0000
+@@ -28,7 +28,11 @@
+   
+ #include <dirent.h>
+ #include <dlfcn.h>
++#ifdef HAS_WORDEXP
+ #include <wordexp.h>
++#else
++#include <glob.h>
++#endif
+ #include <locale.h>
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
+@@ -815,13 +819,18 @@
+ {
+ 	const char *c;
+ 	size_t l;
+-	wordexp_t we;
++#ifdef HAS_WORDEXP
++	wordexp_t           we;
++#else
++	glob_t              globbuf;
++#endif
+ 	int err;
+ 	
+ 	for (c = path; (l = strcspn(c, ": ")) > 0; ) {
+ 		char name[l + 1];
+ 		memcpy(name, c, l);
+ 		name[l] = 0;
++#ifdef HAS_WORDEXP
+ 		err = wordexp(name, &we, WRDE_NOCMD);
+ 		switch (err) {
+ 		case WRDE_NOSPACE:
+@@ -835,6 +844,21 @@
+ 		}
+ 		err = snd_pcm_ladspa_check_dir(plugin, we.we_wordv[0], label, ladspa_id);
+ 		wordfree(&we);
++#else
++		err = glob(name, 0, NULL, &globbuf);
++		switch (err) {
++		case GLOB_NOSPACE:
++			return -ENOMEM;
++		case 0:
++			if (globbuf.gl_pathc == 1)
++				break;
++			/* Fall through */
++		default:
++			return -EINVAL;
++		}
++		err = snd_pcm_ladspa_check_dir(plugin, globbuf.gl_pathv[0], label, ladspa_id);
++		globfree(&globbuf);
++#endif
+ 		if (err < 0)
+ 			return err;
+ 		if (err > 0)
+--- old/src/names.c	2005-06-06 15:01:13.000000000 +0100
++++ alsa-lib-1.0.10/src/names.c	2005-12-02 23:32:26.000000000 +0000
+@@ -31,7 +31,11 @@
+  */
+ 
+ #include <stdarg.h>
++#ifdef HAS_WORDEXP
+ #include <wordexp.h>
++#else
++#include <glob.h>
++#endif
+ #include <dlfcn.h>
+ #include <limits.h>
+ #include <sys/stat.h>
 
-0000:00:01.0 0604: 1106:b198
-	Flags: bus master, 66MHz, medium devsel, latency 0
-	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-	Memory behind bridge: dde00000-dfefffff
-	Prefetchable memory behind bridge: cdd00000-ddcfffff
-	Capabilities: [80] Power Management version 2
-
-0000:00:0f.0 0104: 1106:3149 (rev 80)
-	Subsystem: 1849:3149
-	Flags: bus master, medium devsel, latency 32, IRQ 169
-	I/O ports at ec00 [size=8]
-	I/O ports at e800 [size=4]
-	I/O ports at e400 [size=8]
-	I/O ports at e000 [size=4]
-	I/O ports at dc00 [size=16]
-	I/O ports at d800 [size=256]
-	Capabilities: [c0] Power Management version 2
-
-0000:00:0f.1 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
-	Subsystem: 1849:0571
-	Flags: bus master, medium devsel, latency 32, IRQ 169
-	I/O ports at fc00 [size=16]
-	Capabilities: [c0] Power Management version 2
-
-0000:00:10.0 0c03: 1106:3038 (rev 81)
-	Subsystem: 1849:3038
-	Flags: bus master, medium devsel, latency 32, IRQ 177
-	I/O ports at c800 [size=32]
-	Capabilities: [80] Power Management version 2
-
-0000:00:10.1 0c03: 1106:3038 (rev 81)
-	Subsystem: 1849:3038
-	Flags: bus master, medium devsel, latency 32, IRQ 177
-	I/O ports at cc00 [size=32]
-	Capabilities: [80] Power Management version 2
-
-0000:00:10.2 0c03: 1106:3038 (rev 81)
-	Subsystem: 1849:3038
-	Flags: bus master, medium devsel, latency 32, IRQ 177
-	I/O ports at d000 [size=32]
-	Capabilities: [80] Power Management version 2
-
-0000:00:10.3 0c03: 1106:3038 (rev 81)
-	Subsystem: 1849:3038
-	Flags: bus master, medium devsel, latency 32, IRQ 177
-	I/O ports at d400 [size=32]
-	Capabilities: [80] Power Management version 2
-
-0000:00:10.4 0c03: 1106:3104 (rev 86) (prog-if 20)
-	Subsystem: 1849:3104
-	Flags: bus master, medium devsel, latency 32, IRQ 177
-	Memory at dfffbe00 (32-bit, non-prefetchable) [size=256]
-	Capabilities: [80] Power Management version 2
-
-0000:00:11.0 0601: 1106:3227
-	Subsystem: 1849:3227
-	Flags: bus master, stepping, medium devsel, latency 0
-	Capabilities: [c0] Power Management version 2
-
-0000:00:11.5 0401: 1106:3059 (rev 60)
-	Subsystem: 1849:9761
-	Flags: medium devsel, IRQ 193
-	I/O ports at c400 [size=256]
-	Capabilities: [c0] Power Management version 2
-
-0000:00:12.0 0200: 1106:3065 (rev 78)
-	Subsystem: 1849:3065
-	Flags: bus master, medium devsel, latency 32, IRQ 185
-	I/O ports at c000 [size=256]
-	Memory at dfffbd00 (32-bit, non-prefetchable) [size=256]
-	Capabilities: [40] Power Management version 2
-
-0000:01:00.0 0300: 10de:0322 (rev a1)
-	Subsystem: 1682:1351
-	Flags: bus master, 66MHz, medium devsel, latency 248, IRQ 201
-	Memory at de000000 (32-bit, non-prefetchable) [size=16M]
-	Memory at d0000000 (32-bit, prefetchable) [size=128M]
-	Expansion ROM at dfee0000 [disabled] [size=128K]
-	Capabilities: [60] Power Management version 2
-	Capabilities: [44] AGP version 3.0
-
-
---------------010004090705060206090009--
+--=-+IUpaflyBl42dowCXDt1--
 
 
 
