@@ -1,17 +1,15 @@
-From: Sergei Steshenko <steshenko_sergei@list.ru>
+From: Nicolas Mailhot <nicolas.mailhot@laposte.net>
 Subject: Re: [Alsa-user] Revo 7.1 setup ?
-Date: Sat, 3 Dec 2005 22:01:38 +0200
-Message-ID: <20051203220138.6cc87ddc@athlon.home.net>
+Date: Sat, 03 Dec 2005 21:08:57 +0100
+Message-ID: <1133640540.5025.17.camel@rousalka.dyndns.org>
 References: <1133636889.4274.7.camel@rousalka.dyndns.org>
-	<20051203212122.13f4e6b5@athlon.home.net>
-	<1133637981.4274.9.camel@rousalka.dyndns.org>
-	<20051203213203.1da386cf@athlon.home.net>
-	<1133639073.5025.13.camel@rousalka.dyndns.org>
+	 <1133638082.16836.16.camel@mindpipe>
+	 <1133638892.5025.10.camel@rousalka.dyndns.org>
+	 <1133639327.16836.18.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-xPKxjVAXw+kXN+9dSmLd"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1133639073.5025.13.camel@rousalka.dyndns.org>
+In-Reply-To: <1133639327.16836.18.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,38 +19,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nicolas Mailhot <nicolas.mailhot@laposte.net>
+To: Lee Revell <rlrevell@joe-job.com>
 Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-If I understand correctly what 'alsamixer' is doing, it, among other things,
-redirects certain streams (e.g. PCM Out) to certain outputs.
 
-So, probably, if you choose IEC958 on an output, you'll get the stream
-on that output.
+--=-xPKxjVAXw+kXN+9dSmLd
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-I'd first try to get CD playback in analog form - this definitely works.
+Le samedi 03 d=C3=A9cembre 2005 =C3=A0 14:48 -0500, Lee Revell a =C3=A9crit=
+ :
 
-The three leftmost controls are called "IEC958",  "IEC958 0",  "IEC958 1"
-and one of the values is "PCM Out" - maybe one of them is the one that
-needs to be set ?
+> Ah, OK. Then it's not a bug, the output just defaults to analog.
 
-I believe Takashi Iwai knows the definite answer - he is the driver develop=
-er if
-I understand correctly.
+You're probably right about it not being a bug but it'd be nice if using
+digital out was documented properly somewhere. M-audio windows driver
+does it right - you have several use case profiles, and load the one you
+need. Not a single specialized default - this card is too capable to
+have only one default.
 
-On Sat, 03 Dec 2005 20:44:31 +0100
-Nicolas Mailhot <nicolas.mailhot@laposte.net> wrote:
+--=20
+Nicolas Mailhot
 
-> Le samedi 03 d=E9cembre 2005 =E0 21:32 +0200, Sergei Steshenko a =E9crit :
-> > A lot of channels have IEC958 setting, so I thought it was the thing to=
- look for.
->=20
-> Right. The hardware seems nice and able to do many complex things, but I
-> didn't find how to make it do simple things yet.
->=20
-> --=20
-> Nicolas Mailhot
+--=-xPKxjVAXw+kXN+9dSmLd
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iEYEABECAAYFAkOR+1kACgkQI2bVKDsp8g1gEwCgxIb4eRDwOyIVXv3qLGfHYV7z
+VioAniyRv0mvmiq1mEqFNN3igiGI0gVp
+=3gW+
+-----END PGP SIGNATURE-----
+
+--=-xPKxjVAXw+kXN+9dSmLd--
+
 
 
 -------------------------------------------------------
