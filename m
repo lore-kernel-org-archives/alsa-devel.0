@@ -1,13 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Sergei Steshenko <steshenko_sergei@list.ru>
 Subject: Re: [Alsa-user] Revo 7.1 setup ?
-Date: Sat, 03 Dec 2005 14:28:02 -0500
-Message-ID: <1133638082.16836.16.camel@mindpipe>
+Date: Sat, 3 Dec 2005 21:32:03 +0200
+Message-ID: <20051203213203.1da386cf@athlon.home.net>
 References: <1133636889.4274.7.camel@rousalka.dyndns.org>
+	<20051203212122.13f4e6b5@athlon.home.net>
+	<1133637981.4274.9.camel@rousalka.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1133636889.4274.7.camel@rousalka.dyndns.org>
+In-Reply-To: <1133637981.4274.9.camel@rousalka.dyndns.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,33 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: nicolas.mailhot@laposte.net
+To: Nicolas Mailhot <nicolas.mailhot@laposte.net>
 Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-12-03 at 20:08 +0100, Nicolas Mailhot wrote:
-> Hi,
-> 
-> I'm trying to setup a revo 7.1 in digital out mode (will do 5.1 analog
-> whenever I receive Y cables).
-> 
-> After much googling the best asoundrc setting I found is :
-> 
-> pcm.!default {
->         type plug
->         slave.pcm "spdif"
-> }
+A lot of channels have IEC958 setting, so I thought it was the thing to loo=
+k for.
 
-That .asoundrc does nothing that you could not do by setting the app to
-use the "spdif" PCM - it's useless.
+On Sat, 03 Dec 2005 20:26:18 +0100
+Nicolas Mailhot <nicolas.mailhot@laposte.net> wrote:
 
-If you get no sound at all without an .asoundrc it's a bug, please file
-a bug report:
-
-https://bugtrack.alsa-project.org/alsa-bug/main_page.php
-
-Lee
-
+> Le samedi 03 d=E9cembre 2005 =E0 21:21 +0200, Sergei Steshenko a =E9crit :
+> > Have you played with settings using 'alsamixer' ?
+>=20
+> First thing I did.
+> Alsamixer seems useless in digital out with this card.
+>=20
+> --=20
+> Nicolas Mailhot
 
 
 -------------------------------------------------------
