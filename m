@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 3 Dec 2005 02:27:45 -0000
-Message-ID: <E1EiN7v-0001xc-3l@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001613]: Wish
+Date: Sat, 3 Dec 2005 10:32:12 +0100
+Message-ID: <17f295021295b252aa051d35baa5866d@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E072A16F
+	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2005 10:32:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,53 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<pooh@yahoo.com>:
-Can't open mailbox for pooh@yahoo.com. Temporary error
-//I'm not going to try again; this message has been in the queue too long.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1613> 
+======================================================================
+Reported By:                amp77
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1613
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian stable (sarge)
+Kernel Version:             2.6.8-2
+======================================================================
+Date Submitted:             12-03-2005 10:32 CET
+Last Modified:              12-03-2005 10:32 CET
+======================================================================
+Summary:                    Wish
+Description: 
+The Four Channel Mode is great, but is there a possibility to do this for
+6ch? i would like to be able to listen from Line-In and SPDIF-in (with a
+stereo source) to all channels, or at least 4+LFE.  Right now i just
+swaped C/LFE with SR/SL in order to get at least some LFE.
+The method stated in FAQ028 is only for Wave-Out (or not?)
+======================================================================
 
---- Original message follows.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-03-05 10:32 amp77          New Issue                                    
+12-03-05 10:32 amp77          Distribution              => Debian stable (sarge)
+12-03-05 10:32 amp77          Kernel Version            => 2.6.8-2         
+======================================================================
 
-Return-Path: <alsa-devel@lists.sf.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 211.232.110.143
-X-YahooFilteredBulk: 211.232.110.143
-X-Rocket-Track: cat=BK; info=ip:BK<ip=211.232.110.143,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.234>
-X-Originating-IP: [211.232.110.143]
-Return-Path: <alsa-devel@lists.sf.net>
-Authentication-Results: mta232.mail.mud.yahoo.com
-  from=lists.sf.net; domainkeys=neutral (no sig)
-Received: from 211.232.110.143  (HELO gwajnixv.net) (211.232.110.143)
-  by mta232.mail.mud.yahoo.com with SMTP; Thu, 01 Dec 2005 18:17:14 -0800
-From: alsa-devel@lists.sf.net
-Date: Fri, 02 Dec 2005 02:00:41 UTC
-Subject: hi,_ive_a_new_mail_address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <9ee9.632ef1dd9ebdf@lists.sf.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="====56cbbbd30db.d8fd7f5dcf647"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
-
---====56cbbbd30db.d8fd7f5dcf647
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---====56cbbbd30db.d8fd7f5dcf647
-Content-Type: application/octet-stream; name=mailtext.zip
-Content-
-*** MESSAGE TRUNCATED ***
 
 
 
