@@ -1,63 +1,74 @@
-From: Nicolas Mailhot <nicolas.mailhot@laposte.net>
-Subject: Re: Revo 7.1 setup ?
-Date: Sat, 03 Dec 2005 20:44:31 +0100
-Message-ID: <1133639073.5025.13.camel@rousalka.dyndns.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-user] Revo 7.1 setup ?
+Date: Sat, 03 Dec 2005 14:48:46 -0500
+Message-ID: <1133639327.16836.18.camel@mindpipe>
 References: <1133636889.4274.7.camel@rousalka.dyndns.org>
-	 <20051203212122.13f4e6b5@athlon.home.net>
-	 <1133637981.4274.9.camel@rousalka.dyndns.org>
-	 <20051203213203.1da386cf@athlon.home.net>
+	 <1133638082.16836.16.camel@mindpipe>
+	 <1133638892.5025.10.camel@rousalka.dyndns.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-m1C04gN4pmSo0Dp6Hakw"
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <20051203213203.1da386cf@athlon.home.net>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Sergei Steshenko <steshenko_sergei@list.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1133638892.5025.10.camel@rousalka.dyndns.org>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Nicolas Mailhot <nicolas.mailhot@laposte.net>
 Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2005-12-03 at 20:41 +0100, Nicolas Mailhot wrote:
+> Le samedi 03 d=E9cembre 2005 =E0 14:28 -0500, Lee Revell a =E9crit :
+> > On Sat, 2005-12-03 at 20:08 +0100, Nicolas Mailhot wrote:
+> > > Hi,
+> > >=20
+> > > I'm trying to setup a revo 7.1 in digital out mode (will do 5.1 ana=
+log
+> > > whenever I receive Y cables).
+> > >=20
+> > > After much googling the best asoundrc setting I found is :
+> > >=20
+> > > pcm.!default {
+> > >         type plug
+> > >         slave.pcm "spdif"
+> > > }
+> >=20
+> > That .asoundrc does nothing that you could not do by setting the app =
+to
+> > use the "spdif" PCM - it's useless.
+>=20
+> I don't want to set up apps; I want the default output to be spdif for
+> all the system and all apps, regardless of the sound system they use
+> (oss, alsa, gstreamer or whatever).
+>=20
+> without an .asoundrc I get no sound, I suppose it's routed to the analo=
+g
+> outputs but since they're not cabled yet it does me no good (yes I trie=
+d
+> toggling IEC958 Output in alsamixer).
+>=20
+> I created this setup after seing an old message from Takashi stating
+> aplay -d plug:spdif should work with this card (no idea where spdif is
+> defined). And then googling half an hour more on how to make a plug the
+> default. This after trying all the revo asoundrc examples I could find
+> on the net, none of which did me much good.
+>=20
 
---=-m1C04gN4pmSo0Dp6Hakw
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Ah, OK. Then it's not a bug, the output just defaults to analog.
 
-Le samedi 03 d=C3=A9cembre 2005 =C3=A0 21:32 +0200, Sergei Steshenko a =C3=
-=A9crit :
-> A lot of channels have IEC958 setting, so I thought it was the thing to l=
-ook for.
-
-Right. The hardware seems nice and able to do many complex things, but I
-didn't find how to make it do simple things yet.
-
---=20
-Nicolas Mailhot
-
---=-m1C04gN4pmSo0Dp6Hakw
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iEYEABECAAYFAkOR9Z8ACgkQI2bVKDsp8g3vCQCgvJI73MNsQwN6Y/M4WrijoQoC
-RXsAoNYxao/AMo64cuN96v6MmYzbhpY8
-=r8CO
------END PGP SIGNATURE-----
-
---=-m1C04gN4pmSo0Dp6Hakw--
+Lee
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
+les
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+http://ads.osdn.com/?ad_id=3D7637&alloc_id=3D16865&op=3Dclick
