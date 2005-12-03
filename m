@@ -1,11 +1,14 @@
-From: Dirk Jagdmann <doj@cubic.org>
-Subject: [patch] split interleaved files in arecord when reaching 2GB
-Date: Sat, 03 Dec 2005 12:00:49 +0100
-Message-ID: <43917AE1.3020002@cubic.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001612]: Ubuntu5.10 not configured for Alsa device:surround51?
+Date: Sat, 3 Dec 2005 13:54:03 +0100
+Message-ID: <5fc9e166366e140f86f47ce1b164ac9f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000105070509040404040303"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07AC816F
+	for <alsa-devel@alsa-project.org>; Sat,  3 Dec 2005 13:54:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,241 +18,208 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000105070509040404040303
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
 
-This patch will split files in chunks of aprox. 2GB in the interleaved 
-recording mode of arecord. This is meant to overcome the 2GB filesize 
-limit of .wav files, which is easily reached when recording multiple 
-channels.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1612> 
+======================================================================
+Reported By:                Manolo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1612
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10 Breezy
+Kernel Version:             Linux 2.6.12
+======================================================================
+Date Submitted:             12-02-2005 17:51 CET
+Last Modified:              12-03-2005 13:54 CET
+======================================================================
+Summary:                    Ubuntu5.10 not configured for Alsa
+device:surround51?
+Description: 
+Hardware
+  Motherboard: Abit Ic7, Audio: Onboard (Intel ICH5) RealTek
+    ALC650F 6-Channel AC97 CODEC.
+  uP: Pentium4, Hyperthreading, 3Ghz
 
--- 
----> Dirk Jagdmann ^ doj / cubic
-----> http://cubic.org/~doj
------> http://llg.cubic.org
+Software
+  Ubuntu 5.10
+  Custom compiled kernel from 'linux-source-2.6.12 2.6.12-10.24'
+    make menuconfig
+      Device Drivers
+        Sound
+          <M> Sound card support
+          Advanced Linux Sound Architecture --->
+            <M> Advanced Linux Sound Architecture
+            <M>   Sequencer support
+            <M>     Sequencer dummy client
+            <M>   OSS Mixer API
+            <M>   OSS PCM (digital audio) API
+            [*]   OSS Sequencer API
+            <M>   RTC Timer support
+            PCI devices --->
+              <M>  All drivers <M> when option available.
+          Open Sound System --->
+            < > Open Sound System
+  Compiled Alsa packages:
+    alsa-driver-1.0.10
+    alsa-lib-1.0.10
+    alsa-utils-1.0.10 # configure --disable-nls: configure fails
+otherwise.
+    alsa-oss
+    alsa-plugins-1.0.10 # configure,pcm/Makefile.in:Modified to compile
+without
+      jack.
+    Note: At boot, if file /var/lib/alsa/asound.state does not exist,
+file
+      /etc/asound.state is overwritten with default values (No surround
+sound!).
+      Alsa package is not responsible for this (Ubuntu5.10 or
+Kernel2.6.12??).
 
---------------000105070509040404040303
-Content-Type: text/plain;
- name="aplay-splitfiles.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="aplay-splitfiles.patch"
+Sound Applications
+  aplay (alsa-utils-1.0.10)
+  audacity 1.2.3 #Device /dev/dsp
+  xmms 1.2.10 #plugin /usr/lib/xmms/Input/libwav.so (does not accept
+    5.1ChannelFile.wav) replaced by older version (Ubuntu 4.10).
+  mplayer 4.0.2
+  xine v0.99.3
 
-Index: alsa-utils-1.0.10/aplay/aplay.c
-===================================================================
---- alsa-utils-1.0.10.orig/aplay/aplay.c	2005-12-03 01:05:34.000000000 +0100
-+++ alsa-utils-1.0.10/aplay/aplay.c	2005-12-03 01:06:50.000000000 +0100
-@@ -1981,33 +1981,6 @@
- 	snd_pcm_drain(handle);
- }
- 
--/* capturing raw data, this proc handels WAVE files and .VOCs (as one block) */
--
--void capture_go(int fd, off64_t count, int rtype, char *name)
--{
--	size_t c;
--	off64_t cur;
--	ssize_t r, err;
--
--	header(rtype, name);
--	set_params();
--
--	do {
--		for (cur = count; cur > 0; cur -= r) {
--			c = (cur <= chunk_bytes) ? cur : chunk_bytes;
--			c = c * 8 / bits_per_frame;
--			if ((size_t)(r = pcm_read(audiobuf, c)) != c)
--				break;
--			r = r * bits_per_frame / 8;
--			if ((err = write(fd, audiobuf, r)) != r) {
--				perror(name);
--				exit(EXIT_FAILURE);
--			}
--			if (err > 0)
--				fdcount += err;
--		}
--	} while (rtype == FORMAT_RAW && !timelimit);
--}
- 
- /*
-  *  let's play or capture it (capture_type says VOC/WAVE/raw)
-@@ -2068,20 +2041,16 @@
- 		close(fd);
- }
- 
--static void capture(char *name)
-+static void capture(char *name_)
- {
--	pbrec_count = LLONG_MAX;
--	if (!name || !strcmp(name, "-")) {
--		fd = fileno(stdout);
--		name = "stdout";
--	} else {
--		remove(name);
--		if ((fd = open64(name, O_WRONLY | O_CREAT, 0644)) == -1) {
--			perror(name);
--			exit(EXIT_FAILURE);
--		}
--	}
--	fdcount = 0;
-+	int tostdout=0;		/* boolean which describes output stream */
-+	int filecount=0;	/* number of files written */
-+	const unsigned wrthreshold=2000000000; /* threshold in bytes. If file becomes larger a new file is created */
-+	char *name=name_;	/* current filename */
-+	char namebuf[PATH_MAX+1];
-+	off64_t cur;		/* number of bytes to capture */
-+
-+	/* get number of bytes to capture */
- 	pbrec_count = calc_count();
- 	/* WAVE-file should be even (I'm not sure), but wasting one byte
- 	   isn't a problem (this can only be in 8 bit mono) */
-@@ -2091,10 +2060,107 @@
- 		pbrec_count -= pbrec_count % 2;
- 	if (pbrec_count == 0)
- 		pbrec_count -= 2;
--	if (fmt_rec_table[file_type].start)
--		fmt_rec_table[file_type].start(fd, pbrec_count);
--	capture_go(fd, pbrec_count, file_type, name);
--	fmt_rec_table[file_type].end(fd);
-+
-+	cur = pbrec_count;
-+
-+	/* display verbose output to console */
-+	header(file_type, name);
-+
-+	/* setup sound hardware */
-+	set_params();
-+
-+	/* write to stdout? */
-+	if (!name || !strcmp(name, "-")) {
-+		fd = fileno(stdout);
-+		name = "stdout";
-+		tostdout=1;
-+		fdcount = 0;
-+	}
-+
-+	do {
-+		/* open a file to write */
-+		if(!tostdout) {
-+
-+			/* upon the second file we start the numbering scheme */
-+			if(filecount)
-+			{
-+				/* get a copy of the original filename */
-+				char *s;
-+				char buf[PATH_MAX+1];
-+				strncpy(buf, name_, sizeof(buf));
-+
-+				/* separate extension from filename */
-+				s=buf+strlen(buf);
-+				while(s>buf && *s!='.' && *s!='/')
-+					--s;
-+				if(*s=='.')
-+					*s++=0;
-+				else if(*s=='/')
-+					s=buf+strlen(buf);
-+
-+				/* upon first jump to this if block rename the first file */
-+				if(filecount==1) {
-+					if(*s)
-+						snprintf(namebuf, sizeof(namebuf), "%s-01.%s", buf, s);
-+					else
-+						snprintf(namebuf, sizeof(namebuf), "%s-01", buf);
-+					remove(namebuf);
-+					rename(name, namebuf);
-+					filecount=2;
-+				}
-+
-+				/* name of the current file */
-+				if(*s)
-+					snprintf(namebuf, sizeof(namebuf), "%s-%02i.%s", buf, filecount, s);
-+				else
-+					snprintf(namebuf, sizeof(namebuf), "%s-%02i", buf, filecount);
-+				name=namebuf;
-+
-+			}
-+
-+			/* open a new file */
-+			remove(name);
-+			if ((fd = open64(name, O_WRONLY | O_CREAT, 0644)) == -1) {
-+				perror(name);
-+				exit(EXIT_FAILURE);
-+			}
-+			fdcount = 0;
-+			filecount++;
-+		}
-+
-+		/* setup sample header */
-+		if (fmt_rec_table[file_type].start)
-+			fmt_rec_table[file_type].start(fd, pbrec_count);
-+
-+		/* capture */
-+		do {
-+			ssize_t r=0;
-+			for (; cur > 0 && fdcount<wrthreshold; cur -= r) {
-+				ssize_t err;
-+				size_t c = (cur <= chunk_bytes) ? cur : chunk_bytes;
-+				c = c * 8 / bits_per_frame;
-+				if ((size_t)(r = pcm_read(audiobuf, c)) != c)
-+					break;
-+				r = r * bits_per_frame / 8;
-+				if ((err = write(fd, audiobuf, r)) != r) {
-+					perror(name);
-+					exit(EXIT_FAILURE);
-+				}
-+				if (err > 0)
-+					fdcount += err;
-+			}
-+			/* exit conditions:
-+			   1) format_raw and a timelimit
-+			   2) all requested samples/bytes have been captured (cur>0)
-+			   3) filesize threshold was reached (fdcount<wrthreshold)
-+			*/
-+		} while (file_type == FORMAT_RAW && !timelimit && cur>0 && fdcount<wrthreshold);
-+
-+		/* finish sample container */
-+		fmt_rec_table[file_type].end(fd);
-+
-+		/* repeat the loop when format is raw without timelimit or filesize threshold was reached */
-+	} while((file_type == FORMAT_RAW && !timelimit) || fdcount>=wrthreshold);
- }
- 
- void playbackv_go(int* fds, unsigned int channels, size_t loaded, off64_t count, int rtype, char **names)
-Index: alsa-utils-1.0.10/aplay/aplay.1
-===================================================================
---- alsa-utils-1.0.10.orig/aplay/aplay.1	2005-12-03 01:06:01.000000000 +0100
-+++ alsa-utils-1.0.10/aplay/aplay.1	2005-12-03 01:10:17.000000000 +0100
-@@ -10,7 +10,8 @@
- .SH DESCRIPTION
- \fBarecord\fP is a command-line soundfile recorder for the ALSA soundcard
- driver. It supports several file formats and multiple soundcards with
--multiple devices. 
-+multiple devices. If recording with interleaved mode samples the file is
-+automatically split before the 2GB filesize.
- 
- \fBaplay\fP is much the same, only it plays instead of recording. For
- supported soundfile formats, the sampling rate, bit depth, and so
-Index: alsa-utils-1.0.10/aplay/arecord.1
-===================================================================
---- alsa-utils-1.0.10.orig/aplay/arecord.1	2005-12-03 01:06:19.000000000 +0100
-+++ alsa-utils-1.0.10/aplay/arecord.1	2005-12-03 01:10:26.000000000 +0100
-@@ -10,7 +10,8 @@
- .SH DESCRIPTION
- \fBarecord\fP is a command-line soundfile recorder for the ALSA soundcard
- driver. It supports several file formats and multiple soundcards with
--multiple devices. 
-+multiple devices. If recording with interleaved mode samples the file is
-+automatically split before the 2GB filesize.
- 
- \fBaplay\fP is much the same, only it plays instead of recording. For
- supported soundfile formats, the sampling rate, bit depth, and so
+esd daemon running:
+  aplay -Dsurround51 File.wav #GnomePanel or gnome-terminal
+    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
+    .xsession-errors fills with:
+      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  aplay -Ddefault File.wav # GnomePanel or gnome-terminal
+    2ChannelFile.wav: Sound Ok.
+    No output sent to .xsession-errors
+  audacity #GnomePanel
+    Error Message: There was an error initializing the audio i/o
+      layer. You will not be able to play or record audio.
+      Error: Host error.
+  audacity #gnome-terminal
+    Most of the times application starts without error message.
+  xmms #OutputPlugin:Alsa;AudioDevice:default.GnomePanel or
+gnome-terminal
+    Application starts without error message
+    No output sent to .xsession-errors
+    2ChannelFile.wav: Sound Ok.
+  xmms #OutputPlugin:Alsa;AudioDevice:surround51.GnomePanel
+    Error Message: Couldn't open audio. Please check that:
+      Your soundcard is configured properly
+      You have the correct output plugin selected
+      No other program is blocking the soundcard.
+    After several Play/ErrorMessage:
+      5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
+      .xsession-errors fills with:
+        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  xmms #OutputPlugin:Alsa;AudioDevice:surround51.gnome-terminal
+    Most of the times application starts without error message.
+    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
+    .xsession-errors fills with:
+      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  mplayer # 'mplayer -v -ao alsa:device=surround51 -channels 6'
+    No StdError error messages (-v)
+    All kinds of files and DVDs (Multichannel AC3) play Ok.
+    .xsession-errors fills with:
+      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  xine # 'xine --verbose --audio-driver
+alsa';SpeakerArrangement:Surround5.1
+    Error Message: The audio device is unavailable. Please verify if
+another program
+      already uses it.
+    StdError error messages (--verbose):
+      audio_alsa_out: snd_pcm_open() of plug:surround51:0 failed: Device
+or
+        resource busy
+      audio_alsa_out: >>> check if another program already uses PCM <<<
+    After several Play/ErrorMessage:
+      All kinds of files and DVDs (Multichannel AC3) play Ok.
+      .xsession-errors fills with:
+        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  xine # 'xine --verbose --audio-driver
+alsa';SpeakerArrangement:Stereo2.0
+    No error Message
+    No StdError error messages
+    All kinds of files and DVDs play Ok. Multichannel AC3 downshifted to 2
+Channels.
+    No output sent to .xsession-errors
 
---------------000105070509040404040303--
+esd daemon NOT running (killall esd):
+  aplay -Dsurround51 File.wav #GnomePanel or gnome-terminal
+    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
+    .xsession-errors fills with:
+      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  aplay -Ddefault File.wav # GnomePanel or gnome-terminal
+    2ChannelFile.wav: Sound Ok.
+    No output sent to .xsession-errors
+  audacity #GnomePanel or gnome-terminal
+    Application starts without error message
+  xmms #OutputPlugin:Alsa;AudioDevice:default.GnomePanel or
+gnome-terminal
+    Application starts without error message
+    No output sent to .xsession-errors
+    2ChannelFile.wav: Sound Ok.
+  xmms #OutputPlugin:Alsa;AudioDevice:surround51.GnomePanel or
+gnome-terminal
+    Application starts without error message
+    5.1ChannelFile.wav, 2ChannelFile.wav: Sound Ok.
+    .xsession-errors fills with:
+      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  mplayer # 'mplayer -v -ao alsa:device=surround51 -channels 6'
+    No StdError error messages (-v)
+    All kinds of files and DVDs (Multichannel AC3) play Ok.
+    .xsession-errors fills with:
+      ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  xine # 'xine --verbose --audio-driver
+alsa';SpeakerArrangement:Surround5.1
+    Error Message: The audio device is unavailable. Please verify if
+another program
+      already uses it.
+    StdError error messages (--verbose):
+      audio_alsa_out: snd_pcm_open() of plug:surround51:0 failed: Device
+or
+        resource busy
+      audio_alsa_out: >>> check if another program already uses PCM <<<
+    After several Play/ErrorMessage:
+      All kinds of files and DVDs (Multichannel AC3) play Ok.
+      .xsession-errors fills with:
+        ALSA lib pcm_dmix.c:819:(snd_pcm_dmix_open) unable to open slave
+  xine # 'xine --verbose --audio-driver
+alsa';SpeakerArrangement:Stereo2.0
+    No error Message
+    No StdError error messages
+    All kinds of files and DVDs play Ok. Multichannel AC3 downshifted to 2
+Channels.
+    No output sent to .xsession-errors
+
+======================================================================
+
+----------------------------------------------------------------------
+ Manolo - 12-03-05 13:54 
+----------------------------------------------------------------------
+Please have a look at:
+https://sourceforge.net/tracker/?func=detail&atid=109655&aid=1226595&group_id=9655
+xine and Alsa surround51
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-02-05 17:51 Manolo         New Issue                                    
+12-02-05 17:51 Manolo         Distribution              => Ubuntu 5.10 Breezy
+12-02-05 17:51 Manolo         Kernel Version            => Linux 2.6.12    
+12-03-05 13:54 Manolo         Note Added: 0006898                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
