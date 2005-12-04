@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001617]: "The field ipc_gid must be a valid group (create group audio)"
-Date: Sun, 4 Dec 2005 10:21:30 +0100
-Message-ID: <0be2ace2cfd665b1cac5707ab36df5f4@bugtrack.alsa-project.org>
+From: Andreas Schwab <schwab@suse.de>
+Subject: Fix missing declarations
+Date: Sun, 04 Dec 2005 14:19:43 +0100
+Message-ID: <jepsodyp74.fsf@sykes.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E553D16D
-	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2005 10:21:30 +0100 (MET)
+Received: from mx2.suse.de (ns2.suse.de [195.135.220.15])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E185516D
+	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2005 14:19:51 +0100 (MET)
+Received: from Relay2.suse.de (mail2.suse.de [195.135.221.8])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx2.suse.de (Postfix) with ESMTP id 4AC241CC33
+	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2005 14:19:45 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,97 +26,54 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+sound/pci/emu10k1/emufx.c: In function 'snd_emu10k1_efx_alloc_pm_buffer':
+sound/pci/emu10k1/emufx.c:2402: error: implicit declaration of function '=
+vmalloc'
+sound/pci/emu10k1/emufx.c:2402: warning: assignment makes pointer from in=
+teger without a cast
+sound/pci/emu10k1/emufx.c: In function 'snd_emu10k1_efx_free_pm_buffer':
+sound/pci/emu10k1/emufx.c:2413: error: implicit declaration of function '=
+vfree'
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1617> 
-======================================================================
-Reported By:                db1802xx
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1617
-Category:                   0_general
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             12-04-2005 09:01 CET
-Last Modified:              12-04-2005 10:21 CET
-======================================================================
-Summary:                    "The field ipc_gid must be a valid group (create
-group audio)"
-Description: 
-After upgrading alsa packages a while ago, i got some problems...
-I'm not sure if this has to du with the alsa upgrade, or if it's something
-else.. Only thing I'm sure of is that it worked the last time I used
-mplayer with alsa(3 months ago, or something/with last version of
-alsa-libs)..
+Signed-off-by: Andreas Schwab <schwab@suse.de>
 
-As user in group "audio" I can use alsamixer, xmms and bmp...
-But when i try to run aplay, mplayer I get this message:
-   "The field ipc_gid must be a valid group (create group audio)"
-  ALSA Lib: something about pcm_dmix.c line 1102 or something.......
-There is no error when running as root...
+Index: linux/sound/pci/emu10k1/emufx.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux/sound/pci/emu10k1/emufx.c	2005-12-04 13:29:12.247722913 +0100
++++ linux/sound/pci/emu10k1/emufx.c	2005-12-04 13:35:03.971435580 +0100
+@@ -29,6 +29,7 @@
+ #include <linux/pci.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
++#include <linux/vmalloc.h>
+ #include <linux/init.h>
+ #include <sound/core.h>
+ #include <sound/emu10k1.h>
+Index: linux/sound/pci/emu10k1/p16v.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux/sound/pci/emu10k1/p16v.c	2005-12-04 13:29:12.271722893 +0100
++++ linux/sound/pci/emu10k1/p16v.c	2005-12-04 13:34:52.671444672 +0100
+@@ -93,6 +93,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/pci.h>
+ #include <linux/slab.h>
++#include <linux/vmalloc.h>
+ #include <linux/moduleparam.h>
+ #include <sound/core.h>
+ #include <sound/initval.h>
 
-I've recently changed from devfs to udev, so I have been trying to change
-the permissions, groups and so on, but with no luck... 
+Andreas.
 
-Finaly i opend the "pcm_dmix.c" file in the source, and commented away a
-few things to check if it would work if i forced it to skip the gid
-check:
-
-		if (strcmp(id, "ipc_gid") == 0) {
-			char *group;
-			char *endp;
-			err = snd_config_get_ascii(n, &group);
-			if (err < 0) {
-				SNDERR("The field ipc_gid must be a valid group");
-				return err;
-			}
-			//if (isdigit(*group) == 0) {
-			//	struct group *grp = getgrnam(group);
-			//	if (grp == NULL) {
-			//		SNDERR("The field ipc_gid must be a valid group (create group %s)",
-group);
-			//		free(group);
-			//		return -EINVAL;
-			//	}
-			//	ipc_gid = grp->gr_gid;
-			//} else {
-				ipc_perm = strtol(group, &endp, 10);
-			//}
-			free(group);
-			continue;
-
-After this everything works fine...
-
-The question is:
-Is this a ALSA related question (as in I've fucked up somthing in my OS),
-or has this something to do with the latest alsa-lib(1.3.3)?
-======================================================================
-
-----------------------------------------------------------------------
- db1802xx - 12-04-05 09:04 
-----------------------------------------------------------------------
-Forgot to mention my sound card driver: intel8x0..
-But I doubt it has something to do with the issue...
-
-----------------------------------------------------------------------
- perex - 12-04-05 10:21 
-----------------------------------------------------------------------
-Could you give us 'strace' with the original sources?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-04-05 09:01 db1802xx       New Issue                                    
-12-04-05 09:04 db1802xx       Note Added: 0006906                          
-12-04-05 10:21 perex          Note Added: 0006907                          
-======================================================================
-
-
+--=20
+Andreas Schwab, SuSE Labs, schwab@suse.de
+SuSE Linux Products GmbH, Maxfeldstra=DFe 5, 90409 N=FCrnberg, Germany
+PGP key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED=
+5
+"And now for something completely different."
 
 
 -------------------------------------------------------
