@@ -1,17 +1,14 @@
-From: Doctor <blundell@ggcatering.com>
-Subject: The Ultimate Online Pharmaceutical
-Date: Sun, 04 Dec 2005 13:14:11 -0600
-Message-ID: <9220902845.20051204131411@ggcatering.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001616]: Support for mute led feature
+Date: Sun, 4 Dec 2005 07:00:55 +0100
+Message-ID: <299f369c8e083cd0275278947a2064c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------6258CDF61B1A794"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -190137968 (c-24-98-213-35.hsd1.ga.comcast.net [24.98.213.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BB7AA163
-	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2005 06:06:20 +0100 (MET)
-Received: from ggcatering.com (-188425656 [-188125368])
-	by c-24-98-213-35.hsd1.ga.comcast.net (Qmailv1) with ESMTP id 352A60223A
-	for <alsa-devel@alsa-project.org>; Sun, 04 Dec 2005 13:14:11 -0600
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8C4A17B
+	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2005 07:00:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,70 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------------6258CDF61B1A794
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1616> 
+======================================================================
+Reported By:                jstamp
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1616
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             12-04-2005 07:00 CET
+Last Modified:              12-04-2005 07:00 CET
+======================================================================
+Summary:                    Support for mute led feature
+Description: 
+The PowerPro G 3:11 (aka the Sabio MW1) uses an ALC880 chip.  It also has a
+mute button which is supposed to light up when the audio is muted.
 
-Vlcagra $3.3
-Leevitra $3.3
-Cixalis $3.7
-Imigtrex $16.4
-Flovmax $2.2
-Ultsram $0.78
-Vigoxx $4.75
-Amkbien $2.2
-Valiuum $0.97 
-Xahnax $1.09
-Somfa $3
-Merlidia $2.2  
+I found out that you can turn on the LED with the following commands:
+  snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_MASK, 0x01);
+  snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DIRECTION, 0x01);
+  snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA, 0x01);
 
+Setting GPIO_DATA to 0x00 will turn off the LED.
 
-visit our website
-http://tanoter.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+Is there an easy way to incorporate this feature into the driver?
 
-___
-Best regards,
-Online Pharmaceuticals
+======================================================================
 
-fedfewwsc UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-------------6258CDF61B1A794
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<b>Vlragra - $3.3 <br>
-Lelvitra - $3.3<br>
-Ciealis - $3.7<br>
-Imigtrex - $16.4<br>
-Flobmax - $2.2<br>
-Ulttram - $0.78<br>
-Vihoxx - $4.75 <br>
-Amtbien - $2.2<br>
-Valifum - $0.97 <br>
-Xajnax - $1.09<br>
-Somea - $3 <br>
-Mernidia - $2.2</b><br>
-<br>
-  <br>
-  <a href="http://tanoter.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV"><strong>visit our website</strong></a><br>
-  <br>
-   <br>
-  Best regards,<br>
-  Online Pharmaceuticals 
-<br>
-   <br>
-fedfewwsc UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</body>
-</html>
-
-------------6258CDF61B1A794--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-04-05 07:00 jstamp         New Issue                                    
+12-04-05 07:00 jstamp         Distribution              => Debian          
+12-04-05 07:00 jstamp         Kernel Version            => 2.6.14          
+======================================================================
 
 
 
