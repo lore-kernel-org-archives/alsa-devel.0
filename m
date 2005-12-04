@@ -1,13 +1,11 @@
 From: Tomas Carnecky <tom@dbservice.com>
-Subject: Re: internal structures and 32/64bit compatibility
-Date: Sun, 04 Dec 2005 01:12:26 +0000
-Message-ID: <4392427A.9090608@dbservice.com>
-References: <43923767.2090704@dbservice.com>
+Subject: aoss and teamspeak
+Date: Sun, 04 Dec 2005 04:00:54 +0000
+Message-ID: <439269F6.2070404@dbservice.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43923767.2090704@dbservice.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,61 +18,102 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Tomas Carnecky wrote:
-> Looks like they (the 32 and 64bit libraries) don't understand each 
-> other. As I can't compile the 32bit libs on my own, they are precompiled 
-> by the gentoo staff, I don't know which version they are, but the 64bit 
-> alsa-lib has version 1.0.10.
+I think I've foud the problem: snd_pcm_start() is never called !
 
-... they should update their packages ;)
+Look at the output:
 
-
-> I've tried to compile my own 32bit alsa-oss to test why teamspeak fails, 
-> but libtool keeps using absolute paths (/usr/lib/libasound.so) but the 
-> 32bit libs are located in /usr/lib32, and I have no clue how to convince 
-> libtool to use "-lasound" instead of the absolete path. And I guess 
-> alsa-lib will be equally hard to compile for 32bit so I didn't even try it.
-> 
-> How can I compile alsa-lib for 32bit ?
-> 
-
-was easier that I've expected:
-
-./configure --prefix=~/root LDFLAGS="-L/emul/linux/x86/usr/lib -m32" 
-CFLAGS="-L/emul/linux/x86/usr/lib -m32"
-
-and the package compiled without errors, copied the library to the lib32 
-path and now I can play WoW and listen to music !
-
-but the aoss wrapper library (version 1.0.10) still fails:
-
-$ ALSA_OSS_DEBUG=1 LD_PRELOAD=/emul/linux/x86/usr/lib/libaoss.so.0.0.0 
-TeamSpeak
-ERROR: ld.so: object '/emul/linux/x86/usr/lib/libaoss.so.0.0.0' from 
-LD_PRELOAD cannot be preloaded: ignored.
+$ ALSA_OSS_DEBUG=1 LD_PRELOAD=./libaoss.so.0.0.0 TeamSpeak
+ERROR: ld.so: object './libaoss.so.0.0.0' from LD_PRELOAD cannot be 
+preloaded: ignored.
 Opened PCM dsp0 for stream 0 (result = -2)
 Opened PCM default for stream 0 (result = 0)
 Opened PCM default for stream 1 (result = 0)
 open("/dev/dsp", 2, 0) -> 18
 ioctl(18, SNDCTL_DSP_RESET)
 ioctl(18, SNDCTL_DSP_SETDUPLEX)
-ioctl(18, SNDCTL_DSP_GETCAPS, 0x590e9168) -> [13056]
+ioctl(18, SNDCTL_DSP_GETCAPS, 0x59202168) -> [13056]
+ioctl(18, SNDCTL_DSP_SETFRAGMENT, 0x5920216c[3000c])
+ioctl(18, SNDCTL_DSP_SETFMT, 0x59202168[16]) -> [16]
+ioctl(18, SNDCTL_DSP_CHANNELS, 0x59202178[1]) -> [1]
+ioctl(18, SNDCTL_DSP_SPEED, 0x5920216c[22050]) -> [22050]
+ioctl(18, SNDCTL_DSP_GETBLKSIZE, 0x592022cc) -> [4096]
+read(18, 0x83d1140, 4096) -> 4096
+write(18, 0x83a3a70, 4096) -> 4096
+read(18, 0x83d1140, 4096) -> 4096
+write(18, 0x83a3a70, 4096) -> 4096
+read(18, 0x83d1140, 4096) -> 4096
+write(18, 0x83a3a70, 4096) -> 4096
+read(18, 0x83d1140, 4096) -> 4096
+write(18, 0x83a3a70, 4096) -> 4096
+read(18, 0x83d1140, 4096) -> 4096
+
+[and those read/write continue forever]
+
+if you look at alsa-oss/alsa/pcm.c, you'll see that snd_pcm_start() is 
+only called from the ioctl() handler, and only on SNDCTL_DSP_SETTRIGGER 
+which never occurs in the teamspeak trace. Because TS2 works with native 
+OSS, I assume that the alsa-oss emulator is buggy. I've added 
+snd_pcm_start() to the read/write functions and everything works.
+
+a little step-by-step guide:
+
+first I had to remove (comment out) the "period_size" option from the 
+capture device, it was set to 1024 and it caused 
+snd_pcm_hw_params_set_periods_max() to fail, here is the output of a 
+failed session, along with a few debug information:
+
 ioctl(18, SNDCTL_DSP_SETFRAGMENT, 0x590e916c[3000c])
+periods_min: 3, periods_max: 3, dsp->maxfrags: 3 <== capture device
+periods_min: 15, periods_max: 15, dsp->maxfrags: 3 <== playback device 
+that fails
 dsp ioctl error = -22
-close(18) -> 0
-$
 
-Maybe a bug in TeamSpeak itself, not initializing the device properly, 
-but it works fine under native oss. I even tracked down the file and 
-line on which it fails (posted to the alsa-user mailing list). So if 
-someone has a clue how to fix this I'd be more than happy to test it.
+then I had to adjust the SNDCTL_DSP_GETBLKSIZE return value, the normal 
+value computed by the aoss library would be:
+ioctl(18, SNDCTL_DSP_GETBLKSIZE, 0x592022cc) -> [8192]
+but that caused memory corruption in TeamSpeak, any value below (4092, 
+2048, 1024) work fine. Symptoms:
 
-Just commenting out the function call didn't help, so that call seems to 
-be important for the device initialization. Seems like the function 
-arguments ate calculated wrong, but I'm not a sound expert and I don't 
-know what the valid fucntiion arguments are.
+read(18, 0x83d9088, 8192) -> 8192
+Runtime error 231 at 0806A7E9
+Runtime error 231 at 0806A7E9
+munmap((nil), 61439)
+TeamSpeak.bin: pcm.c:1451: lib_oss_pcm_munmap: Assertion 
+`str->mmap_buffer' failed.
+Aborted
+
+or
+
+read(18, 0x83c8770, 8192) -> 8192
+Runtime error 231 at 0806A7E9
+X Error: BadWindow (invalid Window parameter) 3
+   Major opcode:  4
+X Error: BadValue (integer parameter out of range for operation) 2
+   Major opcode:  56
+X Error: BadRequest (invalid request code or no such operation) 1
+   Major opcode:  249
+X Error: BadWindow (invalid Window parameter) 3
+   Major opcode:  12
+X Error: BadLength (poly request too large or internal Xlib length error) 16
+   Major opcode:  2
+TeamSpeak.bin: Fatal IO error: client killed
+
+or
+
+read(18, 0x83d91d8, 8192) -> 8192
+Runtime error 231 at 0806A7E9
+Exception EAccessViolation in module TeamSpeak.bin at 0806A7E9.
+Access violation at address 0805C238, accessing address FFFFFFFC.
+munmap((nil), 61439)
+TeamSpeak.bin: pcm.c:1451: lib_oss_pcm_munmap: Assertion 
+`str->mmap_buffer' failed.
+Aborted
+
+system: Gentoo Linux 2.6.14.2 #8 SMP PREEMPT Sat Dec 3 23:51:59 GMT 2005 
+x86_64 AMD Athlon(tm) 64 X2 Dual Core Processor 4400+ AuthenticAMD GNU/Linux
 
 tom
+
 
 
 -------------------------------------------------------
