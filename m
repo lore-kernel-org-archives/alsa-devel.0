@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Sun, 4 Dec 2005 21:24:25 +0100
-Message-ID: <f5a6b73952193a6ac2fce9cda44d84b0@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: =?GB2312?B?xvPStdW9wtTNu86nLcDKz8zGvQ==?= <MAILER-DAEMON@163.net>
+Subject: =?GB2312?B?xvPStdW9wtTNu86nLcDKz8zGvQ==?=
+Date: Mon, 5 Dec 2005 04:51:52 +0800
+Message-ID: <E1Ej0co-0000y0-Os@mail.sourceforge.net>
+Reply-To: lz-tuoya@ty819.cn
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3389019E
-	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2005 21:24:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +16,170 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
-======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
-======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              12-04-2005 21:24 CET
-======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
-Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-======================================================================
+                                =D6=D0=B9=FA=C6=F3=D2=B5=D5=BD=C2=D4=CD=BB=
+=CE=A7
+                         =D6=D0=B9=FA=CE=A8=D2=BB=D3=C3=B0=B8=C0=FD=CA=DA=
+=BF=CE=B5=C4=C6=F4=B7=A2=D0=D4=D1=D0=CC=D6=BB=E1
+           =C0=CA=CF=CC=C6=BD=BD=CC=CA=DA    =C9=EE=DB=DA=D1=D0=CC=D6=BB=E1=
+    2005=C4=EA12=D4=C230-31=C8=D5 =D6=D0=B9=FA=A1=A4=C9=EE=DB=DA
 
 
+  =CA=B1=B4=FA=D2=D1=BE=AD=B1=E4=BB=AF=A3=AC=C8=E7=B9=FB=C6=F3=D2=B5=B2=BB=
+=B6=AE=B5=C3=BE=AD=BC=C3=B1=E4=BB=AF=B9=E6=C2=C9=BA=CD=CA=C0=BD=E7=BC=B6=B5=
+=C4=B9=AB=CB=BE=D6=CE=C0=ED=B9=E6=C2=C9=A3=AC=C4=C7=C3=B4=C6=F3=D2=B5=B5=C4=
+=CB=A5=B0=DC=A1=A2=C9=F5=D6=C1=B5=B9=B1=D5=B6=BC=D6=BB=CA=C7=CA=B1=BC=E4=B5=
+=C4=CE=CA=CC=E2=A3=A1
+
+  =C7=B020=C4=EA=B7=A2=D5=B9=B3=C9=BE=CD=D3=D0=C4=BF=B9=B2=B6=C3=A3=AC=CB=
+=AD=B8=E6=CB=DF=C4=E3=CE=B4=C0=B420=C4=EA=A1=AA=A1=AA=C8=E7=BA=CE=B0=D1=CE=
+=D5=D0=C2=BE=AD=BC=C3=CA=B1=B4=FA=CD=BB=C0=B4=B5=C4=B2=C6=B8=BB=B9=E6=C2=C9=
+=A3=BF
+  =CE=AA=CA=B2=C3=B4=D6=D0=B9=FA=B5=C4=B6=E0=CA=FD=B2=FA=D2=B5=BA=CD=C6=F3=
+=D2=B5=B6=BC=CF=DD=C8=EB=C1=CB=D5=FB=CC=E5=D0=D4=B5=C4=CD=AC=D6=CA=BB=AF=BE=
+=BA=D5=F9=A3=AC=C0=FB=C8=F3=C2=CA=B2=BB=B6=CF=BD=B5=B5=CD=A3=AC=D4=F6=B3=A4=
+=CD=A3=D6=CD=A3=BF
+  =CE=AA=CA=B2=C3=B4=C8=FD=D0=C7=A1=A2LG=B5=C8=B9=AB=CB=BE=C4=DC=B2=BB=B6=
+=CF=C0=A9=D5=C5=A3=AC=B1=B3=BA=F3=BB=FA=C0=ED=BA=CD=BF=C9=D2=D4=D6=B1=BD=D3=
+=D1=A7=CF=B0=B5=C4=B2=D9=D7=F7=B7=BD=B7=A8=CA=C7=CA=B2=C3=B4=A3=BF
+  =CE=AA=CA=B2=C3=B4=D3=D0=D0=A9=C6=F3=D2=B5=BF=C9=D2=D4=B3=A4=CA=A2=B2=BB=
+=CB=A5=A1=AA=A1=AA=D3=C5=D0=E3=C6=F3=D2=B5=CA=C7=C8=E7=BA=CE=CA=B5=CF=D6=B7=
+=E7=CF=D5=BF=D8=D6=C6=A3=BF=C6=F3=D2=B5=B3=D6=D0=F8=B5=C4=BB=F9=C0=ED=CA=C7=
+=CA=B2=C3=B4=A3=BF
+=20
+
+  =C0=C9=CF=CC=C6=BD=BD=CC=CA=DA=A3=AC=BB=AA=C8=CB=C6=F3=D2=B5=BD=E7=D7=EE=
+=D3=D0=BC=DB=D6=B5=B5=C4=D7=A8=BC=D2=A3=AC=CA=C0=BD=E7=BC=B6=B5=C4=BD=CC=CA=
+=DA=A3=AC=CE=A8=D2=BB=D3=C3=B4=F3=B9=E6=C4=A3=D6=D0=B9=FA=B0=B8=C0=FD=CA=DA=
+=BF=CE=B5=C4=CA=C0=BD=E7=BC=B6=B4=F3=CA=A6
+  =D3=C3=BE=AD=BC=C3=B7=A2=D5=B9=BA=CD=CA=C0=BD=E7=BC=B6=B9=AB=CB=BE=D6=CE=
+=C0=ED=B9=E6=C2=C9=A3=AC=CE=AA=C4=FA=DA=B9=CA=CD=D6=D0=B9=FA=C6=F3=D2=B5=D5=
+=BD=C2=D4=CD=BB=CE=A7=A1=A2=B2=FA=D2=B5=D5=FB=BA=CF=BA=CD=BE=AB=CF=B8=BB=AF=
+=B8=FB=D7=F7=B5=C4=D7=F6=C7=BF=D7=F6=B4=F3=CB=BC=CE=AC
+
+
+=D1=D0=CC=D6=C4=DA=C8=DD=A3=BA
+
+=D5=BD=C2=D4=B7=D6=CE=F6
+ =BD=B2=CA=DA=D5=BD=C2=D4=CD=BB=CE=A7=D5=FB=CC=E5=BF=F2=BC=DC=A1=A2=BE=AD=
+=BC=C3=BB=B7=BE=B3=B1=E4=BB=AF=B5=BC=D6=C2=B5=C4=D5=BD=C2=D4=C8=A1=CF=F2=BA=
+=CD=BE=AD=D3=AA=CA=D6=B6=CE=B5=C4=B1=E4=BB=AF=A1=A2=BE=AD=BC=C3=BB=B7=BE=B3=
+=B1=E4=BB=AF=B5=BC=D6=C2=B5=C4=BE=AD=D3=AA=B9=DC=C0=ED=CB=BC=CE=AC=B1=E4=BB=
+=AF=20
+1=A1=A2=D5=D2=B5=BD=D0=C2=C0=FB=C8=F3=B5=E3
+2=A1=A2=CB=BC=CE=AC=CD=BB=C6=C6=B7=BD=B0=B8
+=20
+=D5=BD=C2=D4=D1=D0=BE=BF
+ =D2=D4=D6=D0=B9=FA=BA=CD=C8=D5=B1=BE=B5=E4=D0=CD=C6=F3=D2=B5=B5=C4=B0=B8=
+=C0=FD=D1=D0=BE=BF=C0=B4=C6=CA=CE=F6=D6=D0=C8=D5=C6=F3=D2=B5=C6=D5=B1=E9=CF=
+=DD=C8=EB=B5=C4=D5=BD=C2=D4=C0=A7=BE=B3=A3=AC=B2=A2=D6=B8=B5=BC=C6=F3=D2=B5=
+=C8=E7=BA=CE=CD=BB=C6=C6=C0=A7=BE=B3=20
+3=A1=A2=D4=A4=B7=C0=D5=BD=C2=D4=C3=D4=CA=A7
+4=A1=A2=BF=B4=C7=E5=D5=BD=C2=D4=B1=BE=D6=CA
+=20
+=D5=BD=C2=D4=D1=A1=D4=F1
+ =D2=D4=D0=C2=BE=AD=BC=C3=BB=B7=BE=B3=CF=C2=C8=FD=D0=C7=B5=E7=D7=D3=A1=A2=
+LG=B5=E7=D7=D3=A1=A2=D6=D0=D0=CB=CD=A8=D1=B6=B5=C8=CB=C4=B8=F6=C6=F3=D2=B5=
+=B5=C4=B0=B8=C0=FD=D1=D0=BE=BF=A3=AC=D6=B8=B5=BC=D6=D0=B9=FA=C6=F3=D2=B5=CA=
+=C0=BD=E7=BC=B6=BE=BA=D5=F9=BA=CD=D6=D0=B9=FA=BB=AF=D5=BD=C2=D4=20
+5=A1=A2=C8=AB=C7=F2=BB=AF=BE=BA=D5=F9=B2=DF=C2=D4
+6=A1=A2=D6=D0=B9=FA=BB=AF=D5=BD=C2=D4=D1=A1=D4=F1
+=20
+=D5=BD=C2=D4=BF=D8=D6=C6
+ =BB=D8=B4=F0=CE=D2=C3=C7=C6=BE=CA=B2=C3=B4=B2=BB=CB=C0=A3=BA=B6=E0=D4=AA=
+=BB=AF=D2=B5=CE=F1=BE=AD=D3=AA=BB=A5=B2=B9=D0=D4=B7=E7=CF=D5=BF=D8=D6=C6=B2=
+=D9=D7=F7=B2=DF=C2=D4=BA=CD=D7=A8=D2=B5=BB=AF=BE=AD=D3=AA=B7=E7=CF=D5=BF=D8=
+=D6=C6=B2=DF=C2=D4=A1=AA=A1=AA=CF=F2=B5=D8=B2=FA=C6=F3=D2=B5=D1=A7=CF=B0
+7=A1=A2=D7=A8=D2=B5=BB=AF=B7=E7=CF=D5=BF=D8=D6=C6
+8=A1=A2=B6=E0=D4=AA=BB=AF=B7=E7=CF=D5=BF=D8=D6=C6
+=20
+=CA=B5=CA=A9=C2=B7=CF=DF=CD=BC
+ =D1=A1=D4=F11-2=B8=F6=CF=D6=B3=A1=C4=B3=B8=F6=C6=F3=D2=B5=CA=B5=BC=CA=C7=
+=E9=BF=F6=A3=AC=C0=C9=BD=CC=CA=DA=BA=CD=C6=E4=CB=FB=BC=CE=B1=F6=B8=F9=BE=DD=
+=C1=BD=CC=EC=B5=C4=D1=A7=CF=B0=C4=DA=C8=DD=B9=B2=CD=AC=B0=EF=D6=FA=D6=C6=B6=
+=A8=D5=BD=C2=D4=CD=BB=CE=A7=C2=B7=CF=DF=CD=BC=A3=AC=B9=A9=D1=A7=D4=B1=B2=CE=
+=BF=BC
+9=A1=A2=D5=BD=C2=D4=CD=BB=CE=A7=C2=B7=CF=DF=CD=BC
+10=A1=A2=B6=C0=C1=A2=B7=D6=CE=F6=B7=BD=B7=A8
+=20
+=CE=CA=CC=E2=BD=E2=BE=F6
+ =CA=D5=BC=AF=CF=D6=B3=A1=C6=F3=D2=B5=BC=D2=B6=D4=D3=DA=D5=BD=C2=D4=B9=E6=
+=BB=AE=B5=C4=CE=CA=CC=E2=A3=AC=C0=C9=BD=CC=CA=DA=BD=AB=B6=D45-10=B8=F6=C6=
+=D5=B1=E9=D0=D4=B5=C4=CE=CA=CC=E2=BD=F8=D0=D0=BD=E2=B4=F0=BA=CD=CA=B5=CA=A9=
+=B5=C4=B9=D8=BC=FC=B5=E3=D6=B8=B5=BC
+11=A1=A2=BD=E2=BE=F6=C6=D5=B1=E9=CE=CA=CC=E2
+12=A1=A2=B9=D8=BC=FC=B5=E3=D6=B8=B5=BC
+=20
+=D6=F7=BD=B2=C8=CB=A3=BA=C0=C9=CF=CC=C6=BD=BD=CC=CA=DA
+
+=C3=C0=B9=FA=B1=F6=CE=F7=B7=A8=C4=E1=D1=C7=B4=F3=D1=A7=CE=D6=B6=D9=C9=CC=D1=
+=A7=D4=BA=B2=A9=CA=BF
+=CA=C0=BD=E7=BC=B6=BE=AD=BC=C3=D1=A7=BC=D2=A3=AC=C6=F3=D2=B5=BE=AD=D3=AA=B5=
+=C4=CB=BC=CF=EB=BC=D2=A1=A2=D4=A4=BC=FB=BC=D2
+=CA=C0=BD=E7=BC=B6=B5=C4=B9=AB=CB=BE=D6=CE=C0=ED=BA=CD=BD=F0=C8=DA=D7=A8=BC=
+=D2
+2003=C4=EA=CA=DC=D4=BA=B3=A4=CF=EE=B1=F8=B5=C420=B4=CE=D1=FB=C7=EB=A3=AC=B3=
+=F6=C8=CE=B3=A4=BD=AD=C9=CC=D1=A7=D4=BA=A3=A8=CA=D7=CF=AF=A3=A9=BD=CC=CA=DA=
+=A3=AC=CD=AC=CA=B1=B3=F6=C8=CE=CF=E3=B8=DB=D6=D0=CE=C4=B4=F3=D1=A7=D7=EE=B8=
+=DF=D1=A7=CA=F5=BC=B6=B1=F0=B5=C4=A3=A8=CA=D7=CF=AF=A3=A9=BD=CC=CA=DA
+=B3=A4=BD=AD=CA=B5=D2=B5=B6=AD=CA=C2=BE=D6=D6=F7=CF=AF=C0=EE=BC=CE=B3=CF=A1=
+=A2=CB=D1=BA=FC=D7=DC=B2=C3=D5=C5=B3=AF=D1=F4=A1=A2=CD=F2=BF=C6=BC=AF=CD=C5=
+=B6=AD=CA=C2=B3=A4=CD=F5=CA=AF=A1=A2=B3=A4=BD=AD=C9=CC=D1=A7=D4=BA=D4=BA=B3=
+=A4=CF=EE=B1=F8=B5=C4=D2=BB=D6=C2=CD=C6=BC=F6=C6=F3=D2=B5=B9=CB=CE=CA
+=CA=C0=BD=E7=D2=F8=D0=D0=A1=A2=C9=EE=DB=DA=D6=A4=C8=AF=BD=BB=D2=D7=CB=F9=B9=
+=AB=CB=BE=D6=CE=C0=ED=B9=CB=CE=CA
+2003=C4=EA=CA=C0=BD=E7=D7=EE=D3=D0=D3=B0=CF=EC=C1=A6=B5=C4=BE=AD=BC=C3=D1=
+=A7=BC=D2=A1=A2=D4=F8=D6=B4=BD=CC=D3=DA=CE=D6=B6=D9=C9=CC=D1=A7=D4=BA=A1=A2=
+=C3=DC=CE=F7=B8=F9=D6=DD=C1=A2=B4=F3=D1=A7=A1=A2=B6=ED=BA=A5=B6=ED=D6=DD=C1=
+=A2=B4=F3=D1=A7=A3=AC=C5=A6=D4=BC=B4=F3=D1=A7=BA=CD=D6=A5=BC=D3=B8=E7=B4=F3=
+=D1=A7
+=C6=F3=D2=B5=BE=AD=D3=AA=B9=DC=C0=ED=B3=A9=CF=FA=CA=E9=A1=B6=B9=AB=CB=BE=D6=
+=CE=C0=ED=A1=B7=A1=A2=A1=B6=D4=CB=D7=F7=A1=B7=A1=A2=A1=B6=D5=FB=BA=CF=A1=B7=
+=A1=A2=A1=B6=B2=D9=D7=DD=A1=B7=B5=C4=D7=F7=D5=DF
+
+
+=C5=E0=D1=B5=B6=D4=CF=F3=A3=BA=C6=F3=D2=B5=B6=AD=CA=C2=B3=A4=A1=A2=D7=DC=B2=
+=C3=A1=A2=B8=B1=D7=DC=B2=C3=A1=A2=D7=DC=BE=AD=C0=ED=A1=A2=B8=B1=D7=DC=BE=AD=
+=C0=ED=B5=C8=C6=F3=D2=B5=B8=DF=BC=B6=B9=DC=C0=ED=C8=CB=CA=BF
+
+=C5=E0=D1=B5=CA=B1=BC=E4=A3=BA2005=C4=EA12=D4=C230=A3=AD31=C8=D5
+
+=C5=E0=D1=B5=B5=D8=B5=E3=A3=BA=D6=D0=B9=FA=A1=A4=C9=EE=DB=DA
+
+=C5=E0=D1=B5=B7=D1=D3=C3=A3=BA=A1=A4=C6=D5=CD=A8=C6=B1 5800=D4=AA/=C8=CB =
+=B0=FC=BA=AC=BD=CC=B2=C4=A1=A2=B2=E8=B5=E3=CB=AE=B9=FB=A1=A2=C1=BD=CC=EC=CE=
+=E7=B2=CD=A3=AC=B4=CB=B4=CE=BF=CE=B3=CC=CF=DE200=C8=CB=A3=AC=B1=A8=C2=FA=BC=
+=B4=D6=B9=A3=AC=CB=F9=D3=D0=B5=C4=CE=BB=D6=C3=B0=B2=C5=C5=BE=F9=B0=B4=D5=D5=
+=B1=A8=C3=FB=CF=C8=BA=F3=C5=C5=D0=F2=A1=A3=20
+
+          =A1=A4=B9=F3=B1=F6=C6=B1 8800=D4=AA/=C8=CB =A3=A8=B0=FC=BA=AC=C1=
+=BD=CC=EC=B5=C4=D7=A1=CB=DE=A3=A9=A3=AC=D4=DA=C7=B0=C5=C5=B9=F3=B1=F6=CF=AF=
+=BE=CD=D7=F8=A3=AC=B0=B2=C5=C5=BA=CD=C0=C9=BD=CC=CA=DA=B6=D4=BB=B0=A1=A2=D3=
+=C3=B2=CD=A1=A3
+
+=B1=A8=C3=FB=B2=CE=BC=D3=C1=F7=B3=CC=A3=BA
+    1. =C0=B4=B5=E7=CB=F7=C8=A1=B1=A8=C3=FB=B1=ED=CC=EE=D0=B4=BA=C3=BA=F3=
+=B4=AB=D5=E6=D6=C1=A3=BA=A3=A8010=A3=A969547342     =CD=F8=C9=CF=D7=A2=B2=
+=E1=A3=BA=D4=DA=CF=DF=B1=A8=C3=FB
+    2. =B1=A8=C3=FB=BA=F3=BD=D3=CA=D5=B8=B6=BF=EE=CD=A8=D6=AA=A3=AC=C8=FD=
+=C8=D5=C4=DA=D6=A7=B8=B6=C5=E0=D1=B5=B7=D1=D3=C3=A3=AC=B2=A2=CC=E1=B9=A9=B8=
+=B6=BF=EE=C6=BE=D6=A4=A3=AC=BF=EE=B5=BD=BA=F3=B7=BD=BF=C9=CD=EA=B3=C9=B1=A8=
+=C3=FB=CA=D6=D0=F8=A3=BB
+    3. =D1=A7=D4=B1=BD=D3=CA=D5=C3=C5=C6=B1=A3=AC=B0=B4=CA=B1=B2=CE=BC=D3=
+=C5=E0=D1=B5=A3=BB
+
+=C1=AA=CF=B5=CE=D2=C3=C7=A3=BA=B1=B1=BE=A9=CD=D8=D1=C5=C5=E0=D1=B5=D6=D0=D0=
+=C4 =20
+
+=B1=A8=C3=FB=B5=E7=BB=B0=A3=BA=A3=A8010=A3=A969542447 85416990 =B4=AB=D5=E6=
+=A3=BA=A3=A8010=A3=A969547342 =D3=CA=BC=FE=A3=BAsiwei@ty819.cn
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
+les
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+http://ads.osdn.com/?ad_id=3D7637&alloc_id=3D16865&op=3Dclick
