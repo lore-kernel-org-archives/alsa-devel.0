@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001617]: "The field ipc_gid must be a valid group (create group audio)"
-Date: Sun, 4 Dec 2005 09:01:39 +0100
-Message-ID: <b91e5f6a10178452119cb5ef7919f01e@bugtrack.alsa-project.org>
+Date: Sun, 4 Dec 2005 09:04:25 +0100
+Message-ID: <a91cfb3e2c04670b4ad292010e3e4ef0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71FBA16F
-	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2005 09:01:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F70A16F
+	for <alsa-devel@alsa-project.org>; Sun,  4 Dec 2005 09:04:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1617> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             12-04-2005 09:01 CET
-Last Modified:              12-04-2005 09:01 CET
+Last Modified:              12-04-2005 09:04 CET
 ======================================================================
 Summary:                    "The field ipc_gid must be a valid group (create
 group audio)"
@@ -92,10 +92,17 @@ Is this a ALSA related question (as in I've fucked up somthing in my OS),
 or has this something to do with the latest alsa-lib(1.3.3)?
 ======================================================================
 
+----------------------------------------------------------------------
+ db1802xx - 12-04-05 09:04 
+----------------------------------------------------------------------
+Forgot to mention my sound card driver: intel8x0..
+But I doubt it has something to do with the issue...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-04-05 09:01 db1802xx       New Issue                                    
+12-04-05 09:04 db1802xx       Note Added: 0006906                          
 ======================================================================
 
 
