@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 4 Dec 2005 22:16:08 -0000
-Message-ID: <E1Ej29V-0000hL-Kd@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0001619]: Ctl-Click (0dB shortcut) is in reality a Ctl-Drag, this can perhaps be changed to be a real Ctl-Click?
+Date: Mon, 5 Dec 2005 01:54:24 +0100
+Message-ID: <e727d57085d5415e84f4d9953abea973@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FD0D186
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2005 01:54:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1619> 
+======================================================================
+Reported By:                plessas
+Assigned To:                charbonnel
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   1619
+Category:                   hdsp progs
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             12-05-2005 01:54 CET
+Last Modified:              12-05-2005 01:54 CET
+======================================================================
+Summary:                    Ctl-Click (0dB shortcut) is in reality a Ctl-Drag,
+this can perhaps be changed to be a real Ctl-Click?
+Description: 
+see above.
 
---- Original message follows.
+PS: perhaps adding some info about shortcuts for 0dB, Stereo Chain, in the
+about... window?
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+thanks
+======================================================================
 
-The original message is over 5k.  Message truncated to 1K.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-05-05 01:54 plessas        New Issue                                    
+======================================================================
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.235>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta161.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO uetgp.net) (64.251.132.84)
-  by mta161.mail.mud.yahoo.com with SMTP; Sun, 04 Dec 2005 14:16:05 -0800
-From: alsa-devel@lists.sourceforge.net
-To: priv-mail@yahoo.com
-Date: Sun, 04 Dec 2005 22:15:16 GMT
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <96db9ad91.eeb5ec9@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="====27a3b83b740ee.d3"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
-
---====27a3b83b740ee.d3
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---====27a3b83b740ee.d3
-Content-Type: application/octet-stream; name=mail
-*** MESSAGE TRUNCATED ***
 
 
 
