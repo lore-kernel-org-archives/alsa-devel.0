@@ -1,12 +1,14 @@
-From: Richard Smith <smithbone@gmail.com>
-Subject: Input gain on M-Audio Audiophile USB
-Date: Mon, 5 Dec 2005 02:19:17 -0600
-Message-ID: <8a0c36780512050019k3ef806c3h2cb8b9b5edb03088@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001621]: chanels not detected
+Date: Mon, 5 Dec 2005 11:24:19 +0100
+Message-ID: <0c26da3bff83d46160c4db76734ccaa4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF402162
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2005 11:24:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,17 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QW55Ym9keSBoYXZlIGFueSBpZGVhIGhvdyB0byBjaGFuZ2UgdGhlIGxpbmUgaW4gaW5wdXQgZ2Fp
-biBvbiB0aGUKTS1BdWRpbyBBdWRpb3BoaWxlIFVTQj8gIFRoZSB3YXkgaXRzIGN1cnJlbnRseSBz
-ZXQgcmVuZGVycyBpdCB1c2VsZXNzLgogSXQncyBqdXN0IHRvbyBob3QuICAgSWYgeW91IGNvbm5l
-Y3QgYW55IG5vcm1hbCBsaW5lIGxldmVsIHNvdXJjZSB1cAp0byBpdCBpdCBqdXN0IGJhbmdzIHRo
-ZSBpbnB1dCByYWlscy4KCkFsc2FtaXhlciB0ZWxscyBtZSB0aGVyZSBpcyBub3QgYSBtaXhlci4K
-Ckkga25vdyBpdHMgcG9zc2libGUgYmVjYXVzZSBpZiB5b3UgdHJ5IHRoZSBzYW1lIHNldHVwIHVu
-ZGVyIHdpbjJrIHRoZW4gaXQgd29ya3MuCgpJJ3ZlIHRyaWVkIDEuMC45IGFuZCAxLjAuMTByYzMg
-YW5kIHRoZXkgaGF2ZSB0aGUgc2FtZSBiZWhhdmlvci4KCi0tClJpY2hhcmQgQS4gU21pdGgK
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1621> 
+======================================================================
+Reported By:                bor1
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1621
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             12-05-2005 11:24 CET
+Last Modified:              12-05-2005 11:24 CET
+======================================================================
+Summary:                    chanels not detected
+Description: 
+mainboard :p5wd2 premium with alc882d. driver:snd-hda-intel. alsamixer
+detect chip alc882 but usualy only one chanel(front), sometimes second
+chanel. Problems when unloading and loading again driver - several
+attempts must be performed.
+janusz
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-05-05 11:24 bor1           New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
