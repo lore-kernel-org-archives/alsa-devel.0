@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001620]: snd_hda_intel mixer query problem
-Date: Mon, 5 Dec 2005 04:03:33 +0100
-Message-ID: <fb7c916acde5e95e4f857571b88f405c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Mon, 5 Dec 2005 07:12:23 +0100
+Message-ID: <0dee85b3afd917d13f612003802296e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D1C916C
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2005 04:03:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A59C8144
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2005 07:12:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1620> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                dja
-Assigned To:                
+Reported By:                robertw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1620
-Category:                   CORE - control
+Issue ID:                   1618
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               RedhatFedore core 4
-Kernel Version:             2.6.14-1.1644_FC4.root
-
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             12-05-2005 04:03 CET
-Last Modified:              12-05-2005 04:03 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              12-05-2005 07:12 CET
 ======================================================================
-Summary:                    snd_hda_intel mixer query problem
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-I have a system with an Asus board (intel 915 shipset) with the outboard
-sound:
-
-00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 05)
-        Subsystem: ASUSTeK Computer Inc.: Unknown device 8181
-        Flags: bus master, fast devsel, latency 0, IRQ 10
-        Memory at cddf8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-Modules load,  cannot load alsamixer or amixer to unmute channels
-amixer reports:
-amixer: Mixer default load error: Invalid argument
-
-however on further inspection:
-# amixer controls
-numid=28,iface=MIXER,name='PCM Playback Volume'
-numid=5,iface=MIXER,name='Center Playback Switch'
-amixer: Control default snd_hctl_elem_info error: Invalid argument
-
-# amixer contents
-numid=28,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=255,step=0
-  : values=255,255
-numid=5,iface=MIXER,name='Center Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-amixer: Control default snd_hctl_elem_info error: Invalid argument
-
-
-I'll take a stab that the snd_hctl_elem_info error is being fed back
-invalid information from snd_hda_intel ?  
-
-When these commands are run this message comes up in dmesg each time:
-hda_codec: num_steps = 0 for NID=0x9
-
-playing audio seems to work though no sound is heard. (I suspect all
-channels are muted as default, only I can't unmute them because of this)
-
-the kernel is 2.6.14-1.1644_FC4.root
-
-
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
+
+----------------------------------------------------------------------
+ jwoithe - 12-05-05 07:12 
+----------------------------------------------------------------------
+This sounds exactly like what I saw with a Fujitsu S7020 laptop earlier
+this year.  The ALC260 sound chip has about a dozen identical audio I/O
+pins which are somewhat arbitarily labeled as "CD" and "Line" (etc) by the
+manufacturer.  While some system integrators go along with these labels,
+others do not.  To fix the problem one must deduce which chip pins are
+physically connected to the various I/O plugs on the laptop and then
+define a mapping for that laptop in patch_realtek.c.  Once this is done
+alsa mixer application (alsamixer for example) will do the right thing.
+
+I went through this process by trial and error for the S7020 earlier this
+year.  Essentially I defined a large number of mixer controls and hooked
+one to each of the output widgets on the ALC260 (having the ALC260
+datasheet is very helpful here).  When the resulting driver was loaded I
+then used alsamixer to work out what each control/widget did (if
+anything).  Finally I used the resultant information to define mixer
+layout and initialisation details for the S7020.
+  
+There may be a better (streamlined) way of doing this but the above was
+quick and worked for me.  Takashi may well have an easier way. :)
+
+If you want more details contact me via the ALSA mailing list.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-05 04:03 dja            New Issue                                    
-12-05-05 04:03 dja            Distribution              => RedhatFedore core 4
-12-05-05 04:03 dja            Kernel Version            =>
-2.6.14-1.1644_FC4.root
-
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
 ======================================================================
 
 
