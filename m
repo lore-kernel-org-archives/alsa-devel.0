@@ -1,14 +1,16 @@
 From: Dirk Jagdmann <doj@cubic.org>
-Subject: Re: [patch] split interleaved files in arecord when
- reaching 2GB
-Date: Tue, 06 Dec 2005 00:24:45 +0100
-Message-ID: <4394CC3D.1010108@cubic.org>
-References: <43917AE1.3020002@cubic.org> <s5hr78rl01f.wl%tiwai@suse.de>
+Subject: Re: [patch] alternative peak meter for aplay
+Date: Tue, 06 Dec 2005 00:26:06 +0100
+Message-ID: <4394CC8E.3060808@cubic.org>
+References: <43917A64.20707@cubic.org> <s5h64q3mksn.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------040108030406030600000503"
+ boundary="------------090503020009000902080700"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr78rl01f.wl%tiwai@suse.de>
+Received: from roasted.cubic.org (roasted.cubic.org [193.108.181.130])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6FC0F16D
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 00:26:07 +0100 (MET)
+In-Reply-To: <s5h64q3mksn.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,262 +21,142 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------040108030406030600000503
+--------------090503020009000902080700
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-> It's a nice idea.  But, I prefer this as an option.
-> For example, there is no 2GB limit for the raw format.
-> We can set this on automatically for WAV format, though...
+> I like this one.  I'd vote to make this one as -vv and the older one
+> to -vvv.  -vvv would be useful to log to a file while -vv is prettier
+> for a terminal output.
 
-You're right. it makes no sense to split raw and au files. I have 
-modified my patch to work with the fileformat table fmt_rec_table my 
-adding a variable max_filesize. File split is set to ~2GB for wav, ~16MB 
-for voc and LLONG_MAX for au and raw (which should not be reached in 
-practice).
+Ok, I exchanged the appropriate blocks.
+
+> The only problem with this patch is that a linefeed is missing even
+> after the playback is finished.  Could you fix it?
+
+Yes I can fix it, although it's a very difficult request ;-)
 
 -- 
 ---> Dirk Jagdmann ^ doj / cubic
 ----> http://cubic.org/~doj
 -----> http://llg.cubic.org
 
---------------040108030406030600000503
+--------------090503020009000902080700
 Content-Type: text/plain;
- name="aplay-splitfiles.patch"
+ name="aplay-verbose3.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="aplay-splitfiles.patch"
+ filename="aplay-verbose3.patch"
 
 Index: alsa-utils-1.0.10/aplay/aplay.c
 ===================================================================
---- alsa-utils-1.0.10.orig/aplay/aplay.c	2005-12-05 23:16:19.000000000 +0100
-+++ alsa-utils-1.0.10/aplay/aplay.c	2005-12-05 23:36:44.000000000 +0100
-@@ -124,11 +124,12 @@
- 	void (*start) (int fd, size_t count);
- 	void (*end) (int fd);
- 	char *what;
-+	long long max_filesize;
- } fmt_rec_table[] = {
--	{	NULL,		end_raw,	N_("raw data")	},
--	{	begin_voc,	end_voc,	N_("VOC")	},
--	{	begin_wave,	end_wave,	N_("WAVE")	},
--	{	begin_au,	end_au,		N_("Sparc Audio")}
-+	{	NULL,		end_raw,	N_("raw data"),		LLONG_MAX },
-+	{	begin_voc,	end_voc,	N_("VOC"),		16000000 },
-+	{	begin_wave,	end_wave,	N_("WAVE"),		2000000000 },
-+	{	begin_au,	end_au,		N_("Sparc Audio"),	LLONG_MAX }
- };
+--- alsa-utils-1.0.10.orig/aplay/aplay.c	2005-11-08 17:43:36.000000000 +0100
++++ alsa-utils-1.0.10/aplay/aplay.c	2005-12-05 23:16:19.000000000 +0100
+@@ -303,6 +303,8 @@
  
- #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
-@@ -1985,33 +1986,6 @@
- 	snd_pcm_drain(handle);
+ static void signal_handler(int sig)
+ {
++	if (verbose==2)
++		putchar('\n');
+ 	if (!quiet_mode)
+ 		fprintf(stderr, _("Aborted by signal %s...\n"), strsignal(sig));
+ 	if (stream == SND_PCM_STREAM_CAPTURE) {
+@@ -603,6 +605,8 @@
+ 		else
+ 			capturev(&argv[optind], argc - optind);
+ 	}
++	if (verbose==2)
++		putchar('\n');
+ 	snd_pcm_close(handle);
+ 	free(audiobuf);
+ 	snd_output_close(log);
+@@ -1183,17 +1187,47 @@
+ 	max = 1 << (bits_per_sample-1);
+ 	if (max <= 0)
+ 		max = 0x7fffffff;
+-	printf(_("Max peak (%li samples): 0x%08x "), (long)ocount, max_peak);
++
+ 	if (bits_per_sample > 16)
+ 		perc = max_peak / (max / 100);
+ 	else
+ 		perc = max_peak * 100 / max;
+-	for (val = 0; val < 20; val++)
+-		if (val <= perc / 5)
+-			putc('#', stdout);
+-		else
+-			putc(' ', stdout);
+-	printf(" %i%%\n", perc);
++
++	if(verbose<=2) {
++		static int maxperc=0;
++		static time_t t=0;
++		const time_t tt=time(NULL);
++		if(tt>t) {
++			t=tt;
++			maxperc=0;
++		}
++		if(perc>maxperc)
++			maxperc=perc;
++
++		putchar('\r');
++		for (val = 0; val <= perc / 2 && val < 50; val++)
++			putchar('#');
++		for (; val < maxperc / 2 && val < 50; val++)
++			putchar(' ');
++		putchar('+');
++		for (++val; val < 50; val++)
++			putchar(' ');
++
++		printf("| %02i%%", maxperc);
++		if (perc>99)
++			printf(_(" !clip  "));
++
++		fflush(stdout);
++	}
++	else if(verbose==3) {
++		printf(_("Max peak (%li samples): 0x%08x "), (long)ocount, max_peak);
++		for (val = 0; val < 20; val++)
++			if (val <= perc / 5)
++				putchar('#');
++			else
++				putchar(' ');
++		printf(" %i%%\n", perc);
++	}
  }
- 
--/* capturing raw data, this proc handels WAVE files and .VOCs (as one block) */
--
--void capture_go(int fd, off64_t count, int rtype, char *name)
--{
--	size_t c;
--	off64_t cur;
--	ssize_t r, err;
--
--	header(rtype, name);
--	set_params();
--
--	do {
--		for (cur = count; cur > 0; cur -= r) {
--			c = (cur <= chunk_bytes) ? cur : chunk_bytes;
--			c = c * 8 / bits_per_frame;
--			if ((size_t)(r = pcm_read(audiobuf, c)) != c)
--				break;
--			r = r * bits_per_frame / 8;
--			if ((err = write(fd, audiobuf, r)) != r) {
--				perror(name);
--				exit(EXIT_FAILURE);
--			}
--			if (err > 0)
--				fdcount += err;
--		}
--	} while (rtype == FORMAT_RAW && !timelimit);
--}
  
  /*
-  *  let's play or capture it (capture_type says VOC/WAVE/raw)
-@@ -2072,20 +2046,15 @@
- 		close(fd);
- }
- 
--static void capture(char *name)
-+static void capture(char *name_)
- {
--	pbrec_count = LLONG_MAX;
--	if (!name || !strcmp(name, "-")) {
--		fd = fileno(stdout);
--		name = "stdout";
--	} else {
--		remove(name);
--		if ((fd = open64(name, O_WRONLY | O_CREAT, 0644)) == -1) {
--			perror(name);
--			exit(EXIT_FAILURE);
--		}
--	}
--	fdcount = 0;
-+	int tostdout=0;		/* boolean which describes output stream */
-+	int filecount=0;	/* number of files written */
-+	char *name=name_;	/* current filename */
-+	char namebuf[PATH_MAX+1];
-+	off64_t cur;		/* number of bytes to capture */
-+
-+	/* get number of bytes to capture */
- 	pbrec_count = calc_count();
- 	/* WAVE-file should be even (I'm not sure), but wasting one byte
- 	   isn't a problem (this can only be in 8 bit mono) */
-@@ -2095,10 +2064,107 @@
- 		pbrec_count -= pbrec_count % 2;
- 	if (pbrec_count == 0)
- 		pbrec_count -= 2;
--	if (fmt_rec_table[file_type].start)
--		fmt_rec_table[file_type].start(fd, pbrec_count);
--	capture_go(fd, pbrec_count, file_type, name);
--	fmt_rec_table[file_type].end(fd);
-+
-+	cur = pbrec_count;
-+
-+	/* display verbose output to console */
-+	header(file_type, name);
-+
-+	/* setup sound hardware */
-+	set_params();
-+
-+	/* write to stdout? */
-+	if (!name || !strcmp(name, "-")) {
-+		fd = fileno(stdout);
-+		name = "stdout";
-+		tostdout=1;
-+		fdcount = 0;
-+	}
-+
-+	do {
-+		/* open a file to write */
-+		if(!tostdout) {
-+
-+			/* upon the second file we start the numbering scheme */
-+			if(filecount)
-+			{
-+				/* get a copy of the original filename */
-+				char *s;
-+				char buf[PATH_MAX+1];
-+				strncpy(buf, name_, sizeof(buf));
-+
-+				/* separate extension from filename */
-+				s=buf+strlen(buf);
-+				while(s>buf && *s!='.' && *s!='/')
-+					--s;
-+				if(*s=='.')
-+					*s++=0;
-+				else if(*s=='/')
-+					s=buf+strlen(buf);
-+
-+				/* upon first jump to this if block rename the first file */
-+				if(filecount==1) {
-+					if(*s)
-+						snprintf(namebuf, sizeof(namebuf), "%s-01.%s", buf, s);
-+					else
-+						snprintf(namebuf, sizeof(namebuf), "%s-01", buf);
-+					remove(namebuf);
-+					rename(name, namebuf);
-+					filecount=2;
-+				}
-+
-+				/* name of the current file */
-+				if(*s)
-+					snprintf(namebuf, sizeof(namebuf), "%s-%02i.%s", buf, filecount, s);
-+				else
-+					snprintf(namebuf, sizeof(namebuf), "%s-%02i", buf, filecount);
-+				name=namebuf;
-+
-+			}
-+
-+			/* open a new file */
-+			remove(name);
-+			if ((fd = open64(name, O_WRONLY | O_CREAT, 0644)) == -1) {
-+				perror(name);
-+				exit(EXIT_FAILURE);
-+			}
-+			fdcount = 0;
-+			filecount++;
-+		}
-+
-+		/* setup sample header */
-+		if (fmt_rec_table[file_type].start)
-+			fmt_rec_table[file_type].start(fd, pbrec_count);
-+
-+		/* capture */
-+		do {
-+			ssize_t r=0;
-+			for (; cur > 0 && fdcount<fmt_rec_table[file_type].max_filesize; cur -= r) {
-+				ssize_t err;
-+				size_t c = (cur <= chunk_bytes) ? cur : chunk_bytes;
-+				c = c * 8 / bits_per_frame;
-+				if ((size_t)(r = pcm_read(audiobuf, c)) != c)
-+					break;
-+				r = r * bits_per_frame / 8;
-+				if ((err = write(fd, audiobuf, r)) != r) {
-+					perror(name);
-+					exit(EXIT_FAILURE);
-+				}
-+				if (err > 0)
-+					fdcount += err;
-+			}
-+			/* exit conditions:
-+			   1) format_raw and a timelimit
-+			   2) all requested samples/bytes have been captured (cur>0)
-+			   3) filesize threshold was reached (fdcount<wrthreshold)
-+			*/
-+		} while (file_type == FORMAT_RAW && !timelimit && cur>0 && fdcount<fmt_rec_table[file_type].max_filesize);
-+
-+		/* finish sample container */
-+		fmt_rec_table[file_type].end(fd);
-+
-+		/* repeat the loop when format is raw without timelimit or filesize threshold was reached */
-+	} while((file_type == FORMAT_RAW && !timelimit) || fdcount>=fmt_rec_table[file_type].max_filesize);
- }
- 
- void playbackv_go(int* fds, unsigned int channels, size_t loaded, off64_t count, int rtype, char **names)
 Index: alsa-utils-1.0.10/aplay/aplay.1
 ===================================================================
---- alsa-utils-1.0.10.orig/aplay/aplay.1	2005-12-05 23:10:36.000000000 +0100
-+++ alsa-utils-1.0.10/aplay/aplay.1	2005-12-05 23:23:28.000000000 +0100
-@@ -10,7 +10,8 @@
- .SH DESCRIPTION
- \fBarecord\fP is a command-line soundfile recorder for the ALSA soundcard
- driver. It supports several file formats and multiple soundcards with
--multiple devices. 
-+multiple devices. If recording with interleaved mode samples the file is
-+automatically split before the 2GB filesize.
- 
- \fBaplay\fP is much the same, only it plays instead of recording. For
- supported soundfile formats, the sampling rate, bit depth, and so
+--- alsa-utils-1.0.10.orig/aplay/aplay.1	2005-11-14 11:11:50.000000000 +0100
++++ alsa-utils-1.0.10/aplay/aplay.1	2005-12-05 23:10:36.000000000 +0100
+@@ -111,7 +111,7 @@
+ \fI\-v, \-\-verbose\fP           
+ Show PCM structure and setup.
+ This option is accumulative.  The VU meter is displayed when this
+-is given twice.
++is given twice or three times.
+ .TP
+ \fI\-I, \-\-separate\-channels\fP 
+ One file for each channel
 Index: alsa-utils-1.0.10/aplay/arecord.1
 ===================================================================
---- alsa-utils-1.0.10.orig/aplay/arecord.1	2005-12-05 23:10:36.000000000 +0100
-+++ alsa-utils-1.0.10/aplay/arecord.1	2005-12-05 23:23:28.000000000 +0100
-@@ -10,7 +10,8 @@
- .SH DESCRIPTION
- \fBarecord\fP is a command-line soundfile recorder for the ALSA soundcard
- driver. It supports several file formats and multiple soundcards with
--multiple devices. 
-+multiple devices. If recording with interleaved mode samples the file is
-+automatically split before the 2GB filesize.
- 
- \fBaplay\fP is much the same, only it plays instead of recording. For
- supported soundfile formats, the sampling rate, bit depth, and so
+--- alsa-utils-1.0.10.orig/aplay/arecord.1	2005-11-14 11:11:50.000000000 +0100
++++ alsa-utils-1.0.10/aplay/arecord.1	2005-12-05 23:10:36.000000000 +0100
+@@ -111,7 +111,7 @@
+ \fI\-v, \-\-verbose\fP           
+ Show PCM structure and setup.
+ This option is accumulative.  The VU meter is displayed when this
+-is given twice.
++is given twice or three times.
+ .TP
+ \fI\-I, \-\-separate\-channels\fP 
+ One file for each channel
 
---------------040108030406030600000503--
+--------------090503020009000902080700--
 
 
 -------------------------------------------------------
