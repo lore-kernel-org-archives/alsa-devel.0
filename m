@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001622]: ASUS A8V-MX onboard sound does not work
-Date: Mon, 5 Dec 2005 18:59:22 +0100
-Message-ID: <6851e4fa9f1ae86fab7491c4ee6a1d7e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Mon, 5 Dec 2005 19:35:22 +0100
+Message-ID: <5a163a1ce8c1d1a0df938d78fbf9d646@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0974A158
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2005 18:59:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B668A169
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2005 19:35:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                m_yates
-Assigned To:                
+Reported By:                robertw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1622
-Category:                   PCI - via82xx
+Issue ID:                   1618
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12 (also reproduced using 2.6.15-rc2)
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             12-05-2005 18:59 CET
-Last Modified:              12-05-2005 18:59 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              12-05-2005 19:35 CET
 ======================================================================
-Summary:                    ASUS A8V-MX onboard sound does not work
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-Onboard sound plays for a second, then freezes on Asus A8V-MX mainboard. 
-Here is sound output from lspci:
-
-matt@duster:~$ lspci | grep Multimedia
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
-
-Here is alsa version (version that came with Ubuntu 5.10):
-
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  alsa-base      1.0.9b-4       ALSA driver configuration files
-
-Here are the sound modules:
-
-root@duster:/home/matt# lsmod | grep snd
-snd_seq_dummy 4484 0
-snd_seq_oss 32128 0
-snd_seq_midi 9920 0
-snd_seq_midi_event 8064 2 snd_seq_oss,snd_seq_midi
-snd_seq 52032 6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_via82xx 29472 1
-gameport 16392 1 snd_via82xx
-snd_ac97_codec 87000 1 snd_via82xx
-snd_pcm_oss 51232 0
-snd_mixer_oss 17664 1 snd_pcm_oss
-snd_pcm 91020 3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer 24200 2 snd_seq,snd_pcm
-snd_page_alloc 11408 2 snd_via82xx,snd_pcm
-snd_mpu401_uart 7936 1 snd_via82xx
-snd_rawmidi 27040 2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device 9488 5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
-snd 55784 13
-snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu40
-1_uart,snd_rawmidi,snd_seq_device
-soundcore 10912 1 snd
-
-Asus lists the audio chip as "Realtek ALC653", alsamixer shows "Realtek
-ALC655 rev 1". 
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
+
+----------------------------------------------------------------------
+ jwoithe - 12-05-05 07:12 
+----------------------------------------------------------------------
+This sounds exactly like what I saw with a Fujitsu S7020 laptop earlier
+this year.  The ALC260 sound chip has about a dozen identical audio I/O
+pins which are somewhat arbitarily labeled as "CD" and "Line" (etc) by the
+manufacturer.  While some system integrators go along with these labels,
+others do not.  To fix the problem one must deduce which chip pins are
+physically connected to the various I/O plugs on the laptop and then
+define a mapping for that laptop in patch_realtek.c.  Once this is done
+alsa mixer application (alsamixer for example) will do the right thing.
+
+I went through this process by trial and error for the S7020 earlier this
+year.  Essentially I defined a large number of mixer controls and hooked
+one to each of the output widgets on the ALC260 (having the ALC260
+datasheet is very helpful here).  When the resulting driver was loaded I
+then used alsamixer to work out what each control/widget did (if
+anything).  Finally I used the resultant information to define mixer
+layout and initialisation details for the S7020.
+  
+There may be a better (streamlined) way of doing this but the above was
+quick and worked for me.  Takashi may well have an easier way. :)
+
+If you want more details contact me via the ALSA mailing list.
+
+----------------------------------------------------------------------
+ timmy - 12-05-05 19:35 
+----------------------------------------------------------------------
+I have exactly the same problem, with an Acer Travelmate 4064WLMi,
+unfortunately. I even tried with the driver Realtek have, with no luck.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-05 18:59 m_yates        New Issue                                    
-12-05-05 18:59 m_yates        Distribution              => Ubuntu 5.10     
-12-05-05 18:59 m_yates        Kernel Version            => 2.6.12 (also
-reproduced using 2.6.15-rc2)
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
 ======================================================================
 
 
