@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001621]: chanels not detected
-Date: Mon, 5 Dec 2005 11:24:19 +0100
-Message-ID: <0c26da3bff83d46160c4db76734ccaa4@bugtrack.alsa-project.org>
+Date: Mon, 5 Dec 2005 11:44:36 +0100
+Message-ID: <83d5673b056c83f55bab6bcb446b7dd8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF402162
-	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2005 11:24:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BE7A162
+	for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2005 11:44:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1621> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-05-2005 11:24 CET
-Last Modified:              12-05-2005 11:24 CET
+Last Modified:              12-05-2005 11:44 CET
 ======================================================================
 Summary:                    chanels not detected
 Description: 
@@ -51,10 +51,17 @@ attempts must be performed.
 janusz
 ======================================================================
 
+----------------------------------------------------------------------
+ bor1 - 12-05-05 11:44 
+----------------------------------------------------------------------
+debian stable with kernel 2.6.13;
+alsa driver 1.0.10
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-05-05 11:24 bor1           New Issue                                    
+12-05-05 11:44 bor1           Note Added: 0006909                          
 ======================================================================
 
 
