@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001534]: Mixer channel problems
-Date: Tue, 6 Dec 2005 09:40:01 +0100
-Message-ID: <c7dcf1754f52594b69eaffd6bbb5bb8a@bugtrack.alsa-project.org>
+From: Serhiy Kachanuk <serzholino@gmail.com>
+Subject: Problems with soundcard based on Realtek ALC860 audio codec
+Date: Tue, 06 Dec 2005 11:11:04 +0200
+Message-ID: <439555A8.8070306@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=KOI8-U; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55C8718B
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 09:40:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +15,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1534> 
-======================================================================
-Reported By:                mrblur
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1534
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             11-08-2005 08:41 CET
-Last Modified:              12-06-2005 09:40 CET
-======================================================================
-Summary:                    Mixer channel problems
-Description: 
-I'm using Acer AS5002WLMi with SiS 7012 soundcard. It works quite good,
-but... unfortunately if I would like to change sound volume I have to do
-it on headphones channel, master channel stereo/mona are not working.
-======================================================================
+I've got no answer at alsa-users, I'm posting this here:
 
-----------------------------------------------------------------------
- mrblur - 11-29-05 09:22 
-----------------------------------------------------------------------
-Still nothing... Additionally when added this option there was no sound at
-all... (?)
+I have motherboard with Intel 915PL Express Chipset with integrated
+builtin audio subsystem based on Realtek ALC860 audio codec.
 
-----------------------------------------------------------------------
- mrblur - 12-06-05 09:40 
-----------------------------------------------------------------------
-Ok.. sorry... ac97_quirk=2 and now it's working :-)
-BIG THANKS :-)
+I use Kubuntu 5.10 Breezy Badger as my operating system and having
+problems with this integrated soundcard. Original alsa from distribution
+- 1.0.9a was totally unable to find my sound system. I have to disable
+hotplug to make system boot. When I upgraded alsa to 1.0.10 and enabling
+hotplug, soundcard became  recognized, modules for hda-intel loaded at
+boot time, but I still have no sound :(. Kmix shows my soundcard as
+Realtek880, but it is 860 and alsamixer and alsactl both printing errors
+and not starting/working.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-08-05 08:41 mrblur         New Issue                                    
-11-08-05 08:41 mrblur         Kernel Version            => 2.6.14          
-11-08-05 17:48 tiwai          Note Added: 0006628                          
-11-28-05 13:48 mrblur         Note Added: 0006859                          
-11-28-05 18:51 tiwai          Note Added: 0006863                          
-11-29-05 09:22 mrblur         Note Added: 0006871                          
-12-06-05 09:40 mrblur         Note Added: 0006921                          
-======================================================================
+Is my soundcard supported? What do I need to make my sound system work
+on Linux?
 
+Thanks.
 
 
 
