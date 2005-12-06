@@ -1,11 +1,8 @@
-From: TAMAS Gergely <dice@mfa.kfki.hu>
-Subject: REPOST [dice@mfa.kfki.hu: SB Live 5.1 Digital OEM [SB0220, (c) 2003]]
-Date: Tue, 6 Dec 2005 14:39:25 +0100
-Message-ID: <20051206133925.GB11208@felix.mfa.kfki.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 6 Dec 2005 14:07:58 -0000
+Message-ID: <E1EjdUD-0000lO-LE@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,63 +12,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------ Forwarded message from TAMAS Gergely <dice@mfa.kfki.hu> -----
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-Date: Thu, 17 Nov 2005 06:31:14 +0100
-From: TAMAS Gergely <dice@mfa.kfki.hu>
-To: alsa-devel@lists.sourceforge.net
-User-Agent: Mutt/1.5.9i
-Subject: [Alsa-devel] SB Live 5.1 Digital OEM [SB0220, (c) 2003]
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-Hi!
+--- Original message follows.
 
-I've got an 'SB Live 5.1 Digital OEM' card, model number 'SB0220',
-(c) 2003.
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-PCM playing and MIDI (i tested only these) works fine, but alsamixer and
-/proc/asound/cards shows 'unknown' as card type (on kernel 2.6.14,
-included alsa drivers).
+The original message is over 5k.  Message truncated to 1K.
 
-If it doesn't do any harm, maybe the following patch could be
-included...
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.232>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta193.mail.mud.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO jjikdhksg.net) (64.251.132.84)
+  by mta193.mail.mud.yahoo.com with SMTP; Tue, 06 Dec 2005 06:07:57 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Tue, 06 Dec 2005 14:07:14 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <4d3ba.96bbdafd19123@yahoo.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="==98ab3cd71f0.a"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-Thanks,
-Gergely
+--==98ab3cd71f0.a
 
-Signed-off-by: Gergely Tamas <dice@mfa.kfki.hu>
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
---- emu10k1/emu10k1_main.c~	2005-11-16 22:08:32.218141000 +0100
-+++ emu10k1/emu10k1_main.c	2005-11-16 22:20:24.575285000 +0100
-@@ -748,6 +748,12 @@
- 	 .emu10k1_chip = 1,
- 	 .ac97_chip = 1,
- 	 .sblive51 = 1} ,
-+	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x100a1102,
-+	 .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
-+	 .id = "Live",
-+	 .emu10k1_chip = 1,
-+	 .ac97_chip = 1,
-+	 .sblive51 = 1} ,
- 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
- 	 .driver = "EMU10K1", .name = "SB Live 5.1", 
- 	 .id = "Live",
+plz read and check ...
+cyaaaaaaa
+--==98ab3cd71f0.a
+Content-Type: application/octet-stream; name=mailtext.zip
+Content-Transfer-Encoding: base64
+Co
+*** MESSAGE TRUNCATED ***
 
-
--------------------------------------------------------
-This SF.Net email is sponsored by the JBoss Inc.  Get Certified Today
-Register for a JBoss Training Course.  Free Certification Exam
-for All Training Attendees Through End of 2005. For more info visit:
-http://ads.osdn.com/?ad_id=7628&alloc_id=16845&op=click
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
------ End forwarded message -----
 
 
 -------------------------------------------------------
