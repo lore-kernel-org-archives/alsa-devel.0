@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001557]: Sounds play only for a very short time (VT8251, 64-bit)
-Date: Tue, 6 Dec 2005 15:15:26 +0100
-Message-ID: <f81549aa91a3b48025dc4dc42cf40e74@bugtrack.alsa-project.org>
+From: conrad =?iso-8859-1?q?berh=F6rster?= <conrad.berhoerster@gmx.de>
+Subject: Re: [Alsa-user] New Echoaudio firmware - testers wanted for Layla 3G (3rd attempt)
+Date: Tue, 6 Dec 2005 15:37:32 +0100
+Message-ID: <200512061537.32273.conrad.berhoerster@gmx.de>
+References: <20051205202000.6a58f7af.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BBCA10A
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 15:15:27 +0100 (MET)
+In-Reply-To: <20051205202000.6a58f7af.pochini@shiny.it>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +19,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@lists.sourceforge.net
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hallo Giuliano, 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1557> 
-======================================================================
-Reported By:                Dakkus
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1557
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10 "Breezy Badger" (64-bit)
-Kernel Version:             2.6.12-9-amd64-generic
-======================================================================
-Date Submitted:             11-14-2005 13:10 CET
-Last Modified:              12-06-2005 15:15 CET
-======================================================================
-Summary:                    Sounds play only for a very short time (VT8251,
-64-bit)
-Description: 
-When playing for example an mp3 file, only a short burst of sound is heard.
-The songs play with correct speed and sound otherwise correct, but sound
-is played only for about one second. If I choose any random part of the
-song (for example with xmms), I hear the same ~1s from that part of the
-song, but then everything's quiet again.
-======================================================================
+this is good timing.  Today my new Gina3G was delivered. But i have some 
+problems to get it working. 
+with kernel 2.6.14 und alsa 1.0.10 i installed driver, lib an utils as usual. 
+then i read your page, and installed the alsa firmware driver, also. 
 
-----------------------------------------------------------------------
- m_yates - 12-06-05 15:15 
-----------------------------------------------------------------------
-I have the same motherboard and the same problem.  I have reproduced it in
-Ubuntu 5.10 i386, Ubuntu 5.10 amd64, Debian Etch (i386 and amd64), and
-Knoppix (version 4).  Upgrading to Alsa 1.0.10 didn't help, nor did
-upgrading the kernel to 2.6.15-rc2.
+after running alsaconf, there is a card detected V8237 with VT1616i
+is this ok?
+DO i need to copy some more files to some place, maybe the firmware from the 
+CD. 
 
-I also accidently filed a duplicate bug
-report:https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622 
+and how can i make sure, if i have the hotplug scripts or i need to update 
+them. the link from your website had no readme and lots of different 
+programs, which one do i need. 
 
-I filed that one before I discovered this post.
+thanks c~
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-14-05 13:10 Dakkus         New Issue                                    
-11-14-05 13:10 Dakkus         Distribution              => Ubuntu 5.10 "Breezy
-Badger" (64-bit)
-11-14-05 13:10 Dakkus         Kernel Version            =>
-2.6.12-9-amd64-generic
-12-05-05 19:01 m_yates        Issue Monitored: m_yates                     
-12-06-05 15:15 m_yates        Note Added: 0006923                          
-======================================================================
-
-
+Am Montag 05 Dezember 2005 21:20 schrieb Giuliano Pochini:
+> http://www.webalice.it/g_pochini
 
 
 -------------------------------------------------------
