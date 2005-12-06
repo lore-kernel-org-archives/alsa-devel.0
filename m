@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Tue, 6 Dec 2005 07:36:11 +0100
-Message-ID: <779ab9ff44916a0f01d3baa896cdcebd@bugtrack.alsa-project.org>
+From: Richard Smith <smithbone@gmail.com>
+Subject: Re: Input gain on M-Audio Audiophile USB
+Date: Tue, 6 Dec 2005 01:19:57 -0600
+Message-ID: <8a0c36780512052319h1fe87dffh357ea11069b58f40@mail.gmail.com>
+References: <8a0c36780512050019k3ef806c3h2cb8b9b5edb03088@mail.gmail.com>
+	 <43942386.10807@champin.net>
+	 <8a0c36780512050800t51279569y6e5e3ef57f6dd0d3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29307174
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 07:36:11 +0100 (MET)
+In-Reply-To: <8a0c36780512050800t51279569y6e5e3ef57f6dd0d3@mail.gmail.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +20,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Pierre-Antoine Champin <alsa-050822@champin.net>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
-======================================================================
-Reported By:                dvalin
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
-======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              12-06-2005 07:36 CET
-======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
-Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
-
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
-======================================================================
-
-----------------------------------------------------------------------
- dvalin - 12-01-05 18:15 
-----------------------------------------------------------------------
-Bus 002 Device 001: ID 0000:0000
-Bus 001 Device 004: ID 041e:3070 Creative Technology, Ltd
-Bus 001 Device 003: ID 041e:3061 Creative Technology, Ltd
-Bus 001 Device 002: ID 041e:3050 Creative Technology, Ltd
-Bus 001 Device 001: ID 0000:0000
-
-Here ya go, as implied by the patch, 041e:3061 is the dsp device&#248;
-
-----------------------------------------------------------------------
- dvalin - 12-06-05 07:36 
-----------------------------------------------------------------------
-seems like sound only stutters when using acpi, when booting with acpi=off
-it no longer stutters..
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-12-01-05 16:58 Clemens LadischNote Added: 0006886                          
-12-01-05 18:15 dvalin         Note Added: 0006887                          
-12-06-05 07:36 dvalin         Note Added: 0006920                          
-======================================================================
-
-
+PiBUaGF0IGFwcGVhcnMgdG8gaW5kZWVkIGJlIHdoYXQgdGhlIHByb2JsZW0gaXMuICBSdW5uaW5n
+IHlvdXIgc2NyaXB0IG9uCj4gdGhlIHRoZSBvdXRwdXQgZml4ZXMgaXQuCj4gU28gaXQgbG9va3Mg
+bGlrZSByZWNvcmRpbmcgb24gdGhlIEF1ZGlvcGhpbGUgVVNCIG5lZWRzIHNvbWUgZW5kaWFuCj4g
+c3dhcHMuICBUaGlzIGlzIHByb2JhbGx5IGEgcHJldHR5IGVhc3kgdGhpbmcgdG8gZml4Lgo+CgpN
+eSBwcm9ibGVtcyBhcHBlYXIgdG8gZ28gbXVjaCBkZWVwZXIgdGhhbiBlbmRpYW4gaXNzdWVzLgoK
+SSd2ZSBjb21lIHVwIHdpdGggNCBkaWZmZXJlbnQgaXNzdWVzLiAgRXZlcnkgdGltZSBJIGVpdGhl
+ciBib290IG9yCnBvd2VyIGN5Y2xlIC8gdW5wbHVnIHRoZSBkZXZpY2UgSSBnZXQgIG9uZSBvZiB0
+aGUgZm9sbG93aW5nLiAgSW4gYWxsCmNhc2VzIHRoZSBkZXZpY2Ugd2lsbCBwbGF5IGZpbmUgaWYg
+SSB1c2UgbXBnMzIxIGFuZCAgJy1vIGFsc2EwOSAtYQpwbHVnaHcnCgpUZXN0ZWQgd2l0aCAxLjAu
+MTByYzEgIG9uIDIuNi4xNC4yIGFuZCAgMS4wLjEwcmMzIGFuZCAxLjAuMTAgIG9uCjIuNi4xNS1y
+YzUtZ2l0MSkKCjEpIERldmljZSB3aWxsIG5vdCBjcHR1cmUgYXQgYWxsCgogJCBhcmVjb3JkIC12
+diAtRCBodzoxLDEgLWYgUzI0XzNCRSAtdCByYXcgLWMgMiAtcjQ4MDAwIHRlc3QucmF3CgpJdHMg
+c2V0dXAgaXM6CnN0cmVhbSAgICAgICA6IENBUFRVUkUKYWNjZXNzICAgICAgIDogUldfSU5URVJM
+RUFWRUQKZm9ybWF0ICAgICAgIDogUzI0XzNCRQpzdWJmb3JtYXQgICAgOiBTVEQKY2hhbm5lbHMg
+ICAgIDogMgpyYXRlICAgICAgICAgOiA0ODAwMApleGFjdCByYXRlICAgOiA0ODAwMCAoNDgwMDAv
+MSkKbXNiaXRzICAgICAgIDogMjQKYnVmZmVyX3NpemUgIDogMjQwMDAKcGVyaW9kX3NpemUgIDog
+NjAwMApwZXJpb2RfdGltZSAgOiAxMjUwMDAKdGlja190aW1lICAgIDogNDAwMAp0c3RhbXBfbW9k
+ZSAgOiBOT05FCnBlcmlvZF9zdGVwICA6IDEKc2xlZXBfbWluICAgIDogMAphdmFpbF9taW4gICAg
+OiA2MDAwCnhmZXJfYWxpZ24gICA6IDYwMDAKc3RhcnRfdGhyZXNob2xkICA6IDEKc3RvcF90aHJl
+c2hvbGQgICA6IDI0MDAwCnNpbGVuY2VfdGhyZXNob2xkOiAwCnNpbGVuY2Vfc2l6ZSA6IDAKYm91
+bmRhcnkgICAgIDogMTU3Mjg2NDAwMAphcmVjb3JkOiBwY21fcmVhZDoxMzAzOiByZWFkIGVycm9y
+OiBJbnB1dC9vdXRwdXQgZXJyb3IKCjIpIERldmljZSBjYXB0dXJlcyBidXQgYWxsIEkgZ2V0IGlz
+IHN0YXRpYy4KCiAkIGFyZWNvcmQgLXZ2IC1EIGh3OjEsMSAtZiBTMjRfM0JFIC10IHJhdyAtYyAy
+IC1yNDgwMDAgdGVzdC5yYXcKICQgYXJlY29yZCAtdnYgLUQgcGx1Z2h3OjEsMSAtZiBTMjRfM0JF
+IC10IHJhdyAtYyAyIC1yNDgwMDAgdGVzdC5yYXcKCkJvdGggcGVnIHRoZSBWVSBtZXRlciB3aXRo
+IDk5JSBhbmQgMTAwJQpVc2luZyB5b3VyIHN3YXAyLnB5IGRvZXMgbm90IG1ha2UgYW55IGRpZmZl
+cmVuY2UuCgozKSBEZXZpY2UgY2FwdHVyZXMgYnV0IGFsbCBJIGdldCBpcyBzaWxlbmNlLgoKICQg
+YXJlY29yZCAtdnYgLUQgaHc6MSwxIC1mIFMyNF8zQkUgLXQgcmF3IC1jIDIgLXI0ODAwMCB0ZXN0
+LnJhdwogJCBhcmVjb3JkIC12diAtRCBwbHVnaHc6MSwxIC1mIFMyNF8zQkUgLXQgcmF3IC1jIDIg
+LXI0ODAwMCB0ZXN0LnJhdwoKQm90aCBwZWcgdGhlIFZVIG1ldGVyIHdpdGggOTklIGFuZCAxMDAl
+ClVzaW5nIHlvdXIgc3dhcDIucHkgZG9lcyBub3QgbWFrZSBhbnkgZGlmZmVyZW5jZS4KCjMpIERl
+dmljZSBjYXB0dXJlcywgVlUgbWV0ZXIgc2hvd3MgbWF4IGJ1dCBpdHMgZml4YWJsZS4KCiAkIGFy
+ZWNvcmQgLXZ2IC1EIGh3OjEsMSAtZiBTMjRfM0JFIC10IHJhdyAtYyAyIC1yNDgwMDAgdGVzdC5y
+YXcKICQgYXJlY29yZCAtdnYgLUQgcGx1Z2h3OjEsMSAtZiBTMjRfM0JFIC10IHJhdyAtYyAyIC1y
+NDgwMDAgdGVzdC5yYXcKCkJvdGggcGVnIHRoZSBWVSBtZXRlciB3aXRoIDk5JSBhbmQgMTAwJQpV
+c2luZyBzd2FwMi5weSBwcm9kdWNlcyB0aGUgcHJvcGVyIGF1ZGlvIHdpdGgKCiAkIGFwbGF5IC12
+diAtRCBodzoxLDAgLWYgUzI0XzNCRSAtdCByYXcgLWMgMiAtcjQ4MDAwIHRlc3Quc3dhcAoKTGlr
+ZSBJIHNhaWQgcmVib290LCBwb3dlciBjeWNsZSwgdW5wbHVnL3JlcGx1ZyB0aGUgZGV2aWNlIGFu
+ZCB5b3UgZ2V0Cm9uZSBvZiB0aGUgYWJvdmUuICBJJ3ZlIGJlZW4gdW5hYmxlIHRvIGRldGVybWlu
+ZSBhbnkgc29ydCBvZiBwYXR0ZXJuLgoKQWxsIG9mIHRoZSBhYm92ZSB3YXMgZG9uZSB1c2luZyBh
+IGtub3duIGxpbmUgbGV2ZWwgc291cmNlIHdpdGggbm8gY2hhbmdlcy4KClNob3VsZCBJIGZpbGUg
+YSBidWcgb3IgaXMgdGhlcmUgbW9yZSBzdHVmZiBJIGNhbiB0cnkuICBJJ3ZlIG5vdAplbmFibGVk
+IGRlYnVnIGluIHRoZSBkcml2ZXIgeWV0LgoKLS0KUmljaGFyZCBBLiBTbWl0aAo=
 
 
 -------------------------------------------------------
