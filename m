@@ -1,11 +1,14 @@
-From: postmaster@hetnet.nl
-Subject: Delivery Status Notification (Failure)
-Date: Tue, 6 Dec 2005 00:50:38 +0100
-Message-ID: <1bs2UDdib00066a56@hnexvs03.HETNET.LOCAL>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
+Date: Tue, 6 Dec 2005 02:56:32 +0100
+Message-ID: <9f19d06ddf2127698da58da31a400a0a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="9B095B5ADSN=_01C5F9B52829406C0003AF60hnexvs03.HETNET."
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D6E4173
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 02:56:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,113 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  
-Portions of this message may be unreadable without a MIME-capable mail program.
 
---9B095B5ADSN=_01C5F9B52829406C0003AF60hnexvs03.HETNET.
-Content-Type: text/plain; charset=unicode-1-1-utf-7
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
+======================================================================
+Reported By:                gflash
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   927
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-20-2005 08:53 CET
+Last Modified:              12-06-2005 02:56 CET
+======================================================================
+Summary:                    Support for Creative SB Audigy 2 ZS Notebook
+Description: 
+Is this PCMCIA Souncard supported or will it be supported in the next time?
+I haven't heard any positive reports yet...
 
-This is an automatically generated Delivery Status Notification.
+Thank you!
+======================================================================
 
-Delivery to the following recipients failed.
+----------------------------------------------------------------------
+ bubbleguuum - 11-30-05 15:57 
+----------------------------------------------------------------------
+What's the status of the the driver for this card ? Does the CVS work at
+least partially ?
 
-       3Djohan.beaard@hetnet.nl
+----------------------------------------------------------------------
+ hades - 12-06-05 02:56 
+----------------------------------------------------------------------
+I'm also interested on the status of this driver. How far have you gone? Do
+you need any help?
 
-
-
-
---9B095B5ADSN=_01C5F9B52829406C0003AF60hnexvs03.HETNET.
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns;hnexvs03.HETNET.LOCAL
-Received-From-MTA: dns;hetnet.nl
-Arrival-Date: Tue, 6 Dec 2005 00:49:56 +0100
-
-Final-Recipient: rfc822;3Djohan.beaard@hetnet.nl
-Action: failed
-Status: 5.1.1
-
---9B095B5ADSN=_01C5F9B52829406C0003AF60hnexvs03.HETNET.
-Content-Type: message/rfc822
-
-Received: from mail pickup service by hnexvs03.HETNET.LOCAL with Microsoft SMTPSVC;
-	 Tue, 6 Dec 2005 00:49:56 +0100
-Received: from hnexfe11.hetnet.nl ([10.94.9.34]) by hnexvs03.HETNET.LOCAL with Microsoft SMTPSVC(5.0.2195.6713);
-	 Mon, 5 Dec 2005 16:23:05 +0100
-Received: from apps95.wxs.nl ([195.121.9.239]) by hnexfe11.hetnet.nl with Microsoft SMTPSVC(5.0.2195.6874);
-	 Mon, 5 Dec 2005 16:23:02 +0100
-Received: from apps95.wxs.nl (apps95-adm.wxs.nl [10.94.14.200] (may be forged))
-	by apps95.wxs.nl (8.13.1/8.13.1) with ESMTP id jB5FN0dF012088
-	for <pmosselman@bmboth.hetnet.nl>; Mon, 5 Dec 2005 16:23:01 +0100
-Received: from [10.94.9.30] by apps95 (bmifilter);
-	Mon, 05 Dec 2005 16:21:55 CET
-Received: from ynwmyhuh.net ([62.131.55.167]) by hnexfe07.hetnet.nl with Microsoft SMTPSVC(5.0.2195.6874);
-	 Mon, 5 Dec 2005 16:21:52 +0100
-From: alsa-devel@lists.sourceforge.net
-To: 3Djohan.beaard@hetnet.nl
-Date: Mon, 05 Dec 2005 15:20:20 GMT
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <abe80392f350ed426@lists.sourceforge.net>
-Content-Transfer-Encoding: 7bit
-X-OriginalArrivalTime: 05 Dec 2005 15:21:52.0242 (UTC) FILETIME=[9E6C5520:01C5F9AF]
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="z13578ACEFHJLNOQSUWXZbdegikmnprsuwy02357"
-X-BLTSYMAVREINSERT: WlX0W2qUPUMi6JN5nJrCCKBWGTgA
-Return-Path: alsa-devel@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---z13578ACEFHJLNOQSUWXZbdegikmnprsuwy02357
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-Deze e-mail is door E-mail Virus Scan van Het Net gecontroleerd op virussen. Zie voor meer informatie: http://www.hetnet.nl/evs/
-
-Een aan u verstuurd e-mail bericht bevatte het virus W32.Sober.X@mm!zip in het bestand mailtext.zip. Dit bestand is verwijderd omdat het virus niet verwijderd kon worden.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-20-05 08:53 gflash         New Issue                                    
+02-20-05 12:32 jcdutton       Note Added: 0003673                          
+02-20-05 14:06 gflash         Note Added: 0003674                          
+02-20-05 14:39 jcdutton       Note Added: 0003675                          
+02-20-05 14:47 jcdutton       Note Edited: 0003675                         
+07-25-05 17:43 dale           Note Added: 0005564                          
+07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
+08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
+10-30-05 21:08 jcdutton       Note Added: 0006577                          
+10-31-05 00:55 buckvitulli    Note Added: 0006578                          
+10-31-05 12:43 jcdutton       Status                   new => assigned     
+10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
+11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
+11-30-05 15:58 bubbleguuum    Issue Monitored: bubbleguuum                    
+12-06-05 02:55 hades          Issue Monitored: hades                       
+12-06-05 02:56 hades          Note Added: 0006918                          
+======================================================================
 
 
---z13578ACEFHJLNOQSUWXZbdegikmnprsuwy02357
-Content-Type: message/rfc822
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Received: from [10.94.9.30] by apps95 (bmifilter);
-	Mon, 05 Dec 2005 16:21:55 CET
-Received: from ynwmyhuh.net ([62.131.55.167]) by hnexfe07.hetnet.nl with Microsoft SMTPSVC(5.0.2195.6874);
-	 Mon, 5 Dec 2005 16:21:52 +0100
-From: alsa-devel@lists.sourceforge.net
-To: 3Djohan.beaard@hetnet.nl
-Date: Mon, 05 Dec 2005 15:20:20 GMT
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <abe80392f350ed426@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=====7b0dec50f36aa3b3"
-Content-Transfer-Encoding: 7bit
-Return-Path: alsa-devel@lists.sourceforge.net
-X-OriginalArrivalTime: 05 Dec 2005 15:21:52.0242 (UTC) FILETIME=[9E6C5520:01C5F9AF]
-
-This is a multi-part message in MIME format.
-
---=====7b0dec50f36aa3b3
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---=====7b0dec50f36aa3b3--
-
---z13578ACEFHJLNOQSUWXZbdegikmnprsuwy02357--
-
-
---9B095B5ADSN=_01C5F9B52829406C0003AF60hnexvs03.HETNET.--
 
 
 -------------------------------------------------------
