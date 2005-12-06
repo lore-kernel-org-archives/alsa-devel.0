@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000931]: Wish for M-Audio Revolution 5.1 Support
-Date: Tue, 6 Dec 2005 15:58:43 +0100
-Message-ID: <f5b462f15516637848038513ebbbf201@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001605]: Sixpack 5.1 can not record with cs46xx
+Date: Tue, 6 Dec 2005 16:01:24 +0100
+Message-ID: <00aa6898c472a895a4eb353a91531e1e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9E7C1A9
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 15:58:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 167A31A9
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 16:01:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=931> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1605> 
 ======================================================================
-Reported By:                Thinky
-Assigned To:                
+Reported By:                shadowfox
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   931
-Category:                   PCI - ice1724
+Issue ID:                   1605
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.10
+Status:                     resolved
+Distribution:               Mandriva 10.2
+Kernel Version:             2.6.11-6mdk
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-22-2005 10:40 CET
-Last Modified:              12-06-2005 15:58 CET
+Date Submitted:             11-28-2005 10:52 CET
+Last Modified:              12-06-2005 16:01 CET
 ======================================================================
-Summary:                    Wish for M-Audio Revolution 5.1 Support
+Summary:                    Sixpack 5.1 can not record with cs46xx
 Description: 
-Could you add support for that soundcard?
-I hope parts of the ice1724/12 driver can be reused so that it is not a
-too hard task.
+
+
+I have a Terratec Sixpack 5.1 soundcard using module cs46xx of ALSA
+1.0.10.
+I can neither record my voice by gnome recorder nor talk to others through
+Skype
+although I can hear my sound from my speaks with a microphone.
+The record function of my card is out of work.
+But everything is OK in my ms windows system.
+Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- cyan - 12-03-05 22:21 
+ shadowfox - 11-29-05 14:56 
 ----------------------------------------------------------------------
-What about this:
-http://www.mph.eclipse.co.uk/pub/linux/patches/ice1712_revo.patch
-May it help you?
+It is solved.
+Btw I am not sure  that some of functions of items mean.
+Dose anything offer more infos in detail about this?
+Thanks a lot.
 
 ----------------------------------------------------------------------
- tiwai - 12-06-05 15:58 
+ tiwai - 12-06-05 16:01 
 ----------------------------------------------------------------------
-The partial implementation is on CVS.
+A contribution of a better document would be really helpful ;)
+Anyway, closing this now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 10:40 Thinky         New Issue                                    
-02-22-05 10:40 Thinky         Distribution              => Debian unstable 
-02-22-05 10:40 Thinky         Kernel Version            => 2.6.10          
-02-22-05 10:53 perex          Note Added: 0003696                          
-02-27-05 17:42 Thinky         Note Added: 0003742                          
-03-02-05 17:40 Thinky         Note Added: 0003780                          
-12-02-05 11:54 perex          Note Added: 0006888                          
-12-03-05 22:21 cyan           Note Added: 0006904                          
-12-03-05 22:36 cyan           Issue Monitored: cyan                        
-12-06-05 15:58 tiwai          Note Added: 0006928                          
+11-28-05 10:52 shadowfox      New Issue                                    
+11-28-05 10:52 shadowfox      File Added: asound.state                     
+11-28-05 10:52 shadowfox      Distribution              => Mandriva 10.2   
+11-28-05 10:52 shadowfox      Kernel Version            => 2.6.11-6mdk     
+11-28-05 10:56 shadowfox      Note Added: 0006857                          
+11-28-05 18:52 tiwai          Note Added: 0006864                          
+11-29-05 14:56 shadowfox      Note Added: 0006873                          
+12-06-05 16:01 tiwai          Status                   new => resolved     
+12-06-05 16:01 tiwai          Resolution               open => not an issue
+12-06-05 16:01 tiwai          Assigned To               => tiwai           
+12-06-05 16:01 tiwai          Note Added: 0006929                          
 ======================================================================
 
 
