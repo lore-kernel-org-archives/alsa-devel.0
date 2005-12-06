@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001622]: ASUS A8V-MX onboard sound does not work
-Date: Tue, 6 Dec 2005 15:53:51 +0100
-Message-ID: <6c8f927dd015932a795314255a8c05da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001620]: snd_hda_intel mixer query problem
+Date: Tue, 6 Dec 2005 15:56:41 +0100
+Message-ID: <f6e1e7701e6c413c7a3b8dbcc733961c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC0311A3
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 15:53:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2445A1A9
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 15:56:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1620> 
 ======================================================================
-Reported By:                m_yates
+Reported By:                dja
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1622
-Category:                   PCI - via82xx
+Issue ID:                   1620
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12 (also reproduced using 2.6.15-rc2)
+Distribution:               RedhatFedore core 4
+Kernel Version:             2.6.14-1.1644_FC4.root
+
 ======================================================================
-Date Submitted:             12-05-2005 18:59 CET
-Last Modified:              12-06-2005 15:53 CET
+Date Submitted:             12-05-2005 04:03 CET
+Last Modified:              12-06-2005 15:56 CET
 ======================================================================
-Summary:                    ASUS A8V-MX onboard sound does not work
+Summary:                    snd_hda_intel mixer query problem
 Description: 
-Onboard sound plays for a second, then freezes on Asus A8V-MX mainboard. 
-Here is sound output from lspci:
+I have a system with an Asus board (intel 915 shipset) with the outboard
+sound:
 
-matt@duster:~$ lspci | grep Multimedia
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 05)
+        Subsystem: ASUSTeK Computer Inc.: Unknown device 8181
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at cddf8000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-Here is alsa version (version that came with Ubuntu 5.10):
+Modules load,  cannot load alsamixer or amixer to unmute channels
+amixer reports:
+amixer: Mixer default load error: Invalid argument
 
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  alsa-base      1.0.9b-4       ALSA driver configuration files
+however on further inspection:
+# amixer controls
+numid=28,iface=MIXER,name='PCM Playback Volume'
+numid=5,iface=MIXER,name='Center Playback Switch'
+amixer: Control default snd_hctl_elem_info error: Invalid argument
 
-Here are the sound modules:
+# amixer contents
+numid=28,iface=MIXER,name='PCM Playback Volume'
+  ; type=INTEGER,access=rw---,values=2,min=0,max=255,step=0
+  : values=255,255
+numid=5,iface=MIXER,name='Center Playback Switch'
+  ; type=BOOLEAN,access=rw---,values=1
+  : values=on
+amixer: Control default snd_hctl_elem_info error: Invalid argument
 
-root@duster:/home/matt# lsmod | grep snd
-snd_seq_dummy 4484 0
-snd_seq_oss 32128 0
-snd_seq_midi 9920 0
-snd_seq_midi_event 8064 2 snd_seq_oss,snd_seq_midi
-snd_seq 52032 6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_via82xx 29472 1
-gameport 16392 1 snd_via82xx
-snd_ac97_codec 87000 1 snd_via82xx
-snd_pcm_oss 51232 0
-snd_mixer_oss 17664 1 snd_pcm_oss
-snd_pcm 91020 3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer 24200 2 snd_seq,snd_pcm
-snd_page_alloc 11408 2 snd_via82xx,snd_pcm
-snd_mpu401_uart 7936 1 snd_via82xx
-snd_rawmidi 27040 2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device 9488 5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
-snd 55784 13
-snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu40
-1_uart,snd_rawmidi,snd_seq_device
-soundcore 10912 1 snd
 
-Asus lists the audio chip as "Realtek ALC653", alsamixer shows "Realtek
-ALC655 rev 1". 
+I'll take a stab that the snd_hctl_elem_info error is being fed back
+invalid information from snd_hda_intel ?  
+
+When these commands are run this message comes up in dmesg each time:
+hda_codec: num_steps = 0 for NID=0x9
+
+playing audio seems to work though no sound is heard. (I suspect all
+channels are muted as default, only I can't unmute them because of this)
+
+the kernel is 2.6.14-1.1644_FC4.root
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-06-05 15:53 
+ tiwai - 12-06-05 15:56 
 ----------------------------------------------------------------------
-It sounds like rather a problem of interrupt routing, most likely related
-with ACPI.  Try to boot with pci=noacpi or acpi=off boot option.
+Try the latest ALSA CVS version.  The detection should have been improved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-05 18:59 m_yates        New Issue                                    
-12-05-05 18:59 m_yates        Distribution              => Ubuntu 5.10     
-12-05-05 18:59 m_yates        Kernel Version            => 2.6.12 (also
-reproduced using 2.6.15-rc2)
-12-06-05 15:53 tiwai          Note Added: 0006926                          
+12-05-05 04:03 dja            New Issue                                    
+12-05-05 04:03 dja            Distribution              => RedhatFedore core 4
+12-05-05 04:03 dja            Kernel Version            =>
+2.6.14-1.1644_FC4.root
+
+12-06-05 15:56 tiwai          Note Added: 0006927                          
 ======================================================================
 
 
