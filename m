@@ -1,16 +1,14 @@
-From: Richard Smith <smithbone@gmail.com>
-Subject: Re: Input gain on M-Audio Audiophile USB
-Date: Tue, 6 Dec 2005 01:19:57 -0600
-Message-ID: <8a0c36780512052319h1fe87dffh357ea11069b58f40@mail.gmail.com>
-References: <8a0c36780512050019k3ef806c3h2cb8b9b5edb03088@mail.gmail.com>
-	 <43942386.10807@champin.net>
-	 <8a0c36780512050800t51279569y6e5e3ef57f6dd0d3@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001534]: Mixer channel problems
+Date: Tue, 6 Dec 2005 09:40:01 +0100
+Message-ID: <c7dcf1754f52594b69eaffd6bbb5bb8a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <8a0c36780512050800t51279569y6e5e3ef57f6dd0d3@mail.gmail.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55C8718B
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 09:40:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,53 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pierre-Antoine Champin <alsa-050822@champin.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBUaGF0IGFwcGVhcnMgdG8gaW5kZWVkIGJlIHdoYXQgdGhlIHByb2JsZW0gaXMuICBSdW5uaW5n
-IHlvdXIgc2NyaXB0IG9uCj4gdGhlIHRoZSBvdXRwdXQgZml4ZXMgaXQuCj4gU28gaXQgbG9va3Mg
-bGlrZSByZWNvcmRpbmcgb24gdGhlIEF1ZGlvcGhpbGUgVVNCIG5lZWRzIHNvbWUgZW5kaWFuCj4g
-c3dhcHMuICBUaGlzIGlzIHByb2JhbGx5IGEgcHJldHR5IGVhc3kgdGhpbmcgdG8gZml4Lgo+CgpN
-eSBwcm9ibGVtcyBhcHBlYXIgdG8gZ28gbXVjaCBkZWVwZXIgdGhhbiBlbmRpYW4gaXNzdWVzLgoK
-SSd2ZSBjb21lIHVwIHdpdGggNCBkaWZmZXJlbnQgaXNzdWVzLiAgRXZlcnkgdGltZSBJIGVpdGhl
-ciBib290IG9yCnBvd2VyIGN5Y2xlIC8gdW5wbHVnIHRoZSBkZXZpY2UgSSBnZXQgIG9uZSBvZiB0
-aGUgZm9sbG93aW5nLiAgSW4gYWxsCmNhc2VzIHRoZSBkZXZpY2Ugd2lsbCBwbGF5IGZpbmUgaWYg
-SSB1c2UgbXBnMzIxIGFuZCAgJy1vIGFsc2EwOSAtYQpwbHVnaHcnCgpUZXN0ZWQgd2l0aCAxLjAu
-MTByYzEgIG9uIDIuNi4xNC4yIGFuZCAgMS4wLjEwcmMzIGFuZCAxLjAuMTAgIG9uCjIuNi4xNS1y
-YzUtZ2l0MSkKCjEpIERldmljZSB3aWxsIG5vdCBjcHR1cmUgYXQgYWxsCgogJCBhcmVjb3JkIC12
-diAtRCBodzoxLDEgLWYgUzI0XzNCRSAtdCByYXcgLWMgMiAtcjQ4MDAwIHRlc3QucmF3CgpJdHMg
-c2V0dXAgaXM6CnN0cmVhbSAgICAgICA6IENBUFRVUkUKYWNjZXNzICAgICAgIDogUldfSU5URVJM
-RUFWRUQKZm9ybWF0ICAgICAgIDogUzI0XzNCRQpzdWJmb3JtYXQgICAgOiBTVEQKY2hhbm5lbHMg
-ICAgIDogMgpyYXRlICAgICAgICAgOiA0ODAwMApleGFjdCByYXRlICAgOiA0ODAwMCAoNDgwMDAv
-MSkKbXNiaXRzICAgICAgIDogMjQKYnVmZmVyX3NpemUgIDogMjQwMDAKcGVyaW9kX3NpemUgIDog
-NjAwMApwZXJpb2RfdGltZSAgOiAxMjUwMDAKdGlja190aW1lICAgIDogNDAwMAp0c3RhbXBfbW9k
-ZSAgOiBOT05FCnBlcmlvZF9zdGVwICA6IDEKc2xlZXBfbWluICAgIDogMAphdmFpbF9taW4gICAg
-OiA2MDAwCnhmZXJfYWxpZ24gICA6IDYwMDAKc3RhcnRfdGhyZXNob2xkICA6IDEKc3RvcF90aHJl
-c2hvbGQgICA6IDI0MDAwCnNpbGVuY2VfdGhyZXNob2xkOiAwCnNpbGVuY2Vfc2l6ZSA6IDAKYm91
-bmRhcnkgICAgIDogMTU3Mjg2NDAwMAphcmVjb3JkOiBwY21fcmVhZDoxMzAzOiByZWFkIGVycm9y
-OiBJbnB1dC9vdXRwdXQgZXJyb3IKCjIpIERldmljZSBjYXB0dXJlcyBidXQgYWxsIEkgZ2V0IGlz
-IHN0YXRpYy4KCiAkIGFyZWNvcmQgLXZ2IC1EIGh3OjEsMSAtZiBTMjRfM0JFIC10IHJhdyAtYyAy
-IC1yNDgwMDAgdGVzdC5yYXcKICQgYXJlY29yZCAtdnYgLUQgcGx1Z2h3OjEsMSAtZiBTMjRfM0JF
-IC10IHJhdyAtYyAyIC1yNDgwMDAgdGVzdC5yYXcKCkJvdGggcGVnIHRoZSBWVSBtZXRlciB3aXRo
-IDk5JSBhbmQgMTAwJQpVc2luZyB5b3VyIHN3YXAyLnB5IGRvZXMgbm90IG1ha2UgYW55IGRpZmZl
-cmVuY2UuCgozKSBEZXZpY2UgY2FwdHVyZXMgYnV0IGFsbCBJIGdldCBpcyBzaWxlbmNlLgoKICQg
-YXJlY29yZCAtdnYgLUQgaHc6MSwxIC1mIFMyNF8zQkUgLXQgcmF3IC1jIDIgLXI0ODAwMCB0ZXN0
-LnJhdwogJCBhcmVjb3JkIC12diAtRCBwbHVnaHc6MSwxIC1mIFMyNF8zQkUgLXQgcmF3IC1jIDIg
-LXI0ODAwMCB0ZXN0LnJhdwoKQm90aCBwZWcgdGhlIFZVIG1ldGVyIHdpdGggOTklIGFuZCAxMDAl
-ClVzaW5nIHlvdXIgc3dhcDIucHkgZG9lcyBub3QgbWFrZSBhbnkgZGlmZmVyZW5jZS4KCjMpIERl
-dmljZSBjYXB0dXJlcywgVlUgbWV0ZXIgc2hvd3MgbWF4IGJ1dCBpdHMgZml4YWJsZS4KCiAkIGFy
-ZWNvcmQgLXZ2IC1EIGh3OjEsMSAtZiBTMjRfM0JFIC10IHJhdyAtYyAyIC1yNDgwMDAgdGVzdC5y
-YXcKICQgYXJlY29yZCAtdnYgLUQgcGx1Z2h3OjEsMSAtZiBTMjRfM0JFIC10IHJhdyAtYyAyIC1y
-NDgwMDAgdGVzdC5yYXcKCkJvdGggcGVnIHRoZSBWVSBtZXRlciB3aXRoIDk5JSBhbmQgMTAwJQpV
-c2luZyBzd2FwMi5weSBwcm9kdWNlcyB0aGUgcHJvcGVyIGF1ZGlvIHdpdGgKCiAkIGFwbGF5IC12
-diAtRCBodzoxLDAgLWYgUzI0XzNCRSAtdCByYXcgLWMgMiAtcjQ4MDAwIHRlc3Quc3dhcAoKTGlr
-ZSBJIHNhaWQgcmVib290LCBwb3dlciBjeWNsZSwgdW5wbHVnL3JlcGx1ZyB0aGUgZGV2aWNlIGFu
-ZCB5b3UgZ2V0Cm9uZSBvZiB0aGUgYWJvdmUuICBJJ3ZlIGJlZW4gdW5hYmxlIHRvIGRldGVybWlu
-ZSBhbnkgc29ydCBvZiBwYXR0ZXJuLgoKQWxsIG9mIHRoZSBhYm92ZSB3YXMgZG9uZSB1c2luZyBh
-IGtub3duIGxpbmUgbGV2ZWwgc291cmNlIHdpdGggbm8gY2hhbmdlcy4KClNob3VsZCBJIGZpbGUg
-YSBidWcgb3IgaXMgdGhlcmUgbW9yZSBzdHVmZiBJIGNhbiB0cnkuICBJJ3ZlIG5vdAplbmFibGVk
-IGRlYnVnIGluIHRoZSBkcml2ZXIgeWV0LgoKLS0KUmljaGFyZCBBLiBTbWl0aAo=
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1534> 
+======================================================================
+Reported By:                mrblur
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1534
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             11-08-2005 08:41 CET
+Last Modified:              12-06-2005 09:40 CET
+======================================================================
+Summary:                    Mixer channel problems
+Description: 
+I'm using Acer AS5002WLMi with SiS 7012 soundcard. It works quite good,
+but... unfortunately if I would like to change sound volume I have to do
+it on headphones channel, master channel stereo/mona are not working.
+======================================================================
+
+----------------------------------------------------------------------
+ mrblur - 11-29-05 09:22 
+----------------------------------------------------------------------
+Still nothing... Additionally when added this option there was no sound at
+all... (?)
+
+----------------------------------------------------------------------
+ mrblur - 12-06-05 09:40 
+----------------------------------------------------------------------
+Ok.. sorry... ac97_quirk=2 and now it's working :-)
+BIG THANKS :-)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-08-05 08:41 mrblur         New Issue                                    
+11-08-05 08:41 mrblur         Kernel Version            => 2.6.14          
+11-08-05 17:48 tiwai          Note Added: 0006628                          
+11-28-05 13:48 mrblur         Note Added: 0006859                          
+11-28-05 18:51 tiwai          Note Added: 0006863                          
+11-29-05 09:22 mrblur         Note Added: 0006871                          
+12-06-05 09:40 mrblur         Note Added: 0006921                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
