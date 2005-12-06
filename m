@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001534]: Mixer channel problems
-Date: Tue, 6 Dec 2005 15:51:54 +0100
-Message-ID: <c6c60102e4f6e927fef05829b39d4ef6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Tue, 6 Dec 2005 15:52:52 +0100
+Message-ID: <37099858d96cc7681df473a9ce968a92@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40802101
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 15:51:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A6511A3
+	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 15:52:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1534> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                mrblur
-Assigned To:                
+Reported By:                robertw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1534
-Category:                   PCI - intel8x0
+Issue ID:                   1618
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.14
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             11-08-2005 08:41 CET
-Last Modified:              12-06-2005 15:51 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              12-06-2005 15:52 CET
 ======================================================================
-Summary:                    Mixer channel problems
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-I'm using Acer AS5002WLMi with SiS 7012 soundcard. It works quite good,
-but... unfortunately if I would like to change sound volume I have to do
-it on headphones channel, master channel stereo/mona are not working.
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
 
 ----------------------------------------------------------------------
- mrblur - 12-06-05 09:40 
+ timmy - 12-05-05 19:35 
 ----------------------------------------------------------------------
-Ok.. sorry... ac97_quirk=2 and now it's working :-)
-BIG THANKS :-)
+I have exactly the same problem, with an Acer Travelmate 4064WLMi,
+unfortunately. I even tried with the driver Realtek have, with no luck.
 
 ----------------------------------------------------------------------
- tiwai - 12-06-05 15:51 
+ tiwai - 12-06-05 15:52 
 ----------------------------------------------------------------------
-Then please show the output of lspci -nv to add your device to the known
-quirk list.
+Could you try the latest ALSA CVS version?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-08-05 08:41 mrblur         New Issue                                    
-11-08-05 08:41 mrblur         Kernel Version            => 2.6.14          
-11-08-05 17:48 tiwai          Note Added: 0006628                          
-11-28-05 13:48 mrblur         Note Added: 0006859                          
-11-28-05 18:51 tiwai          Note Added: 0006863                          
-11-29-05 09:22 mrblur         Note Added: 0006871                          
-12-06-05 09:40 mrblur         Note Added: 0006921                          
-12-06-05 15:51 tiwai          Note Added: 0006924                          
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
 ======================================================================
 
 
