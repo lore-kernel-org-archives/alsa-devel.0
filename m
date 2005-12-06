@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001622]: ASUS A8V-MX onboard sound does not work
-Date: Tue, 6 Dec 2005 18:21:09 +0100
-Message-ID: <b4478f0292f723271a3381e1d4549e6f@bugtrack.alsa-project.org>
+From: Christoph Hellwig <hch@infradead.org>
+Subject: Re: Re: [PATCH 2.6.13.1 1/1] CS5535 AUDIO ALSA driver
+Date: Tue, 6 Dec 2005 17:42:03 +0000
+Message-ID: <20051206174203.GA24569@infradead.org>
+References: <200509190639.j8J6dIM4007948@localhost.localdomain> <20050920152830.7ef6733b.akpm@osdl.org> <47f5dce305092017031a2ba375@mail.gmail.com> <20050920172309.626db866.akpm@osdl.org> <20050921083109.GA27254@infradead.org> <s5hpsqsdn6g.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E1CC18E
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 18:21:09 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5hpsqsdn6g.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,150 +17,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@osdl.org>, jayakumar.alsa@gmail.com, perex@suse.cz, mj@ucw.cz, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Sep 29, 2005 at 03:21:43PM +0200, Takashi Iwai wrote:
+> At Wed, 21 Sep 2005 09:31:09 +0100,
+> Christoph Hellwig wrote:
+> > 
+> > On Tue, Sep 20, 2005 at 05:23:09PM -0700, Andrew Morton wrote:
+> > > > I'm not sure what to do. I'd be happy to take them out. But I woudn't
+> > > > mind leaving them in if that's what alsa convention is.
+> > > 
+> > > I'd be inclined to stick with the alsa style.  That's just an fyi if you
+> > > plan on working in other places.
+> > 
+> > I'd _really_ prefer to fix all of alsa.  Alsa is so full of wrappers
+> > and multiple names for the same thing that's it's almost impossibly
+> > for a normal kernel developer to fix anythign in there.
+> 
+> Oh I guess you're referring to the messy memory stuff in ALSA code?
+> 
+> (Or you mean about the foo_t style?  Then it would be easy to fix, and
+>  I'd appreciate if someone takes this job :)
+> 
+> Basically I agree with all your suggestions - hacks have been there
+> simply as workarounds.  They should be removed.
+> 
+> The following are in WIP on my local tree:
+> 
+> - Merge of dma_alloc_coherent() hacks for pages <32bit to kernel core
+>   (for i386 and ppc)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622> 
-======================================================================
-Reported By:                m_yates
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1622
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12 (also reproduced using 2.6.15-rc2)
-======================================================================
-Date Submitted:             12-05-2005 18:59 CET
-Last Modified:              12-06-2005 18:21 CET
-======================================================================
-Summary:                    ASUS A8V-MX onboard sound does not work
-Description: 
-Onboard sound plays for a second, then freezes on Asus A8V-MX mainboard. 
-Here is sound output from lspci:
+Did this get out?
 
-matt@duster:~$ lspci | grep Multimedia
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
+> 
+> - PageReserve and mmaps:
+>   dma_mmap_coherent() will be used in all architectures instead of
+>   vma nopage callback.  Of course, dma_mmap_coherent() should be
+>   ported to all archs.
 
-Here is alsa version (version that came with Ubuntu 5.10):
+What about just making the i386 one Russell posted generic?  It shouldn't
+be any less broken than what we do now and every architecture that needs
+something more specific can implements it.
 
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  alsa-base      1.0.9b-4       ALSA driver configuration files
+> - Removal of the common allocator in sound/core/memalloc.c
+>   Instead, each driver has alloc_buffer() and free_buffer()
+>   callbacks.
 
-Here are the sound modules:
+this isn't in mainline yet, is it?
 
-root@duster:/home/matt# lsmod | grep snd
-snd_seq_dummy 4484 0
-snd_seq_oss 32128 0
-snd_seq_midi 9920 0
-snd_seq_midi_event 8064 2 snd_seq_oss,snd_seq_midi
-snd_seq 52032 6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_via82xx 29472 1
-gameport 16392 1 snd_via82xx
-snd_ac97_codec 87000 1 snd_via82xx
-snd_pcm_oss 51232 0
-snd_mixer_oss 17664 1 snd_pcm_oss
-snd_pcm 91020 3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer 24200 2 snd_seq,snd_pcm
-snd_page_alloc 11408 2 snd_via82xx,snd_pcm
-snd_mpu401_uart 7936 1 snd_via82xx
-snd_rawmidi 27040 2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device 9488 5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
-snd 55784 13
-snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu40
-1_uart,snd_rawmidi,snd_seq_device
-soundcore 10912 1 snd
+> - The "right" way to allocate/mmap coherent SG-buffers.
 
-Asus lists the audio chip as "Realtek ALC653", alsamixer shows "Realtek
-ALC655 rev 1". 
-======================================================================
+How do you get coherent SG-buffers?  The only way to get coherent dma
+allocations is dma_alloc_coheren (and the pci variant), but that's not
+handing back an SG list.  But even if you build one yourself it should
+be handled by dma_mmap_coherent.
 
-----------------------------------------------------------------------
- tiwai - 12-06-05 15:53 
-----------------------------------------------------------------------
-It sounds like rather a problem of interrupt routing, most likely related
-with ACPI.  Try to boot with pci=noacpi or acpi=off boot option.
+> - A common API for mmap vmalloc buffers.
 
-----------------------------------------------------------------------
- m_yates - 12-06-05 18:21 
-----------------------------------------------------------------------
-I tried pci=noacpi and acpi=off and still have the same problem.  I tried
-searching for IRQ related information, but I'm not sure what I am looking
-for.  The Asus motherboard manual is confusing, but lists IRQ for AC'97 as
-"shared" under heading "C".  I'm not sure what that means.  Here is the
-full output of "lspci":
+What API do you think about?  If you do alloc_page yourself and use
+vmap everything gets much much easier.  And with the new vm_install_page
+this becomes pretty easy:
 
-0000:00:00.0 Host bridge: VIA Technologies, Inc.: Unknown device 0204
-0000:00:00.1 Host bridge: VIA Technologies, Inc.: Unknown device 1204
-0000:00:00.2 Host bridge: VIA Technologies, Inc.: Unknown device 2204
-0000:00:00.3 Host bridge: VIA Technologies, Inc.: Unknown device 3204
-0000:00:00.4 Host bridge: VIA Technologies, Inc.: Unknown device 4204
-0000:00:00.7 Host bridge: VIA Technologies, Inc.: Unknown device 7204
-0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI bridge [K8T800
-South]
-0000:00:0f.0 IDE interface: VIA Technologies, Inc.
-VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 07)
-0000:00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 90)
-0000:00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 90)
-0000:00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 90)
-0000:00:10.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
-Controller (rev 90)
-0000:00:10.4 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 90)
-0000:00:11.0 ISA bridge: VIA Technologies, Inc.: Unknown device 3287
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
-0000:00:11.7 Host bridge: VIA Technologies, Inc.: Unknown device 287e
-0000:00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II]
-(rev 7c)
-0000:00:13.0 PCI bridge: VIA Technologies, Inc.: Unknown device 287b
-0000:00:18.0 Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge
-0000:00:18.1 Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge
-0000:00:18.2 Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge
-0000:00:18.3 Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge
-0000:01:00.0 VGA compatible controller: VIA Technologies, Inc.: Unknown
-device 3108 (rev 01)
-0000:02:00.0 PCI bridge: VIA Technologies, Inc.: Unknown device 287c
-0000:02:00.1 PCI bridge: VIA Technologies, Inc.: Unknown device 287d
+init_routine()
+{
 
-Here is also an IRQ related thing I noticed in "dmesg":
+	...
+	for (i = 0; i < NR_PAGES; i++) {
+		pages[i] = alloc_page(GFP_KERNEL);
+		...
+	}
 
-[   50.914237] via82xx: Assuming DXS channels with 48k fixed sample rate.
-[   50.914240]          Please try dxs_support=5 option
-[   50.914243]          and report if it works on your machine.
-[   50.914245]          For more details, read ALSA-Configuration.txt.
-[   50.914260] PCI: Via IRQ fixup for 0000:00:11.5, from 10 to 6
-[   50.914404] PCI: Setting latency timer of device 0000:00:11.5 to 64
+	dma_buffer = vmap(pages, ...);
+}
 
+dma_map()
+{
+	for (i = 0; i < NR_PAGES; i++) {
+		dma_map_page(pages[i, ....);
+		...
+	}
+}
 
-Any ideas you have would be greatly appreciated.  This post is also an
-inadvertantly duplicated bug post from:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1557  I found that
-after I posted.
+mmap()
+{
+	for (i = 0; i < NR_PAGES; i++) {
+		vm_insert_page(..., pages[i], ..);
+		...
+	}
+}
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-05-05 18:59 m_yates        New Issue                                    
-12-05-05 18:59 m_yates        Distribution              => Ubuntu 5.10     
-12-05-05 18:59 m_yates        Kernel Version            => 2.6.12 (also
-reproduced using 2.6.15-rc2)
-12-06-05 15:53 tiwai          Note Added: 0006926                          
-12-06-05 18:21 m_yates        Note Added: 0006931                          
-======================================================================
-
+maybe some tiny helpers that encapsulate the loop over the pages would
+be nice, but we shouldn't need much of a new API here.
 
 
 
