@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001626]: Kernel panic on use of hardware MIDI synth
-Date: Wed, 7 Dec 2005 22:08:59 +0100
-Message-ID: <049f372bd76e5feefa860f123747954d@bugtrack.alsa-project.org>
+Date: Wed, 7 Dec 2005 22:25:08 +0100
+Message-ID: <64aee13d309ab08207ad3f9afbaa21af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 849E5146
-	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 22:09:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBAB7155
+	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 22:25:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.14-1.1644_FC4
 ======================================================================
 Date Submitted:             12-07-2005 20:56 CET
-Last Modified:              12-07-2005 22:08 CET
+Last Modified:              12-07-2005 22:25 CET
 ======================================================================
 Summary:                    Kernel panic on use of hardware MIDI synth
 Description: 
@@ -54,13 +54,6 @@ avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-07-05 21:18 
-----------------------------------------------------------------------
-Um, the SBLive! 24 bit does not have a MIDI synth.
-
-Please post the kernel panic here.
-
-----------------------------------------------------------------------
  Twey - 12-07-05 22:08 
 ----------------------------------------------------------------------
 It doesn't?  Ah, well that would explain the panic.  Is there any way to
@@ -72,6 +65,14 @@ memorize or write down.  Is there a log?
 
 I'm thankfully inexperienced in the area of kernel panics :-)
 
+----------------------------------------------------------------------
+ rlrevell - 12-07-05 22:25 
+----------------------------------------------------------------------
+No point trying to disable the MIDI port, this seems to be a driver bug.
+
+If you have one, a digital camera is the easiest way to capture an Oops,
+just take a picture of the screen and upload it.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -81,6 +82,7 @@ Date Modified  Username       Field                    Change
 12-07-05 20:56 Twey           Issue Monitored: Twey                        
 12-07-05 21:18 rlrevell       Note Added: 0006948                          
 12-07-05 22:08 Twey           Note Added: 0006950                          
+12-07-05 22:25 rlrevell       Note Added: 0006951                          
 ======================================================================
 
 
