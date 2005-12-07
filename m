@@ -1,12 +1,14 @@
-From: Trevor Feeney <trev@feens.org>
-Subject: Re: Revo 5.1
-Date: Wed, 7 Dec 2005 18:36:41 +0000 (UTC)
-Message-ID: <loom.20051207T193631-374@post.gmane.org>
-References: <43948A9F.6020009@feens.org> <43948F9E.50407@seznam.cz> <4395A188.7060307@feens.org> <s5hu0dmjn6f.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001604]: alsa-utils compilation dies - undefined reference to `snd_mixer_selem_get_capture_dB'
+Date: Wed, 7 Dec 2005 20:45:08 +0100
+Message-ID: <3ee547f9eade4ba6c8e3886dd6ed8e85@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4279159
+	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 20:45:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,71 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai <at> suse.de> writes:
 
-> 
-> At Tue, 06 Dec 2005 09:34:48 -0500,
-> Trevor Feeney wrote:
-> > 
-> > Was taking a look at the source for the Revo 5.1, noticed a few things.  
-> > You set it up as using only 6 DACs, going by the 5.1 I figure, but when 
-> > you consider that it also has the headpone out, it would have the same 
-> > number of DACs as the 7.1 (8 DACs in all). 
-> > 
-> > Takashi - that answers your question in the last thread...from what I've 
-> > read, the 5.1 only uses one codec, and the headphones would just be a 
-> > separate channel.  I tried adjusting the number of DACs to 8 in the 
-> > driver, and did manage to get two
-> > DAC mixer sliders.  I'm not really sure if that was the way to go or 
-> > not.  I tried adjusting the asound plugin to output to 8 channels, pcm 
-> > device surround71, but that didn't seem to work.  I wondering if it 
-> > needs to be setup separately thant the other 6 channels so that it would 
-> > be considered it's own PCM device.  That goes a bit beyond my realm of 
-> > knowledge for driver development though...still trying to learn this.  
-> > Been reading a lot of the documents and such.
-> 
-> [Added alsa-devel ML again]
-> 
-> In the case of ice1724, you can open a stereo stream separately.
-> The first PCM is assigned to the multi-channel, i.e. 2-8 channels
-> interleaved format.  The secondary PCM is for SPDIF.  The third PCM is
-> the "independent" streams.  This may have up to 3 substreams, each of
-> which is a 2-channel one.  If you change num_dacs = 8, you'll be able
-> to access plughw:0,2,3 (suppose the card# is 0) for the last two
-> channels individually:
-> 
-> 	% aplay -Dplughw:0,1,3 foo.wav
-> 
-> And you have to raise the corresponding DAC mixer values, of course.
-> 
-> Takashi
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-> for problems?  Stop!  Download the new AJAX search engine that makes
-> searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-> http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
-> 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1604> 
+======================================================================
+Reported By:                Twey
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1604
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.14-1.1637_FC4
+======================================================================
+Date Submitted:             11-27-2005 19:39 CET
+Last Modified:              12-07-2005 20:45 CET
+======================================================================
+Summary:                    alsa-utils compilation dies - undefined reference to
+`snd_mixer_selem_get_capture_dB'
+Description: 
+Compilation of alsamixer dies.  Full errors attached.  Note that the output
+given here is using gcc32, but gcc4 gives the same errors.
+======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 12-02-05 14:48 
+----------------------------------------------------------------------
+Did you really look at /lib whether _another_ libasound.so.* exists?  This
+conflicts with the one you installed.
 
-I tried the aplay without succes...oh, and I was assuming that it should be 
-plughw:0,2,1, plughw:0,2,2, and plughw:0,2,3.  
+----------------------------------------------------------------------
+ Twey - 12-07-05 20:45 
+----------------------------------------------------------------------
+One did exist, and I removed it, but the error persists.
 
-However, I was doing some looking into the chips used on the card and had a 
-thought.  The 5.1 uses the envy24gt as opposed to the envy24ht.  The big 
-difference is that the gt is that it is a 6 channel card.  However, with the 
-headphones included, there are 8 output channels/DACS in total.  So I would 
-guess that basing the card off the ht, setting it up with 8 DACs would not 
-work.  Though I'm still figuring this out, I'm guessing that means that one 
-output (pcm)_channel actually has to drive 2 DACs.  I'm not quite sure where 
-to go with that though.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-27-05 19:39 Twey           New Issue                                    
+11-27-05 19:39 Twey           Distribution              => Fedora Core 4   
+11-27-05 19:39 Twey           Kernel Version            => 2.6.14-1.1637_FC4
+11-28-05 18:56 tiwai          Note Added: 0006866                          
+11-28-05 19:11 Twey           Note Added: 0006867                          
+11-28-05 19:13 tiwai          Note Added: 0006868                          
+11-28-05 19:39 Twey           Note Added: 0006869                          
+12-02-05 14:48 tiwai          Note Added: 0006893                          
+12-07-05 20:45 Twey           Note Added: 0006946                          
+======================================================================
 
-Any help, suggestions, etc would be welcomed.
-
-Trevor
 
 
 
