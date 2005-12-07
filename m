@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001623]: Kernel oopsed when modprobing snd_mpu401 module
-Date: Wed, 7 Dec 2005 13:41:22 +0100
-Message-ID: <d0b624c0e60612041527250ee69b25b3@bugtrack.alsa-project.org>
+From: =?ISO-8859-1?Q?Rafael_Esp=EDndola?= <rafael.espindola@gmail.com>
+Subject: Re: [PATCH] add support for ALC880 8196
+Date: Wed, 7 Dec 2005 11:39:33 -0200
+Message-ID: <564d96fb0512070539h667d7c2x7fc8be395293c1ac@mail.gmail.com>
+References: <564d96fb0512060520q7647727cld0e932582829a985@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_11699_24001238.1133962773138"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55145161
-	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 13:41:22 +0100 (MET)
+Received: from xproxy.gmail.com (xproxy.gmail.com [66.249.82.198])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A813A171
+	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 14:39:34 +0100 (MET)
+Received: by xproxy.gmail.com with SMTP id i31so215786wxd
+        for <alsa-devel@alsa-project.org>; Wed, 07 Dec 2005 05:39:33 -0800 (PST)
+In-Reply-To: <564d96fb0512060520q7647727cld0e932582829a985@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,138 +25,62 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_11699_24001238.1133962773138
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1623> 
-======================================================================
-Reported By:                cartman
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1623
-Category:                   GENERIC - mpu401
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Pardus Linux
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             12-06-2005 19:50 CET
-Last Modified:              12-07-2005 13:41 CET
-======================================================================
-Summary:                    Kernel oopsed when modprobing snd_mpu401 module
-Description: 
-When I try to modprobe snd_mpu401 I get this:
+On 12/6/05, Rafael Esp=EDndola <rafael.espindola@gmail.com> wrote:
+> I have tested the patch by plugging a headphone to each output pin and
+> tested both the mute and the volume controls of the left and right
+> channel individually.
+And that is why I didn't realized that LFE and Center are mono. When I
+plugged the headphone one channel was in the left and the other in the
+right. Duh!
+My first 7.1 :)
 
+A fixed patch is attached.
 
-Unable to handle kernel NULL pointer dereference at virtual address
-00000000
- printing eip:
-00000000
-*pde = 00000000
-Oops: 0000 [#1]
-PREEMPT
-Modules linked in: snd_mpu401 snd_opl3_lib snd_hwdep snd_cs4231_lib
-parport_pc
-parport i2c_viapro i2c_core via_agp agpgart snd_seq_dummy snd_seq_oss
-snd_seq_midi_event snd_seq snd_pcm_oss snd_mixer_oss snd_via82xx
-snd_ac97_codec
-snd_ac97_bus snd_pcm snd_timer snd_page_alloc snd_mpu401_uart snd_rawmidi
-snd_seq_device snd sbp2 ohci1394 ieee1394 usb_storage uhci_hcd ohci_hcd
-ehci_hcd
-usbcore sata_sil sata_nv sata_mv sata_promise sata_sis sata_svw sata_via
-sata_uli sata_vsc sata_sx4 sym53c8xx sg a100u2w scsi_transport_sas dc395x
-tmscsim ahci BusLogic aacraid sr_mod 3w_xxxx lpfc qla1280 ipr st ch
-megaraid
-megaraid_mbox megaraid_mm megaraid_sas dmx3191d atp870u nsp32 aic7xxx
-aic79xx
-scsi_transport_spi osst qlogicfas408 ata_piix libata 3w_9xxx aha152x
-qla6312
-qla2200 qla2322 qla2100 qla2300 qla2xxx firmware_class scsi_transport_fc
-sd_mod
-scsi_mod
-CPU:    0
-EIP:    0060:[<00000000>]    Not tainted VLI
-EFLAGS: 00010286   (2.6.14.3-10)
-EIP is at rest_init+0x3feffdc0/0x40
-eax: ccbf3e00   ebx: 00000000   ecx: d244d1b4   edx: d244d1b4
-esi: d244d1b4   edi: ccbf3e08   ebp: ccbf3e08   esp: cba15db8
-ds: 007b   es: 007b   ss: 0068
-Process modprobe (pid: 9771, threadinfo=cba14000 task=cee87a50)
-Stack: d2442011 ccbf3e00 c03031ca ccbf3e08 00000000 cba15dec c0303230
-c030323f
-       d244d1b4 ccbf3e08 c0302a5d d244d1b4 ccbf3e08 c04264f8 c04264f8
-d244d20c
-       ccbf3eb2 ccbf3e08 c0426400 ccbf3e08 00000000 c030329b c0426400
-00000000
-Call Trace:
- [<d2442011>] snd_platform_driver_probe+0x11/0x20 [snd]
- [<c03031ca>] driver_probe_device+0x2a/0x90
- [<c0303230>] __device_attach+0x0/0x20
- [<c030323f>] __device_attach+0xf/0x20
- [<c0302a5d>] bus_for_each_drv+0x4d/0x70
- [<c030329b>] device_attach+0x4b/0x60
- [<c0303230>] __device_attach+0x0/0x20
- [<c0302b83>] bus_add_device+0x23/0x90
- [<c0301cb6>] device_add+0xa6/0x120
- [<c0301d41>] device_register+0x11/0x20
- [<c0304889>] platform_device_register+0x119/0x170
- [<d244386f>] snd_generic_device_register+0x4f/0x90 [snd]
- [<d24438eb>] snd_card_set_generic_dev+0xb/0x30 [snd]
- [<d25680e8>] snd_mpu401_create+0xe8/0x160 [snd_mpu401]
- [<c02f1b07>] compare_pnp_id+0x77/0x90
- [<d2568207>] snd_mpu401_pnp_probe+0x57/0x90 [snd_mpu401]
- [<c02f1c85>] pnp_device_probe+0x75/0xa0
- [<c03031ca>] driver_probe_device+0x2a/0x90
- [<c03032b0>] __driver_attach+0x0/0x40
- [<c03032eb>] __driver_attach+0x3b/0x40
- [<c030294d>] bus_for_each_dev+0x4d/0x70
- [<c0291102>] kobject_add+0x72/0xc0
- [<c0303305>] driver_attach+0x15/0x20
- [<c03032b0>] __driver_attach+0x0/0x40
- [<c0302d9b>] bus_add_driver+0x5b/0xa0
- [<c03036d4>] driver_register+0x34/0x40
- [<c02f1d4f>] pnp_register_driver+0x2f/0x60
- [<d231b14a>] alsa_card_mpu401_init+0x4a/0x92 [snd_mpu401]
- [<c01388a2>] sys_init_module+0x122/0x1f0
- [<c0102f2b>] sysenter_past_esp+0x54/0x79
-Code:  Bad EIP value.
+Ps.: IMHO "rear" is more descriptive (and is what is printed on the
+plug) then "surround" in a 7.1 system.
 
-======================================================================
+Rafael
 
-----------------------------------------------------------------------
- tiwai - 12-06-05 20:10 
-----------------------------------------------------------------------
-Yes, the code has been largely changed after 1.0.10 release.
+------=_Part_11699_24001238.1133962773138
+Content-Type: application/octet-stream; name=alsa.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="alsa.patch"
 
-----------------------------------------------------------------------
- vsu - 12-07-05 13:41 
-----------------------------------------------------------------------
-This problem happens with alsa-driver-1.0.10 on 2.6.x kernels <= 2.6.14
-(which don't have platform_driver_register()).  The problem is that
-snd_platform_driver_probe() does not check for non-NULL drv->probe before
-calling it, and platfor_driver_register() emulation code always sets
-drv->driver.probe = snd_platform_driver_probe even if drv->probe is NULL.
-
-I have attached a patch for alsa-driver-1.0.10 which should fix this.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-06-05 19:50 cartman        New Issue                                    
-12-06-05 19:50 cartman        Distribution              => Pardus Linux    
-12-06-05 19:50 cartman        Kernel Version            => 2.6.14          
-12-06-05 19:57 tiwai          Note Added: 0006932                          
-12-06-05 20:05 cartman        Note Added: 0006933                          
-12-06-05 20:10 tiwai          Note Added: 0006936                          
-12-07-05 13:39 vsu            File Added: 00_platform_device_compat.patch       
-            
-12-07-05 13:41 vsu            Note Added: 0006940                          
-======================================================================
+Index: alsa-kernel/pci/hda/patch_realtek.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/patch_realtek.c,v
+retrieving revision 1.37
+diff -u -3 -p -u -r1.37 patch_realtek.c
+--- alsa-kernel/pci/hda/patch_realtek.c	5 Dec 2005 19:42:22 -0000	1.37
++++ alsa-kernel/pci/hda/patch_realtek.c	7 Dec 2005 13:21:51 -0000
+@@ -513,8 +513,8 @@ static struct hda_channel_mode alc880_si
+ static struct snd_kcontrol_new alc880_six_stack_mixer[] = {
+ 	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Surround Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Surround Playback Switch", 0x0d, 2, HDA_INPUT),
++	HDA_CODEC_VOLUME("Rear Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Rear Playback Switch", 0x0d, 2, HDA_INPUT),
+ 	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x0e, 1, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x0e, 2, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0e, 1, 2, HDA_INPUT),
+@@ -1657,6 +1657,7 @@ static struct hda_board_config alc880_cf
+ 	{ .modelname = "6stack", .config = ALC880_6ST },
+ 	{ .pci_subvendor = 0x1043, .pci_subdevice = 0x81b4, .config = ALC880_6ST },
+ 	{ .pci_subvendor = 0x1019, .pci_subdevice = 0xa884, .config = ALC880_6ST }, /* Acer APFV */
++	{ .pci_subvendor = 0x1043, .pci_subdevice = 0x8196, .config = ALC880_6ST },
+ 
+ 	{ .modelname = "6stack-digout", .config = ALC880_6ST_DIG },
+ 	{ .pci_subvendor = 0x2668, .pci_subdevice = 0x8086, .config = ALC880_6ST_DIG },
 
 
+
+------=_Part_11699_24001238.1133962773138--
 
 
 -------------------------------------------------------
