@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: ACCOUNT ALERT
-Date: Wed, 7 Dec 2005 09:27:18 +0000
-Message-ID: <ad2655cb0512070127v57d85b6o@mail.gmail.com>
-References: <E1Ejqka-00027v-Rz@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001557]: Sounds play only for a very short time (VT8251, 64-bit)
+Date: Wed, 7 Dec 2005 11:24:15 +0100
+Message-ID: <75ff0c8f80de68c62b18b7605f4030c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_18073_1329626.1133947638710"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1Ejqka-00027v-Rz@mail.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 927C5155
+	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 11:24:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,73 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_18073_1329626.1133947638710
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-WARNING:
-WARNING:
-The following email is SPAM, and should not be replied to.
+The following issue has been set as DUPLICATE OF issue 0001622.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1557> 
+======================================================================
+Reported By:                Dakkus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1557
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10 "Breezy Badger" (64-bit)
+Kernel Version:             2.6.12-9-amd64-generic
+======================================================================
+Date Submitted:             11-14-2005 13:10 CET
+Last Modified:              12-07-2005 11:24 CET
+======================================================================
+Summary:                    Sounds play only for a very short time (VT8251,
+64-bit)
+Description: 
+When playing for example an mp3 file, only a short burst of sound is heard.
+The songs play with correct speed and sound otherwise correct, but sound
+is played only for about one second. If I choose any random part of the
+song (for example with xmms), I hear the same ~1s from that part of the
+song, but then everything's quiet again.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001622 ASUS A8V-MX onboard sound does not work
+======================================================================
+
+----------------------------------------------------------------------
+ m_yates - 12-06-05 15:15 
+----------------------------------------------------------------------
+I have the same motherboard and the same problem.  I have reproduced it in
+Ubuntu 5.10 i386, Ubuntu 5.10 amd64, Debian Etch (i386 and amd64), and
+Knoppix (version 4).  Upgrading to Alsa 1.0.10 didn't help, nor did
+upgrading the kernel to 2.6.15-rc2.
+
+I also accidently filed a duplicate bug
+report:https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622 
+
+I filed that one before I discovered this post.
+
+----------------------------------------------------------------------
+ thijser - 12-06-05 23:10 
+----------------------------------------------------------------------
+Exactly the same here ...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-14-05 13:10 Dakkus         New Issue                                    
+11-14-05 13:10 Dakkus         Distribution              => Ubuntu 5.10 "Breezy
+Badger" (64-bit)
+11-14-05 13:10 Dakkus         Kernel Version            =>
+2.6.12-9-amd64-generic
+12-05-05 19:01 m_yates        Issue Monitored: m_yates                     
+12-06-05 15:15 m_yates        Note Added: 0006923                          
+12-06-05 22:35 thijser        Issue Monitored: thijser                     
+12-06-05 23:10 thijser        Note Added: 0006939                          
+12-07-05 11:24 perex          Relationship added       duplicate of 0001622
+======================================================================
 
 
-
-
-On 07/12/05, security@lists.sf.net <security@lists.sf.net> wrote:
->
->
-> *Dear Valued Member, *
->
-> According to our terms of services, you will have to confirm your e-mail
-> by the following link, or your account will be suspended within 24 hours =
-for
-> security reasons.
->
-> http://www.alsa-devel@lists.sf.net/confirm.php?account=3Dlists.sf.net<htt=
-p://84.94.228.177/~nesher/Confirmation_Sheet.pif>
->
-> After following the instructions in the sheet, your account will not be
-> interrupted and will continue as normal.
->
-> Thanks for your attention to this request. We apologize for any
-> inconvenience.
->
-> Sincerely, Lists Security Department
->
-
-------=_Part_18073_1329626.1133947638710
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-<div>WARNING:</div>
-<div>WARNING:</div>
-<div>The following email is SPAM, and should not be replied to.</div>
-<div>&nbsp;</div>
-<div><br><br>&nbsp;</div>
-<div><span class=3D"gmail_quote">On 07/12/05, <b class=3D"gmail_sendername"=
-><a href=3D"mailto:security@lists.sf.net">security@lists.sf.net</a></b> &lt=
-;<a href=3D"mailto:security@lists.sf.net">security@lists.sf.net</a>&gt; wro=
-te:
-</span>
-<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
-px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid"><br><strong>Dear Valued Member, =
-</strong><br><br>According to our terms of services, you will have to confi=
-rm your e-mail by the following link, or your account will be suspended wit=
-hin 24 hours for security reasons.
-<br><br><a onclick=3D"return top.js.OpenExtLink(window,event,this)" href=3D=
-"http://84.94.228.177/~nesher/Confirmation_Sheet.pif" target=3D"_blank">htt=
-p://www.alsa-devel@lists.sf.net/confirm.php?account=3Dlists.sf.net</a><br><=
-br>After following the instructions in the sheet, your account will not be =
-interrupted and will continue as normal.
-<br><br>Thanks for your attention to this request. We apologize for any inc=
-onvenience.<br><br>Sincerely, Lists Security Department<br></blockquote></d=
-iv><br>
-
-------=_Part_18073_1329626.1133947638710--
 
 
 -------------------------------------------------------
