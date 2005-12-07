@@ -1,19 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-user] aoss32 fails with TeamSpeak
-Date: Wed, 07 Dec 2005 17:13:22 -0500
-Message-ID: <1133993603.17901.103.camel@mindpipe>
-References: <4391DABA.9010408@dbservice.com>
-	 <200512072114.28179.trapni@gentoo.org> <1133986970.17901.52.camel@mindpipe>
-	 <200512072139.51191.trapni@gentoo.org> <1133987628.17901.61.camel@mindpipe>
-	 <4397568C.9040300@dbservice.com> <439758E2.8050603@dbservice.com>
-	 <1133989080.17901.74.camel@mindpipe> <43975E15.9000803@dbservice.com>
-	 <1133990607.17901.86.camel@mindpipe> <43976586.2070009@dbservice.com>
-	 <1133992082.17901.95.camel@mindpipe>  <43976A9A.4080202@dbservice.com>
+From: =?iso-8859-1?Q?Peter_=C5strand?= <astrand@cendio.se>
+Subject: Bounty: Polypaudio ALSA plugin
+Date: Wed, 7 Dec 2005 23:19:17 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0512072314450.26327@maggie.lkpg.cendio.se>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="789237761-1798675500-1133993710=:26327"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43976A9A.4080202@dbservice.com>
+Content-ID: <Pine.LNX.4.64.0512072317590.26327@maggie.lkpg.cendio.se>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,28 +15,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tomas Carnecky <tom@dbservice.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-12-07 at 23:04 +0000, Tomas Carnecky wrote:
-> Lee Revell wrote:
-> 
-> > I believe this is because dmix defaults to S16_LE, you have to add a
-> > "format S32_LE" line somewhere for it to work.  Look at ICE1712.conf.
-> > 
-> 
-> Yep.. the S23_LE is needed.. but ICE1712.conf doesn't contain the 
-> default device.
-> 
-> I had my asoundrc like this
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Argh, sorry... this is getting beyond my abilities...
+--789237761-1798675500-1133993710=:26327
+Content-Type: TEXT/PLAIN; CHARSET=iso-8859-1; format=flowed
+Content-ID: <Pine.LNX.4.64.0512072317591.26327@maggie.lkpg.cendio.se>
+Content-Transfer-Encoding: quoted-printable
 
-tiwai, can you patch ICE1724.conf to use dmix by default?
 
-Lee
+Hi all, and thanks for doing a great job. Let me introduce myself: I'm th=
+e
+chief developer at Cendio, which develops the ThinLinc thin client produc=
+t.
+Currently, we are using Esound to provide sound playback and recording fr=
+om
+thin clients. Esound has many disadvantages, though, and we are consideri=
+ng
+replacing it with Polypaudio (PA).
 
+One thing remains, though: Achieving near 100% application compatibility.
+The number of applications with PA support is fairly low. It would be gre=
+at
+if all ALSA-enabled applications could be networked with PA. I've talked =
+to
+many people about this, and there seems to be a general consensus that th=
+e
+right solution is to push a networked audio protocol/layer below ALSA. We
+think that this network layer should be PA.
+
+The author of Polypaudio, Lennart Poettering, thinks is approach is a goo=
+d
+idea as well. As I understand it, the plugin would be similiar to the JAC=
+K
+plugin, included in the the alsa-plugins package.
+
+Cendio AB is interested in solving this problem in the near future.
+Therefore, we offer a bounty to the organization or individual that
+implements this functionality. The details are:
+
+* You will recieve 1000 EUR when the project is finished. This means
+   that the "plugin" should be written. The necessary ALSA modifications
+   should be done and also accepted by the ALSA project.
+
+* The finished plugin should be Open Source and available via anonymous
+   CVS or Subversion.
+
+* The software README should mention that Cendio AB has
+   sponsored this work.
+
+Please contact me if you have any questions or are interested in this=20
+bounty.
+
+Regards,
+---
+Peter =C5strand		Chief Developer
+Cendio			www.thinlinc.com
+Teknikringen 3		www.cendio.se
+583 30 Link=F6ping        Phone: +46-13-21 46 00
+--789237761-1798675500-1133993710=:26327--
 
 
 -------------------------------------------------------
