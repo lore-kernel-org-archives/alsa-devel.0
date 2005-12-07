@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001626]: Kernel panic on use of hardware MIDI synth
-Date: Wed, 7 Dec 2005 22:25:08 +0100
-Message-ID: <64aee13d309ab08207ad3f9afbaa21af@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Envy24control -DMX6fire specifics
+Date: Wed, 7 Dec 2005 22:23:41 +0000
+Message-ID: <200512072223.41504.gineera@aspect135.co.uk>
+References: <200512051152.03090.gineera@aspect135.co.uk> <200512071208.14218.gineera@aspect135.co.uk> <s5hhd9lglze.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_tD2lDbiivA6e6o2"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBAB7155
-	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 22:25:08 +0100 (MET)
+In-Reply-To: <s5hhd9lglze.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +17,223 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1626> 
-======================================================================
-Reported By:                Twey
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1626
-Category:                   GENERIC - mpu401
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.14-1.1644_FC4
-======================================================================
-Date Submitted:             12-07-2005 20:56 CET
-Last Modified:              12-07-2005 22:25 CET
-======================================================================
-Summary:                    Kernel panic on use of hardware MIDI synth
-Description: 
-I've just upgraded to 1.0.10 from Fedora's 1.0.9, and now I have access to
-my soundcard's (SB Live! 24-bit) MIDI synth.  However, any attempt to use
-it causes a kernel panic, something about a spinlock.  My other MIDI port
-(connected to a musical keyboard via a USB adapter) works fine.  Both
-snd_mpu401 and snd_mpu401_uart load without problems.  I thought this
-error might be related to 1623, so applied the supplied patch, but to no
-avail.
-======================================================================
+--Boundary-00=_tD2lDbiivA6e6o2
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- Twey - 12-07-05 22:08 
-----------------------------------------------------------------------
-It doesn't?  Ah, well that would explain the panic.  Is there any way to
-disable the MIDI port ALSA creates so that applications don't try to use
-it?
+On Wednesday 07 December 2005 11:55, you wrote:
+> It looks fine but small glitches:
+> > +	} else if (card_is_dmx6fire) {
+> > +		if (stream == 11) sprintf(str, "CD In L");
+> > +		if (stream == 12) sprintf(str, "CD In R");
+> > +		if (stream == 13) sprintf(str, "Line In L");
+> > +		if (stream == 14) sprintf(str, "Line In R");
+> > +		if (stream == 15) sprintf(str, "Phono/Mic L");
+> > +		if (stream == 16) sprintf(str, "Phono/Mic R");
+> > +		if (stream == 19) sprintf(str, "Digital In L");
+> > +		if (stream == 20) sprintf(str, "Digital In R");
+>
+> switch() would be better here.
 
-And... how exactly do I post a kernel panic?  It goes by far too fast to
-memorize or write down.  Is there a log?
+I hadn't intended to change code structure, but agree; switch implemented.
 
-I'm thankfully inexperienced in the area of kernel panics :-)
+> > @@ -1473,7 +1467,7 @@
+> >  		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+> >
+> >  		/* Add friendly labels for DMX 6Fires */
+> > -		if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (i < 6)){
+> > +		if((card_is_dmx6fire) && (i < 6)){
+>
+> No unneeded parentheses please.
 
-----------------------------------------------------------------------
- rlrevell - 12-07-05 22:25 
-----------------------------------------------------------------------
-No point trying to disable the MIDI port, this seems to be a driver bug.
+Done. Revised patch attached.
 
-If you have one, a digital camera is the easiest way to capture an Oops,
-just take a picture of the screen and upload it.
+Summary: Tidy up DMX6fire eeprom checks
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-07-05 20:56 Twey           New Issue                                    
-12-07-05 20:56 Twey           Distribution              => Fedora Core 4   
-12-07-05 20:56 Twey           Kernel Version            => 2.6.14-1.1644_FC4
-12-07-05 20:56 Twey           Issue Monitored: Twey                        
-12-07-05 21:18 rlrevell       Note Added: 0006948                          
-12-07-05 22:08 Twey           Note Added: 0006950                          
-12-07-05 22:25 rlrevell       Note Added: 0006951                          
-======================================================================
+Multiple instances of DMX6FIRE eeprom checks in envy24control replaced with a 
+variable.
 
+Signed-off-by:  Alan Horstmann <gineera@aspect135.co.uk>
+
+--Boundary-00=_tD2lDbiivA6e6o2
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="e24c-1.0.10-AHmod2.7d.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="e24c-1.0.10-AHmod2.7d.patch"
+
+diff -ru Denvy24control/envy24control.c Aenvy24control/envy24control.c
+--- Denvy24control/envy24control.c	2005-12-06 10:49:17.000000000 +0000
++++ Aenvy24control/envy24control.c	2005-12-06 15:00:17.000000000 +0000
+@@ -27,6 +27,7 @@
+ #include <getopt.h>
+ 
+ int input_channels, output_channels, pcm_output_channels, spdif_channels, view_spdif_playback, card_number;
++int card_is_dmx6fire = FALSE;
+ char *profiles_file_name, *default_profile;
+ 
+ ice1712_eeprom_t card_eeprom;
+@@ -147,22 +148,18 @@
+ 		sprintf(str, "PCM Out %i", stream);
+ 	} else if (stream <= (MAX_PCM_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS)) {
+ 		sprintf(str, "S/PDIF Out %s", stream & 1 ? "L": "R");
+-	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 11)) {
+-		sprintf(str, "CD In L");
+-	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 12)) {
+-		sprintf(str, "CD In R");
+-	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 13)) {
+-		sprintf(str, "Line In L");
+-	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 14)) {
+-		sprintf(str, "Line In R");
+-	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 15)) {
+-		sprintf(str, "Phono/Mic L");
+-	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 16)) {
+-		sprintf(str, "Phono/Mic R");
+-	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 19)) {
+-		sprintf(str, "Digital In L");
+-	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 20)) {
+-		sprintf(str, "Digital In R");
++	} else if (card_is_dmx6fire) {
++		switch (stream) {
++		case 11: sprintf(str, "CD In L");break;
++		case 12: sprintf(str, "CD In R");break;
++		case 13: sprintf(str, "Line In L");break;
++		case 14: sprintf(str, "Line In R");break;
++		case 15: sprintf(str, "Phono/Mic L");break;
++		case 16: sprintf(str, "Phono/Mic R");break;
++		case 19: sprintf(str, "Digital In L");break;
++		case 20: sprintf(str, "Digital In R");break;
++		default : sprintf(str, "????");break;
++		}
+ 	} else if (stream <= (MAX_PCM_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS + MAX_INPUT_CHANNELS)) {
+ 		sprintf(str, "H/W In %i", stream - (MAX_PCM_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS));
+ 	} else if (stream <= (MAX_PCM_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS + MAX_INPUT_CHANNELS + MAX_SPDIF_CHANNELS)) {
+@@ -418,7 +412,7 @@
+ 		"H/W In 8"
+ 	};
+ 
+-	if (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
++	if (card_is_dmx6fire)
+ 	{
+                 table[0] = "Digital In L";
+                 table[1] = "Digital In R";
+@@ -433,13 +427,13 @@
+ 	if (stream <= MAX_OUTPUT_CHANNELS) {
+ 		sprintf(str, "H/W Out %i (%s)", stream, stream & 1 ? "L" : "R");
+ 	} else if (stream == (MAX_OUTPUT_CHANNELS + 1)) {
+-		if (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
++		if (card_is_dmx6fire) {
+ 				strcpy(str, "Digital Out (L)");
+ 			} else {
+ 				strcpy(str, "S/PDIF Out (L)");
+ 				}
+ 	} else if (stream == (MAX_OUTPUT_CHANNELS + 2)) {
+-		if (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
++		if (card_is_dmx6fire) {
+ 				strcpy(str, "Digital Out (R)");
+ 			} else {
+ 				strcpy(str, "S/PDIF Out (R)");
+@@ -1176,7 +1170,7 @@
+ 	GSList *group = NULL;
+ 	int hide = 1;
+ 
+-	if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DELTADIO2496) || (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE))
++	if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DELTADIO2496) || (card_is_dmx6fire))
+ 		hide = 0;
+ 
+ 	frame = gtk_frame_new("Digital Input");
+@@ -1210,7 +1204,7 @@
+         radiobutton = gtk_radio_button_new_with_label(group, "Internal CD");
+         hw_spdif_switch_off_radio = radiobutton;
+         group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton));
+-	if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
++	if(card_is_dmx6fire)
+ 	        gtk_widget_show(radiobutton);
+         gtk_box_pack_start(GTK_BOX(vbox), radiobutton, FALSE, FALSE, 0);
+         gtk_signal_connect(GTK_OBJECT(radiobutton), "toggled",
+@@ -1230,7 +1224,7 @@
+         GSList *group = NULL;
+         int hide = 1;
+ 
+-        if( card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
++        if(card_is_dmx6fire)
+                 hide = 0;
+ 
+         frame = gtk_frame_new("Phono Input Switch");
+@@ -1273,7 +1267,7 @@
+         GSList *group = NULL;
+         int hide = 1;
+ 
+-        if( card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
++        if (card_is_dmx6fire)
+                 hide = 0;
+ 
+         frame = gtk_frame_new("Line In Selector");
+@@ -1473,7 +1467,7 @@
+ 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+ 
+ 		/* Add friendly labels for DMX 6Fires */
+-		if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (i < 6)){
++		if(card_is_dmx6fire && (i < 6)){
+ 			label = gtk_label_new(dmx6fire_outputs[i]);
+ 			gtk_widget_show(label);
+ 			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, TRUE, 6);
+@@ -1529,7 +1523,7 @@
+ 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+ 
+ 		/* Add friendly labels for DMX 6Fires */
+-		if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (i < 6)){
++		if(card_is_dmx6fire && (i < 6)){
+ 			label = gtk_label_new(dmx6fire_inputs[i]);
+ 			gtk_widget_show(label);
+ 			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, TRUE, 6);
+@@ -1585,7 +1579,7 @@
+ 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
+ 
+ 		/* Add friendly labels for DMX 6Fires */
+-		if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (i < 6)){
++		if(card_is_dmx6fire && (i < 6)){
+ 			label = gtk_label_new(dmx6fire_inputs[i]);
+ 			gtk_widget_show(label);
+ 			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, TRUE, 6);
+@@ -2046,21 +2040,24 @@
+ 	}
+ 	memcpy(&card_eeprom, snd_ctl_elem_value_get_bytes(val), 32);
+ 
++	if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
++		card_is_dmx6fire = TRUE;
++
+ 	/* Set a better default for input_channels and output_channels */
+ 	if(!input_channels_set) {
+-		if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
++		if(card_is_dmx6fire) {
+ 			input_channels = 6;
+ 		}
+ 	}
+ 
+ 	if(!output_channels_set) {
+-		if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
++		if(card_is_dmx6fire) {
+ 			output_channels = 6;
+ 		}
+ 	}
+ 
+ 	if(!pcm_output_channels_set) {
+-		if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
++		if(card_is_dmx6fire) {
+ 			pcm_output_channels = 6; /* PCMs 7&8 can be used -set using option -p8 */
+ 		}
+ 	}
+
+--Boundary-00=_tD2lDbiivA6e6o2--
 
 
 
