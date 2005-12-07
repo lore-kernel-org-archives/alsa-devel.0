@@ -1,13 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Envy24control -DMX6fire specifics
-Date: Wed, 7 Dec 2005 22:23:41 +0000
-Message-ID: <200512072223.41504.gineera@aspect135.co.uk>
-References: <200512051152.03090.gineera@aspect135.co.uk> <200512071208.14218.gineera@aspect135.co.uk> <s5hhd9lglze.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Wed, 7 Dec 2005 23:10:42 +0100
+Message-ID: <4e5e94bcfb0421814fce127133838441@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_tD2lDbiivA6e6o2"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhd9lglze.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 546C111B
+	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 23:10:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,223 +18,165 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_tD2lDbiivA6e6o2
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+======================================================================
+Reported By:                robertw
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1618
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
+======================================================================
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              12-07-2005 23:10 CET
+======================================================================
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
+Description: 
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
+======================================================================
 
-On Wednesday 07 December 2005 11:55, you wrote:
-> It looks fine but small glitches:
-> > +	} else if (card_is_dmx6fire) {
-> > +		if (stream == 11) sprintf(str, "CD In L");
-> > +		if (stream == 12) sprintf(str, "CD In R");
-> > +		if (stream == 13) sprintf(str, "Line In L");
-> > +		if (stream == 14) sprintf(str, "Line In R");
-> > +		if (stream == 15) sprintf(str, "Phono/Mic L");
-> > +		if (stream == 16) sprintf(str, "Phono/Mic R");
-> > +		if (stream == 19) sprintf(str, "Digital In L");
-> > +		if (stream == 20) sprintf(str, "Digital In R");
->
-> switch() would be better here.
+----------------------------------------------------------------------
+ tiwai - 12-07-05 14:59 
+----------------------------------------------------------------------
+How about the attached additional patch?  Please build with
+--with-debug=full configure option for debugging.
 
-I hadn't intended to change code structure, but agree; switch implemented.
+----------------------------------------------------------------------
+ robertw - 12-07-05 23:10 
+----------------------------------------------------------------------
+I tried again the cvs-version of ~ 20:00 CET. This time the module behaves
+fine. This time two cards showed up, one analog and one digital. Alsamixer
+changed a bit:
 
-> > @@ -1473,7 +1467,7 @@
-> >  		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
-> >
-> >  		/* Add friendly labels for DMX 6Fires */
-> > -		if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (i < 6)){
-> > +		if((card_is_dmx6fire) && (i < 6)){
->
-> No unneeded parentheses please.
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 64
+  Front Left: Playback 64 [100%] [on]
+  Front Right: Playback 64 [100%] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Front Left: Playback 255 [100%]
+  Front Right: Playback 255 [100%]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 65
+  Front Left: Playback 65 [100%] [on]
+  Front Right: Playback 65 [100%] [on]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 65
+  Front Left: Playback 24 [37%] [on]
+  Front Right: Playback 24 [37%] [on]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 35
+  Front Left: Capture 35 [100%] [on]
+  Front Right: Capture 35 [100%] [on]
+Simple mixer control 'Capture',1
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 35
+  Front Left: Capture 0 [0%] [on]
+  Front Right: Capture 0 [0%] [on]
+Simple mixer control 'Input Source',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Input Source',1
+  Capabilities:
+  Mono:
 
-Done. Revised patch attached.
+aplay can play a file, but no output. With your second patch applied
+against this cvs-version, everything is the same, but aplay couldn't play
+anything:
 
-Summary: Tidy up DMX6fire eeprom checks
+$ aplay test.wav
+ALSA lib pcm_dmix.c:802:(snd_pcm_dmix_open) unable to open slave
+aplay: main:533: audio open error: Invalid argument
 
-Multiple instances of DMX6FIRE eeprom checks in envy24control replaced with a 
-variable.
+dmesg says:
 
-Signed-off-by:  Alan Horstmann <gineera@aspect135.co.uk>
+Dec  7 23:04:23 localhost kernel: [4334412.498000] ALSA
+/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3024:
+hda_codec: Unknown model for ALC260
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536786703/1069872128] snd_pcm_hw_constraints_complete+0x2af/0x3a0
+[snd_pcm]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536787479/1069872128] snd_pcm_open_file+0xd7/0x190 [snd_pcm]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536788024/1069872128] snd_pcm_open+0xe8/0x160 [snd_pcm]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[default_wake_function+0/18] default_wake_function+0x0/0x12
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [cdev_get+43/92]
+cdev_get+0x2b/0x5c
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536787718/1069872128] snd_pcm_playback_open+0x36/0x40 [snd_pcm]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536564094/1069872128] snd_open+0x7e/0x1a0 [snd]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536563968/1069872128] snd_open+0x0/0x1a0 [snd]
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [chrdev_open+141/326]
+chrdev_open+0x8d/0x146
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [dentry_open+411/511]
+dentry_open+0x19b/0x1ff
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [filp_open+92/97]
+filp_open+0x5c/0x61
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [get_unused_fd+35/176]
+get_unused_fd+0x23/0xb0
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [sys_open+91/255]
+sys_open+0x5b/0xff
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[sysenter_past_esp+84/117] sysenter_past_esp+0x54/0x75
 
---Boundary-00=_tD2lDbiivA6e6o2
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="e24c-1.0.10-AHmod2.7d.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="e24c-1.0.10-AHmod2.7d.patch"
+The first line is also present with the plain cvs-version
 
-diff -ru Denvy24control/envy24control.c Aenvy24control/envy24control.c
---- Denvy24control/envy24control.c	2005-12-06 10:49:17.000000000 +0000
-+++ Aenvy24control/envy24control.c	2005-12-06 15:00:17.000000000 +0000
-@@ -27,6 +27,7 @@
- #include <getopt.h>
- 
- int input_channels, output_channels, pcm_output_channels, spdif_channels, view_spdif_playback, card_number;
-+int card_is_dmx6fire = FALSE;
- char *profiles_file_name, *default_profile;
- 
- ice1712_eeprom_t card_eeprom;
-@@ -147,22 +148,18 @@
- 		sprintf(str, "PCM Out %i", stream);
- 	} else if (stream <= (MAX_PCM_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS)) {
- 		sprintf(str, "S/PDIF Out %s", stream & 1 ? "L": "R");
--	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 11)) {
--		sprintf(str, "CD In L");
--	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 12)) {
--		sprintf(str, "CD In R");
--	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 13)) {
--		sprintf(str, "Line In L");
--	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 14)) {
--		sprintf(str, "Line In R");
--	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 15)) {
--		sprintf(str, "Phono/Mic L");
--	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 16)) {
--		sprintf(str, "Phono/Mic R");
--	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 19)) {
--		sprintf(str, "Digital In L");
--	} else if ((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (stream == 20)) {
--		sprintf(str, "Digital In R");
-+	} else if (card_is_dmx6fire) {
-+		switch (stream) {
-+		case 11: sprintf(str, "CD In L");break;
-+		case 12: sprintf(str, "CD In R");break;
-+		case 13: sprintf(str, "Line In L");break;
-+		case 14: sprintf(str, "Line In R");break;
-+		case 15: sprintf(str, "Phono/Mic L");break;
-+		case 16: sprintf(str, "Phono/Mic R");break;
-+		case 19: sprintf(str, "Digital In L");break;
-+		case 20: sprintf(str, "Digital In R");break;
-+		default : sprintf(str, "????");break;
-+		}
- 	} else if (stream <= (MAX_PCM_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS + MAX_INPUT_CHANNELS)) {
- 		sprintf(str, "H/W In %i", stream - (MAX_PCM_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS));
- 	} else if (stream <= (MAX_PCM_OUTPUT_CHANNELS + MAX_SPDIF_CHANNELS + MAX_INPUT_CHANNELS + MAX_SPDIF_CHANNELS)) {
-@@ -418,7 +412,7 @@
- 		"H/W In 8"
- 	};
- 
--	if (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
-+	if (card_is_dmx6fire)
- 	{
-                 table[0] = "Digital In L";
-                 table[1] = "Digital In R";
-@@ -433,13 +427,13 @@
- 	if (stream <= MAX_OUTPUT_CHANNELS) {
- 		sprintf(str, "H/W Out %i (%s)", stream, stream & 1 ? "L" : "R");
- 	} else if (stream == (MAX_OUTPUT_CHANNELS + 1)) {
--		if (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
-+		if (card_is_dmx6fire) {
- 				strcpy(str, "Digital Out (L)");
- 			} else {
- 				strcpy(str, "S/PDIF Out (L)");
- 				}
- 	} else if (stream == (MAX_OUTPUT_CHANNELS + 2)) {
--		if (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
-+		if (card_is_dmx6fire) {
- 				strcpy(str, "Digital Out (R)");
- 			} else {
- 				strcpy(str, "S/PDIF Out (R)");
-@@ -1176,7 +1170,7 @@
- 	GSList *group = NULL;
- 	int hide = 1;
- 
--	if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DELTADIO2496) || (card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE))
-+	if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DELTADIO2496) || (card_is_dmx6fire))
- 		hide = 0;
- 
- 	frame = gtk_frame_new("Digital Input");
-@@ -1210,7 +1204,7 @@
-         radiobutton = gtk_radio_button_new_with_label(group, "Internal CD");
-         hw_spdif_switch_off_radio = radiobutton;
-         group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton));
--	if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
-+	if(card_is_dmx6fire)
- 	        gtk_widget_show(radiobutton);
-         gtk_box_pack_start(GTK_BOX(vbox), radiobutton, FALSE, FALSE, 0);
-         gtk_signal_connect(GTK_OBJECT(radiobutton), "toggled",
-@@ -1230,7 +1224,7 @@
-         GSList *group = NULL;
-         int hide = 1;
- 
--        if( card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
-+        if(card_is_dmx6fire)
-                 hide = 0;
- 
-         frame = gtk_frame_new("Phono Input Switch");
-@@ -1273,7 +1267,7 @@
-         GSList *group = NULL;
-         int hide = 1;
- 
--        if( card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
-+        if (card_is_dmx6fire)
-                 hide = 0;
- 
-         frame = gtk_frame_new("Line In Selector");
-@@ -1473,7 +1467,7 @@
- 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
- 
- 		/* Add friendly labels for DMX 6Fires */
--		if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (i < 6)){
-+		if(card_is_dmx6fire && (i < 6)){
- 			label = gtk_label_new(dmx6fire_outputs[i]);
- 			gtk_widget_show(label);
- 			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, TRUE, 6);
-@@ -1529,7 +1523,7 @@
- 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
- 
- 		/* Add friendly labels for DMX 6Fires */
--		if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (i < 6)){
-+		if(card_is_dmx6fire && (i < 6)){
- 			label = gtk_label_new(dmx6fire_inputs[i]);
- 			gtk_widget_show(label);
- 			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, TRUE, 6);
-@@ -1585,7 +1579,7 @@
- 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 6);
- 
- 		/* Add friendly labels for DMX 6Fires */
--		if((card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) && (i < 6)){
-+		if(card_is_dmx6fire && (i < 6)){
- 			label = gtk_label_new(dmx6fire_inputs[i]);
- 			gtk_widget_show(label);
- 			gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, TRUE, 6);
-@@ -2046,21 +2040,24 @@
- 	}
- 	memcpy(&card_eeprom, snd_ctl_elem_value_get_bytes(val), 32);
- 
-+	if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE)
-+		card_is_dmx6fire = TRUE;
-+
- 	/* Set a better default for input_channels and output_channels */
- 	if(!input_channels_set) {
--		if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
-+		if(card_is_dmx6fire) {
- 			input_channels = 6;
- 		}
- 	}
- 
- 	if(!output_channels_set) {
--		if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
-+		if(card_is_dmx6fire) {
- 			output_channels = 6;
- 		}
- 	}
- 
- 	if(!pcm_output_channels_set) {
--		if(card_eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) {
-+		if(card_is_dmx6fire) {
- 			pcm_output_channels = 6; /* PCMs 7&8 can be used -set using option -p8 */
- 		}
- 	}
+You could also contact me more directly: robert@xenim.de (mail & jabber)
 
---Boundary-00=_tD2lDbiivA6e6o2--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+======================================================================
+
 
 
 
