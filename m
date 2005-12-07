@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Wed, 7 Dec 2005 14:59:46 +0100
-Message-ID: <86c0e0fc91446ba9573ff48588d472cb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001623]: Kernel oopsed when modprobing snd_mpu401 module
+Date: Wed, 7 Dec 2005 15:31:47 +0100
+Message-ID: <69cdd25dcdeda24fb42a2fa81c44397b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 241B9171
-	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 14:59:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DA74171
+	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 15:31:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,424 +24,134 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1623> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                cartman
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
+Issue ID:                   1623
+Category:                   GENERIC - mpu401
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Status:                     new
+Distribution:               Pardus Linux
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              12-07-2005 14:59 CET
+Date Submitted:             12-06-2005 19:50 CET
+Last Modified:              12-07-2005 15:31 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    Kernel oopsed when modprobing snd_mpu401 module
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+When I try to modprobe snd_mpu401 I get this:
+
+
+Unable to handle kernel NULL pointer dereference at virtual address
+00000000
+ printing eip:
+00000000
+*pde = 00000000
+Oops: 0000 [#1]
+PREEMPT
+Modules linked in: snd_mpu401 snd_opl3_lib snd_hwdep snd_cs4231_lib
+parport_pc
+parport i2c_viapro i2c_core via_agp agpgart snd_seq_dummy snd_seq_oss
+snd_seq_midi_event snd_seq snd_pcm_oss snd_mixer_oss snd_via82xx
+snd_ac97_codec
+snd_ac97_bus snd_pcm snd_timer snd_page_alloc snd_mpu401_uart snd_rawmidi
+snd_seq_device snd sbp2 ohci1394 ieee1394 usb_storage uhci_hcd ohci_hcd
+ehci_hcd
+usbcore sata_sil sata_nv sata_mv sata_promise sata_sis sata_svw sata_via
+sata_uli sata_vsc sata_sx4 sym53c8xx sg a100u2w scsi_transport_sas dc395x
+tmscsim ahci BusLogic aacraid sr_mod 3w_xxxx lpfc qla1280 ipr st ch
+megaraid
+megaraid_mbox megaraid_mm megaraid_sas dmx3191d atp870u nsp32 aic7xxx
+aic79xx
+scsi_transport_spi osst qlogicfas408 ata_piix libata 3w_9xxx aha152x
+qla6312
+qla2200 qla2322 qla2100 qla2300 qla2xxx firmware_class scsi_transport_fc
+sd_mod
+scsi_mod
+CPU:    0
+EIP:    0060:[<00000000>]    Not tainted VLI
+EFLAGS: 00010286   (2.6.14.3-10)
+EIP is at rest_init+0x3feffdc0/0x40
+eax: ccbf3e00   ebx: 00000000   ecx: d244d1b4   edx: d244d1b4
+esi: d244d1b4   edi: ccbf3e08   ebp: ccbf3e08   esp: cba15db8
+ds: 007b   es: 007b   ss: 0068
+Process modprobe (pid: 9771, threadinfo=cba14000 task=cee87a50)
+Stack: d2442011 ccbf3e00 c03031ca ccbf3e08 00000000 cba15dec c0303230
+c030323f
+       d244d1b4 ccbf3e08 c0302a5d d244d1b4 ccbf3e08 c04264f8 c04264f8
+d244d20c
+       ccbf3eb2 ccbf3e08 c0426400 ccbf3e08 00000000 c030329b c0426400
+00000000
+Call Trace:
+ [<d2442011>] snd_platform_driver_probe+0x11/0x20 [snd]
+ [<c03031ca>] driver_probe_device+0x2a/0x90
+ [<c0303230>] __device_attach+0x0/0x20
+ [<c030323f>] __device_attach+0xf/0x20
+ [<c0302a5d>] bus_for_each_drv+0x4d/0x70
+ [<c030329b>] device_attach+0x4b/0x60
+ [<c0303230>] __device_attach+0x0/0x20
+ [<c0302b83>] bus_add_device+0x23/0x90
+ [<c0301cb6>] device_add+0xa6/0x120
+ [<c0301d41>] device_register+0x11/0x20
+ [<c0304889>] platform_device_register+0x119/0x170
+ [<d244386f>] snd_generic_device_register+0x4f/0x90 [snd]
+ [<d24438eb>] snd_card_set_generic_dev+0xb/0x30 [snd]
+ [<d25680e8>] snd_mpu401_create+0xe8/0x160 [snd_mpu401]
+ [<c02f1b07>] compare_pnp_id+0x77/0x90
+ [<d2568207>] snd_mpu401_pnp_probe+0x57/0x90 [snd_mpu401]
+ [<c02f1c85>] pnp_device_probe+0x75/0xa0
+ [<c03031ca>] driver_probe_device+0x2a/0x90
+ [<c03032b0>] __driver_attach+0x0/0x40
+ [<c03032eb>] __driver_attach+0x3b/0x40
+ [<c030294d>] bus_for_each_dev+0x4d/0x70
+ [<c0291102>] kobject_add+0x72/0xc0
+ [<c0303305>] driver_attach+0x15/0x20
+ [<c03032b0>] __driver_attach+0x0/0x40
+ [<c0302d9b>] bus_add_driver+0x5b/0xa0
+ [<c03036d4>] driver_register+0x34/0x40
+ [<c02f1d4f>] pnp_register_driver+0x2f/0x60
+ [<d231b14a>] alsa_card_mpu401_init+0x4a/0x92 [snd_mpu401]
+ [<c01388a2>] sys_init_module+0x122/0x1f0
+ [<c0102f2b>] sysenter_past_esp+0x54/0x79
+Code:  Bad EIP value.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- robertw - 12-06-05 22:51 
+ vsu - 12-07-05 13:41 
 ----------------------------------------------------------------------
-I got the oops again ..
+This problem happens with alsa-driver-1.0.10 on 2.6.x kernels <= 2.6.14
+(which don't have platform_driver_register()).  The problem is that
+snd_platform_driver_probe() does not check for non-NULL drv->probe before
+calling it, and platfor_driver_register() emulation code always sets
+drv->driver.probe = snd_platform_driver_probe even if drv->probe is NULL.
 
-Here the data from the 1.0.10-release
-
-/proc/asound/card0/codec#0:
-
-Codec: Realtek ALC260
-Address: 0
-Vendor Id: 0x10ec0260
-Subsystem Id: 0x1025160d
-Revision Id: 0x100400
-Default PCM: rates 0x560, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-Node 0x02 [Audio Output] wcaps 0x11: Stereo
-  PCM: rates 0x560, bits 0x0e, types 0x1
-Node 0x03 [Audio Output] wcaps 0x211: Stereo Digital
-  PCM: rates 0x560, bits 0x1e, types 0x1
-Node 0x04 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
-  Amp-In vals:  [0x23 0x23] [0x23 0x23] [0x23 0x23] [0x23 0x23] [0x23
-0x23] [0x23 0x23] [0x23 0x23]
-  PCM: rates 0x160, bits 0x06, types 0x1
-  Connection: 7
-     0x12 0x13 0x14* 0x15 0x16 0x0f 0x10
-Node 0x05 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
-0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
-  PCM: rates 0x160, bits 0x06, types 0x1
-  Connection: 8
-     0x12 0x13 0x14* 0x15 0x16 0x07 0x0f 0x10
-Node 0x06 [Audio Input] wcaps 0x100391: Stereo Digital
-  PCM: rates 0x160, bits 0x1e, types 0x1
-  Connection: 1
-     0x19
-Node 0x07 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x23, nsteps=0x41, stepsize=0x03, mute=1
-  Amp-In vals:  [0x18 0x18] [0x41 0x41] [0x41 0x41] [0xa3 0xa3] [0x41
-0x41] [0x41 0x41] [0xa3 0xa3] [0xa3 0xa3]
-  Connection: 8
-     0x12 0x13 0x14 0x15 0x16 0x17 0x0f 0x10
-Node 0x08 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x40 0x40]
-  Connection: 2
-     0x02 0x07
-Node 0x09 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x40 0x40]
-  Connection: 2
-     0x02 0x07
-Node 0x0a [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80] [0x80]
-  Amp-Out caps: ofs=0x23, nsteps=0x41, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x3c]
-  Connection: 2
-     0x02 0x07
-Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x08* 0x09
-Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x08* 0x09
-Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x08* 0x09
-Node 0x0e [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x08* 0x09
-Node 0x0f [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x081003f: IN OUT HP
-  Pin Default 0x0121111f: [Jack] HP Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x08
-Node 0x10 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x081003f: IN OUT HP
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x09
-Node 0x11 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00]
-  Pincap 0x0810: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0a
-Node 0x12 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x08133f: IN OUT HP
-  Pin Default 0x01a19932: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x0b
-Node 0x13 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x08133f: IN OUT HP
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x0c
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x08133f: IN OUT HP
-  Pin Default 0x01813130: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x0d
-Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x08133f: IN OUT HP
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x16 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x00:
-Node 0x17 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0xb7830131: [Fixed] Line In at Oth Mobile-In
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x18 [Pin Complex] wcaps 0x400380: Mono Digital
-  Pincap 0x0814: OUT
-  Pin Default 0xb7430120: [Fixed] SPDIF Out at Oth Mobile-In
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x03
-Node 0x19 [Pin Complex] wcaps 0x400280: Mono Digital
-  Pincap 0x0824: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x00:
-Node 0x1a [Vendor Defined Widget] wcaps 0xf00040: Mono
-Node 0x1b [Volume Knob Widget] wcaps 0x600080: Mono
-
-/proc/asound/card0/codec#1
-
-Codec: Generic 14f1 ID 2bfa
-Address: 1
-Vendor Id: 0x14f12bfa
-Subsystem Id: 0x1025008f
-Revision Id: 0x90000
-
-/etc/asound.state
-
-state.Intel {
-        control.1 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 64'
-                iface MIXER
-                name 'Front Playback Volume'
-                value.0 64
-                value.1 64
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Front Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 65'
-                iface MIXER
-                name 'CD Playback Volume'
-                value.0 65
-                value.1 65
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'CD Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 65'
-                iface MIXER
-                name 'Line Playback Volume'
-                value.0 65
-                value.1 65
-        }
-        control.6 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Line Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.7 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 65'
-                iface MIXER
-                name 'Mic Playback Volume'
-                value.0 24
-                value.1 24
-        }
-        control.8 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Mic Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.9 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 65'
-                iface MIXER
-                name 'Front Mic Playback Volume'
-                value.0 65
-                value.1 65
-        }
-        control.10 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Front Mic Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.11 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 65'
-                iface MIXER
-                name 'PC Speaker Playback Volume'
-                value.0 65
-                value.1 65
-        }
-        control.12 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'PC Speaker Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.13 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 64'
-                iface MIXER
-                name 'Headphone Playback Volume'
-                value.0 64
-                value.1 64
-        }
-        control.14 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Headphone Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.15 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 1
-                comment.range '0 - 65'
-                iface MIXER
-                name 'Mono Playback Volume'
-                value 60
-        }
-        control.16 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 1
-                iface MIXER
-                name 'Mono Playback Switch'
-                value true
-        }
-        control.17 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 35'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 35
-                value.1 35
-        }
-        control.18 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Capture Switch'
-                value.0 true
-                value.1 true
-        }
-        control.19 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 Mic
-                comment.item.1 'Front Mic'
-                comment.item.2 Line
-                comment.item.3 CD
-                iface MIXER
-                name 'Capture Source'
-                value Mic
-        }
-        control.20 {
-                comment.access 'read write user'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 255'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 255
-                value.1 255
-        }
-}
+I have attached a patch for alsa-driver-1.0.10 which should fix this.
 
 ----------------------------------------------------------------------
- tiwai - 12-07-05 14:59 
+ cartman - 12-07-05 15:31 
 ----------------------------------------------------------------------
-How about the attached additional patch?  Please build with
---with-debug=full configure option for debugging.
+Thank you Sergey, your patch fixed this issue. Takashi can you please add
+the patch to upstream CVS? Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-06-05 19:50 cartman        New Issue                                    
+12-06-05 19:50 cartman        Distribution              => Pardus Linux    
+12-06-05 19:50 cartman        Kernel Version            => 2.6.14          
+12-06-05 19:57 tiwai          Note Added: 0006932                          
+12-06-05 20:05 cartman        Note Added: 0006933                          
+12-06-05 20:10 tiwai          Note Added: 0006936                          
+12-07-05 13:39 vsu            File Added: 00_platform_device_compat.patch       
+            
+12-07-05 13:41 vsu            Note Added: 0006940                          
+12-07-05 15:31 cartman        Note Added: 0006942                          
 ======================================================================
 
 
