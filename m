@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001557]: Sounds play only for a very short time (VT8251, 64-bit)
-Date: Tue, 6 Dec 2005 23:10:46 +0100
-Message-ID: <82f781b0b1c059574d7b3d43abb15a2a@bugtrack.alsa-project.org>
+From: Mailer Daemon <Mailer-Daemon@punt-3.mail.demon.net>
+Subject: Mail delivery failure
+Date: Wed, 07 Dec 2005 02:17:53 -0000
+Message-ID: <1133921873-18825-2117-dsn@lon1-punt3-7.mail.demon.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/report; report-type=delivery-status;
+ boundary="=_1133921873_18825_2117_="
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53A2516B
-	for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2005 23:10:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +15,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+--=_1133921873_18825_2117_=
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1557> 
-======================================================================
-Reported By:                Dakkus
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1557
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10 "Breezy Badger" (64-bit)
-Kernel Version:             2.6.12-9-amd64-generic
-======================================================================
-Date Submitted:             11-14-2005 13:10 CET
-Last Modified:              12-06-2005 23:10 CET
-======================================================================
-Summary:                    Sounds play only for a very short time (VT8251,
-64-bit)
-Description: 
-When playing for example an mp3 file, only a short burst of sound is heard.
-The songs play with correct speed and sound otherwise correct, but sound
-is played only for about one second. If I choose any random part of the
-song (for example with xmms), I hear the same ~1s from that part of the
-song, but then everything's quiet again.
-======================================================================
+This message was created automatically by mail delivery software.
 
-----------------------------------------------------------------------
- m_yates - 12-06-05 15:15 
-----------------------------------------------------------------------
-I have the same motherboard and the same problem.  I have reproduced it in
-Ubuntu 5.10 i386, Ubuntu 5.10 amd64, Debian Etch (i386 and amd64), and
-Knoppix (version 4).  Upgrading to Alsa 1.0.10 didn't help, nor did
-upgrading the kernel to 2.6.15-rc2.
+A message you sent could not be delivered to the following recipients:
+    g4klx@g4klx.demon.co.uk
 
-I also accidently filed a duplicate bug
-report:https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622 
+The message has not been collected after 30 days
 
-I filed that one before I discovered this post.
+--=_1133921873_18825_2117_=
+Content-Type: message/delivery-status
 
-----------------------------------------------------------------------
- thijser - 12-06-05 23:10 
-----------------------------------------------------------------------
-Exactly the same here ...
+Reporting-MTA: dns; punt-3.mail.demon.net
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-14-05 13:10 Dakkus         New Issue                                    
-11-14-05 13:10 Dakkus         Distribution              => Ubuntu 5.10 "Breezy
-Badger" (64-bit)
-11-14-05 13:10 Dakkus         Kernel Version            =>
-2.6.12-9-amd64-generic
-12-05-05 19:01 m_yates        Issue Monitored: m_yates                     
-12-06-05 15:15 m_yates        Note Added: 0006923                          
-12-06-05 22:35 thijser        Issue Monitored: thijser                     
-12-06-05 23:10 thijser        Note Added: 0006939                          
-======================================================================
+Final-Recipient: rfc822; g4klx@g4klx.demon.co.uk
+Action: failed
+Status: 5.4.7
 
+--=_1133921873_18825_2117_=
+Content-Type: text/rfc822-headers; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Received: from punt3.mail.demon.net by mailstore
+	for g4klx@g4klx.demon.co.uk id 1EYbDb-2qFGPo-06-91E;
+	Sun, 06 Nov 2005 03:29:19 +0000
+Received: from [194.217.242.95] (lhlo=anchor-hub.mail.demon.net)
+	by punt3.mail.demon.net with lmtp id 1EYbDb-2qFGPo-06
+	for g4klx@g4klx.demon.co.uk; Sun, 06 Nov 2005 03:29:19 +0000
+Received: from [219.223.222.178] (helo=lists.sf.net)
+	by anchor-hub.mail.demon.net with esmtp id 1EYbDR-0005Mp-C9
+	for g4klx@g4klx.demon.co.uk; Sun, 06 Nov 2005 03:29:19 +0000
+From: alsa-devel@lists.sf.net
+To: g4klx@g4klx.demon.co.uk
+Subject: Status
+Date: Sun, 6 Nov 2005 11:29:05 +0800
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0010_16675404.5C384A34"
+X-Priority: 3
+X-MSMail-Priority: Normal
+
+
+--=_1133921873_18825_2117_=--
 
 
 
