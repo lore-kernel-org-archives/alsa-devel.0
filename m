@@ -1,10 +1,10 @@
-From: Ramani Karuppiah <ramani.karuppiah@gmail.com>
-Subject: (no subject)
-Date: Wed, 7 Dec 2005 05:44:54 -0500
-Message-ID: <73d09e180512070244v5e5dd0c3t1d34644302e4c66e@mail.gmail.com>
+From: Serhiy Kachanuk <serzholino@gmail.com>
+Subject: Problems with soundcard based on Realtek ALC860 audio codec
+Date: Wed, 07 Dec 2005 13:03:25 +0200
+Message-ID: <4396C17D.9060600@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_27349_31504608.1133952294822"
+Content-Type: text/plain; charset=KOI8-U; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,59 +18,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_27349_31504608.1133952294822
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hi!
 
-Respected Sir,
+I've got no answer at alsa-users, I'm posting this here:
 
-                      I want devolope a good project in linux . My idea is
-about the Audio System in linux.Please give me any
+I have motherboard with Intel 915PL Express Chipset with integrated
+builtin audio subsystem based on Realtek ALC860 audio codec.
 
-information about it.
+I use Kubuntu 5.10 Breezy Badger as my operating system and having
+problems with this integrated soundcard. Original alsa from distribution
+- 1.0.9a was totally unable to find my sound system. I have to disable
+hotplug to make system boot. When I upgraded alsa to 1.0.10 and enabling
+hotplug, soundcard became  recognized, modules for hda-intel loaded at
+boot time, but I still have no sound :(. Kmix shows my soundcard as
+Realtek880, but it is 860 and alsamixer and alsactl both printing errors
+and not starting/working.
+
+Is my soundcard supported? What do I need to make my sound system work
+on Linux?
+
+Thanks.
 
 
-
-
-
-                         Thanking
-You.
--K.Ramani
-
-------=_Part_27349_31504608.1133952294822
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Respected Sir,<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-I want devolope a good project in linux . My idea is about the Audio
-System in linux.Please give me any<br>
-<br>
-information about it.<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Thanking
-You.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
--K.Ramani<br>
-
-------=_Part_27349_31504608.1133952294822--
 
 
 -------------------------------------------------------
