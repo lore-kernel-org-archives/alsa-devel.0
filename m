@@ -1,11 +1,14 @@
-From: Mailer Daemon <Mailer-Daemon@punt-3.mail.demon.net>
-Subject: Mail delivery failure
-Date: Wed, 07 Dec 2005 02:17:53 -0000
-Message-ID: <1133921873-18825-2117-dsn@lon1-punt3-7.mail.demon.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001625]: Enabling headphone/line jack sense mutes audio for intel8x0
+Date: Wed, 7 Dec 2005 08:57:05 +0100
+Message-ID: <18e53903b4bf0ce306760d8ed390aef6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
- boundary="=_1133921873_18825_2117_="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DADEC163
+	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 08:57:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,54 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---=_1133921873_18825_2117_=
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 
-This message was created automatically by mail delivery software.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1625> 
+======================================================================
+Reported By:                MgFrobozz
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1625
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             12-07-2005 08:57 CET
+Last Modified:              12-07-2005 08:57 CET
+======================================================================
+Summary:                    Enabling headphone/line jack sense mutes audio for
+intel8x0
+Description: 
+If either of the jack sense is on (unmuted), then the audio is muted. Since
+most of the forums indicate unmuting everything to unmute audio, it's
+extremely difficult to discover that the jack sense is causing audio to
+mute.
 
-A message you sent could not be delivered to the following recipients:
-    g4klx@g4klx.demon.co.uk
+The dialog needs some sort of indication that enabling the jack sense will
+mute audio.
+======================================================================
 
-The message has not been collected after 30 days
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-07-05 08:57 MgFrobozz      New Issue                                    
+======================================================================
 
---=_1133921873_18825_2117_=
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; punt-3.mail.demon.net
-
-Final-Recipient: rfc822; g4klx@g4klx.demon.co.uk
-Action: failed
-Status: 5.4.7
-
---=_1133921873_18825_2117_=
-Content-Type: text/rfc822-headers; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-Received: from punt3.mail.demon.net by mailstore
-	for g4klx@g4klx.demon.co.uk id 1EYbDb-2qFGPo-06-91E;
-	Sun, 06 Nov 2005 03:29:19 +0000
-Received: from [194.217.242.95] (lhlo=anchor-hub.mail.demon.net)
-	by punt3.mail.demon.net with lmtp id 1EYbDb-2qFGPo-06
-	for g4klx@g4klx.demon.co.uk; Sun, 06 Nov 2005 03:29:19 +0000
-Received: from [219.223.222.178] (helo=lists.sf.net)
-	by anchor-hub.mail.demon.net with esmtp id 1EYbDR-0005Mp-C9
-	for g4klx@g4klx.demon.co.uk; Sun, 06 Nov 2005 03:29:19 +0000
-From: alsa-devel@lists.sf.net
-To: g4klx@g4klx.demon.co.uk
-Subject: Status
-Date: Sun, 6 Nov 2005 11:29:05 +0800
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0010_16675404.5C384A34"
-X-Priority: 3
-X-MSMail-Priority: Normal
-
-
---=_1133921873_18825_2117_=--
 
 
 
