@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Thu, 8 Dec 2005 22:05:21 +0100
-Message-ID: <c9e1d72f8fcc28a6a666030fef2b0ddd@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: 2.6.15-rc5-mm1
+Date: Fri, 9 Dec 2005 00:02:03 +0100
+Message-ID: <20051208230203.GA23349__2561.99705550007$1134083159$gmane$org@stusta.de>
+References: <20051204232153.258cd554.akpm@osdl.org> <1134068983.21841.71.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E76A18F
-	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 22:05:21 +0100 (MET)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D5024197
+	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2005 00:02:06 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1134068983.21841.71.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +20,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Badari Pulavarty <pbadari@gmail.com>, Jaroslav Kysela <perex@suse.cz>
+Cc: Andrew Morton <akpm@osdl.org>, lkml <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Dec 08, 2005 at 11:09:43AM -0800, Badari Pulavarty wrote:
+> On Sun, 2005-12-04 at 23:21 -0800, Andrew Morton wrote:
+> > ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.15-rc5/2.6.15-rc5-mm1/
+> 
+> In file included from sound/pci/ens1371.c:2:
+> sound/pci/ens1370.c: In function `snd_audiopci_probe':
+> sound/pci/ens1370.c:2462: error: `spdif' undeclared (first use in this
+> function)sound/pci/ens1370.c:2462: error: (Each undeclared identifier is
+> reported only once
+> sound/pci/ens1370.c:2462: error: for each function it appears in.)
+> sound/pci/ens1370.c:2462: error: `lineio' undeclared (first use in this
+> function)
+> make[2]: *** [sound/pci/ens1371.o] Error 1
+> make[2]: *** Waiting for unfinished jobs....
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
-======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
-======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              12-08-2005 22:05 CET
-======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
-Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
-======================================================================
+Jaroslav, this seems to come from your
 
-----------------------------------------------------------------------
- tiwai - 12-08-05 17:19 
-----------------------------------------------------------------------
-The line number in dmesg doesn't match with my code, so your code is likely
-still older than mine.  Could you update the CVS tree?
+  [ALSA] ens1371: added spdif and lineio module option
 
-Also, please upload the codec and asound.state files instead of pasting
-them.
+patch in the ALSA git tree if SUPPORT_JOYSTICK=n.
 
-----------------------------------------------------------------------
- robertw - 12-08-05 22:05 
-----------------------------------------------------------------------
-the Files uploaded now are from the current cvs-build.
+> Thanks,
+> Badari
 
-dmesg still says:
-[4300337.794000] ALSA
-/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3029:
-hda_codec: Unknown model for ALC260
+cu
+Adrian
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-======================================================================
+-- 
 
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
