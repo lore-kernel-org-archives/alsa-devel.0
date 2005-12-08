@@ -1,8 +1,16 @@
 From: John Rigg <ad@carbon-black.co.uk>
-Subject: pcm_multi poll timeout error
-Date: Thu, 08 Dec 2005 19:13:40 +0000
-Message-ID: <E1EkRD2-00016x-Kb@localhost.localdomain>
+Subject: Re: jerks
+Date: Thu, 8 Dec 2005 19:31:38 +0000
+Message-ID: <20051208193138.GA4312@localhost.localdomain>
+References: <1134063707.13439.37.camel@snuk.slsware.lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD7C4170
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 20:22:53 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1134063707.13439.37.camel@snuk.slsware.lan>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,40 +20,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Glenn English <ghe@slsware.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 03, 2005 at 03:23:18PM +0000, John Rigg wrote:
-> The pcm_multi plugin doesn't work currently with jackd in duplex mode. 
-> It's OK for either capture or playback with multi cards, but a poll time out
-> occurs in duplex mode. Several users have experienced this problem with
-> multiple ice1712 and RME cards.
-> After some testing I found the following:
+On Thu, Dec 08, 2005 at 10:41:47AM -0700, Glenn English wrote:
+> I'm trying to make a Digital Audio Workstation (DAW) out of a SUN W2100z
+> (dual AMD64).
 > 
-> alsa-lib-1.0.8 works
-> alsa-lib-1.0.9rc1 onwards gives poll time out
+> Every few seconds, at seemingly random times, everything freezes for
+> ~50ms. Even the mouse. Sometimes. Reliable at the first card moved in
+> Aisle Riot Solitaire and when Jack is running. Often when I'm typing
+> email (chars don't get from the keyboard to the screen).
+> 
+> I know that's not much of a description, but I don't know where to start
+> looking for this. I'm assuming interrupts are being disabled entirely
+> momentarily. My background says it's time for a bus monitor, but I don't
+> have one handy.
+> 
+> This happens with a 2.6 kernel from the current updated Sarge or a 2.4
+> from DeMuDi 1.2.1 distro.
 
-I got my two Delta 1010s working with jackd and pcm_multi in duplex mode by
-removing three functions that were added in pcm_multi.c rev 1.89:
-snd_pcm_multi_link_fd_failed()
-snd_pcm_multi_link_fd()
-snd_pcm_multi_unlink()
-along with two associated members of snd_pcm_multi_fast_ops structure:
-.link_fd = snd_pcm_multi_link_fd
-.unlink = snd_pcm_multi_unlink
-
-I then started trying to debug the code causing the problem. Adding extra
-printf's showed that none of the extra functions executed unless jackd was
-started with both -C and -P devices (ie. duplex), and then only
-snd_pcm_multi_link_fd(). This executed twice (once for capture and once for
-playback presumably). Neither of the two other new functions was used when the
-poll time out occurred.
-
-Unfortunately I'm now getting a little out of my depth. I've been studying the
-docs and the source code, but the source is a little sparse on comments and
-hard to follow for someone of my limited programming experience.
-Does anyone have any pointers for a dumb sound engineer/musician trying to
-understand what this extra linking code in pcm_multi.c is supposed to be doing?
+Could this be the libc NPTL bug? Sarge has a buggy version of glibc with
+a broken NPTL implementation (don't know about DeMuDi 1.2.1).
+If so, threaded apps won't perform properly - I switched to sid for this
+reason.
+Workaround is to set LD_ASSUME_KERNEL=2.4.22 for jackd and other audio
+apps. In sid it's fixed, and you'll also get the extra benefits of
+gcc-4.0's better AMD64 optimisation.
 
 John
 
