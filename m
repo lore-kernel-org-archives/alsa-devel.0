@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001628]: Unable to get digital surround sound out of via sound driver
-Date: Thu, 8 Dec 2005 17:23:06 +0100
-Message-ID: <c47ba3257f5dc3ec3129414e4d8ed393@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable model
+Date: Thu, 8 Dec 2005 17:26:14 +0100
+Message-ID: <afbb18c89f26e3cc0fadeed03793610c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CB4B175
-	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 17:23:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99E40173
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 17:26:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,42 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1628> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1627> 
 ======================================================================
-Reported By:                msillence
-Assigned To:                
+Reported By:                Elfe
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1628
-Category:                   PCI - via82xx
+Issue ID:                   1627
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.12
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-07-2005 21:34 CET
-Last Modified:              12-08-2005 17:23 CET
+Date Submitted:             12-07-2005 21:00 CET
+Last Modified:              12-08-2005 17:26 CET
 ======================================================================
-Summary:                    Unable to get digital surround sound out of via
-sound driver
+Summary:                    snd-hda-intel no suitable model
 Description: 
-I can get digital sterio sound out OK but not surround.
+Hi,
+
+I can't find a suitable model for the ALC880 on my Fujitsi Siemens Amilo
+1439G.
+The following devices are present:
+- internal speakers (possibly emulating pc beep)
+- internal mic
+- one jack for mic/line-in
+- one jack for Headset/IEC958
+- volume control wheel
+
+status:
+- volume control wheel does not work at all
+- Headset jack disables internal speakers
+- Headset and internal Speakers have a different output control :( (or no
+master volume)
+- Internal Mic gets disabled when external mic is plugged in
+- Mic works with a lot of try and error
+
+the best config would be:
+- volume wheel working
+- the control for internal speakers and headphone combined into one or
+both and a master volume
+- correct recording device and volume selection
+- microphone boost setting if available
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-08-05 17:23 
+ tiwai - 12-08-05 17:26 
 ----------------------------------------------------------------------
-Could you elaborate what do you expect and what not working?
+The volume control wheel isn't implemented yet.
+Also, on this chipset, there is no real "master" volume.  Each output is
+controlled separately.  We need to implement it virtually, and this should
+be better done in user-space.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-05 21:34 msillence      New Issue                                    
-12-07-05 21:34 msillence      Distribution              => Debian          
-12-07-05 21:34 msillence      Kernel Version            => 2.6.12          
-12-08-05 17:23 tiwai          Note Added: 0006958                          
+12-07-05 21:00 Elfe           New Issue                                    
+12-08-05 17:26 tiwai          Note Added: 0006960                          
 ======================================================================
 
 
