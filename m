@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Wed, 7 Dec 2005 23:35:57 +0100
-Message-ID: <348b097b94afdb275c9c2b1dadb7e28a@bugtrack.alsa-project.org>
+Date: Thu, 8 Dec 2005 02:22:03 +0100
+Message-ID: <572e735de04fa6697068bd0689bba435@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4102D161
-	for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2005 23:35:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F443161
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 02:22:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              12-07-2005 23:35 CET
+Last Modified:              12-08-2005 02:22 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,21 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- drfindley - 11-27-05 17:31 
-----------------------------------------------------------------------
-Thanks to the patches posted here, I can get this card to work.  I was
-wondering though if these patches are planned to enter into the standard
-ALSA release.  Builing from CVS is fun, but just plain working is nice
-too.
-
-Also I have a hard time getting the sound card to play at the right
-frequencies, causing my video to sound all messed up.  Playing a video at
-48000hz, it sounds like chipmunks. I rate the card to 48000, and it still
-sounds odd.  When I rate lock it to 44100, it sounds more normal, but it
-is noticebly slow, as voices and such sound a little too deep.  Does
-anyone know how to overcome these issues?
-
-----------------------------------------------------------------------
  moffa - 12-07-05 23:35 
 ----------------------------------------------------------------------
 After some fiddling with the driver I have a working sound card. 
@@ -96,6 +81,11 @@ already.
 I'll clean my code up a bit tomorrow and see what is really different from
 the patches provided here, but it seems like a working driver shouldn't be
 too far off.
+
+----------------------------------------------------------------------
+ Demosthenes - 12-08-05 02:22 
+----------------------------------------------------------------------
+Excellent news!  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -223,6 +213,7 @@ Hedgehog)
 11-27-05 17:27 drfindley      Issue Monitored: drfindley                    
 11-27-05 17:31 drfindley      Note Added: 0006851                          
 12-07-05 23:35 moffa          Note Added: 0006953                          
+12-08-05 02:22 Demosthenes    Note Added: 0006954                          
 ======================================================================
 
 
