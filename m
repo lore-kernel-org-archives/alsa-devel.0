@@ -1,15 +1,15 @@
-From: John Rigg <ad@carbon-black.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: jerks
-Date: Thu, 8 Dec 2005 19:31:38 +0000
-Message-ID: <20051208193138.GA4312@localhost.localdomain>
+Date: Thu, 08 Dec 2005 14:40:30 -0500
+Message-ID: <1134070831.3919.28.camel@mindpipe>
 References: <1134063707.13439.37.camel@snuk.slsware.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD7C4170
-	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 20:22:53 +0100 (MET)
-Content-Disposition: inline
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 20F5218D
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 20:39:16 +0100 (MET)
 In-Reply-To: <1134063707.13439.37.camel@snuk.slsware.lan>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -24,7 +24,7 @@ To: Glenn English <ghe@slsware.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 08, 2005 at 10:41:47AM -0700, Glenn English wrote:
+On Thu, 2005-12-08 at 10:41 -0700, Glenn English wrote:
 > I'm trying to make a Digital Audio Workstation (DAW) out of a SUN W2100z
 > (dual AMD64).
 > 
@@ -40,16 +40,13 @@ On Thu, Dec 08, 2005 at 10:41:47AM -0700, Glenn English wrote:
 > 
 > This happens with a 2.6 kernel from the current updated Sarge or a 2.4
 > from DeMuDi 1.2.1 distro.
+> 
+> Anybody have any idea how to begin tracing this down? Or maybe a better
+> explanation of what's going on?
+> 
 
-Could this be the libc NPTL bug? Sarge has a buggy version of glibc with
-a broken NPTL implementation (don't know about DeMuDi 1.2.1).
-If so, threaded apps won't perform properly - I switched to sid for this
-reason.
-Workaround is to set LD_ASSUME_KERNEL=2.4.22 for jackd and other audio
-apps. In sid it's fixed, and you'll also get the extra benefits of
-gcc-4.0's better AMD64 optimisation.
+Try the -rt kernel and enable latency tracing
 
-John
 
 
 -------------------------------------------------------
