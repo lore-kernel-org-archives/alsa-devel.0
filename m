@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: jerks
-Date: Thu, 08 Dec 2005 15:03:34 -0500
-Message-ID: <1134072215.3919.36.camel@mindpipe>
-References: <1134063707.13439.37.camel@snuk.slsware.lan>
-	 <20051208193138.GA4312@localhost.localdomain>
-	 <1134071386.13439.93.camel@snuk.slsware.lan>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Thu, 8 Dec 2005 21:23:12 +0100
+Message-ID: <d3bd3f47fa58e812719c684a7f56b766@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1134071386.13439.93.camel@snuk.slsware.lan>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 161BC18F
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 21:23:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,31 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Glenn English <ghe@slsware.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-12-08 at 12:49 -0700, Glenn English wrote:
-> On Thu, 2005-12-08 at 19:31 +0000, John Rigg wrote:
-> 
-> > > This happens with a 2.6 kernel from the current updated Sarge or a 2.4
-> > > from DeMuDi 1.2.1 distro.
-> > 
-> > Could this be the libc NPTL bug? Sarge has a buggy version of glibc with
-> > a broken NPTL implementation (don't know about DeMuDi 1.2.1).
-> > If so, threaded apps won't perform properly - I switched to sid for this
-> > reason.
-> > Workaround is to set LD_ASSUME_KERNEL=2.4.22 for jackd and other audio
-> > apps. In sid it's fixed, and you'll also get the extra benefits of
-> > gcc-4.0's better AMD64 optimisation.
-> 
-> The prospect of sid is terrifying on a machine I'd like to rely on :-)
-> But I'll try it. Thanks.
 
-This is almost certainly not your problem.  The NPTL bug would not cause
-the mouse to freeze for 50ms.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+======================================================================
+Reported By:                mjsb
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1572
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
+======================================================================
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              12-08-2005 21:23 CET
+======================================================================
+Summary:                    Simultaneous sound from speakers and headphone
+Description: 
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-Lee
+======================================================================
+
+----------------------------------------------------------------------
+ mjsb - 12-08-05 21:23 
+----------------------------------------------------------------------
+Correction: kernel is 2.6.13-gentoo-r3.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+======================================================================
+
 
 
 
