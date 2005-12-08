@@ -1,16 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: jerks
-Date: Thu, 08 Dec 2005 14:40:30 -0500
-Message-ID: <1134070831.3919.28.camel@mindpipe>
-References: <1134063707.13439.37.camel@snuk.slsware.lan>
+From: John Rigg <ad@carbon-black.co.uk>
+Subject: alsa-devel mail problem
+Date: Thu, 8 Dec 2005 19:50:51 +0000
+Message-ID: <20051208195051.GA4340@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 20F5218D
-	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 20:39:16 +0100 (MET)
-In-Reply-To: <1134063707.13439.37.camel@snuk.slsware.lan>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,33 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Glenn English <ghe@slsware.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: James Courtier-Dutton <james.dutton@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-12-08 at 10:41 -0700, Glenn English wrote:
-> I'm trying to make a Digital Audio Workstation (DAW) out of a SUN W2100z
-> (dual AMD64).
-> 
-> Every few seconds, at seemingly random times, everything freezes for
-> ~50ms. Even the mouse. Sometimes. Reliable at the first card moved in
-> Aisle Riot Solitaire and when Jack is running. Often when I'm typing
-> email (chars don't get from the keyboard to the screen).
-> 
-> I know that's not much of a description, but I don't know where to start
-> looking for this. I'm assuming interrupts are being disabled entirely
-> momentarily. My background says it's time for a bus monitor, but I don't
-> have one handy.
-> 
-> This happens with a 2.6 kernel from the current updated Sarge or a 2.4
-> from DeMuDi 1.2.1 distro.
-> 
-> Anybody have any idea how to begin tracing this down? Or maybe a better
-> explanation of what's going on?
-> 
+Some of you might have seen James Courtier-Dutton's warning yesterday
+about a piece of spam purporting to come from sourceforge.
+When I received the spam I reported it to the ISP hosting the fake
+web page and was pleased to see that the site had been removed a few
+hours later. I replied to James' email on the list to point this out,
+but I found that my email address had been blocked by the list.
 
-Try the -rt kernel and enable latency tracing
+I'm not sure yet if it was a disgruntled phisher adding me to a blacklist
+or whether the sourceforge mail filters didn't like the reference to
+the spam in my mail. I had to open a new subscription to send this.
 
+The obvious moral: if you're going to report these idiots to their ISP,
+don't use an important email address!
+
+John
 
 
 -------------------------------------------------------
