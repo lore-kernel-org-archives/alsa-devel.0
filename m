@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001604]: alsa-utils compilation dies - undefined reference to `snd_mixer_selem_get_capture_dB'
-Date: Thu, 8 Dec 2005 10:54:36 +0100
-Message-ID: <07af2fed484b4e3749041567930dc267@bugtrack.alsa-project.org>
+Date: Thu, 8 Dec 2005 10:56:29 +0100
+Message-ID: <56879bbe78497f07e80e02e4ac1b4c64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93EF814F
-	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 10:54:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5BA514F
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 10:56:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1604> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Fedora Core 4
 Kernel Version:             2.6.14-1.1637_FC4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-27-2005 19:39 CET
-Last Modified:              12-08-2005 10:54 CET
+Last Modified:              12-08-2005 10:56 CET
 ======================================================================
 Summary:                    alsa-utils compilation dies - undefined reference to
 `snd_mixer_selem_get_capture_dB'
@@ -50,14 +52,14 @@ given here is using gcc32, but gcc4 gives the same errors.
 ======================================================================
 
 ----------------------------------------------------------------------
- Twey - 12-07-05 20:45 
-----------------------------------------------------------------------
-One did exist, and I removed it, but the error persists.
-
-----------------------------------------------------------------------
  Twey - 12-08-05 10:54 
 ----------------------------------------------------------------------
 Apologies - I missed an RPM.  Solved.
+
+----------------------------------------------------------------------
+ perex - 12-08-05 10:56 
+----------------------------------------------------------------------
+not an ALSA bug
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +75,10 @@ Date Modified  Username       Field                    Change
 12-07-05 20:45 Twey           Note Added: 0006946                          
 12-07-05 20:45 Twey           Issue Monitored: Twey                        
 12-08-05 10:54 Twey           Note Added: 0006955                          
+12-08-05 10:55 Twey           Issue End Monitor: Twey                      
+12-08-05 10:56 perex          Status                   assigned => resolved
+12-08-05 10:56 perex          Resolution               open => fixed       
+12-08-05 10:56 perex          Note Added: 0006956                          
 ======================================================================
 
 
