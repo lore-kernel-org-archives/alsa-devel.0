@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001631]: Audiophile USB will not capture.
-Date: Thu, 8 Dec 2005 17:38:01 +0100
-Message-ID: <2cc37f71bff4e78596f7a295fbe04cf6@bugtrack.alsa-project.org>
+From: Glenn English <ghe@slsware.com>
+Subject: jerks
+Date: Thu, 08 Dec 2005 10:41:47 -0700
+Message-ID: <1134063707.13439.37.camel@snuk.slsware.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22AF5173
-	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 17:38:02 +0100 (MET)
+Received: from srv.slsware.lan (server.slsware.com [207.189.192.218])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8350C173
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 18:41:49 +0100 (MET)
+Received: from snuk.slsware.lan (snuk.slsware.dmz [192.168.20.11])
+	by srv.slsware.lan (slsware.com) with ESMTP id 828D226FCB
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 10:41:47 -0700 (MST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,66 +24,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I'm trying to make a Digital Audio Workstation (DAW) out of a SUN W2100z
+(dual AMD64).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1631> 
-======================================================================
-Reported By:                smithbone
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1631
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               1.0.10
-Kernel Version:             2.6.15-rc5-git1
-======================================================================
-Date Submitted:             12-08-2005 17:38 CET
-Last Modified:              12-08-2005 17:38 CET
-======================================================================
-Summary:                    Audiophile USB will not capture.
-Description: 
-If I try to capure audio from my Audiophile USB I get the following.
+Every few seconds, at seemingly random times, everything freezes for
+~50ms. Even the mouse. Sometimes. Reliable at the first card moved in
+Aisle Riot Solitaire and when Jack is running. Often when I'm typing
+email (chars don't get from the keyboard to the screen).
 
- $ arecord -vv -D hw:1,1 -f S24_3BE -t raw -c 2 -r48000 test.raw
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S24_3BE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 24
-buffer_size  : 24000
-period_size  : 6000
-period_time  : 125000
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 6000
-xfer_align   : 6000
-start_threshold  : 1
-stop_threshold   : 24000
-silence_threshold: 0
-silence_size : 0
-boundary     : 1572864000
-arecord: pcm_read:1303: read error: Input/output error
-======================================================================
+I know that's not much of a description, but I don't know where to start
+looking for this. I'm assuming interrupts are being disabled entirely
+momentarily. My background says it's time for a bus monitor, but I don't
+have one handy.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-08-05 17:38 smithbone      New Issue                                    
-12-08-05 17:38 smithbone      Distribution              => 1.0.10          
-12-08-05 17:38 smithbone      Kernel Version            => 2.6.15-rc5-git1 
-======================================================================
+This happens with a 2.6 kernel from the current updated Sarge or a 2.4
+from DeMuDi 1.2.1 distro.
 
+Anybody have any idea how to begin tracing this down? Or maybe a better
+explanation of what's going on?
+
+-- 
+Glenn English
+ghe@slsware.com
+GPG ID: D0D7FF20
 
 
 
