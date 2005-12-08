@@ -1,14 +1,14 @@
-From: Serhiy Kachanuk <serzholino@gmail.com>
-Subject: Re: Problems with soundcard based on Realtek ALC860
- audio codec
-Date: Thu, 08 Dec 2005 08:02:30 +0200
-Message-ID: <4397CC76.9060305@gmail.com>
-References: <4396C17D.9060600@gmail.com> <200512070921.38560.rafael.espindola@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001604]: alsa-utils compilation dies - undefined reference to `snd_mixer_selem_get_capture_dB'
+Date: Thu, 8 Dec 2005 10:54:36 +0100
+Message-ID: <07af2fed484b4e3749041567930dc267@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200512070921.38560.rafael.espindola@gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93EF814F
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 10:54:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,28 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07.12.2005 13:21, Rafael =C3=81vila de Esp=C3=ADndola wrote:
->>Is my soundcard supported? What do I need to make my sound system work
->>on Linux?
->=20
-> Realtek has an hacked version of alsa. Could you please try:
-> http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=3D2004052&famid=3D=
-2004052&series=3D2004061&Software=3DTrue#2004061Unix=20
-> (Linux)
-> and report whether it works?
 
-Thank you all guys :)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1604> 
+======================================================================
+Reported By:                Twey
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1604
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.14-1.1637_FC4
+======================================================================
+Date Submitted:             11-27-2005 19:39 CET
+Last Modified:              12-08-2005 10:54 CET
+======================================================================
+Summary:                    alsa-utils compilation dies - undefined reference to
+`snd_mixer_selem_get_capture_dB'
+Description: 
+Compilation of alsamixer dies.  Full errors attached.  Note that the output
+given here is using gcc32, but gcc4 gives the same errors.
+======================================================================
 
-I've tried realtek version of alsa as long as it is less download then=20
-CVS checkout and yes, :) it works! Mixer lacks of master volume, only=20
-PCM  and then two front volumes, but sound is working.
-I'm now using this card only in stereo mode, is in also possible to use=20
-5.1 mode in Linux?
+----------------------------------------------------------------------
+ Twey - 12-07-05 20:45 
+----------------------------------------------------------------------
+One did exist, and I removed it, but the error persists.
 
-Thank you very much to pointing me to this.
+----------------------------------------------------------------------
+ Twey - 12-08-05 10:54 
+----------------------------------------------------------------------
+Apologies - I missed an RPM.  Solved.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-27-05 19:39 Twey           New Issue                                    
+11-27-05 19:39 Twey           Distribution              => Fedora Core 4   
+11-27-05 19:39 Twey           Kernel Version            => 2.6.14-1.1637_FC4
+11-28-05 18:56 tiwai          Note Added: 0006866                          
+11-28-05 19:11 Twey           Note Added: 0006867                          
+11-28-05 19:13 tiwai          Note Added: 0006868                          
+11-28-05 19:39 Twey           Note Added: 0006869                          
+12-02-05 14:48 tiwai          Note Added: 0006893                          
+12-07-05 20:45 Twey           Note Added: 0006946                          
+12-07-05 20:45 Twey           Issue Monitored: Twey                        
+12-08-05 10:54 Twey           Note Added: 0006955                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
