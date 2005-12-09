@@ -1,13 +1,11 @@
-From: John Rigg <ad@carbon-black.co.uk>
-Subject: Re: pcm_multi poll timeout error
-Date: Fri, 9 Dec 2005 20:15:02 +0000
-Message-ID: <20051209201502.GA3751@localhost.localdomain>
-References: <20051209171605.GA4132@localhost.localdomain> <200512091755.jB9HtR5i008279@sith.maoz.com>
+From: Nicolas Pitre <nico@cam.org>
+Subject: [PATCH] make the pxa2xx-ac97 module more robust against PXA27x bugs
+Date: Fri, 09 Dec 2005 15:48:01 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0512091537350.26663@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200512091755.jB9HtR5i008279@sith.maoz.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +15,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jeremy Hall <jhall@maoz.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 09, 2005 at 12:55:27PM -0500, Jeremy Hall wrote:
-> In the new year, John Rigg wrote:
-> > On Fri, Dec 09, 2005 at 12:40:05PM +0100, Takashi Iwai wrote:
-> > > The link_fd returns the file descriptor for linking multiple PCM
-> > > streams.  If you comment it out, it means that no link is possible.
-> > > It means that snd_pcm_link() didn't do anything in fact after your
-> > > patch.
-> > 
-> > I can't understand why this works after my patch broke snd_pcm_link .
->
-> It probably works because the rme cards are synced by an external means 
-> such as word clock or the entity they are connected to has master sync
+The SDONE and CDONE interrupt on the PXA27x might become unusable in 
+some conditions.  Let's use an hybrid approach (interrupt with timeout) 
+to have the best possible behavior in all conditions.
 
-Makes sense. So, the situation appears to be:
-1 - The link code is unnecessary for duplex operation of multiple
-clock-synchronised sound cards with jackd.
-2 - It breaks the above when present.
+Also let's not care about CAR_CAIP anymore.  This is useless.
 
-John
+Signed-off-by: Nicolas Pitre <nico@cam.org>
+
+---
+
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index c96c8a2..4db9b87 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -37,39 +37,47 @@ static DECLARE_MUTEX(car_mutex);
+ static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
+ static volatile long gsr_bits;
+ 
++/*
++ * Beware PXA27x bugs:
++ *
++ *   o Slot 12 read from modem space will hang controller.
++ *   o CDONE, SDONE interrupt fails after any slot 12 IO.
++ *
++ * We therefore have an hybrid approach for waiting on SDONE (interrupt or
++ * 1 jiffy timeout if interrupt never comes).
++ */ 
++
+ static unsigned short pxa2xx_ac97_read(ac97_t *ac97, unsigned short reg)
+ {
+ 	unsigned short val = -1;
+ 	volatile u32 *reg_addr;
+ 
+ 	down(&car_mutex);
+-	if (CAR & CAR_CAIP) {
+-		printk(KERN_CRIT"%s: CAR_CAIP already set\n", __FUNCTION__);
+-		goto out;
+-	}
+ 
+ 	/* set up primary or secondary codec space */
+ 	reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
+ 	reg_addr += (reg >> 1);
+ 
+ 	/* start read access across the ac97 link */
++	GSR = GSR_CDONE | GSR_SDONE;
+ 	gsr_bits = 0;
+ 	val = *reg_addr;
+ 	if (reg == AC97_GPIO_STATUS)
+ 		goto out;
+-	wait_event_timeout(gsr_wq, gsr_bits & GSR_SDONE, 1);
+-	if (!gsr_bits & GSR_SDONE) {
++	if (wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1) <= 0 &&
++	    !((GSR | gsr_bits) & GSR_SDONE)) {
+ 		printk(KERN_ERR "%s: read error (ac97_reg=%d GSR=%#lx)\n",
+-				__FUNCTION__, reg, gsr_bits);
++				__FUNCTION__, reg, GSR | gsr_bits);
+ 		val = -1;
+ 		goto out;
+ 	}
+ 
+ 	/* valid data now */
++	GSR = GSR_CDONE | GSR_SDONE;
+ 	gsr_bits = 0;
+ 	val = *reg_addr;			
+ 	/* but we've just started another cycle... */
+-	wait_event_timeout(gsr_wq, gsr_bits & GSR_SDONE, 1);
++	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
+ 
+ out:	up(&car_mutex);
+ 	return val;
+@@ -81,22 +89,19 @@ static void pxa2xx_ac97_write(ac97_t *ac
+ 
+ 	down(&car_mutex);
+ 
+-	if (CAR & CAR_CAIP) {
+-		printk(KERN_CRIT "%s: CAR_CAIP already set\n", __FUNCTION__);
+-		goto out;
+-	}
+-
+ 	/* set up primary or secondary codec space */
+ 	reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
+ 	reg_addr += (reg >> 1);
++
++	GSR = GSR_CDONE | GSR_SDONE;
+ 	gsr_bits = 0;
+ 	*reg_addr = val;
+-	wait_event_timeout(gsr_wq, gsr_bits & GSR_CDONE, 1);
+-	if (!gsr_bits & GSR_SDONE)
++	if (wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_CDONE, 1) <= 0 &&
++	    !((GSR | gsr_bits) & GSR_CDONE))
+ 		printk(KERN_ERR "%s: write error (ac97_reg=%d GSR=%#lx)\n",
+-				__FUNCTION__, reg, gsr_bits);
++				__FUNCTION__, reg, GSR | gsr_bits);
+ 
+-out:	up(&car_mutex);
++	up(&car_mutex);
+ }
+ 
+ static void pxa2xx_ac97_reset(ac97_t *ac97)
 
 
 -------------------------------------------------------
