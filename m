@@ -1,8 +1,13 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 9 Dec 2005 19:45:58 -0000
-Message-ID: <E1EkoC1-0007YC-GX@mail.sourceforge.net>
+From: John Rigg <ad@carbon-black.co.uk>
+Subject: Re: pcm_multi poll timeout error
+Date: Fri, 9 Dec 2005 20:15:02 +0000
+Message-ID: <20051209201502.GA3751@localhost.localdomain>
+References: <20051209171605.GA4132@localhost.localdomain> <200512091755.jB9HtR5i008279@sith.maoz.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <200512091755.jB9HtR5i008279@sith.maoz.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,54 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jeremy Hall <jhall@maoz.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
+On Fri, Dec 09, 2005 at 12:55:27PM -0500, Jeremy Hall wrote:
+> In the new year, John Rigg wrote:
+> > On Fri, Dec 09, 2005 at 12:40:05PM +0100, Takashi Iwai wrote:
+> > > The link_fd returns the file descriptor for linking multiple PCM
+> > > streams.  If you comment it out, it means that no link is possible.
+> > > It means that snd_pcm_link() didn't do anything in fact after your
+> > > patch.
+> > 
+> > I can't understand why this works after my patch broke snd_pcm_link .
+>
+> It probably works because the rme cards are synced by an external means 
+> such as word clock or the entity they are connected to has master sync
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+Makes sense. So, the situation appears to be:
+1 - The link code is unnecessary for duplex operation of multiple
+clock-synchronised sound cards with jackd.
+2 - It breaks the above when present.
 
---- Original message follows.
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.247>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta195.mail.re2.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO thxha.net) (64.251.132.84)
-  by mta195.mail.re2.yahoo.com with SMTP; Fri, 09 Dec 2005 11:45:26 -0800
-From: alsa-devel@lists.sourceforge.net
-To: certificate@yahoo.com
-Date: Fri, 09 Dec 2005 19:43:06 GMT
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-X-MSMail-Priority: Normal
-Message-ID: <5a6ce7534155f9b83f9@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="======93aafcac9c.ad63d937"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
-
---======93aafcac9c.ad63d937
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---======93aafcac9c.ad63d937
-Cont
-*** MESSAGE TRUNCATED ***
-
+John
 
 
 -------------------------------------------------------
