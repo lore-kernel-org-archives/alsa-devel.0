@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Fri, 9 Dec 2005 00:51:36 +0100
-Message-ID: <ad33669532153744322ed0cedf53ab17@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 9 Dec 2005 06:22:43 -0000
+Message-ID: <E1Ekbea-00087m-PN@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F1791AD
-	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2005 00:51:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +12,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
-======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
-======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              12-09-2005 00:51 CET
-======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
-Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+--- Original message follows.
 
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-======================================================================
+The original message is over 5k.  Message truncated to 1K.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 11-22-05 07:54 
-----------------------------------------------------------------------
-This is probably a bug that has been fixed in ALSA 1.0.10 and since
-2.6.15rc1.
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.227>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta254.mail.mud.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO jhhhjcfjr.net) (64.251.132.84)
+  by mta254.mail.mud.yahoo.com with SMTP; Thu, 08 Dec 2005 22:22:42 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Fri, 09 Dec 2005 06:11:53 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <94f031.ed1ce495c4ca4@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="======b98aa3cbf0b7c1758343daaf"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-(rc1 and rc2 came before the release)
+--======b98aa3cbf0b7c1758343daaf
 
-----------------------------------------------------------------------
- sailfrog - 12-09-05 00:51 
-----------------------------------------------------------------------
-Clemens,
-  Just tried 2.6.15-rc5-mm1, same result. Card shows up, volume levels are
-set, no sound.
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-jason@jackass ~$ cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC)
-
-Jason
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-======================================================================
-
+plz read and check ...
+cyaaaaaaa
+--======b98aa3cbf0b7c1758343daaf
+Content-Type: application/octet-stre
+*** MESSAGE TRUNCATED ***
 
 
 
