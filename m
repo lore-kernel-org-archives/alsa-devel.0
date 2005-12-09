@@ -1,8 +1,17 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 8 Dec 2005 10:54:50 -0000
-Message-ID: <E1EkJQO-0002xZ-6I@mail.sourceforge.net>
+From: "Placenta L. Calabash" <David_Robins@gpb.seanet.com>
+Subject: Pharmaceutical revolution
+Date: Thu, 08 Dec 2005 19:57:17 -0600
+Message-ID: <8601869097.20051208195717@gpb.seanet.com>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----------ADF17ED9FD32726"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from -196530856 (host-81-190-46-84.lodz.mm.pl [81.190.46.84])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8C03AE2
+	for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2005 12:48:33 +0100 (MET)
+Received: from gpb.seanet.com (-196687624 [-196685704])
+	by host-81-190-46-84.lodz.mm.pl (Qmailv1) with ESMTP id 22994BD01F
+	for <alsa-devel@alsa-project.org>; Thu, 08 Dec 2005 19:57:17 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,53 +21,98 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
-
-<admin@yahoo.com>:
-This address no longer accepts mail.
-
---- Original message follows.
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.249>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta158.mail.scd.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO rvvvxjm.net) (64.251.132.84)
-  by mta158.mail.scd.yahoo.com with SMTP; Thu, 08 Dec 2005 02:54:50 -0800
-From: alsa-devel@lists.sourceforge.net
-To: admin@yahoo.com
-Date: Thu, 08 Dec 2005 10:54:17 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-X-MSMail-Priority: Normal
-Message-ID: <d1f8e5.14eda9e38d3b@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===146fdcfe9ecc06.f0fbac7d"
-Content-Transfer-Encoding: 7bit
 This is a multi-part message in MIME format.
 
---===146fdcfe9ecc06.f0fbac7d
+------------ADF17ED9FD32726
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+Welcome to our Internet Pharpmacy
+We offer a wide selection of the
+most popular medicines online!
+FAST shipping, LOW prices and
+Toll-free customer support! 
 
-plz read and check ...
-cyaaaaaaa
---===146fdcfe9ecc06.f0fbac7d
-Conten
-*** MESSAGE TRUNCATED ***
+If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
+Vlagwra - $3.3 
+Lekvitra - $3.3
+Cialihs - $3.7
+Imbitrex - $16.4 Flomax - $2.2
+Ulktram - $0.78
+Vidoxx - $4.75 
+Amibien - $2.2 VaIium - $0.97 
+Scoma - $3
+Xangax - $1.09
+Mgeridia - $2.2 
+* we offer a money-back guarantee in case the product doesn't work for you or you may be somehow dissatisfied by its performance 
+* we've efficiently streamlined our service, letting you buy from us in a very discreet, non-embarrassing and hassle-free manner  
+
+The new, easy way to order your prescripptions! 
+Visit our website
+http://acopanie.com
+
+With best regards,
+Online Pharmaceuticals
+
+gdgsdegnsq UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------ADF17ED9FD32726
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#FFF6FF">
+<p><b><font color="#FF6664">Welcome to our Internet Pharxmacy<br>
+  We offer a wide selection of the<br>
+  most popular medicines online!<br>
+  FAST shipping, LOW prices and<br>
+  Toll-free customer support! </font></b></p>
+<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#FF66CC">
+  <tr bgcolor="#FFF0CC"> 
+    <td colspan="3">If you compare the cost and services of our competitors, you 
+      will see that we give you much more… for less. Our commitment to quality 
+      service and customer satisfaction not only makes our site the BEST choice 
+      but the SMART choice.</td>
+  </tr>
+  <tr bgcolor="#C4C4FF"> 
+    <td bgcolor="#FFDECC"><b>Vlagxra - $3.3 <br>
+      Letvitra - $3.3<br>
+      Cialies - $3.7<br>
+      Imlitrex - $16.4</b></td>
+    <td bgcolor="#FFBACC"><b>Flsomax - $2.2<br>
+      Uljtram - $0.78<br>
+      Vipoxx - $4.75 <br>
+      Ambbien - $2.2</b></td>
+    <td bgcolor="#FFDECC"><b>VaIiugm - $0.97 <br>
+      Syoma - $3<br>
+      Xanoax - $1.09<br>
+      Meeridia - $2.2</b></td>
+  </tr>
+  <tr bgcolor="#FFC0FF"> 
+    <td colspan="3">* we offer a money-back guarantee in case the product doesn't 
+      work for you or you may be somehow dissatisfied by its performance <br>
+      * we've efficiently streamlined our service, letting you buy from us in 
+      a very discreet, non-embarrassing and hassle-free manner </td>
+  </tr>
+</table>
+<br>
+<b>The new, easy way to order your prescriptions!</b> 
+<p><b><A href="http://acopanie.com">Visit our website</A> 
+</b></p>
+With best regards,<br>
+Online Pharmaceuticals
+<br>
+<br>
+gdgsdegnsq UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
+
+
+------------ADF17ED9FD32726--
+
 
 
 
