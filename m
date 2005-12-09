@@ -1,11 +1,13 @@
-From: Nicolas Pitre <nico@cam.org>
-Subject: [PATCH] make the pxa2xx-ac97 module more robust against PXA27x bugs
-Date: Fri, 09 Dec 2005 15:48:01 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0512091537350.26663@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+From: "BIZ =?ISO-2022-JP?B?GyRCJU0lQyVIGyhC?= " <biznet1124@yahoo.co.jp>
+Subject: =?iso-2022-jp?B?GyRCISEhISEhISEhISEhIXo2QzBbJE5HM0hxJSIlQyVXJE8kMyQzJEchKiEqIXobKEo=?=
+Date: Sat, 10 Dec 2005 08:42:13 +0900 (JST)
+Message-ID: <20051209234213.28468310155@www.biznet2.info>
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from www.biznet2.info (st0012.nas931.oita.nttpc.ne.jp [210.150.101.76])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44ABF173
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 00:42:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,109 +17,113 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The SDONE and CDONE interrupt on the PXA27x might become unusable in 
-some conditions.  Let's use an hybrid approach (interrupt with timeout) 
-to have the best possible behavior in all conditions.
+☆*☆━━━━━━━━━━━━━━━━━━━━━━━━━━━━☆*☆　
+　　　　　　　◇ビジネスマガジン◇♪〓　ＢＩＺネット　〓♪
+           
+　　　　　　　　　今回もお得な情報をお届けします！
+　　　　　　　　　是非、アクセスしてみてくださいね♪
+　　　　　　　
+　　　　　※購読の解除は編集後部でワンクリック解除できます。
+☆★━━━━━━━━━━━━━━━━━━━━━━━━━━━━━★☆
 
-Also let's not care about CAR_CAIP anymore.  This is useless.
+alsa-devel@alsa-project.org 様♪
+○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
+★彡★　　 　 　＜◇独占広告をお届けします◇＞　　　　　★彡★
+○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
 
-Signed-off-by: Nicolas Pitre <nico@cam.org>
 
----
 
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index c96c8a2..4db9b87 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -37,39 +37,47 @@ static DECLARE_MUTEX(car_mutex);
- static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
- static volatile long gsr_bits;
- 
-+/*
-+ * Beware PXA27x bugs:
-+ *
-+ *   o Slot 12 read from modem space will hang controller.
-+ *   o CDONE, SDONE interrupt fails after any slot 12 IO.
-+ *
-+ * We therefore have an hybrid approach for waiting on SDONE (interrupt or
-+ * 1 jiffy timeout if interrupt never comes).
-+ */ 
-+
- static unsigned short pxa2xx_ac97_read(ac97_t *ac97, unsigned short reg)
- {
- 	unsigned short val = -1;
- 	volatile u32 *reg_addr;
- 
- 	down(&car_mutex);
--	if (CAR & CAR_CAIP) {
--		printk(KERN_CRIT"%s: CAR_CAIP already set\n", __FUNCTION__);
--		goto out;
--	}
- 
- 	/* set up primary or secondary codec space */
- 	reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
- 	reg_addr += (reg >> 1);
- 
- 	/* start read access across the ac97 link */
-+	GSR = GSR_CDONE | GSR_SDONE;
- 	gsr_bits = 0;
- 	val = *reg_addr;
- 	if (reg == AC97_GPIO_STATUS)
- 		goto out;
--	wait_event_timeout(gsr_wq, gsr_bits & GSR_SDONE, 1);
--	if (!gsr_bits & GSR_SDONE) {
-+	if (wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1) <= 0 &&
-+	    !((GSR | gsr_bits) & GSR_SDONE)) {
- 		printk(KERN_ERR "%s: read error (ac97_reg=%d GSR=%#lx)\n",
--				__FUNCTION__, reg, gsr_bits);
-+				__FUNCTION__, reg, GSR | gsr_bits);
- 		val = -1;
- 		goto out;
- 	}
- 
- 	/* valid data now */
-+	GSR = GSR_CDONE | GSR_SDONE;
- 	gsr_bits = 0;
- 	val = *reg_addr;			
- 	/* but we've just started another cycle... */
--	wait_event_timeout(gsr_wq, gsr_bits & GSR_SDONE, 1);
-+	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
- 
- out:	up(&car_mutex);
- 	return val;
-@@ -81,22 +89,19 @@ static void pxa2xx_ac97_write(ac97_t *ac
- 
- 	down(&car_mutex);
- 
--	if (CAR & CAR_CAIP) {
--		printk(KERN_CRIT "%s: CAR_CAIP already set\n", __FUNCTION__);
--		goto out;
--	}
--
- 	/* set up primary or secondary codec space */
- 	reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
- 	reg_addr += (reg >> 1);
-+
-+	GSR = GSR_CDONE | GSR_SDONE;
- 	gsr_bits = 0;
- 	*reg_addr = val;
--	wait_event_timeout(gsr_wq, gsr_bits & GSR_CDONE, 1);
--	if (!gsr_bits & GSR_SDONE)
-+	if (wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_CDONE, 1) <= 0 &&
-+	    !((GSR | gsr_bits) & GSR_CDONE))
- 		printk(KERN_ERR "%s: write error (ac97_reg=%d GSR=%#lx)\n",
--				__FUNCTION__, reg, gsr_bits);
-+				__FUNCTION__, reg, GSR | gsr_bits);
- 
--out:	up(&car_mutex);
-+	up(&car_mutex);
- }
- 
- static void pxa2xx_ac97_reset(ac97_t *ac97)
+　◆「ガソリン価格の高騰」は気になるところです。
+
+　　◆車を維持する上で、燃費を良くしたいのは誰しも同じ思いです。
+
+
+　　エンジンのパワーがＵＰし、さらには燃料のガソリン消費も削減！！
+　　正に、エコロジーそのものです。
+
+　　私の車は、かなり古いタイプの「ワンボックスカー」です。
+　　最近、上り坂では『ブルブル・・・？？』亀の走りでした^^゜゜
+
+　　ところが、これをつけてからは『新車同様』の走り！！
+　　私の中古車が”スーパーカー”に思えました＼（◎▼◎）／
+　　
+　　価格を見て、チョッと二の足を踏みましたが、
+　　今ではもっと早くつければよかったと思っています。
+
+　　年間のガソリン代を計算すると、かなりの削減なのです
+
+　　仕掛けは　↓　↓
+　　≪ロケットパワーにんじん君≫
+　　　　（国際特許出願中）
+　　　http://2ch2.net/.l?=UDD5 
+
+　◎　車のエンジン性能をパワーアップさせる。
+　　　（なんと、９馬力以上パワーアップ）
+
+　◎　エンジン本体をパワーアップさせるので
+　　　燃費も良くなる。
+
+
+　こんな仕掛けが、スパナー１本あれば簡単に出来るのです。
+　そしてあなたの車もスーパーカーに変身です！！
+　しかも、燃費が向上することで「ガソリン」の節約にも
+　なるのです。
+
+　　　　≪ロケットパワーにんじん君≫
+　　　　　　（国際特許出願中）
+
+　　　　　　　今すぐクリック！！
+　　　　　　　　↓　↓　↓
+　　　　　http://2ch2.net/.l?=UDD5 
+　
+
+
+　
+
+　
+
+☆★━━━━━━━━━━━━━━━━━━━━━━━━━━━━━★☆
+
+　　最後までお読み頂き有り難うございます。
+
+　　　是非、アクセスしてみてくださいね　v(=^-^=)v
+
+☆★━━━━━━━━━━━━━━━━━━━━━━━━━━━━━★☆
+購読をご希望されない方は、下記のＵＲＬをクリックしますと自動で削除となります。
+http://www.biznet2.info/don/biznet4/mail/reset.cgi?alsa-devel@alsa-project.org
+※一部のブラウザでＵＲＬが正しく表示されない場合がございます。
+表示されない場合は、大変お手数ではございますが下記のＵＲＬより解除頂きます様お願い申し上げます。
+http://biznet2.info/don/biznet1/mail/index.cgi
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■お願い■
+　　一括投稿サイト様からの無料投稿は購読が条件ですので
+　　代理登録させて頂いておりますのでご了承ください。
+    また、メルマガ連動型掲示板のご利用、掲示板書き込み及び
+　　掲示板書き込み業者へのご依頼も同様となります。
+
+　　尚、複数の一括投稿サイト様にお申し込みをされている場合
+　　再度登録になる可能性がございますことをご了承ください。
+　　ご面倒でも、ご自分で解除されますようお願いいたします。
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■免責事項■
+　　掲載されているすべてのサイトにおいて発生した
+　　いかなるトラブルに対しても、発行者は一切の責任は
+　　負いませんのでご了承ください。
+
+─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━
+■発行元：【ＢＩＺネット】広報事業部
+　　　　　http://www.biznet2.info/index/
+■発行人連絡先：  biznet@biznet2.ifno　
+■発行システム：　独自配信システム
+■購読・解除： 
+http://www.biznet2.info/don/biznet4/mail/reset.cgi?alsa-devel@alsa-project.org
+─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━
+
+
+
 
 
 -------------------------------------------------------
