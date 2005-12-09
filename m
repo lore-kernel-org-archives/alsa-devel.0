@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Fri, 9 Dec 2005 16:35:54 +0100
-Message-ID: <5b09ffd4329002c9e4e3ce6b741f5f75@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Fri, 9 Dec 2005 16:46:32 +0100
+Message-ID: <3d17fdc1daed19a188236407b3713f3f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C454143
-	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2005 16:35:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22A36189
+	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2005 16:46:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              12-09-2005 16:35 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              12-09-2005 16:46 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-09-05 15:09 
+ sailfrog - 12-09-05 00:51 
 ----------------------------------------------------------------------
-OK, then you still have no sound, right?  What outputs do your device have?
- Did you get the same kernel error messages?
+Clemens,
+  Just tried 2.6.15-rc5-mm1, same result. Card shows up, volume levels are
+set, no sound.
 
-The internal speaker and headphone jack?
+jason@jackass ~$ cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC)
+
+Jason
 
 ----------------------------------------------------------------------
- robertw - 12-09-05 16:35 
+ smithbone - 12-09-05 16:46 
 ----------------------------------------------------------------------
-I have two build-in speakers (for stereo), headphone, microphone, and a
-line-in jack. All these jacks are at the front.
+I'll confirm that I see the same behavior with a M-Audio Audiophile USB. 
+Upgrading to 2.6.15-rc5-git1 and debian ALSA 1.0.10 packages the card is
+silent.  No errors, everything looks good, /proc/interrupts is cranking
+away but just silence on the output.  
 
-This is exactly the notebook I have:
-http://www.mediaonline.de/shop/product_5000_5000_-3_141114
+Previously debian ALSA 1.0.9a and 2.6.14 (Alsa 1.0.10rc1) worked.
 
-The kernel does only say the one line about "unknown model".
-
-And yes, I can still hear nothing.
+Note that this device dosen't have a mixer so I dont think I've set it
+wrong. *grin*
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
 ======================================================================
 
 
