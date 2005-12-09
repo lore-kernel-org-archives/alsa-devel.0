@@ -1,7 +1,7 @@
 From: MAILER-DAEMON@yahoo.com
 Subject: failure delivery
-Date: 9 Dec 2005 18:50:37 -0000
-Message-ID: <E1EknKW-0003HY-4Y@mail.sourceforge.net>
+Date: 9 Dec 2005 19:45:58 -0000
+Message-ID: <E1EkoC1-0007YC-GX@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -29,34 +29,35 @@ The original message is over 5k.  Message truncated to 1K.
 
 X-Rocket-Spam: 64.251.132.84
 X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.239>
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.247>
 X-Originating-IP: [64.251.132.84]
 Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta275.mail.mud.yahoo.com
+Authentication-Results: mta195.mail.re2.yahoo.com
   from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO qupfddcfw.net) (64.251.132.84)
-  by mta275.mail.mud.yahoo.com with SMTP; Fri, 09 Dec 2005 10:49:57 -0800
+Received: from 64.251.132.84  (HELO thxha.net) (64.251.132.84)
+  by mta195.mail.re2.yahoo.com with SMTP; Fri, 09 Dec 2005 11:45:26 -0800
 From: alsa-devel@lists.sourceforge.net
-To: emailserv@yahoo.com
-Date: Fri, 09 Dec 2005 18:11:35 GMT
+To: certificate@yahoo.com
+Date: Fri, 09 Dec 2005 19:43:06 GMT
 Subject: hi, ive a new mail address
 Importance: Normal
 X-Priority: 3 (Normal)
-Message-ID: <246dc49c8a55aa87281@lists.sourceforge.net>
+X-MSMail-Priority: Normal
+Message-ID: <5a6ce7534155f9b83f9@lists.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="a5eb8c78d.c91bcbf8"
+Content-Type: multipart/mixed; boundary="======93aafcac9c.ad63d937"
 Content-Transfer-Encoding: 7bit
 This is a multi-part message in MIME format.
 
---a5eb8c78d.c91bcbf8
+--======93aafcac9c.ad63d937
 
 hey its me, my old address dont work at time. i dont know why?!
 in the last days ive got some mails. i' think thaz your mails but im not sure!
 
 plz read and check ...
 cyaaaaaaa
---a5eb8c78d.c91bcbf8
-Content-Type: application/octet-stream; name=mail
+--======93aafcac9c.ad63d937
+Cont
 *** MESSAGE TRUNCATED ***
 
 
