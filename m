@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Fri, 9 Dec 2005 15:09:18 +0100
-Message-ID: <2bfc1df1c3861257f9ef5dda56150e49@bugtrack.alsa-project.org>
+From: Trevor Feeney <trev@feens.org>
+Subject: Re: Re: Revo 5.1
+Date: Fri, 09 Dec 2005 09:20:51 -0500
+Message-ID: <439992C3.6010604@feens.org>
+References: <43948A9F.6020009@feens.org>	<43948F9E.50407@seznam.cz>	<4395A188.7060307@feens.org>	<s5hu0dmjn6f.wl%tiwai@suse.de>	<43989AC8.1020203@seznam.cz> <s5hslt2zfy7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 278EC194
-	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2005 15:09:19 +0100 (MET)
+In-Reply-To: <s5hslt2zfy7.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +17,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: David Peroutka <david.peroutka@seznam.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
-======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
-======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              12-09-2005 15:09 CET
-======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
-Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
-======================================================================
+>At Thu, 08 Dec 2005 21:42:48 +0100,
+>David Peroutka wrote:
+>  
+>
+>>Takashi Iwai wrote:
+>>    
+>>
+>>>At Tue, 06 Dec 2005 09:34:48 -0500,
+>>>Trevor Feeney wrote:
+>>>
+>>>      
+>>>
+>>>>Was taking a look at the source for the Revo 5.1, noticed a few things.  
+>>>>You set it up as using only 6 DACs, going by the 5.1 I figure, but when 
+>>>>you consider that it also has the headpone out, it would have the same 
+>>>>number of DACs as the 7.1 (8 DACs in all). 
+>>>>
+>>>>Takashi - that answers your question in the last thread...from what I've 
+>>>>read, the 5.1 only uses one codec, and the headphones would just be a 
+>>>>separate channel.  I tried adjusting the number of DACs to 8 in the 
+>>>>driver, and did manage to get two
+>>>>DAC mixer sliders.  I'm not really sure if that was the way to go or 
+>>>>not.  I tried adjusting the asound plugin to output to 8 channels, pcm 
+>>>>device surround71, but that didn't seem to work.  I wondering if it 
+>>>>needs to be setup separately thant the other 6 channels so that it would 
+>>>>be considered it's own PCM device.  That goes a bit beyond my realm of 
+>>>>knowledge for driver development though...still trying to learn this.  
+>>>>Been reading a lot of the documents and such.
+>>>>        
+>>>>
+>>>[Added alsa-devel ML again]
+>>>
+>>>In the case of ice1724, you can open a stereo stream separately.
+>>>The first PCM is assigned to the multi-channel, i.e. 2-8 channels
+>>>interleaved format.  The secondary PCM is for SPDIF.  The third PCM is
+>>>the "independent" streams.  This may have up to 3 substreams, each of
+>>>which is a 2-channel one.  If you change num_dacs = 8, you'll be able
+>>>to access plughw:0,2,3 (suppose the card# is 0) for the last two
+>>>channels individually:
+>>>
+>>>	% aplay -Dplughw:0,1,3 foo.wav
+>>>
+>>>And you have to raise the corresponding DAC mixer values, of course.
+>>>
+>>>
+>>>Takashi
+>>>      
+>>>
+>>I've enabled all 8-channels of AK4358 in the driver, but I was unable to 
+>>access the 4-th substream, because (as you noted) there are max 3 
+>>substreams per PCM, so "plughw:0,2,3" is actually not available (the 
+>>other substreams work fine).
+>>    
+>>
+>
+>My bad, I mean 'plughw:0,2,2'.
+>
+>But Trevor reported it doesn't work, too, and mentioned that the chip
+>itself (Envy24GT) shouldn't support 4th stream...
+>
+>
+>Takashi
+>  
+>
+Takashi,
 
-----------------------------------------------------------------------
- robertw - 12-08-05 22:05 
-----------------------------------------------------------------------
-the Files uploaded now are from the current cvs-build.
+I've been poking around in the source for the driver and have a few 
+questions.  Where is it in the code that the front PCM stream would 
+conncect to output to the DACs associated with that, and is there a way 
+to duplicate that to the extra 2 DACs?  I know that laptop cards tend to 
+have a similar setup, outputting to headphones and speakers, so I figure 
+it can be done.  I'm also thinking that's the most logical solution in 
+this case as well.
 
-dmesg still says:
-[4300337.794000] ALSA
-/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3029:
-hda_codec: Unknown model for ALC260
+I have no problem fooling around to figure things out (I went to school 
+for software engineering, just have never dealt with drivers before), I 
+just need to be pointed in the right direction.  I know there are a few 
+people now looking for support with this card, so I figure if we work 
+together we can get it all working.
 
-----------------------------------------------------------------------
- tiwai - 12-09-05 15:09 
-----------------------------------------------------------------------
-OK, then you still have no sound, right?  What outputs do your device have?
- Did you get the same kernel error messages?
+Thanks again,
 
-The internal speaker and headphone jack?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-======================================================================
-
-
+Trevor
 
 
 -------------------------------------------------------
