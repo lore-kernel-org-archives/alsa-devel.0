@@ -1,8 +1,16 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 9 Dec 2005 06:22:43 -0000
-Message-ID: <E1Ekbea-00087m-PN@mail.sourceforge.net>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: 2.6.15-rc5-mm1
+Date: Fri, 9 Dec 2005 08:15:42 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0512090814400.9355__47145.2302336276$1134112676$gmane$org@tm8103.perex-int.cz>
+References: <20051204232153.258cd554.akpm@osdl.org>
+ <1134068983.21841.71.camel@localhost.localdomain> <20051208230203.GA23349@stusta.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2B51613A
+	for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2005 08:15:43 +0100 (MET)
+In-Reply-To: <20051208230203.GA23349@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +20,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Badari Pulavarty <pbadari@gmail.com>, Andrew Morton <akpm@osdl.org>, lkml <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
+On Fri, 9 Dec 2005, Adrian Bunk wrote:
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+> On Thu, Dec 08, 2005 at 11:09:43AM -0800, Badari Pulavarty wrote:
+> > On Sun, 2005-12-04 at 23:21 -0800, Andrew Morton wrote:
+> > > ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.15-rc5/2.6.15-rc5-mm1/
+> > 
+> > In file included from sound/pci/ens1371.c:2:
+> > sound/pci/ens1370.c: In function `snd_audiopci_probe':
+> > sound/pci/ens1370.c:2462: error: `spdif' undeclared (first use in this
+> > function)sound/pci/ens1370.c:2462: error: (Each undeclared identifier is
+> > reported only once
+> > sound/pci/ens1370.c:2462: error: for each function it appears in.)
+> > sound/pci/ens1370.c:2462: error: `lineio' undeclared (first use in this
+> > function)
+> > make[2]: *** [sound/pci/ens1371.o] Error 1
+> > make[2]: *** Waiting for unfinished jobs....
+> 
+> Jaroslav, this seems to come from your
+> 
+>   [ALSA] ens1371: added spdif and lineio module option
+> 
+> patch in the ALSA git tree if SUPPORT_JOYSTICK=n.
 
---- Original message follows.
+It's already fixed in ALSA git tree:
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+    [ALSA] ens1371: fix compilation without SUPPORT_JOYSTICK
 
-The original message is over 5k.  Message truncated to 1K.
+    Modules: ENS1370/1+ driver
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.227>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta254.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO jhhhjcfjr.net) (64.251.132.84)
-  by mta254.mail.mud.yahoo.com with SMTP; Thu, 08 Dec 2005 22:22:42 -0800
-From: alsa-devel@lists.sourceforge.net
-Date: Fri, 09 Dec 2005 06:11:53 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <94f031.ed1ce495c4ca4@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="======b98aa3cbf0b7c1758343daaf"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+    Move the spdif and lineio parameters around so that they are compiled
+    even when SUPPORT_JOYSTICK isn't set.
 
---======b98aa3cbf0b7c1758343daaf
+    Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-plz read and check ...
-cyaaaaaaa
---======b98aa3cbf0b7c1758343daaf
-Content-Type: application/octet-stre
-*** MESSAGE TRUNCATED ***
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
