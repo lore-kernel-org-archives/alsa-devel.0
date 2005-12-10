@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001633]: Unable to get MIDI working with NForce2/Soundstorm
-Date: Sat, 10 Dec 2005 16:50:22 +0100
-Message-ID: <14f6e1999fdfa35445ab7c0e69bd620a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001636]: Adding support for SB Audigy SE
+Date: Sat, 10 Dec 2005 17:53:28 +0100
+Message-ID: <51e13025e44994eb5ca562e847644158@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20214181
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 16:50:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA79C181
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 17:53:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1633> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1636> 
 ======================================================================
-Reported By:                rjohnson
-Assigned To:                
+Reported By:                chgans
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1633
-Category:                   PCI - intel8x0
+Issue ID:                   1636
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-r2
+Status:                     assigned
+Distribution:               GNU/Linux DeMuDi 1.2.1
+Kernel Version:             2.6.12-3-mm-k7
 ======================================================================
-Date Submitted:             12-10-2005 04:33 CET
-Last Modified:              12-10-2005 16:50 CET
+Date Submitted:             12-10-2005 17:53 CET
+Last Modified:              12-10-2005 17:53 CET
 ======================================================================
-Summary:                    Unable to get MIDI working with NForce2/Soundstorm
+Summary:                    Adding support for SB Audigy SE
 Description: 
-As near as I have been able to determine, the Nforce2 chip has on-board
-MIDI capabilities, possibly using DLS sound banks.  After a great deal of
-research, I found, according to
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Nvidia&card=.&chip=nForce&module=intel8x0,
-that I want to add the option mpu_port=0x330 in my alsa conf file. 
-However, after finally ditching the kernel drivers for the latest
-alsa-driver gentoo module, which is also evidently the latest offering
-available, I get the error: FATAL: Error inserting snd_intel8x0
-(/lib/modules/2.6.12-gentoo-r9/alsa-driver/pci/snd-intel8x0.ko): Unknown
-symbol in module, or unknown parameter
-without fail.  Modinfo snd_intel8x0 makes no mention of the mpu_port
-option, nor does the info for the module indicate any particular version
-of the snd-intel8x0 module I'm using.
-I did come across one other site that stated that midi was no longer
-supported by snd-intel8x0, and to try snd-mpu401 instead.  However, that
-gives me the modprobe error no such device.
-What am I missing?
+The Audigy SE is a card with the ca0106 chipset.
+It is reconized as "Creative Labs SB Audigy LS", the driver doesn't load,
+here is the kernel message:
+PCI: Found IRQ 10 for device 0000:00:0d.0
+Model 100a Rev 00000000 Serial 100a1102
+AC'97 0 does not respond - RESET
+AC'97 0 access is not valid [0x0], removing mixer.
+CA0106: probe of 0000:00:0d.0 failed with error -5
+
+here is the revelant part of output of lspci -vv:
+0000:00:0d.0 Multimedia audio controller: Creative Labs SB Audigy LS
+        Subsystem: Creative Labs: Unknown device 100a
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin A routed to IRQ 10
+        Region 0: I/O ports at e800 [size=32]
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+
+I have see in the ca0106 driver source that the "Audigy LS" is the last
+entry (the default) of the supported card list.
+
+So i wonder if it should be easy to get support for this board.
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-10-05 04:46 
-----------------------------------------------------------------------
-"As near as I have been able to determine, the Nforce2 chip has on-board
-MIDI capabilities, possibly using DLS sound banks. After a great deal of
-research, I found"
-
-The Nforce2 does not have any onboard MIDI synth that ALSA supports. 
-Where did you get this information?
-
-----------------------------------------------------------------------
- rjohnson - 12-10-05 16:50 
-----------------------------------------------------------------------
-As I mentioned above, there was a note posted by a user in the alsa-project
-entry for the intel8x0 chip that he has gotten midi to work by specifying
-the mpu_port option, which is what has been failing for me.
-
-Out of the Windows environment, I do see an entry for the 'Nvidia DLS
-Synthesizer, Hardware'.
-
-I can also reference
-http://www.3dsoundsurge.com/reviews/nForce/nForce-p6.html, which mentions
-'The MIDI quality of the nForce is very good and also very flexible
-sporting full DLS Level 2 support, SoundFont support, user configurable
-voice limit MIDI controllers for reverb and chorus. In the control panel
-MIDI tab you can access several controls specific to the Wavetable MIDI
-Synthesizer on the card.'
-
-It may well be that ALSA does not support it, but all of my searching
-attempts were unable to conclusively say that.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-05 04:33 rjohnson       New Issue                                    
-12-10-05 04:33 rjohnson       Distribution              => Gentoo          
-12-10-05 04:33 rjohnson       Kernel Version            => 2.6.14-r2       
-12-10-05 04:46 rlrevell       Note Added: 0006971                          
-12-10-05 16:50 rjohnson       Note Added: 0006972                          
+12-10-05 17:53 chgans         New Issue                                    
+12-10-05 17:53 chgans         Distribution              => GNU/Linux DeMuDi
+1.2.1
+12-10-05 17:53 chgans         Kernel Version            => 2.6.12-3-mm-k7  
 ======================================================================
 
 
