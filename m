@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001633]: Unable to get MIDI working with NForce2/Soundstorm
-Date: Sat, 10 Dec 2005 04:33:40 +0100
-Message-ID: <e5820fdb4ce2c147d333dc49f0e5c960@bugtrack.alsa-project.org>
+Date: Sat, 10 Dec 2005 04:46:50 +0100
+Message-ID: <e1a98812f6716c54ada6305563ce5011@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E978517B
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 04:33:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA16C185
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 04:46:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1633> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-r2
 ======================================================================
 Date Submitted:             12-10-2005 04:33 CET
-Last Modified:              12-10-2005 04:33 CET
+Last Modified:              12-10-2005 04:46 CET
 ======================================================================
 Summary:                    Unable to get MIDI working with NForce2/Soundstorm
 Description: 
@@ -63,12 +63,23 @@ gives me the modprobe error no such device.
 What am I missing?
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 12-10-05 04:46 
+----------------------------------------------------------------------
+"As near as I have been able to determine, the Nforce2 chip has on-board
+MIDI capabilities, possibly using DLS sound banks. After a great deal of
+research, I found"
+
+The Nforce2 does not have any onboard MIDI synth that ALSA supports. 
+Where did you get this information?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-10-05 04:33 rjohnson       New Issue                                    
 12-10-05 04:33 rjohnson       Distribution              => Gentoo          
 12-10-05 04:33 rjohnson       Kernel Version            => 2.6.14-r2       
+12-10-05 04:46 rlrevell       Note Added: 0006971                          
 ======================================================================
 
 
