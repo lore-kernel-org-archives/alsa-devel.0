@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001632]: suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A  listed,.... asus, nothing,....
-Date: Sat, 10 Dec 2005 04:29:43 +0100
-Message-ID: <9bccc3bcb4ccb4c9367298df793cf41e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001633]: Unable to get MIDI working with NForce2/Soundstorm
+Date: Sat, 10 Dec 2005 04:33:40 +0100
+Message-ID: <e5820fdb4ce2c147d333dc49f0e5c960@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B91A185
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 04:29:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E978517B
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 04:33:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1632> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1633> 
 ======================================================================
-Reported By:                rsrtfm
+Reported By:                rjohnson
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1632
-Category:                   1_OTHERS
+Issue ID:                   1633
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               suse 10.0, super, opensuse
-Kernel Version:             2.6.13
+Distribution:               Gentoo
+Kernel Version:             2.6.14-r2
 ======================================================================
-Date Submitted:             12-10-2005 04:29 CET
-Last Modified:              12-10-2005 04:29 CET
+Date Submitted:             12-10-2005 04:33 CET
+Last Modified:              12-10-2005 04:33 CET
 ======================================================================
-Summary:                    suse 10.0,  yast, no ad1986a listed,  in your
-soundcard list,  NO AD1986A  listed,.... asus, nothing,....
+Summary:                    Unable to get MIDI working with NForce2/Soundstorm
 Description: 
-suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A 
-listed,.... asus, nothing,....
-
-plus,  nic, needs nforce , nvidia driver,  chipset supposed to do sound
-and nic,... but on asus board a8n-vm csm ,  6150, 430,....
-
-anyway , should , list the ad1986a, and be able to select it.
-
-so far I have no sound!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! it's been 4 weeks.
-ehm,...what did you say,.. I can't hear anything,....
-where do I donate , my money, and anger?
-thanks, Robert Schultz
+As near as I have been able to determine, the Nforce2 chip has on-board
+MIDI capabilities, possibly using DLS sound banks.  After a great deal of
+research, I found, according to
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Nvidia&card=.&chip=nForce&module=intel8x0,
+that I want to add the option mpu_port=0x330 in my alsa conf file. 
+However, after finally ditching the kernel drivers for the latest
+alsa-driver gentoo module, which is also evidently the latest offering
+available, I get the error: FATAL: Error inserting snd_intel8x0
+(/lib/modules/2.6.12-gentoo-r9/alsa-driver/pci/snd-intel8x0.ko): Unknown
+symbol in module, or unknown parameter
+without fail.  Modinfo snd_intel8x0 makes no mention of the mpu_port
+option, nor does the info for the module indicate any particular version
+of the snd-intel8x0 module I'm using.
+I did come across one other site that stated that midi was no longer
+supported by snd-intel8x0, and to try snd-mpu401 instead.  However, that
+gives me the modprobe error no such device.
+What am I missing?
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-05 04:29 rsrtfm         New Issue                                    
-12-10-05 04:29 rsrtfm         Distribution              => suse 10.0, super,
-opensuse
-12-10-05 04:29 rsrtfm         Kernel Version            => 2.6.13          
+12-10-05 04:33 rjohnson       New Issue                                    
+12-10-05 04:33 rjohnson       Distribution              => Gentoo          
+12-10-05 04:33 rjohnson       Kernel Version            => 2.6.14-r2       
 ======================================================================
 
 
