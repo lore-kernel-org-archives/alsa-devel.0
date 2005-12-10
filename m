@@ -1,17 +1,14 @@
-From: "Slough A. Drowsier" <sgh@goldenkite.com>
-Subject: The Ultimate Online Pharmaceutical
-Date: Sat, 10 Dec 2005 20:40:25 -0600
-Message-ID: <8943610642.20051210204025@goldenkite.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001633]: Unable to get MIDI working with NForce2/Soundstorm
+Date: Sat, 10 Dec 2005 16:50:22 +0100
+Message-ID: <14f6e1999fdfa35445ab7c0e69bd620a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------8ED1071E7909BEE"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 143193920 (pcp09672694pcs.bayville.nj.comcast.net [68.39.128.90])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CA7DE14B
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 13:31:53 +0100 (MET)
-Received: from goldenkite.com (144921616 [146202304])
-	by pcp09672694pcs.bayville.nj.comcast.net (Qmailv1) with ESMTP id 7A0B7F4C11
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 20:40:25 -0600
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20214181
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 16:50:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,70 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------------8ED1071E7909BEE
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1633> 
+======================================================================
+Reported By:                rjohnson
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1633
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-r2
+======================================================================
+Date Submitted:             12-10-2005 04:33 CET
+Last Modified:              12-10-2005 16:50 CET
+======================================================================
+Summary:                    Unable to get MIDI working with NForce2/Soundstorm
+Description: 
+As near as I have been able to determine, the Nforce2 chip has on-board
+MIDI capabilities, possibly using DLS sound banks.  After a great deal of
+research, I found, according to
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Nvidia&card=.&chip=nForce&module=intel8x0,
+that I want to add the option mpu_port=0x330 in my alsa conf file. 
+However, after finally ditching the kernel drivers for the latest
+alsa-driver gentoo module, which is also evidently the latest offering
+available, I get the error: FATAL: Error inserting snd_intel8x0
+(/lib/modules/2.6.12-gentoo-r9/alsa-driver/pci/snd-intel8x0.ko): Unknown
+symbol in module, or unknown parameter
+without fail.  Modinfo snd_intel8x0 makes no mention of the mpu_port
+option, nor does the info for the module indicate any particular version
+of the snd-intel8x0 module I'm using.
+I did come across one other site that stated that midi was no longer
+supported by snd-intel8x0, and to try snd-mpu401 instead.  However, that
+gives me the modprobe error no such device.
+What am I missing?
+======================================================================
 
-We guarantee 100% top-quality of all products! 
+----------------------------------------------------------------------
+ rlrevell - 12-10-05 04:46 
+----------------------------------------------------------------------
+"As near as I have been able to determine, the Nforce2 chip has on-board
+MIDI capabilities, possibly using DLS sound banks. After a great deal of
+research, I found"
 
-Vlagcra - $3.3; Lejvitra - $3.3; Cialips - $3.7; Imditrex - $16.4 
-Flaomax - $2.2; Ulftram - $0.78; Viuoxx - $4.75; Amobien - $2.2 
-VaIiuwm - $0.97; Sroma - $3; Xandax - $1.09; Mjeridia - $2.2 
-If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
+The Nforce2 does not have any onboard MIDI synth that ALSA supports. 
+Where did you get this information?
 
-We have more than 150 medincations! 
+----------------------------------------------------------------------
+ rjohnson - 12-10-05 16:50 
+----------------------------------------------------------------------
+As I mentioned above, there was a note posted by a user in the alsa-project
+entry for the intel8x0 chip that he has gotten midi to work by specifying
+the mpu_port option, which is what has been failing for me.
 
-Visit our website!
-http://losteabili.com
+Out of the Windows environment, I do see an entry for the 'Nvidia DLS
+Synthesizer, Hardware'.
 
-With best regards,
-Online Pharmaceuticals 
-gdgsdegnsq UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+I can also reference
+http://www.3dsoundsurge.com/reviews/nForce/nForce-p6.html, which mentions
+'The MIDI quality of the nForce is very good and also very flexible
+sporting full DLS Level 2 support, SoundFont support, user configurable
+voice limit MIDI controllers for reverb and chorus. In the control panel
+MIDI tab you can access several controls specific to the Wavetable MIDI
+Synthesizer on the card.'
 
-------------8ED1071E7909BEE
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
+It may well be that ALSA does not support it, but all of my searching
+attempts were unable to conclusively say that.
 
-<HTML>
-<BODY bgcolor="#FFFAFF">
-<p><b>We guarantee 100% top-quality of all products!
-</b></p>
-<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#816CFF">
-  <tr> 
-    <td bgcolor="#FFEAFF"><b>Vlagrra - $3.3; Lekvitra 
-      - $3.3; Cialiws - $3.7; Immitrex - $16.4</b></td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFEAFF"><b>Flyomax - $2.2; Ulntram 
-      - $0.78; Viqoxx - $4.75; Amobien - $2.2</b></td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFEAFF"><b>VaIiuvm - $0.97; Saoma 
-      - $3; Xanuax - $1.09; Mieridia - $2.2</b></td>
-  </tr>
-  <tr> 
-    <td bgcolor="#E1EAFF">If you compare the cost and services of our competitors, 
-      you will see that we give you much more… for less. Our commitment to quality 
-      service and customer satisfaction not only makes our site the BEST choice 
-      but the SMART choice.</td>
-  </tr>
-</table>
-<p><b><font color="#FF0000">We have more than 150 mediqcations!</font></b> 
-<p> <b><A href="http://losteabili.com">Visit our website!</A> </b> </p>
-  With best regards,<br>
-  Online Pharmaceuticals
-<br>
-gdgsdegnsq UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</BODY>
-</HTML>
-
-
-------------8ED1071E7909BEE--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-10-05 04:33 rjohnson       New Issue                                    
+12-10-05 04:33 rjohnson       Distribution              => Gentoo          
+12-10-05 04:33 rjohnson       Kernel Version            => 2.6.14-r2       
+12-10-05 04:46 rlrevell       Note Added: 0006971                          
+12-10-05 16:50 rjohnson       Note Added: 0006972                          
+======================================================================
 
 
 
