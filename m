@@ -1,11 +1,14 @@
-From: Paul Lake <knowdet@yahoo.com>
-Subject: Capture program
-Date: Sun, 11 Dec 2005 12:43:21 -0800 (PST)
-Message-ID: <20051211204321.40817.qmail@web32107.mail.mud.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
+Date: Sun, 11 Dec 2005 22:34:32 +0100
+Message-ID: <8cca39383f6886166a716d9224c57565@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-686540575-1134333801=:35977"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CFED167
+	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 22:34:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,50 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0-686540575-1134333801=:35977
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
 
-Hi
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
+======================================================================
+Reported By:                dvalin
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1607
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandriva Linux (cooker)
+Kernel Version:             2.6.14.3 (vanilla)
+======================================================================
+Date Submitted:             11-30-2005 16:44 CET
+Last Modified:              12-11-2005 22:34 CET
+======================================================================
+Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
+sample rates than 48000 and 96000
+Description: 
+This seems to be same bug as 1050 which seems to be resolved for Audigy 2
+NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
+Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
+the SB Audigy2 ZS pcmcia card).
 
-I wrote a capture program, but i wanted to add overrun handling for synch=
-ronization. My goal was to get the frames number (available + not-availab=
-le frames due to overrun).
-I tried snd_pcm_delay() call, but the return value was always 1 during an=
- overrun. Another attempt was to use snd_pcm_avail_update(), which gave b=
-ack results more then the buffer size, but i'm not sure if it's correct c=
-onsidering my goal. If it's not right, what do i do?
+Also when changing sample rate to 48000 or 96000 the sound chops every now
+and then.
+======================================================================
 
-Thank is advance!
+----------------------------------------------------------------------
+ rlrevell - 12-11-05 20:20 
+----------------------------------------------------------------------
+By "fix it in CVS" you mean just apply the patch from the first comment?
 
-ps.: mmap access is used by the program
+Anyway, why did you assume this device is supported, if it's not in the
+soundcard matrix?
 
-		=09
----------------------------------
-Yahoo! Shopping
- Find Great Deals on Holiday Gifts at Yahoo! Shopping=20
---0-686540575-1134333801=:35977
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+I guess you want it added to the matrix as "partially supported"?
 
-Hi<br><br>I wrote a capture program, but i wanted to add overrun handling=
- for synchronization. My goal was to get the frames number (available + n=
-ot-available frames due to overrun).<br>I tried snd_pcm_delay() call, but=
- the return value was always 1 during an overrun. Another attempt was to =
-use snd_pcm_avail_update(), which gave back results more then the buffer =
-size, but i'm not sure if it's correct considering my goal. If it's not r=
-ight, what do i do?<br><br>Thank is advance!<br><br>ps.: mmap access is u=
-sed by the program<br><p>
-=09
-		<hr size=3D1>Yahoo! Shopping<br>=20
-Find Great Deals on Holiday Gifts at <a href=3D"http://us.rd.yahoo.com/ma=
-il_us/footer/shopping/*http://shopping.yahoo.com/;_ylc=3DX3oDMTE2bzVzaHJt=
-BF9TAzk1OTQ5NjM2BHNlYwNtYWlsdGFnBHNsawNob2xpZGF5LTA1=20
-">Yahoo! Shopping</a>=20
---0-686540575-1134333801=:35977--
+Re: the ACPI issue this sounds like a kernel or BIOS bug.  Try updating
+the BIOS and if you still have the problem then report it on
+bugzilla.kernel.org.
+
+----------------------------------------------------------------------
+ dvalin - 12-11-05 22:34 
+----------------------------------------------------------------------
+uhm, yes, I was thinking of the patch.
+
+My assumption that it was (somewhat) supported and should be added to the
+soundcard matrix was based on the fact that it works okay when forcing the
+samplerate :o)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-30-05 16:44 dvalin         New Issue                                    
+11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
+(cooker)
+11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
+11-30-05 17:07 dvalin         Note Added: 0006877                          
+11-30-05 17:07 dvalin         Note Deleted: 0006877                        
+11-30-05 17:07 dvalin         File Added:
+alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
+11-30-05 17:08 dvalin         Note Added: 0006878                          
+11-30-05 17:09 dvalin         Note Edited: 0006878                         
+11-30-05 17:22 dvalin         Note Edited: 0006878                         
+12-01-05 03:13 dvalin         Note Added: 0006882                          
+12-01-05 16:58 Clemens LadischNote Added: 0006886                          
+12-01-05 18:15 dvalin         Note Added: 0006887                          
+12-06-05 07:36 dvalin         Note Added: 0006920                          
+12-11-05 19:05 dvalin         Note Added: 0006977                          
+12-11-05 20:20 rlrevell       Note Added: 0006979                          
+12-11-05 22:34 dvalin         Note Added: 0006980                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
