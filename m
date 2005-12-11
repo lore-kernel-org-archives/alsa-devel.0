@@ -1,14 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Sun, 11 Dec 2005 06:43:35 +0100
-Message-ID: <8a723a4f3d090570e3112d4476770530@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: fvhsfh@dl.com
+Subject: =?GB2312?B?1tC5+sPxur0t1du/27fJu/rGsQ==?=
+Date: Sun, 11 Dec 2005 14:56:14 +0800
+Message-ID: <E1ElL8Z-0001dQ-Pt@mail.sourceforge.net>
+Content-Type: text/html;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF61316B
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 06:43:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,143 +13,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+</head>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
-======================================================================
-Reported By:                yafrank
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
-======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              12-11-2005 06:43 CET
-======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
-Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
-
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
-
-
-======================================================================
-
-----------------------------------------------------------------------
- rufusplant - 11-28-05 05:18 
-----------------------------------------------------------------------
-As a test, I installed Fedora Core 4 with default kernel version
-2.6.11-1.1369-FC4.  I then tried various alsa driver versions to see if
-the sound worked:
-
-1.0.10 - NO SOUND
-1.0.9rc? (FC4 default) - NO SOUND
-1.0.8 - NO SOUND
-1.0.8rc2 - NO SOUND
-1.0.8rc1 - SOUND WORKS!
-1.0.7 - SOUND WORKS!
-
-With alsamixer: In all cases where the sound did not work, the "Master"
-control did not have a "MM" button, and there was no "PCM" control.
-
-So what changed between alsa 1.0.8rc1 and 1.0.8rc2 to cause this to stop
-working?
-
-Note: my card is a Creative Vibra 128 (model CT4730) with EV1938 chip.
-
-----------------------------------------------------------------------
- yafrank - 12-11-05 06:43 
-----------------------------------------------------------------------
-The latest update of fc4 with alsa-utils upgraded to 1.0.10-1.FC4 gives
-segmentation fault for at least alsamixer utility. The kernel is
-2.6.14-1.1644_FC4.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-======================================================================
-
-
+<body bgcolor="#FFFFFF" text="#000000">
+<div align="center"> 
+  <table width="499" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td><img src="http://thfjp.vicp.net/xin/top.jpg" width="499" height="40"></td>
+    </tr>
+    <tr>
+      <td background="http://thfjp.vicp.net/xin/center.jpg" height="150"> 
+        <table width="91%" border="0" align="center" cellpadding="0" cellspacing="0" height="140">
+          <tr> 
+            <td colspan="2" height="30"><font size="2">本公司提供24小时在线服务</font></td>
+          </tr>
+          <tr> 
+            <td colspan="2" height="30"><font size="2">专业机票查询、酒店预订、服务热情周到、足不出户。</font></td>
+          </tr>
+          <tr> 
+            <td colspan="2" height="30"> <font color="#FF0000" size="2">北京四环以内免费送票上门</font></td>
+          </tr>
+          <tr> 
+            <td colspan="2" height="30"> <font color="#0000FF" size="2">详情请登陆：<a href="http://thfjp.vicp.net" target="_blank">http://thfjp.vicp.net</a></font></td>
+          </tr>
+          <tr> 
+            <td width="64%" height="30"><font size="2">服务电话：010-65912067 65062668</font></td>
+            <td rowspan="2" height="30" width="36%"><img src="http://thfjp.vicp.net/xin/dianhua.gif" width="50" height="40"></td>
+          </tr>
+          <tr> 
+            <td width="64%" height="30"><font size="2">服务传真：010-65062668</font></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td><img src="http://thfjp.vicp.net/xin/down.jpg" width="499" height="10"></td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>
 
 
 -------------------------------------------------------
