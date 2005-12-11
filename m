@@ -1,16 +1,11 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: snd-es1968 (+ snd-cs4236) trouble
-Date: Sun, 11 Dec 2005 16:16:38 +0100
-Message-ID: <439C42D6.1050002@keyaccess.nl>
-References: <439B36E0.3090709@keyaccess.nl> <20051211090848.GB11694@procyon.home>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: bill <bill@bardo.com.au>
+Subject: help on small program
+Date: Sun, 11 Dec 2005 11:27:18 -0500
+Message-ID: <45A89E55-AA98-491F-A655-EC6D68F2DC1B@bardo.com.au>
+Mime-Version: 1.0 (Apple Message framework v746.2)
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl [213.51.130.200])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A4E81A1
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 16:13:08 +0100 (MET)
-In-Reply-To: <20051211090848.GB11694@procyon.home>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,30 +15,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sergey Vlasov <vsu@altlinux.ru>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sergey Vlasov wrote:
+hello,
+i am trying to make a small program...
 
->>Call Trace:
->> [<f093f00c>] snd_platform_driver_probe+0xc/0xd [snd]
+basically i want to measure the ambient noise level with a microphone  
+and then
+set the level of the music playing accordingly
+a basic "IF ... THEN"  scenario
 
-> This also looks like the bug #1623:
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1623
-> 
-> Please try the patch attached to that bugreport.
+IF the microphone level is reading 15 over this 3 second sample  
+period, THEN set the music level output  to 44
+IF the microphone level is reading 20 over this 3 second sample  
+period, THEN set the music level output to 50
+etc
 
-Yes, this lets the 1.0.10 snd-cs4236 load again, thanks.
+and want to take the output from my sound program, process it with  
+this small program,  and then feed it into the USB sound output device
 
-Also confirmed that the 1.0.10 snd-cs4236 + snd-es1968 behaviour is 
-still as described for 1.0.10-rc1: snd-cs4236 dead as soon as snd-es1968 
-is inserted.
+bascially i'm not good enough at programming to do this
 
-Rene.
+can anybody out there help me out??  i will pay CASH, beer, food ,  
+anything .... if you can save me!
 
+thanks
+bill stewart
 
+bill@bardo.com.au
 
 
 -------------------------------------------------------
