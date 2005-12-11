@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Sun, 11 Dec 2005 22:34:32 +0100
-Message-ID: <8cca39383f6886166a716d9224c57565@bugtrack.alsa-project.org>
+From: Chad Simmons <chad.simmons@gmail.com>
+Subject: Question about correct way to code plugin? for ac3 encoding.
+Date: Sun, 11 Dec 2005 16:55:03 -0500
+Message-ID: <15079f890512111355k211724c5s6d298b13733a156b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_4557_22738201.1134338103901"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CFED167
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 22:34:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +15,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_4557_22738201.1134338103901
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
-======================================================================
-Reported By:                dvalin
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
-======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              12-11-2005 22:34 CET
-======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
-Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
+Hello,
 
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
-======================================================================
+I was doing a little research today on a project I have been thinking about
+implementing. The idea is this I want to write an alsa plugin that takes
+multichannel PCM audio in encodes it to AC3 or DTS in realtime and outputs
+it as RAW AC3 or DTS on my SPDIF out. This is my plan
 
-----------------------------------------------------------------------
- rlrevell - 12-11-05 20:20 
-----------------------------------------------------------------------
-By "fix it in CVS" you mean just apply the patch from the first comment?
+Create an alsa plugin that takes mulichannel PCM data and call's ffmpeg(for
+AC3 encoding) and passes it directly to the spdif out(as the hwac3 option
+does in mplayer).
 
-Anyway, why did you assume this device is supported, if it's not in the
-soundcard matrix?
+Would this be the best course of action?
 
-I guess you want it added to the matrix as "partially supported"?
+Regards,
 
-Re: the ACPI issue this sounds like a kernel or BIOS bug.  Try updating
-the BIOS and if you still have the problem then report it on
-bugzilla.kernel.org.
+Chad Simmons
 
-----------------------------------------------------------------------
- dvalin - 12-11-05 22:34 
-----------------------------------------------------------------------
-uhm, yes, I was thinking of the patch.
+------=_Part_4557_22738201.1134338103901
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-My assumption that it was (somewhat) supported and should be added to the
-soundcard matrix was based on the fact that it works okay when forcing the
-samplerate :o)
+Hello,<br>
+<br>
+I was doing a little research today on a project I have been thinking
+about implementing. The idea is this I want to write an alsa plugin
+that takes multichannel PCM audio in encodes it to AC3 or DTS in
+realtime and outputs it as RAW AC3 or DTS on my SPDIF out. This is my
+plan<br>
+<br>
+Create an alsa plugin that takes mulichannel PCM data and call's
+ffmpeg(for AC3 encoding) and passes it directly to the spdif out(as the
+hwac3 option does in mplayer).<br>
+<br>
+Would this be the best course of action?<br>
+<br>
+Regards,<br>
+<br>
+Chad Simmons<br>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-12-01-05 16:58 Clemens LadischNote Added: 0006886                          
-12-01-05 18:15 dvalin         Note Added: 0006887                          
-12-06-05 07:36 dvalin         Note Added: 0006920                          
-12-11-05 19:05 dvalin         Note Added: 0006977                          
-12-11-05 20:20 rlrevell       Note Added: 0006979                          
-12-11-05 22:34 dvalin         Note Added: 0006980                          
-======================================================================
-
-
+------=_Part_4557_22738201.1134338103901--
 
 
 -------------------------------------------------------
