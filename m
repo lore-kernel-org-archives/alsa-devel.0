@@ -1,14 +1,14 @@
-From: Eric Shattow <lucent@gmail.com>
-Subject: Re: Bounty: Polypaudio ALSA plugin
-Date: Sun, 11 Dec 2005 16:42:35 -0600
-Message-ID: <2c746f620512111442l5092db4bv3c38ead9f10c5323@mail.gmail.com>
-References: <Pine.LNX.4.64.0512072314450.26327@maggie.lkpg.cendio.se>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001642]: System lockup when recording
+Date: Mon, 12 Dec 2005 00:31:14 +0100
+Message-ID: <4f89cc7841cced4ee574627a74927176@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.64.0512072314450.26327@maggie.lkpg.cendio.se>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC35419F
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2005 00:31:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?Peter_=C5strand?= <astrand@cendio.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Peter,
 
-Comment for you from a casual ALSA user:  This is a good approach to
-take. I hope that there are interested developers.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1642> 
+======================================================================
+Reported By:                oryn
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1642
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.14.3
+======================================================================
+Date Submitted:             12-12-2005 00:31 CET
+Last Modified:              12-12-2005 00:31 CET
+======================================================================
+Summary:                    System lockup when recording
+Description: 
+When I try to open a usb device for recording it locks up the system
+I have to power cycle the system to recover.
+It makes no difference what application I use and whether it wants to open
+the alsa device directly or via the oss emulation.
+======================================================================
 
-Best wishes,
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-12-05 00:31 oryn           New Issue                                    
+12-12-05 00:31 oryn           Distribution              => Debian          
+12-12-05 00:31 oryn           Kernel Version            => 2.6.14.3        
+======================================================================
 
- Eric
 
-On 12/7/05, Peter =C5strand <astrand@cendio.se> wrote:
->
-> Hi all, and thanks for doing a great job. Let me introduce myself: I'm th=
-e
-> chief developer at Cendio, which develops the ThinLinc thin client produc=
-t.
-> Currently, we are using Esound to provide sound playback and recording fr=
-om
-> thin clients. Esound has many disadvantages, though, and we are consideri=
-ng
-> replacing it with Polypaudio (PA).
->
-> One thing remains, though: Achieving near 100% application compatibility.
-> The number of applications with PA support is fairly low. It would be gre=
-at
-> if all ALSA-enabled applications could be networked with PA. I've talked =
-to
-> many people about this, and there seems to be a general consensus that th=
-e
-> right solution is to push a networked audio protocol/layer below ALSA. We
-> think that this network layer should be PA.
->
-> The author of Polypaudio, Lennart Poettering, thinks is approach is a goo=
-d
-> idea as well. As I understand it, the plugin would be similiar to the JAC=
-K
-> plugin, included in the the alsa-plugins package.
->
-> Cendio AB is interested in solving this problem in the near future.
-> Therefore, we offer a bounty to the organization or individual that
-> implements this functionality. The details are:
->
-> * You will recieve 1000 EUR when the project is finished. This means
->    that the "plugin" should be written. The necessary ALSA modifications
->    should be done and also accepted by the ALSA project.
->
-> * The finished plugin should be Open Source and available via anonymous
->    CVS or Subversion.
->
-> * The software README should mention that Cendio AB has
->    sponsored this work.
->
-> Please contact me if you have any questions or are interested in this
-> bounty.
->
-> Regards,
-> ---
-> Peter =C5strand           Chief Developer
-> Cendio                  www.thinlinc.com
-> Teknikringen 3          www.cendio.se
-> 583 30 Link=F6ping        Phone: +46-13-21 46 00
->
 
 
 -------------------------------------------------------
