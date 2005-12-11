@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001640]: Microphone volume too low
-Date: Sun, 11 Dec 2005 01:06:03 +0100
-Message-ID: <bcb6b2bb74b9eb0de126914723cfb704@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-user] [SB Audigy4] capturing problems
+Date: Sun, 11 Dec 2005 00:09:18 -0500
+Message-ID: <1134277759.6019.4.camel@mindpipe>
+References: <200512101453.50834.trapni@gentoo.org>
+	 <200512102054.56708.trapni@gentoo.org>
+	 <1134247250.18432.112.camel@mindpipe>
+	 <200512110557.23619.trapni@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90F0A13D
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 01:06:03 +0100 (MET)
+In-Reply-To: <200512110557.23619.trapni@gentoo.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +20,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Christian Parpart <trapni@gentoo.org>
+Cc: alsa-user@lists.sourceforge.net, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2005-12-11 at 05:57 +0100, Christian Parpart wrote:
+> On Saturday 10 December 2005 21:40, Lee Revell wrote:
+> [...]
+> > OK.  Just for the sake of future driver improvements, do you know what
+> > capabilities is the Audigy4 supposed to have that the Audigy2 does not?
+> 
+> technical specification (shamelessly stolen from retail box :D):
+> * 64 audio channel playback with independent sample rates
+> * 24bit digital-to-analog conversion during playback with 
+>   sampling rates of 8, 11.025, 16, 22.05, 24, 32, 44.1, 48 and 
+>   96kHz in 7.1 mode and up to 192kHz in stereo mode
+> * 24bit analog-to-digital conversion during recording in 8, 16, 
+>   or 24bit at sampling rates of 8, 11.025, 16, 22.05, 24, 32, 
+>   44.1, 48 and 96kHz
+> * supports sony/philips digital interface (spdif) format of 
+>   up to 24bit/96kHz quality
+> * low latency multitrack recording with ASIO 2.0 support
+> 
+> Now this:
+> 
+> battousai linux # cat /proc/asound/pcm
+> 00-00: emu10k1 : ADC Capture/Standard PCM Playback : playback 32 : capture 1
+> 00-01: emu10k1 mic : Mic Capture : capture 1
+> 00-02: emu10k1 efx : Multichannel Capture/PT Playback : playback 8 : capture 1
+> 00-03: emu10k1 : Multichannel Playback : playback 1
+> 00-04: p16v : p16v : playback 1 : capture 1
+> 
+> ^^ the above shows me a playback of 32 and capture of 1.
+> is this correct, I'm asking because the spec tells something about 64 audio 
+> channel playback (unfortunately doesn't mention the capture side :(
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1640> 
-======================================================================
-Reported By:                jherazob
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1640
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Mepis
-Kernel Version:             2.6.11.6
-======================================================================
-Date Submitted:             12-11-2005 01:06 CET
-Last Modified:              12-11-2005 01:06 CET
-======================================================================
-Summary:                    Microphone volume too low
-Description: 
-Mic Volume is too low even when set to 100% and with the +20dB booster
-turned on. Hardware is OK since in the windows partition with the Via
-driver it works loud and clear with the volume at about 20-25% without the
-booster. 
-Soundcard is an onboard Via AC97 VT8235. The motherboard is an Asrock
-K7VM3.Attaching a txt file with output from lspci, /proc/asound/cards and
-various amixer outputs. Will also add a 10 second wav that demonstrates
-the unuseable low level of the volume. Any other information you need i'll
-provide as possible.
+Hmm, yes, that might be the difference.  It sounds exactly like the
+Audigy2 but with 64 substreams rather than 32.  And 64 substreams would
+fit nicely into the current driver without requiring a new register
+addressing scheme (see emu10k1.h, PTR_CHANNEL_MASK is 0x3f).
 
+I'll send an experimental patch.
 
-======================================================================
+Lee
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-11-05 01:06 jherazob       New Issue                                    
-12-11-05 01:06 jherazob       File Added: outputs.txt                      
-12-11-05 01:06 jherazob       Distribution              => Mepis           
-12-11-05 01:06 jherazob       Kernel Version            => 2.6.11.6        
-======================================================================
-
+Lee
 
 
 
