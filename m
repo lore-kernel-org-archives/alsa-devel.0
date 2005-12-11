@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001641]: error: cannot find input file: src/pcm/Makefile.in
-Date: Sun, 11 Dec 2005 11:12:26 +0100
-Message-ID: <b17b65fac6af401de49c207819684ca1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001593]: au88x0 wt synth
+Date: Sun, 11 Dec 2005 13:21:36 +0100
+Message-ID: <d8fd2cf9862e96fafb8bf9c54b833401@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DED61183
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 11:12:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23A1019D
+	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 13:21:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,178 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1641> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593> 
 ======================================================================
 Reported By:                Raymond
-Assigned To:                
+Assigned To:                mjander
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1641
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1593
+Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             12-11-2005 11:12 CET
-Last Modified:              12-11-2005 11:12 CET
+Date Submitted:             11-23-2005 17:16 CET
+Last Modified:              12-11-2005 13:21 CET
 ======================================================================
-Summary:                    error: cannot find input file: src/pcm/Makefile.in
+Summary:                    au88x0 wt synth
 Description: 
-I can compile alsa-lib-1.0.10 on Kernel 2.4
+After applied the patch as described in 
 
-alsa-lib CVS 11/Dec/2005
+http://article.gmane.org/gmane.linux.alsa.devel/27095
 
-./cvscompile
-./cvscompile: line 7:  9376 Terminated              automake --foreign
---copy --add-missing
-CFLAGS=-O2 -Wall -W -pipe -g
-./configure
-checking build system type... i686-redhat-linux-gnu
-checking host system type... i686-redhat-linux-gnu
-checking target system type... i686-redhat-linux-gnu
-checking for a BSD-compatible install... /usr/bin/install -c
-checking whether build environment is sane... yes
-checking for gawk... gawk
-checking whether make sets $(MAKE)... yes
-checking for gcc... gcc32
-checking for C compiler default output... a.out
-checking whether the C compiler works... yes
-checking whether we are cross compiling... no
-checking for suffix of executables...
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc32 accepts -g... yes
-checking for gcc32 option to accept ANSI C... none needed
-checking for style of include used by make... GNU
-checking dependency style of gcc32... gcc3
-checking for a BSD-compatible install... /usr/bin/install -c
-checking whether ln -s works... yes
-checking for a sed that does not truncate output... /bin/sed
-checking for egrep... grep -E
-checking for ld used by gcc32... /usr/bin/ld
-checking if the linker (/usr/bin/ld) is GNU ld... yes
-checking for /usr/bin/ld option to reload object files... -r
-checking for BSD-compatible nm... /usr/bin/nm -B
-checking how to recognise dependent libraries... pass_all
-checking how to run the C preprocessor... gcc32 -E
-checking for ANSI C header files... yes
-checking for sys/types.h... yes
-checking for sys/stat.h... yes
-checking for stdlib.h... yes
-checking for string.h... yes
-checking for memory.h... yes
-checking for strings.h... yes
-checking for inttypes.h... yes
-checking for stdint.h... yes
-checking for unistd.h... yes
-checking dlfcn.h usability... yes
-checking dlfcn.h presence... yes
-checking for dlfcn.h... yes
-checking for g++... g++
-checking whether we are using the GNU C++ compiler... yes
-checking whether g++ accepts -g... yes
-checking dependency style of g++... gcc3
-checking how to run the C++ preprocessor... g++ -E
-checking for g77... g77
-checking whether we are using the GNU Fortran 77 compiler... yes
-checking whether g77 accepts -g... yes
-checking the maximum length of command line arguments... 32768
-checking command to parse /usr/bin/nm -B output from gcc32 object... ok
-checking for objdir... .libs
-checking for ar... ar
-checking for ranlib... ranlib
-checking for strip... strip
-checking if gcc32 static flag  works... yes
-checking if gcc32 supports -fno-rtti -fno-exceptions... no
-checking for gcc32 option to produce PIC... -fPIC
-checking if gcc32 PIC flag -fPIC works... yes
-checking if gcc32 supports -c -o file.o... yes
-checking whether the gcc32 linker (/usr/bin/ld) supports shared
-libraries... yeschecking whether -lc should be explicitly linked in... no
-checking how to hardcode library paths into programs... immediate
-checking whether stripping libraries is possible... yes
-checking dynamic linker characteristics... GNU/Linux ld.so
-checking for shl_load... no
-checking for shl_load in -ldld... no
-checking for dlopen... no
-checking for dlopen in -ldl... yes
-checking whether a program can dlopen itself... yes
-checking whether a statically linked program can dlopen itself... yes
-checking if libtool supports shared libraries... yes
-checking whether to build shared libraries... yes
-checking whether to build static libraries... no
-configure: creating libtool
-appending configuration tag "CXX" to libtool
-checking for ld used by g++... /usr/bin/ld
-checking if the linker (/usr/bin/ld) is GNU ld... yes
-checking whether the g++ linker (/usr/bin/ld) supports shared libraries...
-yes
-checking for g++ option to produce PIC... -fPIC
-checking if g++ PIC flag -fPIC works... yes
-checking if g++ supports -c -o file.o... yes
-checking whether the g++ linker (/usr/bin/ld) supports shared libraries...
-yes
-checking how to hardcode library paths into programs... immediate
-checking whether stripping libraries is possible... yes
-checking dynamic linker characteristics... GNU/Linux ld.so
-checking for shl_load... (cached) no
-checking for shl_load in -ldld... (cached) no
-checking for dlopen... (cached) no
-checking for dlopen in -ldl... (cached) yes
-checking whether a program can dlopen itself... (cached) yes
-checking whether a statically linked program can dlopen itself... (cached)
-yes
-appending configuration tag "F77" to libtool
-checking if libtool supports shared libraries... yes
-checking whether to build shared libraries... yes
-checking whether to build static libraries... no
-checking for g77 option to produce PIC... -fPIC
-checking if g77 PIC flag -fPIC works... yes
-checking if g77 supports -c -o file.o... yes
-checking whether the g77 linker (/usr/bin/ld) supports shared libraries...
-yes
-checking how to hardcode library paths into programs... immediate
-checking whether stripping libraries is possible... yes
-checking dynamic linker characteristics... GNU/Linux ld.so
-checking for ANSI C header files... (cached) yes
-checking for an ANSI C-conforming const... yes
-checking for inline... inline
-checking whether time.h and sys/time.h may both be included... yes
-checking whether gcc32 needs -traditional... no
-checking for hsearch_r... yes
-checking for library version... major 1 minor 0 subminor 10 extrastr 
-extraver 1000000
-checking for versioned symbols... yes
-checking for debug... yes
-checking for tmpdir... /tmp
-checking for softfloat... no
-checking for architecture... x86
-checking wordexp.h usability... yes
-checking wordexp.h presence... yes
-checking for wordexp.h... yes
-checking for resmgr support... no
-checking for aload* support... yes
-configure: creating ./config.status
-config.status: creating Makefile
-config.status: creating doc/Makefile
-config.status: creating doc/pictures/Makefile
-config.status: creating include/Makefile
-config.status: creating include/sound/Makefile
-config.status: creating src/Makefile
-config.status: creating src/control/Makefile
-config.status: creating src/mixer/Makefile
-config.status: creating src/pcm/Makefile
-config.status: error: cannot find input file: src/pcm/Makefile.in
+Sound (like a monster roaring) is heard when using aplay through device 3
+of au8830 with the mono files from alsa-utils-1.0.10/speaker-test/samples
+
+The sound repeat 7 times and stop.
+
+Refer to the strace, 
+
+Do the DMA transfer occur when using hw:0,3 ?
+
+
 
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 11-30-05 08:48 
+----------------------------------------------------------------------
+There is most likely another bug in vortex_fifo_setwtvalid(vortex_t *
+vortex, int fifo, int en)
+
+----------------------------------------------------------------------
+ Raymond - 12-11-05 13:21 
+----------------------------------------------------------------------
+Do anyone know how to multiply 32bits x 32bits in I386/AMD64 ?
+
+We need to obtain the upper and lower 32 bits of the 64-bits product to
+calculate the wt parameters.
+
+	((sr << 0xf) * 0x57619F1)
+
+
+in au88x0_synth.c
+
+static void vortex_wt_SetFrequency(vortex_t * vortex, int wt, unsigned int
+sr)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-11-05 11:12 Raymond        New Issue                                    
+11-23-05 17:16 Raymond        New Issue                                    
+11-23-05 17:16 Raymond        Distribution              => Fedora Core 1   
+11-23-05 17:16 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+11-23-05 20:54 mjander        Note Added: 0006832                          
+11-25-05 07:57 Raymond        Note Added: 0006847                          
+11-30-05 08:48 Raymond        Note Added: 0006875                          
+12-11-05 13:21 Raymond        Note Added: 0006976                          
 ======================================================================
 
 
