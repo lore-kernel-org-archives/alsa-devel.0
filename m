@@ -1,7 +1,10 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 11 Dec 2005 19:22:52 -0000
-Message-ID: <E1ElWmj-0002Dz-4A@mail.sourceforge.net>
+From: Paul Lake <knowdet@yahoo.com>
+Subject: Capture program
+Date: Sun, 11 Dec 2005 12:43:21 -0800 (PST)
+Message-ID: <20051211204321.40817.qmail@web32107.mail.mud.yahoo.com>
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-686540575-1134333801=:35977"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,51 +18,47 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
+--0-686540575-1134333801=:35977
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+Hi
 
---- Original message follows.
+I wrote a capture program, but i wanted to add overrun handling for synch=
+ronization. My goal was to get the frames number (available + not-availab=
+le frames due to overrun).
+I tried snd_pcm_delay() call, but the return value was always 1 during an=
+ overrun. Another attempt was to use snd_pcm_avail_update(), which gave b=
+ack results more then the buffer size, but i'm not sure if it's correct c=
+onsidering my goal. If it's not right, what do i do?
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+Thank is advance!
 
-The original message is over 5k.  Message truncated to 1K.
+ps.: mmap access is used by the program
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=216.155.197.130>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta184.mail.dcn.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO mebfthai.net) (64.251.132.84)
-  by mta184.mail.dcn.yahoo.com with SMTP; Sun, 11 Dec 2005 11:22:49 -0800
-From: alsa-devel@lists.sourceforge.net
-To: ellenorzes@yahoo.com
-Date: Sun, 11 Dec 2005 19:09:47 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-X-MSMail-Priority: Normal
-Message-ID: <37bdcfb309c961a9335@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="======e27aeb.37c43c984dd"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+		=09
+---------------------------------
+Yahoo! Shopping
+ Find Great Deals on Holiday Gifts at Yahoo! Shopping=20
+--0-686540575-1134333801=:35977
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
---======e27aeb.37c43c984dd
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---======e27aeb.37c43c984dd
-Cont
-*** MESSAGE TRUNCATED ***
-
+Hi<br><br>I wrote a capture program, but i wanted to add overrun handling=
+ for synchronization. My goal was to get the frames number (available + n=
+ot-available frames due to overrun).<br>I tried snd_pcm_delay() call, but=
+ the return value was always 1 during an overrun. Another attempt was to =
+use snd_pcm_avail_update(), which gave back results more then the buffer =
+size, but i'm not sure if it's correct considering my goal. If it's not r=
+ight, what do i do?<br><br>Thank is advance!<br><br>ps.: mmap access is u=
+sed by the program<br><p>
+=09
+		<hr size=3D1>Yahoo! Shopping<br>=20
+Find Great Deals on Holiday Gifts at <a href=3D"http://us.rd.yahoo.com/ma=
+il_us/footer/shopping/*http://shopping.yahoo.com/;_ylc=3DX3oDMTE2bzVzaHJt=
+BF9TAzk1OTQ5NjM2BHNlYwNtYWlsdGFnBHNsawNob2xpZGF5LTA1=20
+">Yahoo! Shopping</a>=20
+--0-686540575-1134333801=:35977--
 
 
 -------------------------------------------------------
