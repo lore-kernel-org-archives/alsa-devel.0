@@ -1,17 +1,14 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: snd-es1968 (+ snd-cs4236) trouble
-Date: Sun, 11 Dec 2005 12:08:48 +0300
-Message-ID: <20051211090848.GB11694@procyon.home>
-References: <439B36E0.3090709@keyaccess.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001641]: error: cannot find input file: src/pcm/Makefile.in
+Date: Sun, 11 Dec 2005 11:12:26 +0100
+Message-ID: <b17b65fac6af401de49c207819684ca1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ftEhullJWpWg/VHq"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from master.altlinux.org (master.altlinux.org [62.118.250.235])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0310E16A
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 10:08:58 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <439B36E0.3090709@keyaccess.nl>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DED61183
+	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 11:12:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,86 +18,185 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ftEhullJWpWg/VHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1641> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1641
+Category:                   0_general
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             12-11-2005 11:12 CET
+Last Modified:              12-11-2005 11:12 CET
+======================================================================
+Summary:                    error: cannot find input file: src/pcm/Makefile.in
+Description: 
+I can compile alsa-lib-1.0.10 on Kernel 2.4
 
-On Sat, Dec 10, 2005 at 09:13:20PM +0100, Rene Herman wrote:
-> Unable to handle kernel NULL pointer dereference at virtual address 00000=
-000
->  printing eip:
-> 00000000
-> *pde =3D 00000000
-> Oops: 0000 [#1]
-> PREEMPT=20
-> Modules linked in: snd_cs4236 snd_opl3_lib snd_hwdep snd_cs4236_lib snd_m=
-pu401_uart snd_rawmidi snd_seq_device snd_cs4231_lib snd_pcm snd_timer snd =
-soundcore snd_page_alloc nfsd exportfs lockd sunrpc nls_iso8859_1 nls_cp437=
- vfat fat nls_base
-> CPU:    0
-> EIP:    0060:[<00000000>]    Not tainted VLI
-> EFLAGS: 00010286   (2.6.14.3-local-wc)=20
-> EIP is at 0x0
-> eax: ef2daa14   ebx: ef2daa1c   ecx: 00000008   edx: f094a494
-> esi: 00000000   edi: f094a494   ebp: c01b30e8   esp: ee8c2e3c
-> ds: 007b   es: 007b   ss: 0068
-> Process modprobe (pid: 1516, threadinfo=3Dee8c2000 task=3Def113a90)
-> Stack: f093f00c c01b3097 ee8c2e54 00000000 ef2daa1c c01b2a75 c0299458 c02=
-99458=20
->        f094a4ec c016d676 ef2daa1c ef2daa1c c0299360 00000000 c01b3127 c01=
-b30e8=20
->        ef2daa84 c01b2b77 ef2daa84 ef2daa1c ef2daac6 00000000 c01b2022 c02=
-99240=20
-> Call Trace:
->  [<f093f00c>] snd_platform_driver_probe+0xc/0xd [snd]
->  [<c01b3097>] driver_probe_device+0x31/0x82
->  [<c01b2a75>] bus_for_each_drv+0x35/0x59
->  [<c016d676>] create_files+0x27/0x51
->  [<c01b3127>] device_attach+0x3a/0x4d
->  [<c01b30e8>] __device_attach+0x0/0x5
->  [<c01b2b77>] bus_add_device+0x20/0x6f
->  [<c01b2022>] device_add+0x97/0xf8
->  [<c01b41d9>] platform_device_register+0xb5/0x103
->  [<f08f7995>] snd_cs4231_pm_suspend+0x0/0x15 [snd_cs4231_lib]
->  [<f09404b2>] snd_generic_device_register+0x64/0x81 [snd]
->  [<f08f79aa>] snd_cs4231_pm_resume+0x0/0x15 [snd_cs4231_lib]
->  [<f0940682>] snd_card_set_generic_pm_callback+0x13/0x2f [snd]
->  [<f08f7e63>] snd_cs4231_create+0x28a/0x29e [snd_cs4231_lib]
->  [<f09593a2>] snd_cs4236_create+0x70/0x2b1 [snd_cs4236_lib]
->  [<f09784e6>] snd_card_cs423x_probe+0x14c/0x30c [snd_cs4236]
->  [<f09786d0>] snd_cs423x_pnp_detect+0x2a/0x4c [snd_cs4236]
->  [<c0192e39>] card_probe+0x3b/0x85
->  [<c01933f0>] pnp_register_card_driver+0x7a/0x86
->  [<f08e103d>] alsa_card_cs423x_init+0x3d/0x62 [snd_cs4236]
->  [<c0126e59>] sys_init_module+0xae/0x1a5
->  [<c01024d1>] syscall_call+0x7/0xb
-> Code:  Bad EIP value.
+alsa-lib CVS 11/Dec/2005
 
-This also looks like the bug #1623:
+./cvscompile
+./cvscompile: line 7:  9376 Terminated              automake --foreign
+--copy --add-missing
+CFLAGS=-O2 -Wall -W -pipe -g
+./configure
+checking build system type... i686-redhat-linux-gnu
+checking host system type... i686-redhat-linux-gnu
+checking target system type... i686-redhat-linux-gnu
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for gcc... gcc32
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc32 accepts -g... yes
+checking for gcc32 option to accept ANSI C... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc32... gcc3
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether ln -s works... yes
+checking for a sed that does not truncate output... /bin/sed
+checking for egrep... grep -E
+checking for ld used by gcc32... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for /usr/bin/ld option to reload object files... -r
+checking for BSD-compatible nm... /usr/bin/nm -B
+checking how to recognise dependent libraries... pass_all
+checking how to run the C preprocessor... gcc32 -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking dlfcn.h usability... yes
+checking dlfcn.h presence... yes
+checking for dlfcn.h... yes
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking dependency style of g++... gcc3
+checking how to run the C++ preprocessor... g++ -E
+checking for g77... g77
+checking whether we are using the GNU Fortran 77 compiler... yes
+checking whether g77 accepts -g... yes
+checking the maximum length of command line arguments... 32768
+checking command to parse /usr/bin/nm -B output from gcc32 object... ok
+checking for objdir... .libs
+checking for ar... ar
+checking for ranlib... ranlib
+checking for strip... strip
+checking if gcc32 static flag  works... yes
+checking if gcc32 supports -fno-rtti -fno-exceptions... no
+checking for gcc32 option to produce PIC... -fPIC
+checking if gcc32 PIC flag -fPIC works... yes
+checking if gcc32 supports -c -o file.o... yes
+checking whether the gcc32 linker (/usr/bin/ld) supports shared
+libraries... yeschecking whether -lc should be explicitly linked in... no
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for shl_load... no
+checking for shl_load in -ldld... no
+checking for dlopen... no
+checking for dlopen in -ldl... yes
+checking whether a program can dlopen itself... yes
+checking whether a statically linked program can dlopen itself... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+configure: creating libtool
+appending configuration tag "CXX" to libtool
+checking for ld used by g++... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking whether the g++ linker (/usr/bin/ld) supports shared libraries...
+yes
+checking for g++ option to produce PIC... -fPIC
+checking if g++ PIC flag -fPIC works... yes
+checking if g++ supports -c -o file.o... yes
+checking whether the g++ linker (/usr/bin/ld) supports shared libraries...
+yes
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for shl_load... (cached) no
+checking for shl_load in -ldld... (cached) no
+checking for dlopen... (cached) no
+checking for dlopen in -ldl... (cached) yes
+checking whether a program can dlopen itself... (cached) yes
+checking whether a statically linked program can dlopen itself... (cached)
+yes
+appending configuration tag "F77" to libtool
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking for g77 option to produce PIC... -fPIC
+checking if g77 PIC flag -fPIC works... yes
+checking if g77 supports -c -o file.o... yes
+checking whether the g77 linker (/usr/bin/ld) supports shared libraries...
+yes
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for ANSI C header files... (cached) yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc32 needs -traditional... no
+checking for hsearch_r... yes
+checking for library version... major 1 minor 0 subminor 10 extrastr 
+extraver 1000000
+checking for versioned symbols... yes
+checking for debug... yes
+checking for tmpdir... /tmp
+checking for softfloat... no
+checking for architecture... x86
+checking wordexp.h usability... yes
+checking wordexp.h presence... yes
+checking for wordexp.h... yes
+checking for resmgr support... no
+checking for aload* support... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating doc/Makefile
+config.status: creating doc/pictures/Makefile
+config.status: creating include/Makefile
+config.status: creating include/sound/Makefile
+config.status: creating src/Makefile
+config.status: creating src/control/Makefile
+config.status: creating src/mixer/Makefile
+config.status: creating src/pcm/Makefile
+config.status: error: cannot find input file: src/pcm/Makefile.in
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1623
+======================================================================
 
-Please try the patch attached to that bugreport.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-11-05 11:12 Raymond        New Issue                                    
+======================================================================
 
---ftEhullJWpWg/VHq
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iD8DBQFDm+ygW82GfkQfsqIRAnXLAJ9lGEEFZfPupWIsg/hWcwdP+s41lwCfaGLs
-fJtXr7Ttm06T1uM/gxsuHsg=
-=+eJl
------END PGP SIGNATURE-----
-
---ftEhullJWpWg/VHq--
 
 
 -------------------------------------------------------
