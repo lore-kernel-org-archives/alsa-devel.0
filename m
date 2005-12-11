@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Sun, 11 Dec 2005 19:05:31 +0100
-Message-ID: <5da51de554925615b08daa5fdc2726c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001628]: Unable to get digital surround sound out of via sound driver
+Date: Sun, 11 Dec 2005 19:56:52 +0100
+Message-ID: <0c3d9c5a46b243513d32b858ea03555d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DED641A7
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 19:05:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 549691AA
+	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 19:56:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1628> 
 ======================================================================
-Reported By:                dvalin
-Assigned To:                Clemens Ladisch
+Reported By:                msillence
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
+Issue ID:                   1628
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              12-11-2005 19:05 CET
+Date Submitted:             12-07-2005 21:34 CET
+Last Modified:              12-11-2005 19:56 CET
 ======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
+Summary:                    Unable to get digital surround sound out of via
+sound driver
 Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
-
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
+I can get digital sterio sound out OK but not surround.
 ======================================================================
 
 ----------------------------------------------------------------------
- dvalin - 12-06-05 07:36 
+ tiwai - 12-08-05 17:23 
 ----------------------------------------------------------------------
-seems like sound only stutters when using acpi, when booting with acpi=off
-it no longer stutters..
+Could you elaborate what do you expect and what not working?
 
 ----------------------------------------------------------------------
- dvalin - 12-11-05 19:05 
+ msillence - 12-11-05 19:56 
 ----------------------------------------------------------------------
-noone's gone bother fixing this in cvs? :\
+I was hoping to get 6 channel sound out of the driver thought the digital
+SPDIF connector. I've got the front 2 channels OK but nothing out of the
+other speakers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-12-01-05 16:58 Clemens LadischNote Added: 0006886                          
-12-01-05 18:15 dvalin         Note Added: 0006887                          
-12-06-05 07:36 dvalin         Note Added: 0006920                          
-12-11-05 19:05 dvalin         Note Added: 0006977                          
+12-07-05 21:34 msillence      New Issue                                    
+12-07-05 21:34 msillence      Distribution              => Debian          
+12-07-05 21:34 msillence      Kernel Version            => 2.6.12          
+12-08-05 17:23 tiwai          Note Added: 0006958                          
+12-11-05 19:56 msillence      Note Added: 0006978                          
 ======================================================================
 
 
