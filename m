@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001635]: VIA 8237 with CMI9761 - master channel doesn't control volume
-Date: Sat, 10 Dec 2005 11:10:59 +0100
-Message-ID: <ddcb51d1d0925da5f6ef620fb118bafa@bugtrack.alsa-project.org>
+From: "Slough A. Drowsier" <sgh@goldenkite.com>
+Subject: The Ultimate Online Pharmaceutical
+Date: Sat, 10 Dec 2005 20:40:25 -0600
+Message-ID: <8943610642.20051210204025@goldenkite.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------8ED1071E7909BEE"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C49018D
-	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 11:11:00 +0100 (MET)
+Received: from 143193920 (pcp09672694pcs.bayville.nj.comcast.net [68.39.128.90])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CA7DE14B
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 13:31:53 +0100 (MET)
+Received: from goldenkite.com (144921616 [146202304])
+	by pcp09672694pcs.bayville.nj.comcast.net (Qmailv1) with ESMTP id 7A0B7F4C11
+	for <alsa-devel@alsa-project.org>; Sat, 10 Dec 2005 20:40:25 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +21,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1635> 
-======================================================================
-Reported By:                konmal
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1635
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               SUSE 10
-Kernel Version:             2.6.13-15.7-default
-======================================================================
-Date Submitted:             12-10-2005 11:10 CET
-Last Modified:              12-10-2005 11:10 CET
-======================================================================
-Summary:                    VIA 8237 with CMI9761 - master channel doesn't
-control volume
-Description: 
-Like in 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1510
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1599
+------------8ED1071E7909BEE
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-master control doesn't change volume. Muting master channel doesn't work
-either.
+We guarantee 100% top-quality of all products! 
 
-I have kernel modules of 1.0.9b and utils/libs of 1.0.10
-======================================================================
+Vlagcra - $3.3; Lejvitra - $3.3; Cialips - $3.7; Imditrex - $16.4 
+Flaomax - $2.2; Ulftram - $0.78; Viuoxx - $4.75; Amobien - $2.2 
+VaIiuwm - $0.97; Sroma - $3; Xandax - $1.09; Mjeridia - $2.2 
+If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-10-05 11:10 konmal         New Issue                                    
-12-10-05 11:10 konmal         Distribution              => SUSE 10         
-12-10-05 11:10 konmal         Kernel Version            => 2.6.13-15.7-default
-======================================================================
+We have more than 150 medincations! 
+
+Visit our website!
+http://losteabili.com
+
+With best regards,
+Online Pharmaceuticals 
+gdgsdegnsq UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------8ED1071E7909BEE
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#FFFAFF">
+<p><b>We guarantee 100% top-quality of all products!
+</b></p>
+<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#816CFF">
+  <tr> 
+    <td bgcolor="#FFEAFF"><b>Vlagrra - $3.3; Lekvitra 
+      - $3.3; Cialiws - $3.7; Immitrex - $16.4</b></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFEAFF"><b>Flyomax - $2.2; Ulntram 
+      - $0.78; Viqoxx - $4.75; Amobien - $2.2</b></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFEAFF"><b>VaIiuvm - $0.97; Saoma 
+      - $3; Xanuax - $1.09; Mieridia - $2.2</b></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#E1EAFF">If you compare the cost and services of our competitors, 
+      you will see that we give you much more… for less. Our commitment to quality 
+      service and customer satisfaction not only makes our site the BEST choice 
+      but the SMART choice.</td>
+  </tr>
+</table>
+<p><b><font color="#FF0000">We have more than 150 mediqcations!</font></b> 
+<p> <b><A href="http://losteabili.com">Visit our website!</A> </b> </p>
+  With best regards,<br>
+  Online Pharmaceuticals
+<br>
+gdgsdegnsq UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
+
+
+------------8ED1071E7909BEE--
 
 
 
