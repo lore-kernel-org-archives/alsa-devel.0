@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Sun, 11 Dec 2005 20:20:30 +0100
-Message-ID: <8f4f10a21986191b977d7f54cb364f69@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 11 Dec 2005 19:22:52 -0000
+Message-ID: <E1ElWmj-0002Dz-4A@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A72B1AA
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 20:20:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +12,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
-======================================================================
-Reported By:                dvalin
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
-======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              12-11-2005 20:20 CET
-======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
-Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
-======================================================================
+--- Original message follows.
 
-----------------------------------------------------------------------
- dvalin - 12-11-05 19:05 
-----------------------------------------------------------------------
-noone's gone bother fixing this in cvs? :\
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-----------------------------------------------------------------------
- rlrevell - 12-11-05 20:20 
-----------------------------------------------------------------------
-By "fix it in CVS" you mean just apply the patch from the first comment?
+The original message is over 5k.  Message truncated to 1K.
 
-Anyway, why did you assume this device is supported, if it's not in the
-soundcard matrix?
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=216.155.197.130>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta184.mail.dcn.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO mebfthai.net) (64.251.132.84)
+  by mta184.mail.dcn.yahoo.com with SMTP; Sun, 11 Dec 2005 11:22:49 -0800
+From: alsa-devel@lists.sourceforge.net
+To: ellenorzes@yahoo.com
+Date: Sun, 11 Dec 2005 19:09:47 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+X-MSMail-Priority: Normal
+Message-ID: <37bdcfb309c961a9335@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="======e27aeb.37c43c984dd"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-I guess you want it added to the matrix as "partially supported"?
+--======e27aeb.37c43c984dd
 
-Re: the ACPI issue this sounds like a kernel or BIOS bug.  Try updating
-the BIOS and if you still have the problem then report it on
-bugzilla.kernel.org.
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-12-01-05 16:58 Clemens LadischNote Added: 0006886                          
-12-01-05 18:15 dvalin         Note Added: 0006887                          
-12-06-05 07:36 dvalin         Note Added: 0006920                          
-12-11-05 19:05 dvalin         Note Added: 0006977                          
-12-11-05 20:20 rlrevell       Note Added: 0006979                          
-======================================================================
-
+plz read and check ...
+cyaaaaaaa
+--======e27aeb.37c43c984dd
+Cont
+*** MESSAGE TRUNCATED ***
 
 
 
