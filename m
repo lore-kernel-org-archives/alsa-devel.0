@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001628]: Unable to get digital surround sound out of via sound driver
-Date: Sun, 11 Dec 2005 19:56:52 +0100
-Message-ID: <0c3d9c5a46b243513d32b858ea03555d@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: help on small program
+Date: Sun, 11 Dec 2005 14:17:17 -0500
+Message-ID: <1134328638.6019.15.camel@mindpipe>
+References: <45A89E55-AA98-491F-A655-EC6D68F2DC1B@bardo.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 549691AA
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 19:56:52 +0100 (MET)
+In-Reply-To: <45A89E55-AA98-491F-A655-EC6D68F2DC1B@bardo.com.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: bill <bill@bardo.com.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2005-12-11 at 11:27 -0500, bill wrote:
+> hello,
+> i am trying to make a small program...
+> 
+> basically i want to measure the ambient noise level with a microphone  
+> and then
+> set the level of the music playing accordingly
+> a basic "IF ... THEN"  scenario
+> 
+> IF the microphone level is reading 15 over this 3 second sample  
+> period, THEN set the music level output  to 44
+> IF the microphone level is reading 20 over this 3 second sample  
+> period, THEN set the music level output to 50
+> etc
+> 
+> and want to take the output from my sound program, process it with  
+> this small program,  and then feed it into the USB sound output device
+> 
+> bascially i'm not good enough at programming to do this
+> 
+> can anybody out there help me out??  i will pay CASH, beer, food ,  
+> anything .... if you can save me!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1628> 
-======================================================================
-Reported By:                msillence
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1628
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             12-07-2005 21:34 CET
-Last Modified:              12-11-2005 19:56 CET
-======================================================================
-Summary:                    Unable to get digital surround sound out of via
-sound driver
-Description: 
-I can get digital sterio sound out OK but not surround.
-======================================================================
+Just take a look at the "aplay" and "arecord" sources, all you need is
+in there.  Hint - when you run "aplay" or "arecord" with -vvv, it
+displays a real time VU meter of the audio.  You just need to combine
+the two into a single program, where the output level is set based on
+the input level.
 
-----------------------------------------------------------------------
- tiwai - 12-08-05 17:23 
-----------------------------------------------------------------------
-Could you elaborate what do you expect and what not working?
+It seems like you could do it with 95% copy and paste.  Unfortunately I
+don't have time to help you in more detail but this should get you
+started.
 
-----------------------------------------------------------------------
- msillence - 12-11-05 19:56 
-----------------------------------------------------------------------
-I was hoping to get 6 channel sound out of the driver thought the digital
-SPDIF connector. I've got the front 2 channels OK but nothing out of the
-other speakers.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-07-05 21:34 msillence      New Issue                                    
-12-07-05 21:34 msillence      Distribution              => Debian          
-12-07-05 21:34 msillence      Kernel Version            => 2.6.12          
-12-08-05 17:23 tiwai          Note Added: 0006958                          
-12-11-05 19:56 msillence      Note Added: 0006978                          
-======================================================================
-
+Lee 
 
 
 
