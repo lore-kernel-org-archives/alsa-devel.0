@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001643]: Microphone is muted and no mic option available
-Date: Mon, 12 Dec 2005 04:12:02 +0100
-Message-ID: <a37a11636cdc12982acad799366d4b61@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001632]: suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A  listed,.... asus, nothing,....
+Date: Mon, 12 Dec 2005 04:59:40 +0100
+Message-ID: <5b27ecf4663edea89b9ef4fee6f3695a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8C5319D
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2005 04:12:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8718919F
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2005 04:59:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1643> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1632> 
 ======================================================================
-Reported By:                MACHINE
-Assigned To:                tiwai
+Reported By:                rsrtfm
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1643
-Category:                   PCI - hda-intel
+Issue ID:                   1632
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.14.3
+Status:                     new
+Distribution:               suse 10.0, super, opensuse
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             12-12-2005 04:12 CET
-Last Modified:              12-12-2005 04:12 CET
+Date Submitted:             12-10-2005 04:29 CET
+Last Modified:              12-12-2005 04:59 CET
 ======================================================================
-Summary:                    Microphone is muted and no mic option available
+Summary:                    suse 10.0,  yast, no ad1986a listed,  in your
+soundcard list,  NO AD1986A  listed,.... asus, nothing,....
 Description: 
-This issue exists since I bought this notebook, and it was never solved
-since ALSA 1.0.9, no matter what kernel I use.
+suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A 
+listed,.... asus, nothing,....
 
-The only mixer option related to microphone is "Input Source", and there
-is a "Front Mic", but useless.
+plus,  nic, needs nforce , nvidia driver,  chipset supposed to do sound
+and nic,... but on asus board a8n-vm csm ,  6150, 430,....
 
-in 'alsamixer -V capture', the only three columns are IEC958, Capture, and
-Capture (not a typo!)
+anyway , should , list the ad1986a, and be able to select it.
 
-I unmuted everything and push every volumes to 100%. Everything works
-fine, except microphone.
-
-Hardware has no problem (checked by Windows2000).
+so far I have no sound!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! it's been 4 weeks.
+ehm,...what did you say,.. I can't hear anything,....
+where do I donate , my money, and anger?
+thanks, Robert Schultz
 ======================================================================
+
+----------------------------------------------------------------------
+ juliancola - 12-12-05 04:59 
+----------------------------------------------------------------------
+I have the same problem with FC4 and RHEL 4 ES, ASUS A8R-MVP onboard sound
+chip AD1986A. At first time, I installed RHEL 4 ES ...the system hang at
+"initialize hardware... network storage". Then I install FC4 , the hang
+problem is gone, but system still can't detect my sound device....
+When I used alsa-1.0.9b-driver , alsaconf can't dectect the AD1986A chip.
+When I used alsa-1.0.10-driver , alsaconf can dectect one HD Audio.
+But when I reboot system , it's hang on "initialize hardware ... network
+storage audio" ......
+Is this bug??
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-12-05 04:12 MACHINE        New Issue                                    
-12-12-05 04:12 MACHINE        File Added: alsa                             
-12-12-05 04:12 MACHINE        Distribution              => Gentoo          
-12-12-05 04:12 MACHINE        Kernel Version            => 2.6.14.3        
+12-10-05 04:29 rsrtfm         New Issue                                    
+12-10-05 04:29 rsrtfm         Distribution              => suse 10.0, super,
+opensuse
+12-10-05 04:29 rsrtfm         Kernel Version            => 2.6.13          
+12-12-05 04:59 juliancola     Note Added: 0006982                          
 ======================================================================
 
 
