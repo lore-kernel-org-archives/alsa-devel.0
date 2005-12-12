@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001593]: au88x0 wt synth
-Date: Sun, 11 Dec 2005 13:21:36 +0100
-Message-ID: <d8fd2cf9862e96fafb8bf9c54b833401@bugtrack.alsa-project.org>
+From: "Whitings S. Incline" <gdr@gotdiceracing.com>
+Subject: Pharmaceutical revolution
+Date: Sun, 11 Dec 2005 20:42:04 -0600
+Message-ID: <3576618394.20051211204204@gotdiceracing.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------A7C821368878500"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23A1019D
-	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 13:21:37 +0100 (MET)
+Received: from 144881128 (cust-02-E9BB.adsl.scarlet.nl [82.134.233.187])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 303D819F
+	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 13:33:27 +0100 (MET)
+Received: from gotdiceracing.com (146365232 [144496616])
+	by cust-02-E9BB.adsl.scarlet.nl (Qmailv1) with ESMTP id 57BE7737AC
+	for <alsa-devel@alsa-project.org>; Sun, 11 Dec 2005 20:42:04 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +21,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1593
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
-======================================================================
-Date Submitted:             11-23-2005 17:16 CET
-Last Modified:              12-11-2005 13:21 CET
-======================================================================
-Summary:                    au88x0 wt synth
-Description: 
-After applied the patch as described in 
+------------A7C821368878500
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-http://article.gmane.org/gmane.linux.alsa.devel/27095
+Get Cipcro, Avanpdia, Prokzac and more ONLINE! 
 
-Sound (like a monster roaring) is heard when using aplay through device 3
-of au8830 with the mono files from alsa-utils-1.0.10/speaker-test/samples
+Vlagdra - $3.3 
+Legvitra - $3.3
+Cialiys - $3.7
+Imaitrex - $16.4
+Flqomax - $2.2
+Ulrtram - $0.78
+Vipoxx - $4.75 
+Amhbien - $2.2
+VaIiupm - $0.97 
+Sooma - $3
+Xanaax - $1.09
+Mderidia - $2.2 
+If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
 
-The sound repeat 7 times and stop.
+*we guarantee 100% top-quality of all products
+* we offer a money-back guarantee in case the product doesn't work for you or you may be somehow dissatisfied by its performance 
+* we've efficiently streamlined our service, letting you buy from us in a very discreet, non-embarrassing and hassle-free manner 
 
-Refer to the strace, 
+Visit our website
+http://generslow.com
+ 
+gdgsdegnsq UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
-Do the DMA transfer occur when using hw:0,3 ?
+------------A7C821368878500
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#FDFBFD">
+<p><b>Get Cipcro, Avanbdia, Prokzac 
+and more ONLINE!</b>
+</p>
+<table width="80%" cellpadding="15" cellspacing="1">
+  <tr valign="top"> 
+    <td width="33%" valign="top" bgcolor="#FDF3FD"> <b>Vlagira 
+      - $3.3 <br>
+      Ledvitra - $3.3<br>
+      Cialifs - $3.7<br>
+      Immitrex - $16.4<br>
+      Floomax - $2.2<br>
+      Ulmtram - $0.78<br>
+      Vizoxx - $4.75 <br>
+      Amzbien - $2.2<br>
+      VaIiuhm - $0.97 <br>
+      Sqoma - $3<br>
+      Xanjax - $1.09<br>
+      Mueridia - $2.2</b></td>
+    
+  </tr>
+  <tr> 
+    <td bgcolor="#EDFBFD">If you compare the cost and services of our competitors, 
+      you will see that we give you much more… for less. Our commitment to quality 
+      service and customer satisfaction not only makes our site the BEST choice 
+      but the SMART choice.</td>
+  </tr>
+</table> 
+<p> *we guarantee 100% top-quality of all products<br>
+  * we offer a money-back guarantee in case the product doesn't work for you or 
+  you may be somehow dissatisfied by its performance <br>
+  * we've efficiently streamlined our service, letting you buy from us in a very 
+  discreet, non-embarrassing and hassle-free manner </p><b><A href="http://generslow.com">Visit 
+  our website</A> </b>
+<br>
+<br>
+gdgsdegnsq UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
 
 
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 11-30-05 08:48 
-----------------------------------------------------------------------
-There is most likely another bug in vortex_fifo_setwtvalid(vortex_t *
-vortex, int fifo, int en)
-
-----------------------------------------------------------------------
- Raymond - 12-11-05 13:21 
-----------------------------------------------------------------------
-Do anyone know how to multiply 32bits x 32bits in I386/AMD64 ?
-
-We need to obtain the upper and lower 32 bits of the 64-bits product to
-calculate the wt parameters.
-
-	((sr << 0xf) * 0x57619F1)
-
-
-in au88x0_synth.c
-
-static void vortex_wt_SetFrequency(vortex_t * vortex, int wt, unsigned int
-sr)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-23-05 17:16 Raymond        New Issue                                    
-11-23-05 17:16 Raymond        Distribution              => Fedora Core 1   
-11-23-05 17:16 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-11-23-05 20:54 mjander        Note Added: 0006832                          
-11-25-05 07:57 Raymond        Note Added: 0006847                          
-11-30-05 08:48 Raymond        Note Added: 0006875                          
-12-11-05 13:21 Raymond        Note Added: 0006976                          
-======================================================================
+------------A7C821368878500--
 
 
 
