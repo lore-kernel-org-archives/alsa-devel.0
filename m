@@ -1,10 +1,14 @@
-From: "Andrew V. Samoilov" <andrew@email.zp.ua>
-Subject: [patch]: alsa-lib-1.0.10 gcc296 compilation error
-Date: Mon, 12 Dec 2005 15:08:36 +0200 (EET)
-Message-ID: <200512121308.jBCD8a0v059779@email.zp.ua>
+From: Nicolas Pitre <nico@cam.org>
+Subject: Re: [PATCH] make the pxa2xx-ac97 module more robust against PXA27x bugs
+Date: Mon, 12 Dec 2005 10:25:48 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0512121025040.26663@localhost.localdomain>
+References: <Pine.LNX.4.64.0512091537350.26663@localhost.localdomain>
+ <s5h64puzhf6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="-WMAIL-ATTACH-BOUNDARY-1134392916---"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <s5h64puzhf6.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,40 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
----WMAIL-ATTACH-BOUNDARY-1134392916---
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 12 Dec 2005, Takashi Iwai wrote:
 
-Hello!
+> At Fri, 09 Dec 2005 15:48:01 -0500 (EST),
+> Nicolas Pitre wrote:
+> > 
+> > The SDONE and CDONE interrupt on the PXA27x might become unusable in 
+> > some conditions.  Let's use an hybrid approach (interrupt with timeout) 
+> > to have the best possible behavior in all conditions.
+> > 
+> > Also let's not care about CAR_CAIP anymore.  This is useless.
+> > 
+> > Signed-off-by: Nicolas Pitre <nico@cam.org>
+> 
+> Could you regenerate the patch to the latest ALSA CVS version, so that
+> it's included in the upcoming 1.0.11-rc1?
+> Because of recent changes, the patch can't be applied.
 
---=20
-Regards,
-Andrew V. Samoilov
+Sure, Updated patch follows.
 
-________________________________________________________________
-GET INTERNET ACCESS FROM BCS! http://www.bcs.zp.ua
-Join BCS today! For your FREE webmail, visit: http://email.zp.ua/
 
----WMAIL-ATTACH-BOUNDARY-1134392916---
-Content-Type: text/plain; name="pcm_file.c.gcc296.patch"
-Content-Disposition: attachment; filename="pcm_file.c.gcc296.patch"
-Content-Transfer-Encoding: BASE64
-
-LS0tIGFsc2EtbGliLTEuMC4xMC9zcmMvcGNtL3BjbV9maWxlLmMuYmFrCU1vbiBPY3QgMTcgMTk6
-MTA6MTYgMjAwNQorKysgYWxzYS1saWItMS4wLjEwL3NyYy9wY20vcGNtX2ZpbGUuYwlGcmkgRGVj
-ICA5IDIyOjM1OjI5IDIwMDUKQEAgLTE4OCw3ICsxODgsNyBAQCBzdGF0aWMgc25kX3BjbV9zZnJh
-bWVzX3Qgc25kX3BjbV9maWxlX2ZvCiAJZXJyID0gSU5URVJOQUwoc25kX3BjbV9mb3J3YXJkKShm
-aWxlLT5nZW4uc2xhdmUsIGZyYW1lcyk7CiAJaWYgKGVyciA+IDApIHsKIAkJZmlsZS0+YXBwbF9w
-dHIgPSAoZmlsZS0+YXBwbF9wdHIgKyBlcnIpICUgZmlsZS0+d2J1Zl9zaXplOwotCQlzbmRfcGNt
-X3VmcmFtZXNfdCBuID0gc25kX3BjbV9mcmFtZXNfdG9fYnl0ZXMocGNtLCBlcnIpOworCQluID0g
-c25kX3BjbV9mcmFtZXNfdG9fYnl0ZXMocGNtLCBlcnIpOwogCQlmaWxlLT53YnVmX3VzZWRfYnl0
-ZXMgKz0gbjsKIAl9CiAJcmV0dXJuIGVycjsK
-
----WMAIL-ATTACH-BOUNDARY-1134392916-----
+Nicolas
 
 
 -------------------------------------------------------
