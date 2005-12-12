@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 12 Dec 2005 01:54:56 -0000
-Message-ID: <E1Elcu6-0007Lq-1f@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001643]: Microphone is muted and no mic option available
+Date: Mon, 12 Dec 2005 04:12:02 +0100
+Message-ID: <a37a11636cdc12982acad799366d4b61@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8C5319D
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2005 04:12:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1643> 
+======================================================================
+Reported By:                MACHINE
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1643
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.14.3
+======================================================================
+Date Submitted:             12-12-2005 04:12 CET
+Last Modified:              12-12-2005 04:12 CET
+======================================================================
+Summary:                    Microphone is muted and no mic option available
+Description: 
+This issue exists since I bought this notebook, and it was never solved
+since ALSA 1.0.9, no matter what kernel I use.
 
---- Original message follows.
+The only mixer option related to microphone is "Input Source", and there
+is a "Front Mic", but useless.
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+in 'alsamixer -V capture', the only three columns are IEC958, Capture, and
+Capture (not a typo!)
 
-The original message is over 5k.  Message truncated to 1K.
+I unmuted everything and push every volumes to 100%. Everything works
+fine, except microphone.
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.239>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta191.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO ynttcef.net) (64.251.132.84)
-  by mta191.mail.mud.yahoo.com with SMTP; Sun, 11 Dec 2005 17:54:56 -0800
-From: alsa-devel@lists.sourceforge.net
-To: address@yahoo.com
-Date: Mon, 12 Dec 2005 01:53:16 GMT
-Subject: hi,_ive_a_new_mail_address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <1a0ddd72.8bbfaa8fa7@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="====e3a794addcb6.abdab99234b6"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+Hardware has no problem (checked by Windows2000).
+======================================================================
 
---====e3a794addcb6.abdab99234b6
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-12-05 04:12 MACHINE        New Issue                                    
+12-12-05 04:12 MACHINE        File Added: alsa                             
+12-12-05 04:12 MACHINE        Distribution              => Gentoo          
+12-12-05 04:12 MACHINE        Kernel Version            => 2.6.14.3        
+======================================================================
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---====e3a794addcb6.abdab99234b6
-Content-Type: applic
-*** MESSAGE TRUNCATED ***
 
 
 
