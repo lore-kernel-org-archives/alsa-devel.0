@@ -1,7 +1,7 @@
 From: Nicolas Pitre <nico@cam.org>
-Subject: Re: [PATCH] make the pxa2xx-ac97 module more robust against PXA27x bugs
-Date: Mon, 12 Dec 2005 10:25:48 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0512121025040.26663@localhost.localdomain>
+Subject: [PATCH] make the pxa2xx-ac97 module more robust against PXA27x bugs
+Date: Mon, 12 Dec 2005 10:31:25 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0512121026380.26663@localhost.localdomain>
 References: <Pine.LNX.4.64.0512091537350.26663@localhost.localdomain>
  <s5h64puzhf6.wl%tiwai@suse.de>
 Mime-Version: 1.0
@@ -22,27 +22,108 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 12 Dec 2005, Takashi Iwai wrote:
+The SDONE and CDONE interrupt on the PXA27x might become unusable in
+some conditions.  Let's use an hybrid approach (interrupt with timeout)
+to have the best possible behavior in all conditions.
 
-> At Fri, 09 Dec 2005 15:48:01 -0500 (EST),
-> Nicolas Pitre wrote:
-> > 
-> > The SDONE and CDONE interrupt on the PXA27x might become unusable in 
-> > some conditions.  Let's use an hybrid approach (interrupt with timeout) 
-> > to have the best possible behavior in all conditions.
-> > 
-> > Also let's not care about CAR_CAIP anymore.  This is useless.
-> > 
-> > Signed-off-by: Nicolas Pitre <nico@cam.org>
-> 
-> Could you regenerate the patch to the latest ALSA CVS version, so that
-> it's included in the upcoming 1.0.11-rc1?
-> Because of recent changes, the patch can't be applied.
+Also let's not care about CAR_CAIP anymore.  This is useless.
 
-Sure, Updated patch follows.
+Signed-off-by: Nicolas Pitre <nico@cam.org>
 
+---
 
-Nicolas
+Index: alsa-kernel/arm/pxa2xx-ac97.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/arm/pxa2xx-ac97.c,v
+retrieving revision 1.9
+diff -u -r1.9 pxa2xx-ac97.c
+--- alsa-kernel/arm/pxa2xx-ac97.c	17 Nov 2005 17:19:25 -0000
++++ alsa-kernel/arm/pxa2xx-ac97.c	12 Dec 2005 15:20:23 -0000
+@@ -37,39 +37,47 @@
+ static DECLARE_WAIT_QUEUE_HEAD(gsr_wq);
+ static volatile long gsr_bits;
+ 
++/*
++ * Beware PXA27x bugs:
++ *
++ *   o Slot 12 read from modem space will hang controller.
++ *   o CDONE, SDONE interrupt fails after any slot 12 IO.
++ *
++ * We therefore have an hybrid approach for waiting on SDONE (interrupt or
++ * 1 jiffy timeout if interrupt never comes).
++ */ 
++
+ static unsigned short pxa2xx_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+ {
+ 	unsigned short val = -1;
+ 	volatile u32 *reg_addr;
+ 
+ 	down(&car_mutex);
+-	if (CAR & CAR_CAIP) {
+-		printk(KERN_CRIT"%s: CAR_CAIP already set\n", __FUNCTION__);
+-		goto out;
+-	}
+ 
+ 	/* set up primary or secondary codec space */
+ 	reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
+ 	reg_addr += (reg >> 1);
+ 
+ 	/* start read access across the ac97 link */
++	GSR = GSR_CDONE | GSR_SDONE;
+ 	gsr_bits = 0;
+ 	val = *reg_addr;
+ 	if (reg == AC97_GPIO_STATUS)
+ 		goto out;
+-	wait_event_timeout(gsr_wq, gsr_bits & GSR_SDONE, 1);
+-	if (!gsr_bits & GSR_SDONE) {
++	if (wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1) <= 0 &&
++	    !((GSR | gsr_bits) & GSR_SDONE)) {
+ 		printk(KERN_ERR "%s: read error (ac97_reg=%d GSR=%#lx)\n",
+-				__FUNCTION__, reg, gsr_bits);
++				__FUNCTION__, reg, GSR | gsr_bits);
+ 		val = -1;
+ 		goto out;
+ 	}
+ 
+ 	/* valid data now */
++	GSR = GSR_CDONE | GSR_SDONE;
+ 	gsr_bits = 0;
+ 	val = *reg_addr;			
+ 	/* but we've just started another cycle... */
+-	wait_event_timeout(gsr_wq, gsr_bits & GSR_SDONE, 1);
++	wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_SDONE, 1);
+ 
+ out:	up(&car_mutex);
+ 	return val;
+@@ -81,22 +89,19 @@
+ 
+ 	down(&car_mutex);
+ 
+-	if (CAR & CAR_CAIP) {
+-		printk(KERN_CRIT "%s: CAR_CAIP already set\n", __FUNCTION__);
+-		goto out;
+-	}
+-
+ 	/* set up primary or secondary codec space */
+ 	reg_addr = (ac97->num & 1) ? &SAC_REG_BASE : &PAC_REG_BASE;
+ 	reg_addr += (reg >> 1);
++
++	GSR = GSR_CDONE | GSR_SDONE;
+ 	gsr_bits = 0;
+ 	*reg_addr = val;
+-	wait_event_timeout(gsr_wq, gsr_bits & GSR_CDONE, 1);
+-	if (!gsr_bits & GSR_SDONE)
++	if (wait_event_timeout(gsr_wq, (GSR | gsr_bits) & GSR_CDONE, 1) <= 0 &&
++	    !((GSR | gsr_bits) & GSR_CDONE))
+ 		printk(KERN_ERR "%s: write error (ac97_reg=%d GSR=%#lx)\n",
+-				__FUNCTION__, reg, gsr_bits);
++				__FUNCTION__, reg, GSR | gsr_bits);
+ 
+-out:	up(&car_mutex);
++	up(&car_mutex);
+ }
+ 
+ static void pxa2xx_ac97_reset(struct snd_ac97 *ac97)
 
 
 -------------------------------------------------------
