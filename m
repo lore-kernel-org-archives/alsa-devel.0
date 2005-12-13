@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001636]: Adding support for SB Audigy SE
-Date: Tue, 13 Dec 2005 11:58:19 +0100
-Message-ID: <d86192eefa30966cb24a923001a09fc0@bugtrack.alsa-project.org>
+Date: Tue, 13 Dec 2005 11:59:52 +0100
+Message-ID: <fb388cbe2ad6879c8b611ef2d2f93b61@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC4671C0
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 11:58:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97482196
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 11:59:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1636> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               GNU/Linux DeMuDi 1.2.1
 Kernel Version:             2.6.12-3-mm-k7
 ======================================================================
 Date Submitted:             12-10-2005 17:53 CET
-Last Modified:              12-13-2005 11:58 CET
+Last Modified:              12-13-2005 11:59 CET
 ======================================================================
 Summary:                    Adding support for SB Audigy SE
 Description: 
@@ -207,6 +207,7 @@ Date Modified  Username       Field                    Change
 12-13-05 11:56 jcdutton       File Added: sb-audigy-se.fix.diff                 
   
 12-13-05 11:58 jcdutton       Note Added: 0006989                          
+12-13-05 11:59 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
