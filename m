@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000584]: LADSPA plugins which require multiple channels are not connected to properly -> SEGV
-Date: Tue, 13 Dec 2005 15:26:24 +0100
-Message-ID: <7ee2ce95663c0813f3382651ca755c97@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001457]: Lagged sound
+Date: Tue, 13 Dec 2005 17:17:54 +0100
+Message-ID: <5d1fd83c0d4bf3997b896eba32b5025e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9821F1C0
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 15:26:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D68871C1
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 17:17:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=584> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1457> 
 ======================================================================
-Reported By:                divVerent
-Assigned To:                perex
+Reported By:                mouse
+Assigned To:                mjander
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   584
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1457
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               ALT Linux
+Kernel Version:             from 2.6.10 to 2.6.12
 ======================================================================
-Date Submitted:             10-15-2004 22:58 CEST
-Last Modified:              12-13-2005 15:26 CET
+Date Submitted:             09-25-2005 12:56 CEST
+Last Modified:              12-13-2005 17:17 CET
 ======================================================================
-Summary:                    LADSPA plugins which require multiple channels are
-not connected to properly -> SEGV
+Summary:                    Lagged sound
 Description: 
-Instead of connecting all channels to the LADSPA plugin and invoking it
-once, libasound connects them one-by-one and invokes the LADSPA plugin
-multiple times. In other words, libasound only handles mono plugins and
-"stretches" them into stereo plugins by processing the audio data channel
-by channel.
-
-This will however make real stereo/multichannel plugins crash because they
-do what "ladspa.h" says:
-
-/* quoting ladspa.h
-The plugin may assume that all its input and output ports have been
-connected to the relevant data location (see the `connect_port()' function
-below) before it is asked to run.
-*/
+Played music a bit lagged and in dmesg I see:
+vortex: IRQ fifo error
 ======================================================================
 
 ----------------------------------------------------------------------
- divVerent - 03-20-05 15:15 
+ Raymond - 11-17-05 10:56 
 ----------------------------------------------------------------------
-By handling multichannel LADSPA plugins so that all channels are connected
-to their slots.
+Which application are you using to play music ?
 
-I see that this would break old functionality which can "expand" a
-single-channel LADSPA plugin to all channels. Perhaps it would be good to
-make this "expansion" an option of the LADSPA plugin.
+http://developer.intel.com/technology/iapc/involve.htm
 
-Unfortunately, from what I've read in the ALSA source code about this, it
-would require a complete rewrite of the LADSPA interface. But I still hope
-I am wrong.
+Although the windows drivers are ACPI compliant, the ALSA au88x0 driver do
+not support suspend/resume.
+
+My au8830 works fine (including 10-bands stereo equalizer) except the
+front/rear channels are swapped.
+
+Does the front/rear channels swap occur on your MX300 ?
+
+Which AC97 codec is on your MX300 ?
+
+speaker-test -c 4
 
 ----------------------------------------------------------------------
- perex - 12-13-05 15:26 
+ Raymond - 12-13-05 17:17 
 ----------------------------------------------------------------------
-It's fixed in ALSA CVS. The configuration example works now and the LADSPA
-code in alsa-lib was recoded to be more universal.
+You better put your MX300 on a PCI slot which do not share interrupt with
+your add-on IDE/SCSI controller and video card.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-15-04 22:58 divVerent      New Issue                                    
-10-15-04 23:21 divVerent      Issue Monitored: divVerent                    
-03-20-05 13:02 jdthood        Note Added: 0004076                          
-03-20-05 15:15 divVerent      Note Added: 0004090                          
-12-13-05 15:26 perex          Status                   new => resolved     
-12-13-05 15:26 perex          Resolution               open => fixed       
-12-13-05 15:26 perex          Assigned To               => perex           
-12-13-05 15:26 perex          Note Added: 0007018                          
+09-25-05 12:56 mouse          New Issue                                    
+09-25-05 12:56 mouse          Distribution              => ALT Linux       
+09-25-05 12:56 mouse          Kernel Version            => from 2.6.10 to 2.6.12
+09-25-05 13:00 mouse          Note Added: 0006386                          
+09-25-05 13:00 mouse          File Added: au8830                           
+11-16-05 13:05 Raymond        Note Added: 0006739                          
+11-17-05 09:10 mouse          Note Added: 0006746                          
+11-17-05 10:56 Raymond        Note Added: 0006747                          
+12-13-05 17:17 Raymond        Note Added: 0007019                          
 ======================================================================
 
 
