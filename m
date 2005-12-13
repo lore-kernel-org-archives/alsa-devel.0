@@ -1,14 +1,14 @@
-From: Clemens Ladisch <ladischc@informatik.uni-halle.de>
-Subject: Re: hw pause in USB
-Date: Tue, 13 Dec 2005 10:16:51 +0100
-Message-ID: <20051213091651.GA23938@turing.informatik.uni-halle.de>
-References: <439E2735.4060700@pianodisc.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001646]: Wish for M-Audio AudioPhile 192 (AP192K) Support
+Date: Tue, 13 Dec 2005 11:38:05 +0100
+Message-ID: <9e5b861652dcc67eeb408db105631912@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <439E2735.4060700@pianodisc.com>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1FBE51C3
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 11:38:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,34 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Steve deRosier <derosier@pianodisc.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Steve deRosier wrote:
-> When running my player via commandline and pressing pause, I get the 
-> following error message out of ALSA lib:
-> 
-> ALSA lib pcm_hw.c:535:(snd_pcm_hw_pause) SNDRV_PCM_IOCTL_PAUSE failed: 
-> Function not implemented
-> 
-> I'm guessing that the USB driver doesn't implement pause.
 
-Yes.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646> 
+======================================================================
+Reported By:                bobek
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1646
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             12-13-2005 11:38 CET
+Last Modified:              12-13-2005 11:38 CET
+======================================================================
+Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
+Description: 
+Could you add support for that soundcard? I have discussed this already
+with Jaroslav, he asked for photo of the card.
+======================================================================
 
-> My program implements pause by calling snd_pcm_pause( hPCM, 1 );.
-
-You cannot call snd_pcm_pause() when the device doesn't support it
-(it should have returned an error code).
-See snd_pcm_hw_params_can_pause().
-
-> * Is there a better way to implement pause in my client program?  
-
-snd_pcm_stop()
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-13-05 11:38 bobek          New Issue                                    
+12-13-05 11:38 bobek          File Added: ap192k-front.jpg                    
+======================================================================
 
 
-HTH
-Clemens
 
 
 -------------------------------------------------------
