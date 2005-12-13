@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Tue, 13 Dec 2005 12:15:32 +0100
-Message-ID: <6d28b8b863792444ac3d2b65da066eb4@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 13 Dec 2005 11:29:15 -0000
+Message-ID: <E1Em8LQ-00044f-6K@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E6CA132
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:15:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +12,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
-======================================================================
-Reported By:                gflash
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   927
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              12-13-2005 12:15 CET
-======================================================================
-Summary:                    Support for Creative SB Audigy 2 ZS Notebook
-Description: 
-Is this PCMCIA Souncard supported or will it be supported in the next time?
-I haven't heard any positive reports yet...
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-Thank you!
-======================================================================
+--- Original message follows.
 
-----------------------------------------------------------------------
- hades - 12-06-05 02:56 
-----------------------------------------------------------------------
-I'm also interested on the status of this driver. How far have you gone? Do
-you need any help?
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-----------------------------------------------------------------------
- jcdutton - 12-13-05 12:15 
-----------------------------------------------------------------------
-This card is still not working in Linux.
-The current status is that the card is now recognised, but the sound
-output is badly distorted. Until that is fixed, the card is still unusable
-in Linux.
-The distortion is like it doing massive gain (+12 dB) and then clipping
-the result, so pretty nasty. So, still work-in-progress
+The original message is over 5k.  Message truncated to 1K.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-20-05 08:53 gflash         New Issue                                    
-02-20-05 12:32 jcdutton       Note Added: 0003673                          
-02-20-05 14:06 gflash         Note Added: 0003674                          
-02-20-05 14:39 jcdutton       Note Added: 0003675                          
-02-20-05 14:47 jcdutton       Note Edited: 0003675                         
-07-25-05 17:43 dale           Note Added: 0005564                          
-07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
-08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
-10-30-05 21:08 jcdutton       Note Added: 0006577                          
-10-31-05 00:55 buckvitulli    Note Added: 0006578                          
-10-31-05 12:43 jcdutton       Status                   new => assigned     
-10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
-11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
-11-30-05 15:58 bubbleguuum    Issue Monitored: bubbleguuum                    
-12-06-05 02:55 hades          Issue Monitored: hades                       
-12-06-05 02:56 hades          Note Added: 0006918                          
-12-06-05 13:26 jpeak          Issue End Monitor: jpeak                     
-12-13-05 12:15 jcdutton       Note Added: 0006990                          
-======================================================================
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;ipts:ER;sv:ER<err=transport>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta260.mail.scd.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO rfofq.net) (64.251.132.84)
+  by mta260.mail.scd.yahoo.com with SMTP; Tue, 13 Dec 2005 03:29:14 -0800
+From: alsa-devel@lists.sourceforge.net
+To: smntp@yahoo.com
+Date: Tue, 13 Dec 2005 10:41:45 UTC
+Subject: hi,_ive_a_new_mail_address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <8dbaf5ff31.9d625e8ef@yahoo.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=====0a22d9eb.f128b54192"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
+--=====0a22d9eb.f128b54192
+
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--=====0a22d9eb.f128b54192
+Content-Type: application/octet-stream; name=m
+*** MESSAGE TRUNCATED ***
 
 
 
