@@ -1,13 +1,11 @@
-From: Daniel James <daniel@64studio.com>
-Subject: Re: ALSA Soundcard Matrix update
-Date: Tue, 13 Dec 2005 22:20:10 +0000
-Message-ID: <439F491A.8090003@64studio.com>
-References: <439DC569.5040103@64studio.com> <s5h1x0hxnju.wl%tiwai@suse.de>
+From: Tehn Yit Chin <tehn.yit.chin@gmail.com>
+Subject: power management in ALSA
+Date: Wed, 14 Dec 2005 10:50:05 +1100
+Message-ID: <bf04f99c0512131550r13b4197fx97f03e4a0c2672d6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_815_32638535.1134517805939"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1x0hxnju.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,38 +15,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, 64studio-devel@64studio.com
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
+------=_Part_815_32638535.1134517805939
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
->>I can 
->>confirm that a MobilePre USB version 200F, Firmware V1.03, Date 04-2005 
->>works out of the box with 64 Studio version 0.6.0, with no manual 
->>firmware upload required by the user. This particular unit is marked on 
->>the packaging as 'class compliant'. Kernel version is 2.6.13 and ALSA 
->>version is 1.0.9.
-> 
-> Thanks, fixed now.
+Hi all,
 
-I think the confusion arises from the fact there are at least two models 
-produced by M-Audio with this name. My class-compliant unit looks like this:
+I am trying to put power management awareness into a driver that I wrote,
+but I am having a little trouble understanding which model to use.
 
-http://www.m-audio.com/images/en/callouts/big/mobilepre_usb.jpg
+Looking at the other drivers, I noticed that the suspend/resume callbacks
+can be registered via snd_card_set_pm_callback(). The power management is
+then handled via pm.c and friends.
 
-The older model has a different colour faceplate:
+The other way is to initialise the suspend/resume callbacks via the linux
+device driver model like the following, and then registered via
+driver_register(). I think that the power management is then handled by
+sysfs.
 
-http://www.core-sound.com/mobilepre_large.jpg
+static struct device_driver codec_driver =3D {
+        .name =3D "codec",
+        .bus =3D &platform_bus_type,
+        .probe =3D codec_probe,
+        .remove =3D codec_remove,
+        .suspend =3D codec_suspend,
+        .resume =3D codec_resume
+};
 
-I'm guessing they changed the internals at the same time as they 
-redesigned the case, but who knows? For owners of the earlier units, 
-there could be a link to http://usb-midi-fw.sourceforge.net/ from the 
-matrix.
+Any suggestions on which is a better/correct method is welcome.
 
-Cheers!
+many thanks,
+tyc
 
-Daniel
+------=_Part_815_32638535.1134517805939
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Hi all,<br><br>I am trying to put power management awareness into a driver =
+that I wrote, but I am having a little trouble understanding which model to=
+ use. <br><br>Looking at the other drivers, I noticed that the suspend/resu=
+me callbacks can be registered via snd_card_set_pm_callback(). The power ma=
+nagement is then handled via=20
+pm.c and friends.<br><br>The other way is to initialise the suspend/resume =
+callbacks via the linux device driver model like the following, and then re=
+gistered via driver_register(). I think that the power management is then h=
+andled by sysfs.
+<br><br>static struct device_driver codec_driver =3D {<br>&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp; .name =3D &quot;codec&quot;,<br>&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp; .bus =3D &amp;platform_bus_type,<br>&nbsp;&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .probe =3D codec_probe,<br>&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp; .remove =3D codec_remove,<br>&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; .suspend =3D codec_suspend,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .resume =3D codec_resume<br>=
+};<br><br>Any suggestions on which is a better/correct method is welcome.<b=
+r><br>many thanks,<br>tyc<br>
+
+------=_Part_815_32638535.1134517805939--
 
 
 -------------------------------------------------------
