@@ -1,17 +1,14 @@
-From: "Patronage H. Psychotherapist" <havardk@global-asp.net>
-Subject: Online Pharmacy Guide
-Date: Tue, 13 Dec 2005 19:58:48 -0600
-Message-ID: <7126982209.20051213195848@global-asp.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000949]: Randomly, left and right tracks are swaped
+Date: Tue, 13 Dec 2005 12:50:17 +0100
+Message-ID: <2bfadfbfa3590de58e19140a961970c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------E179642EAFA0B89"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -195628408 (did75-10-82-236-231-219.fbx.proxad.net [82.236.231.219])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2F902168
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:49:58 +0100 (MET)
-Received: from global-asp.net (-195883352 [-195882920])
-	by did75-10-82-236-231-219.fbx.proxad.net (Qmailv1) with ESMTP id ACAECA5270
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 19:58:48 -0600
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0454018A
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:50:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,97 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------------E179642EAFA0B89
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=949> 
+======================================================================
+Reported By:                NorbertB
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   949
+Category:                   PCI - intel8x0
+Reproducibility:            random
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:              2.4.21-20.ELsmp
+======================================================================
+Date Submitted:             02-28-2005 00:08 CET
+Last Modified:              12-13-2005 12:50 CET
+======================================================================
+Summary:                    Randomly, left and right tracks are swaped
+Description: 
+I'm running ALSA 1.0.8 on an APro 6224 (AMD8111, ac97' chipset Realtek
+ALC655).
+alsamixer is on, I can hear my audio OK but sometimes, randomly, left and
+right channels are swapped.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000059 On au8820 left and right channels are s...
+has duplicate       0000403 intel8x0 driver swaps channels
+======================================================================
 
-Welcome to our Internet Pharkmacy
-We offer a wide selection of the
-most popular medicines online!
-FAST shipping, LOW prices and
-Toll-free customer support! 
+----------------------------------------------------------------------
+ phox - 03-23-05 02:30 
+----------------------------------------------------------------------
+I should mention that I (the reporter of bug 0000403 mentioned above) am
+also using an AMD8111-based board, the Tyan Thunder K8W (S2885ANRF), and
+of course using the integrated Analog Devices 1981B chip.
 
-If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
-Vlagdra - $3.3 
-Lehvitra - $3.3
-Cialiws - $3.7
-Imaitrex - $16.4 Flomax - $2.2
-Ulktram - $0.78
-Viloxx - $4.75 
-Amgbien - $2.2 VaIium - $0.97 
-Svoma - $3
-Xanyax - $1.09
-Maeridia - $2.2 
-* we offer a money-back guarantee in case the product doesn't work for you or you may be somehow dissatisfied by its performance 
-* we've efficiently streamlined our service, letting you buy from us in a very discreet, non-embarrassing and hassle-free manner  
+----------------------------------------------------------------------
+ jdthood - 12-13-05 12:50 
+----------------------------------------------------------------------
+NorbertB, phox: Any improvement in 1.0.10?
 
-The new, easy way to order your prescriuptions! 
-Visit our website
-http://contribue.com
-
-With best regards,
-Online Pharmaceuticals
-
-ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-------------E179642EAFA0B89
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<HTML>
-<BODY bgcolor="#FFF6FF">
-<p><b><font color="#FF6664">Welcome to our Internet Pharnmacy<br>
-  We offer a wide selection of the<br>
-  most popular medicines online!<br>
-  FAST shipping, LOW prices and<br>
-  Toll-free customer support! </font></b></p>
-<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#FF66CC">
-  <tr bgcolor="#FFF0CC"> 
-    <td colspan="3">If you compare the cost and services of our competitors, you 
-      will see that we give you much more… for less. Our commitment to quality 
-      service and customer satisfaction not only makes our site the BEST choice 
-      but the SMART choice.</td>
-  </tr>
-  <tr bgcolor="#C4C4FF"> 
-    <td bgcolor="#FFDECC"><b>Vlaghra - $3.3 <br>
-      Leyvitra - $3.3<br>
-      Cialifs - $3.7<br>
-      Imoitrex - $16.4</b></td>
-    <td bgcolor="#FFBACC"><b>Flaomax - $2.2<br>
-      Uljtram - $0.78<br>
-      Viyoxx - $4.75 <br>
-      Amkbien - $2.2</b></td>
-    <td bgcolor="#FFDECC"><b>VaIiulm - $0.97 <br>
-      Sqoma - $3<br>
-      Xanhax - $1.09<br>
-      Mueridia - $2.2</b></td>
-  </tr>
-  <tr bgcolor="#FFC0FF"> 
-    <td colspan="3">* we offer a money-back guarantee in case the product doesn't 
-      work for you or you may be somehow dissatisfied by its performance <br>
-      * we've efficiently streamlined our service, letting you buy from us in 
-      a very discreet, non-embarrassing and hassle-free manner </td>
-  </tr>
-</table>
-<br>
-<b>The new, easy way to order your prescriptions!</b> 
-<p><b><A href="http://contribue.com">Visit our website</A> 
-</b></p>
-With best regards,<br>
-Online Pharmaceuticals
-<br>
-<br>
-ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</BODY>
-</HTML>
-
-
-------------E179642EAFA0B89--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-28-05 00:08 NorbertB       New Issue                                    
+02-28-05 00:08 NorbertB       Kernel Version            =>  2.4.21-20.ELsmp
+03-22-05 22:30 jdthood        Relationship added       has duplicate 0000403
+03-22-05 22:33 jdthood        Relationship added       related to 0000059  
+03-23-05 02:30 phox           Note Added: 0004149                          
+12-13-05 12:50 jdthood        Note Added: 0007004                          
+======================================================================
 
 
 
