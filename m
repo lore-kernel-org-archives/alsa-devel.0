@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000553]: Experimental feature for dual codecs produce choppy sound
-Date: Tue, 13 Dec 2005 12:46:38 +0100
-Message-ID: <49d463072eec41de200f432c6f5d2a2e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
+Date: Tue, 13 Dec 2005 12:49:27 +0100
+Message-ID: <1142f710a6e7e24224c096263d393276@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D3D01C1
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:46:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CE04163
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:49:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=553> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
 ======================================================================
-Reported By:                cgdef
+Reported By:                klausr
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   553
+Issue ID:                   305
 Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.9-rc2
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             Debian kernel 2.6.5-4-686
 ======================================================================
-Date Submitted:             09-30-2004 07:51 CEST
-Last Modified:              12-13-2005 12:46 CET
+Date Submitted:             05-25-2004 14:49 CEST
+Last Modified:              12-13-2005 12:49 CET
 ======================================================================
-Summary:                    Experimental feature for dual codecs produce choppy
-sound
+Summary:                    sound is locked up after suspend/resume (APM)
 Description: 
-I first discovered this feature in the 2.6.9-rc2 kernel. There is a option
-which allows you to enable support for dual codecs in the cs-46xx driver.
-I have a Turtle Beach Santa Cruz card and it does come with dual codecs
-(CS 4297A-JQ and CS 4294-JQ) and a dsp (CS 4630). If the alsa driver is
-compiled with support for dual codecs the sound produced is often choppy
-and way bellow ~90dB SNR (specs provided by the manufacturer and verified
-by several reviewers). 
-However, if the alsa driver is compiled without the experimental code and
-support for only one codec the sound problems disapear compleatelly.
+Until recently I was running oss driver cs46xx without a problem. I could
+suspend in the middle of playback and xmms would keep playing after resume
+as if nothing happend at all.
+After switching to the 2.6 kernel, currently running 2.6.5, I also
+switched to ALSA beeing the new sound architecture of choice.
+Unforunately now when I suspend and resume my notebook sound stops working
+at all. Sometimes unloading all ALSA modules helps, sometimes even that is
+not possible anymore.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000226 Sound hangs after APM resume
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 12:54 
+ rlrevell - 03-23-05 00:39 
 ----------------------------------------------------------------------
-Do you see any improvement in more recent ALSA releases?
+Make sure to turn off all "Fast Boot" BIOS options on Thinkpads.  Otherwise
+you may have bizarre sound problems.  This advice is from Alan Cox.
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:46 
+ jdthood - 12-13-05 12:49 
 ----------------------------------------------------------------------
-No response to request for more information.
+klausr: Does cs46xx suspend-'n'-resume work properly in 1.0.10?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-30-04 07:51 cgdef          New Issue                                    
-09-30-04 07:51 cgdef          Distribution              => Gentoo          
-09-30-04 07:51 cgdef          Kernel Version            => 2.6.9-rc2       
-11-07-04 16:37 fvdpol         Issue Monitored: fvdpol                      
-03-19-05 12:54 jdthood        Note Added: 0004042                          
-08-08-05 07:52 madCoder       Issue Monitored: madCoder                    
-12-13-05 12:46 jdthood        Status                   new => closed       
-12-13-05 12:46 jdthood        Note Added: 0007002                          
+05-25-04 14:49 klausr         New Issue                                    
+05-25-04 14:49 klausr         Kernel Version            => Debian kernel
+2.6.5-4-686
+05-25-04 15:02 tiwai          Note Added: 0001213                          
+05-25-04 15:31 klausr         Note Added: 0001215                          
+05-25-04 15:59 klausr         Note Added: 0001217                          
+05-25-04 16:02 klausr         Issue Monitored: klausr                      
+05-25-04 16:05 tiwai          Note Added: 0001218                          
+05-25-04 16:44 klausr         Note Added: 0001220                          
+05-25-04 16:56 klausr         Note Edited: 0001220                         
+05-27-04 08:49 klausr         Issue End Monitor: klausr                    
+05-28-04 17:08 tiwai          Note Added: 0001269                          
+05-29-04 09:36 klausr         Note Added: 0001276                          
+01-17-05 10:57 jdthood        Note Added: 0003226                          
+03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
+03-23-05 00:39 rlrevell       Note Added: 0004145                          
+03-28-05 15:42 sboehler       Issue Monitored: sboehler                    
+06-20-05 01:59 tromer         Issue Monitored: tromer                      
+12-12-05 11:12 bheung         Issue Monitored: bheung                      
+12-13-05 12:49 jdthood        Note Added: 0007003                          
 ======================================================================
 
 
