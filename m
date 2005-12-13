@@ -1,11 +1,14 @@
-From: Steve deRosier <derosier@pianodisc.com>
-Subject: hw pause in USB
-Date: Mon, 12 Dec 2005 17:43:17 -0800
-Message-ID: <439E2735.4060700@pianodisc.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001051]: 'Headphones', 'PCM', 'Master' control names misassigned
+Date: Tue, 13 Dec 2005 03:58:57 +0100
+Message-ID: <1cb17b28c0981594dc3dceda5ed18183@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5411B1B5
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 03:58:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,41 +18,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-All,
 
-When I have a USB pcm device attached and I press pause in my application, I get a "burp" of audio out of device.  Un-pausing is fine, but then my MIDI and audio are no longer synced up.  This happens in several different players in our system.  This doesn't happen when using the on-board audio (but we're recommending USB audio devices to some customers since the on-board audio may be somewhat noisy for certain configurations).  BTW, this happens on 6 different USB audio devices from different manufacturers.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+======================================================================
+Reported By:                kayandus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1051
+Category:                   PCI - via82xx
+Reproducibility:            N/A
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.10-5-k7
+======================================================================
+Date Submitted:             04-13-2005 21:16 CEST
+Last Modified:              12-13-2005 03:58 CET
+======================================================================
+Summary:                    'Headphones', 'PCM', 'Master' control names
+misassigned
+Description: 
+Hello,
 
-When running my player via commandline and pressing pause, I get the following error message out of ALSA lib:
+I bought a Targa Traveller 811 laptop a couple of months ago with an
+onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
+works fine with the via82xx driver, but there's only one minor problem.
+Let me explain my problem.
 
-ALSA lib pcm_hw.c:535:(snd_pcm_hw_pause) SNDRV_PCM_IOCTL_PAUSE failed: Function not implemented
+There are 3 major volume controls for me:
 
-I'm guessing that the USB driver doesn't implement pause.
+Master: Controls the volume of the internal laptop speaker, so when there
+is a plug/earphones in my LINE IN, it changes nothing. (!!)
+Headphones: Controls volume of the LINE IN, so does nothing when there is
+nothing my LINE IN.
+PCM: Controls both internal speaker and LINE IN, so volume goes up and
+down whether im using the internal speaker or not.
 
-My program implements pause by calling snd_pcm_pause( hPCM, 1 );.
+Probably the problem is clear already to you. Most programs control only
+Master, so when I have my laptop attached to my stereo, those programs
+don't change my volume =(
+I hope you guys can fix this, I suggest by making an option to exchange
+Master with PCM.
 
-For drill:
-# cat /proc/asound/cards
-0 [rev50          ]: VIA686A - VIA 82C686A/B rev50
-                     VIA 82C686A/B rev50 at 0xdc00, irq 10
-1 [Opus7          ]: Serial - Serial midi (uart16550A)
-                     Serial midi (uart16550A) at 0x3f8, irq 4 speed 115200 div 1 outs 3 ins 3 adaptor Generic droponfull 1
-2 [AN1            ]: USB-Audio - HiFi Link AN1
-                     XITEL HiFi Link AN1 at usb-0000:00:07.2-1, full speed
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.4 (Mon May 17 14:31:44 2004 UTC).
-Compiled on Jun 23 2004 for kernel 2.6.7.
+Thanks in advance, Harm te Hennepe
+======================================================================
 
-So, the questions:
-* Is there a better way to implement pause in my client program?  
-* Is the USB driver broken?  
-* Does a more current USB driver fix this issue?  Yes, I know there are more current alsa releases; I ask this because upgrading and qualifying a new kernel and alsa lib on our device is not a trivial undertaking and if a more current USB driver doesn't absolutely fix it then I've got a serious time issue on my hands.
-* Can anybody suggest any other workarounds?
+----------------------------------------------------------------------
+ Nafallo - 09-16-05 00:16 
+----------------------------------------------------------------------
+I got a tip on IRC. I added "options snd-via82xx ac97_quirk=hp_only" to the
+end of /etc/modprobe.d/alsa-base. It works now! I guess you want to make
+this the default for my card? Here is the lspci -vns 00:11.5 info:
 
-Thanks,
-- Steve
+0000:00:11.5 0401: 1106:3059 (rev 50)
+        Subsystem: 161f:2032
+        Flags: medium devsel, IRQ 22
+        I/O ports at 1000 [size=256]
+
+
+
+----------------------------------------------------------------------
+ Nafallo - 12-13-05 03:58 
+----------------------------------------------------------------------
+What's the status of this bug?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-13-05 21:16 kayandus       New Issue                                    
+04-13-05 21:16 kayandus       Distribution              => Ubuntu          
+04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
+04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
+04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
+04-19-05 18:26 tiwai          Note Added: 0004535                          
+04-21-05 20:59 kayandus       Note Added: 0004552                          
+09-14-05 04:09 Nafallo        Note Added: 0006156                          
+09-14-05 04:10 Nafallo        Note Edited: 0006156                         
+09-14-05 04:10 Nafallo        Issue Monitored: Nafallo                     
+09-14-05 04:11 Nafallo        Note Edited: 0006156                         
+09-14-05 15:45 jdthood        Summary                  Master <--> PCM =>
+'Headphones', 'PCM', 'Master' control names misassigned
+09-14-05 15:45 jdthood        Description Updated                          
+09-15-05 16:04 tiwai          Note Added: 0006211                          
+09-15-05 22:38 Nafallo        Note Added: 0006225                          
+09-15-05 22:41 Nafallo        Note Edited: 0006225                         
+09-15-05 23:35 Nafallo        Note Added: 0006228                          
+09-15-05 23:52 rlrevell       Note Added: 0006229                          
+09-15-05 23:54 Nafallo        Note Added: 0006230                          
+09-15-05 23:59 Nafallo        Note Deleted: 0006230                        
+09-16-05 00:07 rlrevell       Note Added: 0006232                          
+09-16-05 00:16 Nafallo        Note Added: 0006233                          
+09-16-05 00:16 Nafallo        Note Edited: 0006233                         
+12-13-05 03:58 Nafallo        Note Added: 0006987                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
