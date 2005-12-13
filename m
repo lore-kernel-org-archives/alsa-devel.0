@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000146]: mic stops working
-Date: Tue, 13 Dec 2005 13:47:15 +0100
-Message-ID: <b52efca345c90e8f43a9f2d0d44caa66@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001554]: LADSPA plugin do not work in case of policy NONE. LADSPA plugin usage is not documented propertly.
+Date: Tue, 13 Dec 2005 15:13:56 +0100
+Message-ID: <16679f57bac9bed6ccd7861f27144b55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A1081C8
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:47:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 414481CA
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 15:13:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=146> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1554> 
 ======================================================================
-Reported By:                davec
-Assigned To:                
+Reported By:                gena2x
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   146
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1554
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-18-2004 14:40 CET
-Last Modified:              12-13-2005 13:47 CET
+Date Submitted:             11-13-2005 21:04 CET
+Last Modified:              12-13-2005 15:13 CET
 ======================================================================
-Summary:                    mic stops working
+Summary:                    LADSPA plugin do not work in case of policy NONE.
+LADSPA plugin usage is not documented propertly.
 Description: 
-I can initiate a call in skype ( through wine) and talk for a few seconds,
-then it drops
+This bug make impossible to work with single channel of multichannel
+frame.
+So I do not find another clear way to filter high frequences out of my
+subwoofer.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:42 
+ perex - 12-05-05 14:46 
 ----------------------------------------------------------------------
-Submitter: Does this problem still exist in ALSA 1.0.10?
+gena2x: any progress?
 
 ----------------------------------------------------------------------
- davec - 12-13-05 13:47 
+ perex - 12-13-05 15:13 
 ----------------------------------------------------------------------
-Sorry, I have no idea. I now use a Mac
+I rewrote the LADSPA plugin in CVS, so this issue is fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-04 14:40 davec          New Issue                                    
-03-19-05 09:29 jdthood        Note Added: 0004019                          
-12-13-05 12:42 jdthood        Note Added: 0006997                          
-12-13-05 13:47 davec          Note Added: 0007016                          
+11-13-05 21:04 gena2x         New Issue                                    
+11-13-05 21:04 gena2x         File Added: patch.localeANDladspa                 
+  
+11-14-05 10:59 perex          Note Added: 0006712                          
+11-14-05 11:32 gena2x         Note Added: 0006719                          
+11-21-05 18:31 jdthood        Note Added: 0006772                          
+11-22-05 09:01 perex          Note Added: 0006786                          
+12-05-05 14:46 perex          Note Added: 0006911                          
+12-05-05 14:46 perex          Note Added: 0006912                          
+12-05-05 14:57 perex          Note Deleted: 0006912                        
+12-13-05 15:13 perex          Status                   new => resolved     
+12-13-05 15:13 perex          Resolution               open => fixed       
+12-13-05 15:13 perex          Assigned To               => perex           
+12-13-05 15:13 perex          Note Added: 0007017                          
 ======================================================================
 
 
