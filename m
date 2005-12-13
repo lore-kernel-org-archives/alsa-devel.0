@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000926]: dmix segfaults
-Date: Tue, 13 Dec 2005 12:32:45 +0100
-Message-ID: <bf41da2e6cbe90c658eed8d3b1e406d9@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001361]: sound choppy when resuming alsa client process
+Date: Tue, 13 Dec 2005 12:34:57 +0100
+Message-ID: <3b43d7bf1a7859eebccc155fe937747c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53E03166
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:32:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4ED31C1
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:34:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=926> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1361> 
 ======================================================================
-Reported By:                jiyuan
-Assigned To:                
+Reported By:                mbwardle
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   926
-Category:                   hw specific configuration
+Issue ID:                   1361
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     feedback
 ======================================================================
-Date Submitted:             02-20-2005 03:18 CET
-Last Modified:              12-13-2005 12:32 CET
+Date Submitted:             08-23-2005 12:39 CEST
+Last Modified:              12-13-2005 12:34 CET
 ======================================================================
-Summary:                    dmix segfaults
+Summary:                    sound choppy when resuming alsa client process
 Description: 
-#warning Please, recode mix_areas1() routine to your architecture...
-#warning Please, recode mix_areas2() routine to your architecture...
-Therefore, when you using dmix under other architecture CPU, the dmix will
-crash down, and make error segmentation fault.
+If I start an ALSA client process from a terminal, begin playback of a
+song, suspend the process, then resume the process, the playback becomes
+choppy (has many intermittent periods of silence per second).
+
+A possibly related similar problem seems to occur if there is a runaway
+process on the system which starves the ALSA client of CPU time.  Even
+after the client gets a good slice of CPU time, the sound remains choppy.
+
+This issue was originally reported as a bug in Ubuntu Linux
+<http://bugzilla.ubuntu.com/show_bug.cgi?id=13003>.
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000824 sparc, powerpc, hppa, alpha, ia64: &quo...
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 19:08 
+ perex - 11-14-05 09:58 
 ----------------------------------------------------------------------
-Try the CVS version (better wait until tomorrow).
-
-If you still get segfault, it's not in the part with warnings above. 
-Possibly, either SYSV shm or semaphore...
+Could you try 1.0.10rc3 alsa-lib package?
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:32 
+ jdthood - 12-13-05 12:34 
 ----------------------------------------------------------------------
-Submitter: Does dmix still segfault on you?
+Submitter: Do you still see this problem with ALSA 1.0.10?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-20-05 03:18 jiyuan         New Issue                                    
-03-16-05 22:33 jdthood        Note Added: 0003970                          
-03-17-05 08:16 perex          Relationship added       related to 0000824  
-03-29-05 19:08 tiwai          Note Added: 0004256                          
-03-31-05 20:44 jdthood        Summary                  There is no source code
-for the functions mix_areas1() and mix_areas2() in the file pcm_dmix.c! => dmix
-segfaults
-04-29-05 09:15 mandreiana     Issue Monitored: mandreiana                    
-12-13-05 12:32 jdthood        Note Added: 0006993                          
+08-23-05 12:39 mbwardle       New Issue                                    
+08-23-05 12:39 mbwardle       File Added: asound.conf                      
+11-14-05 09:58 perex          Note Added: 0006699                          
+11-14-05 09:58 perex          Status                   assigned => feedback
+12-13-05 12:34 jdthood        Note Added: 0006995                          
 ======================================================================
 
 
