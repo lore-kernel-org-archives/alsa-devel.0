@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001648]: Front speakers are quiet
-Date: Tue, 13 Dec 2005 20:52:08 +0100
-Message-ID: <2557763cd94e975c5b5d6aeec853c94e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001628]: Unable to get digital surround sound out of via sound driver
+Date: Tue, 13 Dec 2005 21:07:54 +0100
+Message-ID: <e12472103b3d6005eb07887904367d82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F4FF120
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 20:52:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 412F01C1
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 21:07:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1648> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1628> 
 ======================================================================
-Reported By:                kamilp11
+Reported By:                msillence
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1648
-Category:                   PCI - emu10k1
+Issue ID:                   1628
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.14
+Distribution:               Debian
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             12-13-2005 19:30 CET
-Last Modified:              12-13-2005 20:52 CET
+Date Submitted:             12-07-2005 21:34 CET
+Last Modified:              12-13-2005 21:07 CET
 ======================================================================
-Summary:                    Front speakers are quiet
+Summary:                    Unable to get digital surround sound out of via
+sound driver
 Description: 
-I have SoundBlaster Live! 5.1 Digital. When I run sound program who has
-support 5.1 (xine, mplayer) everythings work fine without front speakers.
-When I run sound program on default sound device 5 speakers play and wave,
-wave center, wave surround volume controls has effect
-
-I have wave, wave surround, wave center, pcm, master and other volume
-controls unmute.
-
+I can get digital sterio sound out OK but not surround.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-13-05 20:27 
+ msillence - 12-11-05 19:56 
 ----------------------------------------------------------------------
-Please post the output of:
+I was hoping to get 6 channel sound out of the driver thought the digital
+SPDIF connector. I've got the front 2 channels OK but nothing out of the
+other speakers.
 
-lspci -vn | grep -A1 0401
-
 ----------------------------------------------------------------------
- mikma - 12-13-05 20:52 
+ msillence - 12-13-05 21:07 
 ----------------------------------------------------------------------
-It might be related to #1624.
+I've also found other references to this problem and there are links to the
+sound test files here:
+http://wastelands.net/d470k/index.php/SurroundSound
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-05 19:30 kamilp11       New Issue                                    
-12-13-05 19:30 kamilp11       Distribution              => Fedora Core 4   
-12-13-05 19:30 kamilp11       Kernel Version            => 2.6.14          
-12-13-05 20:27 rlrevell       Note Added: 0007021                          
-12-13-05 20:52 mikma          Note Added: 0007023                          
+12-07-05 21:34 msillence      New Issue                                    
+12-07-05 21:34 msillence      Distribution              => Debian          
+12-07-05 21:34 msillence      Kernel Version            => 2.6.12          
+12-08-05 17:23 tiwai          Note Added: 0006958                          
+12-11-05 19:56 msillence      Note Added: 0006978                          
+12-13-05 21:07 msillence      Issue Monitored: msillence                    
+12-13-05 21:07 msillence      Note Added: 0007024                          
 ======================================================================
 
 
