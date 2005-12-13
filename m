@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001554]: LADSPA plugin do not work in case of policy NONE. LADSPA plugin usage is not documented propertly.
-Date: Tue, 13 Dec 2005 15:13:56 +0100
-Message-ID: <16679f57bac9bed6ccd7861f27144b55@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000584]: LADSPA plugins which require multiple channels are not connected to properly -> SEGV
+Date: Tue, 13 Dec 2005 15:26:24 +0100
+Message-ID: <7ee2ce95663c0813f3382651ca755c97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 414481CA
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 15:13:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9821F1C0
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 15:26:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1554> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=584> 
 ======================================================================
-Reported By:                gena2x
+Reported By:                divVerent
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1554
-Category:                   0_general
+Issue ID:                   584
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-13-2005 21:04 CET
-Last Modified:              12-13-2005 15:13 CET
+Date Submitted:             10-15-2004 22:58 CEST
+Last Modified:              12-13-2005 15:26 CET
 ======================================================================
-Summary:                    LADSPA plugin do not work in case of policy NONE.
-LADSPA plugin usage is not documented propertly.
+Summary:                    LADSPA plugins which require multiple channels are
+not connected to properly -> SEGV
 Description: 
-This bug make impossible to work with single channel of multichannel
-frame.
-So I do not find another clear way to filter high frequences out of my
-subwoofer.
+Instead of connecting all channels to the LADSPA plugin and invoking it
+once, libasound connects them one-by-one and invokes the LADSPA plugin
+multiple times. In other words, libasound only handles mono plugins and
+"stretches" them into stereo plugins by processing the audio data channel
+by channel.
 
+This will however make real stereo/multichannel plugins crash because they
+do what "ladspa.h" says:
 
+/* quoting ladspa.h
+The plugin may assume that all its input and output ports have been
+connected to the relevant data location (see the `connect_port()' function
+below) before it is asked to run.
+*/
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 12-05-05 14:46 
+ divVerent - 03-20-05 15:15 
 ----------------------------------------------------------------------
-gena2x: any progress?
+By handling multichannel LADSPA plugins so that all channels are connected
+to their slots.
+
+I see that this would break old functionality which can "expand" a
+single-channel LADSPA plugin to all channels. Perhaps it would be good to
+make this "expansion" an option of the LADSPA plugin.
+
+Unfortunately, from what I've read in the ALSA source code about this, it
+would require a complete rewrite of the LADSPA interface. But I still hope
+I am wrong.
 
 ----------------------------------------------------------------------
- perex - 12-13-05 15:13 
+ perex - 12-13-05 15:26 
 ----------------------------------------------------------------------
-I rewrote the LADSPA plugin in CVS, so this issue is fixed.
+It's fixed in ALSA CVS. The configuration example works now and the LADSPA
+code in alsa-lib was recoded to be more universal.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 21:04 gena2x         New Issue                                    
-11-13-05 21:04 gena2x         File Added: patch.localeANDladspa                 
-  
-11-14-05 10:59 perex          Note Added: 0006712                          
-11-14-05 11:32 gena2x         Note Added: 0006719                          
-11-21-05 18:31 jdthood        Note Added: 0006772                          
-11-22-05 09:01 perex          Note Added: 0006786                          
-12-05-05 14:46 perex          Note Added: 0006911                          
-12-05-05 14:46 perex          Note Added: 0006912                          
-12-05-05 14:57 perex          Note Deleted: 0006912                        
-12-13-05 15:13 perex          Status                   new => resolved     
-12-13-05 15:13 perex          Resolution               open => fixed       
-12-13-05 15:13 perex          Assigned To               => perex           
-12-13-05 15:13 perex          Note Added: 0007017                          
+10-15-04 22:58 divVerent      New Issue                                    
+10-15-04 23:21 divVerent      Issue Monitored: divVerent                    
+03-20-05 13:02 jdthood        Note Added: 0004076                          
+03-20-05 15:15 divVerent      Note Added: 0004090                          
+12-13-05 15:26 perex          Status                   new => resolved     
+12-13-05 15:26 perex          Resolution               open => fixed       
+12-13-05 15:26 perex          Assigned To               => perex           
+12-13-05 15:26 perex          Note Added: 0007018                          
 ======================================================================
 
 
