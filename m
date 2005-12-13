@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001624]: No front channels on AC3
-Date: Tue, 13 Dec 2005 12:57:02 +0100
-Message-ID: <2a060aa5c5912f345adaea9b4e1c2ed9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
+Date: Tue, 13 Dec 2005 13:16:11 +0100
+Message-ID: <1351a9010da7881d42e76a85333da8c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE9671C1
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:57:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FCC21C3
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:16:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1624> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
 ======================================================================
-Reported By:                Cimi
-Assigned To:                
+Reported By:                Cimmo
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1624
-Category:                   PCI - emu10k1
+Issue ID:                   1331
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Etch
-Kernel Version:             2.6.13.4
+Status:                     feedback
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1398-x86_64
 ======================================================================
-Date Submitted:             12-06-2005 21:31 CET
-Last Modified:              12-13-2005 12:57 CET
+Date Submitted:             08-13-2005 01:27 CEST
+Last Modified:              12-13-2005 13:16 CET
 ======================================================================
-Summary:                    No front channels on AC3
+Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
 Description: 
-I can't hear any sound playing any ac3 track with xine. Same with 2.6.14.3
-kernel.
+I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
+integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack like the pci version of the sb live 24
+bit.
+
+With this card I cannot hear any sound that come from line-in.
+For Example I have a tv card, its output audio go into line-in: result is
+I cannot hear nothing from the tv, I can only see channels without audio.
+
+The "Capture feedback into playback" in the mixer change the mic's
+volume.
+There is nothing that change line-in's volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- mikma - 12-13-05 12:57 
+ Cimmo - 11-11-05 19:33 
 ----------------------------------------------------------------------
-Which alsa-driver version do you use? Check with "cat
-/proc/asound/version".
+Ok I've compiled and installed succesfully alsa-driver and alsa-lib
+1.0.10rc3
 
-You need to use alsa-driver version 1.0.10 if you use alsa-lib 1.0.10,
-since the FX ports used by the front PCM channels in the surround modes
-have changed. 
+I've retested everything:
+putting TV audio output to mic it works great, I can listen to TV!
+With this configuration I'm be able to record and play with these 2
+commands:
+arecord -fdat -Dhw:0,1 | aplay
+arecord -fdat -Dhw:0,2 | aplay
 
-You could try /usr/share/alsa/cards/EMU10K1.conf from alsa-lib (libasound2
-in Debian) version 1.0.9 instead of upgrading, but I'm not sure it works.
+with line-in there is no chance: audio doesn't work, and none of the four
+0,x works.
+
+I've to stress Creative for documentation?
+
+Tell me something
+
+Thanx
+Marco
+
+----------------------------------------------------------------------
+ jcdutton - 12-13-05 13:16 
+----------------------------------------------------------------------
+Ok, so now the mic in works, but line in does not.
+The only way to fix this is if I get a hardware sample.
+The connections of the mic and line in are hardware specific and different
+from all other SB Live 24bit cards.
+You could try and get MSI to send me a hardware sample if you wish to fix
+this.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-06-05 21:31 Cimi           New Issue                                    
-12-06-05 21:31 Cimi           Distribution              => Debian Etch     
-12-06-05 21:31 Cimi           Kernel Version            => 2.6.13.4        
-12-08-05 16:21 Cimi           Issue Monitored: Cimi                        
-12-13-05 12:57 mikma          Note Added: 0007006                          
+08-13-05 01:27 Cimmo          New Issue                                    
+08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
+08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
+08-13-05 01:41 jcdutton       Note Added: 0005798                          
+08-13-05 01:42 jcdutton       Status                   assigned => feedback
+08-13-05 18:30 Cimmo          Note Added: 0005807                          
+08-31-05 15:14 Cimmo          Note Added: 0005989                          
+08-31-05 18:59 rlrevell       Note Added: 0005991                          
+09-10-05 10:31 jcdutton       Note Added: 0006107                          
+10-19-05 19:13 Cimmo          Note Added: 0006496                          
+11-07-05 00:02 jcdutton       Note Added: 0006610                          
+11-07-05 11:07 Cimmo          Note Added: 0006612                          
+11-11-05 19:33 Cimmo          Note Added: 0006678                          
+12-13-05 13:16 jcdutton       Note Added: 0007007                          
 ======================================================================
 
 
