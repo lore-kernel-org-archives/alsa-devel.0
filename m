@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001642]: System lockup when recording
-Date: Mon, 12 Dec 2005 17:23:07 +0100
-Message-ID: <65bca9a3e398406587d0b70525d084f8@bugtrack.alsa-project.org>
+From: "Celesta P. Playgoer" <witten@goldwaterlaw.com>
+Subject: The Ultimate Online Pharmaceutical
+Date: Tue, 13 Dec 2005 00:44:42 -0600
+Message-ID: <2687749931.20051213004442@goldwaterlaw.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------6E5EC7BAFC5A22F"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AC1416E
-	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2005 17:23:08 +0100 (MET)
+Received: from -193709856 (pppin-b5-bc.pop-oberhonnefeld.rz-online.NET [212.7.188.181])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0650C1A2
+	for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2005 17:35:54 +0100 (MET)
+Received: from goldwaterlaw.com (-167866560 [-193800232])
+	by pppin-b5-bc.pop-oberhonnefeld.rz-online.NET (Qmailv1) with ESMTP id 7B663E9C61
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 00:44:42 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,90 +21,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1642> 
-======================================================================
-Reported By:                oryn
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1642
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.14.3
-======================================================================
-Date Submitted:             12-12-2005 00:31 CET
-Last Modified:              12-12-2005 17:23 CET
-======================================================================
-Summary:                    System lockup when recording
-Description: 
-When I try to open a usb device for recording it locks up the system
-I have to power cycle the system to recover.
-It makes no difference what application I use and whether it wants to open
-the alsa device directly or via the oss emulation.
-======================================================================
+------------6E5EC7BAFC5A22F
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-----------------------------------------------------------------------
- rlrevell - 12-12-05 01:01 
-----------------------------------------------------------------------
-Try recording from a text console (not X) and see if an Oops or kernel
-panic appears on the screen.  If so then try to capture it with a digital
-camera and attach it to this bug report.
+Whether you are home, at work or on the go, find what you want at our online store!
+We offer a wide selection of the most popular mediceines online! 
 
-----------------------------------------------------------------------
- oryn - 12-12-05 17:23 
-----------------------------------------------------------------------
-I'm not sure if I'm doing this right, but I tried to record using arecord
--------
-falcore:~# arecord -f cd -t wav -D hw:1,0 >test.wav
-Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-arecord: xrun:1077: read/write error, state = PREPARED
--------
-It didn't crash or lock up though :)
--------
-falcore:~# arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 0: I82801DBICH4 [Intel 82801DB-ICH4], device 0: Intel ICH [Intel
-82801DB-ICH4]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: I82801DBICH4 [Intel 82801DB-ICH4], device 1: Intel ICH - MIC ADC
-[Intel 82801DB-ICH4 - MIC ADC]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: I82801DBICH4 [Intel 82801DB-ICH4], device 2: Intel ICH - MIC2 ADC
-[Intel 82801DB-ICH4 - MIC2 ADC]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: I82801DBICH4 [Intel 82801DB-ICH4], device 3: Intel ICH - ADC2
-[Intel 82801DB-ICH4 - ADC2]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: headset [Plantronics headset], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
--------
-Any suggestions on something oss that records and runs in the console?
+Flpomax - $2.2; Ulmtram - $0.78; Viboxx - $4.75; Amsbien - $2.2 
+Vlagdra - $3.3; Leuvitra - $3.3; Cialips - $3.7; Imlitrex - $16.4 
+VaIiukm - $0.97; Sboma - $3; Xankax - $1.09; Mqeridia - $2.2 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-12-05 00:31 oryn           New Issue                                    
-12-12-05 00:31 oryn           Distribution              => Debian          
-12-12-05 00:31 oryn           Kernel Version            => 2.6.14.3        
-12-12-05 01:01 rlrevell       Note Added: 0006981                          
-12-12-05 17:23 oryn           Note Added: 0006984                          
-======================================================================
+The Facts: Our site has lower prices and more services than its competitors for three consecutive years!
+Our prices are between 24.62 and 37.12% (an average of 30.87%) less than the market average.
+
+Visit our website 
+http://teiheas.com
+
+WBR,
+Online Pharmaceuticals 
+
+
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------6E5EC7BAFC5A22F
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#F9FFFF">
+<p><b>Whether you are home, at work or on the go, find what you want at our online 
+store!<br>
+We offer a wide selection of the most popular medicqines online!</b> </p>
+<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#339966">
+  <tr> 
+    <td bgcolor="#EB99FF"><b>Flcomax - $2.2; Ulytram 
+      - $0.78; Vidoxx - $4.75; Amubien - $2.2</b></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#FFE6FF"><b>Vlagyra - $3.3; Lefvitra 
+      - $3.3; Cialims - $3.7; Imditrex - $16.4</b></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#EB99FF"><b>VaIiubm - $0.97; Sroma 
+      - $3; Xanvax - $1.09; Mferidia - $2.2</b></td>
+  </tr>
+</table>
+<p><b>The Facts:</b> Our site has lower prices and more services than its competitors for 
+three consecutive years!<br>
+Our prices are between 24.62 and 37.12% (an average of 30.87%) less than the market 
+average.</p>
+<p>
+  <b><A href="http://teiheas.com">Visit our website</A>
+  </b>
+</p>
+WBR,<br>
+  Online Pharmaceuticals 
+<br>
+<br>
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
+
+
+------------6E5EC7BAFC5A22F--
 
 
 
