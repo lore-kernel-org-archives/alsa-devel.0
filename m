@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001648]: Front speakers are quiet
-Date: Tue, 13 Dec 2005 19:30:50 +0100
-Message-ID: <fcd140e6d8c5930bbbd2a73441a97aaf@bugtrack.alsa-project.org>
+Date: Tue, 13 Dec 2005 20:27:11 +0100
+Message-ID: <080d9755ee30d0d99c00daf34634d909@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7621E1B8
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 19:30:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1BC71B6
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 20:27:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1648> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.14
 ======================================================================
 Date Submitted:             12-13-2005 19:30 CET
-Last Modified:              12-13-2005 19:30 CET
+Last Modified:              12-13-2005 20:27 CET
 ======================================================================
 Summary:                    Front speakers are quiet
 Description: 
@@ -54,12 +54,20 @@ controls unmute.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 12-13-05 20:27 
+----------------------------------------------------------------------
+Please post the output of:
+
+lspci -vn | grep -A1 0401
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-13-05 19:30 kamilp11       New Issue                                    
 12-13-05 19:30 kamilp11       Distribution              => Fedora Core 4   
 12-13-05 19:30 kamilp11       Kernel Version            => 2.6.14          
+12-13-05 20:27 rlrevell       Note Added: 0007021                          
 ======================================================================
 
 
