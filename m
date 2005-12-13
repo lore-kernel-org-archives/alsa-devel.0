@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000992]: no supported card
-Date: Tue, 13 Dec 2005 13:24:19 +0100
-Message-ID: <d62fa0e804202115298b21213961e24e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001297]: driver can't initialise card
+Date: Tue, 13 Dec 2005 13:27:43 +0100
+Message-ID: <8174c65a9ca106e215553d2d02d455ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24A4F1C1
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:24:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA75B1C8
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:27:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,121 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1297> 
 ======================================================================
-Reported By:                rav0r
+Reported By:                hus
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   992
+Issue ID:                   1297
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.4
-Resolution:                 open
+Distribution:               Fedora Core 4 (mostly)
+Kernel Version:             2.6.12
+Resolution:                 reopened
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-14-2005 21:52 CET
-Last Modified:              12-13-2005 13:24 CET
+Date Submitted:             08-01-2005 14:27 CEST
+Last Modified:              12-13-2005 13:27 CET
 ======================================================================
-Summary:                    no supported card
+Summary:                    driver can't initialise card
 Description: 
-I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
-this model ever be supported?
+My card is a somewhat older SB Live! (says "SB Live! Platinum 5.1" on the
+box).
+The snd-emu10k1 module refuses to work for this card; the kernel logs:
+
+ACPI: PCI Interrupt 0000:02:05.0[A] -> GSI 17 (level, low) -> IRQ 17
+ALSA sound/pci/emu10k1/emu10k1_main.c:742: vendor=0x1102, device=0x2, 
+subsystem_vendor_id=0x80611102, subsystem_id=0x8061
+ALSA sound/pci/emu10k1/emu10k1_main.c:760: Soundcard name=SB Live
+[Unknown], 
+vendor=0x1102, device=0x2, subsystem=0x80611102
+ALSA sound/pci/ac97/ac97_codec.c:1888: AC'97 0 does not respond - RESET
+ALSA sound/pci/ac97/ac97_codec.c:1897: AC'97 0 access is not valid [0x0],
+
+removing mixer.
+EMU10K1_Audigy: probe of 0000:02:05.0 failed with  error -5
+
+lspci shows
+02:05.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
+07)
+        Subsystem: Creative Labs SBLive! Player 5.1
+        Flags: bus master, medium devsel, latency 64, IRQ 17
+        I/O ports at 30c0 [size=32]
+        Capabilities: [dc] Power Management version 1
+(-n: Class 0401: 1102:0002 (rev 07) Subsystem: 1102:8061)
+
+
+The only deviation from the ordinary I can think of is that my system is
+dual CPU, a Tyan Tiger MPX (S2466), and has it's PCI slots (iirc) behind a
+PCI-to-PCI bridge. That's one thing our systems might have in common, as
+your message shows the card on bus 03. Perhaps this is some strange kind
+of routing problem?
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 10-23-05 19:47 
+ mchouque - 09-29-05 01:39 
 ----------------------------------------------------------------------
-lspci is used to detect your sound card.
-You don't seem to have it installed.
-install pciutils.
-The ./configure should then work fine.
+Same here, same git tag (cf dstaaf). If I put the following back in, it
+works again.
+
+Here's my card:
+0 [Live           ]: EMU10K1 - SBLive! Platinum 5.1 [SB0060]
+                     SBLive! Platinum 5.1 [SB0060] (rev.7,
+serial:0x80611102) at 0x8400, irq 14
+
+
+--- emu10k1_main.c.orig 2005-09-14 21:07:48.000000000 -0400
++++ emu10k1_main.c      2005-09-28 19:32:20.000000000 -0400
+@@ -759,6 +759,7 @@
+         .driver = "EMU10K1", .name = "SBLive! Platinum 5.1 [SB0060]", 
+         .id = "Live",
+         .emu10k1_chip = 1,
++        .ac97_chip = 1,
+         .sblive51 = 1} ,
+        {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80511102,
+         .driver = "EMU10K1", .name = "SBLive! Value [CT4850]",
+
+
 
 ----------------------------------------------------------------------
- jcdutton - 12-13-05 13:24 
+ jcdutton - 12-13-05 13:27 
 ----------------------------------------------------------------------
-Closed due to lack of feedback
+Both of the issues described in this bug should be fixed now in alsa-driver
+1.0.10
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 21:52 rav0r          New Issue                                    
-03-14-05 21:52 rav0r          Kernel Version            => 2.4             
-03-14-05 22:57 mikma          Note Added: 0003910                          
-03-15-05 23:13 rav0r          Note Added: 0003925                          
-03-16-05 11:05 mikma          Note Added: 0003935                          
-03-17-05 00:51 rav0r          Note Added: 0003974                          
-03-20-05 19:14 rav0r          Note Added: 0004096                          
-03-20-05 20:28 mikma          Note Added: 0004099                          
-03-21-05 03:32 rav0r          File Added: config.log                       
-03-21-05 03:33 rav0r          Note Added: 0004112                          
-03-21-05 03:33 rav0r          Note Added: 0004113                          
-03-21-05 15:44 mikma          Note Added: 0004118                          
-03-21-05 17:13 rav0r          Note Added: 0004120                          
-04-06-05 18:15 rav0r          Note Added: 0004347                          
-04-06-05 18:16 rav0r          Note Added: 0004348                          
-04-06-05 18:40 jcdutton       Note Added: 0004349                          
-04-06-05 18:40 jcdutton       Status                   assigned => feedback
-04-07-05 12:54 rav0r          Note Added: 0004355                          
-04-07-05 12:55 rav0r          Note Added: 0004356                          
-04-11-05 13:30 rav0r          Note Edited: 0004356                         
-06-06-05 10:03 perex          Assigned To              perex => jcdutton   
-06-06-05 10:03 perex          Category                 0_compilation problem_!!!
-=> PCI - emu10k1
-09-10-05 13:16 jcdutton       Note Added: 0006119                          
-10-23-05 19:47 jcdutton       Note Added: 0006516                          
-12-13-05 13:24 jcdutton       Status                   feedback => closed  
-12-13-05 13:24 jcdutton       Note Added: 0007009                          
+08-01-05 14:27 hus            New Issue                                    
+08-01-05 14:27 hus            Distribution              => Fedora Core 4
+(mostly)
+08-01-05 14:27 hus            Kernel Version            => 2.6.12          
+08-01-05 14:28 hus            Issue Monitored: hus                         
+08-01-05 15:24 jcdutton       Status                   new => assigned     
+08-01-05 15:24 jcdutton       Assigned To               => jcdutton        
+08-13-05 00:38 jcdutton       File Added: fix.diff.txt                     
+08-13-05 00:39 jcdutton       Note Added: 0005795                          
+08-13-05 00:40 jcdutton       Status                   assigned => feedback
+08-13-05 21:18 hus            Note Added: 0005809                          
+08-13-05 21:38 rlrevell       Note Added: 0005810                          
+08-14-05 00:32 hus            Note Added: 0005813                          
+09-10-05 13:00 jcdutton       Status                   feedback => closed  
+09-10-05 13:00 jcdutton       Note Added: 0006114                          
+09-13-05 00:16 jcdutton       Status                   closed => feedback  
+09-13-05 00:16 jcdutton       Resolution               open => reopened    
+09-13-05 00:16 jcdutton       Note Added: 0006150                          
+09-19-05 20:20 selflein       Note Added: 0006299                          
+09-19-05 21:08 hus            Note Added: 0006300                          
+09-24-05 17:54 dstaaf         Note Added: 0006374                          
+09-29-05 01:38 mchouque       Note Added: 0006412                          
+09-29-05 01:39 mchouque       Note Edited: 0006412                         
+09-29-05 02:06 mchouque       Issue Monitored: mchouque                    
+12-13-05 13:27 jcdutton       Status                   feedback => closed  
+12-13-05 13:27 jcdutton       Note Added: 0007010                          
 ======================================================================
 
 
