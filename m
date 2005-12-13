@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001219]: alsamixer cannot handle mixer controls that have separate mute for each channel.
-Date: Tue, 13 Dec 2005 13:30:55 +0100
-Message-ID: <577f63f078a219ad96dc540e3195eb7c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001220]: Surround and Centre/LFE mixer elements need swapping.
+Date: Tue, 13 Dec 2005 13:31:50 +0100
+Message-ID: <4e19390532fd728d56880f7d5c8284c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51D121C8
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:30:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3EA291C8
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:31:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1220> 
 ======================================================================
 Reported By:                jcdutton
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1219
-Category:                   simple mixer
+Project:                    ALSA - driver
+Issue ID:                   1220
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-29-2005 11:11 CEST
-Last Modified:              12-13-2005 13:30 CET
+Date Submitted:             06-29-2005 23:25 CEST
+Last Modified:              12-13-2005 13:31 CET
 ======================================================================
-Summary:                    alsamixer cannot handle mixer controls that have
-separate mute for each channel.
+Summary:                    Surround and Centre/LFE mixer elements need
+swapping.
 Description: 
-When a mixer control has a mute control for each channel, alsamixer is only
-able to adjust the left channel mute.
-For example, with a snd-intel8x0 driver with the ac97 ALC650 codec, this
-has a separate mute control for surround left and surround right.
-alsamixer is only able to adjust/toggle the surround left mute control.
-So far in my investigations, this does not appear to be a bug in
-alsamixer. This still might be a bug in alsa-lib functions:
-snd_mixer_selem_get_playback_switch(elem, chn_right, &sw);
-snd_mixer_selem_set_playback_switch(elem, chn_right, !sw);
-or in alsa-kernel ac97_codec.c where is manages the stereo mute controls.
+On my snd-intel8x0, I have a ALC650 codec and ICH5 motherboard.
+speaker-test -c6 -Dsurround51 produces the correct output on every
+speaker.
+But, when I change the alsamixer volume "Surround" is adjusts the
+Center/LFE sound. When I change the alsamixer volume "Centre" and "LFE" is
+adjusts the "Surround" volume.
+What will be the best way to add a quirk for my MB to handle this.
+The macros in alsa-driver cannot just swap Surround <-> Centre/LFE
+alsamixer controls.
 
-I will investigate further when I get a chance.
+The "Swap Surround Slot" control does not help, as it actually swaps the
+sound output, and not the mixer controls.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-08-05 14:46 
+ tiwai - 07-08-05 14:44 
 ----------------------------------------------------------------------
-OK, clsoing.
+Are you sure that the CLFE jack is really CLFE?  I suspect the output is
+rather swapped.
 
 ----------------------------------------------------------------------
- jcdutton - 12-13-05 13:30 
+ jcdutton - 12-13-05 13:31 
 ----------------------------------------------------------------------
-Fixed in alsa-driver/lib 1.0.10
+The jack is in the correct slot because the jacks are all coloured, and the
+cable colour matches the slot.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-05 11:11 jcdutton       New Issue                                    
-06-29-05 20:07 tiwai          Note Added: 0005309                          
-06-29-05 21:26 jcdutton       Note Added: 0005315                          
-06-29-05 22:32 jcdutton       Note Added: 0005317                          
-07-08-05 14:45 tiwai          Status                   new => resolved     
-07-08-05 14:46 tiwai          Resolution               open => fixed       
-07-08-05 14:46 tiwai          Assigned To               => tiwai           
-07-08-05 14:46 tiwai          Note Added: 0005427                          
-12-13-05 13:30 jcdutton       Status                   resolved => closed  
-12-13-05 13:30 jcdutton       Note Added: 0007013                          
+06-29-05 23:25 jcdutton       New Issue                                    
+07-08-05 14:44 tiwai          Note Added: 0005426                          
+12-13-05 13:31 jcdutton       Note Added: 0007014                          
 ======================================================================
 
 
