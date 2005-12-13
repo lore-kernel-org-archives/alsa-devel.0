@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001323]: MIC jack not supported
-Date: Tue, 13 Dec 2005 13:21:59 +0100
-Message-ID: <b70107aa2eeaa278a74456ea5e71ebce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000992]: no supported card
+Date: Tue, 13 Dec 2005 13:24:19 +0100
+Message-ID: <d62fa0e804202115298b21213961e24e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 95E8411F
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:21:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24A4F1C1
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:24:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1323> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
 ======================================================================
-Reported By:                submax82
+Reported By:                rav0r
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1323
-Category:                   PCI - ca0106
+Issue ID:                   992
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               debian 3.1 sarge
-Kernel Version:             linux 2.6.12.4
+Distribution:               
+Kernel Version:             2.4
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-08-2005 22:10 CEST
-Last Modified:              12-13-2005 13:21 CET
+Date Submitted:             03-14-2005 21:52 CET
+Last Modified:              12-13-2005 13:24 CET
 ======================================================================
-Summary:                    MIC jack not supported
+Summary:                    no supported card
 Description: 
-The problem is simple but important! The alsamixer do not show the volume
-of the MIC therefore this do not work!
+I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
+this model ever be supported?
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 11-07-05 00:06 
+ jcdutton - 10-23-05 19:47 
 ----------------------------------------------------------------------
-You seem to have drivers up to date enough.
-The controls to adjust are the
-Mic/Line in
-SPDIF out
-
-These are mutually exclusive. I.e. if SPDIF out is un-muted, Mic/Line in
-will not work.
-To capture from mic, select Mic on the Mic/Line in control in alsamixer
-playback windows, and then I2S in on the capture window.
+lspci is used to detect your sound card.
+You don't seem to have it installed.
+install pciutils.
+The ./configure should then work fine.
 
 ----------------------------------------------------------------------
- jcdutton - 12-13-05 13:21 
+ jcdutton - 12-13-05 13:24 
 ----------------------------------------------------------------------
-Closed due to lack of feedback.
+Closed due to lack of feedback
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 22:10 submax82       New Issue                                    
-08-08-05 22:10 submax82       Distribution              => debian 3.1 sarge
-08-08-05 22:10 submax82       Kernel Version            => linux 2.6.12.4  
-08-08-05 22:59 submax82       Issue Monitored: submax82                    
-08-08-05 23:00 submax82       Note Added: 0005714                          
-08-10-05 05:21 rlrevell       Note Added: 0005746                          
-08-12-05 23:09 jcdutton       Note Added: 0005790                          
-08-12-05 23:09 jcdutton       Status                   assigned => feedback
-08-13-05 14:28 submax82       Note Added: 0005804                          
-08-13-05 14:33 submax82       Issue End Monitor: submax82                    
-08-17-05 17:02 submax82       Note Added: 0005839                          
-09-10-05 10:39 jcdutton       Note Added: 0006109                          
-09-15-05 06:44 qqtortqq       Note Added: 0006194                          
-09-15-05 06:51 qqtortqq       Issue Monitored: qqtortqq                    
-09-25-05 04:00 qqtortqq       Note Added: 0006383                          
-11-07-05 00:06 jcdutton       Note Added: 0006611                          
-12-13-05 13:21 jcdutton       Status                   feedback => closed  
-12-13-05 13:21 jcdutton       Note Added: 0007008                          
+03-14-05 21:52 rav0r          New Issue                                    
+03-14-05 21:52 rav0r          Kernel Version            => 2.4             
+03-14-05 22:57 mikma          Note Added: 0003910                          
+03-15-05 23:13 rav0r          Note Added: 0003925                          
+03-16-05 11:05 mikma          Note Added: 0003935                          
+03-17-05 00:51 rav0r          Note Added: 0003974                          
+03-20-05 19:14 rav0r          Note Added: 0004096                          
+03-20-05 20:28 mikma          Note Added: 0004099                          
+03-21-05 03:32 rav0r          File Added: config.log                       
+03-21-05 03:33 rav0r          Note Added: 0004112                          
+03-21-05 03:33 rav0r          Note Added: 0004113                          
+03-21-05 15:44 mikma          Note Added: 0004118                          
+03-21-05 17:13 rav0r          Note Added: 0004120                          
+04-06-05 18:15 rav0r          Note Added: 0004347                          
+04-06-05 18:16 rav0r          Note Added: 0004348                          
+04-06-05 18:40 jcdutton       Note Added: 0004349                          
+04-06-05 18:40 jcdutton       Status                   assigned => feedback
+04-07-05 12:54 rav0r          Note Added: 0004355                          
+04-07-05 12:55 rav0r          Note Added: 0004356                          
+04-11-05 13:30 rav0r          Note Edited: 0004356                         
+06-06-05 10:03 perex          Assigned To              perex => jcdutton   
+06-06-05 10:03 perex          Category                 0_compilation problem_!!!
+=> PCI - emu10k1
+09-10-05 13:16 jcdutton       Note Added: 0006119                          
+10-23-05 19:47 jcdutton       Note Added: 0006516                          
+12-13-05 13:24 jcdutton       Status                   feedback => closed  
+12-13-05 13:24 jcdutton       Note Added: 0007009                          
 ======================================================================
 
 
