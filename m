@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000949]: Randomly, left and right tracks are swaped
-Date: Tue, 13 Dec 2005 12:50:17 +0100
-Message-ID: <2bfadfbfa3590de58e19140a961970c9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
+Date: Tue, 13 Dec 2005 12:51:46 +0100
+Message-ID: <db22a50ae72a311fcc8137b65e5d9aa9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0454018A
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:50:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AD2818A
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:51:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=949> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
 ======================================================================
-Reported By:                NorbertB
+Reported By:                segnini75
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   949
-Category:                   PCI - intel8x0
-Reproducibility:            random
+Issue ID:                   933
+Category:                   PCI - als4000
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:              2.4.21-20.ELsmp
+Status:                     feedback
+Distribution:               Kanotix - Debian/sid
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-28-2005 00:08 CET
-Last Modified:              12-13-2005 12:50 CET
+Date Submitted:             02-22-2005 14:08 CET
+Last Modified:              12-13-2005 12:51 CET
 ======================================================================
-Summary:                    Randomly, left and right tracks are swaped
+Summary:                    ALS4000 chipset dont sounds fine, the sound is too
+slow and dont play everything.
 Description: 
-I'm running ALSA 1.0.8 on an APro 6224 (AMD8111, ac97' chipset Realtek
-ALC655).
-alsamixer is on, I can hear my audio OK but sometimes, randomly, left and
-right channels are swapped.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000059 On au8820 left and right channels are s...
-has duplicate       0000403 intel8x0 driver swaps channels
+The modconf info about snd-als4000 retuns:
+
+Jevus@box:~$ modinfo snd-als4000
+filename:      
+/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
+author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
+description:    Avance Logic ALS4000
+license:        GPL
+vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
+depends:       
+snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
+alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
+parm:           joystick_port:Joystick port address for ALS4000 soundcard.
+(0 = disabled)
+parm:           enable:Enable ALS4000 soundcard.
+parm:           id:ID string for ALS4000 soundcard.
+parm:           index:Index value for ALS4000 soundcard.
+--------------------------------------------------------------------
+NOTE: This card works fine in windows
+
+Plase solve that problems (Note. Is not working on any version of ALSA
+drivers actually, all have same problem.
+
+Thanks!- Jesus Segnini
 ======================================================================
 
 ----------------------------------------------------------------------
- phox - 03-23-05 02:30 
+ segnini75 - 03-23-05 03:51 
 ----------------------------------------------------------------------
-I should mention that I (the reporter of bug 0000403 mentioned above) am
-also using an AMD8111-based board, the Tyan Thunder K8W (S2885ANRF), and
-of course using the integrated Analog Devices 1981B chip.
+The problem is back :S until one actualization the problem persist... what
+can i do? Thanks u!
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:50 
+ jdthood - 12-13-05 12:51 
 ----------------------------------------------------------------------
-NorbertB, phox: Any improvement in 1.0.10?
+segnini75: Can you please list which ALSA versions work and which ones
+don't?  That will help with bug hunting.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-28-05 00:08 NorbertB       New Issue                                    
-02-28-05 00:08 NorbertB       Kernel Version            =>  2.4.21-20.ELsmp
-03-22-05 22:30 jdthood        Relationship added       has duplicate 0000403
-03-22-05 22:33 jdthood        Relationship added       related to 0000059  
-03-23-05 02:30 phox           Note Added: 0004149                          
-12-13-05 12:50 jdthood        Note Added: 0007004                          
+02-22-05 14:08 segnini75      New Issue                                    
+02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
+02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
+02-22-05 17:15 segnini75      Note Added: 0003705                          
+02-22-05 17:16 segnini75      Note Edited: 0003705                         
+02-22-05 18:26 segnini75      Issue Monitored: segnini75                    
+02-24-05 22:06 tiwai          Note Added: 0003728                          
+02-24-05 23:29 segnini75      Note Added: 0003731                          
+03-01-05 03:07 segnini75      Note Added: 0003753                          
+03-01-05 03:07 segnini75      Issue End Monitor: segnini75                    
+03-09-05 18:39 tiwai          Status                   new => resolved     
+03-09-05 18:39 tiwai          Resolution               open => fixed       
+03-09-05 18:39 tiwai          Assigned To               => tiwai           
+03-09-05 18:39 tiwai          Note Added: 0003832                          
+03-09-05 18:39 tiwai          Assigned To              tiwai =>            
+03-23-05 03:51 segnini75      Status                   resolved => feedback
+03-23-05 03:51 segnini75      Resolution               fixed => reopened   
+03-23-05 03:51 segnini75      Note Added: 0004150                          
+12-13-05 12:51 jdthood        Note Added: 0007005                          
 ======================================================================
 
 
