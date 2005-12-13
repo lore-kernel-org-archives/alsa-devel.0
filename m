@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001103]: Please support /dev/snd/aload* as well
-Date: Tue, 13 Dec 2005 12:33:53 +0100
-Message-ID: <797331836efa5bc828b9acbe4be38427@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000926]: dmix segfaults
+Date: Tue, 13 Dec 2005 12:32:45 +0100
+Message-ID: <bf41da2e6cbe90c658eed8d3b1e406d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9A8C1C1
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:33:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53E03166
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:32:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1103> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=926> 
 ======================================================================
-Reported By:                jordi
+Reported By:                jiyuan
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1103
-Category:                   0_general
+Issue ID:                   926
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             05-13-2005 13:49 CEST
-Last Modified:              12-13-2005 12:33 CET
+Date Submitted:             02-20-2005 03:18 CET
+Last Modified:              12-13-2005 12:32 CET
 ======================================================================
-Summary:                    Please support /dev/snd/aload* as well
+Summary:                    dmix segfaults
 Description: 
-Currently, alsa-lib looks for aload* files in /dev.
-
-I think it would be nice if these files could live in /dev/snd, with the
-rest of ALSA devices.
-
-Can alsa-lib be modified to support aload* devices in both /dev and
-/dev/snd?
-
-Maybe in the future, after people have transitioned, support for
-/dev/aload* could be dropped. Defaulting to /dev/snd and falling back to
-/dev could be the way to work for now.
-
-The udev maintainer thinks this would be a good enhancement.
+#warning Please, recode mix_areas1() routine to your architecture...
+#warning Please, recode mix_areas2() routine to your architecture...
+Therefore, when you using dmix under other architecture CPU, the dmix will
+crash down, and make error segmentation fault.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000824 sparc, powerpc, hppa, alpha, ia64: &quo...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-13-05 19:46 
+ tiwai - 03-29-05 19:08 
 ----------------------------------------------------------------------
-More exactly: the problem is by the combination of udev + aload + resmgr +
-modprobe, IIRC.
+Try the CVS version (better wait until tomorrow).
+
+If you still get segfault, it's not in the part with warnings above. 
+Possibly, either SYSV shm or semaphore...
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:33 
+ jdthood - 12-13-05 12:32 
 ----------------------------------------------------------------------
-Wontfix
+Submitter: Does dmix still segfault on you?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-05 13:49 jordi          New Issue                                    
-05-13-05 14:15 tiwai          Note Added: 0004644                          
-05-13-05 15:36 jdthood        Note Added: 0004649                          
-05-13-05 19:45 tiwai          Note Added: 0004653                          
-05-13-05 19:46 tiwai          Note Added: 0004654                          
-05-24-05 14:02 jdthood        Severity                 minor => feature    
-12-13-05 12:33 jdthood        Status                   new => closed       
-12-13-05 12:33 jdthood        Note Added: 0006994                          
+02-20-05 03:18 jiyuan         New Issue                                    
+03-16-05 22:33 jdthood        Note Added: 0003970                          
+03-17-05 08:16 perex          Relationship added       related to 0000824  
+03-29-05 19:08 tiwai          Note Added: 0004256                          
+03-31-05 20:44 jdthood        Summary                  There is no source code
+for the functions mix_areas1() and mix_areas2() in the file pcm_dmix.c! => dmix
+segfaults
+04-29-05 09:15 mandreiana     Issue Monitored: mandreiana                    
+12-13-05 12:32 jdthood        Note Added: 0006993                          
 ======================================================================
 
 
