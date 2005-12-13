@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001647]: Wish for M-Audio AudioPhile 192 (AP192K) Support
-Date: Tue, 13 Dec 2005 11:38:14 +0100
-Message-ID: <446ec30f675b0912192173b65921c7f6@bugtrack.alsa-project.org>
+Date: Tue, 13 Dec 2005 11:40:17 +0100
+Message-ID: <1d41acd77a863c29ca81e6cab2e3897a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A3D81C3
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 11:38:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F6061C3
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 11:40:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1647> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-13-2005 11:38 CET
-Last Modified:              12-13-2005 11:38 CET
+Last Modified:              12-13-2005 11:40 CET
 ======================================================================
 Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
 Description: 
@@ -48,10 +48,17 @@ Could you add support for that soundcard? I have discussed this already
 with Jaroslav, he asked for photo of the card.
 ======================================================================
 
+----------------------------------------------------------------------
+ bobek - 12-13-05 11:40 
+----------------------------------------------------------------------
+Sorry for duplicated post :( 
+I am not able to remove this issue as a normal user.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-13-05 11:38 bobek          New Issue                                    
+12-13-05 11:40 bobek          Note Added: 0006988                          
 ======================================================================
 
 
