@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000165]: random snd_es1938 crashes
-Date: Tue, 13 Dec 2005 12:45:15 +0100
-Message-ID: <00b03c39e398900e35ae1d4d971a9d5d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000199]: Bug in sis7012 driver - or probably I'm doing something wrong ?
+Date: Tue, 13 Dec 2005 12:46:05 +0100
+Message-ID: <c5d899630a736a920a6df6238bcda058@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B965D1C1
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:45:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3877E1C1
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:46:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,155 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=165> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=199> 
 ======================================================================
-Reported By:                lucas
+Reported By:                rrrozman
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   165
-Category:                   PCI - es1938
-Reproducibility:            sometimes
-Severity:                   crash
+Issue ID:                   199
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
+Distribution:               
 Kernel Version:             
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-29-2004 16:25 CEST
-Last Modified:              12-13-2005 12:45 CET
+Date Submitted:             04-10-2004 09:15 CEST
+Last Modified:              12-13-2005 12:46 CET
 ======================================================================
-Summary:                    random snd_es1938 crashes
+Summary:                    Bug in sis7012 driver - or probably I'm doing
+something wrong ?
 Description: 
-Some randoms alsa problems appeared after I upgraded from 2.6.3 to 2.6.4.
-Here is what hit the logs :
+Hi,
 
-<3>irq 7: nobody cared!
-Call Trace:
- [<c010a8aa>] __report_bad_irq+0x2a/0x90
- [<c010a99c>] note_interrupt+0x6c/0xb0
- [<c010ac51>] do_IRQ+0x121/0x130
- [<c01090a4>] common_interrupt+0x18/0x20
- [<c011dd80>] do_softirq+0x40/0xa0
- [<c010ac2d>] do_IRQ+0xfd/0x130
- [<c0105000>] rest_init+0x0/0x60
- [<c01090a4>] common_interrupt+0x18/0x20
- [<c0105000>] rest_init+0x0/0x60
- [<c0106c13>] default_idle+0x23/0x30
- [<c0106c7c>] cpu_idle+0x2c/0x40
- [<c031e6e3>] start_kernel+0x163/0x180
- [<c031e430>] unknown_bootoption+0x0/0x120
+I have Asus pundit with sis7012 sound device and alsa 1.0.4 under Suse
+9.0.
+I've got advice how to use this 6 channel device as 3 stereo channels but
+there seems something not to be right (it could be my mistake).
 
-handlers:
-[<df994980>] (snd_es1938_interrupt+0x0/0x1b0 [snd_es1938])
-Disabling IRQ #7
-spurious 8259A interrupt: IRQ7.
+I have /etc/asound.conf :
+pcm_slave.sis {
+pcm "hw:0"
+channels 6
+rate 48000
+buffer_size 4096  # make these sizes smaller for lower latency
+period_size 2048
+periods 0
+period_time 0
+}
 
-xmms hangs when trying to listen to music, but xawtv/xawdecode still works
-with sound. rmmod-ing and modprob-ing snd_es1938 restores the normal
-behaviour.
+pcm.ch12 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 0
+bindings.1 1
+}
+
+pcm.ch34 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 2
+bindings.1 3
+}
+
+pcm.ch56 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 4
+bindings.1 5
+}
+
+
+pcm.a {
+type plug
+slave.pcm ch12
+}
+
+pcm.b {
+type plug
+slave.pcm ch34
+}
+
+pcm.c {
+type plug
+slave.pcm ch56
+}
+
+pcm.dmixerALL {
+type dmix
+ipc_key 47110815
+slave sis
+    bindings.0 0
+    bindings.1 1
+    bindings.2 2
+    bindings.3 3
+    bindings.4 4
+    bindings.5 5
+}
+
+pcm.channelALL {
+    type plug
+    slave.pcm "dmixerALL"
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+    ttable.0.4 1
+    ttable.1.5 1
+}
+-----------------------------------------
+
+Now I do:
+
+- alsaplayer with mp3 file on device plug:a
+- aplay -D plug:ch12 (funny is that plug:a doesn't work)
+- everything is ok and mixed properly
+
+- but if I start another alsaplayer on plug:b (probably also plug:c would
+be
+the same), then aplay produces sound that is "interleaved" in short
+chunks
+and also sound from alsaplayer on plug:b is also heard in addition to
+original mp3 and aplay sound.
+
+Am I doing something worng or is this somkind of bug or limitation of
+alsa
+driver ?
+
+Thanks in advance,
+
+Robert.
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 12:43 
+ jdthood - 03-19-05 12:46 
 ----------------------------------------------------------------------
-Submitter: Is this still a problem?
+No one ever responded to this.
+
+Submitter: Did you ever solve the problem on your own?
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:45 
+ jdthood - 12-13-05 12:46 
 ----------------------------------------------------------------------
 No feedback was forthcoming.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-04 16:25 lucas          New Issue                                    
-03-29-04 16:25 lucas          Distribution              => Debian          
-03-19-05 12:43 jdthood        Note Added: 0004037                          
-12-13-05 12:45 jdthood        Status                   new => closed       
-12-13-05 12:45 jdthood        Note Added: 0007000                          
+04-10-04 09:15 rrrozman       New Issue                                    
+03-19-05 12:46 jdthood        Note Added: 0004039                          
+12-13-05 12:46 jdthood        Status                   new => closed       
+12-13-05 12:46 jdthood        Note Added: 0007001                          
 ======================================================================
 
 
