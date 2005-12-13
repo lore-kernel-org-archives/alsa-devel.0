@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001330]: alsa-driver fails "make install"
-Date: Tue, 13 Dec 2005 13:30:08 +0100
-Message-ID: <b4d42e625b5c182d33218e160fba4e77@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001219]: alsamixer cannot handle mixer controls that have separate mute for each channel.
+Date: Tue, 13 Dec 2005 13:30:55 +0100
+Message-ID: <577f63f078a219ad96dc540e3195eb7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F48B1C8
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:30:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51D121C8
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 13:30:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1330> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1219> 
 ======================================================================
 Reported By:                jcdutton
-Assigned To:                perex
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1330
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   1219
+Category:                   simple mixer
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-13-2005 00:07 CEST
+Date Submitted:             06-29-2005 11:11 CEST
 Last Modified:              12-13-2005 13:30 CET
 ======================================================================
-Summary:                    alsa-driver fails "make install"
+Summary:                    alsamixer cannot handle mixer controls that have
+separate mute for each channel.
 Description: 
-See output below.
-Does anyone have a clew how to fix this?
+When a mixer control has a mute control for each channel, alsamixer is only
+able to adjust the left channel mute.
+For example, with a snd-intel8x0 driver with the ac97 ALC650 codec, this
+has a separate mute control for surround left and surround right.
+alsamixer is only able to adjust/toggle the surround left mute control.
+So far in my investigations, this does not appear to be a bug in
+alsamixer. This still might be a bug in alsa-lib functions:
+snd_mixer_selem_get_playback_switch(elem, chn_right, &sw);
+snd_mixer_selem_set_playback_switch(elem, chn_right, !sw);
+or in alsa-kernel ac97_codec.c where is manages the stereo mute controls.
 
-
-alsa-driver # make install
-find /lib/modules/2.6.13-rc5/kernel/sound -name 'snd*.*o' | xargs rm -f
-make[1]: Entering directory `/u/alsacvs/alsa-driver/acore'
-make[1]: *** No rule to make target `modules_install'.  Stop.
-make[1]: Leaving directory `/u/alsacvs/alsa-driver/acore'
-make: *** [install-modules] Error 1
-
-
-
+I will investigate further when I get a chance.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-13-05 13:47 
+ tiwai - 07-08-05 14:46 
 ----------------------------------------------------------------------
-Fixed correctly in CVS.
+OK, clsoing.
 
 ----------------------------------------------------------------------
  jcdutton - 12-13-05 13:30 
 ----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.10
+Fixed in alsa-driver/lib 1.0.10
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 00:07 jcdutton       New Issue                                    
-08-13-05 00:26 jcdutton       File Added: make-it-work.diff.txt                 
-  
-08-13-05 00:27 jcdutton       Note Added: 0005792                          
-08-13-05 13:47 perex          Status                   assigned => resolved
-08-13-05 13:47 perex          Resolution               open => fixed       
-08-13-05 13:47 perex          Note Added: 0005803                          
+06-29-05 11:11 jcdutton       New Issue                                    
+06-29-05 20:07 tiwai          Note Added: 0005309                          
+06-29-05 21:26 jcdutton       Note Added: 0005315                          
+06-29-05 22:32 jcdutton       Note Added: 0005317                          
+07-08-05 14:45 tiwai          Status                   new => resolved     
+07-08-05 14:46 tiwai          Resolution               open => fixed       
+07-08-05 14:46 tiwai          Assigned To               => tiwai           
+07-08-05 14:46 tiwai          Note Added: 0005427                          
 12-13-05 13:30 jcdutton       Status                   resolved => closed  
-12-13-05 13:30 jcdutton       Note Added: 0007012                          
+12-13-05 13:30 jcdutton       Note Added: 0007013                          
 ======================================================================
 
 
