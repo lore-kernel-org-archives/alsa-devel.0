@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001651]: ac3 passthrough not really work with ac3dec
-Date: Wed, 14 Dec 2005 10:05:24 +0100
-Message-ID: <cc2a9cec979dc058303c1e0b4fda3588@bugtrack.alsa-project.org>
+Date: Wed, 14 Dec 2005 10:15:10 +0100
+Message-ID: <371fb313b48b90af8df40adc5c2e8dc1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B99241B1
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 10:05:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AF2418F
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 10:15:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.31
 ======================================================================
 Date Submitted:             12-14-2005 09:44 CET
-Last Modified:              12-14-2005 10:05 CET
+Last Modified:              12-14-2005 10:15 CET
 ======================================================================
 Summary:                    ac3 passthrough not really work with ac3dec
 Description: 
@@ -82,12 +82,37 @@ output for : ac3dec -C oneac3file.ac3
 
 Using PCM device 'plug:iec958:{AES0 0x2 AES1 0x82 AES2 0x0 AES3 0x2}'
 
+----------------------------------------------------------------------
+ tycordinal - 12-14-05 10:15 
+----------------------------------------------------------------------
+I use alsamixer to monitor ac3dec action.
+
+ac3dec -C oneac3file.ac3
+When ac3dec is NOT running:
+IEC958 Optical Raw: MM (Muted?)
+
+when ac3dec IS running:
+IEC958 Optical Raw: OO (opened? / not muted?)
+
+when it stopped:
+IEC958 Optical Raw: MM (Muted?)
+
+
+Is this the reason that ac3dec cannot do ac3 passthrough ?
+
+
+when ac3dec do software decode, IEC958 Optical Raw STAYS as MM , and I can
+hear the left/right channels of that ac3 file, so I believe the spdif
+output is working, just that this time the ac3dec software have to change
+something (or NOT to change something :) .
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-14-05 09:44 tycordinal     New Issue                                    
 12-14-05 09:44 tycordinal     Kernel Version            => 2.4.31          
 12-14-05 10:05 tycordinal     Note Added: 0007031                          
+12-14-05 10:15 tycordinal     Note Added: 0007032                          
 ======================================================================
 
 
