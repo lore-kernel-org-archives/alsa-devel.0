@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000959]: After S3 resume: ali_stimer_read: stimer is not ready
-Date: Wed, 14 Dec 2005 17:38:43 +0100
-Message-ID: <8c2210130746676418160136b9bd8ff7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001624]: No front channels on AC3
+Date: Wed, 14 Dec 2005 18:23:23 +0100
+Message-ID: <1d0b5ce14d6de200b6d420c0550c536b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3A7E191
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 17:38:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 488DF193
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 18:23:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=959> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1624> 
 ======================================================================
-Reported By:                avuton
+Reported By:                Cimi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   959
-Category:                   PCI - ali5451
+Issue ID:                   1624
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11
+Distribution:               Debian Etch
+Kernel Version:             2.6.13.4
 ======================================================================
-Date Submitted:             03-03-2005 18:41 CET
-Last Modified:              12-14-2005 17:38 CET
+Date Submitted:             12-06-2005 21:31 CET
+Last Modified:              12-14-2005 18:23 CET
 ======================================================================
-Summary:                    After S3 resume: ali_stimer_read: stimer is not
-ready
+Summary:                    No front channels on AC3
 Description: 
-After S3 resume, 'ali_stimer_read: stimer is not ready.' repeats until I
-reset/power down the computer.
-
-Workaround is to stop all audio activity and unload the driver, which
-works fine.
-
-This happens on my Libretto L5.
+I can't hear any sound playing any ac3 track with xine. Same with 2.6.14.3
+kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- avuton - 07-08-05 22:48 
+ Winterbird - 12-13-05 20:50 
 ----------------------------------------------------------------------
-I'm very sorry, but this machine cannot use APM due to it not being
-equipped for it (it has no bios). And acpi=off would work but then I
-wouldn't be able to suspend any longer thus defeating the purpose of this
-bug :).
+I'm having a similar problem (no sound from front speakers in 5.1 output),
+using alsa and emu10k1 built in kernel (2.6.14-gentoo-r2), and alsa-lib
+1.0.10.
 
-Thanks, anything else I can do please let me know.
+# cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
+08:13:09 2005 UTC).
 
 ----------------------------------------------------------------------
- sluskyb - 12-14-05 17:38 
+ mikma - 12-14-05 18:23 
 ----------------------------------------------------------------------
-Looks like the "stimer is not ready" messages repeat for only about two and
-a half minutes, and then I get my laptop back. (Tested on my Libretto L5
-w/2.6.15-rc5.) Sound doesn't work after that until I unload and reload the
-module.
+The problem should go away if you upgrade alsa-driver to version 1.0.10.
+The change of EMU10K1.conf was made in alsa-lib release 1.0.10rc2. 
 
-The hangcheck timer throws out a few backtraces -- see dmesg output in
-attached ali5451-S3.txt.
-
-Using a CVS tree from November 18th, the "stimer is not ready" messages
-come faster, and the total delay is only a few seconds, but still sound
-doesn't work as described above. I'll try 1.0.11-rc1 tonight...
+(Using EMU10K1.conf from version 1.0.10rc1, the version before, could be
+tried as a work-around if you want to avoid upgrading the alsa-driver).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-03-05 18:41 avuton         New Issue                                    
-03-03-05 18:41 avuton         Distribution              => Gentoo          
-03-03-05 18:41 avuton         Kernel Version            => 2.6.11          
-05-02-05 02:22 avuton         Note Added: 0004583                          
-06-27-05 03:52 avuton         Note Added: 0005270                          
-07-08-05 14:59 tiwai          Note Added: 0005431                          
-07-08-05 22:48 avuton         Note Added: 0005436                          
-12-14-05 17:28 sluskyb        File Added: ali5451-S3.txt                    
-12-14-05 17:38 sluskyb        Note Added: 0007038                          
+12-06-05 21:31 Cimi           New Issue                                    
+12-06-05 21:31 Cimi           Distribution              => Debian Etch     
+12-06-05 21:31 Cimi           Kernel Version            => 2.6.13.4        
+12-08-05 16:21 Cimi           Issue Monitored: Cimi                        
+12-13-05 12:57 mikma          Note Added: 0007006                          
+12-13-05 20:50 Winterbird     Note Added: 0007022                          
+12-14-05 18:23 mikma          Note Added: 0007039                          
 ======================================================================
 
 
