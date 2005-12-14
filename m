@@ -1,50 +1,39 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Ameter plugin : looping sound
-Date: Wed, 14 Dec 2005 17:25:30 -0500
-Message-ID: <1134599131.12086.71.camel@mindpipe>
-References: <1134598668.43a09a0cb1add@imp3-g19.free.fr>
+Subject: Re: [Alsa-devel] [RFC] Zero-conf ALSA
+Date: Wed, 14 Dec 2005 17:27:01 -0500
+Message-ID: <1134599222.12086.73.camel@mindpipe>
+References: <1132805024.1921.48.camel@mindpipe>
+	 <s5hfypmgx0d.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1134598668.43a09a0cb1add@imp3-g19.free.fr>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: laugeo2@free.fr
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <s5hfypmgx0d.wl%tiwai@suse.de>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-12-14 at 23:17 +0100, laugeo2@free.fr wrote:
-> Hi,
->  Ameter  is a metering plugin for Alsa :
-> http://laugeo.free.fr/ameter.html
->  It stopped working since 1.0.10,and also fails with 1.0.11rc1 (was ok with
-> 1.0.9) :
-> Playing a sound with aplay (or any other program) cause  a short sound looping
-> in audio out ,while  peakmeter displays the real soundfile level .
->  It seems that the looping sound is the end of the last played sound .
->  I have Mandriva 2005 (2.6.11 standard kernel),  ens1371 sound card.
-> Somenone else has reported the problem ( I don't know his config) .
+On Thu, 2005-11-24 at 11:28 +0100, Takashi Iwai wrote:
+> > Can #2 be solved by having dmix prefer power of two period/buffer
+> sizes
+> > for the slave hw PCM by default?  AFAICT this should work unless an
+> ALSA
+> > app has opened the device first and set an incompatible buffer size.
 > 
-> Test command:
-> aplay -D ameter sound.wav -v
-> It returns no error.
+> It's not so easy, unfortunately.  We'll need to fix to allow dmix the
+> arbitrary period/buffer sizes.  As long as the constraints of slave
+> PCM perido size exists, power-of-2 cannot be applied. 
 
-The easiest solution is to use ALSA CVS to do a binary search and find
-out exactly which commit broke it.
-
-I like to go by date as not all releases get tagged in CVS:
-
-cvs update -D2005-11-01 -A
-
-etc
+Is the power of 2 period size restriction imposed by OSS, or dmix?
 
 Lee
 
