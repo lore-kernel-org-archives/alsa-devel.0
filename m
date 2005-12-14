@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001651]: ac3 passthrough not really work with ac3dec
-Date: Wed, 14 Dec 2005 10:16:13 +0100
-Message-ID: <58974e403ed9c39c559131d0e1567b52@bugtrack.alsa-project.org>
+Date: Wed, 14 Dec 2005 10:30:10 +0100
+Message-ID: <31435ace87abf4f588ee445ff6a8f178@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F22118F
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 10:16:14 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5149B174
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 10:30:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.31
 ======================================================================
 Date Submitted:             12-14-2005 09:44 CET
-Last Modified:              12-14-2005 10:16 CET
+Last Modified:              12-14-2005 10:30 CET
 ======================================================================
 Summary:                    ac3 passthrough not really work with ac3dec
 Description: 
@@ -76,30 +76,6 @@ Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- tycordinal - 12-14-05 10:15 
-----------------------------------------------------------------------
-I use alsamixer to monitor ac3dec action.
-
-ac3dec -C oneac3file.ac3
-When ac3dec is NOT running:
-IEC958 Optical Raw: MM (Muted?)
-
-when ac3dec IS running:
-IEC958 Optical Raw: OO (opened? / not muted?)
-
-when it stopped:
-IEC958 Optical Raw: MM (Muted?)
-
-
-Is this the reason that ac3dec cannot do ac3 passthrough ?
-
-
-when ac3dec do software decode, IEC958 Optical Raw STAYS as MM , and I can
-hear the left/right channels of that ac3 file, so I believe the spdif
-output is working, just that this time the ac3dec software have to change
-something (or NOT to change something :) .
-
-----------------------------------------------------------------------
  tycordinal - 12-14-05 10:16 
 ----------------------------------------------------------------------
 ac3dec to do software decoding:
@@ -109,6 +85,35 @@ ac3dec -6 thatac3file.ac3
 5.1 Mode 48.0 KHz 448 kbps Complete Main Audio Service
 Using PCM device 'plug:surround51'
 
+----------------------------------------------------------------------
+ pzad - 12-14-05 10:30 
+----------------------------------------------------------------------
+IEC958 Optical Raw - this looks correct.
+
+Problem can be with "Audigy Analog/Digital Output Jack".
+
+Looks like Audigy 4 works diffrently as others Audigy *.
+
+Try to find file /usr/share/alsa/conf/cards/Audigy2.conf.
+
+In this file find this
+
+{
+     name "Audigy Analog/Digital Output Jack"
+     lock true
+     preserve true
+     value 1
+} 
+
+and change it to
+
+{
+     name "Audigy Analog/Digital Output Jack"
+     lock true
+     preserve true
+     value 0
+}
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -117,6 +122,7 @@ Date Modified  Username       Field                    Change
 12-14-05 10:05 tycordinal     Note Added: 0007031                          
 12-14-05 10:15 tycordinal     Note Added: 0007032                          
 12-14-05 10:16 tycordinal     Note Added: 0007033                          
+12-14-05 10:30 pzad           Note Added: 0007034                          
 ======================================================================
 
 
