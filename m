@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001648]: Front speakers are quiet
-Date: Wed, 14 Dec 2005 02:54:32 +0100
-Message-ID: <80d879015fba23b288a4e9a4a7361012@bugtrack.alsa-project.org>
+Date: Wed, 14 Dec 2005 03:15:36 +0100
+Message-ID: <b2b6981009d3e1401ab96c186541e41a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40BFE1B4
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 02:54:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94DFC139
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 03:15:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.14
 ======================================================================
 Date Submitted:             12-13-2005 19:30 CET
-Last Modified:              12-14-2005 02:54 CET
+Last Modified:              12-14-2005 03:15 CET
 ======================================================================
 Summary:                    Front speakers are quiet
 Description: 
@@ -55,11 +55,6 @@ controls unmute.
 ======================================================================
 
 ----------------------------------------------------------------------
- mikma - 12-13-05 20:52 
-----------------------------------------------------------------------
-It might be related to #1624.
-
-----------------------------------------------------------------------
  kamilp11 - 12-14-05 02:54 
 ----------------------------------------------------------------------
 Yes, its might be related, but what is the solution?
@@ -67,6 +62,14 @@ Yes, its might be related, but what is the solution?
 $ /sbin/lspci -vn | grep -A1 0401
 00:0c.0 Class 0401: 1102:0002 (rev 0a)
         Subsystem: 1102:8065
+
+----------------------------------------------------------------------
+ rlrevell - 12-14-05 03:15 
+----------------------------------------------------------------------
+OK this is "SB Live 5.1 [SB0222]".  I suspected that the SB022* has
+slightly different chipset than other SBLive!s.
+
+Is bug #1624 the same device?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -77,6 +80,7 @@ Date Modified  Username       Field                    Change
 12-13-05 20:27 rlrevell       Note Added: 0007021                          
 12-13-05 20:52 mikma          Note Added: 0007023                          
 12-14-05 02:54 kamilp11       Note Added: 0007027                          
+12-14-05 03:15 rlrevell       Note Added: 0007028                          
 ======================================================================
 
 
