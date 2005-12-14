@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001591]: dmix not enabled for snd-ice1724
-Date: Wed, 14 Dec 2005 23:35:53 +0100
-Message-ID: <3610284d84ac077e06f8beb08eaa9dbc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001648]: Front speakers are quiet
+Date: Thu, 15 Dec 2005 00:44:03 +0100
+Message-ID: <6c8abd1beaaa7483b4e611f76cc7e55c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5490178
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 23:35:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4059A1B1
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 00:44:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1591> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1648> 
 ======================================================================
-Reported By:                AdamW
-Assigned To:                perex
+Reported By:                kamilp11
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1591
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1648
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             11-22-2005 21:14 CET
-Last Modified:              12-14-2005 23:35 CET
+Date Submitted:             12-13-2005 19:30 CET
+Last Modified:              12-15-2005 00:44 CET
 ======================================================================
-Summary:                    dmix not enabled for snd-ice1724
+Summary:                    Front speakers are quiet
 Description: 
-Upstream default ALSA config files in /usr/share/alsa/cards/ now seem to
-enable dmix by default for most drivers, but not snd-ice1724. I have tried
-to enable dmix for snd-ice1724 by editing
-/usr/share/alsa/cards/ICE1724.conf and adding the section which seems to
-enable dmix on other cards - I copied and pasted it from ENS1371.conf,
-with the obvious change of ENS1371 to ICE1724 - but then sound playback no
-longer worked. mplayer would give these errors:
+I have SoundBlaster Live! 5.1 Digital. When I run sound program who has
+support 5.1 (xine, mplayer) everythings work fine without front speakers.
+When I run sound program on default sound device 5 speakers play and wave,
+wave center, wave surround volume controls has effect
 
-ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave) requested or
-auto-format is not available
-ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
-alsa-init: playback open error: Invalid argument
-Could not open/initialize audio device -> no sound.
+I have wave, wave surround, wave center, pcm, master and other volume
+controls unmute.
 
-So, a few questions. Is dmix not being enabled by default intentional,
-perhaps due to bugs with ice1724's support for dmix? Was my attempt to
-turn it on performed wrong, or does the problem lie elsewhere? Thanks.
-
-Please note I am using ALSA 1.1.0, this version was not available on the
-'product version' list when I reported this bug. I have already mentioned
-this to Mandriva's ALSA packager, Thierry Vignaud; he suggested I should
-report it upstream.
 ======================================================================
 
 ----------------------------------------------------------------------
- AdamW - 11-22-05 22:06 
+ Winterbird - 12-14-05 13:12 
 ----------------------------------------------------------------------
-Modified ICE1724.conf attempting to enable dmix. Playback works but dmix
-does not seem to.
+/sbin/lspci -vn | grep -A1 0401
+0000:01:07.0 Class 0401: 1102:0002 (rev 07)
+        Subsystem: 1102:8064
+
+I also have the same problem, and #1624 is probably the same bug.
 
 ----------------------------------------------------------------------
- rlrevell - 12-14-05 23:35 
+ kamilp11 - 12-15-05 00:44 
 ----------------------------------------------------------------------
-Fixed in CVS.
+I used EMU10K1.conf from CVS (like #1624) and now everythigs works fine. So
+newer version of drivers must be work, thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 21:14 AdamW          New Issue                                    
-11-22-05 21:38 rlrevell       Note Added: 0006801                          
-11-22-05 22:04 AdamW          Note Added: 0006804                          
-11-22-05 22:06 AdamW          Note Added: 0006805                          
-11-23-05 08:27 AdamW          File Added: ICE1724.conf                     
-12-14-05 23:35 rlrevell       Status                   assigned => resolved
-12-14-05 23:35 rlrevell       Resolution               open => fixed       
-12-14-05 23:35 rlrevell       Note Added: 0007044                          
+12-13-05 19:30 kamilp11       New Issue                                    
+12-13-05 19:30 kamilp11       Distribution              => Fedora Core 4   
+12-13-05 19:30 kamilp11       Kernel Version            => 2.6.14          
+12-13-05 20:27 rlrevell       Note Added: 0007021                          
+12-13-05 20:52 mikma          Note Added: 0007023                          
+12-14-05 02:54 kamilp11       Note Added: 0007027                          
+12-14-05 03:15 rlrevell       Note Added: 0007028                          
+12-14-05 13:12 Winterbird     Note Added: 0007037                          
+12-15-05 00:44 kamilp11       Note Added: 0007045                          
 ======================================================================
 
 
