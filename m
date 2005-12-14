@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001651]: ac3 passthrough not really work with ac3dec
-Date: Wed, 14 Dec 2005 10:30:10 +0100
-Message-ID: <31435ace87abf4f588ee445ff6a8f178@bugtrack.alsa-project.org>
+Date: Wed, 14 Dec 2005 10:31:34 +0100
+Message-ID: <f3ab6389ce7d6c780c6d164c9b9e39c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5149B174
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 10:30:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11A401B1
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 10:31:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.31
 ======================================================================
 Date Submitted:             12-14-2005 09:44 CET
-Last Modified:              12-14-2005 10:30 CET
+Last Modified:              12-14-2005 10:31 CET
 ======================================================================
 Summary:                    ac3 passthrough not really work with ac3dec
 Description: 
@@ -76,16 +76,6 @@ Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- tycordinal - 12-14-05 10:16 
-----------------------------------------------------------------------
-ac3dec to do software decoding:
-
-
-ac3dec -6 thatac3file.ac3
-5.1 Mode 48.0 KHz 448 kbps Complete Main Audio Service
-Using PCM device 'plug:surround51'
-
-----------------------------------------------------------------------
  pzad - 12-14-05 10:30 
 ----------------------------------------------------------------------
 IEC958 Optical Raw - this looks correct.
@@ -114,6 +104,28 @@ and change it to
      value 0
 }
 
+----------------------------------------------------------------------
+ tycordinal - 12-14-05 10:31 
+----------------------------------------------------------------------
+interesting things:
+
+when doing ac3dec -6 oneac3file.ac3 ,
+there is sound coming out from the spdif output, and when i use alsamixer
+to make "IEC958 Optical Raw" from "MM" to become "OO", the sound stop
+coming out. When I make it as "MM", the sound come back again. In this
+case, alsamixer can toggled the sound output, if spdif output is playing
+digital stereo.
+
+when doing ac3dec -C oneac3file.ac3,
+alsamixer show "IEC958 Optical Raw" as "OO" , and there is no dolby light
+on the decoder (creative DDTS-100). when I make it "MM", there is still no
+dolby light.  when I exit alsamixer and run alsamixer again, "IEC958
+Optical Raw" has become "OO". In this case, alsamixer cannot help to get
+ac3 passthough from the spdif output, because it cannot really make
+"IEC958 Optical Raw" as "MM", even though it seems it can. After ac3dec
+finished, "IEC958 Optical Raw" back to "MM" again, as shown by running
+alsamixer again.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -123,6 +135,7 @@ Date Modified  Username       Field                    Change
 12-14-05 10:15 tycordinal     Note Added: 0007032                          
 12-14-05 10:16 tycordinal     Note Added: 0007033                          
 12-14-05 10:30 pzad           Note Added: 0007034                          
+12-14-05 10:31 tycordinal     Note Added: 0007035                          
 ======================================================================
 
 
