@@ -1,22 +1,14 @@
-From: Dirk Jagdmann <doj@cubic.org>
-Subject: [patch] envy24control: missing command line option helptext
-Date: Wed, 14 Dec 2005 15:51:04 +0100
-Message-ID: <43A03158.7070406@cubic.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000959]: After S3 resume: ali_stimer_read: stimer is not ready
+Date: Wed, 14 Dec 2005 17:38:43 +0100
+Message-ID: <8c2210130746676418160136b9bd8ff7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050004060504070303090605"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from roasted.cubic.org (roasted.cubic.org [193.108.181.130])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 374FD18A
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 15:51:06 +0100 (MET)
-Received: from d010088.adsl.hansenet.de ([80.171.10.88] helo=mrmucke.doj)
-	by roasted.cubic.org with esmtp (Exim 3.36 #1)
-	id 1EmXyD-0001gY-00
-	for alsa-devel@alsa-project.org; Wed, 14 Dec 2005 15:51:05 +0100
-Received: from [192.168.0.3] (helo=[192.168.0.3])
-	by mrmucke.doj with esmtp (Exim 3.36 #1)
-	id 1EmXyC-0001CP-00
-	for alsa-devel@alsa-project.org; Wed, 14 Dec 2005 15:51:04 +0100
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3A7E191
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 17:38:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,44 +21,79 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050004060504070303090605
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello developers,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=959> 
+======================================================================
+Reported By:                avuton
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   959
+Category:                   PCI - ali5451
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             03-03-2005 18:41 CET
+Last Modified:              12-14-2005 17:38 CET
+======================================================================
+Summary:                    After S3 resume: ali_stimer_read: stimer is not
+ready
+Description: 
+After S3 resume, 'ali_stimer_read: stimer is not ready.' repeats until I
+reset/power down the computer.
 
-this patch adds the help description of the "-M" command line option.
+Workaround is to stop all audio activity and unload the driver, which
+works fine.
 
--- 
----> Dirk Jagdmann ^ doj / cubic
-----> http://cubic.org/~doj
------> http://llg.cubic.org
+This happens on my Libretto L5.
+======================================================================
 
---------------050004060504070303090605
-Content-Type: text/plain;
- name="e24c-help.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="e24c-help.patch"
+----------------------------------------------------------------------
+ avuton - 07-08-05 22:48 
+----------------------------------------------------------------------
+I'm very sorry, but this machine cannot use APM due to it not being
+equipped for it (it has no bios). And acpi=off would work but then I
+wouldn't be able to suspend any longer thus defeating the purpose of this
+bug :).
 
-Index: envy24control.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/envy24control/envy24control.c,v
-retrieving revision 1.40
-diff -u -r1.40 envy24control.c
---- envy24control.c	8 Dec 2005 16:36:12 -0000	1.40
-+++ envy24control.c	14 Dec 2005 14:49:34 -0000
-@@ -1877,6 +1877,7 @@
- 	fprintf(stderr, "\t-v, --view_spdif_playback\tshows the spdif playback channels in the mixer\n");
- 	fprintf(stderr, "\t-f, --profiles_file\tuse file as profiles file\n");
- 	fprintf(stderr, "\t-m, --midichannel\tmidi channel number for controller control\n");
-+	fprintf(stderr, "\t-M, --midienhanced\tUse an enhanced mapping from midi controller to db slider\n");
- }
- 
- int main(int argc, char **argv)
+Thanks, anything else I can do please let me know.
 
---------------050004060504070303090605--
+----------------------------------------------------------------------
+ sluskyb - 12-14-05 17:38 
+----------------------------------------------------------------------
+Looks like the "stimer is not ready" messages repeat for only about two and
+a half minutes, and then I get my laptop back. (Tested on my Libretto L5
+w/2.6.15-rc5.) Sound doesn't work after that until I unload and reload the
+module.
+
+The hangcheck timer throws out a few backtraces -- see dmesg output in
+attached ali5451-S3.txt.
+
+Using a CVS tree from November 18th, the "stimer is not ready" messages
+come faster, and the total delay is only a few seconds, but still sound
+doesn't work as described above. I'll try 1.0.11-rc1 tonight...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-03-05 18:41 avuton         New Issue                                    
+03-03-05 18:41 avuton         Distribution              => Gentoo          
+03-03-05 18:41 avuton         Kernel Version            => 2.6.11          
+05-02-05 02:22 avuton         Note Added: 0004583                          
+06-27-05 03:52 avuton         Note Added: 0005270                          
+07-08-05 14:59 tiwai          Note Added: 0005431                          
+07-08-05 22:48 avuton         Note Added: 0005436                          
+12-14-05 17:28 sluskyb        File Added: ali5451-S3.txt                    
+12-14-05 17:38 sluskyb        Note Added: 0007038                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
