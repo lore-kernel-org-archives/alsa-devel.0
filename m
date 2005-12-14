@@ -1,16 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: Re: snd-es1968 (+ snd-cs4236) trouble
-Date: Wed, 14 Dec 2005 05:55:13 +0100
-Message-ID: <439FA5B1.8000601@keyaccess.nl>
-References: <439B36E0.3090709@keyaccess.nl>	<s5hzmn6y1b1.wl%tiwai@suse.de>	<439DFF60.1020105@keyaccess.nl>	<439E7391.60408@keyaccess.nl> <s5h3bkxxnpv.wl%tiwai@suse.de> <439F2E13.7070405@keyaccess.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001649]: No surround sound on ICH5 (AC'97 AD1980)
+Date: Wed, 14 Dec 2005 07:46:27 +0100
+Message-ID: <7afebe7ef916eddcb4ec8381b11b95fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070903080106050104000202"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl [213.51.130.201])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1CD61C8
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 05:51:14 +0100 (MET)
-In-Reply-To: <439F2E13.7070405@keyaccess.nl>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A052E1C1
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 07:46:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,87 +18,181 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070903080106050104000202
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Rene Herman wrote:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1649> 
+======================================================================
+Reported By:                znerd
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1649
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             12-14-2005 02:37 CET
+Last Modified:              12-14-2005 07:46 CET
+======================================================================
+Summary:                    No surround sound on ICH5 (AC'97 AD1980)
+Description: 
+I cannot get my AC'97 device (AD1980) to produce any sound other than
+stereo output. I have tried various settings on alsamixer and I used
+various speaker-test forms to validate settings. When I use:
 
-> I'll poke around some more to confirm the documentation was right about 
-> the Legacy Audio bit. I see the SB-EMU can be set to 0x240 and that's 
-> free here, so I'll try and see for which setting of the bit something 
-> appears there.
+   speaker-test -Dplug:surround40 -c4
 
-Managed to already. Yes, confirmed, the documentation was right. snd-sb8 
-actually loads for this emulation:
+then I hear just Front-Left and Front-Right. There is total silence on the
+rear channels. I plugged the rear speakers plug into the 2nd sound output
+jack.
 
-ALSA sound/isa/sb/sb_common.c:130: SB [0x240]: DSP chip found, version = 3.2
+Some hints would be appreciated. I have been searching around the internet
+and have found other issues regarding the AD1980, but not this one. I do
+realize it may be my setup that's wrong, but the chance is getting quite
+small by now.
+======================================================================
 
-So anyways, the submitted patch, re-attached for convenience, was right.
+----------------------------------------------------------------------
+ znerd - 12-14-05 02:41 
+----------------------------------------------------------------------
+Here's the output of lspci -nv:
 
-Rene.
+00:00.0 0600: 8086:2578 (rev 02)
+        Subsystem: 1028:0156
+        Flags: bus master, fast devsel, latency 0
+        Memory at d0000000 (32-bit, prefetchable) [size=128M]
+        Capabilities: [e4] Vendor Specific Information
+        Capabilities: [a0] AGP version 3.0
+
+00:01.0 0604: 8086:2579 (rev 02)
+        Flags: bus master, 66MHz, fast devsel, latency 64
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=64
+        Memory behind bridge: fd000000-feafffff
+        Prefetchable memory behind bridge: d8000000-efffffff
+
+00:1d.0 0c03: 8086:24d2 (rev 02)
+        Subsystem: 1028:0156
+        Flags: bus master, medium devsel, latency 0, IRQ 19
+        I/O ports at ff80 [size=32]
+
+00:1d.1 0c03: 8086:24d4 (rev 02)
+        Subsystem: 1028:0156
+        Flags: bus master, medium devsel, latency 0, IRQ 20
+        I/O ports at ff60 [size=32]
+
+00:1d.2 0c03: 8086:24d7 (rev 02)
+        Subsystem: 1028:0156
+        Flags: bus master, medium devsel, latency 0, IRQ 16
+        I/O ports at ff40 [size=32]
+
+00:1d.3 0c03: 8086:24de (rev 02)
+        Subsystem: 1028:0156
+        Flags: bus master, medium devsel, latency 0, IRQ 19
+        I/O ports at ff20 [size=32]
+
+00:1d.7 0c03: 8086:24dd (rev 02) (prog-if 20)
+        Subsystem: 1028:0156
+        Flags: bus master, medium devsel, latency 0, IRQ 18
+        Memory at ffa80800 (32-bit, non-prefetchable) [size=1K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [58] Debug port
+
+00:1e.0 0604: 8086:244e (rev c2)
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=02, subordinate=02, sec-latency=32
+        I/O behind bridge: 0000d000-0000dfff
+        Memory behind bridge: fce00000-fcffffff
+        Prefetchable memory behind bridge: 50000000-500fffff
+
+00:1f.0 0601: 8086:24d0 (rev 02)
+        Flags: bus master, medium devsel, latency 0
+
+00:1f.1 0101: 8086:24db (rev 02) (prog-if 8a)
+        Subsystem: 1028:0156
+        Flags: bus master, medium devsel, latency 0, IRQ 16
+        I/O ports at <ignored>
+        I/O ports at <ignored>
+        I/O ports at <ignored>
+        I/O ports at <ignored>
+        I/O ports at ffa0 [size=16]
+        Memory at febffc00 (32-bit, non-prefetchable) [size=1K]
+
+00:1f.2 0101: 8086:24d1 (rev 02) (prog-if 8f)
+        Subsystem: 1028:0156
+        Flags: bus master, 66MHz, medium devsel, latency 0, IRQ 16
+        I/O ports at fe00 [size=8]
+        I/O ports at fe10 [size=4]
+        I/O ports at fe20 [size=8]
+        I/O ports at fe30 [size=4]
+        I/O ports at fea0 [size=16]
+
+00:1f.3 0c05: 8086:24d3 (rev 02)
+        Subsystem: 1028:0156
+        Flags: medium devsel, IRQ 10
+        I/O ports at eda0 [size=32]
+
+00:1f.5 0401: 8086:24d5 (rev 02)
+        Subsystem: 1028:0156
+        Flags: bus master, medium devsel, latency 0, IRQ 17
+        I/O ports at ee00 [size=256]
+        I/O ports at edc0 [size=64]
+        Memory at febffa00 (32-bit, non-prefetchable) [size=512]
+        Memory at febff900 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [50] Power Management version 2
+
+01:00.0 0300: 10de:0326 (rev a1)
+        Flags: bus master, 66MHz, medium devsel, latency 248, IRQ 19
+        Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
+        Memory at e0000000 (32-bit, prefetchable) [size=256M]
+        [virtual] Expansion ROM at fea00000 [disabled] [size=128K]
+        Capabilities: [60] Power Management version 2
+        Capabilities: [44] AGP version 3.0
+
+02:02.0 0100: 9005:0010
+        Subsystem: 9005:a180
+        Flags: bus master, medium devsel, latency 64, IRQ 17
+        BIST result: 00
+        I/O ports at de00 [disabled] [size=256]
+        Memory at fcedf000 (64-bit, non-prefetchable) [size=4K]
+        Expansion ROM at 50000000 [disabled] [size=128K]
+        Capabilities: [dc] Power Management version 1
+
+02:0c.0 0200: 8086:100e (rev 02)
+        Subsystem: 1028:0156
+        Flags: bus master, 66MHz, medium devsel, latency 64, IRQ 16
+        Memory at fcee0000 (32-bit, non-prefetchable) [size=128K]
+        I/O ports at ddc0 [size=64]
+        Capabilities: [dc] Power Management version 2
+        Capabilities: [e4] PCI-X non-bridge device
+        Capabilities: [f0] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+
+----------------------------------------------------------------------
+ lmike - 12-14-05 07:46 
+----------------------------------------------------------------------
+A bit strange the i/o and memory resources settings in the pci output. Do
+you have set PnP OS to 'Yes' in BIOS settings ? If yes, try to set it to
+'No'.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-14-05 02:37 znerd          New Issue                                    
+12-14-05 02:37 znerd          Distribution              => Gentoo Linux    
+12-14-05 02:37 znerd          Kernel Version            => 2.6.14          
+12-14-05 02:41 znerd          Note Added: 0007026                          
+12-14-05 07:46 lmike          Note Added: 0007029                          
+======================================================================
 
 
-
---------------070903080106050104000202
-Content-Type: text/plain;
- name="linux-2.6.14.3_es1968_tdma_la_iem.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="linux-2.6.14.3_es1968_tdma_la_iem.diff"
-
---- linux-2.6.14.3-local-wc/sound/pci/es1968.c.orig	2005-12-13 07:25:47.000000000 +0100
-+++ linux-2.6.14.3-local-wc/sound/pci/es1968.c	2005-12-13 07:26:04.000000000 +0100
-@@ -176,7 +176,7 @@ MODULE_PARM_DESC(joystick, "Enable joyst
- 
- /* Values for the ESM_LEGACY_AUDIO_CONTROL */
- 
--#define ESS_ENABLE_AUDIO	0x8000
-+#define ESS_DISABLE_AUDIO	0x8000
- #define ESS_ENABLE_SERIAL_IRQ	0x4000
- #define IO_ADRESS_ALIAS		0x0020
- #define MPU401_IRQ_ENABLE	0x0010
-@@ -195,7 +195,7 @@ MODULE_PARM_DESC(joystick, "Enable joyst
- #define DMA_TDMA		0x0100
- #define DMA_PCPCI		0x0200
- #define POST_WRITE		0x0080
--#define ISA_TIMING		0x0040
-+#define PCI_TIMING		0x0040
- #define SWAP_LR			0x0020
- #define SUBTR_DECODE		0x0002
- 
-@@ -2197,14 +2197,11 @@ static void snd_es1968_chip_init(es1968_
- 	/* Config Reg A */
- 	pci_read_config_word(pci, ESM_CONFIG_A, &w);
- 
--	/*      Use TDMA for now. TDMA works on all boards, so while its
--	 *      not the most efficient its the simplest. */
- 	w &= ~DMA_CLEAR;	/* Clear DMA bits */
--	w |= DMA_TDMA;		/* TDMA on */
- 	w &= ~(PIC_SNOOP1 | PIC_SNOOP2);	/* Clear Pic Snoop Mode Bits */
- 	w &= ~SAFEGUARD;	/* Safeguard off */
- 	w |= POST_WRITE;	/* Posted write */
--	w |= ISA_TIMING;	/* ISA timing on */
-+	w |= PCI_TIMING;	/* PCI timing on */
- 	/* XXX huh?  claims to be reserved.. */
- 	w &= ~SWAP_LR;		/* swap left/right 
- 				   seems to only have effect on SB
-@@ -2245,7 +2242,7 @@ static void snd_es1968_chip_init(es1968_
- 
- 	pci_read_config_word(pci, ESM_LEGACY_AUDIO_CONTROL, &w);
- 
--	w &= ~ESS_ENABLE_AUDIO;	/* Disable Legacy Audio */
-+	w |= ESS_DISABLE_AUDIO;	/* Disable Legacy Audio */
- 	w &= ~ESS_ENABLE_SERIAL_IRQ;	/* Disable SIRQ */
- 	w &= ~(0x1f);		/* disable mpu irq/io, game port, fm, SB */
- 
-
---------------070903080106050104000202--
 
 
 -------------------------------------------------------
