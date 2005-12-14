@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
-Date: Tue, 13 Dec 2005 12:49:27 +0100
-Message-ID: <1142f710a6e7e24224c096263d393276@bugtrack.alsa-project.org>
+From: "Patronage H. Psychotherapist" <havardk@global-asp.net>
+Subject: Online Pharmacy Guide
+Date: Tue, 13 Dec 2005 19:58:48 -0600
+Message-ID: <7126982209.20051213195848@global-asp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------E179642EAFA0B89"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CE04163
-	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:49:28 +0100 (MET)
+Received: from -195628408 (did75-10-82-236-231-219.fbx.proxad.net [82.236.231.219])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2F902168
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 12:49:58 +0100 (MET)
+Received: from global-asp.net (-195883352 [-195882920])
+	by did75-10-82-236-231-219.fbx.proxad.net (Qmailv1) with ESMTP id ACAECA5270
+	for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2005 19:58:48 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +21,97 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
-======================================================================
-Reported By:                klausr
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   305
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             Debian kernel 2.6.5-4-686
-======================================================================
-Date Submitted:             05-25-2004 14:49 CEST
-Last Modified:              12-13-2005 12:49 CET
-======================================================================
-Summary:                    sound is locked up after suspend/resume (APM)
-Description: 
-Until recently I was running oss driver cs46xx without a problem. I could
-suspend in the middle of playback and xmms would keep playing after resume
-as if nothing happend at all.
-After switching to the 2.6 kernel, currently running 2.6.5, I also
-switched to ALSA beeing the new sound architecture of choice.
-Unforunately now when I suspend and resume my notebook sound stops working
-at all. Sometimes unloading all ALSA modules helps, sometimes even that is
-not possible anymore.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000226 Sound hangs after APM resume
-======================================================================
+------------E179642EAFA0B89
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-----------------------------------------------------------------------
- rlrevell - 03-23-05 00:39 
-----------------------------------------------------------------------
-Make sure to turn off all "Fast Boot" BIOS options on Thinkpads.  Otherwise
-you may have bizarre sound problems.  This advice is from Alan Cox.
+Welcome to our Internet Pharkmacy
+We offer a wide selection of the
+most popular medicines online!
+FAST shipping, LOW prices and
+Toll-free customer support! 
 
-----------------------------------------------------------------------
- jdthood - 12-13-05 12:49 
-----------------------------------------------------------------------
-klausr: Does cs46xx suspend-'n'-resume work properly in 1.0.10?
+If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
+Vlagdra - $3.3 
+Lehvitra - $3.3
+Cialiws - $3.7
+Imaitrex - $16.4 Flomax - $2.2
+Ulktram - $0.78
+Viloxx - $4.75 
+Amgbien - $2.2 VaIium - $0.97 
+Svoma - $3
+Xanyax - $1.09
+Maeridia - $2.2 
+* we offer a money-back guarantee in case the product doesn't work for you or you may be somehow dissatisfied by its performance 
+* we've efficiently streamlined our service, letting you buy from us in a very discreet, non-embarrassing and hassle-free manner  
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-25-04 14:49 klausr         New Issue                                    
-05-25-04 14:49 klausr         Kernel Version            => Debian kernel
-2.6.5-4-686
-05-25-04 15:02 tiwai          Note Added: 0001213                          
-05-25-04 15:31 klausr         Note Added: 0001215                          
-05-25-04 15:59 klausr         Note Added: 0001217                          
-05-25-04 16:02 klausr         Issue Monitored: klausr                      
-05-25-04 16:05 tiwai          Note Added: 0001218                          
-05-25-04 16:44 klausr         Note Added: 0001220                          
-05-25-04 16:56 klausr         Note Edited: 0001220                         
-05-27-04 08:49 klausr         Issue End Monitor: klausr                    
-05-28-04 17:08 tiwai          Note Added: 0001269                          
-05-29-04 09:36 klausr         Note Added: 0001276                          
-01-17-05 10:57 jdthood        Note Added: 0003226                          
-03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
-03-23-05 00:39 rlrevell       Note Added: 0004145                          
-03-28-05 15:42 sboehler       Issue Monitored: sboehler                    
-06-20-05 01:59 tromer         Issue Monitored: tromer                      
-12-12-05 11:12 bheung         Issue Monitored: bheung                      
-12-13-05 12:49 jdthood        Note Added: 0007003                          
-======================================================================
+The new, easy way to order your prescriuptions! 
+Visit our website
+http://contribue.com
+
+With best regards,
+Online Pharmaceuticals
+
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------E179642EAFA0B89
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#FFF6FF">
+<p><b><font color="#FF6664">Welcome to our Internet Pharnmacy<br>
+  We offer a wide selection of the<br>
+  most popular medicines online!<br>
+  FAST shipping, LOW prices and<br>
+  Toll-free customer support! </font></b></p>
+<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#FF66CC">
+  <tr bgcolor="#FFF0CC"> 
+    <td colspan="3">If you compare the cost and services of our competitors, you 
+      will see that we give you much more… for less. Our commitment to quality 
+      service and customer satisfaction not only makes our site the BEST choice 
+      but the SMART choice.</td>
+  </tr>
+  <tr bgcolor="#C4C4FF"> 
+    <td bgcolor="#FFDECC"><b>Vlaghra - $3.3 <br>
+      Leyvitra - $3.3<br>
+      Cialifs - $3.7<br>
+      Imoitrex - $16.4</b></td>
+    <td bgcolor="#FFBACC"><b>Flaomax - $2.2<br>
+      Uljtram - $0.78<br>
+      Viyoxx - $4.75 <br>
+      Amkbien - $2.2</b></td>
+    <td bgcolor="#FFDECC"><b>VaIiulm - $0.97 <br>
+      Sqoma - $3<br>
+      Xanhax - $1.09<br>
+      Mueridia - $2.2</b></td>
+  </tr>
+  <tr bgcolor="#FFC0FF"> 
+    <td colspan="3">* we offer a money-back guarantee in case the product doesn't 
+      work for you or you may be somehow dissatisfied by its performance <br>
+      * we've efficiently streamlined our service, letting you buy from us in 
+      a very discreet, non-embarrassing and hassle-free manner </td>
+  </tr>
+</table>
+<br>
+<b>The new, easy way to order your prescriptions!</b> 
+<p><b><A href="http://contribue.com">Visit our website</A> 
+</b></p>
+With best regards,<br>
+Online Pharmaceuticals
+<br>
+<br>
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
+
+
+------------E179642EAFA0B89--
 
 
 
