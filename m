@@ -1,13 +1,8 @@
-From: Sasha Khapyorsky <sashakh@gmail.com>
-Subject: Re: AC97 modem support -- docs?
-Date: Wed, 14 Dec 2005 22:52:47 +0200
-Message-ID: <20051214205247.GA11022@tecr>
-References: <20051213140231.24955955.don@dis.org.nz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 14 Dec 2005 21:08:03 -0000
+Message-ID: <E1Emdr7-00069M-NX@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20051213140231.24955955.don@dis.org.nz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +12,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Donald Gordon <don@dis.org.nz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 14:02 Tue 13 Dec     , Donald Gordon wrote:
-> Hi
-> 
-> From peering at the source, it looks like ALSA supports driving various
-> "modems" via drivers like intel8x0m.  I'd like to try and get one of
-> these working as a phone line interface with the Asterisk PBX
-> software. 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-That is nice idea.
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-> But I can't find documentation on the interface to these
-> devices provided by ALSA.  Can anyone point me in the right direction?
+--- Original message follows.
 
-The PCM interface is exactly same as with regular audio device, in
-addition there are few special controls 'Off-hook Switch' and 'Caller
-ID Switch'. Some yet messy example of such interface usage you may find
-there http://linmodems.technion.ac.il/sasha/ma/ma-0.000002.tar.gz ,
-look in drv_alsa.c file.
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-Sasha.
+The original message is over 5k.  Message truncated to 1K.
+
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.249>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta323.mail.scd.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO xdombc.net) (64.251.132.84)
+  by mta323.mail.scd.yahoo.com with SMTP; Wed, 14 Dec 2005 13:08:02 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Wed, 14 Dec 2005 21:00:01 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <e7ab08.7dcbdaaa69@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=e25deac29368c9bad208"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
+
+--=e25deac29368c9bad208
+
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--=e25deac29368c9bad208
+Content-Type: application/octet-stream; name=mailtext.zip
+Content-Tran
+*** MESSAGE TRUNCATED ***
+
 
 
 -------------------------------------------------------
