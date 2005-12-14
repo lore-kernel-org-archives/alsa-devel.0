@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001624]: No front channels on AC3
-Date: Wed, 14 Dec 2005 20:06:21 +0100
-Message-ID: <b39cabdf17b4ceca4d7ceff23f5d593a@bugtrack.alsa-project.org>
+Date: Wed, 14 Dec 2005 20:11:20 +0100
+Message-ID: <a9fd68d0eb51db395fdf6dfa02e79a91@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47C8B1B1
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 20:06:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 514841B1
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 20:11:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Etch
 Kernel Version:             2.6.13.4
 ======================================================================
 Date Submitted:             12-06-2005 21:31 CET
-Last Modified:              12-14-2005 20:06 CET
+Last Modified:              12-14-2005 20:11 CET
 ======================================================================
 Summary:                    No front channels on AC3
 Description: 
@@ -49,21 +49,18 @@ kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- mikma - 12-14-05 18:23 
-----------------------------------------------------------------------
-The problem should go away if you upgrade alsa-driver to version 1.0.10.
-The change of EMU10K1.conf was made in alsa-lib release 1.0.10rc2. 
-
-(Using EMU10K1.conf from version 1.0.10rc1, the version before, could be
-tried as a work-around if you want to avoid upgrading the alsa-driver).
-
-----------------------------------------------------------------------
  Winterbird - 12-14-05 20:06 
 ----------------------------------------------------------------------
 I guess I'll just have to wait for the next kernel to be released... I
 assume that would give me a newer version of the alsa drivers (I don't
 want to use the external drivers). I'll see if I can find a EMU10K1.conf
 from 1.0.10rc1 and give it a try.
+
+----------------------------------------------------------------------
+ mikma - 12-14-05 20:11 
+----------------------------------------------------------------------
+It's available via the CVS Web interface:
+http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-lib/src/conf/cards/EMU10K1.conf?rev=1.16
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -76,6 +73,7 @@ Date Modified  Username       Field                    Change
 12-13-05 20:50 Winterbird     Note Added: 0007022                          
 12-14-05 18:23 mikma          Note Added: 0007039                          
 12-14-05 20:06 Winterbird     Note Added: 0007040                          
+12-14-05 20:11 mikma          Note Added: 0007041                          
 ======================================================================
 
 
