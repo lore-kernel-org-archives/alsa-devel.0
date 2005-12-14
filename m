@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001651]: ac3 passthrough not really work with ac3dec
-Date: Wed, 14 Dec 2005 10:31:34 +0100
-Message-ID: <f3ab6389ce7d6c780c6d164c9b9e39c3@bugtrack.alsa-project.org>
+Date: Wed, 14 Dec 2005 10:53:32 +0100
+Message-ID: <39379cbfe2a2dd85b9b8afa2458f2a67@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11A401B1
-	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 10:31:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61112171
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 10:53:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.31
 ======================================================================
 Date Submitted:             12-14-2005 09:44 CET
-Last Modified:              12-14-2005 10:31 CET
+Last Modified:              12-14-2005 10:53 CET
 ======================================================================
 Summary:                    ac3 passthrough not really work with ac3dec
 Description: 
@@ -76,35 +76,6 @@ Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-14-05 10:30 
-----------------------------------------------------------------------
-IEC958 Optical Raw - this looks correct.
-
-Problem can be with "Audigy Analog/Digital Output Jack".
-
-Looks like Audigy 4 works diffrently as others Audigy *.
-
-Try to find file /usr/share/alsa/conf/cards/Audigy2.conf.
-
-In this file find this
-
-{
-     name "Audigy Analog/Digital Output Jack"
-     lock true
-     preserve true
-     value 1
-} 
-
-and change it to
-
-{
-     name "Audigy Analog/Digital Output Jack"
-     lock true
-     preserve true
-     value 0
-}
-
-----------------------------------------------------------------------
  tycordinal - 12-14-05 10:31 
 ----------------------------------------------------------------------
 interesting things:
@@ -126,6 +97,17 @@ ac3 passthough from the spdif output, because it cannot really make
 finished, "IEC958 Optical Raw" back to "MM" again, as shown by running
 alsamixer again.
 
+----------------------------------------------------------------------
+ pzad - 12-14-05 10:53 
+----------------------------------------------------------------------
+IEC958 Optical Raw - this is just multiplexer switch.
+If there is MM - this means spdif output comes from DSP and from normal
+playback device.
+If there is OO - spdif output comes from iec958 (or spdif) device.
+
+Please do, what I suggest you in previous note.
+Your problem is "Audigy Analog/Digital Output Jack" control.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -136,6 +118,7 @@ Date Modified  Username       Field                    Change
 12-14-05 10:16 tycordinal     Note Added: 0007033                          
 12-14-05 10:30 pzad           Note Added: 0007034                          
 12-14-05 10:31 tycordinal     Note Added: 0007035                          
+12-14-05 10:53 pzad           Note Added: 0007036                          
 ======================================================================
 
 
