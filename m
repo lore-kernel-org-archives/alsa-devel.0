@@ -1,68 +1,45 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 14 Dec 2005 21:08:03 -0000
-Message-ID: <E1Emdr7-00069M-NX@mail.sourceforge.net>
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+From: Jiri Slaby <slaby@liberouter.org>
+Subject: Re: [PATCH] cs5536 ID for cs5535audio
+Date: Wed, 14 Dec 2005 23:01:11 +0100
+Message-ID: <43A09627.60106@liberouter.org>
+References: <200512141431.32685.rene@exactcode.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S965009AbVLNWBk@vger.kernel.org>
+In-Reply-To: <200512141431.32685.rene@exactcode.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?B?UmVuw6kgUmViZQ==?= <rene@exactcode.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net, Andrew Morton <akpm@osdl.org>
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
+Ren=C3=A9 Rebe napsal(a):
+> Hi all,
+>=20
+> relative to 2.6.15-rc5-mm2 / alsa-cvs, works for me:
+>=20
+> Added AMD CS5536 to the cs5535audio driver.
+>=20
+> Signed-off-by: Ren=C3=A9 Rebe <rene@exactcode.de>
+>=20
+> --- sound/pci/cs5535audio/cs5535audio.c.orig	2005-12-14 14:39:11.0000=
+00000 +0100
+> +++ sound/pci/cs5535audio/cs5535audio.c	2005-12-14 14:29:23.000000000=
+ +0100
+> @@ -46,8 +46,10 @@
+>  static int enable[SNDRV_CARDS] =3D SNDRV_DEFAULT_ENABLE_PNP;
+> =20
+>  static struct pci_device_id snd_cs5535audio_ids[] =3D {
+> -	{ PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_CS5535_AUDIO, PCI_ANY_ID,
+> -		PCI_ANY_ID, 0, 0, 0, },
+> +	{ PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_CS5535_AUDIO,
+> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },
+> +	{ PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CS5536_AUDIO,
+> +	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },
+Seems like a PCI_DEVICE() candidate
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
-
---- Original message follows.
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.249>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta323.mail.scd.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO xdombc.net) (64.251.132.84)
-  by mta323.mail.scd.yahoo.com with SMTP; Wed, 14 Dec 2005 13:08:02 -0800
-From: alsa-devel@lists.sourceforge.net
-Date: Wed, 14 Dec 2005 21:00:01 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <e7ab08.7dcbdaaa69@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=e25deac29368c9bad208"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
-
---=e25deac29368c9bad208
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---=e25deac29368c9bad208
-Content-Type: application/octet-stream; name=mailtext.zip
-Content-Tran
-*** MESSAGE TRUNCATED ***
-
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+regards,
+--=20
+Jiri Slaby         www.fi.muni.cz/~xslaby
+~\-/~      jirislaby@gmail.com      ~\-/~
+B67499670407CE62ACC8 22A032CC55C339D47A7E
