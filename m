@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001648]: Front speakers are quiet
-Date: Thu, 15 Dec 2005 00:44:03 +0100
-Message-ID: <6c8abd1beaaa7483b4e611f76cc7e55c@bugtrack.alsa-project.org>
+Date: Thu, 15 Dec 2005 01:16:48 +0100
+Message-ID: <7c6cff8062cba65e648a4fdbd5c28e23@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4059A1B1
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 00:44:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61E1A19A
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 01:16:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1648> 
 ======================================================================
 Reported By:                kamilp11
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1648
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Fedora Core 4
 Kernel Version:             2.6.14
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-13-2005 19:30 CET
-Last Modified:              12-15-2005 00:44 CET
+Last Modified:              12-15-2005 01:16 CET
 ======================================================================
 Summary:                    Front speakers are quiet
 Description: 
@@ -55,19 +57,15 @@ controls unmute.
 ======================================================================
 
 ----------------------------------------------------------------------
- Winterbird - 12-14-05 13:12 
-----------------------------------------------------------------------
-/sbin/lspci -vn | grep -A1 0401
-0000:01:07.0 Class 0401: 1102:0002 (rev 07)
-        Subsystem: 1102:8064
-
-I also have the same problem, and #1624 is probably the same bug.
-
-----------------------------------------------------------------------
  kamilp11 - 12-15-05 00:44 
 ----------------------------------------------------------------------
 I used EMU10K1.conf from CVS (like #1624) and now everythigs works fine. So
 newer version of drivers must be work, thanks.
+
+----------------------------------------------------------------------
+ rlrevell - 12-15-05 01:16 
+----------------------------------------------------------------------
+Fixed in CVS
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +79,10 @@ Date Modified  Username       Field                    Change
 12-14-05 03:15 rlrevell       Note Added: 0007028                          
 12-14-05 13:12 Winterbird     Note Added: 0007037                          
 12-15-05 00:44 kamilp11       Note Added: 0007045                          
+12-15-05 01:16 rlrevell       Status                   new => resolved     
+12-15-05 01:16 rlrevell       Resolution               open => fixed       
+12-15-05 01:16 rlrevell       Assigned To               => rlrevell        
+12-15-05 01:16 rlrevell       Note Added: 0007046                          
 ======================================================================
 
 
