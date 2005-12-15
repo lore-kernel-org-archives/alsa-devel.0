@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: broken emu10k1 ADC
-Date: Thu, 15 Dec 2005 22:03:51 +0000
-Message-ID: <43A1E847.8010601@superbug.co.uk>
-References: <1134683387.12352.34.camel@Rainsong.home>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001654]: Support for Midiman (M-audio) Biport 2x4s
+Date: Thu, 15 Dec 2005 23:21:45 +0100
+Message-ID: <ef7777bdb13b3a94ae050aecfc084583@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1134683387.12352.34.camel@Rainsong.home>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E07CE1CD
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 23:21:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,71 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "James C. Georgas" <jgeorgas@rogers.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James C. Georgas wrote:
-> Can someone please verify that they can capture both channels of an
-> analog source with a SBLive 5.1 EMU10k1/STAC9708-11 card?
-> 
-> Here's my setup:
-> 	SBLive 5.1 Platinum, with a LiveDrive(00060?, manufactured 2000)
-> 	kernel 2.6.14-gentoo-r4
-> 	ALSA drivers 1.0.10_rc3 (also tried above kernel driver)
-> 	enable_ir=1 extin=0x3fff extout=0x7fff
-> 
-> Mixer settings:
-> 	capture CD selected
-> 	capture gain = 0
-> 	AC97 playback = 100
-> 	headphone (LiveDrive) = 100
-> 
-> Source:
-> 	Nine Inch Nails, Things Falling Apart, Track 4, first 10 seconds
-> 	(has a noticeable stereo pan effect).
-> 
-> 1) I get the left channel, but not the right channel.
-> 
-> 2) Same result if I play back through the SBLive's main speakers, with
-> the PCM and Master controls unmuted and set to 100. The remaining cases
-> are played back through the LiveDrive headphone jack, to ensure that the
-> stream heard is actually the digital capture, and not just the
-> STAC9708-11's analog passthrough (which works fine for both channels).
-> 
-> 3) Same result if I set AC97 capture to 100, and capture using "arecord
-> -d10 -fdat snd.out" and then play back through the (unmuted, volume=100)
-> wave device, using "aplay snd.out".
-> 
-> 4) Same result for any of the other analog sources, including "mix".
-> 
-> 5) "Mix mono" mixes both channels properly, but I still only get the
-> left stream for playback and capture.
-> 
-> 6 I get both channels when playing back or capturing a digital source.
-> 
-> I'm pretty sure that my STAC9708-11's right ADC is fried, but I wanted
-> to get some second opinions before I went and blew thirty bucks on a
-> replacement card.
-> 
-> I'm not on the list, so could you please CC to my personal email
-> address?
-> 
-> Thanks.
-> 
 
-Hardly and alsa-devel topic...
-Have you checked which socket the line in is connected to.
-If it is the Line in, you will get stereo,
-If it is the Mic in, you will get a single channel.
-If you are recording from the CD/Aux input on the sound card, linked 
-internally to the CD player, then you might have a valid problem.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1654> 
+======================================================================
+Reported By:                pumpkin
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1654
+Category:                   GENERIC - serialmidi
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               slackware 10.2
+Kernel Version:             
+======================================================================
+Date Submitted:             12-15-2005 23:21 CET
+Last Modified:              12-15-2005 23:21 CET
+======================================================================
+Summary:                    Support for Midiman (M-audio) Biport 2x4s
+Description: 
+I have a Midiman Biport 2x4s (a midi-interface that connects to the
+serial-port) that I cant get to work in Linux. I have seen that there is
+support for many other midi-interfaces by Midiman (M-audio) in ALSA but I
+havent seen support for my model. I have searched the internet and asked
+around for drivers and stuff to get it to work but with no luck so far.
+Is there support for my model that I havent found yet? and if not, will
+there be any support for my model soon?
+unfortunately I am pretty new to linux so I cant make my own driver so I
+am happy for all the help I can get.
+======================================================================
 
-As a general note, playback features on cards has been well tested, 
-capture features have not be so well tested, so you might just have 
-noticed a bug.
-
-James
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-15-05 23:21 pumpkin        New Issue                                    
+12-15-05 23:21 pumpkin        Distribution              => slackware 10.2  
+======================================================================
 
 
 
