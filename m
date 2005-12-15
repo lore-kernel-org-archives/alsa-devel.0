@@ -1,13 +1,8 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Tips on debugging ALSA driver snd_es18xx
-Date: Thu, 15 Dec 2005 09:27:17 +0100
-Message-ID: <1134635237.43a128e5e75fa@webmail.uni-halle.de>
-References: <20051215013411.GK7983@cortazar>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7BIT
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 15 Dec 2005 08:42:00 -0000
+Message-ID: <E1Emogg-0006io-Eq@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20051215013411.GK7983@cortazar>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,21 +12,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paulo Marcel Coelho Aragao <pmcaragao-ag@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paulo Marcel Coelho Aragao wrote:
-> I recently switched from OSS to ALSA and I'm baffled by this: aplay produces
-> sound when playing wav files, but gxine and xmms produce no sound when
-> playing streaming audio.
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-What are the contents of /proc/asound/card0/pcm0p/sub0/hw_params and sw_params
-in either case?
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
+--- Original message follows.
 
-Regards,
-Clemens
+Return-Path: <alsa-devel@lists.sourceforge.net>
+
+The original message is over 5k.  Message truncated to 1K.
+
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.235>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta196.mail.mud.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO hugftksl.net) (64.251.132.84)
+  by mta196.mail.mud.yahoo.com with SMTP; Thu, 15 Dec 2005 00:42:00 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Thu, 15 Dec 2005 08:35:50 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <409b80.6ee0cdd1ad461@cuxbjww.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===adfe75f.5b8e85cceae2a1"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
+
+--===adfe75f.5b8e85cceae2a1
+
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--===adfe75f.5b8e85cceae2a1
+Content-Type: application/octet-stream; name=mailtext.zip
+Cont
+*** MESSAGE TRUNCATED ***
+
 
 
 -------------------------------------------------------
