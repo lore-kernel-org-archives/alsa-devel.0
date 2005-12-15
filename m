@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001641]: "error: cannot find input file: src/pcm/Makefile.in" when building under Linux 2.4
-Date: Thu, 15 Dec 2005 13:30:12 +0100
-Message-ID: <aec924a991e86ef5abe0f6f354f3f3f5@bugtrack.alsa-project.org>
+Date: Thu, 15 Dec 2005 13:38:30 +0100
+Message-ID: <47d21582349e1b272f11df5c541519d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E0DD189
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 13:30:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C9C3189
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 13:38:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1641> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             12-11-2005 11:12 CET
-Last Modified:              12-15-2005 13:30 CET
+Last Modified:              12-15-2005 13:38 CET
 ======================================================================
 Summary:                    "error: cannot find input file: src/pcm/Makefile.in"
 when building under Linux 2.4
@@ -192,17 +192,6 @@ config.status: error: cannot find input file: src/pcm/Makefile.in
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 12-15-05 10:08 
-----------------------------------------------------------------------
-See this line:
-
-./cvscompile: line 7: 9376 Terminated automake --foreign --copy
---add-missing
-
-Upgrade to latest autoconf and automake GNU tools. Appearently, old ones
-cannot deal with new alsa-lib.
-
-----------------------------------------------------------------------
  Raymond - 12-15-05 13:30 
 ----------------------------------------------------------------------
 automake --version
@@ -212,6 +201,36 @@ automake (GNU automake) 1.7.8
 ./cvscompile is OK for CVS version of alsa-driver and alsa-utils
 
 Which version of automake is required for alsa-lib ?
+
+----------------------------------------------------------------------
+ Raymond - 12-15-05 13:38 
+----------------------------------------------------------------------
+It seem that ac97->subsystem_vendor and ac97->subsystem_device is not
+initialised in kernel 2.4 with 1.0.11rc1
+
+
+cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: SigmaTel STAC9708,11
+ 
+PCI Subsys Vendor: 0x0000
+PCI Subsys Device: 0x0000
+ 
+Capabilities     : -headphone out-
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : SigmaTel 3D Enhancement
+ 
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 SDAC DSA=0
+Extended status  : SDAC
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -228,6 +247,7 @@ src/pcm/Makefile.in" when building under Linux 2.4
 12-15-05 13:30 Raymond        Status                   resolved => feedback
 12-15-05 13:30 Raymond        Resolution               fixed => reopened   
 12-15-05 13:30 Raymond        Note Added: 0007049                          
+12-15-05 13:38 Raymond        Note Added: 0007050                          
 ======================================================================
 
 
