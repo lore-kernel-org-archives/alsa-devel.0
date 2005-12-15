@@ -1,18 +1,11 @@
-From: "Asya Mcmakin" <mcmakio@aaa.dk>
-Subject: Re: dimerous jellify
-Date: Wed, 14 Dec 2005 20:28:15 -0500
-Message-ID: <000001c60116$d247b1a0$1e84a8c0@sailboat>
-Reply-To: "Asya Mcmakin" <mcmakio@aaa.dk>
+From: Paulo Marcel Coelho Aragao <pmcaragao-ag@yahoo.com>
+Subject: Tips on debugging ALSA driver snd_es18xx
+Date: Wed, 14 Dec 2005 23:34:11 -0200
+Message-ID: <20051215013411.GK7983@cortazar>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C600EC.E971A9A0"
+Content-Type: multipart/mixed; boundary="DBIVS5p969aUjpLe"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E766A1B8
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 02:28:45 +0100 (MET)
-Received: from aaa.dk (201-42-134-240.dsl.telesp.net.br [201.42.134.240])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id D51C2981CE
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 02:28:35 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,104 +15,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rosanne Landwehr <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C600EC.E971A9A0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+--DBIVS5p969aUjpLe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-=20
-http://www.hoodevelo.com
-=20
-Le
-Vl
-So
-Xa
-Va
-A
-Cl
-vitra (30)
-AGRA  (30)
-ma    (30)
-nax   (30)
-LlUM  (30)
-mbien  (30)
-ALlS  (30)
- - $166
- - $135
- - $76
- - $124
- - $86
- - $120
- - $170
-=20
-woman running down the armory path toward the accident, only to realize
-that the three of them were running the other way, removing themselves
-from any involvement. Obviously, precious breaks in a military schedule
-were jealously protected. Bourne abandoned the limp, crashed through the
-hedgerow and raced to the concrete path that stretched to the corner of
-the huge building, gathering speed and breathing heavily with increasing
-frequency. Jasons weapon was now in plain sight, slashing the air as he
-gripped it in the hand of his swinging right arm. He reached the end of
-the path, his chest heaving, the veins in his neck seemingly prepared to
-burst as the sweat ran down his skin, drenching his face, his collar and
-his shirt. Gasping, he steadied the AK-47, his back pressed against the
-wall of the building, then spun around the corner into the parking area,
-stunned by
+Hi,
 
-------=_NextPart_000_0001_01C600EC.E971A9A0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I recently switched from OSS to ALSA and I'm baffled by this: aplay produces 
+sound when playing wav files, but gxine and xmms produce no sound when playing 
+streaming audio. I traced them and observed that they accessed sound in the 
+same way, calling open() and ioctl() on /dev/snd/pcmC0D0p and 
+/dev/snd/controlC0.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.hoodevelo.com">http://www.hoodevelo.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"FLOAT: left;"><FONT =
-size=3D3><STRONG>Le<BR>Vl<BR>So<BR>Xa<BR>Va<BR>A<BR>Cl</STRONG></FONT></D=
-IV>
-<DIV style=3D"FLOAT: left;"><FONT =
-size=3D3><STRONG>vitra&nbsp;(30)<BR>AGRA&nbsp;&nbsp;(30)<BR>ma&nbsp;&nbsp=
-;&nbsp;&nbsp;(30)<BR>nax&nbsp;&nbsp;&nbsp;(30)<BR>LlUM&nbsp;&nbsp;(30)<BR=
->mbien&nbsp;&nbsp;(30)<BR>ALlS&nbsp;&nbsp;(30)</STRONG></FONT></DIV>
-<DIV style=3D"FLOAT: left;"><FONT =
-size=3D3><STRONG>&nbsp;-&nbsp;$166<BR>&nbsp;-&nbsp;$135<BR>&nbsp;-&nbsp;$=
-76<BR>&nbsp;-&nbsp;$124<BR>&nbsp;-&nbsp;$86<BR>&nbsp;-&nbsp;$120<BR>&nbsp=
-;-&nbsp;$170</STRONG></FONT></DIV>
-<DIV style=3D"CLEAR: both"></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>woman running down the armory path toward the accident, only to =
-realize
-that the three of them were running the other way, removing themselves
-from any involvement. Obviously, precious breaks in a military schedule
-were jealously protected.
-   Bourne abandoned the limp, crashed through the hedgerow and raced to
-the concrete path that stretched to the corner of the huge building,
-gathering speed and breathing heavily with increasing frequency. Jasons
-weapon was now in plain sight, slashing the air as he gripped it in the
-hand of his swinging right arm. He reached the end of the path, his
-chest heaving, the veins in his neck seemingly prepared to burst as the
-sweat ran down his skin, drenching his face, his collar and his shirt.
-Gasping, he steadied the AK-47, his back pressed against the wall of the
-building, then spun around the corner into the parking area, stunned =
-by</DIV></BODY></HTML>
-------=_NextPart_000_0001_01C600EC.E971A9A0--
+I started threads at alsa-user and xine-users which didn't reach a conclusion 
+so far. I also tried linux-audio-user and debian-user but nobody replied. Of 
+course, long hours googling, too. With the tools and knowledge (lack of) I 
+have, I feel I can get no further. I thought of filing a bug (don't know 
+against which package, actually) but then, what the heck, I should try doing 
+something about it first. Perhaps I spent too much time working with 
+commercial software and I still see myself expecting my problem to be solved 
+by somebody else. Time to change that and get into the Linux way.
+
+With this frame of mind, I come here asking for guidance: could anybody share 
+with me some tips about debugging my ALSA driver, snd_es18xx ? A confession of 
+ignorance: I've never hacked a Linux kernel, never compiled Linux software 
+from source, for that matter, but I'm willing to learn what it takes to get to 
+the bottom of this problem.
+
+I've attached the output of http://alsa.opensrc.org/aadebug.txt, to describe 
+my environment.
+
+Thanks
+Paulo
+
+--DBIVS5p969aUjpLe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="aadebug.log"
+
+ALSA Audio Debug v0.1.0 - Wed Dec 14 09:50:33 BRDT 2005
+http://alsa.opensrc.org/index.php?page=aadebug
+http://www.gnu.org/licenses/gpl.txt
+
+Kernel ----------------------------------------------------
+Linux cortazar 2.6.14-2-686 #2 Fri Dec 9 10:11:34 UTC 2005 i686 GNU/Linux
+
+Loaded Modules --------------------------------------------
+snd_es18xx             31496  1 
+snd_pcm_oss            55264  0 
+snd_mixer_oss          19808  1 snd_pcm_oss
+snd_pcm                92392  2 snd_es18xx,snd_pcm_oss
+snd_page_alloc         10952  1 snd_pcm
+snd_opl3_lib           10848  1 snd_es18xx
+snd_timer              24708  2 snd_pcm,snd_opl3_lib
+snd_hwdep               9184  1 snd_opl3_lib
+snd_mpu401_uart         7328  1 snd_es18xx
+snd_rawmidi            24896  1 snd_mpu401_uart
+snd_seq_device          8748  2 snd_opl3_lib,snd_rawmidi
+snd                    55940  12 snd_es18xx,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_opl3_lib,snd_timer,snd_hwdep,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+
+Modprobe Conf ---------------------------------------------
+alias char-major-14-* soundcore
+
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12 08:13:09 2005 UTC).
+0 [ES1879         ]: ES1879 - ESS AudioDrive ES1879
+                     ESS AudioDrive ES1879 at 0x220, irq 5, dma1 1, dma2 5
+  8: [0- 0]: raw midi
+  4: [0- 0]: hardware dependent
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+00-00: OPL3 FM
+00-00: ES1879 : ESS AudioDrive ES1879 : playback 2 : capture 1
+
+Dev Snd ---------------------------------------------------
+controlC0  hwC0D0  midiC0D0  pcmC0D0c  pcmC0D0p  timer
+
+CPU -------------------------------------------------------
+model name	: Celeron (Mendocino)
+cpu MHz		: 298.688
+
+RAM -------------------------------------------------------
+MemTotal:       159172 kB
+SwapTotal:      313256 kB
+
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: Intel Corporation 440BX/ZX/DX - 82443BX/ZX/DX Host bridge (AGP disabled) (rev 03)
 
 
-
+--DBIVS5p969aUjpLe--
 
 
 -------------------------------------------------------
