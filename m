@@ -1,11 +1,11 @@
-From: Paulo Marcel Coelho Aragao <pmcaragao-ag@yahoo.com>
-Subject: Tips on debugging ALSA driver snd_es18xx
-Date: Wed, 14 Dec 2005 23:34:11 -0200
-Message-ID: <20051215013411.GK7983@cortazar>
+From: Mail Delivery Subsystem <MAILER-DAEMON@Gabriel.its.calpoly.edu>
+Subject: Returned mail: User unknown (from falcon.csc.calpoly.edu)
+Date: Wed, 14 Dec 2005 20:41:47 -0800 (PST)
+Message-ID: <200512150441.CXR40835@Gabriel.its.calpoly.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="DBIVS5p969aUjpLe"
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="CXR40835.1134621707/Gabriel.its.calpoly.edu"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,97 +18,53 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a MIME-encapsulated message
 
---DBIVS5p969aUjpLe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--CXR40835.1134621707/Gabriel.its.calpoly.edu
 
-Hi,
+The original message was received at Wed, 14 Dec 2005 20:40:25 -0800 (PST)
+from [218.17.227.216]
 
-I recently switched from OSS to ALSA and I'm baffled by this: aplay produces 
-sound when playing wav files, but gxine and xmms produce no sound when playing 
-streaming audio. I traced them and observed that they accessed sound in the 
-same way, calling open() and ioctl() on /dev/snd/pcmC0D0p and 
-/dev/snd/controlC0.
-
-I started threads at alsa-user and xine-users which didn't reach a conclusion 
-so far. I also tried linux-audio-user and debian-user but nobody replied. Of 
-course, long hours googling, too. With the tools and knowledge (lack of) I 
-have, I feel I can get no further. I thought of filing a bug (don't know 
-against which package, actually) but then, what the heck, I should try doing 
-something about it first. Perhaps I spent too much time working with 
-commercial software and I still see myself expecting my problem to be solved 
-by somebody else. Time to change that and get into the Linux way.
-
-With this frame of mind, I come here asking for guidance: could anybody share 
-with me some tips about debugging my ALSA driver, snd_es18xx ? A confession of 
-ignorance: I've never hacked a Linux kernel, never compiled Linux software 
-from source, for that matter, but I'm willing to learn what it takes to get to 
-the bottom of this problem.
-
-I've attached the output of http://alsa.opensrc.org/aadebug.txt, to describe 
-my environment.
-
-Thanks
-Paulo
-
---DBIVS5p969aUjpLe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="aadebug.log"
-
-ALSA Audio Debug v0.1.0 - Wed Dec 14 09:50:33 BRDT 2005
-http://alsa.opensrc.org/index.php?page=aadebug
-http://www.gnu.org/licenses/gpl.txt
-
-Kernel ----------------------------------------------------
-Linux cortazar 2.6.14-2-686 #2 Fri Dec 9 10:11:34 UTC 2005 i686 GNU/Linux
-
-Loaded Modules --------------------------------------------
-snd_es18xx             31496  1 
-snd_pcm_oss            55264  0 
-snd_mixer_oss          19808  1 snd_pcm_oss
-snd_pcm                92392  2 snd_es18xx,snd_pcm_oss
-snd_page_alloc         10952  1 snd_pcm
-snd_opl3_lib           10848  1 snd_es18xx
-snd_timer              24708  2 snd_pcm,snd_opl3_lib
-snd_hwdep               9184  1 snd_opl3_lib
-snd_mpu401_uart         7328  1 snd_es18xx
-snd_rawmidi            24896  1 snd_mpu401_uart
-snd_seq_device          8748  2 snd_opl3_lib,snd_rawmidi
-snd                    55940  12 snd_es18xx,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_opl3_lib,snd_timer,snd_hwdep,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-
-Modprobe Conf ---------------------------------------------
-alias char-major-14-* soundcore
-
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12 08:13:09 2005 UTC).
-0 [ES1879         ]: ES1879 - ESS AudioDrive ES1879
-                     ESS AudioDrive ES1879 at 0x220, irq 5, dma1 1, dma2 5
-  8: [0- 0]: raw midi
-  4: [0- 0]: hardware dependent
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-00-00: OPL3 FM
-00-00: ES1879 : ESS AudioDrive ES1879 : playback 2 : capture 1
-
-Dev Snd ---------------------------------------------------
-controlC0  hwC0D0  midiC0D0  pcmC0D0c  pcmC0D0p  timer
-
-CPU -------------------------------------------------------
-model name	: Celeron (Mendocino)
-cpu MHz		: 298.688
-
-RAM -------------------------------------------------------
-MemTotal:       159172 kB
-SwapTotal:      313256 kB
-
-Hardware --------------------------------------------------
-0000:00:00.0 Host bridge: Intel Corporation 440BX/ZX/DX - 82443BX/ZX/DX Host bridge (AGP disabled) (rev 03)
+   ----- The following addresses had permanent delivery errors -----
+<lolita@falcon.csc.calpoly.edu>
 
 
---DBIVS5p969aUjpLe--
+--CXR40835.1134621707/Gabriel.its.calpoly.edu
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; Gabriel.its.calpoly.edu
+Arrival-Date: Wed, 14 Dec 2005 20:40:25 -0800 (PST)
+
+Final-Recipient: RFC822; lolita@falcon.csc.calpoly.edu
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; falcon.csc.calpoly.edu
+Diagnostic-Code: SMTP; 550 5.1.1 <lolita@falcon.csc.calpoly.edu>... User unknown
+Last-Attempt-Date: Wed, 14 Dec 2005 20:41:47 -0800 (PST)
+
+--CXR40835.1134621707/Gabriel.its.calpoly.edu
+Content-Type: message/rfc822
+
+Received: from lists.sf.net ([218.17.227.216])
+	by Gabriel.its.calpoly.edu (MOS 3.6.5-GR)
+	with ESMTP id CXR40489;
+	Wed, 14 Dec 2005 20:39:55 -0800 (PST)
+Message-Id: <200512150439.CXR40489@Gabriel.its.calpoly.edu>
+From: alsa-devel@lists.sourceforge.net
+To: lolita@falcon.csc.calpoly.edu
+Subject: Mail Delivery System
+Date: Thu, 15 Dec 2005 12:39:46 +0800
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mirapoint-Virus: VIRUSDELETED;
+	host=Gabriel.its.calpoly.edu;
+	attachment=[2.2];
+	virus=W32/Mytob-E
+
+
+
+--CXR40835.1134621707/Gabriel.its.calpoly.edu--
+
 
 
 -------------------------------------------------------
