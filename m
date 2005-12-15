@@ -1,15 +1,17 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [RFC] Zero-conf ALSA
-Date: Thu, 15 Dec 2005 13:06:02 -0500
-Message-ID: <1134669963.12086.124.camel@mindpipe>
-References: <1132805024.1921.48.camel@mindpipe>
-	 <s5hfypmgx0d.wl%tiwai@suse.de> <1134599222.12086.73.camel@mindpipe>
-	 <s5hfyouvdhx.wl%tiwai@suse.de>
+From: Doctor <lnz@greenstreetfinancial.com>
+Subject: The Ultimate Online Pharmaceutical
+Date: Wed, 14 Dec 2005 20:06:39 -0600
+Message-ID: <7202749711.20051214200639@greenstreetfinancial.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------CA1E831C30D13A4"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfyouvdhx.wl%tiwai@suse.de>
+Received: from -1213591048 (c-24-91-32-237.hsd1.ma.comcast.net [24.91.32.237])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BAB16198
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 19:31:32 +0100 (MET)
+Received: from greenstreetfinancial.com (-1210675624 [-1210676168])
+	by c-24-91-32-237.hsd1.ma.comcast.net (Qmailv1) with ESMTP id E97F7F8B71
+	for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2005 20:06:39 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,34 +21,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, ALSA user list <alsa-user@lists.sourceforge.net>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-12-15 at 11:52 +0100, Takashi Iwai wrote:
-> At Wed, 14 Dec 2005 17:27:01 -0500,
-> Lee Revell wrote:
-> > 
-> > On Thu, 2005-11-24 at 11:28 +0100, Takashi Iwai wrote:
-> > > > Can #2 be solved by having dmix prefer power of two period/buffer
-> > > sizes
-> > > > for the slave hw PCM by default?  AFAICT this should work unless an
-> > > ALSA
-> > > > app has opened the device first and set an incompatible buffer size.
-> > > 
-> > > It's not so easy, unfortunately.  We'll need to fix to allow dmix the
-> > > arbitrary period/buffer sizes.  As long as the constraints of slave
-> > > PCM perido size exists, power-of-2 cannot be applied. 
-> > 
-> > Is the power of 2 period size restriction imposed by OSS, or dmix?
-> 
-> It's OSS.
+This is a multi-part message in MIME format.
 
-Then why can't the OSS emulation open the slave PCM with a power of 2
-period size by default?  AFAICT this would only fail if someone else has
-already opened the slave PCM with a non power of 2 period/buffer.
+------------CA1E831C30D13A4
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Lee
+Vluagra $3.3
+Lenvitra $3.3
+Cikalis $3.7
+Imittrex $16.4
+Flowmax $2.2
+Ultyram $0.78
+Visoxx $4.75
+Amebien $2.2
+Valibum $0.97 
+Xaenax $1.09
+Somsa $3
+Mersidia $2.2  
+
+
+visit our website
+http://meanseid.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+___
+Best regards,
+Online Pharmaceuticals
+
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------CA1E831C30D13A4
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+<b>Vlqagra - $3.3 <br>
+Lefvitra - $3.3<br>
+Cigalis - $3.7<br>
+Imihtrex - $16.4<br>
+Flokmax - $2.2<br>
+Ultjram - $0.78<br>
+Vitoxx - $4.75 <br>
+Amvbien - $2.2<br>
+Valigum - $0.97 <br>
+Xainax - $1.09<br>
+Somma - $3 <br>
+Merxidia - $2.2</b><br>
+<br>
+  <br>
+  <a href="http://meanseid.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV"><strong>visit our website</strong></a><br>
+  <br>
+   <br>
+  Best regards,<br>
+  Online Pharmaceuticals 
+<br>
+   <br>
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</body>
+</html>
+
+------------CA1E831C30D13A4--
+
 
 
 
