@@ -1,19 +1,17 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [PATCH] Adds dB gain to alsa-driver, alsa-lib.
-Date: Fri, 16 Dec 2005 14:55:18 +0000
-Message-ID: <1134744918.22774.62.camel@cearnarfon>
-References: <43A1B744.2050703@superbug.co.uk>
-	 <Pine.LNX.4.61.0512151940270.9555@tm8103.perex-int.cz>
-	 <43A1C7F5.6070307@superbug.co.uk> <s5hlkylz68s.wl%tiwai@suse.de>
-	 <43A29B2A.1000406@superbug.co.uk> <s5hirtpz1pc.wl%tiwai@suse.de>
-	 <43A2B669.1080602@superbug.co.uk> <s5hfyotyxws.wl%tiwai@suse.de>
-	 <43A2C57F.6020503@superbug.co.uk> <s5hd5jxyvwh.wl%tiwai@suse.de>
-	 <Pine.LNX.4.61.0512161509230.10849@tm8103.perex-int.cz>
+From: "Criticism H. Inebriated" <dan_boo@greatoaktitle.com>
+Subject: Online Pharmacy Guide
+Date: Thu, 15 Dec 2005 15:51:42 -0600
+Message-ID: <7862429271.20051215155142@greatoaktitle.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------18005FCBE23F064"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0512161509230.10849@tm8103.perex-int.cz>
+Received: from -1212504336 (adsl196-199-49-217-196.adsl196-10.iam.net.ma [196.217.49.199])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 20696153
+	for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2005 16:09:26 +0100 (MET)
+Received: from greatoaktitle.com (-1212308216 [-1212307784])
+	by adsl196-199-49-217-196.adsl196-10.iam.net.ma (Qmailv1) with ESMTP id 9F141CCB4F
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 15:51:42 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,27 +21,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-12-16 at 15:11 +0100, Jaroslav Kysela wrote:
-> On Fri, 16 Dec 2005, Takashi Iwai wrote:
-> 
-> > The trick is to define "step".  Then min/max can be usually within
-> > 8 bits.  I recommend you to take a look at HD-audio specification, for
-> > example.
-> 
-> Just short note: Wouldn't be better to use a RPN expression to describe dB 
-> <-> raw conversions like rrdtool uses? Just idea (of course that everybody 
-> tells me that it's overkill).
-> 
+This is a multi-part message in MIME format.
 
-I think it might just be overkill :) as whoever is writing the driver
-code will probably just lift the values from the codec data sheet. The
-data sheets I've seen typically just specify the dB range and step size.
+------------18005FCBE23F064
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Liam  
+Need to buy some medickations?
+Take it easy!
+Buy it's ONLINE!
+
+Vlagera - $3.3 
+Ledvitra - $3.3
+Cialibs - $3.7
+Imlitrex - $16.4
+Flaomax - $2.2
+Ulitram - $0.78
+Vifoxx - $4.75 
+Amibien - $2.2
+VaIiuhm - $0.97 
+Suoma - $3
+Xanyax - $1.09
+Mjeridia - $2.2 
+
+Important notice: Our order process could not be simpler, just select the medicines you need, fill in our medical questionnaire, and submit your order. Our U.S Licensed Physicians will review your order and issue your prescription. Next, our U.S.
+
+Visit our website 
+http://forgaboth.com
+
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+
+------------18005FCBE23F064
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#F8F8F8">
+<p><b><font color="#F80000">Need to buy some medicjations?<br>
+  Take it easy!<br>
+  Buy it's ONLINE!</font></b></p>
+<table width="100%" cellpadding="15" cellspacing="1">
+  <tr valign="top"> 
+    <td width="33%" valign="top" bgcolor="#F0F0F8"> <b>Vlagwra 
+      - $3.3 <br>
+      Lemvitra - $3.3<br>
+      Cialihs - $3.7<br>
+      Imjitrex - $16.4<br>
+      Flzomax - $2.2<br>
+      Ulhtram - $0.78<br>
+      Viaoxx - $4.75 <br>
+      Amabien - $2.2<br>
+      VaIiuam - $0.97 <br>
+      Sooma - $3<br>
+      Xaniax - $1.09<br>
+      Mneridia - $2.2</b></td>
+  </tr>
+</table>
+<p> <b>Important notice:</b> Our order process could not be simpler, just select 
+  the medicines you need, fill in our medical questionnaire, and submit your order. 
+  Our U.S Licensed Physicians will review your order and issue your prescription. 
+  Next, our U.S.</p>
+<b><A href="http://forgaboth.com">Visit 
+  our website</A> </b>
+<br>
+<br>
+<br>
+<br>
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
+
+
+------------18005FCBE23F064--
+
 
 
 
