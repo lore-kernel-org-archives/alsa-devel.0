@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 15 Dec 2005 21:58:40 -0000
-Message-ID: <E1En17d-00018m-O9@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001653]: Sound in DOOM3 is fuzzy/metallic like.
+Date: Thu, 15 Dec 2005 23:00:10 +0100
+Message-ID: <69d9205cbf3a43d8e56a999881c4751d@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E08B31CE
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 23:00:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1653> 
+======================================================================
+Reported By:                quetzyg
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1653
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.14.4 (but any version above 2.6.12 should be
+enough to reproduce this)
+======================================================================
+Date Submitted:             12-15-2005 23:00 CET
+Last Modified:              12-15-2005 23:00 CET
+======================================================================
+Summary:                    Sound in DOOM3 is fuzzy/metallic like.
+Description: 
+When running DOOM3 with Alsa 1.0.10rc3, 1.0.10 Final or 1.0.11rc1 (I don't
+remember if 1.0.10rc2 also has this problem, but 1.0.10rc1 works fine),
+all the audio (music and effects) sounds fuzzy/metallic.
 
---- Original message follows.
+All other audio stuff like audio(SoX, MOC, aplay)/video(MPlayer) playing
+works fine tough.
+======================================================================
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-15-05 23:00 quetzyg        New Issue                                    
+12-15-05 23:00 quetzyg        Distribution              => Slackware       
+12-15-05 23:00 quetzyg        Kernel Version            => 2.6.14.4 (but any
+version above 2.6.12 should be enough to reproduce this)
+======================================================================
 
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.238>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta129.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO driqj.net) (64.251.132.84)
-  by mta129.mail.mud.yahoo.com with SMTP; Thu, 15 Dec 2005 13:58:40 -0800
-From: alsa-devel@lists.sourceforge.net
-Date: Thu, 15 Dec 2005 21:57:34 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <0d9df61bcf.444da5ac@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=5c1f18e4eb94.b"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
-
---=5c1f18e4eb94.b
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---=5c1f18e4eb94.b
-Content-Type: application/octet-stream; name=mailtext.zip
-Content-Transfer-Encoding: b
-*** MESSAGE TRUNCATED ***
 
 
 
