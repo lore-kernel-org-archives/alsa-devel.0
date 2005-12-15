@@ -1,13 +1,14 @@
-From: Paulo Marcel Coelho Aragao <pmcaragao-ag@yahoo.com>
-Subject: Re: Tips on debugging ALSA driver snd_es18xx
-Date: Thu, 15 Dec 2005 10:40:31 -0200
-Message-ID: <20051215124031.GC4263@cortazar>
-References: <20051215013411.GK7983@cortazar> <1134635237.43a128e5e75fa@webmail.uni-halle.de> <20051215111213.GA3636@cortazar> <s5hd5jyvc3q.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001641]: "error: cannot find input file: src/pcm/Makefile.in" when building under Linux 2.4
+Date: Thu, 15 Dec 2005 13:50:18 +0100
+Message-ID: <4caadb062625adf557b4d3651e6218d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hd5jyvc3q.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B220189
+	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 13:50:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,70 +18,241 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote on Dec, 15:
 
-[...]
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1641> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1641
+Category:                   0_general
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     feedback
+======================================================================
+Date Submitted:             12-11-2005 11:12 CET
+Last Modified:              12-15-2005 13:50 CET
+======================================================================
+Summary:                    "error: cannot find input file: src/pcm/Makefile.in"
+when building under Linux 2.4
+Description: 
+I can compile alsa-lib-1.0.10 on Kernel 2.4
 
-> > > > I recently switched from OSS to ALSA and I'm baffled by this: aplay 
-> > > > produces
-> > > > sound when playing wav files, but gxine and xmms produce no sound when
-> > > > playing streaming audio.
+alsa-lib CVS 11/Dec/2005
 
-> > > What are the contents of /proc/asound/card0/pcm0p/sub0/hw_params and sw_params
-> > > in either case?
+./cvscompile
+./cvscompile: line 7:  9376 Terminated              automake --foreign
+--copy --add-missing
+CFLAGS=-O2 -Wall -W -pipe -g
+./configure
+checking build system type... i686-redhat-linux-gnu
+checking host system type... i686-redhat-linux-gnu
+checking target system type... i686-redhat-linux-gnu
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for gcc... gcc32
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc32 accepts -g... yes
+checking for gcc32 option to accept ANSI C... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc32... gcc3
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether ln -s works... yes
+checking for a sed that does not truncate output... /bin/sed
+checking for egrep... grep -E
+checking for ld used by gcc32... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for /usr/bin/ld option to reload object files... -r
+checking for BSD-compatible nm... /usr/bin/nm -B
+checking how to recognise dependent libraries... pass_all
+checking how to run the C preprocessor... gcc32 -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking dlfcn.h usability... yes
+checking dlfcn.h presence... yes
+checking for dlfcn.h... yes
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking dependency style of g++... gcc3
+checking how to run the C++ preprocessor... g++ -E
+checking for g77... g77
+checking whether we are using the GNU Fortran 77 compiler... yes
+checking whether g77 accepts -g... yes
+checking the maximum length of command line arguments... 32768
+checking command to parse /usr/bin/nm -B output from gcc32 object... ok
+checking for objdir... .libs
+checking for ar... ar
+checking for ranlib... ranlib
+checking for strip... strip
+checking if gcc32 static flag  works... yes
+checking if gcc32 supports -fno-rtti -fno-exceptions... no
+checking for gcc32 option to produce PIC... -fPIC
+checking if gcc32 PIC flag -fPIC works... yes
+checking if gcc32 supports -c -o file.o... yes
+checking whether the gcc32 linker (/usr/bin/ld) supports shared
+libraries... yeschecking whether -lc should be explicitly linked in... no
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for shl_load... no
+checking for shl_load in -ldld... no
+checking for dlopen... no
+checking for dlopen in -ldl... yes
+checking whether a program can dlopen itself... yes
+checking whether a statically linked program can dlopen itself... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+configure: creating libtool
+appending configuration tag "CXX" to libtool
+checking for ld used by g++... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking whether the g++ linker (/usr/bin/ld) supports shared libraries...
+yes
+checking for g++ option to produce PIC... -fPIC
+checking if g++ PIC flag -fPIC works... yes
+checking if g++ supports -c -o file.o... yes
+checking whether the g++ linker (/usr/bin/ld) supports shared libraries...
+yes
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for shl_load... (cached) no
+checking for shl_load in -ldld... (cached) no
+checking for dlopen... (cached) no
+checking for dlopen in -ldl... (cached) yes
+checking whether a program can dlopen itself... (cached) yes
+checking whether a statically linked program can dlopen itself... (cached)
+yes
+appending configuration tag "F77" to libtool
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking for g77 option to produce PIC... -fPIC
+checking if g77 PIC flag -fPIC works... yes
+checking if g77 supports -c -o file.o... yes
+checking whether the g77 linker (/usr/bin/ld) supports shared libraries...
+yes
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for ANSI C header files... (cached) yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc32 needs -traditional... no
+checking for hsearch_r... yes
+checking for library version... major 1 minor 0 subminor 10 extrastr 
+extraver 1000000
+checking for versioned symbols... yes
+checking for debug... yes
+checking for tmpdir... /tmp
+checking for softfloat... no
+checking for architecture... x86
+checking wordexp.h usability... yes
+checking wordexp.h presence... yes
+checking for wordexp.h... yes
+checking for resmgr support... no
+checking for aload* support... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating doc/Makefile
+config.status: creating doc/pictures/Makefile
+config.status: creating include/Makefile
+config.status: creating include/sound/Makefile
+config.status: creating src/Makefile
+config.status: creating src/control/Makefile
+config.status: creating src/mixer/Makefile
+config.status: creating src/pcm/Makefile
+config.status: error: cannot find input file: src/pcm/Makefile.in
 
-[...]
+======================================================================
 
-> > This was curious: the wav files I tried with aplay ended too quickly, so I 
-> > looked for longer ones. My surprise: no sound from the longer ones. It gave me 
-> > the impression to be related to the sound source being coded for 16 or 
-> > 8-bits, if I'm not speaking just plain nonsense.
-
-[...]
-
-> Might it be depending on the sample rate?
-> Try speaker-test, for example, with different sample rates.
-
-Tried all rates from the aplay/gxine/xmms runs, and also lower and higher 
-rates but no sound at all, not even with 11127Hz, the rate of the aplay run 
-that produced sound.
-
-I did notice this line in all speaker-test runs:
-
-Stream parameters are 11127Hz, S16_LE, 1 channels
-
-of course with a differen rate at each run. S16_LE is the format for all 
-aplay/gxine/xmms runs that didn't produce sound. I don't know precisely what 
-`format' is, but the aplay run that produced sound had a different value: U8.
-
-[...]
-
-> > PS: Would have at hand a reference to some document that describes 
-> > /proc/asound ?
-
-> alsa-kernel/Documentation/Procfile.txt (in kernel tree
-> linux/Documentation/sounds/alsa/Procfile.txt).
-
-It just occurred to me now: should I record this problem in ALSA BTS for 
-future reference ?
-
-Thanks for this, and more so, thanks for taking your time with such 
-speed-lightning reply.
-Paulo
+----------------------------------------------------------------------
+ Raymond - 12-15-05 13:38 
+----------------------------------------------------------------------
+It seem that ac97->subsystem_vendor and ac97->subsystem_device is not
+initialised in kernel 2.4 with 1.0.11rc1
 
 
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
+cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: SigmaTel STAC9708,11
+ 
+PCI Subsys Vendor: 0x0000
+PCI Subsys Device: 0x0000
+ 
+Capabilities     : -headphone out-
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : SigmaTel 3D Enhancement
+ 
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 SDAC DSA=0
+Extended status  : SDAC
+
+----------------------------------------------------------------------
+ Raymond - 12-15-05 13:50 
+----------------------------------------------------------------------
+more /cvs/alsa-lib/cvscompile
+#!/bin/bash
+ 
+WANT_AUTOMAKE_1_6=1 export WANT_AUTOMAKE_1_6
+WANT_AUTOMAKE=1.6 export WANT_AUTOMAKE
+AUTOMAKE_MIN=1.6.0
+AUTOCONF_MIN=2.53
+LIBTOOL_MIN=1.4.0
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-11-05 11:12 Raymond        New Issue                                    
+12-13-05 12:36 jdthood        Summary                  error: cannot find input
+file: src/pcm/Makefile.in => "error: cannot find input file:
+src/pcm/Makefile.in" when building under Linux 2.4
+12-13-05 18:21 Raymond        Note Added: 0007020                          
+12-15-05 10:08 perex          Status                   new => resolved     
+12-15-05 10:08 perex          Resolution               open => fixed       
+12-15-05 10:08 perex          Assigned To               => perex           
+12-15-05 10:08 perex          Note Added: 0007048                          
+12-15-05 13:30 Raymond        Status                   resolved => feedback
+12-15-05 13:30 Raymond        Resolution               fixed => reopened   
+12-15-05 13:30 Raymond        Note Added: 0007049                          
+12-15-05 13:38 Raymond        Note Added: 0007050                          
+12-15-05 13:50 Raymond        Note Added: 0007051                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
