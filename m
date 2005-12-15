@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001653]: Sound in DOOM3 is fuzzy/metallic like.
-Date: Thu, 15 Dec 2005 23:00:10 +0100
-Message-ID: <69d9205cbf3a43d8e56a999881c4751d@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: broken emu10k1 ADC
+Date: Thu, 15 Dec 2005 22:03:51 +0000
+Message-ID: <43A1E847.8010601@superbug.co.uk>
+References: <1134683387.12352.34.camel@Rainsong.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E08B31CE
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 23:00:10 +0100 (MET)
+In-Reply-To: <1134683387.12352.34.camel@Rainsong.home>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +17,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "James C. Georgas" <jgeorgas@rogers.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+James C. Georgas wrote:
+> Can someone please verify that they can capture both channels of an
+> analog source with a SBLive 5.1 EMU10k1/STAC9708-11 card?
+> 
+> Here's my setup:
+> 	SBLive 5.1 Platinum, with a LiveDrive(00060?, manufactured 2000)
+> 	kernel 2.6.14-gentoo-r4
+> 	ALSA drivers 1.0.10_rc3 (also tried above kernel driver)
+> 	enable_ir=1 extin=0x3fff extout=0x7fff
+> 
+> Mixer settings:
+> 	capture CD selected
+> 	capture gain = 0
+> 	AC97 playback = 100
+> 	headphone (LiveDrive) = 100
+> 
+> Source:
+> 	Nine Inch Nails, Things Falling Apart, Track 4, first 10 seconds
+> 	(has a noticeable stereo pan effect).
+> 
+> 1) I get the left channel, but not the right channel.
+> 
+> 2) Same result if I play back through the SBLive's main speakers, with
+> the PCM and Master controls unmuted and set to 100. The remaining cases
+> are played back through the LiveDrive headphone jack, to ensure that the
+> stream heard is actually the digital capture, and not just the
+> STAC9708-11's analog passthrough (which works fine for both channels).
+> 
+> 3) Same result if I set AC97 capture to 100, and capture using "arecord
+> -d10 -fdat snd.out" and then play back through the (unmuted, volume=100)
+> wave device, using "aplay snd.out".
+> 
+> 4) Same result for any of the other analog sources, including "mix".
+> 
+> 5) "Mix mono" mixes both channels properly, but I still only get the
+> left stream for playback and capture.
+> 
+> 6 I get both channels when playing back or capturing a digital source.
+> 
+> I'm pretty sure that my STAC9708-11's right ADC is fried, but I wanted
+> to get some second opinions before I went and blew thirty bucks on a
+> replacement card.
+> 
+> I'm not on the list, so could you please CC to my personal email
+> address?
+> 
+> Thanks.
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1653> 
-======================================================================
-Reported By:                quetzyg
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1653
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.14.4 (but any version above 2.6.12 should be
-enough to reproduce this)
-======================================================================
-Date Submitted:             12-15-2005 23:00 CET
-Last Modified:              12-15-2005 23:00 CET
-======================================================================
-Summary:                    Sound in DOOM3 is fuzzy/metallic like.
-Description: 
-When running DOOM3 with Alsa 1.0.10rc3, 1.0.10 Final or 1.0.11rc1 (I don't
-remember if 1.0.10rc2 also has this problem, but 1.0.10rc1 works fine),
-all the audio (music and effects) sounds fuzzy/metallic.
+Hardly and alsa-devel topic...
+Have you checked which socket the line in is connected to.
+If it is the Line in, you will get stereo,
+If it is the Mic in, you will get a single channel.
+If you are recording from the CD/Aux input on the sound card, linked 
+internally to the CD player, then you might have a valid problem.
 
-All other audio stuff like audio(SoX, MOC, aplay)/video(MPlayer) playing
-works fine tough.
-======================================================================
+As a general note, playback features on cards has been well tested, 
+capture features have not be so well tested, so you might just have 
+noticed a bug.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-15-05 23:00 quetzyg        New Issue                                    
-12-15-05 23:00 quetzyg        Distribution              => Slackware       
-12-15-05 23:00 quetzyg        Kernel Version            => 2.6.14.4 (but any
-version above 2.6.12 should be enough to reproduce this)
-======================================================================
+James
 
 
 
