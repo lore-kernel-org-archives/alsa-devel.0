@@ -1,13 +1,13 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: [PATCH] Adds dB gain to alsa-driver, alsa-lib.
-Date: Thu, 15 Dec 2005 19:32:05 +0000
-Message-ID: <1134675125.3313.23.camel@localhost.localdomain>
-References: <43A1B744.2050703@superbug.co.uk>
+From: Paulo Marcel Coelho Aragao <pmcaragao-ag@yahoo.com>
+Subject: Re: Tips on debugging ALSA driver snd_es18xx
+Date: Thu, 15 Dec 2005 17:42:29 -0200
+Message-ID: <20051215194229.GE5793@cortazar>
+References: <20051215013411.GK7983@cortazar> <1134635237.43a128e5e75fa@webmail.uni-halle.de> <20051215111213.GA3636@cortazar> <1134660339.43a18af3d7aa4@webmail.uni-halle.de> <20051215165203.GC5793@cortazar> <s5hvexqz28y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43A1B744.2050703@superbug.co.uk>
+Content-Disposition: inline
+In-Reply-To: <s5hvexqz28y.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +17,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-12-15 at 18:34 +0000, James Courtier-Dutton wrote:
+Takashi Iwai wrote on Dec, 15:
 
-> 
-> The only piece of information reported by the kernel sound driver is a 
-> db_scale value.  It is a unsigned int at application layer, but the 
-> current IOCTL TLV truncates this to 32bit unsigned int. alsa-lib then 
-> uses this value to decide which translation function to apply to the 
-> currently available "volume" value.
-> I view this "db_scale" value as simply a hint from the low level driver 
-> at which conversion function should be used.
-> The conversion function in alsa-lib can then be as simple or as 
-> complicated as required.
-> 
+[...]
 
-I'm wondering whether it might be a better idea to use the "db_scale" to
-store the specifics of the gain rather than just a hint.
+> > > Please add this to your ~/.asoundrc:
+> > > 
+> > > pcm.u8 {
+> > > 	type plug
+> > > 	slave.pcm {
+> > > 		type linear
+> > > 		slave {
+> > > 			pcm "hw:0"
+> > > 			format U8
+> > > 		}
+> > > 	}
+> > > }
 
-IMHO we need to be able to specify:-
+[...]
 
- o number of steps in control
- o starting dB setting
- o step size (including negative bit)
+> This configuration forces to use 8bit-unsigned format.  If any other
+> formats are given, it's converted to u8 automatically.
 
-This could either be divided up into the 32 bits of db_scale or by
-adding another member(s) to the struct.
+This means that the driver processes the data in 8bit-unsigned chunks ?
 
-This would then mean alsa lib doesn't need to know about the dB settings
-for each codec/card (as they are quite different) and the dB information
-would be in the driver where it belongs.
+> > > and try to play some 16-bit file to the ALSA device named "u8" instead 
+> > > of the
+> > > default one.  If this works, there is a bug in the driver in relation with
+> > > 16-bit data.
 
-Liam
+> > Fantastic, Clemens ! You hit the bull's eye. Now the scenario is:
+> > 
+> > 1) aplay -Du8 produces sound from 8 or 16-bit data (the same I used before) on 
+> >    both speakers
 
- 
+> I guess you're using a mono wav file?
 
+I don't know how to inspect it. Could you give me a hint ? It's 
+/usr/share/sounds/alsa/Front_Right.wav from Debian package alsa-utils.
+
+> > 2) xmms and gxine produce sound only on the left speaker. I've attached a file 
+> >    with the few config parameters which are explicitly set for gxine (the rest 
+> >    is commented out, therefore, default). xmms saves every single parameter, 
+> >    so I'm just sending the ALSA stanza.  My eye didn't catch anything that 
+> >    might be related to usage of left/right speakers. Just in case, I'm also 
+> >    attaching my mixer settings.
+
+> This implies that u8-stereo doesn't work.
+
+Should it work ?
+
+> > 3) speaker-test -Du8 produces what I suppose is pink noise on both speakers, 
+> >    but I noticed that its output included only "0 - Front Left"
+
+> It means u8-mono works as expected, at least.
+
+[...]
+
+> > If this is indeed a bug in the driver, should I file a bug in ALSA BTS ?
+
+> As you like.  We can continue the debug session on alsa-devel ML, too.
+
+As long as we get to the bottom of this and squash this bug, the context 
+doesn't matter to me. So, grasshopper Paulo asks Masters Takashi and Clemens: 
+what's the next step ? I guess the goal is making 16-bit work, right ?
+
+Thanks a lot, Takashi, for spending your time on this
+Paulo
 
 
 -------------------------------------------------------
