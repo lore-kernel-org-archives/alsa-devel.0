@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001636]: Adding support for SB Audigy SE
-Date: Thu, 15 Dec 2005 20:14:49 +0100
-Message-ID: <32679999bc6d1d5c8068e3b8e4582d29@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] Adds dB gain to alsa-driver, alsa-lib.
+Date: Thu, 15 Dec 2005 20:13:57 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0512151940270.9555@tm8103.perex-int.cz>
+References: <43A1B744.2050703@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E04EB1B1
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 20:14:49 +0100 (MET)
+In-Reply-To: <43A1B744.2050703@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,128 +16,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 15 Dec 2005, James Courtier-Dutton wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1636> 
-======================================================================
-Reported By:                chgans
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1636
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     feedback
-Distribution:               GNU/Linux DeMuDi 1.2.1
-Kernel Version:             2.6.12-3-mm-k7
-======================================================================
-Date Submitted:             12-10-2005 17:53 CET
-Last Modified:              12-15-2005 20:14 CET
-======================================================================
-Summary:                    Adding support for SB Audigy SE
-Description: 
-The Audigy SE is a card with the ca0106 chipset.
-It is reconized as "Creative Labs SB Audigy LS", the driver doesn't load,
-here is the kernel message:
-PCI: Found IRQ 10 for device 0000:00:0d.0
-Model 100a Rev 00000000 Serial 100a1102
-AC'97 0 does not respond - RESET
-AC'97 0 access is not valid [0x0], removing mixer.
-CA0106: probe of 0000:00:0d.0 failed with error -5
+> I have implemented dB gain reporting for ALSA mixer controls.
+> By applying the attached patches to alsa-driver and alsa-lib, one will then
+> see dB values appear in alsamixer. (I added support to alsamixer a long time
+> ago)
+> 
+> Currently, only the snd-ca0106 sound card reports the values.
 
-here is the revelant part of output of lspci -vv:
-0000:00:0d.0 Multimedia audio controller: Creative Labs SB Audigy LS
-        Subsystem: Creative Labs: Unknown device 100a
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 10
-        Region 0: I/O ports at e800 [size=32]
-        Capabilities: [dc] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+NACK.
 
+1) The midlevel code should not know anything about dB scale or so...
+   It should handle only universal containter / TLV stuff per control.
+   I'm talking about dB_scale members etc. The TLV should be obtained
+   from the lowlevel driver using a callback like get. You can provide
+   the library function to manage TLV in the control midlevel code.
+2) The ca0106 driver is not candidate for such info. The info should
+   be static somewhere in alsa-lib, probably in the src/control/control.c
+   and added only when TLV stuff is requested.
+3) I'm still not sure to use integers as keys in the TLV 
+   tree. Of course, it's more efficient than string handling, but
+   I think that it's not an issue because the amount of transferred
+   data is low.
+4) Nesting. Do we need this on the driver side? The key might contain
+   multiple "sub-keys". If we have this information static, it might be
+   more efficient than your implementation.
 
-I have see in the ca0106 driver source that the "Audigy LS" is the last
-entry (the default) of the supported card list.
+So, what about this (use integers as keys):
 
-So i wonder if it should be easy to get support for this board.
+- one key - max 8 * 32-bit subkeys
+- value   - depending on subkeys, store only the size, might be binary
 
+or (use strings as keys):
 
-======================================================================
+- one key - max 8 * 16 byte subkeys (ASCII string)
+- value   - depending on subkeys, store only the size, might be binary
 
-----------------------------------------------------------------------
- phormion - 12-15-05 19:27 
-----------------------------------------------------------------------
-Hello, 
+So the key lookup function will handle max. 256 bytes which is no so bad.
+The lowlevel driver might use some key-lookup library functions in the 
+control midlevel code like snd_control_key_is_db_scale() or so and put
+directly the data in the get_key() callback to value area.
 
-I also have an Audigy SE, and had some problems with it on Linux. At least
-the first time I tried it, it would only produce some feedback-like noise,
-and I had to turn the speakers down. I googled a bit, found this bug and
-some other discussions, so I decided that today I'd try to compile the
-alsa-driver code in CVS with the provided patch. However, now the audigy
-SE seems to work! 
+Perhaps, we can use 8 byte strings (it's enough) or use 64-bit values for 
+sub-keys which might represent strings (I can imagine that first sub-key 
+will be string and rest of sub-keys might be indexes, strings, 64-bit 
+values, 64-bit masks etc.).
 
-I was thinking of trying the patch however - is it safe to backup the old
-alsa module(s) and overwrite with the patched one, or do I need to update
-the alsa-tools stuff? 
+In future, if 8-subkeys are not enough, we may create a new ioctl which 
+will add more space to the whole key. The old ioctl might be simply 
+emulated with the conversion to new one.
 
-It is also detected as Audigy LS, the driver used is also ca0106. By the
-way, jcdutton, the model number on the card is SB0570. 
+						Jaroslav
 
-My system is a Mandriva 2006.0 Official, with kernel 2.6.12(-12mdk), the
-alsa version is 1.0.9b.
-
-----------------------------------------------------------------------
- davee - 12-15-05 20:14 
-----------------------------------------------------------------------
-phormion: I'm intrigued that the sb-audigy-se.fix.diff patch worked for
-you, since it appears that (at least according to the kernel messages when
-loading the driver), the card has serial 100a1102 - not the same as in the
-patch which James wrote!  However, I have found that even by modifying his
-patch to use that serial number, although the driver now loads cleanly, I
-still have no sound.
-
-Fuller details of my experience are contained in my alsa-user post here:
-http://article.gmane.org/gmane.linux.alsa.user/21439 and elsewhere in the
-same thread.
-
-I'm glad you've got it working, phormion.  Could you post the results of
-'dmesg' when loading the driver and of 'lspci -vv' for your card?  (I'm
-just wondering whether it is really the same card or not, especially given
-the serial number differences!)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-10-05 17:53 chgans         New Issue                                    
-12-10-05 17:53 chgans         Distribution              => GNU/Linux DeMuDi
-1.2.1
-12-10-05 17:53 chgans         Kernel Version            => 2.6.12-3-mm-k7  
-12-11-05 21:02 chgans         Issue Monitored: chgans                      
-12-12-05 11:05 chgans         Note Added: 0006983                          
-12-12-05 20:05 chgans         Note Edited: 0006983                         
-12-12-05 20:06 chgans         File Added: sb_audigy_se-proc.dump                
-   
-12-12-05 20:34 davee          Issue Monitored: davee                       
-12-12-05 21:07 davee          Note Added: 0006986                          
-12-13-05 11:56 jcdutton       File Added: sb-audigy-se.fix.diff                 
-  
-12-13-05 11:58 jcdutton       Note Added: 0006989                          
-12-13-05 11:59 jcdutton       Status                   assigned => feedback
-12-15-05 19:27 phormion       Note Added: 0007052                          
-12-15-05 20:14 davee          Note Added: 0007053                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
