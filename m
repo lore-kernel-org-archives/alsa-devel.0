@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 Subject: Re: [PATCH] Adds dB gain to alsa-driver, alsa-lib.
-Date: Fri, 16 Dec 2005 10:49:01 +0000
-Message-ID: <1134730142.3137.17.camel@scooper.cruach>
+Date: Fri, 16 Dec 2005 11:09:25 +0000
+Message-ID: <1134731365.22774.21.camel@cearnarfon>
 References: <43A1B744.2050703@superbug.co.uk>
-	 <1134675125.3313.23.camel@localhost.localdomain>
-	 <43A1C89D.90200@superbug.co.uk>
+	 <Pine.LNX.4.61.0512151940270.9555@tm8103.perex-int.cz>
+	 <43A1C7F5.6070307@superbug.co.uk>  <s5hlkylz68s.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43A1C89D.90200@superbug.co.uk>
+In-Reply-To: <s5hlkylz68s.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,38 +19,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-12-15 at 19:48 +0000, James Courtier-Dutton wrote:
+On Fri, 2005-12-16 at 11:27 +0100, Takashi Iwai wrote:
 
-> Problems with your approach were:
-> 1) Control with non-linear dB steps. E.g. attenuation using a different 
-> scale than gain.
-
-In my experience, the majority of controls (certainly in the embedded
-space) use a linear dB scale to adjust the gain/attenuation and would be
-better served by a value rather than a hint. A hint would still be
-required for the non linear controls.
-
-How do you feel about adding a further field called db_hint. This way
-the hint method could be used for the more complex and non linear
-controls whilst the value method could be used for the simple ones. 
-
-This would save a lot effort, as driver developers wouldn't need to add
-any hints to alsa-lib for simple controls.
- 
-> 2) Complicates controls where only a lookup table will do.
+> 
+> Err, then it's a misunderstanding.  I'm also against inclusion of
+> unnecessary code in the kernel.  That is, if the dB information for
+> each control is static and unchanged, it shouldn't be embedded in the
+> driver.
 > 
 
-I agree, but with both fields this isn't an issue.
+I also agree that some dB information shouldn't be in the kernel (e.g.
+lookup tables), however I think it makes sense for simple controls with
+a linear dB step size to be within the driver. 
 
-Further to this, I realised this code could also be used for other
-controls that are unitised. i.e. some ALC controls use ms for timeouts.
-This hint and scale could also be used to describe them.
+I'd like to be able to do something like:-
 
-Liam 
+SOC_SINGLE("Left ADC Capture Volume", WM8753_LADC, 0, 63, 0, DB(-17.25,
+0.75),
+
+This describes a control with a dB gain starting at -17.25 and in
+increments of 0.75dB. The dB info could be represented in hex as
+follows:-
+
+0.75db = 0xC
+1.00 db = 0x10 
+-1.00 dB = 0x8010 (assuming we are using a short)
+
+With a little extra effort the dB code could be extended to pass ALC
+timeout information.
+
+Liam
 
 
 
