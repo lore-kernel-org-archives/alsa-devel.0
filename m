@@ -1,15 +1,17 @@
-From: "Victorius Gangestad" <gangestovicto@vantag.com>
-Subject: Re: monotonous foxhole
-Date: Sat, 17 Dec 2005 12:41:57 +0200
-Message-ID: <000001c602f6$80c8ee20$165fa8c0@lecithin>
-Reply-To: "Victorius Gangestad" <gangestovicto@vantag.com>
+From: "Superlative M. Debarkation" <lyonsm@goddard.edu>
+Subject: Pharmaceutical revolution
+Date: Fri, 16 Dec 2005 12:48:35 -0600
+Message-ID: <2914854713.20051216124835@goddard.edu>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C60307.44540810"
+	boundary="----------F3395940907B10A"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vantag.com (200-207-145-2.dsl.telesp.net.br [200.207.145.2])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9A034138
-	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 11:42:12 +0100 (MET)
+Received: from -1210561952 (p508906D8.dip0.t-ipconnect.de [80.137.6.216])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 45A43166
+	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 14:12:43 +0100 (MET)
+Received: from goddard.edu (-1211682192 [-1213539472])
+	by p508906D8.dip0.t-ipconnect.de (Qmailv1) with ESMTP id A6F1E2118F
+	for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2005 12:48:35 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,119 +21,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Leeba Garduno <alsa-devel@alsa-project.org>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C60307.44540810
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+------------F3395940907B10A
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-=20
-http://www.toegisate.com
-=20
-Am
-VA
-So
-Xa
-VlA
-Me
-Pro
-ClA
-Lev
-bien
-LlUM
-ma
-nax
-GRA
-ridia
-pecia
-LlS
-itra
- $6
- $8
- $7
- $1
- $6
- $9
- $6
- $9
- $9
-8.00
-5.45
-5.95
-23.45
-9.95
-9.95
-4.95
-9.95
-9.95
-=20
-=20
-=20
-How could he find her, protect her? Had she any idea what she was doing?
-David would go out of his mind. Hed panic and make a thousand mistakes.
-.. Oh, my God, I am David! Stop it. Control. Pull back. The telephone
-rang; he grabbed it off the bedside table. Yes? Santos wants to see you.
-With peace in his heart. *24* The Emergency Medical Service helicopter
-was lowered into its threshold; the rotors were cut and the blades
-thumped to a stop. Following EMS procedure when disembarking ambulatory
-patients, only then did the exit door open and the metal steps slap down
-to the ground. A uniformed paramedic preceded Panov, turning and
-assisting the doctor to the tarmac, where a second man in civilian
-clothes escorted him to a
+Get your medifcations ONLINE! 
 
-------=_NextPart_000_0001_01C60307.44540810
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Vlazgra $3.3
+Levxitra $3.3
+Ciawlis $3.7
+Imimtrex $16.4 
+Flombax $2.2
+Ultiram $0.78
+Vioxqx $4.75
+Amxbien $2.2
+Valfium $0.97
+Xagnax $1.09
+Sovma $3
+Merildia $2.2  
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.toegisate.com">http://www.toegisate.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>Am<BR>VA<BR>So<BR>Xa<BR>VlA<BR>Me<BR>Pro<BR>ClA<BR>Lev</FONT=
-></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>bien<BR>LlUM<BR>ma<BR>nax<BR>GRA<BR>ridia<BR>pecia<BR>LlS<BR=
->itra</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>&nbsp;$6<BR>&nbsp;$8<BR>&nbsp;$7<BR>&nbsp;$1<BR>&nbsp;$6<BR>=
-&nbsp;$9<BR>&nbsp;$6<BR>&nbsp;$9<BR>&nbsp;$9</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>8.00<BR>5.45<BR>5.95<BR>23.45<BR>9.95<BR>9.95<BR>4.95<BR>9.9=
-5<BR>9.95</FONT></DIV>
-<DIV style=3D"CLEAR: both">&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>How could he find her, protect her? Had she any idea what she was =
-doing?
-David would go out of his mind. Hed panic and make a thousand mistakes.
-.. Oh, my God, I am David!
-   Stop it. Control. Pull back.
-   The telephone rang; he grabbed it off the bedside table. Yes?
-   Santos wants to see you. With peace in his heart.
-  *24*
-   The Emergency Medical Service helicopter was lowered into its
-threshold; the rotors were cut and the blades thumped to a stop.
-Following EMS procedure when disembarking ambulatory patients, only then
-did the exit door open and the metal steps slap down to the ground. A
-uniformed paramedic preceded Panov, turning and assisting the doctor to
-the tarmac, where a second man in civilian clothes escorted him to =
-a</DIV></BODY></HTML>
-------=_NextPart_000_0001_01C60307.44540810--
+Have you ever stopped to wonder how much an average man pays for his medicbines? Painkillers, drugs to improve the quality of life, weight reducing tablets, and many more. What's worse, the same medilcine costs a lot more if it is branded. Are you intrested? So..
+Visit our website!
+http://opisticatio.com
+ 
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
+------------F3395940907B10A
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#FFF9FF">
+<p><b><font color="#FF6600">Get your medijcations ONLINE! </font></b> </p>
+<table width="100%"  border="0" cellpadding="10" cellspacing="10" bordercolor="#FFFFFF" bgcolor="#CCCCCC">
+  <tr bgcolor="#000D55"> 
+    <td><b><font color="#FFFFFF" size="2" face="Verdana, Arial, Helvetica, sans-serif">Vlaigra 
+      $3.3<br>
+      Leveitra $3.3<br>
+      Ciaflis $3.7<br>Imictrex 
+      $16.4</font></b></td>
+    <td><font color="#FFFFFF" size="2" face="Verdana, Arial, Helvetica, sans-serif"><b>Flomqax 
+      $2.2<br>
+      Ultxram $0.78<br>Vioxjx 
+      $4.75<br>
+      Amoien $2.2</b></font></td>
+    <td><font color="#FFFFFF" size="2" face="Verdana, Arial, Helvetica, sans-serif"><b>Valeium 
+      $0.97<br>
+      Xajnax 
+      $1.09<br>
+      Sonma $3<br>
+      Merizdia $2.2 </b></font></td>
+  </tr>
+</table>
+<p> <b>Have you ever stopped to wonder how much an average man pays for his mediycines? 
+  Painkillers, drugs to improve the quality of life, weight reducing tablets, 
+  and many more. What's worse, the same medibcine costs a lot 
+  more if it is branded. Are you intrested? So..<br>
+  <A href="http://opisticatio.com">Visit our website!</A></b> </p>
+<br>
+<br>
+ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
+
+
+------------F3395940907B10A--
 
 
 
