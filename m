@@ -1,13 +1,19 @@
-From: Paulo Marcel Coelho Aragao <marcelpaulo+l@gmail.com>
-Subject: Re: Tips on debugging ALSA driver snd_es18xx
-Date: Fri, 16 Dec 2005 12:28:45 -0200
-Message-ID: <20051216142845.GR5015@cortazar>
-References: <20051215013411.GK7983@cortazar> <1134635237.43a128e5e75fa@webmail.uni-halle.de> <20051215111213.GA3636@cortazar> <1134660339.43a18af3d7aa4@webmail.uni-halle.de> <20051215165203.GC5793@cortazar> <s5hvexqz28y.wl%tiwai@suse.de> <20051215194229.GE5793@cortazar>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: [PATCH] Adds dB gain to alsa-driver, alsa-lib.
+Date: Fri, 16 Dec 2005 14:55:18 +0000
+Message-ID: <1134744918.22774.62.camel@cearnarfon>
+References: <43A1B744.2050703@superbug.co.uk>
+	 <Pine.LNX.4.61.0512151940270.9555@tm8103.perex-int.cz>
+	 <43A1C7F5.6070307@superbug.co.uk> <s5hlkylz68s.wl%tiwai@suse.de>
+	 <43A29B2A.1000406@superbug.co.uk> <s5hirtpz1pc.wl%tiwai@suse.de>
+	 <43A2B669.1080602@superbug.co.uk> <s5hfyotyxws.wl%tiwai@suse.de>
+	 <43A2C57F.6020503@superbug.co.uk> <s5hd5jxyvwh.wl%tiwai@suse.de>
+	 <Pine.LNX.4.61.0512161509230.10849@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20051215194229.GE5793@cortazar>
+In-Reply-To: <Pine.LNX.4.61.0512161509230.10849@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +23,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Paulo Marcel Coelho Aragao wrote on Dec, 15:
-
-[...]
-
-> > > If this is indeed a bug in the driver, should I file a bug in ALSA BTS ?
+On Fri, 2005-12-16 at 15:11 +0100, Jaroslav Kysela wrote:
+> On Fri, 16 Dec 2005, Takashi Iwai wrote:
 > 
-> > As you like.  We can continue the debug session on alsa-devel ML, too.
+> > The trick is to define "step".  Then min/max can be usually within
+> > 8 bits.  I recommend you to take a look at HD-audio specification, for
+> > example.
 > 
-> As long as we get to the bottom of this and squash this bug, the context 
-> doesn't matter to me. So, grasshopper Paulo asks Masters Takashi and 
-> Clemens: what's the next step ? I guess the goal is making 16-bit work, 
-> right ?
+> Just short note: Wouldn't be better to use a RPN expression to describe dB 
+> <-> raw conversions like rrdtool uses? Just idea (of course that everybody 
+> tells me that it's overkill).
+> 
 
-Is there anything I can do to help debug this further and squash the bug ?
+I think it might just be overkill :) as whoever is writing the driver
+code will probably just lift the values from the codec data sheet. The
+data sheets I've seen typically just specify the dB range and step size.
 
-Paulo
+Liam  
+
 
 
 -------------------------------------------------------
