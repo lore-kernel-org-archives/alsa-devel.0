@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: [PATCH] Adds dB gain to alsa-driver, alsa-lib.
-Date: Fri, 16 Dec 2005 13:37:59 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0512161323540.10849@tm8103.perex-int.cz>
-References: <43A1B744.2050703@superbug.co.uk> <Pine.LNX.4.61.0512151940270.9555@tm8103.perex-int.cz>
- <43A1C7F5.6070307@superbug.co.uk>
+Date: Fri, 16 Dec 2005 12:43:21 +0000
+Message-ID: <43A2B669.1080602@superbug.co.uk>
+References: <43A1B744.2050703@superbug.co.uk>	<Pine.LNX.4.61.0512151940270.9555@tm8103.perex-int.cz>	<43A1C7F5.6070307@superbug.co.uk>	<s5hlkylz68s.wl%tiwai@suse.de>	<43A29B2A.1000406@superbug.co.uk> <s5hirtpz1pc.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43A1C7F5.6070307@superbug.co.uk>
+In-Reply-To: <s5hirtpz1pc.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,59 +17,114 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 15 Dec 2005, James Courtier-Dutton wrote:
+Takashi Iwai wrote:
+> 
+> 
+> The code won't be compliex nor bload so much as you thought.
+> Imagine that you just move the table of dB information into alsa-lib
+> like
+> 
+> 	static struct db_info_lookup table[] = {
+> 		{ "ca0106", db_info_ca0106 },
+> 		...
+> 	};
+> 
+> The static table could be implemented as an external file, too, of
+> course.
+> 
+> OTOH, the lookup-table in alsa-lib has a drawback that the table must
+> includes the whole snd_ctl_elem_id, thus the memory usage about the
+> control name will be doubled.  So the actual size might be bigger.
+> 
+> 
+> ... OK, now I've been slowly convinced to add minimal dB information
+> to the kernel side.  The further question is the implementation.
+> 
+> IMO, your method, everything-about-parser-is-in-alsa-lib, is a bit
+> exaggerated.  In that way, you'll have to add a different type for
+> each driver and chip and end up with endless bloat of new types.
+> 
+> As Liam suggested, most cases are linear.  They can be embedded in 4
+> bytes, including min, max, step and 0dB-offset.  Take a look at
+> HD-audio codec or USB-audio specification.
+> (BTW, the floating point expression is (still) prohibitied in the
+>  kernel code.)
+> 
+> One exception is the volume muting at the lowest value as often seen
+> in ac97 codecs.  This needs a different type.
+> More than 90% cases could be coverted by these two types (linear and
+> linear+mute), I guess.
+> 
 
-> Efficient in what way?
-> The current method is efficient in that it is implemented using very few lines
-> of code, and thus not much code bloat.
+In my thoughts, I started with just the hint, then tried what Liam 
+described (long before Liam described it. I think we all discussed it a 
+some time ago.), and then when back to hint.
+The "hint" is also a lot neater on the kernel side.
+I am also looking forward to when we finally do have a card-mixer.conf 
+config file. We would then put all the conversion function information 
+in there. So, when a new card driver appears, one also adds the alsa-lib 
+card-pcm.conf and card-mixer.conf and you are done. We already have to 
+add the card-pcm.conf file with each new sound card type, so it is not 
+adding much bloat.
+The "hint" is also perfect for the "reverse conversion" requirement. The 
+same "hint" can be the index into the "reverse conversion function" 
+lookup as well as the "forward conversion function".
 
-That's a question. I'm trying to propose something simple which can be
-handled in most easy way.
+> 
+> In addition, some suggestions/questions about your patch:
+> 
+> - The name snd_ctl_misc sounds too ambiguous
 
-> Why do you want to place limits on the size of the request/response?
+The name "snd_ctl_misc" could be anything. It is not dB specific, 
+because that same ioctl could be used for other things. Don't know what 
+yet, but some future requirement might need it. I suppose we could call 
+is "snd_ctl_tlv" but that is about as descriptive as "snd_ctl_misc"
 
-No, the limits will be similar as yours. If you have 2048 bytes for ioctl 
-request, there is plenty space for the response values.
+> 
+> - (in kernel) Move the dB-specific stuff out of snd_ctl_elem_misc_user()
 
-My question is what is better: The static structure or dynamically created
-containers.
+Do you just mean move the dB-specific stuff out to it's own function.
+I just figured to leave it there for now, as it is quite short. If it 
+gets more complicated, we can break it up.
 
-With my proposal, the lowlevel driver can handle only such callbacks:
+> 
+> - TLV parser (e.g. uint32_to_message) should be more optimized :)
 
-struct snd_ctl_extra {
-	unsigned char key[8][8];
-	unsigned char value[2048-256];
-};
+True, but hardly important at this stage.
 
-static int usb_control_get_extra_info(struct snd_kcontrol *kcontrol, 
-				      struct snd_ctl_extra *extra)
-{
-	if (!strcmp(extra->key[0], "dB Scale")) {
-		*((unsigned int *)extra) = 0x11223344;
-		return 0;
-	}
-	return -ENOENT;
-}
+> 
+> - As Jaroslav pointed, the parsing of dB information should be in the
+>   mixer layer instead of [h]control.
 
-As you see:
+No problem, so move the stuff from
+hcontrol.c:snd_hctl_elem_get_db_gain
+to
+simple_none.c:get_dB_ops
+or some extra sub function in simple_none.c
 
-1) no value size encoding / decoding (size is already known, because it is 
-   assigned to key)
-2) the callback can be shared among many controls (ususally one lowlevel
-   driver has many controls with same dB scale values)
-3) extra code for specific controls might be handled in the extra callback
-   as 'if (kcontrol == driver->my_specific_kcontrol) { do_it; return 0; }'
+If you mean move the parsing done in
+control.c:snd_ctl_elem_get_db_scale
+out to simple_none.c, then I don't think we can do that.
+The snd_ctl_misc_t is only visible to control.c.
 
-						Jaroslav
+> 
+> - How to implement the reverse conversion, from dB to raw?
+> 
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+The "hint" is also perfect for the "reverse conversion" requirement. The 
+same "hint" can be the index into the "reverse conversion function" 
+lookup as well as the "forward conversion function".
+
+> 
+> Takashi
+> 
+> 
+
+James
 
 
 -------------------------------------------------------
