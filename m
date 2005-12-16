@@ -1,13 +1,15 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 Subject: Re: [PATCH] Adds dB gain to alsa-driver, alsa-lib.
-Date: Fri, 16 Dec 2005 10:47:06 +0000
-Message-ID: <43A29B2A.1000406@superbug.co.uk>
-References: <43A1B744.2050703@superbug.co.uk>	<Pine.LNX.4.61.0512151940270.9555@tm8103.perex-int.cz>	<43A1C7F5.6070307@superbug.co.uk> <s5hlkylz68s.wl%tiwai@suse.de>
+Date: Fri, 16 Dec 2005 10:49:01 +0000
+Message-ID: <1134730142.3137.17.camel@scooper.cruach>
+References: <43A1B744.2050703@superbug.co.uk>
+	 <1134675125.3313.23.camel@localhost.localdomain>
+	 <43A1C89D.90200@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlkylz68s.wl%tiwai@suse.de>
+In-Reply-To: <43A1C89D.90200@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,60 +19,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 15 Dec 2005 19:45:57 +0000,
-> James Courtier-Dutton wrote:
-> 
->>>2) The ca0106 driver is not candidate for such info. The info should
->>>   be static somewhere in alsa-lib, probably in the src/control/control.c
->>>   and added only when TLV stuff is requested.
->>
->>What "info" are you talking about? If you are talking about the db_scale 
->>information, then I disagree with you on this point and I explained why 
->>some time ago in a previous thread. I think Takashi agreed with me in 
->>the end, once I managed to fully explain the reasons.
-> 
-> 
-> Err, then it's a misunderstanding.  I'm also against inclusion of
-> unnecessary code in the kernel.  That is, if the dB information for
-> each control is static and unchanged, it shouldn't be embedded in the
-> driver.
-> 
-> I agree to add a new ioctl for drivers with dynamic controls or
-> the drivers taking the dB information from the codec chip.
-> The former case is emu10k1, which mixer can be changed via ld10k1.
-> The latter case is usb-audio and hda-intel.
-> 
-> Since the number of drivers requring this ioctl should be relatively
-> small, I suppose that the implementation would be hardware-dependent.
-> So, a generic "hint" and a dedicated parser in alsa-lib would suffice,
-> rather than defining a too complicated struct to cover everyhing about
-> dB.
-> 
-> The case of ac97 needs a further investigation.  I believe it can be
-> implemented well in alsa-lib, but the implementation on the driver
-> side _might_ be more efficient.  Let's see the code.
-> 
-> 
-> Takashi
-> 
+On Thu, 2005-12-15 at 19:48 +0000, James Courtier-Dutton wrote:
+
+> Problems with your approach were:
+> 1) Control with non-linear dB steps. E.g. attenuation using a different 
+> scale than gain.
+
+In my experience, the majority of controls (certainly in the embedded
+space) use a linear dB scale to adjust the gain/attenuation and would be
+better served by a value rather than a hint. A hint would still be
+required for the non linear controls.
+
+How do you feel about adding a further field called db_hint. This way
+the hint method could be used for the more complex and non linear
+controls whilst the value method could be used for the simple ones. 
+
+This would save a lot effort, as driver developers wouldn't need to add
+any hints to alsa-lib for simple controls.
+ 
+> 2) Complicates controls where only a lookup table will do.
 > 
 
-Ok, somone else can write this. I give up.
+I agree, but with both fields this isn't an issue.
 
-Your solution is going to break down in the edge cases, and mine adds 
-just 4 bytes to each mixer control structure in the kernel. No extra 
-code at all to each driver. Just some lines of extra core code to handle 
-the new ioctl.
+Further to this, I realised this code could also be used for other
+controls that are unitised. i.e. some ALC controls use ms for timeouts.
+This hint and scale could also be used to describe them.
 
-Your suggestions will add considerably to code bloat in the alsa-lib, 
-and probably not work very well due to the edge cases.
+Liam 
 
-James
 
 
 -------------------------------------------------------
