@@ -1,11 +1,11 @@
 From: James Courtier-Dutton <james.dutton@gmail.com>
 Subject: Re: emu10k1 patches for 1.0.11
-Date: Fri, 16 Dec 2005 22:27:53 +0000
-Message-ID: <ad2655cb0512161427m1fa559eax@mail.gmail.com>
+Date: Fri, 16 Dec 2005 22:29:10 +0000
+Message-ID: <ad2655cb0512161429m5dfb532cs@mail.gmail.com>
 References: <1134771473.19091.16.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_Part_11841_17794961.1134772073653"
+	boundary="----=_Part_11845_18624368.1134772150622"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <1134771473.19091.16.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -21,7 +21,7 @@ To: Lee Revell <rlrevell@joe-job.com>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_11841_17794961.1134772073653
+------=_Part_11845_18624368.1134772150622
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
@@ -36,21 +36,28 @@ On 16/12/05, Lee Revell <rlrevell@joe-job.com> wrote:
 >
 > Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 >
+> Index: alsa-kernel/pci/emu10k1/emu10k1_main.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
+> retrieving revision 1.79
+> diff -u -r1.79 emu10k1_main.c
+> --- alsa-kernel/pci/emu10k1/emu10k1_main.c      6 Dec 2005 14:10:57
+> -0000       1.79
+> +++ alsa-kernel/pci/emu10k1/emu10k1_main.c      16 Dec 2005 22:13:47 -000=
+0
+> @@ -728,7 +728,17 @@
+>         return snd_emu10k1_free(emu);
+> }
 >
-Lee,
+> -static struct snd_emu_chip_details emu_chip_details[] =3D {
+> +static emu_chip_details_t emu_chip_details[] =3D {
+>
 
-Changing Unknown to Side is ok, but the PCI IDs look very wrong at the
-moment.
-I am still waiting for confirmation from the users that the patch fixes the
-problem.
-the entry for the "Audigy 4 64bit [SB0610]" is just plain wrong.
+emu_chip_details_t is wrong.
 
-I think it would be better to separate up the patch, one for p16v changes,
-and then separate ones for each PCI IDs change.
-
-James
-
-------=_Part_11841_17794961.1134772073653
+------=_Part_11845_18624368.1134772150622
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
@@ -62,17 +69,23 @@ r-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-le=
 ft: 1ex;">
 These were in my CVS tree.<br><br>Add some new PCI IDs.<br><br>p16v: Change=
  Unknown to Side channels.<br><br>Signed-Off-By: Lee Revell &lt;<a href=3D"=
-mailto:rlrevell@joe-job.com">rlrevell@joe-job.com</a>&gt;<br><br></blockquo=
-te>
-</div><br>Lee,<br><br>Changing Unknown to Side is ok, but the PCI IDs look =
-very wrong at the moment.<br>I am still waiting for confirmation from the u=
-sers that the patch fixes the problem.<br>the entry for the &quot;Audigy 4 =
-64bit [SB0610]&quot; is just plain wrong.
-<br><br>I think it would be better to separate up the patch, one for p16v c=
-hanges, and then separate ones for each PCI IDs change.<br><br>James<br><br=
->
+mailto:rlrevell@joe-job.com">rlrevell@joe-job.com</a>&gt;<br><br>Index: als=
+a-kernel/pci/emu10k1/emu10k1_main.c
+<br>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<br>RCS file: /cvs=
+root/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v<br>retrieving revision 1=
+.79<br>diff -u -r1.79 emu10k1_main.c<br>--- alsa-kernel/pci/emu10k1/emu10k1=
+_main.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 Dec 2005 14:10:57 -0000&nbsp;&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+1.79<br>+++ alsa-kernel/pci/emu10k1/emu10k1_main.c&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;16 Dec 2005 22:13:47 -0000<br>@@ -728,7 +728,17 @@<br>&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return snd_emu10k1_free(emu);<br> }<b=
+r><br>-static struct snd_emu_chip_details emu_chip_details[] =3D {<br>
++static emu_chip_details_t emu_chip_details[] =3D {<br></blockquote></div><=
+br>emu_chip_details_t is wrong.<br><br>
 
-------=_Part_11841_17794961.1134772073653--
+------=_Part_11845_18624368.1134772150622--
 
 
 -------------------------------------------------------
