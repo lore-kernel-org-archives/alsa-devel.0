@@ -1,17 +1,14 @@
-From: "Criticism H. Inebriated" <dan_boo@greatoaktitle.com>
-Subject: Online Pharmacy Guide
-Date: Thu, 15 Dec 2005 15:51:42 -0600
-Message-ID: <7862429271.20051215155142@greatoaktitle.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001644]: Endless Pulsing/repeating sound clip emitting from speakers
+Date: Fri, 16 Dec 2005 17:33:30 +0100
+Message-ID: <26b45e88dd98e7c249586f96c8023795@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------18005FCBE23F064"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -1212504336 (adsl196-199-49-217-196.adsl196-10.iam.net.ma [196.217.49.199])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 20696153
-	for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2005 16:09:26 +0100 (MET)
-Received: from greatoaktitle.com (-1212308216 [-1212307784])
-	by adsl196-199-49-217-196.adsl196-10.iam.net.ma (Qmailv1) with ESMTP id 9F141CCB4F
-	for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2005 15:51:42 -0600
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7BC2179
+	for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2005 17:33:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,81 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------------18005FCBE23F064
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1644> 
+======================================================================
+Reported By:                snipepod
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1644
+Category:                   PCI - es1968
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               SUSE 10 direct from Novell
+Kernel Version:             
+======================================================================
+Date Submitted:             12-12-2005 18:56 CET
+Last Modified:              12-16-2005 17:33 CET
+======================================================================
+Summary:                    Endless Pulsing/repeating sound clip emitting from
+speakers
+Description: 
+As soon as SUSE pops-up a window or dialog box that includes anytype of
+sound (ding, pop, boop, etc), a small piece of the sound gets repeated
+through the ES1968 sound hardware in a repeating patter (typically about
+14 times per 10 seconds). This repeating sound can only be terminated by
+restarting ALSA, via booting, or configurint via YAST2 (which restarts the
+ALSA). 
+I searched the internet and found a SUSE-RPM for ALSA 1.0.10 and installed
+it, but the problem did not get fixed.
 
-Need to buy some medickations?
-Take it easy!
-Buy it's ONLINE!
+======================================================================
 
-Vlagera - $3.3 
-Ledvitra - $3.3
-Cialibs - $3.7
-Imlitrex - $16.4
-Flaomax - $2.2
-Ulitram - $0.78
-Vifoxx - $4.75 
-Amibien - $2.2
-VaIiuhm - $0.97 
-Suoma - $3
-Xanyax - $1.09
-Mjeridia - $2.2 
+----------------------------------------------------------------------
+ snipepod - 12-16-05 17:33 
+----------------------------------------------------------------------
+Update from SnipePod 12/16/2005.
+I have experiemented with the clock parameter on the ESS Maestro 2em per
+the instructions for the SND-ES1968 on the ALSA-Project website. I have
+tried every option, 0,1,2,3,4,5,6,7,8. Option 0=auto-detect and Option 1
+were the only ones that allowed any valid sound through, but both option 0
+& 1 had the repeating/oscillation sound problem discribed in the original
+problem report. Clock parameters 2,3,4,5,6,7,8 would only create
+screeching static type of sounds.
 
-Important notice: Our order process could not be simpler, just select the medicines you need, fill in our medical questionnaire, and submit your order. Our U.S Licensed Physicians will review your order and issue your prescription. Next, our U.S.
-
-Visit our website 
-http://forgaboth.com
-
-ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-------------18005FCBE23F064
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<HTML>
-<BODY bgcolor="#F8F8F8">
-<p><b><font color="#F80000">Need to buy some medicjations?<br>
-  Take it easy!<br>
-  Buy it's ONLINE!</font></b></p>
-<table width="100%" cellpadding="15" cellspacing="1">
-  <tr valign="top"> 
-    <td width="33%" valign="top" bgcolor="#F0F0F8"> <b>Vlagwra 
-      - $3.3 <br>
-      Lemvitra - $3.3<br>
-      Cialihs - $3.7<br>
-      Imjitrex - $16.4<br>
-      Flzomax - $2.2<br>
-      Ulhtram - $0.78<br>
-      Viaoxx - $4.75 <br>
-      Amabien - $2.2<br>
-      VaIiuam - $0.97 <br>
-      Sooma - $3<br>
-      Xaniax - $1.09<br>
-      Mneridia - $2.2</b></td>
-  </tr>
-</table>
-<p> <b>Important notice:</b> Our order process could not be simpler, just select 
-  the medicines you need, fill in our medical questionnaire, and submit your order. 
-  Our U.S Licensed Physicians will review your order and issue your prescription. 
-  Next, our U.S.</p>
-<b><A href="http://forgaboth.com">Visit 
-  our website</A> </b>
-<br>
-<br>
-<br>
-<br>
-ertytyjiklg UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</BODY>
-</HTML>
-
-
-------------18005FCBE23F064--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-12-05 18:56 snipepod       New Issue                                    
+12-12-05 18:56 snipepod       Distribution              => SUSE 10 direct from
+Novell
+12-13-05 01:22 snipepod       Issue Monitored: snipepod                    
+12-16-05 17:33 snipepod       Note Added: 0007060                          
+======================================================================
 
 
 
