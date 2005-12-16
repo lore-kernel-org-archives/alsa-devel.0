@@ -1,11 +1,16 @@
-From: Luiz Fernando Capitulino <lcapitulino@mandriva.com.br>
-Subject: No sound after cable replug with a VT8237R.
-Date: Fri, 16 Dec 2005 12:13:57 -0200
-Message-ID: <20051216121357.25ac14e2.lcapitulino@mandriva.com.br>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] Adds dB gain to alsa-driver, alsa-lib.
+Date: Fri, 16 Dec 2005 15:11:57 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0512161509230.10849@tm8103.perex-int.cz>
+References: <43A1B744.2050703@superbug.co.uk> <Pine.LNX.4.61.0512151940270.9555@tm8103.perex-int.cz>
+ <43A1C7F5.6070307@superbug.co.uk> <s5hlkylz68s.wl%tiwai@suse.de>
+ <43A29B2A.1000406@superbug.co.uk> <s5hirtpz1pc.wl%tiwai@suse.de>
+ <43A2B669.1080602@superbug.co.uk> <s5hfyotyxws.wl%tiwai@suse.de>
+ <43A2C57F.6020503@superbug.co.uk> <s5hd5jxyvwh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hd5jxyvwh.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,28 +20,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 16 Dec 2005, Takashi Iwai wrote:
 
- Hi people,
+> The trick is to define "step".  Then min/max can be usually within
+> 8 bits.  I recommend you to take a look at HD-audio specification, for
+> example.
 
- If I unplug and replug the headphone cable from a VIA VT8237R sound card
-several times, the sound just stops. That card is handled by the snd-via82xx
-driver.
+Just short note: Wouldn't be better to use a RPN expression to describe dB 
+<-> raw conversions like rrdtool uses? Just idea (of course that everybody 
+tells me that it's overkill).
 
- When it happens, I can see the sound player (eg, mplayer) still playing the
-song, but there is no sound at all. I have to load the module again to have
-the sound back.
+						Jaroslav
 
- As far as we tested, the problem didn't happen with Windows XP Home.
-
- I tested with alsa-1.0.10 and 1.0.11rc1, it's 100% reproducible.
-
-PS: Is there an open spec for that card?
-
--- 
-Luiz Fernando N. Capitulino
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
