@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001655]: Headphone jack sense and Line jack sense come up on -- need to be off for laptop speaker sound
-Date: Sat, 17 Dec 2005 03:37:33 +0100
-Message-ID: <ac04eebdb76c45ec6f431c84c415d0cc@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 17 Dec 2005 02:55:06 -0000
+Message-ID: <E1EnSE4-00068G-Et@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CB75147
-	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 03:37:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,98 +12,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1655> 
-======================================================================
-Reported By:                mdmarmer
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1655
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Mepis, Ubuntu, Fedora FC3 (probably all)
-Kernel Version:             2.6.10, 2.6.11.14, 2.6.12 (probably all)
-======================================================================
-Date Submitted:             12-17-2005 03:37 CET
-Last Modified:              12-17-2005 03:37 CET
-======================================================================
-Summary:                    Headphone jack sense and Line jack sense come up on
--- need to be off for laptop speaker sound
-Description: 
-This problem is encountered very frequently when installing any version of
-Linux on a laptop with AC'97 Intel8x0 sound.  On installation, headphone
-sound will work, but the internal speakers will not.  The solution to this
-problem is not apparent to the user.  Sometimes users find the answer to
-this problem by posting their problem in a forum or by a diligent search. 
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
+--- Original message follows.
 
-Current solution:
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-The user opens KMix or a similar interface and finds switches marked
-Headphone Jack Sense and Line Jack Sense.  These switches are on, though
-the jack(s) are not plugged in.  When the user turns them off and saves
-the configuration, sound works fine.
+The original message is over 5k.  Message truncated to 1K.
 
-This affects Toshiba M45-S331, Toshiba Tecra M3, E-Machines M5310, Gateway
-M675PRR, IBM Thinkpad T40, T41, T42, R51, Compaq Presario X1000, Dell
-Dimension 2400, 2350, Sony Vaio FR130 and quite a few other laptop models.
- The problem occurs regardless of the Linux diustro -- I have seen it with
-Ubuntu, Mepis, and Fedora FC3.
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.237>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta249.mail.mud.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO plgns.net) (64.251.132.84)
+  by mta249.mail.mud.yahoo.com with SMTP; Fri, 16 Dec 2005 18:53:51 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Sat, 17 Dec 2005 02:15:05 GMT
+Subject: hi,_ive_a_new_mail_address
+Importance: Normal
+X-Priority: 3 (Normal)
+X-MSMail-Priority: Normal
+Message-ID: <06cc8ea3ccd91b80@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="======aad845c.8daa07a98a"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-Here are bug reports : 
-http://lists.debian.org/debian-kernel/2005/04/msg00655.html
+--======aad845c.8daa07a98a
 
-Bug#303311: 2.6.11 Kernel, intel8x0 card and Headphone Jack Sense
-(http://bugs.debian.org
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-http://www.ces.clemson.edu/linux/alsa.shtml
-
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144742
-===>>>>
-This is the only report on alsa bugtrack, claims fixed as of 4 Feb 05 -- I
-continue to see this problem regardless of alsa version
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=852
-
-Reports (not specifically bug reports):
-
-http://dancorkill.home.comcast.net/tecra-m3-on-fc4.html
-
-http://ccrma-mail.stanford.edu/pipermail/planetccrma/2005-May/009305.html
-
-http://www.mepis.org/node/6557
-
-http://lists.debian.org/debian-laptop/2005/10/msg00203.html
-
-http://www.mepislovers.org/modules/newbb/viewtopic.php?topic_id=11362&forum=28&post_id=79808#forumpost79808
-
-
-
-
-
-
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-17-05 03:37 mdmarmer       New Issue                                    
-12-17-05 03:37 mdmarmer       Distribution              => Mepis, Ubuntu, Fedora
-FC3 (probably all)
-12-17-05 03:37 mdmarmer       Kernel Version            => 2.6.10, 2.6.11.14,
-2.6.12 (probably all)
-======================================================================
-
+plz read and check ...
+cyaaaaaaa
+--======aad845c.8daa07a98a
+Content-Type: application/octet-stre
+*** MESSAGE TRUNCATED ***
 
 
 
