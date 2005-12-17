@@ -1,18 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-user] Play two sounds at once
-Date: Sat, 17 Dec 2005 14:17:32 -0500
-Message-ID: <1134847052.11227.17.camel@mindpipe>
-References: <15c45fbc0512160524n4adb7d4bw16617ac7a61ad4b4@mail.gmail.com>
-	 <200512161526.33366.ismail@uludag.org.tr>
-	 <15c45fbc0512160533y40ace2a4g4c9daddb5e7fafbd@mail.gmail.com>
-	 <200512161541.50627.ismail@uludag.org.tr>
-	 <1134758785.17808.5.camel@mindpipe>  <20051217174854.GG31746@localhost>
-	 <1134844578.11227.6.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001584]: Load rises to 100% when dmix is used with ICE1724 (SN25P)
+Date: Sat, 17 Dec 2005 20:16:17 +0100
+Message-ID: <fc72ecd6e6a8be223ff54e38055c3764@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1134844578.11227.6.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1016E184
+	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 20:16:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,92 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Wulf Assols <wulf.assols@arcor.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-12-17 at 13:36 -0500, Lee Revell wrote:
-> On Sat, 2005-12-17 at 18:48 +0100, Wulf Assols wrote:
-> > Hi Lee!
-> > 
-> > On Fri, 16 Dec 2005, Lee Revell wrote:
-> > 
-> > > On Fri, 2005-12-16 at 15:41 +0200, Ismail Donmez wrote:
-> > > > Cuma 16 Aral?k 2005 15:33 tarihinde, Darrell Blake ?unlar? yazm??t?: 
-> > > > > > Use a recent version of ALSA which setups dmix automagically, so you can
-> > > > >
-> > > > > play
-> > > > >
-> > > > > > do this without configuring anything.
-> > > > >
-> > > > > I think I'm already using the latest version of ALSA. I'm running the
-> > > > > 2.6.14.3 kernel and whichever version of ALSA comes with it.
-> > > > 
-> > > > Then your soundcard might not be able to do dmix at all. Worth a check 
-> > > > alsa-wiki.
-> > > 
-> > > Any soundcard can do dmix, as the point of dmix is to do mixing in
-> > > software for devices that can't do it themselves.  Some are just more
-> > > work to get the .config right, like usb-audio and ICE1724, so it does
-> > > not work OOTB yet.
-> > > 
-> > > Lee
-> > what do you have to do to make dmix work with the ICE17xx chip? (i got an
-> > ICE1712)
-> 
-> Make sure you have alsa-lib 1.0.10 or newer installed and remove
-> your .asoundrc and it should work.  I don't have one of these devices
-> but IIRC people have reported it should work.  Maybe someone who has
-> this working with ALSA 1.0.10 or newer can help more?
 
-Never mind, it looks like ICE1712.conf does not configure dmix
-automatically after all.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1584> 
+======================================================================
+Reported By:                mr511
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1584
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             11-20-2005 20:33 CET
+Last Modified:              12-17-2005 20:16 CET
+======================================================================
+Summary:                    Load rises to 100% when dmix is used with ICE1724
+(SN25P)
+Description: 
+ALSA applications using the dmix plugin run at 100% load. Verified with
+aplay, alsaplayer, xine, aoss+mpg123 and several others.
 
-Try this patch.
+Approximately 1/3 of the load appears to be in user space, 2/3 in system
+space.
 
-Lee
+Re-installing alsa-lib 1.0.8 makes the problem go away.
+======================================================================
 
-ICE1712: Use dmix/dsnoop by default
+----------------------------------------------------------------------
+ mr511 - 11-21-05 21:43 
+----------------------------------------------------------------------
+More observations: Behavior depends on the kernel version. With 2.6.12,
+everything works fine. With 2.6.14, the load rises.
 
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+In the earlier note, fd=5 is /dev/snd/timer, so maybe it's a timer
+problem. In the worst case, the poll loop is executed approximately
+8000...10000 times per second. The kernel is configured with
+CONFIG_HZ=250, in case that matters.
 
-Index: alsa-lib/src/conf/cards/ICE1712.conf
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/ICE1712.conf,v
-retrieving revision 1.8
-diff -u -r1.8 ICE1712.conf
---- alsa-lib/src/conf/cards/ICE1712.conf	27 Jan 2004 09:47:13 -0000	1.8
-+++ alsa-lib/src/conf/cards/ICE1712.conf	17 Dec 2005 19:13:03 -0000
-@@ -2,6 +2,29 @@
- # Configuration for the ICE1712 (Envy24) chip
- #
- 
-+# default with dmix & dsnoop
-+ICE1712.pcm.default {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type asym
-+	playback.pcm {
-+		type plug
-+		slave.pcm {
-+			@func concat
-+			strings [ "dmix:" $CARD ",FORMAT=S32_LE" ]
-+		}
-+	}
-+	capture.pcm {
-+		type plug
-+		slave.pcm {
-+			@func concat
-+			strings [ "dsnoop:" $CARD ",FORMAT=S32_LE" ]
-+		}
-+	}
-+}
-+
- <confdir:pcm/front.conf>
- 
- ICE1712.pcm.front.0 {
+----------------------------------------------------------------------
+ rlrevell - 12-17-05 20:16 
+----------------------------------------------------------------------
+Please try the latest ALSA CVS version and remove your .asoundrc and see if
+the problem is still present.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-20-05 20:33 mr511          New Issue                                    
+11-21-05 14:37 mr511          Note Added: 0006771                          
+11-21-05 21:43 mr511          Note Added: 0006777                          
+12-17-05 20:16 rlrevell       Note Added: 0007067                          
+======================================================================
 
 
 
