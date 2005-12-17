@@ -1,8 +1,15 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 17 Dec 2005 02:55:06 -0000
-Message-ID: <E1EnSE4-00068G-Et@mail.sourceforge.net>
+From: "Victorius Gangestad" <gangestovicto@vantag.com>
+Subject: Re: monotonous foxhole
+Date: Sat, 17 Dec 2005 12:41:57 +0200
+Message-ID: <000001c602f6$80c8ee20$165fa8c0@lecithin>
+Reply-To: "Victorius Gangestad" <gangestovicto@vantag.com>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C60307.44540810"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from vantag.com (200-207-145-2.dsl.telesp.net.br [200.207.145.2])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9A034138
+	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 11:42:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +19,120 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Leeba Garduno <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
-
-<admin@yahoo.com>:
-This address no longer accepts mail.
-
---- Original message follows.
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.237>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta249.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO plgns.net) (64.251.132.84)
-  by mta249.mail.mud.yahoo.com with SMTP; Fri, 16 Dec 2005 18:53:51 -0800
-From: alsa-devel@lists.sourceforge.net
-Date: Sat, 17 Dec 2005 02:15:05 GMT
-Subject: hi,_ive_a_new_mail_address
-Importance: Normal
-X-Priority: 3 (Normal)
-X-MSMail-Priority: Normal
-Message-ID: <06cc8ea3ccd91b80@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="======aad845c.8daa07a98a"
-Content-Transfer-Encoding: 7bit
 This is a multi-part message in MIME format.
 
---======aad845c.8daa07a98a
+------=_NextPart_000_0001_01C60307.44540810
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+=20
+http://www.toegisate.com
+=20
+Am
+VA
+So
+Xa
+VlA
+Me
+Pro
+ClA
+Lev
+bien
+LlUM
+ma
+nax
+GRA
+ridia
+pecia
+LlS
+itra
+ $6
+ $8
+ $7
+ $1
+ $6
+ $9
+ $6
+ $9
+ $9
+8.00
+5.45
+5.95
+23.45
+9.95
+9.95
+4.95
+9.95
+9.95
+=20
+=20
+=20
+How could he find her, protect her? Had she any idea what she was doing?
+David would go out of his mind. Hed panic and make a thousand mistakes.
+.. Oh, my God, I am David! Stop it. Control. Pull back. The telephone
+rang; he grabbed it off the bedside table. Yes? Santos wants to see you.
+With peace in his heart. *24* The Emergency Medical Service helicopter
+was lowered into its threshold; the rotors were cut and the blades
+thumped to a stop. Following EMS procedure when disembarking ambulatory
+patients, only then did the exit door open and the metal steps slap down
+to the ground. A uniformed paramedic preceded Panov, turning and
+assisting the doctor to the tarmac, where a second man in civilian
+clothes escorted him to a
 
-plz read and check ...
-cyaaaaaaa
---======aad845c.8daa07a98a
-Content-Type: application/octet-stre
-*** MESSAGE TRUNCATED ***
+------=_NextPart_000_0001_01C60307.44540810
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV><A =
+href=3D"http://www.toegisate.com">http://www.toegisate.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>Am<BR>VA<BR>So<BR>Xa<BR>VlA<BR>Me<BR>Pro<BR>ClA<BR>Lev</FONT=
+></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>bien<BR>LlUM<BR>ma<BR>nax<BR>GRA<BR>ridia<BR>pecia<BR>LlS<BR=
+>itra</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>&nbsp;$6<BR>&nbsp;$8<BR>&nbsp;$7<BR>&nbsp;$1<BR>&nbsp;$6<BR>=
+&nbsp;$9<BR>&nbsp;$6<BR>&nbsp;$9<BR>&nbsp;$9</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>8.00<BR>5.45<BR>5.95<BR>23.45<BR>9.95<BR>9.95<BR>4.95<BR>9.9=
+5<BR>9.95</FONT></DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>How could he find her, protect her? Had she any idea what she was =
+doing?
+David would go out of his mind. Hed panic and make a thousand mistakes.
+.. Oh, my God, I am David!
+   Stop it. Control. Pull back.
+   The telephone rang; he grabbed it off the bedside table. Yes?
+   Santos wants to see you. With peace in his heart.
+  *24*
+   The Emergency Medical Service helicopter was lowered into its
+threshold; the rotors were cut and the blades thumped to a stop.
+Following EMS procedure when disembarking ambulatory patients, only then
+did the exit door open and the metal steps slap down to the ground. A
+uniformed paramedic preceded Panov, turning and assisting the doctor to
+the tarmac, where a second man in civilian clothes escorted him to =
+a</DIV></BODY></HTML>
+------=_NextPart_000_0001_01C60307.44540810--
+
+
 
 
 
