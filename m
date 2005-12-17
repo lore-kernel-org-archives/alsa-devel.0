@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001584]: Load rises to 100% when dmix is used with ICE1724 (SN25P)
-Date: Sat, 17 Dec 2005 23:37:39 +0100
-Message-ID: <095c06df88725ff502dcb01a7131f6b5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001636]: Adding support for SB Audigy SE
+Date: Sat, 17 Dec 2005 23:58:49 +0100
+Message-ID: <79bc4c321ae7f05e7ce5f68e8978cdb0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CBF819D
-	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 23:37:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E918619F
+	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 23:58:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1584> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1636> 
 ======================================================================
-Reported By:                mr511
-Assigned To:                perex
+Reported By:                chgans
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1584
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1636
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
+Distribution:               GNU/Linux DeMuDi 1.2.1
+Kernel Version:             2.6.12-3-mm-k7
 ======================================================================
-Date Submitted:             11-20-2005 20:33 CET
-Last Modified:              12-17-2005 23:37 CET
+Date Submitted:             12-10-2005 17:53 CET
+Last Modified:              12-17-2005 23:58 CET
 ======================================================================
-Summary:                    Load rises to 100% when dmix is used with ICE1724
-(SN25P)
+Summary:                    Adding support for SB Audigy SE
 Description: 
-ALSA applications using the dmix plugin run at 100% load. Verified with
-aplay, alsaplayer, xine, aoss+mpg123 and several others.
+The Audigy SE is a card with the ca0106 chipset.
+It is reconized as "Creative Labs SB Audigy LS", the driver doesn't load,
+here is the kernel message:
+PCI: Found IRQ 10 for device 0000:00:0d.0
+Model 100a Rev 00000000 Serial 100a1102
+AC'97 0 does not respond - RESET
+AC'97 0 access is not valid [0x0], removing mixer.
+CA0106: probe of 0000:00:0d.0 failed with error -5
 
-Approximately 1/3 of the load appears to be in user space, 2/3 in system
-space.
+here is the revelant part of output of lspci -vv:
+0000:00:0d.0 Multimedia audio controller: Creative Labs SB Audigy LS
+        Subsystem: Creative Labs: Unknown device 100a
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin A routed to IRQ 10
+        Region 0: I/O ports at e800 [size=32]
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Re-installing alsa-lib 1.0.8 makes the problem go away.
+
+I have see in the ca0106 driver source that the "Audigy LS" is the last
+entry (the default) of the supported card list.
+
+So i wonder if it should be easy to get support for this board.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-17-05 20:16 
+ jcdutton - 12-17-05 18:48 
 ----------------------------------------------------------------------
-Please try the latest ALSA CVS version and remove your .asoundrc and see if
-the problem is still present.
+Can you please test.
+Power off -> Linux -> Pass/fail
+Power off -> Windows -> Reboot without poweroff -> Linux -> Pass/fail.
+
+This will save me time when fixing the problem.
 
 ----------------------------------------------------------------------
- mr511 - 12-17-05 23:37 
+ phormion - 12-17-05 23:58 
 ----------------------------------------------------------------------
-Sorry, alsa-lib from CVS doesn't change anything except that asym/dmix is
-now the default for my card. The kernel part doesn't compile yet.
+I just did the test: 
 
-But I found out something else: It's a 64/32 bit problem. I use a 64-bit
-kernel but 32-bit userland because the same system is supposed to run on
-either kind of processor. When I use a 64-bit client, however, the load
-stays low.
+Power off -> Linux -> Fail
+Power off -> Windows -> Reboot without poweroff -> Linux -> Pass.
+
+So yes, it seems my first observation was correct, after rebooting from
+Windows, sound works. Well, at least kind of, as I said, OSS emulation
+seems to be non-functional as far as I can see. Any better way to test
+that?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-20-05 20:33 mr511          New Issue                                    
-11-21-05 14:37 mr511          Note Added: 0006771                          
-11-21-05 21:43 mr511          Note Added: 0006777                          
-12-17-05 20:16 rlrevell       Note Added: 0007067                          
-12-17-05 23:37 mr511          Note Added: 0007068                          
+12-10-05 17:53 chgans         New Issue                                    
+12-10-05 17:53 chgans         Distribution              => GNU/Linux DeMuDi
+1.2.1
+12-10-05 17:53 chgans         Kernel Version            => 2.6.12-3-mm-k7  
+12-11-05 21:02 chgans         Issue Monitored: chgans                      
+12-12-05 11:05 chgans         Note Added: 0006983                          
+12-12-05 20:05 chgans         Note Edited: 0006983                         
+12-12-05 20:06 chgans         File Added: sb_audigy_se-proc.dump                
+   
+12-12-05 20:34 davee          Issue Monitored: davee                       
+12-12-05 21:07 davee          Note Added: 0006986                          
+12-13-05 11:56 jcdutton       File Added: sb-audigy-se.fix.diff                 
+  
+12-13-05 11:58 jcdutton       Note Added: 0006989                          
+12-13-05 11:59 jcdutton       Status                   assigned => feedback
+12-15-05 19:27 phormion       Note Added: 0007052                          
+12-15-05 20:14 davee          Note Added: 0007053                          
+12-15-05 21:26 phormion       Note Added: 0007054                          
+12-15-05 22:58 jcdutton       Note Added: 0007055                          
+12-16-05 08:40 phormion       Note Added: 0007056                          
+12-16-05 10:31 davee          Note Added: 0007058                          
+12-16-05 11:26 thorsti        Issue Monitored: thorsti                     
+12-16-05 15:14 chgans         Note Added: 0007059                          
+12-16-05 18:06 phormion       Note Added: 0007061                          
+12-17-05 14:36 Hessophanes    Issue Monitored: Hessophanes                    
+12-17-05 15:22 phormion       Note Added: 0007063                          
+12-17-05 18:48 jcdutton       Note Added: 0007066                          
+12-17-05 23:58 phormion       Note Added: 0007069                          
 ======================================================================
 
 
