@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001656]: snd_pcm_writei seems to be unexpectedly busy-waiting
-Date: Sat, 17 Dec 2005 18:40:35 +0100
-Message-ID: <ae6fd9e13065e3f638a9aa858bf65461@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
+Date: Sat, 17 Dec 2005 18:44:12 +0100
+Message-ID: <416e2462ef9a2506fd7fe35c2176b99c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F111181
-	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 18:40:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81DB3181
+	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 18:44:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,34 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1656> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
 ======================================================================
-Reported By:                Tobias Diedrich
+Reported By:                lilbudda
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1656
-Category:                   1_pcm - digital audio
+Project:                    ALSA - utils
+Issue ID:                   1657
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             12-17-2005 18:40 CET
-Last Modified:              12-17-2005 18:40 CET
+Date Submitted:             12-17-2005 18:44 CET
+Last Modified:              12-17-2005 18:44 CET
 ======================================================================
-Summary:                    snd_pcm_writei seems to be unexpectedly busy-waiting
+Summary:                    no iec958 controls for hda-intel
 Description: 
-On at least an emu10k1 'mplayer -ao alsa -af surround foo.mp3' (Or any
-other 4-channel audio file without '-af surround') hogs the cpu.
-ltrace reveals that most of the time is spent in snd_pcm_writei.
-Further investigation reveals, that snd_pcm_status_get_avail returns a
-value slightly bigger than the selected chunk_size (say 1027), mplayer
-proceeds to decode the corresponding amound of data and feeds it to
-ao_alsa, which calls snd_pcm_writei, which returns after having written
-only chunk_size (in this case 1024).  The surrounding while-loop proceeds
-to call snd_pcm_writei a second time with the remainder (3 frames).  This
-second call to snd_pcm_writei appears to be busy-waiting.
+When trying to configure sound to pass through the spdif port, alsamixer
+does not show any controls for the iec958.
+
+Sound plays fine from rear headphone jack.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-17-05 18:40 Tobias DiedrichNew Issue                                    
+12-17-05 18:44 lilbudda       New Issue                                    
 ======================================================================
 
 
