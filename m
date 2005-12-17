@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001584]: Load rises to 100% when dmix is used with ICE1724 (SN25P)
-Date: Sat, 17 Dec 2005 20:16:17 +0100
-Message-ID: <fc72ecd6e6a8be223ff54e38055c3764@bugtrack.alsa-project.org>
+Date: Sat, 17 Dec 2005 23:37:39 +0100
+Message-ID: <095c06df88725ff502dcb01a7131f6b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1016E184
-	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 20:16:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CBF819D
+	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 23:37:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             11-20-2005 20:33 CET
-Last Modified:              12-17-2005 20:16 CET
+Last Modified:              12-17-2005 23:37 CET
 ======================================================================
 Summary:                    Load rises to 100% when dmix is used with ICE1724
 (SN25P)
@@ -53,21 +53,21 @@ Re-installing alsa-lib 1.0.8 makes the problem go away.
 ======================================================================
 
 ----------------------------------------------------------------------
- mr511 - 11-21-05 21:43 
-----------------------------------------------------------------------
-More observations: Behavior depends on the kernel version. With 2.6.12,
-everything works fine. With 2.6.14, the load rises.
-
-In the earlier note, fd=5 is /dev/snd/timer, so maybe it's a timer
-problem. In the worst case, the poll loop is executed approximately
-8000...10000 times per second. The kernel is configured with
-CONFIG_HZ=250, in case that matters.
-
-----------------------------------------------------------------------
  rlrevell - 12-17-05 20:16 
 ----------------------------------------------------------------------
 Please try the latest ALSA CVS version and remove your .asoundrc and see if
 the problem is still present.
+
+----------------------------------------------------------------------
+ mr511 - 12-17-05 23:37 
+----------------------------------------------------------------------
+Sorry, alsa-lib from CVS doesn't change anything except that asym/dmix is
+now the default for my card. The kernel part doesn't compile yet.
+
+But I found out something else: It's a 64/32 bit problem. I use a 64-bit
+kernel but 32-bit userland because the same system is supposed to run on
+either kind of processor. When I use a 64-bit client, however, the load
+stays low.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -76,6 +76,7 @@ Date Modified  Username       Field                    Change
 11-21-05 14:37 mr511          Note Added: 0006771                          
 11-21-05 21:43 mr511          Note Added: 0006777                          
 12-17-05 20:16 rlrevell       Note Added: 0007067                          
+12-17-05 23:37 mr511          Note Added: 0007068                          
 ======================================================================
 
 
