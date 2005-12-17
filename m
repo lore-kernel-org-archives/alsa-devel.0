@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001636]: Adding support for SB Audigy SE
-Date: Sat, 17 Dec 2005 18:48:48 +0100
-Message-ID: <81f8c82ac47fcc93cccc95b27013e9a8@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-user] Play two sounds at once
+Date: Sat, 17 Dec 2005 14:17:32 -0500
+Message-ID: <1134847052.11227.17.camel@mindpipe>
+References: <15c45fbc0512160524n4adb7d4bw16617ac7a61ad4b4@mail.gmail.com>
+	 <200512161526.33366.ismail@uludag.org.tr>
+	 <15c45fbc0512160533y40ace2a4g4c9daddb5e7fafbd@mail.gmail.com>
+	 <200512161541.50627.ismail@uludag.org.tr>
+	 <1134758785.17808.5.camel@mindpipe>  <20051217174854.GG31746@localhost>
+	 <1134844578.11227.6.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E05D181
-	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 18:48:48 +0100 (MET)
+In-Reply-To: <1134844578.11227.6.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,122 +22,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Wulf Assols <wulf.assols@arcor.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2005-12-17 at 13:36 -0500, Lee Revell wrote:
+> On Sat, 2005-12-17 at 18:48 +0100, Wulf Assols wrote:
+> > Hi Lee!
+> > 
+> > On Fri, 16 Dec 2005, Lee Revell wrote:
+> > 
+> > > On Fri, 2005-12-16 at 15:41 +0200, Ismail Donmez wrote:
+> > > > Cuma 16 Aral?k 2005 15:33 tarihinde, Darrell Blake ?unlar? yazm??t?: 
+> > > > > > Use a recent version of ALSA which setups dmix automagically, so you can
+> > > > >
+> > > > > play
+> > > > >
+> > > > > > do this without configuring anything.
+> > > > >
+> > > > > I think I'm already using the latest version of ALSA. I'm running the
+> > > > > 2.6.14.3 kernel and whichever version of ALSA comes with it.
+> > > > 
+> > > > Then your soundcard might not be able to do dmix at all. Worth a check 
+> > > > alsa-wiki.
+> > > 
+> > > Any soundcard can do dmix, as the point of dmix is to do mixing in
+> > > software for devices that can't do it themselves.  Some are just more
+> > > work to get the .config right, like usb-audio and ICE1724, so it does
+> > > not work OOTB yet.
+> > > 
+> > > Lee
+> > what do you have to do to make dmix work with the ICE17xx chip? (i got an
+> > ICE1712)
+> 
+> Make sure you have alsa-lib 1.0.10 or newer installed and remove
+> your .asoundrc and it should work.  I don't have one of these devices
+> but IIRC people have reported it should work.  Maybe someone who has
+> this working with ALSA 1.0.10 or newer can help more?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1636> 
-======================================================================
-Reported By:                chgans
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1636
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     feedback
-Distribution:               GNU/Linux DeMuDi 1.2.1
-Kernel Version:             2.6.12-3-mm-k7
-======================================================================
-Date Submitted:             12-10-2005 17:53 CET
-Last Modified:              12-17-2005 18:48 CET
-======================================================================
-Summary:                    Adding support for SB Audigy SE
-Description: 
-The Audigy SE is a card with the ca0106 chipset.
-It is reconized as "Creative Labs SB Audigy LS", the driver doesn't load,
-here is the kernel message:
-PCI: Found IRQ 10 for device 0000:00:0d.0
-Model 100a Rev 00000000 Serial 100a1102
-AC'97 0 does not respond - RESET
-AC'97 0 access is not valid [0x0], removing mixer.
-CA0106: probe of 0000:00:0d.0 failed with error -5
+Never mind, it looks like ICE1712.conf does not configure dmix
+automatically after all.
 
-here is the revelant part of output of lspci -vv:
-0000:00:0d.0 Multimedia audio controller: Creative Labs SB Audigy LS
-        Subsystem: Creative Labs: Unknown device 100a
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 10
-        Region 0: I/O ports at e800 [size=32]
-        Capabilities: [dc] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+Try this patch.
 
+Lee
 
-I have see in the ca0106 driver source that the "Audigy LS" is the last
-entry (the default) of the supported card list.
+ICE1712: Use dmix/dsnoop by default
 
-So i wonder if it should be easy to get support for this board.
+Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-
-======================================================================
-
-----------------------------------------------------------------------
- phormion - 12-17-05 15:22 
-----------------------------------------------------------------------
-OK, here's a hopefully accurate description of the situation on my machine:
-
-
-so far I've tried it four times under Linux - twice it worked, twice it
-didn't. Might be related to whether I first booted into Windows and then
-rebooted into Linux, might be related to the phase of the moon, whatever.
-
-
-On Linux, some of the stuff using arts (amarok, kaffeine) works, some work
-but with quirks - vlc, mplayer. When I tried vlc with oss emulation
-(/dev/dsp) it doesn't work at all, ditto for mplayer. 
-
-Didn't try jcdutton's fix yet, I prefer to wait until he can test it on
-the SE Creative sent him.
-
-----------------------------------------------------------------------
- jcdutton - 12-17-05 18:48 
-----------------------------------------------------------------------
-Can you please test.
-Power off -> Linux -> Pass/fail
-Power off -> Windows -> Reboot without poweroff -> Linux -> Pass/fail.
-
-This will save me time when fixing the problem.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-10-05 17:53 chgans         New Issue                                    
-12-10-05 17:53 chgans         Distribution              => GNU/Linux DeMuDi
-1.2.1
-12-10-05 17:53 chgans         Kernel Version            => 2.6.12-3-mm-k7  
-12-11-05 21:02 chgans         Issue Monitored: chgans                      
-12-12-05 11:05 chgans         Note Added: 0006983                          
-12-12-05 20:05 chgans         Note Edited: 0006983                         
-12-12-05 20:06 chgans         File Added: sb_audigy_se-proc.dump                
-   
-12-12-05 20:34 davee          Issue Monitored: davee                       
-12-12-05 21:07 davee          Note Added: 0006986                          
-12-13-05 11:56 jcdutton       File Added: sb-audigy-se.fix.diff                 
-  
-12-13-05 11:58 jcdutton       Note Added: 0006989                          
-12-13-05 11:59 jcdutton       Status                   assigned => feedback
-12-15-05 19:27 phormion       Note Added: 0007052                          
-12-15-05 20:14 davee          Note Added: 0007053                          
-12-15-05 21:26 phormion       Note Added: 0007054                          
-12-15-05 22:58 jcdutton       Note Added: 0007055                          
-12-16-05 08:40 phormion       Note Added: 0007056                          
-12-16-05 10:31 davee          Note Added: 0007058                          
-12-16-05 11:26 thorsti        Issue Monitored: thorsti                     
-12-16-05 15:14 chgans         Note Added: 0007059                          
-12-16-05 18:06 phormion       Note Added: 0007061                          
-12-17-05 14:36 Hessophanes    Issue Monitored: Hessophanes                    
-12-17-05 15:22 phormion       Note Added: 0007063                          
-12-17-05 18:48 jcdutton       Note Added: 0007066                          
-======================================================================
+Index: alsa-lib/src/conf/cards/ICE1712.conf
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/ICE1712.conf,v
+retrieving revision 1.8
+diff -u -r1.8 ICE1712.conf
+--- alsa-lib/src/conf/cards/ICE1712.conf	27 Jan 2004 09:47:13 -0000	1.8
++++ alsa-lib/src/conf/cards/ICE1712.conf	17 Dec 2005 19:13:03 -0000
+@@ -2,6 +2,29 @@
+ # Configuration for the ICE1712 (Envy24) chip
+ #
+ 
++# default with dmix & dsnoop
++ICE1712.pcm.default {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type asym
++	playback.pcm {
++		type plug
++		slave.pcm {
++			@func concat
++			strings [ "dmix:" $CARD ",FORMAT=S32_LE" ]
++		}
++	}
++	capture.pcm {
++		type plug
++		slave.pcm {
++			@func concat
++			strings [ "dsnoop:" $CARD ",FORMAT=S32_LE" ]
++		}
++	}
++}
++
+ <confdir:pcm/front.conf>
+ 
+ ICE1712.pcm.front.0 {
 
 
 
