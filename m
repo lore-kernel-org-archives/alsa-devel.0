@@ -1,8 +1,15 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 18 Dec 2005 17:43:03 -0000
-Message-ID: <E1Eo2Yx-0003Aw-3n@mail.sourceforge.net>
+From: "Oddmund Dutra" <dutr@loopback.net>
+Subject: Re: voyage futurology
+Date: Sun, 18 Dec 2005 13:40:40 -0500
+Message-ID: <000001c60402$8bc38490$6dbfa8c0@prowlcar>
+Reply-To: "Oddmund Dutra" <dutr@loopback.net>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C603D8.A2EFC680"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from loopback.net (125-233-27-220.dynamic.hinet.net [125.233.27.220])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7951A1AA
+	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2005 19:40:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +19,187 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alexa Schleich <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
-
-<admin@yahoo.com>:
-This address no longer accepts mail.
-
---- Original message follows.
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.240>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta136.mail.re2.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO atmalry.net) (64.251.132.84)
-  by mta136.mail.re2.yahoo.com with SMTP; Sun, 18 Dec 2005 09:43:02 -0800
-From: alsa-devel@lists.sourceforge.net
-Date: Sun, 18 Dec 2005 17:31:35 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-X-MSMail-Priority: Normal
-Message-ID: <ed3fbd611260943d48c@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="==b5766bc.31d5ebbe8"
-Content-Transfer-Encoding: 7bit
 This is a multi-part message in MIME format.
 
---==b5766bc.31d5ebbe8
+------=_NextPart_000_0001_01C603D8.A2EFC680
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+=20
+http://www.cadefin.com
+=20
+V
+X
+S
+C
+P
+L
+M
+A
+V
+i
+a
+o
+i
+r
+e
+e
+m
+A
+A
+n
+m
+A
+o
+v
+r
+b
+L
+G
+a
+a
+L
+p
+i
+i
+i
+i
+R
+x
+=20
+i
+e
+t
+d
+e
+U
+A
+=20
+=20
+S
+c
+r
+i
+n
+M
+=20
+=20
+=20
+=20
+i
+a
+a
+=20
+=20
+=20
+=20
+=20
+=20
+a
+=20
+=20
+=20
+=20
+ $6
+ $1
+ $7
+ $9
+ $6
+ $9
+ $9
+ $6
+ $8
+9.95
+23.45
+5.95
+9.95
+4.95
+9.95
+9.95
+8.00
+5.45
+=20
+=20
+=20
+General Norman Swayne, chief of Pentagon procurements, stepped back from
+the tee satisfied with his long straight drive down the fairway. The
+ball would roll to an optimum position for a decent five-iron approach
+shot to the seventeenth green. That ought to do it, he said, turning to
+address his golfing partner. Certainly ought to, Norm, replied the
+youngish senior vice president of Calco Technologies. Youre taking my
+butt for a ride this afternoon. Im going to end up owing you close to
+three hundred clams. At twenty a hole, Ive only gotten four so far. Its
+your hook, young fella. You ought to work on it. Thats certainly the
+truth, Norm, agreed the Calco executive in charge of marketing as he
+approached the tee. Suddenly, there was the high grating sound of a golf
+carts horn as a three-wheeled vehicle
 
-plz read and check ...
-cyaaaaaaa
---==b5766bc.31d5ebbe8
-Content-Type: application/octet-stream; name=m
-*** MESSAGE TRUNCATED ***
+------=_NextPart_000_0001_01C603D8.A2EFC680
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV><A href=3D"http://www.cadefin.com">http://www.cadefin.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>V<BR>X<BR>S<BR>C<BR>P<BR>L<BR>M<BR>A<BR>V</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>i<BR>a<BR>o<BR>i<BR>r<BR>e<BR>e<BR>m<BR>A</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>A<BR>n<BR>m<BR>A<BR>o<BR>v<BR>r<BR>b<BR>L</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>G<BR>a<BR>a<BR>L<BR>p<BR>i<BR>i<BR>i<BR>i</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>R<BR>x<BR>&nbsp;<BR>i<BR>e<BR>t<BR>d<BR>e<BR>U</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>A<BR>&nbsp;<BR>&nbsp;<BR>S<BR>c<BR>r<BR>i<BR>n<BR>M</FONT></=
+DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>i<BR>a<BR>a<BR>&nbsp=
+;<BR>&nbsp;</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>a<BR>&nbsp;<BR>&nbsp=
+;<BR>&nbsp;<BR>&nbsp;</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>&nbsp;$6<BR>&nbsp;$1<BR>&nbsp;$7<BR>&nbsp;$9<BR>&nbsp;$6<BR>=
+&nbsp;$9<BR>&nbsp;$9<BR>&nbsp;$6<BR>&nbsp;$8</FONT></DIV>
+<DIV style=3D"FLOAT: left"><FONT =
+face=3DArial>9.95<BR>23.45<BR>5.95<BR>9.95<BR>4.95<BR>9.95<BR>9.95<BR>8.0=
+0<BR>5.45</FONT></DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>   General Norman Swayne, chief of Pentagon procurements, stepped =
+back
+from the tee satisfied with his long straight drive down the fairway.
+The ball would roll to an optimum position for a decent five-iron
+approach shot to the seventeenth green. That ought to do it, he said,
+turning to address his golfing partner.
+   Certainly ought to, Norm, replied the youngish senior vice
+president of Calco Technologies. Youre taking my butt for a ride this
+afternoon. Im going to end up owing you close to three hundred clams.
+At twenty a hole, Ive only gotten four so far.
+   Its your hook, young fella. You ought to work on it.
+   Thats certainly the truth, Norm, agreed the Calco executive in
+charge of marketing as he approached the tee. Suddenly, there was the
+high grating sound of a golf carts horn as a three-wheeled =
+vehicle</DIV></BODY></HTML>
+------=_NextPart_000_0001_01C603D8.A2EFC680--
+
+
 
 
 
