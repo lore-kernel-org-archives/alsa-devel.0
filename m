@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001636]: Adding support for SB Audigy SE
-Date: Sat, 17 Dec 2005 23:58:49 +0100
-Message-ID: <79bc4c321ae7f05e7ce5f68e8978cdb0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001655]: Headphone jack sense and Line jack sense come up on -- need to be off for laptop speaker sound
+Date: Sun, 18 Dec 2005 04:48:24 +0100
+Message-ID: <7d8cc9d0c3c0d64f3937b98ed306c228@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E918619F
-	for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2005 23:58:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09947184
+	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2005 04:48:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,111 +24,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1636> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1655> 
 ======================================================================
-Reported By:                chgans
-Assigned To:                jcdutton
+Reported By:                mdmarmer
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1636
-Category:                   PCI - ca0106
+Issue ID:                   1655
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               GNU/Linux DeMuDi 1.2.1
-Kernel Version:             2.6.12-3-mm-k7
+Status:                     new
+Distribution:               Mepis, Ubuntu, Fedora FC3 (probably all)
+Kernel Version:             2.6.10, 2.6.11.14, 2.6.12 (probably all)
 ======================================================================
-Date Submitted:             12-10-2005 17:53 CET
-Last Modified:              12-17-2005 23:58 CET
+Date Submitted:             12-17-2005 03:37 CET
+Last Modified:              12-18-2005 04:48 CET
 ======================================================================
-Summary:                    Adding support for SB Audigy SE
+Summary:                    Headphone jack sense and Line jack sense come up on
+-- need to be off for laptop speaker sound
 Description: 
-The Audigy SE is a card with the ca0106 chipset.
-It is reconized as "Creative Labs SB Audigy LS", the driver doesn't load,
-here is the kernel message:
-PCI: Found IRQ 10 for device 0000:00:0d.0
-Model 100a Rev 00000000 Serial 100a1102
-AC'97 0 does not respond - RESET
-AC'97 0 access is not valid [0x0], removing mixer.
-CA0106: probe of 0000:00:0d.0 failed with error -5
-
-here is the revelant part of output of lspci -vv:
-0000:00:0d.0 Multimedia audio controller: Creative Labs SB Audigy LS
-        Subsystem: Creative Labs: Unknown device 100a
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 10
-        Region 0: I/O ports at e800 [size=32]
-        Capabilities: [dc] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+This problem is encountered very frequently when installing any version of
+Linux on a laptop with AC'97 Intel8x0 sound.  On installation, headphone
+sound will work, but the internal speakers will not.  The solution to this
+problem is not apparent to the user.  Sometimes users find the answer to
+this problem by posting their problem in a forum or by a diligent search. 
 
 
-I have see in the ca0106 driver source that the "Audigy LS" is the last
-entry (the default) of the supported card list.
+Current solution:
 
-So i wonder if it should be easy to get support for this board.
+The user opens KMix or a similar interface and finds switches marked
+Headphone Jack Sense and Line Jack Sense.  These switches are on, though
+the jack(s) are not plugged in.  When the user turns them off and saves
+the configuration, sound works fine.
+
+This affects Toshiba M45-S331, Toshiba Tecra M3, E-Machines M5310, Gateway
+M675PRR, IBM Thinkpad T40, T41, T42, R51, Compaq Presario X1000, Dell
+Dimension 2400, 2350, Sony Vaio FR130 and quite a few other laptop models.
+ The problem occurs regardless of the Linux diustro -- I have seen it with
+Ubuntu, Mepis, and Fedora FC3.
+
+Here are bug reports : 
+http://lists.debian.org/debian-kernel/2005/04/msg00655.html
+
+Bug#303311: 2.6.11 Kernel, intel8x0 card and Headphone Jack Sense
+(http://bugs.debian.org
+
+http://www.ces.clemson.edu/linux/alsa.shtml
+
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144742
+===>>>>
+This is the only report on alsa bugtrack, claims fixed as of 4 Feb 05 -- I
+continue to see this problem regardless of alsa version
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=852
+
+Reports (not specifically bug reports):
+
+http://dancorkill.home.comcast.net/tecra-m3-on-fc4.html
+
+http://ccrma-mail.stanford.edu/pipermail/planetccrma/2005-May/009305.html
+
+http://www.mepis.org/node/6557
+
+http://lists.debian.org/debian-laptop/2005/10/msg00203.html
+
+http://www.mepislovers.org/modules/newbb/viewtopic.php?topic_id=11362&forum=28&post_id=79808#forumpost79808
+
+
+
+
+
+
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 12-17-05 18:48 
+ mdmarmer - 12-18-05 04:48 
 ----------------------------------------------------------------------
-Can you please test.
-Power off -> Linux -> Pass/fail
-Power off -> Windows -> Reboot without poweroff -> Linux -> Pass/fail.
+I think this has been corrected in 1.0.10 and possibly in some earlier
+versions -- I apologize for posting without thorough testing.
 
-This will save me time when fixing the problem.
-
-----------------------------------------------------------------------
- phormion - 12-17-05 23:58 
-----------------------------------------------------------------------
-I just did the test: 
-
-Power off -> Linux -> Fail
-Power off -> Windows -> Reboot without poweroff -> Linux -> Pass.
-
-So yes, it seems my first observation was correct, after rebooting from
-Windows, sound works. Well, at least kind of, as I said, OSS emulation
-seems to be non-functional as far as I can see. Any better way to test
-that?
+Thanks!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-05 17:53 chgans         New Issue                                    
-12-10-05 17:53 chgans         Distribution              => GNU/Linux DeMuDi
-1.2.1
-12-10-05 17:53 chgans         Kernel Version            => 2.6.12-3-mm-k7  
-12-11-05 21:02 chgans         Issue Monitored: chgans                      
-12-12-05 11:05 chgans         Note Added: 0006983                          
-12-12-05 20:05 chgans         Note Edited: 0006983                         
-12-12-05 20:06 chgans         File Added: sb_audigy_se-proc.dump                
-   
-12-12-05 20:34 davee          Issue Monitored: davee                       
-12-12-05 21:07 davee          Note Added: 0006986                          
-12-13-05 11:56 jcdutton       File Added: sb-audigy-se.fix.diff                 
-  
-12-13-05 11:58 jcdutton       Note Added: 0006989                          
-12-13-05 11:59 jcdutton       Status                   assigned => feedback
-12-15-05 19:27 phormion       Note Added: 0007052                          
-12-15-05 20:14 davee          Note Added: 0007053                          
-12-15-05 21:26 phormion       Note Added: 0007054                          
-12-15-05 22:58 jcdutton       Note Added: 0007055                          
-12-16-05 08:40 phormion       Note Added: 0007056                          
-12-16-05 10:31 davee          Note Added: 0007058                          
-12-16-05 11:26 thorsti        Issue Monitored: thorsti                     
-12-16-05 15:14 chgans         Note Added: 0007059                          
-12-16-05 18:06 phormion       Note Added: 0007061                          
-12-17-05 14:36 Hessophanes    Issue Monitored: Hessophanes                    
-12-17-05 15:22 phormion       Note Added: 0007063                          
-12-17-05 18:48 jcdutton       Note Added: 0007066                          
-12-17-05 23:58 phormion       Note Added: 0007069                          
+12-17-05 03:37 mdmarmer       New Issue                                    
+12-17-05 03:37 mdmarmer       Distribution              => Mepis, Ubuntu, Fedora
+FC3 (probably all)
+12-17-05 03:37 mdmarmer       Kernel Version            => 2.6.10, 2.6.11.14,
+2.6.12 (probably all)
+12-17-05 03:40 mdmarmer       Issue Monitored: mdmarmer                    
+12-18-05 04:48 mdmarmer       Note Added: 0007070                          
 ======================================================================
 
 
