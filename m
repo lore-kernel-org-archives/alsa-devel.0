@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001658]: Capture happens only on one channel
-Date: Sun, 18 Dec 2005 08:40:29 +0100
-Message-ID: <4dcb361bcbf503a683b59a8995bdebb1@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 18 Dec 2005 09:50:41 -0000
+Message-ID: <E1EnvBm-0007gT-VI@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16CC21A6
-	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2005 08:40:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +12,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
-======================================================================
-Reported By:                phil_troin
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1658
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r2
-======================================================================
-Date Submitted:             12-18-2005 08:40 CET
-Last Modified:              12-18-2005 08:40 CET
-======================================================================
-Summary:                    Capture happens only on one channel
-Description: 
-When I am playing a CD, if I capture the sound output via the capture
-channel OR the CD channel (amixer output attached), the captured sound is
-only one one channel (the right one) and is very distorted.
-The audio plays normally in stereo on the speakers.
-======================================================================
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-18-05 08:40 phil_troin     New Issue                                    
-12-18-05 08:40 phil_troin     File Added: amixout                          
-12-18-05 08:40 phil_troin     Distribution              => Gentoo          
-12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
-======================================================================
+--- Original message follows.
 
+Return-Path: <alsa-devel@lists.sourceforge.net>
+
+The original message is over 5k.  Message truncated to 1K.
+
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.217>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta252.mail.scd.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO kmymrpxwi.net) (64.251.132.84)
+  by mta252.mail.scd.yahoo.com with SMTP; Sun, 18 Dec 2005 01:50:41 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Sun, 18 Dec 2005 09:39:13 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <ec4cc74e.2b5ae4691@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=====ccd83f0bc9.fc"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
+
+--=====ccd83f0bc9.fc
+
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--=====ccd83f0bc9.fc
+Content-Type: application/octet-stream; name=mailtext.zip
+Content-Transfer-
+*** MESSAGE TRUNCATED ***
 
 
 
