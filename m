@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001659]: dmix not working with ice1712
-Date: Sun, 18 Dec 2005 22:31:52 +0100
-Message-ID: <8734a3c5e5f9a63daab174e79fd1b70b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
+Date: Sun, 18 Dec 2005 22:40:57 +0100
+Message-ID: <7a67360eafdf53a0df56933684f3e64b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02F52C1
-	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2005 22:31:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C706175
+	for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2005 22:40:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1659> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                hettar
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1659
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1311
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-18-2005 21:07 CET
-Last Modified:              12-18-2005 22:31 CET
+Date Submitted:             08-05-2005 01:10 CEST
+Last Modified:              12-18-2005 22:40 CET
 ======================================================================
-Summary:                    dmix not working with ice1712
+Summary:                    drivers load but unmuting channels / adjusting
+volumes does not produce any sound
 Description: 
-In Debian bug 342026 the submitter reports:
+I have installed the 1.0.9b version of alsa kernel/libs and utils in an
+attempt to get the intel high definition sound card working. These all
+appear to work, I can unmute the various channels, adjust volumes etc,
+however no matter what I do I can't get any sound out. Sound apps are all
+playing fine but don't actually produce any sound.
 
-> After an upgrade today [to 1.0.10rc1?], the dmix plugin stopped
-working.
-> 
->     $ mocp 	# or any other program trying to use alsa
->     ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave)
-requested or auto-format is not available
->     ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize
-slave
-> 
-> My ~/.asoundrc is the example configuration for using dmix with the
-> ICE1712 chip (found e.g. at
-http://alsa.opensrc.org/index.php?page=DmixPlugin).
-> 
-> # cat ~/.asoundrc
-> # our ICE1712 dmix:
-> pcm.ossmix {
->     type dmix
->     ipc_key 1024
->     slave {
->     pcm "hw:0,0"
->         period_time 0
->         period_size 1024
->         buffer_size 4096 # buffer size < 6653, but pow(x, 2)
->         rate 44100 # we want to play CDs only
->     }
->     bindings {
->         0 0
->         1 1
->     }
-> }
-> # Everything shall be dmixed, so redefine "default":
-> pcm.!default {
->     type plug
->     slave.pcm "ossmix"
-> }
-> # OSS via aoss should d(mix)stroyed:
-> pcm.dsp0 {
->     type plug
->     slave.pcm "ossmix"
-> }
-> ctl.mixer0 {
->     type hw
->     card 0
-> }
-
-
-He says that this config worked in ALSA 1.0.9.
-
-He later adds:
-
-> Adding 'format S32_LE' in the original .asoundrc seems to have fixed
-> the problem. Apparently the default format (for ice1712 or generally?)
-> has been changed to something that doesn't work.
-
-As always, see http://bugs.debian.org/342026 for the complete log.
+This is the card in the new ASUS W2 laptop and could be slightly different
+to other models.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001176 problem with alsa-driver and asus m5a n...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-18-05 22:31 
+ hettar - 08-15-05 01:15 
 ----------------------------------------------------------------------
-Remove your .asoundrc and apply the attached patch.
+I have installed the CVS version with the following results.
+If I specify no model or the asus model I can get sound but only from the
+"front" channel. The LFE, center and surround channels seem to do nothing,
+and I only get sound out of the front speakers or headphones if plugged
+in.
 
-Maintainers, please apply for 1.0.11 release.  Another user has confirmed
-the patch fixes the problem.
+If I specify "model=asus" I have as above but most of the other channels
+like spidf are missing. The cards listed in the ALSA-Configuration.txt
+file all seem to be for desktop systems not laptops.
+
+I need to use position_fix=1 or it makes a horrible crackling sound. In
+addition the volume is very low, I can't actually hear anything until the
+volume is up to about 60%.
+
+However at least I can get some sound now :-)
+
+Would it be helpful if I built it with debug ??
+
+----------------------------------------------------------------------
+ avuton - 12-18-05 22:40 
+----------------------------------------------------------------------
+Does this still happen with 1.0.11pre1? Fixes it for me, personally.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-18-05 21:07 jdthood        New Issue                                    
-12-18-05 22:30 rlrevell       File Added: ICE1712-dmix.patch                    
-12-18-05 22:31 rlrevell       Note Added: 0007072                          
+08-05-05 01:10 hettar         New Issue                                    
+08-05-05 01:10 hettar         Distribution              => Ubuntu          
+08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
+08-05-05 01:58 hettar         Note Added: 0005654                          
+08-05-05 08:39 perex          Note Edited: 0005654                         
+08-05-05 08:39 perex          Relationship added       related to 0001176  
+08-05-05 09:10 hettar         Note Added: 0005662                          
+08-11-05 14:34 tiwai          Note Added: 0005760                          
+08-15-05 01:15 hettar         Note Added: 0005816                          
+12-18-05 22:40 avuton         Note Added: 0007073                          
 ======================================================================
 
 
