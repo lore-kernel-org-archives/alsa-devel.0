@@ -1,10 +1,7 @@
-From: Alexandr <spiro@demiart.ru>
-Subject: 1.0.11rc1: still problem with alsamixer ?
-Date: Sun, 18 Dec 2005 16:30:38 +0200
-Message-ID: <43A5728E.8030103@demiart.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 18 Dec 2005 17:43:03 -0000
+Message-ID: <E1Eo2Yx-0003Aw-3n@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,20 +15,50 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-So. I update my alsa-drivers, -lib , -utils to 1.0.11rc1 - right now my
-Live 5.1 detect correctly, but problem with alsamixer is stay:
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-kernel 2.6.14 , when i execute "alsamixer" get a next message:
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback 
-Volume',0,0,0) appears twice or more
+--- Original message follows.
 
-alsamixer: function snd_mixer_load failed: Invalid argument
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-and alsamixer don't run, same with amixer.
+The original message is over 5k.  Message truncated to 1K.
 
-And silence from my rear speakers after update, early i has a copy of
-front speakers on it.
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.240>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta136.mail.re2.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO atmalry.net) (64.251.132.84)
+  by mta136.mail.re2.yahoo.com with SMTP; Sun, 18 Dec 2005 09:43:02 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Sun, 18 Dec 2005 17:31:35 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+X-MSMail-Priority: Normal
+Message-ID: <ed3fbd611260943d48c@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="==b5766bc.31d5ebbe8"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
+
+--==b5766bc.31d5ebbe8
+
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--==b5766bc.31d5ebbe8
+Content-Type: application/octet-stream; name=m
+*** MESSAGE TRUNCATED ***
+
 
 
 -------------------------------------------------------
