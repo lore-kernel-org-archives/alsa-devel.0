@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
-Date: Mon, 19 Dec 2005 00:10:10 +0100
-Message-ID: <730c8fb265e6218f4e06965c8da88739@bugtrack.alsa-project.org>
+Date: Mon, 19 Dec 2005 00:53:44 +0100
+Message-ID: <d1da9c1661e7f87d15cf49285d5f424f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF82A181
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 00:10:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A021F14B
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 00:53:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Ubuntu
 Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             08-05-2005 01:10 CEST
-Last Modified:              12-19-2005 00:10 CET
+Last Modified:              12-19-2005 00:53 CET
 ======================================================================
 Summary:                    drivers load but unmuting channels / adjusting
 volumes does not produce any sound
@@ -60,14 +62,14 @@ related to          0001176 problem with alsa-driver and asus m5a n...
 ======================================================================
 
 ----------------------------------------------------------------------
- avuton - 12-18-05 22:40 
-----------------------------------------------------------------------
-Does this still happen with 1.0.11pre1? Fixes it for me, personally.
-
-----------------------------------------------------------------------
  hettar - 12-19-05 00:10 
 ----------------------------------------------------------------------
 No It works for me now too thanks.
+
+----------------------------------------------------------------------
+ rlrevell - 12-19-05 00:53 
+----------------------------------------------------------------------
+Fixed in 1.0.11rc1
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -84,6 +86,9 @@ Date Modified  Username       Field                    Change
 12-18-05 22:40 avuton         Note Added: 0007073                          
 12-18-05 22:41 avuton         Issue Monitored: avuton                      
 12-19-05 00:10 hettar         Note Added: 0007075                          
+12-19-05 00:53 rlrevell       Status                   assigned => resolved
+12-19-05 00:53 rlrevell       Resolution               open => fixed       
+12-19-05 00:53 rlrevell       Note Added: 0007076                          
 ======================================================================
 
 
