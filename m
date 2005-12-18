@@ -1,60 +1,96 @@
-From: John Rigg <j@sound-man.co.uk>
-Subject: Re: Real-world reports on two Delta 1010LTs/ice1712 synched?
-Date: Sun, 18 Dec 2005 22:25:43 +0000
-Message-ID: <20051218222543.GA4450@localhost.localdomain>
-References: <43A5C630.7000704@findus.dhs.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001311]: drivers load but unmuting channels / adjusting volumes does not produce any sound
+Date: Mon, 19 Dec 2005 00:10:10 +0100
+Message-ID: <730c8fb265e6218f4e06965c8da88739@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <43A5C630.7000704@findus.dhs.org>
-Sender: jackit-devel-admin@lists.sourceforge.net
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Petter =?iso-8859-1?Q?Sundl=F6f?= <petter.sundlof@findus.dhs.org>
-Cc: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF82A181
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 00:10:10 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 18, 2005 at 09:27:28PM +0100, Petter Sundl=F6f wrote:
-> Hello.
->=20
-> I have the chance to buy a second M-Audio Delta 1010LT (ice1712 chip)=20
-> for approximately US$ 60. I've browsed through the mailing lists, and I=
-=20
-> couldn't find any definite practical/real-world results saying that=20
-> synching two cards (via a BNC cable through the world clock connectors?=
-)=20
-> worked without problems.
 
-There are a few things to be aware of. After it took me 2 months to get
-two Delta 1010s working I put up a web page about it at
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1311> 
+======================================================================
+Reported By:                hettar
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1311
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             08-05-2005 01:10 CEST
+Last Modified:              12-19-2005 00:10 CET
+======================================================================
+Summary:                    drivers load but unmuting channels / adjusting
+volumes does not produce any sound
+Description: 
+I have installed the 1.0.9b version of alsa kernel/libs and utils in an
+attempt to get the intel high definition sound card working. These all
+appear to work, I can unmute the various channels, adjust volumes etc,
+however no matter what I do I can't get any sound out. Sound apps are all
+playing fine but don't actually produce any sound.
 
-http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
+This is the card in the new ASUS W2 laptop and could be slightly different
+to other models.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001176 problem with alsa-driver and asus m5a n...
+======================================================================
 
-The info there might save you some trouble.
-I'm using a (short) BNC cable made with a piece of TV co-ax to sync the
-two boxes. It works. (OK the 1010 has the BNCs on the breakout box
-instead of a flying lead like the 1010LT, but I don't expect that to
-make a difference).
-BTW the manual I got with my Delta 1010s says the word clock input will o=
-nly
-take up to 50kHz. I've been told by M-Audio tech support that this is a t=
-ypo
-and it will take the full 96kHz.
+----------------------------------------------------------------------
+ avuton - 12-18-05 22:40 
+----------------------------------------------------------------------
+Does this still happen with 1.0.11pre1? Fixes it for me, personally.
 
-John
+----------------------------------------------------------------------
+ hettar - 12-19-05 00:10 
+----------------------------------------------------------------------
+No It works for me now too thanks.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-05-05 01:10 hettar         New Issue                                    
+08-05-05 01:10 hettar         Distribution              => Ubuntu          
+08-05-05 01:10 hettar         Kernel Version            => 2.6.10          
+08-05-05 01:58 hettar         Note Added: 0005654                          
+08-05-05 08:39 perex          Note Edited: 0005654                         
+08-05-05 08:39 perex          Relationship added       related to 0001176  
+08-05-05 09:10 hettar         Note Added: 0005662                          
+08-11-05 14:34 tiwai          Note Added: 0005760                          
+08-15-05 01:15 hettar         Note Added: 0005816                          
+12-18-05 22:40 avuton         Note Added: 0007073                          
+12-18-05 22:41 avuton         Issue Monitored: avuton                      
+12-19-05 00:10 hettar         Note Added: 0007075                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
-les
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=3D7637&alloc_id=3D16865&op=3Dclick
+http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
