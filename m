@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
-Date: Mon, 19 Dec 2005 16:39:39 +0100
-Message-ID: <fbdce167edae92811eb25cd3c01dce31@bugtrack.alsa-project.org>
+Date: Mon, 19 Dec 2005 16:50:29 +0100
+Message-ID: <4459baed6e617f91be81e295de955334@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FC29181
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 16:39:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EF8C181
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 16:50:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             12-17-2005 18:44 CET
-Last Modified:              12-19-2005 16:39 CET
+Last Modified:              12-19-2005 16:50 CET
 ======================================================================
 Summary:                    no iec958 controls for hda-intel
 Description: 
@@ -49,14 +49,15 @@ Sound plays fine from rear headphone jack.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-05 08:05 
-----------------------------------------------------------------------
-Any improvement with 1.0.11-rc1?
-
-----------------------------------------------------------------------
  lilbudda - 12-19-05 16:39 
 ----------------------------------------------------------------------
 This occurs with the CVS version as well.
+
+----------------------------------------------------------------------
+ rlrevell - 12-19-05 16:50 
+----------------------------------------------------------------------
+OK, try some of the other "model" options listed in the "Module
+snd-hda-intel" section of Documentation/ALSA-Configuration.txt.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -64,6 +65,7 @@ Date Modified  Username       Field                    Change
 12-17-05 18:44 lilbudda       New Issue                                    
 12-19-05 08:05 rlrevell       Note Added: 0007091                          
 12-19-05 16:39 lilbudda       Note Added: 0007095                          
+12-19-05 16:50 rlrevell       Note Added: 0007096                          
 ======================================================================
 
 
