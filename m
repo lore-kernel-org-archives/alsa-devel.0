@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001456]: some Realtek ALC861 hda-intel problems
-Date: Mon, 19 Dec 2005 02:29:58 +0100
-Message-ID: <2917588d181db10a3d4eba84e4325d32@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001415]: No sound after adjustment of volume
+Date: Mon, 19 Dec 2005 02:31:28 +0100
+Message-ID: <7e64d959c1d1e6ee847a106b49bdc08c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C58F316B
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:29:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0DDC178
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:31:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1456> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1415> 
 ======================================================================
-Reported By:                kaloian
+Reported By:                war0060
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1456
+Issue ID:                   1415
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.13
+Distribution:               Gentoo
+Kernel Version:             2.6.12-r10
 ======================================================================
-Date Submitted:             09-25-2005 12:35 CEST
-Last Modified:              12-19-2005 02:29 CET
+Date Submitted:             09-12-2005 11:49 CEST
+Last Modified:              12-19-2005 02:31 CET
 ======================================================================
-Summary:                    some Realtek ALC861 hda-intel problems
+Summary:                    No sound after adjustment of volume
 Description: 
-First I'm not sure that chip 861 is suported?...Alsa rekognize it like
-880....and therfore there are some unusable sliders at mixer control -
-like 3 input controls instead one...and Master volume is missing. Also
-have problem with straching sound reported already here but it's not big
-problem while work fine with OSS. Other big problem for me is that when
-start Linux from system halt alsa dont work at all - alsamixer shows only
-1 or two controls - front or pcm but they dont realy work...even I try
-remove and load module hda-intel but..... To resolve this I need to start
-first windows(XP) and then reboot(not halt) system - now alsa work. I'm
-not sure where to look for problem - alsa or bios. 
-
-Motherboard is ASUS  P5RD1-V Deluxe with ATI  XPRESS NBridge and Uli 1573
-SBridge with integrated sound - Realtek ALC861. Bios is newest version -
-0802. Kernel 2.6.13, alsa-driver 1.0.9b.
-
-
+I'm using the snd-hda-intel driver, everything seems ok, but when I
+adjusted the volume, there will be no sound anymore. After reboot, it
+works again, the main problem is the volume cannot be adjusted.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-05 02:29 
+ war0060 - 09-20-05 05:19 
 ----------------------------------------------------------------------
-Please try the 1.0.11-rc1 release, we got a patch from Realtek that should
-fix many of these problems.
+I've tried 1.010rc1, still have the problem
+
+----------------------------------------------------------------------
+ rlrevell - 12-19-05 02:31 
+----------------------------------------------------------------------
+Try 1.0.11-rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-05 12:35 kaloian        New Issue                                    
-09-25-05 12:35 kaloian        Kernel Version            => 2.6.13          
-12-19-05 02:29 rlrevell       Note Added: 0007084                          
+09-12-05 11:49 war0060        New Issue                                    
+09-12-05 11:49 war0060        Distribution              => Gentoo          
+09-12-05 11:49 war0060        Kernel Version            => 2.6.12-r10      
+09-12-05 16:24 tiwai          Note Added: 0006145                          
+09-15-05 04:30 war0060        Note Added: 0006191                          
+09-15-05 16:01 tiwai          Note Added: 0006210                          
+09-20-05 05:19 war0060        Note Added: 0006310                          
+12-13-05 21:18 dzi            Issue Monitored: dzi                         
+12-19-05 02:31 rlrevell       Note Added: 0007085                          
 ======================================================================
 
 
