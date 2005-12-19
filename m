@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
-Date: Mon, 19 Dec 2005 16:50:29 +0100
-Message-ID: <4459baed6e617f91be81e295de955334@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001660]: snd_es18xx doesn't output sound for 16-bit sources
+Date: Mon, 19 Dec 2005 17:37:13 +0100
+Message-ID: <0608dd27709f8f6ebddbe8ac60b5ebc9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EF8C181
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 16:50:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8A5818F
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 17:37:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1660> 
 ======================================================================
-Reported By:                lilbudda
+Reported By:                marcelpaulo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1657
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1660
+Category:                   ISA - es18xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.14-2-686
 ======================================================================
-Date Submitted:             12-17-2005 18:44 CET
-Last Modified:              12-19-2005 16:50 CET
+Date Submitted:             12-19-2005 17:37 CET
+Last Modified:              12-19-2005 17:37 CET
 ======================================================================
-Summary:                    no iec958 controls for hda-intel
+Summary:                    snd_es18xx doesn't output sound for 16-bit sources
 Description: 
-When trying to configure sound to pass through the spdif port, alsamixer
-does not show any controls for the iec958.
-
-Sound plays fine from rear headphone jack.
+I recently tried to switch from OSS to ALSA. alsaconf didn't configure the
+soundcard correctly, so I manually edited /etc/modprobe.d/sound with the
+parameters I got from the BIOS.
+gxine and xmms output no sound from streaming audio sources (16-bit), and
+aplay produced sound only for 8-bit wav files. The discussion in
+alsa-devel thread:
+http://thread.gmane.org/gmane.linux.alsa.devel/29442
+reached the conclusion of a bug in snd_es18xx.
+If any further information and tests are needed, please let me know.
 ======================================================================
-
-----------------------------------------------------------------------
- lilbudda - 12-19-05 16:39 
-----------------------------------------------------------------------
-This occurs with the CVS version as well.
-
-----------------------------------------------------------------------
- rlrevell - 12-19-05 16:50 
-----------------------------------------------------------------------
-OK, try some of the other "model" options listed in the "Module
-snd-hda-intel" section of Documentation/ALSA-Configuration.txt.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-17-05 18:44 lilbudda       New Issue                                    
-12-19-05 08:05 rlrevell       Note Added: 0007091                          
-12-19-05 16:39 lilbudda       Note Added: 0007095                          
-12-19-05 16:50 rlrevell       Note Added: 0007096                          
+12-19-05 17:37 marcelpaulo    New Issue                                    
+12-19-05 17:37 marcelpaulo    Distribution              => Debian sid      
+12-19-05 17:37 marcelpaulo    Kernel Version            => 2.6.14-2-686    
 ======================================================================
 
 
