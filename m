@@ -1,105 +1,68 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001626]: Kernel panic on use of hardware MIDI synth
-Date: Mon, 19 Dec 2005 12:28:03 +0100
-Message-ID: <e2668e9f5639e7800b456c952d4ac130@bugtrack.alsa-project.org>
+From: Doug McLain <doug@nostar.net>
+Subject: Re: Real-world reports on two Delta 1010LTs/ice1712
+ synched?
+Date: Mon, 19 Dec 2005 07:36:52 -0500
+Message-ID: <43A6A964.9030308@nostar.net>
+References: <43A5C630.7000704@findus.dhs.org> <20051218222543.GA4450@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC290170
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 12:28:03 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20051218222543.GA4450@localhost.localdomain>
+Sender: jackit-devel-admin@lists.sourceforge.net
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: John Rigg <j@sound-man.co.uk>
+Cc: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+John Rigg wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1626> 
-======================================================================
-Reported By:                Twey
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1626
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.14-1.1644_FC4
-======================================================================
-Date Submitted:             12-07-2005 20:56 CET
-Last Modified:              12-19-2005 12:28 CET
-======================================================================
-Summary:                    Kernel panic on use of hardware MIDI synth
-Description: 
-I've just upgraded to 1.0.10 from Fedora's 1.0.9, and now I have access to
-my soundcard's (SB Live! 24-bit) MIDI synth.  However, any attempt to use
-it causes a kernel panic, something about a spinlock.  My other MIDI port
-(connected to a musical keyboard via a USB adapter) works fine.  Both
-snd_mpu401 and snd_mpu401_uart load without problems.  I thought this
-error might be related to 1623, so applied the supplied patch, but to no
-avail.
-======================================================================
+> There are a few things to be aware of. After it took me 2 months to get
+> two Delta 1010s working I put up a web page about it at
+>
+> http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
+>
 
-----------------------------------------------------------------------
- jcdutton - 12-19-05 12:04 
-----------------------------------------------------------------------
-I can't make head nor tail of this one.
-_spin_lock_irqsave
-snd_ca0106_ptr_read
-ca0106_midi_read
-ca_midi_interrupt
-snd_ca0106_ptr_write
-snd_ca0106_interrupt
+John,
 
-isn't even a valid code path!
-ca_midi_interrupt is never called from inside snd_ca0106_ptr_write.
-The entry point to any ca0106 interrupt handling routine is via
-snd_ca0106_interrupt.
+Great page! This website was great news for me, and I immediately stuck
+a 2nd delta into my machine today and went to it.
 
-All I can think is that something has gone wrong with the compiling of the
-kernel.
+I upgraded to kernel 2.6.14, added the privided .asoundrc to my
+/etc/asound.conf, applied the MMAP_COMPLEX patch to jack 100.7, applied
+the pcm_multi-patch to alsa-lib 1.0.10 and applied the envy24 patch.
 
-----------------------------------------------------------------------
- Twey - 12-19-05 12:28 
-----------------------------------------------------------------------
-Hm... there's a new kernel released for FC4 now, I'll try that and report
-back.
+I am happy to say that seperate capture and playback of 16 tracks works
+wonderfully.  I'm using spdif-out of card 0 to spdif-in of card 1 for
+clocking at the moment, the recordings and playbacks sound perfect.  I
+tested by playing 8 tracks (4 out of each card, all i had was 1 8-way
+snake to test with atm) out of the delta's into a fostex G16 1/2" analog
+reel, then played back out of the reel, again into 4 tracks of each card
+and into ardour.  Everything seemed to be perfect, when running jack
+with -C or -P.  I use -R for both the captures tests (recording into
+ardour) and playback tests.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-07-05 20:56 Twey           New Issue                                    
-12-07-05 20:56 Twey           Distribution              => Fedora Core 4   
-12-07-05 20:56 Twey           Kernel Version            => 2.6.14-1.1644_FC4
-12-07-05 20:56 Twey           Issue Monitored: Twey                        
-12-07-05 21:18 rlrevell       Note Added: 0006948                          
-12-07-05 22:08 Twey           Note Added: 0006950                          
-12-07-05 22:25 rlrevell       Note Added: 0006951                          
-12-08-05 17:32 Twey           Note Added: 0006961                          
-12-08-05 17:32 Twey           Note Edited: 0006961                         
-12-17-05 16:51 Twey           Note Added: 0007064                          
-12-19-05 09:20 Clemens LadischNote Added: 0007092                          
-12-19-05 09:20 Clemens LadischAssigned To               => jcdutton        
-12-19-05 09:20 Clemens LadischStatus                   new => assigned     
-12-19-05 09:20 Clemens LadischCategory                 GENERIC - mpu401 => PCI -
-ca0106
-12-19-05 12:04 jcdutton       Note Added: 0007093                          
-12-19-05 12:28 Twey           Note Added: 0007094                          
-======================================================================
+When trying to run duplex via: jackd -d alsa -C multi_capture -P
+multi_playback (with or without -R), I get:
 
+jackd watchdog: timeout - killing jackd
+Aborted
+
+And jackd dies.  I did nm /usr/lib/libasound.so|grep
+snd_pcm_multi_link_fd to make sure that the patch applied correctly, and
+nothing was returned, so all looks good there.  Does anyone have any 
+advice for me?
+
+Doug
+--
+http://nostar.net/
 
 
 
