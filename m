@@ -1,18 +1,14 @@
-From: "Jayma Horsley" <horsljayma@iraq.net>
-Subject: Re: obligingly multipurpose
-Date: Sun, 18 Dec 2005 23:08:29 -0500
-Message-ID: <000001c60451$de593c50$7501a8c0@suicide>
-Reply-To: "Jayma Horsley" <horsljayma@iraq.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001060]: snd-azx rear speakers volume is too low
+Date: Mon, 19 Dec 2005 05:53:53 +0100
+Message-ID: <e383e8804f61e73f5a0f492d5c430470@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C60427.F5833450"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2CA26171
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 05:08:42 +0100 (MET)
-Received: from iraq.net (unknown [61.110.138.96])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 82E6C91F07
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 05:08:39 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 203C217E
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 05:53:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,184 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Asdrubal Southwick <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C60427.F5833450
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1060> 
+======================================================================
+Reported By:                maranik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1060
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu Linux
+Kernel Version:             2.6.11.7
+======================================================================
+Date Submitted:             04-17-2005 23:56 CEST
+Last Modified:              12-19-2005 05:53 CET
+======================================================================
+Summary:                    snd-azx rear speakers volume is too low
+Description: 
+I have a Azalia sound chip, sound works with snd-azx module, but i can only
+listen to front speakers. Rear speakers are like inesistent. 
+Sound is too low. 
+I set 6ch in alsamixer.
 
-=20
-http://www.signicant.com
-=20
-V
-C
-A
-X
-S
-V
-P
-M
-L
-i
-i
-m
-a
-o
-A
-r
-e
-e
-A
-A
-b
-n
-m
-L
-o
-r
-v
-G
-L
-i
-a
-a
-i
-p
-i
-i
-R
-i
-e
-x
-=20
-U
-e
-d
-t
-A
-S
-n
-=20
-=20
-M
-c
-i
-r
-=20
-=20
-=20
-=20
-=20
-=20
-i
-a
-a
-=20
-=20
-=20
-=20
-=20
-=20
-a
-=20
-=20
- $6
- $9
- $6
- $1
- $7
- $8
- $6
- $9
- $9
-9.95
-9.95
-8.00
-23.45
-5.95
-5.45
-4.95
-9.95
-9.95
-=20
-=20
-=20
-There is an urgent call for you, General, said the man in the
-loose-fitting black suit, placing the phone on the table and holding out
-the plastic knob of the extension cord that was to be placed into the
-walled receptacle. Thank you. The manager left and Rodchenko inserted
-the device. Yes? Youre being watched wherever you go, said the voice of
-the Jackal. By whom? Your own people. I dont believe you. Ive been
-watching all day. Would you like me to describe the places youve been
-for the past thirty hours? Starting with drinks at a cafC) on the
-Kalinin, a kiosk in the Arbat, the Slavyanky for lunch, an afternoon
-walk along the Luznekaya?
+TIA.
+======================================================================
 
-------=_NextPart_000_0001_01C60427.F5833450
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ maranik - 04-19-05 20:56 
+----------------------------------------------------------------------
+I installed 1.0.9rc2 and i loaded snd-hda-intel. The problem persists, and
+the sound quality is worse than before.
+I hope you can help me. 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.signicant.com">http://www.signicant.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>V<BR>C<BR>A<BR>X<BR>S<BR>V<BR>P<BR>M<BR>L</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>i<BR>i<BR>m<BR>a<BR>o<BR>A<BR>r<BR>e<BR>e</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>A<BR>A<BR>b<BR>n<BR>m<BR>L<BR>o<BR>r<BR>v</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>G<BR>L<BR>i<BR>a<BR>a<BR>i<BR>p<BR>i<BR>i</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>R<BR>i<BR>e<BR>x<BR>&nbsp;<BR>U<BR>e<BR>d<BR>t</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>A<BR>S<BR>n<BR>&nbsp;<BR>&nbsp;<BR>M<BR>c<BR>i<BR>r</FONT></=
-DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>=
-i<BR>a<BR>a</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>&nbsp;<BR>=
-a<BR>&nbsp;<BR>&nbsp;</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>&nbsp;$6<BR>&nbsp;$9<BR>&nbsp;$6<BR>&nbsp;$1<BR>&nbsp;$7<BR>=
-&nbsp;$8<BR>&nbsp;$6<BR>&nbsp;$9<BR>&nbsp;$9</FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT =
-face=3DArial>9.95<BR>9.95<BR>8.00<BR>23.45<BR>5.95<BR>5.45<BR>4.95<BR>9.9=
-5<BR>9.95</FONT></DIV>
-<DIV style=3D"CLEAR: both">&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>   There is an urgent call for you, General, said the man in the
-loose-fitting black suit, placing the phone on the table and holding out
-the plastic knob of the extension cord that was to be placed into the
-walled receptacle.
-   Thank you. The manager left and Rodchenko inserted the device. Yes?
-   Youre being watched wherever you go, said the voice of the Jackal.
-   By whom?
-   Your own people.
-   I dont believe you.
-   Ive been watching all day. Would you like me to describe the places
-youve been for the past thirty hours? Starting with drinks at a =
-caf=C3=A9 on
-the Kalinin, a kiosk in the Arbat, the Slavyanky for lunch, an afternoon
-walk along the Luznekaya?</DIV></BODY></HTML>
-------=_NextPart_000_0001_01C60427.F5833450--
+TIA
 
+----------------------------------------------------------------------
+ rlrevell - 12-19-05 05:53 
+----------------------------------------------------------------------
+Please try 1.0.11rc1, lots of bugs have been fixed in this driver.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-17-05 23:56 maranik        New Issue                                    
+04-17-05 23:56 maranik        Distribution              => Ubuntu Linux    
+04-17-05 23:56 maranik        Kernel Version            => 2.6.11.7        
+04-19-05 17:41 tiwai          Note Added: 0004525                          
+04-19-05 17:41 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 20:53 maranik        File Added: asound.state                     
+04-19-05 20:53 maranik        File Added: codec#2                          
+04-19-05 20:56 maranik        Note Added: 0004539                          
+12-19-05 05:53 rlrevell       Note Added: 0007089                          
+======================================================================
 
 
 
