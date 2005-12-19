@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Mon, 19 Dec 2005 02:11:26 +0100
-Message-ID: <e744ca4f7aa4b3a61227f701191fe2a5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001049]: No sound at all
+Date: Mon, 19 Dec 2005 02:14:42 +0100
+Message-ID: <82d5b46e2640dd1bf538e62c3f05b4d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2876134
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:11:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFF89134
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:14:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1049> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                DF5JT
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
+Issue ID:                   1049
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Status:                     closed
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.770_FC3 #1 Thu Feb 24 14:00:06 EST 2005
+i686 i686 i386 GNU/Linux
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              12-19-2005 02:11 CET
+Date Submitted:             04-13-2005 11:25 CEST
+Last Modified:              12-19-2005 02:14 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    No sound at all
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
+        Subsystem: Rioworks: Unknown device 203d
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- robertw - 12-09-05 17:17 
+ rlrevell - 11-23-05 21:49 
 ----------------------------------------------------------------------
-I always tested the buildin speaker and the headphones jack.
-
-aplay shows a vu meter
-
-[...]
-Max peak (1880 samples): 07917 (0x1eed) #####                24%
-Max peak (1880 samples): 08754 (0x2232) ######               26%
-[...]
+Try tiwai's suggestion as well as newer ALSA release
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-05 02:11 
+ rlrevell - 12-19-05 02:14 
 ----------------------------------------------------------------------
-Please try the latest CVS again, many hda-intel bugs are likely to be
-fixed.
+No response from submitter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
+04-13-05 11:25 DF5JT          New Issue                                    
+04-13-05 11:25 DF5JT          Distribution              => Fedora Core 3   
+04-13-05 11:25 DF5JT          Kernel Version            => 2.6.10-1.770_FC3 #1
+Thu Feb 24 14:00:06 EST 2005 i686 i686 i386 GNU/Linux
+04-13-05 11:25 DF5JT          Issue Monitored: DF5JT                       
+04-13-05 16:34 tiwai          Note Added: 0004469                          
+04-13-05 16:52 DF5JT          Note Added: 0004470                          
+04-13-05 17:19 tiwai          Note Added: 0004473                          
+04-15-05 12:08 DF5JT          Note Added: 0004497                          
+04-15-05 12:38 stransky       Note Added: 0004498                          
+04-15-05 14:09 DF5JT          Note Added: 0004499                          
+04-19-05 17:52 tiwai          Note Added: 0004529                          
+04-19-05 17:55 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
+08-12-05 18:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
+11-23-05 21:20 rlrevell       Note Added: 0006834                          
+11-23-05 21:49 rlrevell       Note Added: 0006836                          
+11-23-05 21:49 rlrevell       Status                   new => feedback     
+12-19-05 02:14 rlrevell       Status                   feedback => closed  
+12-19-05 02:14 rlrevell       Note Added: 0007078                          
 ======================================================================
 
 
