@@ -1,13 +1,8 @@
-From: Samuel S Chessman <chessman@tux.org>
-Subject: Re: [Jackit-devel] Real-world reports on two Delta 1010LTs/ice1712
- synched?
-Date: Mon, 19 Dec 2005 13:42:09 -0500 (EST)
-Message-ID: <Pine.LNX.4.30.0512191340450.2898-100000@gwyn.tux.org>
-References: <200512191334.54471.eseol@tiscali.co.uk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 19 Dec 2005 19:11:29 -0000
+Message-ID: <E1EoQQ2-0006Ub-PU@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200512191334.54471.eseol@tiscali.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +12,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jackit-devel@lists.sourceforge.net
-Cc: David Mulcahy <eseol@tiscali.co.uk>, Doug McLain <doug@nostar.net>, John Rigg <j@sound-man.co.uk>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 19 Dec 2005, David Mulcahy wrote:
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
->
-> Did you see this message.
->
-> http://boudicca.tux.org/hypermail/jackit-devel/this-month/0063.html
->
-> It seems to indicate a working setup (albeit a different card).  I guess it
-> might be worth giving it a try.
->
-> Dave
->
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-http://boudicca.tux.org/hypermail/jackit-devel/2005-Dec/0063.html
+--- Original message follows.
 
-will work when December's over.  this-month changes every month.
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
--- 
-   Sam Chessman                                         chessman (a) tux.org
-    First do what's necessary, then what's possible, finally the impossible.
+The original message is over 5k.  Message truncated to 1K.
+
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.246>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta166.mail.re2.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO yhwaj.net) (64.251.132.84)
+  by mta166.mail.re2.yahoo.com with SMTP; Mon, 19 Dec 2005 11:11:28 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Mon, 19 Dec 2005 19:04:54 GMT
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <039f1.6e655ba2a66@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="33fc05868de4a.0d84e521c"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
+
+--33fc05868de4a.0d84e521c
+
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--33fc05868de4a.0d84e521c
+Content-Type: application/octet-stream; name=mailtext.zip
+Conten
+*** MESSAGE TRUNCATED ***
 
 
 
