@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001626]: Kernel panic on use of hardware MIDI synth
-Date: Mon, 19 Dec 2005 09:20:40 +0100
-Message-ID: <f22cb1c37fce964f17e6480053272c56@bugtrack.alsa-project.org>
+Date: Mon, 19 Dec 2005 12:04:21 +0100
+Message-ID: <5248cf24f30ad1b07f50681a54eab497@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45763178
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 09:20:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C65E5181
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 12:04:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1626> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.14-1.1644_FC4
 ======================================================================
 Date Submitted:             12-07-2005 20:56 CET
-Last Modified:              12-19-2005 09:20 CET
+Last Modified:              12-19-2005 12:04 CET
 ======================================================================
 Summary:                    Kernel panic on use of hardware MIDI synth
 Description: 
@@ -52,11 +52,6 @@ snd_mpu401 and snd_mpu401_uart load without problems.  I thought this
 error might be related to 1623, so applied the supplied patch, but to no
 avail.
 ======================================================================
-
-----------------------------------------------------------------------
- Twey - 12-17-05 16:51 
-----------------------------------------------------------------------
-Any news on this?
 
 ----------------------------------------------------------------------
  Clemens Ladisch - 12-19-05 09:20 
@@ -71,6 +66,25 @@ ca0106_midi_read
 ca_midi_interrupt
 snd_ca0106_ptr_write
 snd_ca0106_interrupt
+
+----------------------------------------------------------------------
+ jcdutton - 12-19-05 12:04 
+----------------------------------------------------------------------
+I can't make head nor tail of this one.
+_spin_lock_irqsave
+snd_ca0106_ptr_read
+ca0106_midi_read
+ca_midi_interrupt
+snd_ca0106_ptr_write
+snd_ca0106_interrupt
+
+isn't even a valid code path!
+ca_midi_interrupt is never called from inside snd_ca0106_ptr_write.
+The entry point to any ca0106 interrupt handling routine is via
+snd_ca0106_interrupt.
+
+All I can think is that something has gone wrong with the compiling of the
+kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,6 +104,7 @@ Date Modified  Username       Field                    Change
 12-19-05 09:20 Clemens LadischStatus                   new => assigned     
 12-19-05 09:20 Clemens LadischCategory                 GENERIC - mpu401 => PCI -
 ca0106
+12-19-05 12:04 jcdutton       Note Added: 0007093                          
 ======================================================================
 
 
