@@ -1,77 +1,103 @@
-From: David Mulcahy <eseol@tiscali.co.uk>
-Subject: Re: Real-world reports on two Delta 1010LTs/ice1712 synched?
-Date: Mon, 19 Dec 2005 13:34:54 +0000
-Message-ID: <200512191334.54471.eseol@tiscali.co.uk>
-References: <43A5C630.7000704@findus.dhs.org> <20051218222543.GA4450@localhost.localdomain> <43A6A964.9030308@nostar.net>
+From: Andrey L <alsa-devel@lelik.org>
+Subject: VLC SPDIF passthrough
+Date: Mon, 19 Dec 2005 05:45:47 -0800
+Message-ID: <43A6B98B.6060901@lelik.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43A6A964.9030308@nostar.net>
-Content-Disposition: inline
-Sender: jackit-devel-admin@lists.sourceforge.net
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: jackit-devel@lists.sourceforge.net
-Cc: Doug McLain <doug@nostar.net>, John Rigg <j@sound-man.co.uk>, alsa-devel@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 19 Dec 2005 12:36, Doug McLain wrote:
-> John Rigg wrote:
-> > There are a few things to be aware of. After it took me 2 months to get
-> > two Delta 1010s working I put up a web page about it at
-> >
-> > http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
->
-> John,
->
-> Great page! This website was great news for me, and I immediately stuck
-> a 2nd delta into my machine today and went to it.
->
-> I upgraded to kernel 2.6.14, added the privided .asoundrc to my
-> /etc/asound.conf, applied the MMAP_COMPLEX patch to jack 100.7, applied
-> the pcm_multi-patch to alsa-lib 1.0.10 and applied the envy24 patch.
->
-> I am happy to say that seperate capture and playback of 16 tracks works
-> wonderfully.  I'm using spdif-out of card 0 to spdif-in of card 1 for
-> clocking at the moment, the recordings and playbacks sound perfect.  I
-> tested by playing 8 tracks (4 out of each card, all i had was 1 8-way
-> snake to test with atm) out of the delta's into a fostex G16 1/2" analog
-> reel, then played back out of the reel, again into 4 tracks of each card
-> and into ardour.  Everything seemed to be perfect, when running jack
-> with -C or -P.  I use -R for both the captures tests (recording into
-> ardour) and playback tests.
->
-> When trying to run duplex via: jackd -d alsa -C multi_capture -P
-> multi_playback (with or without -R), I get:
->
-> jackd watchdog: timeout - killing jackd
-> Aborted
->
-> And jackd dies.  I did nm /usr/lib/libasound.so|grep
-> snd_pcm_multi_link_fd to make sure that the patch applied correctly, and
-> nothing was returned, so all looks good there.  Does anyone have any
-> advice for me?
->
-> Doug
+Hi guys. For a number of last nights I'm trying to get SPDIF passthrough 
+working on my setup - ATI RS482 chipset + intel hd audio + realtek 
+ALC880 connected to onkyo reciever. The problem seems common - receiver 
+switches to dolby digital mode but there is no sound (otherwise 
+everything works perfectly, including SPDIF in PCM mode). I have the 
+latest alsa drivers, library and VLC.
 
-Hi Doug 
+I tried lots of theories and so far I believe the problem is due to 
+invalid frame size. The VLC code looks (very simplified) like following 
+fragment (it is in modules\audio_output\alsa.c in vlc source tree) :
 
-Did you see this message. 
+        /* Get Initial hardware parameters */
+snd_pcm_hw_params_any( p_sys->p_snd_pcm, p_hw )
+        /* Set format. */
+snd_pcm_hw_params_set_format( p_sys->p_snd_pcm, p_hw,i_snd_pcm_format )
+        /* Set channels. */
+snd_pcm_hw_params_set_channels( p_sys->p_snd_pcm, p_hw,i_channels)
+        /* Set rate. */
+snd_pcm_hw_params_set_rate_near( p_sys->p_snd_pcm, 
+p_hw,&p_aout->output.output.i_rate,NULL );
+        /* Set buffer size. */
+snd_pcm_hw_params_set_buffer_size_near( p_sys->p_snd_pcm,p_hw, 
+&i_buffer_size ) ;
+        /* Set period size. */
+snd_pcm_hw_params_set_period_size_near( p_sys->p_snd_pcm,p_hw, 
+&i_period_size, NULL ) ;
+        /* Commit hardware parameters. */
+snd_pcm_hw_params( p_sys->p_snd_pcm, p_hw ) ;
 
-http://boudicca.tux.org/hypermail/jackit-devel/this-month/0063.html
 
-It seems to indicate a working setup (albeit a different card).  I guess it 
-might be worth giving it a try.
+In the code above VLC tries to set parameters as specified in AC3 spec - 
+{//i_snd_pcm_format=SND_PCM_FORMAT_IEC958_SUBFRAME,i_channels=2,i_rate=48K,i_buffer_size=1536,i_period_size=16*1536}.
+//I believe the frame size of 1536 is important here - seems like 
+reciever ignores frames with wrong size. However this code  fails to set 
+correct frame size, and once this code is executed the real parameters 
+look like:
 
-Dave
+stream       : PLAYBACK
+access       : RW_INTERLEAVED
+format       : IEC958_SUBFRAME_LE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 32
+buffer_size  : 8192
+period_size  : 2048
+period_time  : 42666
+tick_time    : 4000
+
+ALSA software setup:
+
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 2048
+xfer_align   : 2048
+start_threshold  : 1
+stop_threshold   : 8192
+silence_threshold: 0
+silence_size : 0
+boundary     : 4611686018427387904
+
+
+I'm new to alsa. Why snd_pcm_hw_params_set_buffer_size_near / 
+snd_pcm_hw_params_set_period_size_near fails to set requested values in 
+this example? Where this constraint ( 2K for period size ) lives? Is 
+there any way to set period_size to 1536 or is it hardware restriction 
+(I seriously doubt it though) ? Thanks in advance.
+
+
+
+
+
+
+
+
+
+
+
 
 
 -------------------------------------------------------
