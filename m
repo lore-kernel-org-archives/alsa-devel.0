@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Mon, 19 Dec 2005 02:28:09 +0100
-Message-ID: <8cae741cfd573cd6aa9c89fbeee48b77@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001456]: some Realtek ALC861 hda-intel problems
+Date: Mon, 19 Dec 2005 02:29:58 +0100
+Message-ID: <2917588d181db10a3d4eba84e4325d32@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 099D216B
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:28:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C58F316B
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:29:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1456> 
 ======================================================================
-Reported By:                er-ku
+Reported By:                kaloian
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1517
+Issue ID:                   1456
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-9-686
+Distribution:               
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              12-19-2005 02:28 CET
+Date Submitted:             09-25-2005 12:35 CEST
+Last Modified:              12-19-2005 02:29 CET
 ======================================================================
-Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
+Summary:                    some Realtek ALC861 hda-intel problems
 Description: 
-This will be very much like other reports around.
+First I'm not sure that chip 861 is suported?...Alsa rekognize it like
+880....and therfore there are some unusable sliders at mixer control -
+like 3 input controls instead one...and Master volume is missing. Also
+have problem with straching sound reported already here but it's not big
+problem while work fine with OSS. Other big problem for me is that when
+start Linux from system halt alsa dont work at all - alsamixer shows only
+1 or two controls - front or pcm but they dont realy work...even I try
+remove and load module hda-intel but..... To resolve this I need to start
+first windows(XP) and then reboot(not halt) system - now alsa work. I'm
+not sure where to look for problem - alsa or bios. 
 
-Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
-Sound modules load silently, no complainments, alsamixer works and
-channels are unmuted, but I get absolutely no sound from speakers of
-headphones.
+Motherboard is ASUS  P5RD1-V Deluxe with ATI  XPRESS NBridge and Uli 1573
+SBridge with integrated sound - Realtek ALC861. Bios is newest version -
+0802. Kernel 2.6.13, alsa-driver 1.0.9b.
 
-I'm not the only one having this issue
-(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
-managed to google either didn't help me, or was simply unfinished (like
-forum questions that aren't answered).
-
-I tried the stock drivers provided by the Ubuntu kernel, then I tried
-1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
-all cases the result was the same - absolute silence.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-05 02:28 
+ rlrevell - 12-19-05 02:29 
 ----------------------------------------------------------------------
-Please test the latest ALSA release (1.0.11-rc1), this should be fixed.
+Please try the 1.0.11-rc1 release, we got a patch from Realtek that should
+fix many of these problems.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-05 00:19 er-ku          New Issue                                    
-10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
-10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
-10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
-12-19-05 02:28 rlrevell       Note Added: 0007083                          
+09-25-05 12:35 kaloian        New Issue                                    
+09-25-05 12:35 kaloian        Kernel Version            => 2.6.13          
+12-19-05 02:29 rlrevell       Note Added: 0007084                          
 ======================================================================
 
 
