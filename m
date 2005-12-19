@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001408]: Ask for driver support
-Date: Mon, 19 Dec 2005 02:39:17 +0100
-Message-ID: <26a33cc4f6900be6f5df4cbaae50a338@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001621]: chanels not detected
+Date: Mon, 19 Dec 2005 04:43:22 +0100
+Message-ID: <21c729db7f45d5405b0331f9996b39c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9137E16B
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:39:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F2FB161
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 04:43:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1408> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1621> 
 ======================================================================
-Reported By:                war0060
+Reported By:                bor1
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1408
+Issue ID:                   1621
 Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
+Status:                     new
 Distribution:               
 Kernel Version:             
-Resolution:                 open
-Fixed in Version:           
 ======================================================================
-Date Submitted:             09-09-2005 12:12 CEST
-Last Modified:              12-19-2005 02:39 CET
+Date Submitted:             12-05-2005 11:24 CET
+Last Modified:              12-19-2005 04:43 CET
 ======================================================================
-Summary:                    Ask for driver support
+Summary:                    chanels not detected
 Description: 
-The startup message told me that ALSA can't find the right driver for my
-card. The  sound card is built-in on ASUS P5GL-MX motherboard.
-
-the message of "lspci":
---------------------------------------------------------------------------------
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 05)
---------------------------------------------------------------------------------
-I've tried "intel8x0" driver but doesn't work. Or I should use another
-driver?
+mainboard :p5wd2 premium with alc882d. driver:snd-hda-intel. alsamixer
+detect chip alc882 but usualy only one chanel(front), sometimes second
+chanel. Problems when unloading and loading again driver - several
+attempts must be performed.
+janusz
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-09-05 12:27 
+ bor1 - 12-05-05 11:44 
 ----------------------------------------------------------------------
-It's snd-hda-intel driver.
+debian stable with kernel 2.6.13;
+alsa driver 1.0.10
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-05 02:39 
+ rlrevell - 12-19-05 04:43 
 ----------------------------------------------------------------------
-Not a bug
+Try 1.0.11rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 12:12 war0060        New Issue                                    
-09-09-05 12:27 tiwai          Note Added: 0006092                          
-12-19-05 02:39 rlrevell       Status                   new => closed       
-12-19-05 02:39 rlrevell       Note Added: 0007087                          
+12-05-05 11:24 bor1           New Issue                                    
+12-05-05 11:44 bor1           Note Added: 0006909                          
+12-05-05 11:45 bor1           Issue Monitored: bor1                        
+12-19-05 04:43 rlrevell       Note Added: 0007088                          
 ======================================================================
 
 
