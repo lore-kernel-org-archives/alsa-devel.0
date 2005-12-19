@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001589]: broken support for a SB450 Azalia since (including) 1.0.9b
-Date: Mon, 19 Dec 2005 02:26:03 +0100
-Message-ID: <383f3324f79237f5ee2b7855ce09a959@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
+Date: Mon, 19 Dec 2005 02:28:09 +0100
+Message-ID: <8cae741cfd573cd6aa9c89fbeee48b77@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE63715E
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:26:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 099D216B
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:28:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1589> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
 ======================================================================
-Reported By:                tvignaud
+Reported By:                er-ku
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1589
+Issue ID:                   1517
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Mandriva Linux
-Kernel Version:             2.6.12
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12-9-686
 ======================================================================
-Date Submitted:             11-22-2005 18:17 CET
-Last Modified:              12-19-2005 02:26 CET
+Date Submitted:             10-31-2005 00:19 CET
+Last Modified:              12-19-2005 02:28 CET
 ======================================================================
-Summary:                    broken support for a SB450 Azalia since (including)
-1.0.9b
+Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
 Description: 
-First, not that "product version" isn't availlable in the bug form.
+This will be very much like other reports around.
 
-Marcin Zalicki <marcin.zalicki@mandriva.pl> reported that his ATI "SB450
-Azalia HD audio" sound card, managed by snd-hda-intel (PCI ids: vendor:
-0x1002 device: 0x4376 subv: 0x1462 subd: 0x7191) do not work anymore with
-kernel-2.6.12 since alsa-drivers-1.0.9.
+Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
+Sound modules load silently, no complainments, alsamixer works and
+channels are unmuted, but I get absolutely no sound from speakers of
+headphones.
 
-His motherboard is a "MSI-7191" v1.1, RS482M4
-On Mandriva kernel 2.6.12-12mdk, he reported that:
-- alsa-drivers-1.0.9 + alsa-utils-1.0.9: NO ERROR (but NO SOUND too)
-- alsa-drivers-1.0.9b (mandriva kernel) + alsa-utils-1.0.9: NOT WORKING
-- alsa-drivers-1.0.10 + alsa-utils-1.0.9: NOT WORKING
+I'm not the only one having this issue
+(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
+managed to google either didn't help me, or was simply unfinished (like
+forum questions that aren't answered).
 
-Since alsa-drivers-1.0.9b, he gots the following errors:
+I tried the stock drivers provided by the Ubuntu kernel, then I tried
+1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
+all cases the result was the same - absolute silence.
 
-[root@localhost log]# alsactl store
-alsactl: get_control:149: Cannot read control info '2,0,0,Front Playback
-Volume,0': Invalid argument
-
-#alsamixer
-alsamixer: function snd_mixer_load failed: Invalid argument
-
-
-Thus it's impossible to set appropriate sound settings. He told me that
-with alsa-drivers-1.0.9, it was impssible to get sound with any mixer
-configuration (maybe no support for ALC880 codec?)
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001563 No Sound on Cybersystem S28 (hda_codec:...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 11-23-05 20:10 
+ rlrevell - 12-19-05 02:28 
 ----------------------------------------------------------------------
-OK, there is a possible fix in ALSA CVS - see the patch from bug #1563.
-
-----------------------------------------------------------------------
- rlrevell - 12-19-05 02:26 
-----------------------------------------------------------------------
-Believed fixed in 1.0.11rc1 and no response from submitter.
+Please test the latest ALSA release (1.0.11-rc1), this should be fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-05 18:17 tvignaud       New Issue                                    
-11-22-05 18:17 tvignaud       Distribution              => Mandriva Linux  
-11-22-05 18:17 tvignaud       Kernel Version            => 2.6.12          
-11-22-05 18:20 tvignaud       Note Added: 0006790                          
-11-22-05 18:27 tvignaud       Note Added: 0006791                          
-11-22-05 18:36 tvignaud       Note Added: 0006792                          
-11-22-05 18:58 rlrevell       Note Added: 0006794                          
-11-22-05 19:08 rlrevell       Relationship added       duplicate of 0001563
-11-23-05 20:10 rlrevell       Note Added: 0006824                          
-12-19-05 02:26 rlrevell       Status                   assigned => resolved
-12-19-05 02:26 rlrevell       Resolution               open => fixed       
-12-19-05 02:26 rlrevell       Note Added: 0007082                          
+10-31-05 00:19 er-ku          New Issue                                    
+10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
+10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
+10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
+12-19-05 02:28 rlrevell       Note Added: 0007083                          
 ======================================================================
 
 
