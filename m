@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001049]: No sound at all
-Date: Mon, 19 Dec 2005 02:14:42 +0100
-Message-ID: <82d5b46e2640dd1bf538e62c3f05b4d6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001535]: The sound card is detected. No sound from the speakers or headphones.
+Date: Mon, 19 Dec 2005 02:19:21 +0100
+Message-ID: <236bef78f9518b82fb2f7fee8221477b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFF89134
-	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:14:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A80D5134
+	for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2005 02:19:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1049> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1535> 
 ======================================================================
-Reported By:                DF5JT
-Assigned To:                
+Reported By:                h4ndr3s
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1049
+Issue ID:                   1535
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.770_FC3 #1 Thu Feb 24 14:00:06 EST 2005
-i686 i686 i386 GNU/Linux
+Distribution:               Slackware
+Kernel Version:             2.6.13
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-13-2005 11:25 CEST
-Last Modified:              12-19-2005 02:14 CET
+Date Submitted:             11-08-2005 12:17 CET
+Last Modified:              12-19-2005 02:19 CET
 ======================================================================
-Summary:                    No sound at all
+Summary:                    The sound card is detected. No sound from the
+speakers or headphones.
 Description: 
-00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 04)
-        Subsystem: Rioworks: Unknown device 203d
-        Flags: bus master, fast devsel, latency 0, IRQ 10
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-
-
+I have a Motherboard Intel D915GAV with a sound card Intel HDA onboard,
+chipset Realtek ALC880. The Sound Card is detected, the modules are
+loaded, but no sound come from the speakers or headphones. 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 11-23-05 21:49 
+ rlrevell - 11-23-05 20:45 
 ----------------------------------------------------------------------
-Try tiwai's suggestion as well as newer ALSA release
+Probably the same issue as bug #1563, which may be fixed in CVS, please
+test.
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-05 02:14 
+ rlrevell - 12-19-05 02:19 
 ----------------------------------------------------------------------
 No response from submitter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 11:25 DF5JT          New Issue                                    
-04-13-05 11:25 DF5JT          Distribution              => Fedora Core 3   
-04-13-05 11:25 DF5JT          Kernel Version            => 2.6.10-1.770_FC3 #1
-Thu Feb 24 14:00:06 EST 2005 i686 i686 i386 GNU/Linux
-04-13-05 11:25 DF5JT          Issue Monitored: DF5JT                       
-04-13-05 16:34 tiwai          Note Added: 0004469                          
-04-13-05 16:52 DF5JT          Note Added: 0004470                          
-04-13-05 17:19 tiwai          Note Added: 0004473                          
-04-15-05 12:08 DF5JT          Note Added: 0004497                          
-04-15-05 12:38 stransky       Note Added: 0004498                          
-04-15-05 14:09 DF5JT          Note Added: 0004499                          
-04-19-05 17:52 tiwai          Note Added: 0004529                          
-04-19-05 17:55 tiwai          Category                 PCI - azx => PCI -
-hda-intel
-06-09-05 16:20 Ballbreaker    Issue Monitored: Ballbreaker                    
-08-12-05 18:12 Ballbreaker    Issue End Monitor: Ballbreaker                    
-11-23-05 21:20 rlrevell       Note Added: 0006834                          
-11-23-05 21:49 rlrevell       Note Added: 0006836                          
-11-23-05 21:49 rlrevell       Status                   new => feedback     
-12-19-05 02:14 rlrevell       Status                   feedback => closed  
-12-19-05 02:14 rlrevell       Note Added: 0007078                          
+11-08-05 12:17 h4ndr3s        New Issue                                    
+11-08-05 12:17 h4ndr3s        Distribution              => Slackware       
+11-08-05 12:17 h4ndr3s        Kernel Version            => 2.6.13          
+11-08-05 17:46 tiwai          Note Added: 0006627                          
+11-09-05 12:18 h4ndr3s        Note Added: 0006645                          
+11-09-05 12:24 h4ndr3s        Note Edited: 0006645                         
+11-09-05 13:34 tiwai          Note Added: 0006648                          
+11-09-05 14:22 h4ndr3s        Note Added: 0006653                          
+11-10-05 16:00 jrgns          Note Added: 0006664                          
+11-14-05 11:58 h4ndr3s        Note Added: 0006720                          
+11-15-05 12:19 h4ndr3s        Note Edited: 0006720                         
+11-23-05 20:45 rlrevell       Note Added: 0006831                          
+12-19-05 02:19 rlrevell       Status                   assigned => closed  
+12-19-05 02:19 rlrevell       Note Added: 0007079                          
 ======================================================================
 
 
