@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001661]: alsaconf gets everything working but mic input doesn't work after a reboot
-Date: Tue, 20 Dec 2005 20:58:58 +0100
-Message-ID: <8964dcbea9c408b6ecc495829c8c1cb0@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
+Date: Tue, 20 Dec 2005 21:23:25 +0100
+Message-ID: <20051220202325.GA3850__2371.16101566262$1135110455$gmane$org@stusta.de>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org> <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local> <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org> <20051220191412.GA4578@stusta.de> <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C34711A7
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 20:58:58 +0100 (MET)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2DE8B1B6
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 21:23:26 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +20,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: Sergey Vlasov <vsu@altlinux.ru>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Dec 20, 2005 at 11:59:20AM -0800, Linus Torvalds wrote:
+> 
+> 
+> On Tue, 20 Dec 2005, Adrian Bunk wrote:
+> >
+> > > Adrian, does it work if you change the "module_init()" in 
+> > > sound/sound_core.c into a "fs_initcall()"?
+> > 
+> > No, this didn't work.
+> > 
+> > What did work was to leave sound/sound_core.c alone
+> 
+> Can you do try the other way again, with sound/core/sound.c fixed too?
+>...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
-======================================================================
-Reported By:                amarsh04
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1661
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.14.2-686
-======================================================================
-Date Submitted:             12-20-2005 03:16 CET
-Last Modified:              12-20-2005 20:58 CET
-======================================================================
-Summary:                    alsaconf gets everything working but mic input
-doesn't work after a reboot
-Description: 
-I've finally obtained a SB Live! card that works and alsaconf made
-everything work. However, after a reboot, output still works but not
-microphone input. krecord shows zero input level. Re-running alsaconf
-restores microphone input to a working state.
-======================================================================
+This works in the sense that the kernel boots and my saa7134 TV card is 
+giving both audio and video output.
 
-----------------------------------------------------------------------
- amarsh04 - 12-20-05 12:44 
-----------------------------------------------------------------------
-Some further information: The card has "SoundBlaster Live! 5.1 Digital" and
-"Model SB0220" on it. asfxload doesn't work until alsaconf has been re-run
-after a reboot.
+But the non-saa7134 access to my soundcard (e.g. rexima or xmms) is no 
+longer working.
 
-----------------------------------------------------------------------
- rlrevell - 12-20-05 20:58 
-----------------------------------------------------------------------
-It sounds like a mixer settings problem.  Please provide the output of
-"amixer" for the working and non-working setups.
+> 	Thanks,
+> 
+> 		Linus
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-20-05 03:16 amarsh04       New Issue                                    
-12-20-05 03:16 amarsh04       Distribution              => Debian          
-12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
-12-20-05 12:44 amarsh04       Note Added: 0007104                          
-12-20-05 20:58 rlrevell       Note Added: 0007105                          
-======================================================================
+cu
+Adrian
 
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
