@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001661]: alsaconf gets everything working but mic input doesn't work after a reboot
-Date: Tue, 20 Dec 2005 12:44:15 +0100
-Message-ID: <7a89db8b4655e43874bb16620e18f77b@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: 2.6.15-rc6: boot failure in saa7134-alsa.c
+Date: Tue, 20 Dec 2005 14:18:10 +0100
+Message-ID: <20051220131810.GB6789__36522.2264932983$1135084972$gmane$org@stusta.de>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCA89194
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 12:44:15 +0100 (MET)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A2DA016B
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 14:18:11 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +20,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Linus Torvalds <torvalds@osdl.org>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+2.6.15-rc6 doesn't boot on my computer with an Oops that has 
+drivers/media/video/saa7134/saa7134-alsa.c prominently in it's trace.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
-======================================================================
-Reported By:                amarsh04
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1661
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.14.2-686
-======================================================================
-Date Submitted:             12-20-2005 03:16 CET
-Last Modified:              12-20-2005 12:44 CET
-======================================================================
-Summary:                    alsaconf gets everything working but mic input
-doesn't work after a reboot
-Description: 
-I've finally obtained a SB Live! card that works and alsaconf made
-everything work. However, after a reboot, output still works but not
-microphone input. krecord shows zero input level. Re-running alsaconf
-restores microphone input to a working state.
-======================================================================
+A picture of the Oops is at [1] (I won't get a price for the best 
+picture for it, but it's readable...).
 
-----------------------------------------------------------------------
- amarsh04 - 12-20-05 12:44 
-----------------------------------------------------------------------
-Some further information: The card has "SoundBlaster Live! 5.1 Digital" and
-"Model SB0220" on it. asfxload doesn't work until alsaconf has been re-run
-after a reboot.
+Kernels up to 2.6.14.4 boot fine, 2.6.15-rc1 is the one that introduced 
+the problem.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-20-05 03:16 amarsh04       New Issue                                    
-12-20-05 03:16 amarsh04       Distribution              => Debian          
-12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
-12-20-05 12:44 amarsh04       Note Added: 0007104                          
-======================================================================
+I must give saa7134.card=6 at the lilo prompt for getting my card 
+working.
 
+The saa7134 part of the dmesg in 2.6.14.4:
+
+<--  snip  -->
+
+saa7134[0]: found at 0000:00:0e.0, rev: 1, irq: 18, latency: 32, mmio: 0xed800000
+saa7134[0]: subsystem: 1131:0000, board: Tevion MD 9717 [card=6,insmod option]
+saa7134[0]: board init: gpio is 100a0
+saa7134[0]: Huh, no eeprom present (err=-5)?
+saa7134[0]: registered device video0 [v4l2]
+saa7134[0]: registered device vbi0
+saa7134[0]: registered device radio0
+tuner 4-0060: chip found @ 0xc0 (saa7134[0])
+tuner 4-0060: All bytes are equal. It is not a TEA5767
+tuner 4-0060: type set to 5 (Philips PAL_BG (FI1216 and compatibles))
+
+<--  snip  -->
+
+cu
+Adrian
+
+[1] http://www.fs.tum.de/~bunk/TMP/bootcrash.jpg
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
