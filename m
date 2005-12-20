@@ -1,18 +1,19 @@
 From: Linus Torvalds <torvalds@osdl.org>
 Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
-Date: Tue, 20 Dec 2005 13:03:10 -0800 (PST)
-Message-ID: <Pine.LNX.4.64.0512201248481.4827@g5.osdl.org>
+Date: Tue, 20 Dec 2005 13:06:18 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0512201303580.4827__8045.56114967472$1135112934$gmane$org@g5.osdl.org>
 References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
  <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local>
  <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org> <20051220191412.GA4578@stusta.de>
- <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org> <43A86B20.1090104@superbug.co.uk>
+ <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org> <20051220202325.GA3850@stusta.de>
+ <Pine.LNX.4.64.0512201240480.4827@g5.osdl.org> <43A86DCD.8010400@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF17E185
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 22:03:15 +0100 (MET)
-In-Reply-To: <43A86B20.1090104@superbug.co.uk>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9BFE1B6
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 22:06:24 +0100 (MET)
+In-Reply-To: <43A86DCD.8010400@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,70 +30,34 @@ List-Id: alsa-devel@alsa-project.org
 
 
 On Tue, 20 Dec 2005, James Courtier-Dutton wrote:
->
-> They all load in the correct order if they are modules. The problem comes when
-> one compiles them into the kernel. They then load in the wrong order and bad
-> things happen, resulting in the recommendation that alsa should always be
-> modules.
 
-Which, as a recommendation, is pure and utter crap.
+> Linus Torvalds wrote:
+> > 
+> > On Tue, 20 Dec 2005, Adrian Bunk wrote:
+> > 
+> > > But the non-saa7134 access to my soundcard (e.g. rexima or xmms) is no
+> > > longer working.
+> > 
+> > 
+> > Ahh. I assume it's the sequencer init etc that is missing.
+> > 
+> > Maybe we'll just have to do the late_init thing for at least the 2.6.15
+> > timeframe.
+> 
+> But that's not really a useable fix. The problem is with almost all ALSA sound
+> cards.
 
-> In this basis, we should not have to change the code in alsa at all, but
-> instead change the kernel to understand the load order, even if compiled into
-> the kernel and not as modules.
+Right. Which is why the _correct_ fix is certainly to just initialize the 
+core functionality early.
 
-NO.
+So the fix is certainly _usable_ (and simple, and guaranteed to not break 
+anything, which is why it's fine 2.6.15 material), but I certainly agree 
+that a much better fix would be for a sound core person to walk through 
+the subsystem initializers, and just mark _those_ early instead.
 
-The kernel does support this (and has supported for a long time).
+Hint hint ;)
 
-First off, load order matters, even in the kernel. Within one "class" of 
-initializers, you can just specify the right order in the Makefile, and it 
-will honor them. Of course, that ends up often being hard to do across 
-different directories, which is why there's another facility:
-
-The kernel has several different classes of ordering. Anybody who thinks 
-that "module_init()" is it, just hasn't looked at <linux/init.h>. There's 
-seven different levels:
-
-	#define core_initcall(fn)               __define_initcall("1",fn)
-	#define postcore_initcall(fn)           __define_initcall("2",fn)
-	#define arch_initcall(fn)               __define_initcall("3",fn)
-	#define subsys_initcall(fn)             __define_initcall("4",fn)
-	#define fs_initcall(fn)                 __define_initcall("5",fn)
-	#define device_initcall(fn)             __define_initcall("6",fn)
-	#define late_initcall(fn)               __define_initcall("7",fn)
-
-where the next-to-last one is the regular "device_initcall()" (and this is 
-what a "module_init()" in a compiled-in driver will use).
-
-Now, something like the basic sound subsystem initialization should 
-obviously NOT be a "device initcall". It's not a device. It's a subsystem 
-that serves devices, and thus the basic sound initialization should 
-probably use "subsys_initcall()" instead.
-
-Now, if it's built as a module, that "subsys_initcall()" ends up doing 
-exactly the same thing as a plain "module_init()", and you'll never see 
-any difference. But when it's built into the kernel, it means that it gets 
-initialized with the other subsystems.
-
-Now, one thing to look out for is that if your "core sound initialization" 
-depends on PCI probing having completed (ie it's not a pure subsystem with 
-no dependencies on anything else), the common hack for that is to just use 
-the "fs_initicall()" instead. But a truly independent subsystem (which 
-sound hopefully is) should just use subsys_initcall(), and then, if that 
-subsystem internally has more complex ordering, just use the link order in 
-the Makefiles to indicate that.
-
-> I have no idea how to get the kernel to do this though. Any pointers?
-
-The above should hopefully make the kernel support for this obvious.
-
-I thought more people knew about all this. Forcing (or even just 
-encouraging) people to use loadable modules is just horrible. I personally 
-run a kernel with no modules at all: it makes for a simpler bootup, and in 
-some situations (embedded) it has both security and size advantages.
-
-			Linus
+		Linus
 
 
 -------------------------------------------------------
