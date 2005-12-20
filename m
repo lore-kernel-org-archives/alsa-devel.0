@@ -1,16 +1,17 @@
-From: Adrian Bunk <bunk@stusta.de>
+From: Linus Torvalds <torvalds@osdl.org>
 Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
-Date: Tue, 20 Dec 2005 20:14:12 +0100
-Message-ID: <20051220191412.GA4578__5009.50407372347$1135106442$gmane$org@stusta.de>
-References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org> <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local> <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org>
+Date: Tue, 20 Dec 2005 11:59:20 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
+ <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local>
+ <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org> <20051220191412.GA4578@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B5E0419A
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 20:14:12 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org>
+Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7B5D1A7
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 20:59:24 +0100 (MET)
+In-Reply-To: <20051220191412.GA4578@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,43 +21,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Linus Torvalds <torvalds@osdl.org>
+To: Adrian Bunk <bunk@stusta.de>
 Cc: Sergey Vlasov <vsu@altlinux.ru>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 20, 2005 at 10:24:55AM -0800, Linus Torvalds wrote:
+
+
+On Tue, 20 Dec 2005, Adrian Bunk wrote:
+>
+> > Adrian, does it work if you change the "module_init()" in 
+> > sound/sound_core.c into a "fs_initcall()"?
 > 
+> No, this didn't work.
 > 
-> On Tue, 20 Dec 2005, Sergey Vlasov wrote:
-> > 
-> > saa7134-alsa is trying to initialize before the ALSA core has initialized.
-> > Probably no one has tested CONFIG_VIDEO_SAA7134=y.
-> 
-> Adrian, does it work if you change the "module_init()" in 
-> sound/sound_core.c into a "fs_initcall()"?
+> What did work was to leave sound/sound_core.c alone
 
-No, this didn't work.
+Can you do try the other way again, with sound/core/sound.c fixed too?
 
-What did work was to leave sound/sound_core.c alone and make the 
-module_init() in drivers/media/video/saa7134/saa7134-alsa.c a 
-late_initcall() (plus disabling building of saa7134-oss.o because
-otherwise saa7134-alsa.o wouldn't do anything).
+A regular driver really _should_ use the regular "module_init()" sequence 
+(it is indeed just a compatibility define for "driver_init()").
 
-> That should make sure that the sound core gets to initialize before normal 
-> drivers do.
-> 
-> 		Linus
+The "late_init()" stuff is meant for stuff that literally runs after 
+everything else is up and running, it might want all drivers functional 
+(now, nobody really cares about a sound driver, so in that sense it would 
+be ok..)
 
-cu
-Adrian
+	Thanks,
 
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+		Linus
 
 
 -------------------------------------------------------
