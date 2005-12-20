@@ -1,16 +1,17 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: 2.6.15-rc6: boot failure in saa7134-alsa.c
-Date: Tue, 20 Dec 2005 14:18:10 +0100
-Message-ID: <20051220131810.GB6789__36522.2264932983$1135084972$gmane$org@stusta.de>
-References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
+Date: Tue, 20 Dec 2005 18:52:16 +0300
+Message-ID: <20051220155216.GA19797__36468.3357337073$1135094149$gmane$org@master.mivlgu.local>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org> <20051220131810.GB6789@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A2DA016B
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 14:18:11 +0100 (MET)
+Received: from master.mivlgu.local (mivlgu.ru [81.18.140.87])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF81D1A6
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 16:52:17 +0100 (MET)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
+In-Reply-To: <20051220131810.GB6789@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,51 +21,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Linus Torvalds <torvalds@osdl.org>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Linus Torvalds <torvalds@osdl.org>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2.6.15-rc6 doesn't boot on my computer with an Oops that has 
-drivers/media/video/saa7134/saa7134-alsa.c prominently in it's trace.
 
-A picture of the Oops is at [1] (I won't get a price for the best 
-picture for it, but it's readable...).
+--4Ckj6UjgE2iN1+kY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Kernels up to 2.6.14.4 boot fine, 2.6.15-rc1 is the one that introduced 
-the problem.
+On Tue, Dec 20, 2005 at 02:18:10PM +0100, Adrian Bunk wrote:
+> 2.6.15-rc6 doesn't boot on my computer with an Oops that has=20
+> drivers/media/video/saa7134/saa7134-alsa.c prominently in it's trace.
+>=20
+> A picture of the Oops is at [1] (I won't get a price for the best=20
+> picture for it, but it's readable...).
 
-I must give saa7134.card=6 at the lilo prompt for getting my card 
-working.
+saa7134-alsa is trying to initialize before the ALSA core has initialized.
+Probably no one has tested CONFIG_VIDEO_SAA7134=3Dy.
 
-The saa7134 part of the dmesg in 2.6.14.4:
+There is some more brokenness there:
 
-<--  snip  -->
+1) With CONFIG_VIDEO_SAA7134=3Dy, both saa7134-alsa.o and saa7134-oss.o will
+be built into the kernel, but only the first of them has any chance to be
+used - the second will stay as dead code.
 
-saa7134[0]: found at 0000:00:0e.0, rev: 1, irq: 18, latency: 32, mmio: 0xed800000
-saa7134[0]: subsystem: 1131:0000, board: Tevion MD 9717 [card=6,insmod option]
-saa7134[0]: board init: gpio is 100a0
-saa7134[0]: Huh, no eeprom present (err=-5)?
-saa7134[0]: registered device video0 [v4l2]
-saa7134[0]: registered device vbi0
-saa7134[0]: registered device radio0
-tuner 4-0060: chip found @ 0xc0 (saa7134[0])
-tuner 4-0060: All bytes are equal. It is not a TEA5767
-tuner 4-0060: type set to 5 (Philips PAL_BG (FI1216 and compatibles))
+2) Both saa7134-alsa and saa7134-oss set dmasound_init and dmasound_exit
+function pointers to their functions (for handling of saa7134 cards
+hotplugged later), but they do not reset these pointers on unload -
+therefore if you load one of these modules, then unload it, then try to
+hotplug a saa7134-based card (apparently there are CardBus
+implementation), you will get oopses.  These assignments in saa7134-alsa
+and saa7134-oss also stomp on each other.
 
-<--  snip  -->
+> Kernels up to 2.6.14.4 boot fine, 2.6.15-rc1 is the one that introduced=
+=20
+> the problem.
+>=20
+> I must give saa7134.card=3D6 at the lilo prompt for getting my card=20
+> working.
 
-cu
-Adrian
+-ECHEAPHARDWARE (sadly, boards without EEPROM are too common).
 
-[1] http://www.fs.tum.de/~bunk/TMP/bootcrash.jpg
+--4Ckj6UjgE2iN1+kY
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
--- 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+iD8DBQFDqCiwW82GfkQfsqIRAh5uAJ9mIExZsyqvZjDg0npmkflzZdXVkACeMwXJ
+DQxOeDQT568GbbuNYB9/PcU=
+=US1j
+-----END PGP SIGNATURE-----
 
+--4Ckj6UjgE2iN1+kY--
 
 
 -------------------------------------------------------
