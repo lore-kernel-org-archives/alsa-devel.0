@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: =?iso-8859-1?Q?[ALSA_-_liboss_0001518]:_dmix_plugin_doesn=B4t_work_with_O?=
  =?iso-8859-1?Q?SS_kernel_emulation?=
-Date: Tue, 20 Dec 2005 01:43:21 +0100
-Message-ID: <10cc254083ee331e6250118269761947@bugtrack.alsa-project.org>
+Date: Tue, 20 Dec 2005 02:04:03 +0100
+Message-ID: <7605bd4a5ed1fa6b26cc859157a16426@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A364219C
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 01:43:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27DC8163
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 02:04:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1518> 
 ======================================================================
@@ -39,7 +39,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             10-31-2005 01:22 CET
-Last Modified:              12-20-2005 01:43 CET
+Last Modified:              12-20-2005 02:04 CET
 ======================================================================
 Summary:                    dmix plugin doesn´t work with OSS kernel emulation
 Description: 
@@ -53,16 +53,22 @@ So will dmix support be added to the kernel OSS emulation layer?+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-20-05 01:20 
-----------------------------------------------------------------------
-Not a bug
-
-----------------------------------------------------------------------
  kyromaster - 12-20-05 01:43 
 ----------------------------------------------------------------------
 Sorry for reopening, but can´t you port dmix or just dmix in kernel-mode as
 well? It´s not good for nen-experienced users if they have to run their
 apps through a wrapper script.
+
+----------------------------------------------------------------------
+ rlrevell - 12-20-05 02:04 
+----------------------------------------------------------------------
+No.  It would defeat the purpose of implementing dmix in userspace if we
+had to maintain a parallel implementation in the kernel.  It would also
+preclude the use of SIMD instructions for mixing.
+
+The kernel developers have spoken on this issue and they do not want
+mixing in the kernel.  Your distro should just provide a wrapper script
+for any OSS app so that it's invisible to the user.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -74,6 +80,7 @@ Date Modified  Username       Field                    Change
 12-20-05 01:43 kyromaster     Status                   closed => feedback  
 12-20-05 01:43 kyromaster     Resolution               open => reopened    
 12-20-05 01:43 kyromaster     Note Added: 0007099                          
+12-20-05 02:04 rlrevell       Note Added: 0007100                          
 ======================================================================
 
 
