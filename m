@@ -1,17 +1,14 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
-Date: Tue, 20 Dec 2005 18:52:16 +0300
-Message-ID: <20051220155216.GA19797__36468.3357337073$1135094149$gmane$org@master.mivlgu.local>
-References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org> <20051220131810.GB6789@stusta.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
+Date: Tue, 20 Dec 2005 19:11:51 +0100
+Message-ID: <f9c132ba213177659c1e96331eaba76e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from master.mivlgu.local (mivlgu.ru [81.18.140.87])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF81D1A6
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 16:52:17 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <20051220131810.GB6789@stusta.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DE981B2
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 19:11:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,62 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian Bunk <bunk@stusta.de>
-Cc: Linus Torvalds <torvalds@osdl.org>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---4Ckj6UjgE2iN1+kY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
+======================================================================
+Reported By:                mikael
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1663
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Archlinux
+Kernel Version:             2.4.13.4
+======================================================================
+Date Submitted:             12-20-2005 19:11 CET
+Last Modified:              12-20-2005 19:11 CET
+======================================================================
+Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
+fix, please intergrate it!
+Description: 
+My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
 
-On Tue, Dec 20, 2005 at 02:18:10PM +0100, Adrian Bunk wrote:
-> 2.6.15-rc6 doesn't boot on my computer with an Oops that has=20
-> drivers/media/video/saa7134/saa7134-alsa.c prominently in it's trace.
->=20
-> A picture of the Oops is at [1] (I won't get a price for the best=20
-> picture for it, but it's readable...).
+It though for some reason do not turn off the main speaker when you insert
+headphones. On the site
+http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
+there is a patched alsa package available which fixes this issue by adding
+a "Headphone" mixer which you can turn on/off and also gives you the
+availability to mute the main speakers without (as in 1.0.10/11-rc1)
+muting the headphones aswell.
 
-saa7134-alsa is trying to initialize before the ALSA core has initialized.
-Probably no one has tested CONFIG_VIDEO_SAA7134=3Dy.
+Can you please intergrate this? I struggled trying to intergrate this
+properly but their alsa is built on 1.0.9 and I suppose I am not the
+sharpest of programers either for the job.
 
-There is some more brokenness there:
+Greets,
+  Mikael
+======================================================================
 
-1) With CONFIG_VIDEO_SAA7134=3Dy, both saa7134-alsa.o and saa7134-oss.o will
-be built into the kernel, but only the first of them has any chance to be
-used - the second will stay as dead code.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-20-05 19:11 mikael         New Issue                                    
+12-20-05 19:11 mikael         Distribution              => Archlinux       
+12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
+======================================================================
 
-2) Both saa7134-alsa and saa7134-oss set dmasound_init and dmasound_exit
-function pointers to their functions (for handling of saa7134 cards
-hotplugged later), but they do not reset these pointers on unload -
-therefore if you load one of these modules, then unload it, then try to
-hotplug a saa7134-based card (apparently there are CardBus
-implementation), you will get oopses.  These assignments in saa7134-alsa
-and saa7134-oss also stomp on each other.
 
-> Kernels up to 2.6.14.4 boot fine, 2.6.15-rc1 is the one that introduced=
-=20
-> the problem.
->=20
-> I must give saa7134.card=3D6 at the lilo prompt for getting my card=20
-> working.
-
--ECHEAPHARDWARE (sadly, boards without EEPROM are too common).
-
---4Ckj6UjgE2iN1+kY
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFDqCiwW82GfkQfsqIRAh5uAJ9mIExZsyqvZjDg0npmkflzZdXVkACeMwXJ
-DQxOeDQT568GbbuNYB9/PcU=
-=US1j
------END PGP SIGNATURE-----
-
---4Ckj6UjgE2iN1+kY--
 
 
 -------------------------------------------------------
