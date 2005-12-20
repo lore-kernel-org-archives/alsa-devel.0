@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
-Date: Tue, 20 Dec 2005 19:11:51 +0100
-Message-ID: <f9c132ba213177659c1e96331eaba76e@bugtrack.alsa-project.org>
+From: Linus Torvalds <torvalds@osdl.org>
+Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
+Date: Tue, 20 Dec 2005 10:24:55 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0512201018000.4827__25026.6948868104$1135103356$gmane$org@g5.osdl.org>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
+ <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DE981B2
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 19:11:51 +0100 (MET)
+Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7AE731B2
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 19:25:01 +0100 (MET)
+In-Reply-To: <20051220155216.GA19797@master.mivlgu.local>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +20,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Sergey Vlasov <vsu@altlinux.ru>
+Cc: Adrian Bunk <bunk@stusta.de>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
-======================================================================
-Reported By:                mikael
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1663
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Archlinux
-Kernel Version:             2.4.13.4
-======================================================================
-Date Submitted:             12-20-2005 19:11 CET
-Last Modified:              12-20-2005 19:11 CET
-======================================================================
-Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
-fix, please intergrate it!
-Description: 
-My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
 
-It though for some reason do not turn off the main speaker when you insert
-headphones. On the site
-http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
-there is a patched alsa package available which fixes this issue by adding
-a "Headphone" mixer which you can turn on/off and also gives you the
-availability to mute the main speakers without (as in 1.0.10/11-rc1)
-muting the headphones aswell.
+On Tue, 20 Dec 2005, Sergey Vlasov wrote:
+> 
+> saa7134-alsa is trying to initialize before the ALSA core has initialized.
+> Probably no one has tested CONFIG_VIDEO_SAA7134=y.
 
-Can you please intergrate this? I struggled trying to intergrate this
-properly but their alsa is built on 1.0.9 and I suppose I am not the
-sharpest of programers either for the job.
+Adrian, does it work if you change the "module_init()" in 
+sound/sound_core.c into a "fs_initcall()"?
 
-Greets,
-  Mikael
-======================================================================
+That should make sure that the sound core gets to initialize before normal 
+drivers do.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-20-05 19:11 mikael         New Issue                                    
-12-20-05 19:11 mikael         Distribution              => Archlinux       
-12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
-======================================================================
-
-
+		Linus
 
 
 -------------------------------------------------------
