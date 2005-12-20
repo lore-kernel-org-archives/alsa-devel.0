@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001460]: no sound on Clevo 400a
-Date: Tue, 20 Dec 2005 01:08:42 +0100
-Message-ID: <4877e6b4278a4cb2ddf3bd34900018ee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
+Date: Tue, 20 Dec 2005 01:08:16 +0100
+Message-ID: <77d238ecc77439fe2d34299d9068b3ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68E0819C
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 01:08:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF43019C
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 01:08:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,106 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1460> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
 ======================================================================
-Reported By:                imre
+Reported By:                crimsunkg
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1460
+Issue ID:                   1429
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian sid
-Kernel Version:             2.6.14-rc2-git5
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12-8-686
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-26-2005 16:02 CEST
+Date Submitted:             09-17-2005 00:54 CEST
 Last Modified:              12-20-2005 01:08 CET
 ======================================================================
-Summary:                    no sound on Clevo 400a
+Summary:                    hda_codec: Unknown model for ALC880
 Description: 
-On my Clevo M400A the integrated soundcard doesn't work. When starting
-alsa
-the kernel logs the following:
+Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
 
-hda_codec: num_steps = 0 for NID=0xb
-ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 50
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_intel.c:624: codec_mask = 0x3
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-hda_codec: num_steps = 0 for NID=0x8
+Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
 
-and the last message is printed several times
+Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
+hda_codec does not recognize the model with the ALC880 codec
+(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
 
-Maybe this is the same issue that was reported in #1316
+''lspci -nvv'' output is at
+http://bugzilla.ubuntu.com/attachment.cgi?id=3848
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
-duplicate of        0001563 No Sound on Cybersystem S28 (hda_codec:...
+has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
+has duplicate       0001316 can't run mixer to adjusting volumes / ...
+has duplicate       0001460 no sound on Clevo 400a
 ======================================================================
 
 ----------------------------------------------------------------------
- imre - 11-23-05 21:38 
+ crimsunkg - 09-24-05 20:55 
 ----------------------------------------------------------------------
-Applied the patch in issue #1563 on 2.6.15-rc2
-Some errors gone, but news accours.
-alsamixer works now, but still no sound.
-
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 58
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA sound/pci/hda/hda_intel.c:630: codec_mask = 0x3
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-
-ALSA sound/pci/hda/hda_intel.c:1091: azx_pcm_prepare: bufsize=0x10000,
-fragsize=0x1000, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x6,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x2,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x5,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x3,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x4,
-stream=0x5, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x2,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x5,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x3,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x4,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x6,
-stream=0x0, channel=0, format=0x0
+This issue is duplicated in bug #1453.
 
 ----------------------------------------------------------------------
- imre - 11-24-05 18:18 
+ rlrevell - 11-23-05 20:30 
 ----------------------------------------------------------------------
-I recompiled my kernel with the latest alsa-cvs.
-I works now. Thanks for all help.
+Possibly fixed in CVS.  See the patch from bug #1563.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-05 16:02 imre           New Issue                                    
-09-26-05 16:02 imre           Distribution              => Debian sid      
-09-26-05 16:02 imre           Kernel Version            => 2.6.14-rc2-git5 
-09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
-10-10-05 12:21 drlizau        Note Added: 0006448                          
-10-10-05 12:24 drlizau        Issue Monitored: drlizau                     
-10-11-05 16:33 tiwai          Note Added: 0006453                          
-10-13-05 11:43 drlizau        Note Added: 0006476                          
-10-18-05 07:52 drlizau        Note Edited: 0006476                         
-11-23-05 20:31 rlrevell       Relationship added       duplicate of 0001563
-11-23-05 21:38 imre           Note Added: 0006835                          
-11-24-05 18:18 imre           Note Added: 0006843                          
+09-17-05 00:54 crimsunkg      New Issue                                    
+09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
+09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
+09-24-05 20:55 crimsunkg      Note Added: 0006377                          
+09-24-05 22:06 rlrevell       Relationship added       has duplicate 0001453
+09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001316
+09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001460
+11-23-05 20:30 rlrevell       Note Added: 0006827                          
 12-20-05 01:08 rlrevell       Status                   assigned => resolved
 12-20-05 01:08 rlrevell       Resolution               open => fixed       
 ======================================================================
