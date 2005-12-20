@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001316]: can't run mixer to adjusting volumes / no sound
-Date: Tue, 20 Dec 2005 01:09:53 +0100
-Message-ID: <2668149cb68177a2163d31894655838c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Tue, 20 Dec 2005 01:15:23 +0100
+Message-ID: <b894786aef11d2e38af2e2718e8f0f63@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C87419C
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 01:09:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26F7419C
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 01:15:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,132 +24,126 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1316> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
 ======================================================================
-Reported By:                boris
-Assigned To:                tiwai
+Reported By:                misnagid
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1316
-Category:                   PCI - hda-intel
+Issue ID:                   749
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian stable
-Kernel Version:             2.6.13-rc5-git3
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-06-2005 11:11 CEST
-Last Modified:              12-20-2005 01:09 CET
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              12-20-2005 01:15 CET
 ======================================================================
-Summary:                    can't run mixer to adjusting volumes / no sound
+Summary:                    Buzz from ALSA setup
 Description: 
-When I try to run alsamixer it fails with:
-alsamixer: function snd_mixer_load failed: Invalid argument
-
-running ogg123 seems to work ...
-
-running aumix over oss-emu only shows a view controls 
-which have no effect -> no sound
-
-This happened with 2.6.13-rc[3,5]-git?.
-2.6.12-rc5-git8 (for example) works. 
-
-HW: Aopen 915gmm-hfs.
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001429 hda_codec: Unknown model for ALC880
-======================================================================
 
 ----------------------------------------------------------------------
- imre - 09-05-05 13:48 
+ pzad - 11-21-05 20:37 
 ----------------------------------------------------------------------
-I've got the same problem, no sound.
-Kernel version: 2.6.13-git4
-alsa version: v1.0.10rc1
-hardware: Clevo M400A
-root@eridanus:~# alsamixer 
-
-alsamixer: function snd_mixer_load failed: Invalid argument
-
-root@eridanus:~# cat /dev/snd/controlC0
-cat: /dev/snd/controlC0: File descriptor in bad state
-root@eridanus:~# 
-
-lspci -vvn
-
-0000:00:1b.0 0403: 8086:2668 (rev 04)
-        Subsystem: 1558:04a0
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size: 0x08 (32 bytes)
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at c0000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] #10 [0091]
-
-dmesg:
-ALSA sound/pci/hda/hda_intel.c:1074: azx_pcm_prepare: bufsize=0xc030,
-fragsize=0x6018, format=0x11
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x7,
-stream=0x1, channel=0, format=0x11
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x7,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_intel.c:1074: azx_pcm_prepare: bufsize=0x10000,
-fragsize=0x1000, format=0x4011
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x6,
-stream=0x5, channel=0, format=0x4011
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xfffe,
-stream=0x5, channel=0, format=0x4011
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x1,
-stream=0x5, channel=0, format=0x4011
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xffff,
-stream=0x5, channel=0, format=0x4011
-hda_codec: num_steps = 0 for NID=0xb
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xfffe,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x1,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xffff,
-stream=0x0, channel=0, format=0x0
-ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x6,
-stream=0x0, channel=0, format=0x0
-hda_codec: num_steps = 0 for NID=0xb
-
-The kernel version 2.6.12-rc5-git8 works, with a low quality sound.
+I checked log and there was fixed one bug ("Problem manifests as noise
+when
+using more than 2GB of RAM"), but this was fixed in 1.0.10rc3 (not in
+1.0.10rc1).
 
 ----------------------------------------------------------------------
- rlrevell - 11-23-05 20:33 
+ rlrevell - 12-20-05 01:15 
 ----------------------------------------------------------------------
-Possibly fixed in CVS.  See the patch from bug #1563.
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-06-05 11:11 boris          New Issue                                    
-08-06-05 11:11 boris          Distribution              => Debian stable   
-08-06-05 11:11 boris          Kernel Version            => 2.6.13-rc5-git3 
-08-17-05 15:39 boris          Note Added: 0005837                          
-08-18-05 10:41 pshou          Issue Monitored: pshou                       
-09-05-05 13:18 imre           Issue Monitored: imre                        
-09-05-05 13:48 imre           Note Added: 0006040                          
-09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
-11-23-05 20:33 rlrevell       Note Added: 0006829                          
-12-20-05 01:09 rlrevell       Status                   assigned => resolved
-12-20-05 01:09 rlrevell       Resolution               open => fixed       
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+12-26-04 16:44 misnagid       Note Added: 0002937                          
+12-26-04 16:56 pzad           Note Added: 0002938                          
+12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
+12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
+12-26-04 19:44 misnagid       File Added: test.state                       
+12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
+12-26-04 20:09 misnagid       Note Added: 0002947                          
+12-26-04 20:22 pzad           File Added: newtest.state                    
+12-26-04 20:27 pzad           Note Added: 0002948                          
+12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
+12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
+12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
+12-27-04 10:46 pzad           Note Added: 0002958                          
+12-27-04 16:33 misnagid       Note Added: 0002964                          
+12-27-04 16:34 misnagid       File Added: test2.state                      
+12-27-04 16:38 misnagid       Note Added: 0002965                          
+12-27-04 16:45 pzad           Note Added: 0002966                          
+12-27-04 16:58 misnagid       Note Added: 0002967                          
+12-27-04 16:58 misnagid       File Added: test3.state                      
+12-27-04 17:42 misnagid       Note Added: 0002968                          
+12-27-04 17:57 misnagid       Note Added: 0002969                          
+12-27-04 18:16 pzad           Note Added: 0002970                          
+12-27-04 18:43 misnagid       Note Added: 0002971                          
+12-27-04 19:27 misnagid       Note Added: 0002972                          
+12-27-04 21:09 misnagid       Note Added: 0002975                          
+12-27-04 21:31 pzad           Note Added: 0002976                          
+12-27-04 21:47 misnagid       Note Added: 0002977                          
+12-27-04 21:49 misnagid       Note Added: 0002978                          
+12-27-04 22:00 pzad           Note Added: 0002979                          
+12-27-04 22:29 misnagid       Note Added: 0002980                          
+12-27-04 22:54 pzad           Note Added: 0002981                          
+12-27-04 23:15 misnagid       Note Added: 0002982                          
+12-27-04 23:19 misnagid       Note Added: 0002983                          
+12-27-04 23:46 pzad           Note Added: 0002984                          
+12-27-04 23:48 misnagid       Note Added: 0002985                          
+12-28-04 21:13 rlrevell       Note Added: 0002987                          
+01-03-05 00:36 misnagid       Note Added: 0003049                          
+01-03-05 15:10 pzad           Note Added: 0003064                          
+01-09-05 00:27 misnagid       Note Added: 0003132                          
+01-11-05 10:36 pzad           Note Added: 0003141                          
+01-11-05 11:24 misnagid       Note Added: 0003142                          
+01-11-05 23:20 misnagid       Note Added: 0003159                          
+04-22-05 11:04 stransky       Note Added: 0004553                          
+08-24-05 00:55 lonerider      Note Added: 0005921                          
+11-16-05 15:58 misnagid       Note Added: 0006741                          
+11-16-05 16:03 misnagid       Note Added: 0006742                          
+11-16-05 16:10 pzad           Note Added: 0006743                          
+11-20-05 07:29 misnagid       Note Added: 0006763                          
+11-20-05 09:16 pzad           Note Added: 0006764                          
+11-20-05 13:23 misnagid       Note Added: 0006766                          
+11-21-05 19:53 rlrevell       Note Added: 0006774                          
+11-21-05 20:29 misnagid       Note Added: 0006775                          
+11-21-05 20:37 pzad           Note Added: 0006776                          
+12-20-05 01:15 rlrevell       Status                   assigned => resolved
+12-20-05 01:15 rlrevell       Resolution               open => fixed       
+12-20-05 01:15 rlrevell       Note Added: 0007097                          
 ======================================================================
 
 
