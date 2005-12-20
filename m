@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001661]: alsaconf gets everything working but mic input doesn't work after a reboot
-Date: Tue, 20 Dec 2005 03:16:53 +0100
-Message-ID: <8bf5097a54a906adf6320bd2129fdfcf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001644]: Endless Pulsing/repeating sound clip emitting from speakers
+Date: Tue, 20 Dec 2005 04:47:42 +0100
+Message-ID: <d4bf6b90b7a91c19da25edef5fbf1a5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E896519C
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 03:16:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07B091A2
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 04:47:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,41 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1644> 
 ======================================================================
-Reported By:                amarsh04
-Assigned To:                
+Reported By:                snipepod
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1661
-Category:                   PCI - emu10k1
+Issue ID:                   1644
+Category:                   PCI - es1968
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.14.2-686
+Status:                     assigned
+Distribution:               SUSE 10 direct from Novell
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-20-2005 03:16 CET
-Last Modified:              12-20-2005 03:16 CET
+Date Submitted:             12-12-2005 18:56 CET
+Last Modified:              12-20-2005 04:47 CET
 ======================================================================
-Summary:                    alsaconf gets everything working but mic input
-doesn't work after a reboot
+Summary:                    Endless Pulsing/repeating sound clip emitting from
+speakers
 Description: 
-I've finally obtained a SB Live! card that works and alsaconf made
-everything work. However, after a reboot, output still works but not
-microphone input. krecord shows zero input level. Re-running alsaconf
-restores microphone input to a working state.
+As soon as SUSE pops-up a window or dialog box that includes anytype of
+sound (ding, pop, boop, etc), a small piece of the sound gets repeated
+through the ES1968 sound hardware in a repeating patter (typically about
+14 times per 10 seconds). This repeating sound can only be terminated by
+restarting ALSA, via booting, or configurint via YAST2 (which restarts the
+ALSA). 
+I searched the internet and found a SUSE-RPM for ALSA 1.0.10 and installed
+it, but the problem did not get fixed.
+
 ======================================================================
+
+----------------------------------------------------------------------
+ snipepod - 12-16-05 17:33 
+----------------------------------------------------------------------
+Update from SnipePod 12/16/2005.
+I have experiemented with the clock parameter on the ESS Maestro 2em per
+the instructions for the SND-ES1968 on the ALSA-Project website. I have
+tried every option, 0,1,2,3,4,5,6,7,8. Option 0=auto-detect and Option 1
+were the only ones that allowed any valid sound through, but both option 0
+& 1 had the repeating/oscillation sound problem discribed in the original
+problem report. Clock parameters 2,3,4,5,6,7,8 would only create
+screeching static type of sounds.
+
+----------------------------------------------------------------------
+ snipepod - 12-20-05 04:47 
+----------------------------------------------------------------------
+Identified Problem! Have a IOGEAR GPU202 USB 2.0 PCMCIA Cardbus card that
+appears to have sometype of conflict (IRQ?). Had problems when installed
+SUSE with my Netgear wireless card, that also was some type of conflict
+with the GPU202. Installed SUSE fine when GPU202 was removed from
+equation. Readded the GPU202 after successfully installing SUSE, but now
+had the sound pulse problem. Had a hunch and removed the GPU202, restarted
+ALSA, and the pulsing sound problem appears to have disappeared. Next, I
+reinstalled the GPU202, and the sound pulse returned. Next, I decided to
+swap Cardbus/PCMCIA position, beween the GPU202 and the Netgear wireless
+(realizing that the Cardbus slots use different IRQs). Everything seems to
+be working, good sound, wireless and GPU202. Will monitor and report back
+if necessary. Cheers!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-05 03:16 amarsh04       New Issue                                    
-12-20-05 03:16 amarsh04       Distribution              => Debian          
-12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
+12-12-05 18:56 snipepod       New Issue                                    
+12-12-05 18:56 snipepod       Distribution              => SUSE 10 direct from
+Novell
+12-13-05 01:22 snipepod       Issue Monitored: snipepod                    
+12-16-05 17:33 snipepod       Note Added: 0007060                          
+12-20-05 04:47 snipepod       Note Added: 0007101                          
 ======================================================================
 
 
