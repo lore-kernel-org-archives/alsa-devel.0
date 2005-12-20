@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001429]: hda_codec: Unknown model for ALC880
-Date: Tue, 20 Dec 2005 01:08:16 +0100
-Message-ID: <77d238ecc77439fe2d34299d9068b3ec@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001316]: can't run mixer to adjusting volumes / no sound
+Date: Tue, 20 Dec 2005 01:09:53 +0100
+Message-ID: <2668149cb68177a2163d31894655838c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF43019C
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 01:08:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C87419C
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 01:09:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,132 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1429> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1316> 
 ======================================================================
-Reported By:                crimsunkg
+Reported By:                boris
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1429
+Issue ID:                   1316
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-8-686
+Distribution:               Debian stable
+Kernel Version:             2.6.13-rc5-git3
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-17-2005 00:54 CEST
-Last Modified:              12-20-2005 01:08 CET
+Date Submitted:             08-06-2005 11:11 CEST
+Last Modified:              12-20-2005 01:09 CET
 ======================================================================
-Summary:                    hda_codec: Unknown model for ALC880
+Summary:                    can't run mixer to adjusting volumes / no sound
 Description: 
-Please refer to http://bugzilla.ubuntu.com/show_bug.cgi?id=15031
+When I try to run alsamixer it fails with:
+alsamixer: function snd_mixer_load failed: Invalid argument
 
-Using ALSA shipped with kernel 2.6.12 (~1.0.9+cvs), a kernel OOPS occurs.
+running ogg123 seems to work ...
 
-Using ALSA 1.0.10rc1 and cvs (with alsa-lib 1.0.9), no OOPS occurs, but
-hda_codec does not recognize the model with the ALC880 codec
-(http://bugzilla.ubuntu.com/attachment.cgi?id=3808).
+running aumix over oss-emu only shows a view controls 
+which have no effect -> no sound
 
-''lspci -nvv'' output is at
-http://bugzilla.ubuntu.com/attachment.cgi?id=3848
+This happened with 2.6.13-rc[3,5]-git?.
+2.6.12-rc5-git8 (for example) works. 
+
+HW: Aopen 915gmm-hfs.
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001453 2.6.14-rc2 &quot;Unknown model for ALC8...
-has duplicate       0001316 can't run mixer to adjusting volumes / ...
-has duplicate       0001460 no sound on Clevo 400a
+duplicate of        0001429 hda_codec: Unknown model for ALC880
 ======================================================================
 
 ----------------------------------------------------------------------
- crimsunkg - 09-24-05 20:55 
+ imre - 09-05-05 13:48 
 ----------------------------------------------------------------------
-This issue is duplicated in bug #1453.
+I've got the same problem, no sound.
+Kernel version: 2.6.13-git4
+alsa version: v1.0.10rc1
+hardware: Clevo M400A
+root@eridanus:~# alsamixer 
+
+alsamixer: function snd_mixer_load failed: Invalid argument
+
+root@eridanus:~# cat /dev/snd/controlC0
+cat: /dev/snd/controlC0: File descriptor in bad state
+root@eridanus:~# 
+
+lspci -vvn
+
+0000:00:1b.0 0403: 8086:2668 (rev 04)
+        Subsystem: 1558:04a0
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size: 0x08 (32 bytes)
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at c0000000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] #10 [0091]
+
+dmesg:
+ALSA sound/pci/hda/hda_intel.c:1074: azx_pcm_prepare: bufsize=0xc030,
+fragsize=0x6018, format=0x11
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x7,
+stream=0x1, channel=0, format=0x11
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x7,
+stream=0x0, channel=0, format=0x0
+ALSA sound/pci/hda/hda_intel.c:1074: azx_pcm_prepare: bufsize=0x10000,
+fragsize=0x1000, format=0x4011
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x6,
+stream=0x5, channel=0, format=0x4011
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xfffe,
+stream=0x5, channel=0, format=0x4011
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x1,
+stream=0x5, channel=0, format=0x4011
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xffff,
+stream=0x5, channel=0, format=0x4011
+hda_codec: num_steps = 0 for NID=0xb
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xfffe,
+stream=0x0, channel=0, format=0x0
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x1,
+stream=0x0, channel=0, format=0x0
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0xffff,
+stream=0x0, channel=0, format=0x0
+ALSA sound/pci/hda/hda_codec.c:560: hda_codec_setup_stream: NID=0x6,
+stream=0x0, channel=0, format=0x0
+hda_codec: num_steps = 0 for NID=0xb
+
+The kernel version 2.6.12-rc5-git8 works, with a low quality sound.
 
 ----------------------------------------------------------------------
- rlrevell - 11-23-05 20:30 
+ rlrevell - 11-23-05 20:33 
 ----------------------------------------------------------------------
 Possibly fixed in CVS.  See the patch from bug #1563.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-17-05 00:54 crimsunkg      New Issue                                    
-09-17-05 00:54 crimsunkg      Distribution              => Ubuntu Breezy   
-09-17-05 00:54 crimsunkg      Kernel Version            => 2.6.12-8-686    
-09-24-05 20:55 crimsunkg      Note Added: 0006377                          
-09-24-05 22:06 rlrevell       Relationship added       has duplicate 0001453
-09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001316
-09-26-05 19:14 rlrevell       Relationship added       has duplicate 0001460
-11-23-05 20:30 rlrevell       Note Added: 0006827                          
-12-20-05 01:08 rlrevell       Status                   assigned => resolved
-12-20-05 01:08 rlrevell       Resolution               open => fixed       
+08-06-05 11:11 boris          New Issue                                    
+08-06-05 11:11 boris          Distribution              => Debian stable   
+08-06-05 11:11 boris          Kernel Version            => 2.6.13-rc5-git3 
+08-17-05 15:39 boris          Note Added: 0005837                          
+08-18-05 10:41 pshou          Issue Monitored: pshou                       
+09-05-05 13:18 imre           Issue Monitored: imre                        
+09-05-05 13:48 imre           Note Added: 0006040                          
+09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
+11-23-05 20:33 rlrevell       Note Added: 0006829                          
+12-20-05 01:09 rlrevell       Status                   assigned => resolved
+12-20-05 01:09 rlrevell       Resolution               open => fixed       
 ======================================================================
 
 
