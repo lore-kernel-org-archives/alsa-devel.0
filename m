@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001655]: Headphone jack sense and Line jack sense come up on -- need to be off for laptop speaker sound
-Date: Tue, 20 Dec 2005 00:54:01 +0100
-Message-ID: <efaaee875d8d5365468c18df4ddc908b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001460]: no sound on Clevo 400a
+Date: Tue, 20 Dec 2005 01:08:42 +0100
+Message-ID: <4877e6b4278a4cb2ddf3bd34900018ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1408197
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 00:54:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68E0819C
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 01:08:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,106 +24,108 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1655> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1460> 
 ======================================================================
-Reported By:                mdmarmer
-Assigned To:                rlrevell
+Reported By:                imre
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1655
-Category:                   PCI - intel8x0
+Issue ID:                   1460
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Mepis, Ubuntu, Fedora FC3 (probably all)
-Kernel Version:             2.6.10, 2.6.11.14, 2.6.12 (probably all)
+Distribution:               Debian sid
+Kernel Version:             2.6.14-rc2-git5
 Resolution:                 fixed
-Fixed in Version:           1.0.10
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-17-2005 03:37 CET
-Last Modified:              12-20-2005 00:54 CET
+Date Submitted:             09-26-2005 16:02 CEST
+Last Modified:              12-20-2005 01:08 CET
 ======================================================================
-Summary:                    Headphone jack sense and Line jack sense come up on
--- need to be off for laptop speaker sound
+Summary:                    no sound on Clevo 400a
 Description: 
-This problem is encountered very frequently when installing any version of
-Linux on a laptop with AC'97 Intel8x0 sound.  On installation, headphone
-sound will work, but the internal speakers will not.  The solution to this
-problem is not apparent to the user.  Sometimes users find the answer to
-this problem by posting their problem in a forum or by a diligent search. 
+On my Clevo M400A the integrated soundcard doesn't work. When starting
+alsa
+the kernel logs the following:
 
+hda_codec: num_steps = 0 for NID=0xb
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 50
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA sound/pci/hda/hda_intel.c:624: codec_mask = 0x3
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+hda_codec: num_steps = 0 for NID=0x8
 
-Current solution:
+and the last message is printed several times
 
-The user opens KMix or a similar interface and finds switches marked
-Headphone Jack Sense and Line Jack Sense.  These switches are on, though
-the jack(s) are not plugged in.  When the user turns them off and saves
-the configuration, sound works fine.
-
-This affects Toshiba M45-S331, Toshiba Tecra M3, E-Machines M5310, Gateway
-M675PRR, IBM Thinkpad T40, T41, T42, R51, Compaq Presario X1000, Dell
-Dimension 2400, 2350, Sony Vaio FR130 and quite a few other laptop models.
- The problem occurs regardless of the Linux diustro -- I have seen it with
-Ubuntu, Mepis, and Fedora FC3.
-
-Here are bug reports : 
-http://lists.debian.org/debian-kernel/2005/04/msg00655.html
-
-Bug#303311: 2.6.11 Kernel, intel8x0 card and Headphone Jack Sense
-(http://bugs.debian.org
-
-http://www.ces.clemson.edu/linux/alsa.shtml
-
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=144742
-===>>>>
-This is the only report on alsa bugtrack, claims fixed as of 4 Feb 05 -- I
-continue to see this problem regardless of alsa version
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=852
-
-Reports (not specifically bug reports):
-
-http://dancorkill.home.comcast.net/tecra-m3-on-fc4.html
-
-http://ccrma-mail.stanford.edu/pipermail/planetccrma/2005-May/009305.html
-
-http://www.mepis.org/node/6557
-
-http://lists.debian.org/debian-laptop/2005/10/msg00203.html
-
-http://www.mepislovers.org/modules/newbb/viewtopic.php?topic_id=11362&forum=28&post_id=79808#forumpost79808
-
-
-
-
-
-
-
-
+Maybe this is the same issue that was reported in #1316
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001429 hda_codec: Unknown model for ALC880
+duplicate of        0001563 No Sound on Cybersystem S28 (hda_codec:...
 ======================================================================
 
 ----------------------------------------------------------------------
- mdmarmer - 12-18-05 04:48 
+ imre - 11-23-05 21:38 
 ----------------------------------------------------------------------
-I think this has been corrected in 1.0.10 and possibly in some earlier
-versions -- I apologize for posting without thorough testing.
+Applied the patch in issue #1563 on 2.6.15-rc2
+Some errors gone, but news accours.
+alsamixer works now, but still no sound.
 
-Thanks!
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 20 (level, low) -> IRQ 58
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA sound/pci/hda/hda_intel.c:630: codec_mask = 0x3
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+
+ALSA sound/pci/hda/hda_intel.c:1091: azx_pcm_prepare: bufsize=0x10000,
+fragsize=0x1000, format=0x11
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x6,
+stream=0x5, channel=0, format=0x11
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x2,
+stream=0x5, channel=0, format=0x11
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x5,
+stream=0x5, channel=0, format=0x11
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x3,
+stream=0x5, channel=0, format=0x11
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x4,
+stream=0x5, channel=0, format=0x11
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x2,
+stream=0x0, channel=0, format=0x0
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x5,
+stream=0x0, channel=0, format=0x0
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x3,
+stream=0x0, channel=0, format=0x0
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x4,
+stream=0x0, channel=0, format=0x0
+ALSA sound/pci/hda/hda_codec.c:567: hda_codec_setup_stream: NID=0x6,
+stream=0x0, channel=0, format=0x0
+
+----------------------------------------------------------------------
+ imre - 11-24-05 18:18 
+----------------------------------------------------------------------
+I recompiled my kernel with the latest alsa-cvs.
+I works now. Thanks for all help.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-17-05 03:37 mdmarmer       New Issue                                    
-12-17-05 03:37 mdmarmer       Distribution              => Mepis, Ubuntu, Fedora
-FC3 (probably all)
-12-17-05 03:37 mdmarmer       Kernel Version            => 2.6.10, 2.6.11.14,
-2.6.12 (probably all)
-12-17-05 03:40 mdmarmer       Issue Monitored: mdmarmer                    
-12-18-05 04:48 mdmarmer       Note Added: 0007070                          
-12-20-05 00:54 rlrevell       Status                   new => resolved     
-12-20-05 00:54 rlrevell       Fixed in Version          => 1.0.10          
-12-20-05 00:54 rlrevell       Resolution               open => fixed       
-12-20-05 00:54 rlrevell       Assigned To               => rlrevell        
+09-26-05 16:02 imre           New Issue                                    
+09-26-05 16:02 imre           Distribution              => Debian sid      
+09-26-05 16:02 imre           Kernel Version            => 2.6.14-rc2-git5 
+09-26-05 19:14 rlrevell       Relationship added       duplicate of 0001429
+10-10-05 12:21 drlizau        Note Added: 0006448                          
+10-10-05 12:24 drlizau        Issue Monitored: drlizau                     
+10-11-05 16:33 tiwai          Note Added: 0006453                          
+10-13-05 11:43 drlizau        Note Added: 0006476                          
+10-18-05 07:52 drlizau        Note Edited: 0006476                         
+11-23-05 20:31 rlrevell       Relationship added       duplicate of 0001563
+11-23-05 21:38 imre           Note Added: 0006835                          
+11-24-05 18:18 imre           Note Added: 0006843                          
+12-20-05 01:08 rlrevell       Status                   assigned => resolved
+12-20-05 01:08 rlrevell       Resolution               open => fixed       
 ======================================================================
 
 
