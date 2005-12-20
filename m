@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001644]: Endless Pulsing/repeating sound clip emitting from speakers
-Date: Tue, 20 Dec 2005 04:47:42 +0100
-Message-ID: <d4bf6b90b7a91c19da25edef5fbf1a5b@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
+Date: Tue, 20 Dec 2005 06:20:16 +0100
+Message-ID: <fef59f7b1b704507682d3edd018a1fd3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07B091A2
-	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 04:47:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3A5F195
+	for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2005 06:20:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1644> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
 ======================================================================
-Reported By:                snipepod
-Assigned To:                tiwai
+Reported By:                lilbudda
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1644
-Category:                   PCI - es1968
+Project:                    ALSA - utils
+Issue ID:                   1657
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               SUSE 10 direct from Novell
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             12-12-2005 18:56 CET
-Last Modified:              12-20-2005 04:47 CET
+Date Submitted:             12-17-2005 18:44 CET
+Last Modified:              12-20-2005 06:20 CET
 ======================================================================
-Summary:                    Endless Pulsing/repeating sound clip emitting from
-speakers
+Summary:                    no iec958 controls for hda-intel
 Description: 
-As soon as SUSE pops-up a window or dialog box that includes anytype of
-sound (ding, pop, boop, etc), a small piece of the sound gets repeated
-through the ES1968 sound hardware in a repeating patter (typically about
-14 times per 10 seconds). This repeating sound can only be terminated by
-restarting ALSA, via booting, or configurint via YAST2 (which restarts the
-ALSA). 
-I searched the internet and found a SUSE-RPM for ALSA 1.0.10 and installed
-it, but the problem did not get fixed.
+When trying to configure sound to pass through the spdif port, alsamixer
+does not show any controls for the iec958.
 
+Sound plays fine from rear headphone jack.
 ======================================================================
 
 ----------------------------------------------------------------------
- snipepod - 12-16-05 17:33 
+ rlrevell - 12-19-05 16:50 
 ----------------------------------------------------------------------
-Update from SnipePod 12/16/2005.
-I have experiemented with the clock parameter on the ESS Maestro 2em per
-the instructions for the SND-ES1968 on the ALSA-Project website. I have
-tried every option, 0,1,2,3,4,5,6,7,8. Option 0=auto-detect and Option 1
-were the only ones that allowed any valid sound through, but both option 0
-& 1 had the repeating/oscillation sound problem discribed in the original
-problem report. Clock parameters 2,3,4,5,6,7,8 would only create
-screeching static type of sounds.
+OK, try some of the other "model" options listed in the "Module
+snd-hda-intel" section of Documentation/ALSA-Configuration.txt.
 
 ----------------------------------------------------------------------
- snipepod - 12-20-05 04:47 
+ lilbudda - 12-20-05 06:20 
 ----------------------------------------------------------------------
-Identified Problem! Have a IOGEAR GPU202 USB 2.0 PCMCIA Cardbus card that
-appears to have sometype of conflict (IRQ?). Had problems when installed
-SUSE with my Netgear wireless card, that also was some type of conflict
-with the GPU202. Installed SUSE fine when GPU202 was removed from
-equation. Readded the GPU202 after successfully installing SUSE, but now
-had the sound pulse problem. Had a hunch and removed the GPU202, restarted
-ALSA, and the pulsing sound problem appears to have disappeared. Next, I
-reinstalled the GPU202, and the sound pulse returned. Next, I decided to
-swap Cardbus/PCMCIA position, beween the GPU202 and the Netgear wireless
-(realizing that the Cardbus slots use different IRQs). Everything seems to
-be working, good sound, wireless and GPU202. Will monitor and report back
-if necessary. Cheers!
+Edited the /etc/modules.d/alsa file and tried the various configurations by
+adding the model= to the end of the module line. Restarted the alsa
+service and then re-ran alsamixer but no new controls appeared. Also
+deleted local .asoundrc and /etc/asound.conf and asound.state but still no
+change.
+
+uploaded results from lspci -nv
+
+my machine is an HP Pavilion a730n
+http://h10025.www1.hp.com/ewfrf/wc/document?dlc=en&lc=en&product=431078&lang=en&cc=us&docname=c00196251
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-12-05 18:56 snipepod       New Issue                                    
-12-12-05 18:56 snipepod       Distribution              => SUSE 10 direct from
-Novell
-12-13-05 01:22 snipepod       Issue Monitored: snipepod                    
-12-16-05 17:33 snipepod       Note Added: 0007060                          
-12-20-05 04:47 snipepod       Note Added: 0007101                          
+12-17-05 18:44 lilbudda       New Issue                                    
+12-19-05 08:05 rlrevell       Note Added: 0007091                          
+12-19-05 16:39 lilbudda       Note Added: 0007095                          
+12-19-05 16:50 rlrevell       Note Added: 0007096                          
+12-20-05 06:14 lilbudda       File Added: lspci.txt                        
+12-20-05 06:20 lilbudda       Note Added: 0007102                          
 ======================================================================
 
 
