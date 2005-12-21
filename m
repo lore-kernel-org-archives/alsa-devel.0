@@ -1,14 +1,16 @@
-From: laugeo2@free.fr
-Subject: Re: Ameter plugin : looping sound
-Date: Wed, 21 Dec 2005 23:29:16 +0100
-Message-ID: <1135204156.43a9d73c43032@imp3-g19.free.fr>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
+Date: Wed, 21 Dec 2005 23:40:25 +0100
+Message-ID: <20051221224025.GC3917__8739.67403681508$1135204951$gmane$org@stusta.de>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org> <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local> <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org> <20051220191412.GA4578@stusta.de> <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org> <20051220202325.GA3850@stusta.de> <s5hr786zfzm.wl%tiwai@suse.de> <20051221182214.GB3888@stusta.de> <s5hzmmuxplc.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp3-g19.free.fr (smtp3-g19.free.fr [212.27.42.29])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8FE51B6
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 23:29:17 +0100 (MET)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8AED4199
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 23:40:26 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5hzmmuxplc.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +20,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: rlrevell@joe-job.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linus Torvalds <torvalds@osdl.org>, Sergey Vlasov <vsu@altlinux.ru>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> >Hi,
-> >Ameter  is a metering plugin for Alsa :
-> >http://laugeo.free.fr/ameter.html
-> > It stopped working since 1.0.10,and also fails with 1.0.11rc1 (was ok=
- with
-> >1.0.9) :
-> >Playing a sound with aplay (or any other program) cause  a short sound
-looping
-> >in audio out ,while  peakmeter displays the real soundfile level .
-> > It seems that the looping sound is the end of the last played sound .
-> > I have Mandriva 2005 (2.6.11 standard kernel),  ens1371 sound card.
-> >Somenone else has reported the problem ( I don't know his config) .
-> >
-> >Test command:
-> >aplay -D ameter sound.wav -v
-> >It returns no error.
+On Wed, Dec 21, 2005 at 07:38:39PM +0100, Takashi Iwai wrote:
+> At Wed, 21 Dec 2005 19:22:14 +0100,
+> Adrian Bunk wrote:
+> > 
+> > On Wed, Dec 21, 2005 at 03:23:09PM +0100, Takashi Iwai wrote:
+> > > At Tue, 20 Dec 2005 21:23:25 +0100,
+> > > Adrian Bunk wrote:
+> > > > 
+> > > > On Tue, Dec 20, 2005 at 11:59:20AM -0800, Linus Torvalds wrote:
+> > > > > 
+> > > > > 
+> > > > > On Tue, 20 Dec 2005, Adrian Bunk wrote:
+> > > > > >
+> > > > > > > Adrian, does it work if you change the "module_init()" in 
+> > > > > > > sound/sound_core.c into a "fs_initcall()"?
+> > > > > > 
+> > > > > > No, this didn't work.
+> > > > > > 
+> > > > > > What did work was to leave sound/sound_core.c alone
+> > > > > 
+> > > > > Can you do try the other way again, with sound/core/sound.c fixed too?
+> > > > >...
+> > > > 
+> > > > This works in the sense that the kernel boots and my saa7134 TV card is 
+> > > > giving both audio and video output.
+> > > > 
+> > > > But the non-saa7134 access to my soundcard (e.g. rexima or xmms) is no 
+> > > > longer working.
+> > > 
+> > > What is missing there?  No sound card entry in /proc/asound/cards?
+> > >...
+> > 
+> > <--  snip  -->
+> > 
+> > 0 [SAA7134        ]: SAA7134 - SAA7134
+> >                      saa7134[0] at 0xed800000 irq 18
+> > 1 [V8237          ]: VIA8237 - VIA 8237
+> >                      VIA 8237 with AD1888 at 0xe000, irq 21
+> > 
+> > <--  snip  -->
+> > 
+> > What changed compared to the working setup (if the bug is really here) 
+> > is the order of the two.
+> 
+> Well, that's not anyway guaranteed unless you pass the proper index
+> options.
 
->The easiest solution is to use ALSA CVS to do a binary search and find
->out exactly which commit broke it.
->
->I like to go by date as not all releases get tagged in CVS:
->
->cvs update -D2005-11-01 -A
->etc
->Lee
+I'm not sure whether this is really related to my problem:
 
-It is ok on 2005-09-02 and broken on 2005-09-03
-Changing only alsa-lib  makes the problem to appear.
+No matter how they are ordered, shouldn't my soundcard still be 
+accessible from xmms or rexima?
 
-The files that are updated between 09-02 and 09-03:
-U alsa-lib/src/pcm/pcm_file.c
-U alsa-lib/src/pcm/pcm_generic.c
-U alsa-lib/src/pcm/pcm_generic.h
-U alsa-lib/src/pcm/pcm_local.h
-U alsa-lib/src/pcm/pcm_mmap.c
-U alsa-lib/src/pcm/pcm_null.c
-U alsa-lib/src/pcm/pcm_plug.c
-U alsa-lib/src/pcm/pcm_rate.c
-U alsa-lib/src/pcm/pcm_softvol.c
+> In the case above, snd_via82xx.index=0 saa7134.index=1 should work.
 
-May be it is enough for you, or I can search more exactly
-which file(s) are bad for the meter.
-Regards
+This results in my soundcard being no longer available:
 
-Laurent
+<--  snip  -->
+
+...
+Unknown boot option `saa7134.index=1': ignoring
+...
+cannot find the slot for index 0 (range 0-0)
+VIA 82xx Audio: probe of 0000:00:11.5 failed with error -12
+ALSA device list:
+  #0: saa7134[0] at 0xed800000 irq 18
+NET: Registered protocol family 2
+...
+
+<--  snip  -->
+
+But as said above, I don't suspect the order of the devices being the 
+problem.
+
+> Or you may tune with udev, too.
+
+-ENOUDEV
+
+> Takashi
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
 
 
 -------------------------------------------------------
