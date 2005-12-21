@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Wed, 21 Dec 2005 16:32:36 +0100
-Message-ID: <7ac51a205bbe9d09f5b886a9c17f9c44@bugtrack.alsa-project.org>
+Date: Wed, 21 Dec 2005 18:12:05 +0100
+Message-ID: <10e7929f454ad5c3d50da6f96465c217@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D790198
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 16:32:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61E5C1A7
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 18:12:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              12-21-2005 16:32 CET
+Last Modified:              12-21-2005 18:12 CET
 ======================================================================
 Summary:                    Support for Creative SB Audigy 2 ZS Notebook
 Description: 
@@ -49,17 +49,6 @@ I haven't heard any positive reports yet...
 
 Thank you!
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 12-21-05 16:09 
-----------------------------------------------------------------------
-audigy2-notebook-sound-fix.diff fixes the distortion problem with output.
-Only headphone output tested.
-Other speakers and sound capture not tested.
-
-This fix has been put in alsa CVS.
-
-So, we are getting there.
 
 ----------------------------------------------------------------------
  jcdutton - 12-21-05 16:32 
@@ -71,6 +60,29 @@ notebook card.
 TODO:
 Sound capture (analog and digital)
 Digital output (untested, might already work).
+
+----------------------------------------------------------------------
+ bubbleguuum - 12-21-05 18:12 
+----------------------------------------------------------------------
+Many thanks for this !
+
+I just tested and I have sound. However:
+
+- At low volume the sound is badly distorded with some noise. I suppose it
+might be the case at higher volume too. There's also this constant volume
+white noise at all volume level : listen to some quiet music at high
+volume to hear it. Test done using xmms + alsa out plug in
+Just for reference using windows you can put the card to 0db in the
+creative mixer (ie all the way to the max) and the sound is crystal
+clear)
+
+- Output is very loud, a lot louder at the same settings that the internal
+intel hda card (which I always found a bit low)
+
+- If you go too high with the Master or PCM slider clicks appears
+
+- front, rear and center outputs give no sound but I suppose this is
+expected
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -99,6 +111,7 @@ Date Modified  Username       Field                    Change
 12-21-05 16:31 jcdutton       File Added: audigy-notebook-speakers-enable.diff  
                  
 12-21-05 16:32 jcdutton       Note Added: 0007110                          
+12-21-05 18:12 bubbleguuum    Note Added: 0007111                          
 ======================================================================
 
 
