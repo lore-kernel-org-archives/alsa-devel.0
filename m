@@ -1,16 +1,19 @@
-From: Adrian Bunk <bunk@stusta.de>
+From: Linus Torvalds <torvalds@osdl.org>
 Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
-Date: Wed, 21 Dec 2005 19:22:14 +0100
-Message-ID: <20051221182214.GB3888@stusta.de>
-References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org> <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local> <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org> <20051220191412.GA4578@stusta.de> <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org> <20051220202325.GA3850@stusta.de> <s5hr786zfzm.wl%tiwai@suse.de>
+Date: Wed, 21 Dec 2005 10:32:05 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0512211029200.4827@g5.osdl.org>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
+ <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local>
+ <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org> <20051220191412.GA4578@stusta.de>
+ <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org> <43A86B20.1090104@superbug.co.uk>
+ <Pine.LNX.4.64.0512201248481.4827@g5.osdl.org> <43A989CF.3000901@pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 42A6C1B4
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 19:22:18 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <s5hr786zfzm.wl%tiwai@suse.de>
+Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B9521B4
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 19:32:26 +0100 (MET)
+In-Reply-To: <43A989CF.3000901@pianodisc.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,62 +23,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linus Torvalds <torvalds@osdl.org>, Sergey Vlasov <vsu@altlinux.ru>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
+To: Steve deRosier <derosier@pianodisc.com>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, Adrian Bunk <bunk@stusta.de>, Sergey Vlasov <vsu@altlinux.ru>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 21, 2005 at 03:23:09PM +0100, Takashi Iwai wrote:
-> At Tue, 20 Dec 2005 21:23:25 +0100,
-> Adrian Bunk wrote:
-> > 
-> > On Tue, Dec 20, 2005 at 11:59:20AM -0800, Linus Torvalds wrote:
-> > > 
-> > > 
-> > > On Tue, 20 Dec 2005, Adrian Bunk wrote:
-> > > >
-> > > > > Adrian, does it work if you change the "module_init()" in 
-> > > > > sound/sound_core.c into a "fs_initcall()"?
-> > > > 
-> > > > No, this didn't work.
-> > > > 
-> > > > What did work was to leave sound/sound_core.c alone
-> > > 
-> > > Can you do try the other way again, with sound/core/sound.c fixed too?
-> > >...
-> > 
-> > This works in the sense that the kernel boots and my saa7134 TV card is 
-> > giving both audio and video output.
-> > 
-> > But the non-saa7134 access to my soundcard (e.g. rexima or xmms) is no 
-> > longer working.
+
+
+On Wed, 21 Dec 2005, Steve deRosier wrote:
 > 
-> What is missing there?  No sound card entry in /proc/asound/cards?
->...
+> Thankfully, we've never had to deal with this sort of failure; all of our Alsa
+> drivers and services have been well behaved (mostly).
 
-<--  snip  -->
+Yes, I think the common case is that built-in _does_ work. I certainly 
+have used sound that way. This one case is a bit special just because it's 
+not under the sound/ directory, but I suspect that may be true of some USB 
+sound"cards" too. 
 
-0 [SAA7134        ]: SAA7134 - SAA7134
-                     saa7134[0] at 0xed800000 irq 18
-1 [V8237          ]: VIA8237 - VIA 8237
-                     VIA 8237 with AD1888 at 0xe000, irq 21
+Now, hot-plug devices tend to have a stronger case for being built as 
+modules, although even there I personally actually end up just building in 
+the devices I have (whether cardbus cards or things like the USB
+printer/mouse/keyboard).
 
-<--  snip  -->
+So I don't think sound is terminally broken here, just a few small details 
+that it gets wrong that causes some odder drivers to not like being built 
+in.
 
-What changed compared to the working setup (if the bug is really here) 
-is the order of the two.
-
-> Takashi
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+		Linus
 
 
 -------------------------------------------------------
