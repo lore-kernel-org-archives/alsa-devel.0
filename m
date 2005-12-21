@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001575]: Multi ice1712 cards don't work in duplex mode
-Date: Wed, 21 Dec 2005 23:59:26 +0100
-Message-ID: <215652d64188fc43da981ba0ae40401f@bugtrack.alsa-project.org>
+Date: Thu, 22 Dec 2005 00:57:13 +0100
+Message-ID: <a9f903be62efb5e29a7f120127a49451@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5DA61B7
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 23:59:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B40C1B6
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 00:57:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             11-18-2005 01:12 CET
-Last Modified:              12-21-2005 23:59 CET
+Last Modified:              12-22-2005 00:57 CET
 ======================================================================
 Summary:                    Multi ice1712 cards don't work in duplex mode
 Description: 
@@ -77,17 +77,6 @@ it just appears that the multi plugin can't deal with this.
 ======================================================================
 
 ----------------------------------------------------------------------
- johnrigg - 12-03-05 22:56 
-----------------------------------------------------------------------
-The change that broke it was pcm_multi.c rev 1.89 (Jan 20 2005).
-In alsa-lib-1.0.10/src/pcm/multi_pcm.c commenting out lines 600-641 along
-with lines 729 and 731 removes the following functions and allows it to
-work with jackd in duplex mode:
-snd_pcm_multi_link_fd_failed()
-snd_pcm_multi_link_fd()
-snd_pcm_multi_unlink()
-
-----------------------------------------------------------------------
  Roman - 12-21-05 23:59 
 ----------------------------------------------------------------------
 We have almost the same problem with 2 x M-Audio Delta 1010.
@@ -117,6 +106,28 @@ matter which soundcard is selected during doing changes. After selecting
 the profile from the previous changed soundcard the settings seem to get
 lost.
 
+----------------------------------------------------------------------
+ johnrigg - 12-22-05 00:57 
+----------------------------------------------------------------------
+I just noticed a couple of days ago that envy24control from
+alsa-tools-1.0.10
+with the patch for the word clock doesn't work on 2.6.13 kernel, only on
+2.6.14
+(and hopefully 2.6.15-rc?). On 2.6.13 it can't read word clock status (the
+thing the patch fixes on 2.6.14). Maybe if you try removing the patch it
+will work again on 2.6.13.
+envy24control also has another quirk. The second card can't be locked to
+the word clock input without clicking on the S/PDIF In button first. Then
+the Word Clock button works.
+Unfortunately I still haven't found why the poll timeout is occurring. I
+can use
+duplex multi_pcm mode with kernels up to 2.6.14-rt20 with patched
+pcm_multi, but -rt22 breaks it again. I'm about to try 2.6.15-rc5-rt4 to
+see if it works again
+on my system.
+There's a long thread on jackit-devel about this:
+http://sourceforge.net/mailarchive/forum.php?thread_id=9270417&forum_id=3040
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -126,6 +137,8 @@ Date Modified  Username       Field                    Change
 12-21-05 23:16 Roman          Issue Monitored: Roman                       
 12-21-05 23:16 Roman          Issue End Monitor: Roman                     
 12-21-05 23:59 Roman          Note Added: 0007113                          
+12-22-05 00:00 Roman          Issue Monitored: Roman                       
+12-22-05 00:57 johnrigg       Note Added: 0007114                          
 ======================================================================
 
 
