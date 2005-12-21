@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001665]: Alsaconf crashes with driver e18xx
-Date: Wed, 21 Dec 2005 15:59:06 +0100
-Message-ID: <64bf0aa5be7d0ec3e0164e8a145c1058@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
+Date: Wed, 21 Dec 2005 16:09:01 +0100
+Message-ID: <690658600cdd7e198db496eabfc69b40@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70C831AD
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 15:59:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE7E21B4
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 16:09:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1665> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
 ======================================================================
-Reported By:                renium
-Assigned To:                
+Reported By:                gflash
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1665
-Category:                   ISA - es18xx
+Issue ID:                   927
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             Kernel 2.6.12-r10
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-21-2005 15:59 CET
-Last Modified:              12-21-2005 15:59 CET
+Date Submitted:             02-20-2005 08:53 CET
+Last Modified:              12-21-2005 16:09 CET
 ======================================================================
-Summary:                    Alsaconf crashes with driver e18xx
+Summary:                    Support for Creative SB Audigy 2 ZS Notebook
 Description: 
-Siemens Scenic Mobile 510 Notebook
-Compiled ALSA in the kernel as modules
-and started alsaconf.
-After searching soundcards the messages comes:
-No supported PnP or PCI card found.
-Input Would you like to probe legacy ISA sound cards/chips?
-Yes.... 
-Found an es18xx ESS ES18xx AudioDrive and the system crashes.
-The hardware probe stops the whole system
-and it freezes.
+Is this PCMCIA Souncard supported or will it be supported in the next time?
+I haven't heard any positive reports yet...
+
+Thank you!
 ======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 12-13-05 12:15 
+----------------------------------------------------------------------
+This card is still not working in Linux.
+The current status is that the card is now recognised, but the sound
+output is badly distorted. Until that is fixed, the card is still unusable
+in Linux.
+The distortion is like it doing massive gain (+12 dB) and then clipping
+the result, so pretty nasty. So, still work-in-progress
+
+----------------------------------------------------------------------
+ jcdutton - 12-21-05 16:09 
+----------------------------------------------------------------------
+audigy2-notebook-sound-fix.diff fixes the distortion problem with output.
+Only headphone output tested.
+Other speakers and sound capture not tested.
+
+This fix has been put in alsa CVS.
+
+So, we are getting there.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-21-05 15:59 renium         New Issue                                    
-12-21-05 15:59 renium         Distribution              => Gentoo          
-12-21-05 15:59 renium         Kernel Version            => Kernel 2.6.12-r10
+02-20-05 08:53 gflash         New Issue                                    
+02-20-05 12:32 jcdutton       Note Added: 0003673                          
+02-20-05 14:06 gflash         Note Added: 0003674                          
+02-20-05 14:39 jcdutton       Note Added: 0003675                          
+02-20-05 14:47 jcdutton       Note Edited: 0003675                         
+07-25-05 17:43 dale           Note Added: 0005564                          
+07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
+08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
+10-30-05 21:08 jcdutton       Note Added: 0006577                          
+10-31-05 00:55 buckvitulli    Note Added: 0006578                          
+10-31-05 12:43 jcdutton       Status                   new => assigned     
+10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
+11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
+11-30-05 15:58 bubbleguuum    Issue Monitored: bubbleguuum                    
+12-06-05 02:55 hades          Issue Monitored: hades                       
+12-06-05 02:56 hades          Note Added: 0006918                          
+12-06-05 13:26 jpeak          Issue End Monitor: jpeak                     
+12-13-05 12:15 jcdutton       Note Added: 0006990                          
+12-21-05 16:07 jcdutton       File Added: audigy2-notebook-sound-fix.diff       
+            
+12-21-05 16:09 jcdutton       Note Added: 0007109                          
 ======================================================================
 
 
