@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Wed, 21 Dec 2005 16:09:01 +0100
-Message-ID: <690658600cdd7e198db496eabfc69b40@bugtrack.alsa-project.org>
+Date: Wed, 21 Dec 2005 16:32:36 +0100
+Message-ID: <7ac51a205bbe9d09f5b886a9c17f9c44@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE7E21B4
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 16:09:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D790198
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 16:32:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              12-21-2005 16:09 CET
+Last Modified:              12-21-2005 16:32 CET
 ======================================================================
 Summary:                    Support for Creative SB Audigy 2 ZS Notebook
 Description: 
@@ -49,16 +49,6 @@ I haven't heard any positive reports yet...
 
 Thank you!
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 12-13-05 12:15 
-----------------------------------------------------------------------
-This card is still not working in Linux.
-The current status is that the card is now recognised, but the sound
-output is badly distorted. Until that is fixed, the card is still unusable
-in Linux.
-The distortion is like it doing massive gain (+12 dB) and then clipping
-the result, so pretty nasty. So, still work-in-progress
 
 ----------------------------------------------------------------------
  jcdutton - 12-21-05 16:09 
@@ -70,6 +60,17 @@ Other speakers and sound capture not tested.
 This fix has been put in alsa CVS.
 
 So, we are getting there.
+
+----------------------------------------------------------------------
+ jcdutton - 12-21-05 16:32 
+----------------------------------------------------------------------
+audigy-notebook-speakers-enable.diff 
+This patch adds support for surround7.1 output from the Audigy 2 ZS
+notebook card.
+
+TODO:
+Sound capture (analog and digital)
+Digital output (untested, might already work).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +96,9 @@ Date Modified  Username       Field                    Change
 12-21-05 16:07 jcdutton       File Added: audigy2-notebook-sound-fix.diff       
             
 12-21-05 16:09 jcdutton       Note Added: 0007109                          
+12-21-05 16:31 jcdutton       File Added: audigy-notebook-speakers-enable.diff  
+                 
+12-21-05 16:32 jcdutton       Note Added: 0007110                          
 ======================================================================
 
 
