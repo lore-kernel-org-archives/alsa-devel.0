@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001667]: Distorted sound
-Date: Wed, 21 Dec 2005 22:15:45 +0100
-Message-ID: <7ac7dbc70dc81430b5fad6d0df4798bc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001661]: alsaconf gets everything working but mic input doesn't work after a reboot
+Date: Wed, 21 Dec 2005 22:23:16 +0100
+Message-ID: <7c7923785d1e91b9a6bba331c468ff6f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 976161B6
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 22:15:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 388FD1BF
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 22:23:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,48 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1667> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
 ======================================================================
-Reported By:                nirvanix
+Reported By:                amarsh04
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1667
-Category:                   PCI - via82xx
+Issue ID:                   1661
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Arch
-Kernel Version:             2.6.14
+Distribution:               Debian
+Kernel Version:             2.6.14.2-686
 ======================================================================
-Date Submitted:             12-21-2005 22:15 CET
-Last Modified:              12-21-2005 22:15 CET
+Date Submitted:             12-20-2005 03:16 CET
+Last Modified:              12-21-2005 22:23 CET
 ======================================================================
-Summary:                    Distorted sound
+Summary:                    alsaconf gets everything working but mic input
+doesn't work after a reboot
 Description: 
-I'm getting sound distortion (buzz or crackle) when playing audio files on
-my linux system using the snd_via82xx module.
-
-I know that it's the driver because I can boot kernel 2.4 with the Via
-proprietary module viaudiocombo and the sound is crystal clear on the same
-system.
-
-
-
-
-
-
+I've finally obtained a SB Live! card that works and alsaconf made
+everything work. However, after a reboot, output still works but not
+microphone input. krecord shows zero input level. Re-running alsaconf
+restores microphone input to a working state.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 12-20-05 20:58 
+----------------------------------------------------------------------
+It sounds like a mixer settings problem.  Please provide the output of
+"amixer" for the working and non-working setups.
+
+----------------------------------------------------------------------
+ amarsh04 - 12-21-05 22:23 
+----------------------------------------------------------------------
+I have attached the output of amixer for both the working and the
+non-working cases, and will also attach the output of lsmod for both the
+working and non-working cases.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-21-05 22:15 nirvanix       New Issue                                    
-12-21-05 22:15 nirvanix       Distribution              => Arch            
-12-21-05 22:15 nirvanix       Kernel Version            => 2.6.14          
+12-20-05 03:16 amarsh04       New Issue                                    
+12-20-05 03:16 amarsh04       Distribution              => Debian          
+12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
+12-20-05 12:44 amarsh04       Note Added: 0007104                          
+12-20-05 20:58 rlrevell       Note Added: 0007105                          
+12-21-05 22:20 amarsh04       File Added: amixerworking.txt                    
+12-21-05 22:21 amarsh04       File Added: amixernotworking.txt                  
+ 
+12-21-05 22:23 amarsh04       Note Added: 0007112                          
 ======================================================================
 
 
