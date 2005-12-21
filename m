@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001666]: Mixer controls "Headphones" and "Master"  misassigned.
-Date: Wed, 21 Dec 2005 20:07:27 +0100
-Message-ID: <cfc53a69b90dcd84bec270f7fe7ea403@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 21 Dec 2005 19:34:43 -0000
+Message-ID: <E1Ep9jf-0001Vv-NZ@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC2C3179
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 20:07:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +12,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1666> 
-======================================================================
-Reported By:                atiounkine
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1666
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             12-21-2005 20:07 CET
-Last Modified:              12-21-2005 20:07 CET
-======================================================================
-Summary:                    Mixer controls "Headphones" and "Master" 
-misassigned.
-Description: 
-Mixer controls "Headphones" and "Master"  misassigned.
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-Master is not working and Headphones is working as Master.
-I can control volume with Headphones, PCM and DXS1 .
-We have tried a kernel options ac97_quirk  from 0 to 4 and  hp_only and
-nothing change.
+--- Original message follows.
 
-ALSA drivers version is  1.0.10 .
-Kernel is 2.6.11 with some Colivas desktop patches.
-Chips Via VT8235 and  VIA 1612A
-lspci -n: 1106:3059 (rev. 50)
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-Motherboard Biostar U8668D ver. 7.0 with Pentium 4.
+The original message is over 5k.  Message truncated to 1K.
 
-Thank you
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.241>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta196.mail.re2.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO mdrypscg.net) (64.251.132.84)
+  by mta196.mail.re2.yahoo.com with SMTP; Wed, 21 Dec 2005 11:34:41 -0800
+From: alsa-devel@lists.sourceforge.net
+To: ellenorzes@yahoo.com
+Date: Wed, 21 Dec 2005 19:31:48 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Mailer: SpeedMail_V6.89
+X-Priority: 3 (Normal)
+Message-ID: <a4baff.e4d4eb2fdf@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=====47dfe25858d57eacf5ab77"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-======================================================================
+--=====47dfe25858d57eacf5ab77
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-21-05 20:07 atiounkine     New Issue                                    
-12-21-05 20:07 atiounkine     Kernel Version            => 2.6.11          
-======================================================================
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
+plz read and check ...
+cyaaaaaaa
+--=====47dfe25858d57eacf5ab7
+*** MESSAGE TRUNCATED ***
 
 
 
