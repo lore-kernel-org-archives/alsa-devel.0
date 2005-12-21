@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 21 Dec 2005 19:34:43 -0000
-Message-ID: <E1Ep9jf-0001Vv-NZ@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001667]: Distorted sound
+Date: Wed, 21 Dec 2005 22:15:45 +0100
+Message-ID: <7ac7dbc70dc81430b5fad6d0df4798bc@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 976161B6
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 22:15:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1667> 
+======================================================================
+Reported By:                nirvanix
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1667
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Arch
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             12-21-2005 22:15 CET
+Last Modified:              12-21-2005 22:15 CET
+======================================================================
+Summary:                    Distorted sound
+Description: 
+I'm getting sound distortion (buzz or crackle) when playing audio files on
+my linux system using the snd_via82xx module.
 
---- Original message follows.
+I know that it's the driver because I can boot kernel 2.4 with the Via
+proprietary module viaudiocombo and the sound is crystal clear on the same
+system.
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
 
-The original message is over 5k.  Message truncated to 1K.
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.241>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta196.mail.re2.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO mdrypscg.net) (64.251.132.84)
-  by mta196.mail.re2.yahoo.com with SMTP; Wed, 21 Dec 2005 11:34:41 -0800
-From: alsa-devel@lists.sourceforge.net
-To: ellenorzes@yahoo.com
-Date: Wed, 21 Dec 2005 19:31:48 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Mailer: SpeedMail_V6.89
-X-Priority: 3 (Normal)
-Message-ID: <a4baff.e4d4eb2fdf@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=====47dfe25858d57eacf5ab77"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
 
---=====47dfe25858d57eacf5ab77
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-plz read and check ...
-cyaaaaaaa
---=====47dfe25858d57eacf5ab7
-*** MESSAGE TRUNCATED ***
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-21-05 22:15 nirvanix       New Issue                                    
+12-21-05 22:15 nirvanix       Distribution              => Arch            
+12-21-05 22:15 nirvanix       Kernel Version            => 2.6.14          
+======================================================================
+
 
 
 
