@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Wed, 21 Dec 2005 18:12:05 +0100
-Message-ID: <10e7929f454ad5c3d50da6f96465c217@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
+Date: Wed, 21 Dec 2005 19:22:14 +0100
+Message-ID: <20051221182214.GB3888@stusta.de>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org> <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local> <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org> <20051220191412.GA4578@stusta.de> <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org> <20051220202325.GA3850@stusta.de> <s5hr786zfzm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61E5C1A7
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 18:12:05 +0100 (MET)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 42A6C1B4
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 19:22:18 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5hr786zfzm.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,102 +20,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linus Torvalds <torvalds@osdl.org>, Sergey Vlasov <vsu@altlinux.ru>, Ricardo Cerqueira <v4l@cerqueira.org>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Dec 21, 2005 at 03:23:09PM +0100, Takashi Iwai wrote:
+> At Tue, 20 Dec 2005 21:23:25 +0100,
+> Adrian Bunk wrote:
+> > 
+> > On Tue, Dec 20, 2005 at 11:59:20AM -0800, Linus Torvalds wrote:
+> > > 
+> > > 
+> > > On Tue, 20 Dec 2005, Adrian Bunk wrote:
+> > > >
+> > > > > Adrian, does it work if you change the "module_init()" in 
+> > > > > sound/sound_core.c into a "fs_initcall()"?
+> > > > 
+> > > > No, this didn't work.
+> > > > 
+> > > > What did work was to leave sound/sound_core.c alone
+> > > 
+> > > Can you do try the other way again, with sound/core/sound.c fixed too?
+> > >...
+> > 
+> > This works in the sense that the kernel boots and my saa7134 TV card is 
+> > giving both audio and video output.
+> > 
+> > But the non-saa7134 access to my soundcard (e.g. rexima or xmms) is no 
+> > longer working.
+> 
+> What is missing there?  No sound card entry in /proc/asound/cards?
+>...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
-======================================================================
-Reported By:                gflash
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   927
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              12-21-2005 18:12 CET
-======================================================================
-Summary:                    Support for Creative SB Audigy 2 ZS Notebook
-Description: 
-Is this PCMCIA Souncard supported or will it be supported in the next time?
-I haven't heard any positive reports yet...
+<--  snip  -->
 
-Thank you!
-======================================================================
+0 [SAA7134        ]: SAA7134 - SAA7134
+                     saa7134[0] at 0xed800000 irq 18
+1 [V8237          ]: VIA8237 - VIA 8237
+                     VIA 8237 with AD1888 at 0xe000, irq 21
 
-----------------------------------------------------------------------
- jcdutton - 12-21-05 16:32 
-----------------------------------------------------------------------
-audigy-notebook-speakers-enable.diff 
-This patch adds support for surround7.1 output from the Audigy 2 ZS
-notebook card.
+<--  snip  -->
 
-TODO:
-Sound capture (analog and digital)
-Digital output (untested, might already work).
+What changed compared to the working setup (if the bug is really here) 
+is the order of the two.
 
-----------------------------------------------------------------------
- bubbleguuum - 12-21-05 18:12 
-----------------------------------------------------------------------
-Many thanks for this !
+> Takashi
 
-I just tested and I have sound. However:
+cu
+Adrian
 
-- At low volume the sound is badly distorded with some noise. I suppose it
-might be the case at higher volume too. There's also this constant volume
-white noise at all volume level : listen to some quiet music at high
-volume to hear it. Test done using xmms + alsa out plug in
-Just for reference using windows you can put the card to 0db in the
-creative mixer (ie all the way to the max) and the sound is crystal
-clear)
+-- 
 
-- Output is very loud, a lot louder at the same settings that the internal
-intel hda card (which I always found a bit low)
-
-- If you go too high with the Master or PCM slider clicks appears
-
-- front, rear and center outputs give no sound but I suppose this is
-expected
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-20-05 08:53 gflash         New Issue                                    
-02-20-05 12:32 jcdutton       Note Added: 0003673                          
-02-20-05 14:06 gflash         Note Added: 0003674                          
-02-20-05 14:39 jcdutton       Note Added: 0003675                          
-02-20-05 14:47 jcdutton       Note Edited: 0003675                         
-07-25-05 17:43 dale           Note Added: 0005564                          
-07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
-08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
-10-30-05 21:08 jcdutton       Note Added: 0006577                          
-10-31-05 00:55 buckvitulli    Note Added: 0006578                          
-10-31-05 12:43 jcdutton       Status                   new => assigned     
-10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
-11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
-11-30-05 15:58 bubbleguuum    Issue Monitored: bubbleguuum                    
-12-06-05 02:55 hades          Issue Monitored: hades                       
-12-06-05 02:56 hades          Note Added: 0006918                          
-12-06-05 13:26 jpeak          Issue End Monitor: jpeak                     
-12-13-05 12:15 jcdutton       Note Added: 0006990                          
-12-21-05 16:07 jcdutton       File Added: audigy2-notebook-sound-fix.diff       
-            
-12-21-05 16:09 jcdutton       Note Added: 0007109                          
-12-21-05 16:31 jcdutton       File Added: audigy-notebook-speakers-enable.diff  
-                 
-12-21-05 16:32 jcdutton       Note Added: 0007110                          
-12-21-05 18:12 bubbleguuum    Note Added: 0007111                          
-======================================================================
-
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
