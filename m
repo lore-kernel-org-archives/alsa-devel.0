@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001661]: alsaconf gets everything working but mic input doesn't work after a reboot
-Date: Wed, 21 Dec 2005 22:23:16 +0100
-Message-ID: <7c7923785d1e91b9a6bba331c468ff6f@bugtrack.alsa-project.org>
+From: laugeo2@free.fr
+Subject: Re: Ameter plugin : looping sound
+Date: Wed, 21 Dec 2005 23:29:16 +0100
+Message-ID: <1135204156.43a9d73c43032@imp3-g19.free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 388FD1BF
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 22:23:17 +0100 (MET)
+Received: from smtp3-g19.free.fr (smtp3-g19.free.fr [212.27.42.29])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8FE51B6
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 23:29:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: rlrevell@joe-job.com
 List-Id: alsa-devel@alsa-project.org
 
+> >Hi,
+> >Ameter  is a metering plugin for Alsa :
+> >http://laugeo.free.fr/ameter.html
+> > It stopped working since 1.0.10,and also fails with 1.0.11rc1 (was ok=
+ with
+> >1.0.9) :
+> >Playing a sound with aplay (or any other program) cause  a short sound
+looping
+> >in audio out ,while  peakmeter displays the real soundfile level .
+> > It seems that the looping sound is the end of the last played sound .
+> > I have Mandriva 2005 (2.6.11 standard kernel),  ens1371 sound card.
+> >Somenone else has reported the problem ( I don't know his config) .
+> >
+> >Test command:
+> >aplay -D ameter sound.wav -v
+> >It returns no error.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
-======================================================================
-Reported By:                amarsh04
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1661
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.14.2-686
-======================================================================
-Date Submitted:             12-20-2005 03:16 CET
-Last Modified:              12-21-2005 22:23 CET
-======================================================================
-Summary:                    alsaconf gets everything working but mic input
-doesn't work after a reboot
-Description: 
-I've finally obtained a SB Live! card that works and alsaconf made
-everything work. However, after a reboot, output still works but not
-microphone input. krecord shows zero input level. Re-running alsaconf
-restores microphone input to a working state.
-======================================================================
+>The easiest solution is to use ALSA CVS to do a binary search and find
+>out exactly which commit broke it.
+>
+>I like to go by date as not all releases get tagged in CVS:
+>
+>cvs update -D2005-11-01 -A
+>etc
+>Lee
 
-----------------------------------------------------------------------
- rlrevell - 12-20-05 20:58 
-----------------------------------------------------------------------
-It sounds like a mixer settings problem.  Please provide the output of
-"amixer" for the working and non-working setups.
+It is ok on 2005-09-02 and broken on 2005-09-03
+Changing only alsa-lib  makes the problem to appear.
 
-----------------------------------------------------------------------
- amarsh04 - 12-21-05 22:23 
-----------------------------------------------------------------------
-I have attached the output of amixer for both the working and the
-non-working cases, and will also attach the output of lsmod for both the
-working and non-working cases.
+The files that are updated between 09-02 and 09-03:
+U alsa-lib/src/pcm/pcm_file.c
+U alsa-lib/src/pcm/pcm_generic.c
+U alsa-lib/src/pcm/pcm_generic.h
+U alsa-lib/src/pcm/pcm_local.h
+U alsa-lib/src/pcm/pcm_mmap.c
+U alsa-lib/src/pcm/pcm_null.c
+U alsa-lib/src/pcm/pcm_plug.c
+U alsa-lib/src/pcm/pcm_rate.c
+U alsa-lib/src/pcm/pcm_softvol.c
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-20-05 03:16 amarsh04       New Issue                                    
-12-20-05 03:16 amarsh04       Distribution              => Debian          
-12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
-12-20-05 12:44 amarsh04       Note Added: 0007104                          
-12-20-05 20:58 rlrevell       Note Added: 0007105                          
-12-21-05 22:20 amarsh04       File Added: amixerworking.txt                    
-12-21-05 22:21 amarsh04       File Added: amixernotworking.txt                  
- 
-12-21-05 22:23 amarsh04       Note Added: 0007112                          
-======================================================================
+May be it is enough for you, or I can search more exactly
+which file(s) are bad for the meter.
+Regards
 
-
+Laurent
 
 
 -------------------------------------------------------
