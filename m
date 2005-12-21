@@ -1,26 +1,14 @@
-From: R C <v4l@cerqueira.org>
-Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
-Date: Wed, 21 Dec 2005 22:50:43 +0000
-Message-ID: <1135205444.3029.2.camel__27730.1097791225$1135205531$gmane$org@frolic>
-References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
-	 <20051220131810.GB6789@stusta.de>
-	 <20051220155216.GA19797@master.mivlgu.local>
-	 <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org>
-	 <20051220191412.GA4578@stusta.de>
-	 <Pine.LNX.4.64.0512201156250.4827@g5.osdl.org>
-	 <43A86B20.1090104@superbug.co.uk>
-	 <Pine.LNX.4.64.0512201248481.4827@g5.osdl.org>
-	 <s5hpsnqzf86.wl%tiwai@suse.de>
-	 <Pine.LNX.4.64.0512211026190.4827@g5.osdl.org>
-	 <s5hwthyxoz1.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001575]: Multi ice1712 cards don't work in duplex mode
+Date: Wed, 21 Dec 2005 23:59:26 +0100
+Message-ID: <215652d64188fc43da981ba0ae40401f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from home.cerqueira.org (cerqueira.net [195.23.98.191])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 410F31B6
-	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 23:51:08 +0100 (MET)
-In-Reply-To: <s5hwthyxoz1.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5DA61B7
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 23:59:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -30,30 +18,116 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linus Torvalds <torvalds@osdl.org>, James Courtier-Dutton <James@superbug.co.uk>, Adrian Bunk <bunk@stusta.de>, Sergey Vlasov <vsu@altlinux.ru>, mchehab@brturbo.com.br, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all;
 
-On Wed, 2005-12-21 at 19:52 +0100, Takashi Iwai wrote:
-> > 
-> > Well, you dropped the easiest: make saa7134 just use "late_initcall()".
-> > 
-> > It's not "correct", but it's certainly no less correct than just forcing a 
-> > driver to be moved for link order reasons.
-> 
-> Yep, that's obviously the easiest one.  I'd vote for this, at least
-> for 2.6.15, once after it's confirmed to work.
-> 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1575> 
+======================================================================
+Reported By:                johnrigg
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1575
+Category:                   1_pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-18-2005 01:12 CET
+Last Modified:              12-21-2005 23:59 CET
+======================================================================
+Summary:                    Multi ice1712 cards don't work in duplex mode
+Description: 
+ice 1712 cards have 12 capture channels and 10 playback. This prevents
+multi pcm
+plugin from working in duplex mode. If I use following in .asoundrc:
 
-I've just confirmed it works with rc6-git2. The driver activates
-properly and works as expected.
-I've just commited the changes to v4l, Mauro should send them upstream
-later.
+slaves.a.pcm "hw:0,0"
+slaves.a.channels 12
+slaves.b.pcm "hw:1,0"
+slaves.b.channels 12
 
---
-RC
+I can only start jackd with -C option. Attempting to start with both -C
+and -P
+just produces error message 
+ALSA: no playback configurations available (Invalid argument)
+ALSA: cannot configure playback channel
+
+Similarly if I set channels to 10 I can only start jackd with -P option.
+Using
+both -C and -P gives error
+ALSA: no playback configurations available (invalid argument)
+ALSA: cannot configure capture channel
+
+These cards don't have separate subdevices for capture and playback, so
+it
+isn't possible to define two different multi configs and combine them with
+asym
+plugin. If channels is set to anything other than 10 or 12 (eg. 8) it
+produces error eg. ALSA: cannot set channel count to 8 for capture.
+
+I can use one card at a time in duplex mode with
+`jackd -d alsa -d hw:0'  or `jackd -d alsa -d hw:1'.
+jack is obviously happy to run with 12 capture and 10 playback channels, 
+it just appears that the multi plugin can't deal with this.
+======================================================================
+
+----------------------------------------------------------------------
+ johnrigg - 12-03-05 22:56 
+----------------------------------------------------------------------
+The change that broke it was pcm_multi.c rev 1.89 (Jan 20 2005).
+In alsa-lib-1.0.10/src/pcm/multi_pcm.c commenting out lines 600-641 along
+with lines 729 and 731 removes the following functions and allows it to
+work with jackd in duplex mode:
+snd_pcm_multi_link_fd_failed()
+snd_pcm_multi_link_fd()
+snd_pcm_multi_unlink()
+
+----------------------------------------------------------------------
+ Roman - 12-21-05 23:59 
+----------------------------------------------------------------------
+We have almost the same problem with 2 x M-Audio Delta 1010.
+
+Tried:
+jackd 0.100.0 incl. MMAP_COMPLEX
+alsa-lib-1.0.10
+alsa-driver-1.0.10
+kernel 2.6.13-15-smp
+
+Used Patches:
+envy24control-wc-patch
+pcm_multi-patch
+mmap_complex-patch-0.100.7
+
+Getting error messages like:
+poll time out, polled for XXX usecs
+
+Playback alone works with:
+jackd -dalsa -r48000 -p2048 -n2 -Pmulti_playback&
+Capture only works with:
+jachd -dalsa -r4800 -p2048 -n2 -Cmulti_capture &
+
+It is impossible to set the settings for the second soundcard for
+synchronizing to word clock in envy24control. It seems that it does not
+matter which soundcard is selected during doing changes. After selecting
+the profile from the previous changed soundcard the settings seem to get
+lost.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-18-05 01:12 johnrigg       New Issue                                    
+12-03-05 20:09 johnrigg       Note Added: 0006902                          
+12-03-05 22:56 johnrigg       Note Added: 0006905                          
+12-21-05 23:16 Roman          Issue Monitored: Roman                       
+12-21-05 23:16 Roman          Issue End Monitor: Roman                     
+12-21-05 23:59 Roman          Note Added: 0007113                          
+======================================================================
+
 
 
 
