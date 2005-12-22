@@ -1,17 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
-Date: Thu, 22 Dec 2005 01:59:41 +0100
-Message-ID: <20051222005941.GK3917__18901.3129020625$1135213214$gmane$org@stusta.de>
-References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org> <20051220131810.GB6789@stusta.de> <20051220155216.GA19797@master.mivlgu.local> <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org> <20051220191412.GA4578@stusta.de> <1135110930.7822.18.camel@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001539]: alsa-lib make check: omixer does not build
+Date: Thu, 22 Dec 2005 02:01:15 +0100
+Message-ID: <dddc9a74433d90cc53d5309449091f24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5451A1B7
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 01:59:42 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <1135110930.7822.18.camel@localhost>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66AD51B7
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:01:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,42 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mauro Carvalho Chehab <mchehab@brturbo.com.br>
-Cc: Linus Torvalds <torvalds@osdl.org>, Sergey Vlasov <vsu@altlinux.ru>, Ricardo Cerqueira <v4l@cerqueira.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 20, 2005 at 06:35:30PM -0200, Mauro Carvalho Chehab wrote:
-> Em Ter, 2005-12-20 =E0s 20:14 +0100, Adrian Bunk escreveu:
-> > (plus disabling building of saa7134-oss.o because
-> > otherwise saa7134-alsa.o wouldn't do anything).=20
->=20
-> 	This patch should fix alsa-oss incompatibilities when both are linked
-> as module. It will also require either -oss or -alsa if it is staticall=
-y
-> linked.
->=20
-> 	It doesn't address the OOPS because of sound late init.
->=20
-> 	Adrian,
->=20
-> 	Please test and give us some feedback.
 
-It works and looks good.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1539> 
+======================================================================
+Reported By:                Flameeyes
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1539
+Category:                   aconnect
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-10-2005 12:37 CET
+Last Modified:              12-22-2005 02:01 CET
+======================================================================
+Summary:                    alsa-lib make check: omixer does not build
+Description: 
+make check for alsa-lib does not complete correctly, as the omixer.c source
+file does not build at all.
 
-Can we get this patch into 2.6.15?
+It tries to include mixer_ordinary.h header that is not present on alsa
+1.0.10_rc3 (but it's present on 1.0.9), and then tries to use sndo_*
+functions that are in that file). If that is gone, the test should go
+away, too. I've worked this around on Portage by removing omixer test
+entirely.
 
-> Cheers,=20
-> Mauro.
+HTH,
+Diego
+======================================================================
 
-cu
-Adrian
+----------------------------------------------------------------------
+ Flameeyes - 12-22-05 02:01 
+----------------------------------------------------------------------
+Can someone close this? it's fixed in 1.0.11_rc1
 
---=20
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-10-05 12:37 Flameeyes      New Issue                                    
+11-30-05 23:38 gjasny         Issue Monitored: gjasny                      
+12-22-05 02:01 Flameeyes      Note Added: 0007115                          
+======================================================================
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
 
 
 
