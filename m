@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
-Date: Thu, 22 Dec 2005 11:43:47 +0100
-Message-ID: <fe4749a173d38e83a4b4a650077a15b6@bugtrack.alsa-project.org>
+From: Mauro Carvalho Chehab <mchehab@brturbo.com.br>
+Subject: Re: 2.6.15-rc6: boot failure in saa7134-alsa.c
+Date: Thu, 22 Dec 2005 09:15:47 -0200
+Message-ID: <1135250147.17758.35.camel__18284.457588061$1135250244$gmane$org@localhost>
+References: <Pine.LNX.4.64.0512181641580.4827@g5.osdl.org>
+	 <20051220131810.GB6789@stusta.de>
+	 <20051220155216.GA19797@master.mivlgu.local>
+	 <Pine.LNX.4.64.0512201018000.4827@g5.osdl.org>
+	 <20051220191412.GA4578@stusta.de> <1135110930.7822.18.camel@localhost>
+	 <20051222005941.GK3917@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C688199
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 11:43:48 +0100 (MET)
+Received: from smtp4.brturbo.com.br (smtp4.brturbo.com.br [200.199.201.180])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07FDF1B9
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 12:15:55 +0100 (MET)
+In-Reply-To: <20051222005941.GK3917@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +25,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Linus Torvalds <torvalds@osdl.org>, Sergey Vlasov <vsu@altlinux.ru>, Ricardo Cerqueira <v4l@cerqueira.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, video4linux-list@redhat.com, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Em Qui, 2005-12-22 =E0s 01:59 +0100, Adrian Bunk escreveu:
+=20
+> > 	This patch should fix alsa-oss incompatibilities when both are linke=
+d
+> > as module. It will also require either -oss or -alsa if it is statica=
+lly
+> > linked.
+> >=20
+> > 	It doesn't address the OOPS because of sound late init.
+> >=20
+> > 	Adrian,
+> >=20
+> > 	Please test and give us some feedback.
+>=20
+> It works and looks good.
+>=20
+> Can we get this patch into 2.6.15?
+	I've sent today to Linus for him to pull for 2.6.15.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
-======================================================================
-Reported By:                smagoun
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1545
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-11-2005 21:30 CET
-Last Modified:              12-22-2005 11:43 CET
-======================================================================
-Summary:                    Flash player hangs in Firefox when using aoss
-Description: 
-I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
-an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
-when navigating off a page that has Flash w/ sounds. The problem only
-happens when using aoss. GDB reports that the browser's hung up in
-snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
-
-This sounds a bit like
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
-reportedly fixed in ALSA
-1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
-AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
-alsa-libs to 1.0.10rc3 didn't fix the problem.
-======================================================================
-
-----------------------------------------------------------------------
- ikonst - 12-22-05 11:43 
-----------------------------------------------------------------------
-I'm using libasound2 1.0.10 on kernel 2.6.14 and this problem is present.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-11-05 21:30 smagoun        New Issue                                    
-12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
-12-22-05 11:43 ikonst         Note Added: 0007122                          
-======================================================================
-
+Cheers,=20
+Mauro.
 
 
 
