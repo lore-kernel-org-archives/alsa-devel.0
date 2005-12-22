@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
-Date: Thu, 22 Dec 2005 13:01:26 +0100
-Message-ID: <fd78feaf01a10b620551a298e0dd8ad5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
+Date: Thu, 22 Dec 2005 13:28:02 +0100
+Message-ID: <94857bd8ad03d95314914234d3b6ee27@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E93951BF
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 13:01:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0C2E1BB
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 13:28:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,94 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
 ======================================================================
-Reported By:                Osiris
-Assigned To:                mjander
+Reported By:                khampf
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1025
-Category:                   PCI - au88x0
+Issue ID:                   1595
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.11.6
+Status:                     new
+Distribution:               Debian 3 testing/unstable hybrid
+Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
 ======================================================================
-Date Submitted:             03-30-2005 22:50 CEST
-Last Modified:              12-22-2005 13:01 CET
+Date Submitted:             11-24-2005 03:35 CET
+Last Modified:              12-22-2005 13:28 CET
 ======================================================================
-Summary:                    kernel panic when trying to load module snd-au8830
+Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
+included)
 Description: 
-kernel panic occurs on boot when system tries to load kernel module for
-Aureal Vortex 2. The same thing happens when driver is compiled into
-kernel, not module
+I recently bought me a Creative Audigy 4 and was surprised it didn't work
+at all ... I noticed it wasn't detected and made it detectable and copied
+the settings from Audigy 4 Pro. I have to click the "Audigy Analog/Digital
+Output switch" switch to make it work. Front/Center, Mic works, however I
+have no idea about wether SPDIF is ok or not (I have no devices). It might
+be that a lot of functionality is missing still but it's a start.
 
+First, output of "$ lspci -vn | grep -1 0401"
+0000:02:09.0 0401: 1102:0008
+        Subsystem: 1102:1021
+
+Then, using "modprobe emu10k1 sumsystem=xxxxxx" does not work at all for
+me, doesn't get the interrupt up and errors about probe failing.
+
+So I added did this to my kernel sound/pci/emu10k1/emu10k1_main.c:
+
+	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
+	 .driver = "Audigy2", .name = "Audigy 4 [A400?]", 
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1,
+	 /*.ca0151_chip = 1, */
+	 /*.spk71 = 1,	*/
+	 /*.spdif_bug = 1,*/
+	 .ac97_chip = 1} ,
+
+I left those commented out as I've tried the options and noticed no
+difference in operation. Also, I don't know the SB0xxx model (can't remove
+the card and look at it at the moment either).
 ======================================================================
 
 ----------------------------------------------------------------------
- ponchick - 12-21-05 04:18 
+ BerndBuechs - 11-29-05 22:56 
 ----------------------------------------------------------------------
-I try diff11.diff on alsa-driver-1.0.10 with minor changes in it. It works
-for me. I use it for 2 weeks now and it works fine. I use mixer/equalizer
-but don't even touch gameport, mpu and oss emulation. 
-My configuration:
-P4 631 (em64t)
-Aureal Vortex 2
-Gentoo Linux 2005.1 
-Kernel 2.6.14-gentoo-r2 and 2.6.13-gentoo-r5 (vanilla sources + some
-gentoo patches)
-alsa-drivers 1.0.10 (not kernel one!)
+I think I have the same card, on mine you can read
+Sound Blaster Audigy 4
+Model: SB0610
 
 ----------------------------------------------------------------------
- Raymond - 12-22-05 13:01 
+ jcdutton - 12-22-05 13:28 
 ----------------------------------------------------------------------
-There is no need to change long eq_levels[32] to u16 eq_levels[64] in
-au88x0_eqdata.c
+Can you please provide me with more information regarding the card.
+You will have to remove the card to find this information.
+What is written on the following chips:
+1) The main big one. It will have something like CA0108 or something
+similar.
+2) DAC. It will have a number starting CS or WM.
+3) ADC. It will have a number starting CS or WM.
+4) AC97 chip. This should appear in alsamixer next to "Chip:"
 
-vortex_EqHw_SetLevels() only setup 24 registeres.(i.e the 2x10 EQ peaks
-and 4 other registers 0x2b3cc,0x2b3d8,0x2b3e4,0x2b3f0.)
+I assume the card has written on is SB0610.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 22:50 Osiris         New Issue                                    
-03-30-05 22:50 Osiris         Distribution              => Debian          
-03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
-03-31-05 11:34 mjander        Note Added: 0004278                          
-04-03-05 21:16 Osiris         Note Added: 0004320                          
-04-04-05 10:19 alien999999999 Issue Monitored: alien999999999                   
-
-04-04-05 11:00 alien999999999 File Added: alsa-changes.tar.bz2                  
- 
-04-04-05 11:00 alien999999999 Note Added: 0004325                          
-08-24-05 11:04 Raymond        Note Added: 0005927                          
-11-25-05 08:22 Raymond        Note Added: 0006848                          
-12-21-05 04:05 ponchick       Issue Monitored: ponchick                    
-12-21-05 04:18 ponchick       Note Added: 0007107                          
-12-21-05 04:19 ponchick       File Added: diff11.diff.bz2                    
-12-22-05 13:01 Raymond        Note Added: 0007123                          
+11-24-05 03:35 khampf         New Issue                                    
+11-24-05 03:35 khampf         Distribution              => Debian 3
+testing/unstable hybrid
+11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
+(-ckX+swsusp2+bootsplash)
+11-24-05 03:39 khampf         Issue Monitored: khampf                      
+11-24-05 03:41 khampf         Note Added: 0006837                          
+11-24-05 21:54 jcdutton       Note Added: 0006845                          
+11-26-05 22:33 khampf         Note Added: 0006850                          
+11-29-05 22:55 BerndBuechs    Issue Monitored: BerndBuechs                    
+11-29-05 22:56 BerndBuechs    Note Added: 0006874                          
+12-22-05 13:28 jcdutton       Note Added: 0007124                          
 ======================================================================
 
 
