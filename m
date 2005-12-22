@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001539]: alsa-lib make check: omixer does not build
-Date: Thu, 22 Dec 2005 02:01:15 +0100
-Message-ID: <dddc9a74433d90cc53d5309449091f24@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001580]: Test fixes for GCC4
+Date: Thu, 22 Dec 2005 02:11:20 +0100
+Message-ID: <2e203ac7f7a4e1d3739fd06315bd66ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66AD51B7
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:01:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2F3A1B9
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:11:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1539> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1580> 
 ======================================================================
 Reported By:                Flameeyes
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1539
-Category:                   aconnect
+Project:                    ALSA - lib
+Issue ID:                   1580
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             11-10-2005 12:37 CET
-Last Modified:              12-22-2005 02:01 CET
+Date Submitted:             11-19-2005 20:35 CET
+Last Modified:              12-22-2005 02:11 CET
 ======================================================================
-Summary:                    alsa-lib make check: omixer does not build
+Summary:                    Test fixes for GCC4
 Description: 
-make check for alsa-lib does not complete correctly, as the omixer.c source
-file does not build at all.
+code.c, pcm.c and latency.c files has invalid syntax for GCC4, the attached
+patch allows to build them clean.
 
-It tries to include mixer_ordinary.h header that is not present on alsa
-1.0.10_rc3 (but it's present on 1.0.9), and then tries to use sndo_*
-functions that are in that file). If that is gone, the test should go
-away, too. I've worked this around on Portage by removing omixer test
-entirely.
+See also bug #0001540 that I filed on the wrong component and I can't
+close myself :|
+
+This patch also fixes pcm.c and latency.c from latest alsa-lib version.
 
 HTH,
 Diego
 ======================================================================
 
 ----------------------------------------------------------------------
- Flameeyes - 12-22-05 02:01 
+ Flameeyes - 12-22-05 02:11 
 ----------------------------------------------------------------------
-Can someone close this? it's fixed in 1.0.11_rc1
+This is fixed as of 1.0.11_rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-10-05 12:37 Flameeyes      New Issue                                    
-11-30-05 23:38 gjasny         Issue Monitored: gjasny                      
-12-22-05 02:01 Flameeyes      Note Added: 0007115                          
+11-19-05 20:35 Flameeyes      New Issue                                    
+11-19-05 20:35 Flameeyes      File Added: alsa-lib-1.0.10-test-gcc4.patch       
+            
+12-22-05 02:11 Flameeyes      Note Added: 0007116                          
 ======================================================================
 
 
