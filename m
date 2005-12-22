@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001671]: THIS DRIVER FRICKEN SUCKS
-Date: Thu, 22 Dec 2005 03:04:05 +0100
-Message-ID: <feae64a5dea0f861e01294f6867311f0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001672]: openal not working
+Date: Thu, 22 Dec 2005 03:13:47 +0100
+Message-ID: <8dcae387b58fbea6937f028203053866@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66796199
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 03:04:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2EA2199
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 03:13:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1671> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1672> 
 ======================================================================
-Reported By:                Flyinprogramer
-Assigned To:                tiwai
+Reported By:                ilikejam
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1671
-Category:                   PCI - nm256
+Issue ID:                   1672
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             Kernel 2.6.14-r5
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.14.x (hand rolled)
 ======================================================================
-Date Submitted:             12-22-2005 02:50 CET
-Last Modified:              12-22-2005 03:04 CET
+Date Submitted:             12-22-2005 03:13 CET
+Last Modified:              12-22-2005 03:13 CET
 ======================================================================
-Summary:                    THIS DRIVER FRICKEN SUCKS
+Summary:                    openal not working
 Description: 
-WHAT THE HELL WERE YOU GUYS THINKING? YOU WEREN'T!!!! This has got to be
-one of the shitest drivers i've ever used. o i know lets make a driver
-that crashes 99% of the time. it sucks, why the hell should you put it in
-if it sucks? please make this driver better, its a common card, and you
-are so close to a sucessfull driver, i know you can do it!
+The version of ALSA in the latest (2.6.14) kernel doesn't output sound from
+openal. There are no errors (from Unreal Tournament 2004, and from the
+openal-test utilities in the fedora openal-test package), but no sound is
+output.
+
+Rolling back the kernel to 2.6.11 solves the problem - sound works fine
+with that kernel version.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-22-05 03:04 
-----------------------------------------------------------------------
-Did you ever consider that the ALSA developers don't have access to every
-device they have drivers for?
-
-Anyway this isn't a bug report, please tell us exactly what's wrong with
-it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 02:50 Flyinprogramer New Issue                                    
-12-22-05 02:50 Flyinprogramer Distribution              => Gentoo          
-12-22-05 02:50 Flyinprogramer Kernel Version            => Kernel 2.6.14-r5
-12-22-05 03:04 rlrevell       Note Added: 0007118                          
+12-22-05 03:13 ilikejam       New Issue                                    
+12-22-05 03:13 ilikejam       Distribution              => Fedora Core 4   
+12-22-05 03:13 ilikejam       Kernel Version            => 2.6.14.x (hand
+rolled)
 ======================================================================
 
 
