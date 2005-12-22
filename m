@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001669]: ppc/tumbler.patch does not apply on 1.0.11rc1 drivers
-Date: Thu, 22 Dec 2005 02:16:02 +0100
-Message-ID: <a120381a10b9c6c248b9fbb526e66408@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Thu, 22 Dec 2005 02:25:42 +0100
+Message-ID: <ec1b2443cf17287050cb859b383ee9ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 344EE1B9
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:16:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A91F51B7
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:25:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1669> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                Flameeyes
-Assigned To:                perex
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1669
-Category:                   0_compilation problem_!!!
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.15_rc5
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             12-22-2005 02:16 CET
-Last Modified:              12-22-2005 02:16 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              12-22-2005 02:25 CET
 ======================================================================
-Summary:                    ppc/tumbler.patch does not apply on 1.0.11rc1
-drivers
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-The ppc/tumbler.patch fails to apply on 1.0.11rc1 drivers on PPC.
-Attached there's a patch that fixes the patch, allowing alsa-driver to
-build on PPC.
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-(it still does not load on 2.6.15 for now).
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
+
 ======================================================================
+
+----------------------------------------------------------------------
+ smithbone - 12-09-05 16:46 
+----------------------------------------------------------------------
+I'll confirm that I see the same behavior with a M-Audio Audiophile USB. 
+Upgrading to 2.6.15-rc5-git1 and debian ALSA 1.0.10 packages the card is
+silent.  No errors, everything looks good, /proc/interrupts is cranking
+away but just silence on the output.  
+
+Previously debian ALSA 1.0.9a and 2.6.14 (Alsa 1.0.10rc1) worked.
+
+Note that this device dosen't have a mixer so I dont think I've set it
+wrong. *grin*
+
+----------------------------------------------------------------------
+ sailfrog - 12-22-05 02:25 
+----------------------------------------------------------------------
+I just tried ALSA 1.0.11rc1 with a 2.6.15-rc6 kernel and the problem
+persists :/
+
+Jason
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 02:16 Flameeyes      New Issue                                    
-12-22-05 02:16 Flameeyes      File Added: alsa-driver-1.0.11_rc1-ppc.patch      
-             
-12-22-05 02:16 Flameeyes      Distribution              => Gentoo Linux    
-12-22-05 02:16 Flameeyes      Kernel Version            => 2.6.15_rc5      
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
 ======================================================================
 
 
