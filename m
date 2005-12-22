@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Thu, 22 Dec 2005 02:25:42 +0100
-Message-ID: <ec1b2443cf17287050cb859b383ee9ab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001670]: Mic no longer works, can't seem to change anything to fix it
+Date: Thu, 22 Dec 2005 02:25:47 +0100
+Message-ID: <8ccf5199cf223ae2bb9ea3c7df6490cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A91F51B7
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:25:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B5591B7
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:25:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1670> 
 ======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
+Reported By:                callihn
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
+Issue ID:                   1670
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Distribution:               Fedora Core 4
+Kernel Version:             ALL, currently vanilla 2.6.14.4
 ======================================================================
-Date Submitted:             11-21-2005 17:45 CET
+Date Submitted:             12-22-2005 02:25 CET
 Last Modified:              12-22-2005 02:25 CET
 ======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
+Summary:                    Mic no longer works, can't seem to change anything
+to fix it
 Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
-
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
-
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
-
+Everything was working fine in FC2, now that I have upgraded to FC4 I can
+no longer get the mic to work, using the same asound.state as posted below
+in both and everything else still works as it did before, also I know the
+mic does work because unmuting it allows me to hear it in loopback, not
+sure if it means anything but in alsamixer the capture option on the mic
+does blink when in use but again I can get no sound out of it other than
+loopback from unmuting it in the playback section.
 ======================================================================
-
-----------------------------------------------------------------------
- smithbone - 12-09-05 16:46 
-----------------------------------------------------------------------
-I'll confirm that I see the same behavior with a M-Audio Audiophile USB. 
-Upgrading to 2.6.15-rc5-git1 and debian ALSA 1.0.10 packages the card is
-silent.  No errors, everything looks good, /proc/interrupts is cranking
-away but just silence on the output.  
-
-Previously debian ALSA 1.0.9a and 2.6.14 (Alsa 1.0.10rc1) worked.
-
-Note that this device dosen't have a mixer so I dont think I've set it
-wrong. *grin*
-
-----------------------------------------------------------------------
- sailfrog - 12-22-05 02:25 
-----------------------------------------------------------------------
-I just tried ALSA 1.0.11rc1 with a 2.6.15-rc6 kernel and the problem
-persists :/
-
-Jason
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-22-05 02:25 callihn        New Issue                                    
+12-22-05 02:25 callihn        Distribution              => Fedora Core 4   
+12-22-05 02:25 callihn        Kernel Version            => ALL, currently
+vanilla 2.6.14.4
 ======================================================================
 
 
