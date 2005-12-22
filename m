@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001672]: openal not working
-Date: Thu, 22 Dec 2005 10:06:39 +0100
-Message-ID: <dedc4925488c6b45545f666d31304ca7@bugtrack.alsa-project.org>
+From: Juan Zapatero <jazc@gmvsistemas.es>
+Subject: Writing a Full-Duplex (capture/playback) application.
+Date: Thu, 22 Dec 2005 10:25:33 +0100
+Message-ID: <1135243534.13713.7.camel@jazc.fedora>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----------=_1135243534-26272-274"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78CA2193
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 10:06:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +14,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1672> 
-======================================================================
-Reported By:                ilikejam
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1672
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.14.x (hand rolled)
-======================================================================
-Date Submitted:             12-22-2005 03:13 CET
-Last Modified:              12-22-2005 10:06 CET
-======================================================================
-Summary:                    openal not working
-Description: 
-The version of ALSA in the latest (2.6.14) kernel doesn't output sound from
-openal. There are no errors (from Unreal Tournament 2004, and from the
-openal-test utilities in the fedora openal-test package), but no sound is
-output.
+------------=_1135243534-26272-274
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Rolling back the kernel to 2.6.11 solves the problem - sound works fine
-with that kernel version.
-======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 12-22-05 10:06 
-----------------------------------------------------------------------
-The USB audio driver shipped with 2.6.14 is known to be buggy.
-Update the kernel to 2.6.15-rc?, or update ALSA.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-22-05 03:13 ilikejam       New Issue                                    
-12-22-05 03:13 ilikejam       Distribution              => Fedora Core 4   
-12-22-05 03:13 ilikejam       Kernel Version            => 2.6.14.x (hand
-rolled)
-12-22-05 10:06 Clemens LadischNote Added: 0007121                          
-======================================================================
+Hello,
+First of all, I'm going to explain what am I trying to do, so that best
+help can be provided.
+My final objective is to write a VoIP app to be used over a GPRS
+network, but so far, I'm only taking care about audio. I need to capture
+audio, compress it with Speex, and then, in the other end, decompress it
+and play it. I have written an app based on ALSA api tutorials that
+records audio into a raw file, but then, this raw file is not recognized
+by Speex encoder, so that I need the file recorded into wav format.
+Can anyone help me on how to capture audio into wav format?
+Thanks a lot.
 
 
+______________________
+Este mensaje, y en su caso, cualquier fichero anexo al mismo,
+ puede contener informacion clasificada por su emisor como confidencial
+ en el marco de su Sistema de Gestion de Seguridad de la 
+Informacion siendo para uso exclusivo del destinatario, quedando 
+prohibida su divulgacion copia o distribucion a terceros sin la 
+autorizacion expresa del remitente. Si Vd. ha recibido este mensaje 
+ erroneamente, se ruega lo notifique al remitente y proceda a su borrado. 
+Gracias por su colaboracion.
+______________________
+This message including any attachments may contain confidential 
+information, according to our Information Security Management System,
+ and intended solely for a specific individual to whom they are addressed.
+ Any unauthorised copy, disclosure or distribution of this message
+ is strictly forbidden. If you have received this transmission in error,
+ please notify the sender immediately and delete it.
+______________________
+
+------------=_1135243534-26272-274--
 
 
 -------------------------------------------------------
