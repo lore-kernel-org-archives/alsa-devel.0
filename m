@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001671]: THIS DRIVER FRICKEN SUCKS
-Date: Thu, 22 Dec 2005 02:50:09 +0100
-Message-ID: <faa051359d68f6f2b3a59e0074b7f557@bugtrack.alsa-project.org>
+Date: Thu, 22 Dec 2005 03:04:05 +0100
+Message-ID: <feae64a5dea0f861e01294f6867311f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A4E21B7
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:50:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66796199
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 03:04:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1671> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             Kernel 2.6.14-r5
 ======================================================================
 Date Submitted:             12-22-2005 02:50 CET
-Last Modified:              12-22-2005 02:50 CET
+Last Modified:              12-22-2005 03:04 CET
 ======================================================================
 Summary:                    THIS DRIVER FRICKEN SUCKS
 Description: 
@@ -51,12 +51,22 @@ if it sucks? please make this driver better, its a common card, and you
 are so close to a sucessfull driver, i know you can do it!
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 12-22-05 03:04 
+----------------------------------------------------------------------
+Did you ever consider that the ALSA developers don't have access to every
+device they have drivers for?
+
+Anyway this isn't a bug report, please tell us exactly what's wrong with
+it.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-22-05 02:50 Flyinprogramer New Issue                                    
 12-22-05 02:50 Flyinprogramer Distribution              => Gentoo          
 12-22-05 02:50 Flyinprogramer Kernel Version            => Kernel 2.6.14-r5
+12-22-05 03:04 rlrevell       Note Added: 0007118                          
 ======================================================================
 
 
