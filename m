@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001674]: Audigy 2 ZS after suspend no sound line in
-Date: Thu, 22 Dec 2005 21:41:11 +0100
-Message-ID: <356982820ebe605f111f25518a1866e2@bugtrack.alsa-project.org>
+From: Dirk Jagdmann <doj@cubic.org>
+Subject: Re: re: Envy24control -changes on screen
+Date: Thu, 22 Dec 2005 22:31:10 +0100
+Message-ID: <43AB1B1E.6030309@cubic.org>
+References: <200512162315.43124.gineera@aspect135.co.uk>	<s5hd5jpxgno.wl%tiwai@suse.de> <s5hacetxgfb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4FAF1A3
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 21:41:11 +0100 (MET)
+In-Reply-To: <s5hacetxgfb.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alan Horstmann <gineera@aspect135.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> Can anyone test this patch please?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1674> 
-======================================================================
-Reported By:                andreid1303
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1674
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             12-22-2005 21:41 CET
-Last Modified:              12-22-2005 21:41 CET
-======================================================================
-Summary:                    Audigy 2 ZS after suspend no sound line in
-Description: 
-Finally I have got sound working after suspend with alsa 1.0.11rc1
-installed but only line in is silent. PCM and Mic is OK
-======================================================================
+I tried it and can confirm that it works. I also like the improved GUI 
+layout which saved screenspace and has a cleaner arrangement of some 
+widgets.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-22-05 21:41 andreid1303    New Issue                                    
-======================================================================
-
-
+-- 
+---> Dirk Jagdmann ^ doj / cubic
+----> http://cubic.org/~doj
+-----> http://llg.cubic.org
 
 
 -------------------------------------------------------
