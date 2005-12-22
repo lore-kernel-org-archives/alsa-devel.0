@@ -1,13 +1,13 @@
 From: Steve deRosier <derosier@pianodisc.com>
-Subject: Re: Writing a Full-Duplex (capture/playback) application.
-Date: Thu, 22 Dec 2005 09:43:00 -0800
-Message-ID: <43AAE5A4.60902@pianodisc.com>
-References: <1135243534.13713.7.camel@jazc.fedora>
+Subject: Re: Setting up Alsa by hand on an embedded system
+Date: Thu, 22 Dec 2005 09:46:17 -0800
+Message-ID: <43AAE669.9000703@pianodisc.com>
+References: <b15982770512211736m71edba7eyc4885b0c3cd6bd93@mail.gmail.com>	 <20051222152613.GA6625@stud.ntnu.no> <b15982770512220753x72c28d9dxa60312f872bf1766@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1135243534.13713.7.camel@jazc.fedora>
+In-Reply-To: <b15982770512220753x72c28d9dxa60312f872bf1766@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,49 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Juan Zapatero <jazc@gmvsistemas.es>
+To: David Smoot <davidsmoot@gmail.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Errr... usually (depending on your settings) a raw file and a wav file are nearly the same, just the raw file is missing the wav header.  I'd recommend you search on the net for the wav file format, it's really easy.
+Hm, yeah, I missed the /usr/share/alsa stuff.  Whoops.
 
-On the other hand, here's a link I've got in my bookmarks:
-http://www.borg.com/~jglatt/tech/wave.htm
+We don't have python on our box, so I'd guess you'd be fine.
 
 - Steve
 
-
-Juan Zapatero wrote:
-> Hello,
-> First of all, I'm going to explain what am I trying to do, so that best
-> help can be provided.
-> My final objective is to write a VoIP app to be used over a GPRS
-> network, but so far, I'm only taking care about audio. I need to capture
-> audio, compress it with Speex, and then, in the other end, decompress it
-> and play it. I have written an app based on ALSA api tutorials that
-> records audio into a raw file, but then, this raw file is not recognized
-> by Speex encoder, so that I need the file recorded into wav format.
-> Can anyone help me on how to capture audio into wav format?
-> Thanks a lot.
+David Smoot wrote:
+> I don't the dir variable is the issue because I am not getting 
+> segfaults.  The code compiles and works on my "host machine" (full 
+> debian box) but does not on my embedded.
 > 
+> It appears that combining the two suggestions from Clements and Steve 
+> have gotten me further.  It appears that the file /usr/share/alsa.conf 
+> loads the default configuration and also loads the file in 
+> /etc/asound.conf.  I get a different error now, I think I need to tweak 
+> the files in /usr/share/alsa to match the correct chipset.
 > 
-> ______________________
-> Este mensaje, y en su caso, cualquier fichero anexo al mismo,
->  puede contener informacion clasificada por su emisor como confidencial
->  en el marco de su Sistema de Gestion de Seguridad de la 
-> Informacion siendo para uso exclusivo del destinatario, quedando 
-> prohibida su divulgacion copia o distribucion a terceros sin la 
-> autorizacion expresa del remitente. Si Vd. ha recibido este mensaje 
->  erroneamente, se ruega lo notifique al remitente y proceda a su borrado. 
-> Gracias por su colaboracion.
-> ______________________
-> This message including any attachments may contain confidential 
-> information, according to our Information Security Management System,
->  and intended solely for a specific individual to whom they are addressed.
->  Any unauthorised copy, disclosure or distribution of this message
->  is strictly forbidden. If you have received this transmission in error,
->  please notify the sender immediately and delete it.
-> ______________________
+> Does the alsa configuration environment require python?  My embedded 
+> system does not have python.  I'm sure I will have to hack it in someday 
+> but it is not there yet.
+> 
+> I've gotten further but a few more errors but I think you all have 
+> gotten me on the correct track.  Thank you.
+> 
+> David
 
 
 -------------------------------------------------------
