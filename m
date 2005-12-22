@@ -1,15 +1,14 @@
-From: "Laetitia Coffey" <coffeyu@list.cr.yp.to>
-Subject: Re: relieve awhile
-Date: Thu, 22 Dec 2005 08:06:46 -0500
-Message-ID: <000001c606f8$8fdba370$67c7a8c0@fish>
-Reply-To: "Laetitia Coffey" <coffeyu@list.cr.yp.to>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
+Date: Thu, 22 Dec 2005 15:07:20 +0100
+Message-ID: <b4107588bb970e0c5b14200727dbccdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C606CE.A7059B70"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from list.cr.yp.to (219-68-130-115.adsl.dynamic.giga.net.tw [219.68.130.115])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3820D1C1
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 14:06:56 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 919D91C1
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 15:07:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,88 +18,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gaspare Humble <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C606CE.A7059B70
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
+======================================================================
+Reported By:                khampf
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1595
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian 3 testing/unstable hybrid
+Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
+======================================================================
+Date Submitted:             11-24-2005 03:35 CET
+Last Modified:              12-22-2005 15:07 CET
+======================================================================
+Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
+included)
+Description: 
+I recently bought me a Creative Audigy 4 and was surprised it didn't work
+at all ... I noticed it wasn't detected and made it detectable and copied
+the settings from Audigy 4 Pro. I have to click the "Audigy Analog/Digital
+Output switch" switch to make it work. Front/Center, Mic works, however I
+have no idea about wether SPDIF is ok or not (I have no devices). It might
+be that a lot of functionality is missing still but it's a start.
 
-Pro
-So
-Mer
-Lev
-Xan
-CIA
-Am
-VIA
-VA
-pecia=20
-ma
-idia
-itra
-ax
-LIS
-bien
-GRA
-LIUM
-$139.95 (90)
-$123.45 (90)
-$99.95  (30)
-$165.95 (30)
-$123.45 (30)
-$169.95 (30 pi
-$120.00 (30)
-$134.95 (30 pi
-$161.45 (90 pi
+First, output of "$ lspci -vn | grep -1 0401"
+0000:02:09.0 0401: 1102:0008
+        Subsystem: 1102:1021
 
+Then, using "modprobe emu10k1 sumsystem=xxxxxx" does not work at all for
+me, doesn't get the interrupt up and errors about probe failing.
 
+So I added did this to my kernel sound/pci/emu10k1/emu10k1_main.c:
 
+	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
+	 .driver = "Audigy2", .name = "Audigy 4 [A400?]", 
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1,
+	 /*.ca0151_chip = 1, */
+	 /*.spk71 = 1,	*/
+	 /*.spdif_bug = 1,*/
+	 .ac97_chip = 1} ,
 
+I left those commented out as I've tried the options and noticed no
+difference in operation. Also, I don't know the SB0xxx model (can't remove
+the card and look at it at the moment either).
+======================================================================
 
-lls)
+----------------------------------------------------------------------
+ jcdutton - 12-22-05 13:29 
+----------------------------------------------------------------------
+Also, is the a chip with "CA0151" marked on it?
 
-lls)
-lls)
-=20
-http://www.amesighe.com
+----------------------------------------------------------------------
+ khampf - 12-22-05 15:07 
+----------------------------------------------------------------------
+I will remove the card and take a look at it when I get back from holidays
+(early January). I'll document the different chips and also take some
+photos of it and put online. I would have done this earlier but have had
+no means of removing the card before.
 
-------=_NextPart_000_0001_01C606CE.A7059B70
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Right now my driver seems to contain only:
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV style=3D"FLOAT: left"><FONT face=3DArial =
-size=3D3>Pro<BR>So<BR>Mer<BR>Lev<BR>Xan<BR><STRONG>CIA</STRONG><BR>Am<BR>=
-<STRONG>VIA</STRONG><BR><STRONG>VA</STRONG></FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT face=3DArial =
-size=3D3>pecia&nbsp;<BR>ma<BR>idia<BR>itra<BR>ax<BR><STRONG>LIS</STRONG><=
-BR>bien<BR><STRONG>GRA</STRONG><BR><STRONG>LIUM</STRONG></FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT face=3DArial size=3D3>$139.95 =
-(90)<BR>$123.45 (90)<BR>$99.95&nbsp; (30)<BR>$165.95 (30)<BR>$123.45 =
-(30)<BR><STRONG>$169.95 (30 pi</STRONG><BR>$120.00 =
-(30)<BR><STRONG>$134.95 (30 pi</STRONG><BR><STRONG>$161.45 (90 =
-pi</STRONG></FONT></DIV>
-<DIV style=3D"FLOAT: left"><FONT face=3DArial size=3D3> <BR> <BR> <BR> =
-<BR> <BR><STRONG>lls)</STRONG><BR> =
-<BR><STRONG>lls)</STRONG><BR><STRONG>lls)</STRONG></FONT></DIV><DIV =
-style=3D"CLEAR: both">&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.amesighe.com">http://www.amesighe.com</A></DIV></BODY>=
-</HTML>
-------=_NextPart_000_0001_01C606CE.A7059B70--
+{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
+         .driver = "Audigy2", .name = "Audigy 4 [SB0610]", 
+         .id = "Audigy2",
+         .emu10k2_chip = 1,
+         .ca0102_chip = 1, 
+         /* .ca0108_chip = 1, */
+         /* .ca0151_chip = 1, */
+         /* .spk71 = 1, */
+         /* .spdif_bug = 1, UNTESTED, might be needed */
+         .ac97_chip = 1} ,
 
+And this seems to work ... this is of course irrelevant until one knows
+exactly what IC's there are on the card. I'll get the info for you, until
+then, Happy Holidays
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-24-05 03:35 khampf         New Issue                                    
+11-24-05 03:35 khampf         Distribution              => Debian 3
+testing/unstable hybrid
+11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
+(-ckX+swsusp2+bootsplash)
+11-24-05 03:39 khampf         Issue Monitored: khampf                      
+11-24-05 03:41 khampf         Note Added: 0006837                          
+11-24-05 21:54 jcdutton       Note Added: 0006845                          
+11-26-05 22:33 khampf         Note Added: 0006850                          
+11-29-05 22:55 BerndBuechs    Issue Monitored: BerndBuechs                    
+11-29-05 22:56 BerndBuechs    Note Added: 0006874                          
+12-22-05 13:28 jcdutton       Note Added: 0007124                          
+12-22-05 13:29 jcdutton       Note Added: 0007125                          
+12-22-05 15:07 khampf         Note Added: 0007126                          
+======================================================================
 
 
 
