@@ -1,10 +1,14 @@
-From: Juan Zapatero <jazc@gmvsistemas.es>
-Subject: Writing a Full-Duplex (capture/playback) application.
-Date: Thu, 22 Dec 2005 10:25:33 +0100
-Message-ID: <1135243534.13713.7.camel@jazc.fedora>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
+Date: Thu, 22 Dec 2005 11:43:47 +0100
+Message-ID: <fe4749a173d38e83a4b4a650077a15b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_1135243534-26272-274"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C688199
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 11:43:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,48 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
 
-------------=_1135243534-26272-274
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
+======================================================================
+Reported By:                smagoun
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Issue ID:                   1545
+Category:                   
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-11-2005 21:30 CET
+Last Modified:              12-22-2005 11:43 CET
+======================================================================
+Summary:                    Flash player hangs in Firefox when using aoss
+Description: 
+I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
+an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
+when navigating off a page that has Flash w/ sounds. The problem only
+happens when using aoss. GDB reports that the browser's hung up in
+snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
 
-Hello,
-First of all, I'm going to explain what am I trying to do, so that best
-help can be provided.
-My final objective is to write a VoIP app to be used over a GPRS
-network, but so far, I'm only taking care about audio. I need to capture
-audio, compress it with Speex, and then, in the other end, decompress it
-and play it. I have written an app based on ALSA api tutorials that
-records audio into a raw file, but then, this raw file is not recognized
-by Speex encoder, so that I need the file recorded into wav format.
-Can anyone help me on how to capture audio into wav format?
-Thanks a lot.
+This sounds a bit like
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
+reportedly fixed in ALSA
+1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
+AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
+alsa-libs to 1.0.10rc3 didn't fix the problem.
+======================================================================
+
+----------------------------------------------------------------------
+ ikonst - 12-22-05 11:43 
+----------------------------------------------------------------------
+I'm using libasound2 1.0.10 on kernel 2.6.14 and this problem is present.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-11-05 21:30 smagoun        New Issue                                    
+12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
+12-22-05 11:43 ikonst         Note Added: 0007122                          
+======================================================================
 
 
-______________________
-Este mensaje, y en su caso, cualquier fichero anexo al mismo,
- puede contener informacion clasificada por su emisor como confidencial
- en el marco de su Sistema de Gestion de Seguridad de la 
-Informacion siendo para uso exclusivo del destinatario, quedando 
-prohibida su divulgacion copia o distribucion a terceros sin la 
-autorizacion expresa del remitente. Si Vd. ha recibido este mensaje 
- erroneamente, se ruega lo notifique al remitente y proceda a su borrado. 
-Gracias por su colaboracion.
-______________________
-This message including any attachments may contain confidential 
-information, according to our Information Security Management System,
- and intended solely for a specific individual to whom they are addressed.
- Any unauthorised copy, disclosure or distribution of this message
- is strictly forbidden. If you have received this transmission in error,
- please notify the sender immediately and delete it.
-______________________
-
-------------=_1135243534-26272-274--
 
 
 -------------------------------------------------------
