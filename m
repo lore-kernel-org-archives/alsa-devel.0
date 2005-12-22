@@ -1,12 +1,17 @@
-From: "Pena buckeye" <edgerton-menfolk@egor.pt>
-Subject: PATIENT SERVICES,
-Date: Thu, 22 Dec 2005 10:52:59 +0400
-Message-ID: <1E3keqg$08B2Df@ady46.royce.dongleware.de>
+From: "Useable T. Fanny" <kamtik@graysonrealtor.com>
+Subject: The Ultimate Online Pharmaceutical
+Date: Wed, 21 Dec 2005 22:54:58 -0800
+Message-ID: <3269752718.20051221225458@graysonrealtor.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="--39CA99FCE33592A"
+	boundary="----------3BD85E8FBB8845C"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Message-ID: <8FD9330FD7.71BE222.qmail@schemata.confound.dongleware.de>
+Received: from 145676992 (pcp0011098625pcs.elictc01.md.comcast.net [68.50.246.99])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5B2A11B9
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 09:42:54 +0100 (MET)
+Received: from graysonrealtor.com (146351760 [146352680])
+	by pcp0011098625pcs.elictc01.md.comcast.net (Qmailv1) with ESMTP id 0BB5C72245
+	for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2005 22:54:58 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,103 +21,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel-request@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-----39CA99FCE33592A
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+This is a multi-part message in MIME format.
 
-THE 2006 AMERICAN DOCTOR DIRECTORY 
+------------3BD85E8FBB8845C
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-The 2006 American Doctor Directory has just been completed.  
-It includes key information on more than 500,000 american 
-doctors. Every record is indexed by such features as name, 
-address, phone/fax, year licensed, type of practice, type of 
-physician as well as primary and secondary specialty.  The 
-database can be exported and copied into other programs.  
-As an introductory offer, the data can be used on an unlimited 
-basis.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-Offered at an introductory price of $279.00 (reg.$2,995).
-For a limited time, UNTIL DECEMBER 31,2005
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DCHRISTMAS FOR $209.00=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
+Get Cipxro, Avanedia, Prozzac and more ONLINE! 
 
-THE 2006 AMERICAN DOCTOR DIRECTORY 
+Vlagmra - $3.3 
+Levvitra - $3.3
+Cialiis - $3.7
+Imwitrex - $16.4
+Flromax - $2.2
+Ulwtram - $0.78
+Viwoxx - $4.75 
+Amnbien - $2.2
+VaIiuym - $0.97 
+Swoma - $3
+Xancax - $1.09
+Mzeridia - $2.2 
+If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
 
-The 2006 American Doctor Directory has just been completed.  It 
-includes key information on more than 500,000 american doctors.  
-According to most librarians, it is one of the most referenced 
-and frequently used publications throughout the United States.  
-It is also used by healthcare professionals and industry business 
-development executives.
+*we guarantee 100% top-quality of all products
+* we offer a money-back guarantee in case the product doesn't work for you or you may be somehow dissatisfied by its performance 
+* we've efficiently streamlined our service, letting you buy from us in a very discreet, non-embarrassing and hassle-free manner 
+
+Visit our website
+http://milawanit.com
  
-Each and every record is indexed by such features as name, 
-address, phone/fax, year licensed, type of practice, type of 
-physician as well as primary and secondary specialty.  The 
-database can be exported and copied into other programs.  The 
-data can also be easily manipulated for customized needs. 
- 
-Most importantly, as an introductory offer, the data can be used 
-on an unlimited basis.
- 
-For over 10 years, Med-Info has maintained the most comprehensive 
-databases. Our lists are 100% telephone verified and updated every 
-quarter. Med-Info continues to hold the most extensive and 
-reliable mailing lists and databases of key decision-makers in the 
-healthcare market. 
- 
-Available exclusively on CD-Rom, the data can be easily exportable 
-to other programs for mailing or faxing purposes.
- 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-Offered at an introductory price of $279.00 (reg.$2,995).
-For a limited time, UNTIL DECEMBER 31,2005
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DCHRISTMAS FOR $209.00=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
+etuuimfdsgj UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
-To order The 2006 American Doctor Directory simply fill out the 
+------------3BD85E8FBB8845C
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
 
-order form below and fax it to 905-751-0199 (tel:905-751-0919). 
-
-
-NAME:
-
-TITLE:
-
-ORGANIZATION:
-
-ADDRESS:
-
-CITY:
-
-POSTAL:
-
-TEL:
-
-FAX:
-
-E-MAIL:
+<HTML>
+<BODY bgcolor="#FDFBFD">
+<p><b>Get Cipvro, Avangdia, Promzac 
+and more ONLINE!</b>
+</p>
+<table width="80%" cellpadding="15" cellspacing="1">
+  <tr valign="top"> 
+    <td width="33%" valign="top" bgcolor="#FDF3FD"> <b>Vlagdra 
+      - $3.3 <br>
+      Legvitra - $3.3<br>
+      Cialixs - $3.7<br>
+      Imcitrex - $16.4<br>
+      Flgomax - $2.2<br>
+      Ulutram - $0.78<br>
+      Viboxx - $4.75 <br>
+      Amebien - $2.2<br>
+      VaIiuzm - $0.97 <br>
+      Sfoma - $3<br>
+      Xanvax - $1.09<br>
+      Mferidia - $2.2</b></td>
+    
+  </tr>
+  <tr> 
+    <td bgcolor="#EDFBFD">If you compare the cost and services of our competitors, 
+      you will see that we give you much more… for less. Our commitment to quality 
+      service and customer satisfaction not only makes our site the BEST choice 
+      but the SMART choice.</td>
+  </tr>
+</table> 
+<p> *we guarantee 100% top-quality of all products<br>
+  * we offer a money-back guarantee in case the product doesn't work for you or 
+  you may be somehow dissatisfied by its performance <br>
+  * we've efficiently streamlined our service, letting you buy from us in a very 
+  discreet, non-embarrassing and hassle-free manner </p><b><A href="http://milawanit.com">Visit 
+  our website</A> </b>
+<br>
+<br>
+etuuimfdsgj UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
 
 
-Med-Info Group of Companies
-211 East Lombard Street, Suite 291
-Baltimore, MD
-21202-61-02
+------------3BD85E8FBB8845C--
 
-----39CA99FCE33592A--
+
 
 
 -------------------------------------------------------
