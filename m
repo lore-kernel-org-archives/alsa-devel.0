@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
-Date: Thu, 22 Dec 2005 15:07:20 +0100
-Message-ID: <b4107588bb970e0c5b14200727dbccdd@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001366]: 3D control, EQ peaks and EQ controls appear in capture view of alsamixer and they also have capture channels in amixer
+Date: Thu, 22 Dec 2005 15:44:42 +0100
+Message-ID: <4757892de4238bdbd5da0e36884d39f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 919D91C1
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 15:07:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 06378185
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 15:44:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,105 +24,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1366> 
 ======================================================================
-Reported By:                khampf
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1595
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   1366
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian 3 testing/unstable hybrid
-Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
 ======================================================================
-Date Submitted:             11-24-2005 03:35 CET
-Last Modified:              12-22-2005 15:07 CET
+Date Submitted:             08-24-2005 09:26 CEST
+Last Modified:              12-22-2005 15:44 CET
 ======================================================================
-Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
-included)
+Summary:                    3D control, EQ peaks and EQ controls appear in
+capture view of alsamixer and they also have capture channels in amixer
 Description: 
-I recently bought me a Creative Audigy 4 and was surprised it didn't work
-at all ... I noticed it wasn't detected and made it detectable and copied
-the settings from Audigy 4 Pro. I have to click the "Audigy Analog/Digital
-Output switch" switch to make it work. Front/Center, Mic works, however I
-have no idea about wether SPDIF is ok or not (I have no devices). It might
-be that a lot of functionality is missing still but it's a start.
+3D control (Depth and Rear Depth) appear in capture view of alsamixer.
 
-First, output of "$ lspci -vn | grep -1 0401"
-0000:02:09.0 0401: 1102:0008
-        Subsystem: 1102:1021
+amixer display these controls have capture channels.
 
-Then, using "modprobe emu10k1 sumsystem=xxxxxx" does not work at all for
-me, doesn't get the interrupt up and errors about probe failing.
 
-So I added did this to my kernel sound/pci/emu10k1/emu10k1_main.c:
 
-	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
-	 .driver = "Audigy2", .name = "Audigy 4 [A400?]", 
-	 .id = "Audigy2",
-	 .emu10k2_chip = 1,
-	 .ca0102_chip = 1,
-	 /*.ca0151_chip = 1, */
-	 /*.spk71 = 1,	*/
-	 /*.spdif_bug = 1,*/
-	 .ac97_chip = 1} ,
+EQ peaks
 
-I left those commented out as I've tried the options and noticed no
-difference in operation. Also, I don't know the SB0xxx model (can't remove
-the card and look at it at the moment either).
+alsamixer cannot display 10-bands EQ peaks properly.
+
+amixer display the wrong channel name for EQ peaks (Feature request).
+
+Refer to 5.2.3.4.2.6 Graphical Equalizer Controls in USB audio
+http://www.usb.org/developers/devclass_docs/audio10.pdf
+
+Is it feasible to adopt the naming convention of the EQ center frequency
+in amixer/alsamixer ?
+
+
+
+10-bands stereo EQ controls
+
+alsamixer display 10-bands stereo EQ controls in capture view.
+
+amixer display the 10 EQ controls have capture channels.
+
+In theory, the EQ controls can be connected to regulate the capture audio
+from AC97, but this will need a rewrite of the existing driver to support
+dynamic disconnect of the equalizer from the playback device and connect
+the capture device and vice versa.
+
+Most au8810/au8830 users perfer to use the Equalizer to control playback
+only.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 12-22-05 13:29 
+ Raymond - 11-08-05 13:50 
 ----------------------------------------------------------------------
-Also, is the a chip with "CA0151" marked on it?
+The two Realtek 3D Center and depth control of intel8x0 also appear in the
+Capture view of alsamixer-1.0.10rc3 .
 
 ----------------------------------------------------------------------
- khampf - 12-22-05 15:07 
+ Raymond - 12-22-05 15:44 
 ----------------------------------------------------------------------
-I will remove the card and take a look at it when I get back from holidays
-(early January). I'll document the different chips and also take some
-photos of it and put online. I would have done this earlier but have had
-no means of removing the card before.
+amixer 
 
-Right now my driver seems to contain only:
-
-{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
-         .driver = "Audigy2", .name = "Audigy 4 [SB0610]", 
-         .id = "Audigy2",
-         .emu10k2_chip = 1,
-         .ca0102_chip = 1, 
-         /* .ca0108_chip = 1, */
-         /* .ca0151_chip = 1, */
-         /* .spk71 = 1, */
-         /* .spdif_bug = 1, UNTESTED, might be needed */
-         .ac97_chip = 1} ,
-
-And this seems to work ... this is of course irrelevant until one knows
-exactly what IC's there are on the card. I'll get the info for you, until
-then, Happy Holidays
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono   <--------------------------
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono   <--------------------------
+  Limits: 0 - 15
+  Mono: 0 [0%]
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-05 03:35 khampf         New Issue                                    
-11-24-05 03:35 khampf         Distribution              => Debian 3
-testing/unstable hybrid
-11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
-(-ckX+swsusp2+bootsplash)
-11-24-05 03:39 khampf         Issue Monitored: khampf                      
-11-24-05 03:41 khampf         Note Added: 0006837                          
-11-24-05 21:54 jcdutton       Note Added: 0006845                          
-11-26-05 22:33 khampf         Note Added: 0006850                          
-11-29-05 22:55 BerndBuechs    Issue Monitored: BerndBuechs                    
-11-29-05 22:56 BerndBuechs    Note Added: 0006874                          
-12-22-05 13:28 jcdutton       Note Added: 0007124                          
-12-22-05 13:29 jcdutton       Note Added: 0007125                          
-12-22-05 15:07 khampf         Note Added: 0007126                          
+08-24-05 09:26 Raymond        New Issue                                    
+09-05-05 15:18 Raymond        File Added: Capture.png                      
+09-05-05 15:19 Raymond        File Added: alsamixer.png                    
+11-03-05 14:17 Raymond        Note Added: 0006603                          
+11-08-05 13:50 Raymond        Note Added: 0006620                          
+12-22-05 15:44 Raymond        Note Added: 0007127                          
 ======================================================================
 
 
