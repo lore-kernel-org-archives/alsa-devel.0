@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001580]: Test fixes for GCC4
-Date: Thu, 22 Dec 2005 02:15:42 +0100
-Message-ID: <2f42f2a408f13c0d41a88050cf2a94d6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001669]: ppc/tumbler.patch does not apply on 1.0.11rc1 drivers
+Date: Thu, 22 Dec 2005 02:16:02 +0100
+Message-ID: <a120381a10b9c6c248b9fbb526e66408@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 930891B9
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:15:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 344EE1B9
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 02:16:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1580> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1669> 
 ======================================================================
 Reported By:                Flameeyes
-Assigned To:                rlrevell
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1580
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1669
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.15_rc5
 ======================================================================
-Date Submitted:             11-19-2005 20:35 CET
-Last Modified:              12-22-2005 02:15 CET
+Date Submitted:             12-22-2005 02:16 CET
+Last Modified:              12-22-2005 02:16 CET
 ======================================================================
-Summary:                    Test fixes for GCC4
+Summary:                    ppc/tumbler.patch does not apply on 1.0.11rc1
+drivers
 Description: 
-code.c, pcm.c and latency.c files has invalid syntax for GCC4, the attached
-patch allows to build them clean.
+The ppc/tumbler.patch fails to apply on 1.0.11rc1 drivers on PPC.
+Attached there's a patch that fixes the patch, allowing alsa-driver to
+build on PPC.
 
-See also bug #0001540 that I filed on the wrong component and I can't
-close myself :|
-
-This patch also fixes pcm.c and latency.c from latest alsa-lib version.
-
-HTH,
-Diego
+(it still does not load on 2.6.15 for now).
 ======================================================================
-
-----------------------------------------------------------------------
- Flameeyes - 12-22-05 02:11 
-----------------------------------------------------------------------
-This is fixed as of 1.0.11_rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-05 20:35 Flameeyes      New Issue                                    
-11-19-05 20:35 Flameeyes      File Added: alsa-lib-1.0.10-test-gcc4.patch       
-            
-12-22-05 02:11 Flameeyes      Note Added: 0007116                          
-12-22-05 02:15 rlrevell       Status                   new => resolved     
-12-22-05 02:15 rlrevell       Resolution               open => fixed       
-12-22-05 02:15 rlrevell       Assigned To               => rlrevell        
+12-22-05 02:16 Flameeyes      New Issue                                    
+12-22-05 02:16 Flameeyes      File Added: alsa-driver-1.0.11_rc1-ppc.patch      
+             
+12-22-05 02:16 Flameeyes      Distribution              => Gentoo Linux    
+12-22-05 02:16 Flameeyes      Kernel Version            => 2.6.15_rc5      
 ======================================================================
 
 
