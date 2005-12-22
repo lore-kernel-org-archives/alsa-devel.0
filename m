@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
-Date: Thu, 22 Dec 2005 13:28:02 +0100
-Message-ID: <94857bd8ad03d95314914234d3b6ee27@bugtrack.alsa-project.org>
+Date: Thu, 22 Dec 2005 13:29:44 +0100
+Message-ID: <be1c7fb8cf789f0772d2c76b757e831a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0C2E1BB
-	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 13:28:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E28D17E
+	for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2005 13:29:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian 3 testing/unstable hybrid
 Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
 ======================================================================
 Date Submitted:             11-24-2005 03:35 CET
-Last Modified:              12-22-2005 13:28 CET
+Last Modified:              12-22-2005 13:29 CET
 ======================================================================
 Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
 included)
@@ -77,13 +77,6 @@ the card and look at it at the moment either).
 ======================================================================
 
 ----------------------------------------------------------------------
- BerndBuechs - 11-29-05 22:56 
-----------------------------------------------------------------------
-I think I have the same card, on mine you can read
-Sound Blaster Audigy 4
-Model: SB0610
-
-----------------------------------------------------------------------
  jcdutton - 12-22-05 13:28 
 ----------------------------------------------------------------------
 Can you please provide me with more information regarding the card.
@@ -96,6 +89,11 @@ similar.
 4) AC97 chip. This should appear in alsamixer next to "Chip:"
 
 I assume the card has written on is SB0610.
+
+----------------------------------------------------------------------
+ jcdutton - 12-22-05 13:29 
+----------------------------------------------------------------------
+Also, is the a chip with "CA0151" marked on it?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +110,7 @@ testing/unstable hybrid
 11-29-05 22:55 BerndBuechs    Issue Monitored: BerndBuechs                    
 11-29-05 22:56 BerndBuechs    Note Added: 0006874                          
 12-22-05 13:28 jcdutton       Note Added: 0007124                          
+12-22-05 13:29 jcdutton       Note Added: 0007125                          
 ======================================================================
 
 
