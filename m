@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
-Date: Fri, 23 Dec 2005 19:35:32 +0100
-Message-ID: <f1a50892ce88dac0a3648b0dc268c628@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: No sound comes out of AC97 codec
+Date: Fri, 23 Dec 2005 14:02:05 -0500
+Message-ID: <1135364525.22177.10.camel@mindpipe>
+References: <43AC08ED.9030005@rfo.atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31AB6170
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 19:35:33 +0100 (MET)
+In-Reply-To: <43AC08ED.9030005@rfo.atmel.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +17,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Mohammed Amine SAYA <amine.saya@rfo.atmel.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2005-12-23 at 15:25 +0100, Mohammed Amine SAYA wrote:
+> Hi all,
+> I wrote a driver for an AC97 controller on ARM-based platform.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
-======================================================================
-Reported By:                lilbudda
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1657
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             12-17-2005 18:44 CET
-Last Modified:              12-23-2005 19:35 CET
-======================================================================
-Summary:                    no iec958 controls for hda-intel
-Description: 
-When trying to configure sound to pass through the spdif port, alsamixer
-does not show any controls for the iec958.
+You forgot to post a link to your driver source.
 
-Sound plays fine from rear headphone jack.
-======================================================================
-
-----------------------------------------------------------------------
- lilbudda - 12-23-05 18:16 
-----------------------------------------------------------------------
-Also tried the Realtek drivers:
-
-http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
-
-----------------------------------------------------------------------
- rlrevell - 12-23-05 19:35 
-----------------------------------------------------------------------
-What controls are you expecting to see?
-
-Did the realtek driver work?
-
-And, do you get working IEC958 output despite the lack of mixer controls?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-17-05 18:44 lilbudda       New Issue                                    
-12-19-05 08:05 rlrevell       Note Added: 0007091                          
-12-19-05 16:39 lilbudda       Note Added: 0007095                          
-12-19-05 16:50 rlrevell       Note Added: 0007096                          
-12-20-05 06:14 lilbudda       File Added: lspci.txt                        
-12-20-05 06:20 lilbudda       Note Added: 0007102                          
-12-23-05 18:16 lilbudda       Note Added: 0007134                          
-12-23-05 19:35 rlrevell       Note Added: 0007136                          
-======================================================================
-
+Lee
 
 
 
