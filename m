@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001662]: No audio output in a laptop with hda-intel....
-Date: Fri, 23 Dec 2005 02:04:43 +0100
-Message-ID: <a8d6eb21de8b06e64526417c5f8ce43c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001672]: openal not working
+Date: Fri, 23 Dec 2005 03:27:28 +0100
+Message-ID: <cd91f58b74280a8a659842cc9e6d506c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55614195
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 02:04:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9C521A3
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 03:27:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1662> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1672> 
 ======================================================================
-Reported By:                shl
-Assigned To:                tiwai
+Reported By:                ilikejam
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1662
-Category:                   PCI - hda-intel
+Issue ID:                   1672
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.13.4
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.14.x (hand rolled)
 ======================================================================
-Date Submitted:             12-20-2005 11:18 CET
-Last Modified:              12-23-2005 02:04 CET
+Date Submitted:             12-22-2005 03:13 CET
+Last Modified:              12-23-2005 03:27 CET
 ======================================================================
-Summary:                    No audio output in a laptop with hda-intel....
+Summary:                    openal not working
 Description: 
-Hy, I managed to install the hda-intel on my laptop but my big problem is
-:
-The speakers inside the laptop work correctly but everytime I try to plug
-a headset or some external speaker in the output used normally for it, I'd
-the same result : no sound in the laptop'speakers AND no sound at all in
-the external speakers. So after looking a long long time about that
-problem, I didn't find anything. So maybe the function is not yet
-implemented ? If it's the case, is it possible to do it because it'll be
-very usefull for a lot of people ! Thanks for advance and don't hesitate
-to send me a mail if I missed something ...
+The version of ALSA in the latest (2.6.14) kernel doesn't output sound from
+openal. There are no errors (from Unreal Tournament 2004, and from the
+openal-test utilities in the fedora openal-test package), but no sound is
+output.
 
-
+Rolling back the kernel to 2.6.11 solves the problem - sound works fine
+with that kernel version.
 ======================================================================
 
 ----------------------------------------------------------------------
- shl - 12-23-05 02:04 
+ Clemens Ladisch - 12-22-05 10:06 
 ----------------------------------------------------------------------
-In fact after looking a too much long time, I finally found the solution
-...
-But I'd some luck cause in not some very documented in the alsa.org'help
-about hda-intel ; it's around the options hda-intel model=z71v needed in
-the /etc/modules.d/alsa file to detect correctly the type of card... After
-that, a update-module is recommended... So I'll put this point in the
-official doc, I think it could be usefull for a lot and it can too avoid
-some other people from wasting time ! Thanks however for the great work of
-Alsa team developper and finally sorry for the disturbment. A happy user
-:)
+The USB audio driver shipped with 2.6.14 is known to be buggy.
+Update the kernel to 2.6.15-rc?, or update ALSA.
+
+----------------------------------------------------------------------
+ ilikejam - 12-23-05 03:27 
+----------------------------------------------------------------------
+Everything works fine with 2.6.15-rc6.
+
+Cheers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-05 11:18 shl            New Issue                                    
-12-20-05 11:18 shl            Distribution              => Gentoo Linux    
-12-20-05 11:18 shl            Kernel Version            => 2.6.13.4        
-12-20-05 11:19 shl            Issue Monitored: shl                         
-12-20-05 11:19 shl            Issue End Monitor: shl                       
-12-23-05 01:59 shl            Issue Monitored: shl                         
-12-23-05 02:04 shl            Note Added: 0007130                          
+12-22-05 03:13 ilikejam       New Issue                                    
+12-22-05 03:13 ilikejam       Distribution              => Fedora Core 4   
+12-22-05 03:13 ilikejam       Kernel Version            => 2.6.14.x (hand
+rolled)
+12-22-05 10:06 Clemens LadischNote Added: 0007121                          
+12-23-05 03:27 ilikejam       Note Added: 0007131                          
 ======================================================================
 
 
