@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
-Date: Fri, 23 Dec 2005 18:16:53 +0100
-Message-ID: <9000697de6c4bd3777cdbbf511f38f46@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: re: Envy24control -changes on screen
+Date: Fri, 23 Dec 2005 17:50:22 +0000
+Message-ID: <200512231750.22633.gineera@aspect135.co.uk>
+References: <200512162315.43124.gineera@aspect135.co.uk> <s5hd5jpxgno.wl%tiwai@suse.de> <s5hacetxgfb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 076B8178
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 18:16:53 +0100 (MET)
+In-Reply-To: <s5hacetxgfb.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +19,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thursday 22 December 2005 16:08, you wrote:
+> At Thu, 22 Dec 2005 17:03:55 +0100,
+>
+> I wrote:
+> > Hi,
+> >
+> > thanks for the patch.  Just a few nitpicks...
+> >
+> >
+> > At Fri, 16 Dec 2005 23:15:43 +0000,
+> >
+> > Alan Horstmann wrote:
+> > > -		sprintf(str, "S/PDIF Out %s", stream & 1 ? "L": "R");
+> > > +		sprintf(str, "SPDIF Out %s", stream & 1 ? "L": "R");
+> >
+> > I thought "S/PDIF" is the correct word...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
-======================================================================
-Reported By:                lilbudda
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1657
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             12-17-2005 18:44 CET
-Last Modified:              12-23-2005 18:16 CET
-======================================================================
-Summary:                    no iec958 controls for hda-intel
-Description: 
-When trying to configure sound to pass through the spdif port, alsamixer
-does not show any controls for the iec958.
+The change here is to shorten the label by one character, just enough to 
+prevent those 2 meters being wider than the others, which is noticable when 
+using eg a 2-channel wide window and scrolling along the meters.  (I have 
+narrowed the meters.)  I think the meaning is unambiguous without the '/', 
+although I accept it is a compromise.
 
-Sound plays fine from rear headphone jack.
-======================================================================
+> > > +	/* build scrolling area */
+> > > +	scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
+> > > +	gtk_widget_show(scrolledwindow);
+> > > +	gtk_box_pack_start(GTK_BOX(hbox), scrolledwindow, TRUE, TRUE, 0);
+> > > +	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow),
+> > > +					GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+> >
+> > Wouldn't GTK_POLICY_AUTOMATIC be better?
+> > Some boards have only 2 or 4 channels.
 
-----------------------------------------------------------------------
- lilbudda - 12-20-05 06:20 
-----------------------------------------------------------------------
-Edited the /etc/modules.d/alsa file and tried the various configurations by
-adding the model= to the end of the module line. Restarted the alsa
-service and then re-ran alsamixer but no new controls appeared. Also
-deleted local .asoundrc and /etc/asound.conf and asound.state but still no
-change.
+That section is simply a copy of what exists at present in envy24control.c in 
+3 places.  I notice from the bug-track that 0001664 'GTK2-patch for 
+envy24control' includes just this change to the existing scroll-windows; will 
+this be applied?  I think it might be preferable to fix all the occurances as 
+appropriate with a separate patch afterwards?
 
-uploaded results from lspci -nv
+> Also, I got many compile warnings after your patch.  Could you fix
+> them, too?
 
-my machine is an HP Pavilion a730n
-http://h10025.www1.hp.com/ewfrf/wc/document?dlc=en&lc=en&product=431078&lang=en&cc=us&docname=c00196251
+I have no warnings at all (otherwise the patch would not have been submitted).  
+Can you list them and I will have a go.
 
-----------------------------------------------------------------------
- lilbudda - 12-23-05 18:16 
-----------------------------------------------------------------------
-Also tried the Realtek drivers:
-
-http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-17-05 18:44 lilbudda       New Issue                                    
-12-19-05 08:05 rlrevell       Note Added: 0007091                          
-12-19-05 16:39 lilbudda       Note Added: 0007095                          
-12-19-05 16:50 rlrevell       Note Added: 0007096                          
-12-20-05 06:14 lilbudda       File Added: lspci.txt                        
-12-20-05 06:20 lilbudda       Note Added: 0007102                          
-12-23-05 18:16 lilbudda       Note Added: 0007134                          
-======================================================================
-
+Alan
 
 
 
