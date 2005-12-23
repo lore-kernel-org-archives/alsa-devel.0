@@ -1,13 +1,14 @@
-From: Alexandr <spiro@demiart.ru>
-Subject: Re: 1.0.11rc1: still problem with alsamixer ?
-Date: Fri, 23 Dec 2005 22:11:02 +0200
-Message-ID: <43AC59D6.609@demiart.ru>
-References: <43A5728E.8030103@demiart.ru> <s5h4q51xf42.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
+Date: Sat, 24 Dec 2005 00:54:24 +0100
+Message-ID: <f4d911f36ddaa47aca1f77c301f37b2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------040801080708090602010503"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4q51xf42.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C5C4178
+	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2005 00:54:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,109 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040801080708090602010503
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Takashi Iwai wrote:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
+======================================================================
+Reported By:                lilbudda
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1657
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             12-17-2005 18:44 CET
+Last Modified:              12-24-2005 00:54 CET
+======================================================================
+Summary:                    no iec958 controls for hda-intel
+Description: 
+When trying to configure sound to pass through the spdif port, alsamixer
+does not show any controls for the iec958.
 
->At Sun, 18 Dec 2005 16:30:38 +0200,
->Alexandr wrote:
->  
->
->>So. I update my alsa-drivers, -lib , -utils to 1.0.11rc1 - right now my
->>Live 5.1 detect correctly, but problem with alsamixer is stay:
->>
->>kernel 2.6.14 , when i execute "alsamixer" get a next message:
->>
->>ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback 
->>Volume',0,0,0) appears twice or more
->>
->>alsamixer: function snd_mixer_load failed: Invalid argument
->>
->>and alsamixer don't run, same with amixer.
->>
->>And silence from my rear speakers after update, early i has a copy of
->>front speakers on it.
->>    
->>
->
->Make sure that you have no other libasound.so.  For example, FC4
->installs its own one to /lib while alsa-lib package installs to
->/usr/lib as default.
->
->
->Takashi
->  
->
-I have only one libasound.so:
+Sound plays fine from rear headphone jack.
+======================================================================
 
-# locate libasound.so
-/usr/lib/libasound.so
-/usr/lib/libasound.so.2
-/usr/lib/libasound.so.2.0.0
+----------------------------------------------------------------------
+ rlrevell - 12-23-05 19:35 
+----------------------------------------------------------------------
+What controls are you expecting to see?
 
+Did the realtek driver work?
 
+And, do you get working IEC958 output despite the lack of mixer controls?
 
---------------040801080708090602010503
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+----------------------------------------------------------------------
+ lilbudda - 12-24-05 00:54 
+----------------------------------------------------------------------
+No the Realtek driver did not work.
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-  <title></title>
-</head>
-<body bgcolor="#ffffff" text="#000000">
-Takashi Iwai wrote:
-<blockquote cite="mids5h4q51xf42.wl%25tiwai@suse.de" type="cite">
-  <pre wrap="">At Sun, 18 Dec 2005 16:30:38 +0200,
-Alexandr wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">So. I update my alsa-drivers, -lib , -utils to 1.0.11rc1 - right now my
-Live 5.1 detect correctly, but problem with alsamixer is stay:
+I have not been able to use plugins with programs or anything else to get
+sound from the spdif port. No mixer controls.
 
-kernel 2.6.14 , when i execute "alsamixer" get a next message:
-
-ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback 
-Volume',0,0,0) appears twice or more
-
-alsamixer: function snd_mixer_load failed: Invalid argument
-
-and alsamixer don't run, same with amixer.
-
-And silence from my rear speakers after update, early i has a copy of
-front speakers on it.
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-Make sure that you have no other libasound.so.  For example, FC4
-installs its own one to /lib while alsa-lib package installs to
-/usr/lib as default.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-17-05 18:44 lilbudda       New Issue                                    
+12-19-05 08:05 rlrevell       Note Added: 0007091                          
+12-19-05 16:39 lilbudda       Note Added: 0007095                          
+12-19-05 16:50 rlrevell       Note Added: 0007096                          
+12-20-05 06:14 lilbudda       File Added: lspci.txt                        
+12-20-05 06:20 lilbudda       Note Added: 0007102                          
+12-23-05 18:16 lilbudda       Note Added: 0007134                          
+12-23-05 19:35 rlrevell       Note Added: 0007136                          
+12-24-05 00:54 lilbudda       Note Added: 0007138                          
+======================================================================
 
 
-Takashi
-  </pre>
-</blockquote>
-I have only one libasound.so:<br>
-<br>
-# locate libasound.so<br>
-/usr/lib/libasound.so<br>
-/usr/lib/libasound.so.2<br>
-/usr/lib/libasound.so.2.0.0<br>
-<br>
-<br>
-</body>
-</html>
-
---------------040801080708090602010503--
 
 
 -------------------------------------------------------
