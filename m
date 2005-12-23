@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001675]: Shuttle SD11G5 (pentium M) CA0106 sound card
-Date: Fri, 23 Dec 2005 09:45:07 +0100
-Message-ID: <822acf4868772090be1aacb8d5154838@bugtrack.alsa-project.org>
+From: Juan Zapatero <jazc@gmvsistemas.es>
+Subject: Re: Writing a Full-Duplex (capture/playback)
+	application.
+Date: Fri, 23 Dec 2005 10:39:10 +0100
+Message-ID: <1135330750.22198.4.camel@jazc.fedora>
+References: <1135243534.13713.7.camel@jazc.fedora>
+	 <43AAE5A4.60902@pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----------=_1135330750-1023-108"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01C4417B
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 09:45:07 +0100 (MET)
+In-Reply-To: <43AAE5A4.60902@pianodisc.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format...
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1675> 
-======================================================================
-Reported By:                vava
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1675
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             kernel 2.6.14.4
-======================================================================
-Date Submitted:             12-23-2005 09:45 CET
-Last Modified:              12-23-2005 09:45 CET
-======================================================================
-Summary:                    Shuttle SD11G5 (pentium M) CA0106 sound card
-Description: 
- Recently buy a Shuttle SD11G5 (pentium M)
+------------=_1135330750-1023-108
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Sound card reports as :
-0000:02:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+I've solved the problem concerning encapsulation into wave format,
+thanks to Steve deRosier, but I still have another problem. How can I
+configure hw:0,0 device to capture and play audio in Mono mode (only 1
+channel).
+I've tried to specify 1 channel with
+snd_pcm_hw_params_set_channels(captura, cparams, 1), but I get an
+'Unable to set channels' error.
 
-0000:02:09.0 0401: 1102:0007
-        Subsystem: 1297:3041
-        Flags: bus master, medium devsel, latency 32, IRQ 19
-        I/O ports at c000 [size=32]
-        Capabilities: [dc] Power Management version 2
-
-0 [CA0106 ]: CA0106 - CA0106
-                     AudigyLS [Unknown] at 0xc000 irq 19
-
-recompiling my kernel Linux 2.6.14.4
-
-and I got the same behaviour discribe in this bug report.
-sound card seem to works fine, xmms and others players looks like
-playing sound.
-
-but after moving every switch on alsamixer, still no sound.
+Thanks.
 
 
-************
-Trying to find out a solution with Bug 1636
-After checking out cvs tree and installing latest version
-still no sound
+______________________
+Este mensaje, y en su caso, cualquier fichero anexo al mismo,
+ puede contener informacion clasificada por su emisor como confidencial
+ en el marco de su Sistema de Gestion de Seguridad de la 
+Informacion siendo para uso exclusivo del destinatario, quedando 
+prohibida su divulgacion copia o distribucion a terceros sin la 
+autorizacion expresa del remitente. Si Vd. ha recibido este mensaje 
+ erroneamente, se ruega lo notifique al remitente y proceda a su borrado. 
+Gracias por su colaboracion.
+______________________
+This message including any attachments may contain confidential 
+information, according to our Information Security Management System,
+ and intended solely for a specific individual to whom they are addressed.
+ Any unauthorised copy, disclosure or distribution of this message
+ is strictly forbidden. If you have received this transmission in error,
+ please notify the sender immediately and delete it.
+______________________
 
-
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-23-05 09:45 vava           New Issue                                    
-12-23-05 09:45 vava           Distribution              => Debian          
-12-23-05 09:45 vava           Kernel Version            => kernel 2.6.14.4 
-======================================================================
-
-
+------------=_1135330750-1023-108--
 
 
 -------------------------------------------------------
