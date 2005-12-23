@@ -1,13 +1,14 @@
-From: laugeo2@free.fr
-Subject: Re: Re: Ameter plugin : looping sound
-Date: Thu, 22 Dec 2005 23:06:08 +0100
-Message-ID: <1135289168.43ab23509272f@imp1-g19.free.fr>
-References: <1135204156.43a9d73c43032@imp3-g19.free.fr> <s5h7j9xxfik.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001662]: No audio output in a laptop with hda-intel....
+Date: Fri, 23 Dec 2005 02:04:43 +0100
+Message-ID: <a8d6eb21de8b06e64526417c5f8ce43c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7j9xxfik.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55614195
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 02:04:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,77 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, rlrevell@joe-job.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Selon Takashi Iwai <tiwai@suse.de>:
 
-> At Wed, 21 Dec 2005 23:29:16 +0100,
-> laugeo2@free.fr wrote:
-> >
-> > > >Hi,
-> > > >Ameter  is a metering plugin for Alsa :
-> > > >http://laugeo.free.fr/ameter.html
-> > > > It stopped working since 1.0.10,and also fails with 1.0.11rc1 (wa=
-s ok
-> with
-> > > >1.0.9) :
-> > > >Playing a sound with aplay (or any other program) cause  a short s=
-ound
-> > looping
-> > > >in audio out ,while  peakmeter displays the real soundfile level .
-> > > > It seems that the looping sound is the end of the last played sou=
-nd .
-> > > > I have Mandriva 2005 (2.6.11 standard kernel),  ens1371 sound car=
-d.
-> > > >Somenone else has reported the problem ( I don't know his config) =
-.
-> > > >
-> > > >Test command:
-> > > >aplay -D ameter sound.wav -v
-> > > >It returns no error.
-> >
-> > >The easiest solution is to use ALSA CVS to do a binary search and fi=
-nd
-> > >out exactly which commit broke it.
-> > >
-> > >I like to go by date as not all releases get tagged in CVS:
-> > >
-> > >cvs update -D2005-11-01 -A
-> > >etc
-> > >Lee
-> >
-> > It is ok on 2005-09-02 and broken on 2005-09-03
-> > Changing only alsa-lib  makes the problem to appear.
-> >
-> > The files that are updated between 09-02 and 09-03:
-> > U alsa-lib/src/pcm/pcm_file.c
-> > U alsa-lib/src/pcm/pcm_generic.c
-> > U alsa-lib/src/pcm/pcm_generic.h
-> > U alsa-lib/src/pcm/pcm_local.h
-> > U alsa-lib/src/pcm/pcm_mmap.c
-> > U alsa-lib/src/pcm/pcm_null.c
-> > U alsa-lib/src/pcm/pcm_plug.c
-> > U alsa-lib/src/pcm/pcm_rate.c
-> > U alsa-lib/src/pcm/pcm_softvol.c
-> >
-> > May be it is enough for you, or I can search more exactly
-> > which file(s) are bad for the meter.
-> > Regards
->
-> The patch below should fix your problem.  It's already committed to
-> CVS.
->
->
-> thanks,
->
-> Takashi
->
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1662> 
+======================================================================
+Reported By:                shl
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1662
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.13.4
+======================================================================
+Date Submitted:             12-20-2005 11:18 CET
+Last Modified:              12-23-2005 02:04 CET
+======================================================================
+Summary:                    No audio output in a laptop with hda-intel....
+Description: 
+Hy, I managed to install the hda-intel on my laptop but my big problem is
+:
+The speakers inside the laptop work correctly but everytime I try to plug
+a headset or some external speaker in the output used normally for it, I'd
+the same result : no sound in the laptop'speakers AND no sound at all in
+the external speakers. So after looking a long long time about that
+problem, I didn't find anything. So maybe the function is not yet
+implemented ? If it's the case, is it possible to do it because it'll be
+very usefull for a lot of people ! Thanks for advance and don't hesitate
+to send me a mail if I missed something ...
 
-Ok now.
-Thanks to you
-Laurent
+
+======================================================================
+
+----------------------------------------------------------------------
+ shl - 12-23-05 02:04 
+----------------------------------------------------------------------
+In fact after looking a too much long time, I finally found the solution
+...
+But I'd some luck cause in not some very documented in the alsa.org'help
+about hda-intel ; it's around the options hda-intel model=z71v needed in
+the /etc/modules.d/alsa file to detect correctly the type of card... After
+that, a update-module is recommended... So I'll put this point in the
+official doc, I think it could be usefull for a lot and it can too avoid
+some other people from wasting time ! Thanks however for the great work of
+Alsa team developper and finally sorry for the disturbment. A happy user
+:)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-20-05 11:18 shl            New Issue                                    
+12-20-05 11:18 shl            Distribution              => Gentoo Linux    
+12-20-05 11:18 shl            Kernel Version            => 2.6.13.4        
+12-20-05 11:19 shl            Issue Monitored: shl                         
+12-20-05 11:19 shl            Issue End Monitor: shl                       
+12-23-05 01:59 shl            Issue Monitored: shl                         
+12-23-05 02:04 shl            Note Added: 0007130                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
