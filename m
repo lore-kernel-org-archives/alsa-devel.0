@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001672]: openal not working
-Date: Fri, 23 Dec 2005 03:27:28 +0100
-Message-ID: <cd91f58b74280a8a659842cc9e6d506c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001675]: Shuttle SD11G5 (pentium M) CA0106 sound card
+Date: Fri, 23 Dec 2005 09:45:07 +0100
+Message-ID: <822acf4868772090be1aacb8d5154838@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9C521A3
-	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 03:27:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01C4417B
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 09:45:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1672> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1675> 
 ======================================================================
-Reported By:                ilikejam
-Assigned To:                Clemens Ladisch
+Reported By:                vava
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1672
-Category:                   USB - usb-audio
+Issue ID:                   1675
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.14.x (hand rolled)
+Distribution:               Debian
+Kernel Version:             kernel 2.6.14.4
 ======================================================================
-Date Submitted:             12-22-2005 03:13 CET
-Last Modified:              12-23-2005 03:27 CET
+Date Submitted:             12-23-2005 09:45 CET
+Last Modified:              12-23-2005 09:45 CET
 ======================================================================
-Summary:                    openal not working
+Summary:                    Shuttle SD11G5 (pentium M) CA0106 sound card
 Description: 
-The version of ALSA in the latest (2.6.14) kernel doesn't output sound from
-openal. There are no errors (from Unreal Tournament 2004, and from the
-openal-test utilities in the fedora openal-test package), but no sound is
-output.
+ Recently buy a Shuttle SD11G5 (pentium M)
 
-Rolling back the kernel to 2.6.11 solves the problem - sound works fine
-with that kernel version.
+Sound card reports as :
+0000:02:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+
+0000:02:09.0 0401: 1102:0007
+        Subsystem: 1297:3041
+        Flags: bus master, medium devsel, latency 32, IRQ 19
+        I/O ports at c000 [size=32]
+        Capabilities: [dc] Power Management version 2
+
+0 [CA0106 ]: CA0106 - CA0106
+                     AudigyLS [Unknown] at 0xc000 irq 19
+
+recompiling my kernel Linux 2.6.14.4
+
+and I got the same behaviour discribe in this bug report.
+sound card seem to works fine, xmms and others players looks like
+playing sound.
+
+but after moving every switch on alsamixer, still no sound.
+
+
+************
+Trying to find out a solution with Bug 1636
+After checking out cvs tree and installing latest version
+still no sound
+
+
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 12-22-05 10:06 
-----------------------------------------------------------------------
-The USB audio driver shipped with 2.6.14 is known to be buggy.
-Update the kernel to 2.6.15-rc?, or update ALSA.
-
-----------------------------------------------------------------------
- ilikejam - 12-23-05 03:27 
-----------------------------------------------------------------------
-Everything works fine with 2.6.15-rc6.
-
-Cheers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 03:13 ilikejam       New Issue                                    
-12-22-05 03:13 ilikejam       Distribution              => Fedora Core 4   
-12-22-05 03:13 ilikejam       Kernel Version            => 2.6.14.x (hand
-rolled)
-12-22-05 10:06 Clemens LadischNote Added: 0007121                          
-12-23-05 03:27 ilikejam       Note Added: 0007131                          
+12-23-05 09:45 vava           New Issue                                    
+12-23-05 09:45 vava           Distribution              => Debian          
+12-23-05 09:45 vava           Kernel Version            => kernel 2.6.14.4 
 ======================================================================
 
 
