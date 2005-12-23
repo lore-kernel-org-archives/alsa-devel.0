@@ -1,15 +1,14 @@
-From: Juan Zapatero <jazc@gmvsistemas.es>
-Subject: Re: Writing a Full-Duplex
-	(capture/playback)	application.
-Date: Fri, 23 Dec 2005 12:55:46 +0100
-Message-ID: <1135338946.22198.9.camel@jazc.fedora>
-References: <1135243534.13713.7.camel@jazc.fedora>
-	 <43AAE5A4.60902@pianodisc.com> <1135330750.22198.4.camel@jazc.fedora>
-	 <43ABD837.80601@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001615]: No digital passthrough for Creative Audigy 2 NX
+Date: Fri, 23 Dec 2005 12:40:08 +0100
+Message-ID: <12f26dcb3beb56210dc807ca7e6ba797@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_1135338944-1023-318"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43ABD837.80601@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0528016E
+	for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2005 12:40:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,66 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
 
-------------=_1135338944-1023-318
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-The problem about sample rate is that I need the captured audio to be as
-much compressed as possible so that I can get it trough a GPRS link.
-That's why I use 8000Hz, 16bit, and I would like to capture in Mono,
-because there is no sense in capturing stereo channels with a mono
-microphone.
-
-> When doing full duplex, do not open the device as full duplex, open the 
-> device twice. Once for playback and once for capture. The reason for 
-> this is that sound cards often have different buffer sizes for capture 
-> and playback, and so separating them gives you more control over buffer 
-> and period sizes.
-> For playback use device name "plug:front", for capture you can use the 
-> same "plug:front". The important bit it the "plug", as it will do sample 
-> rate and sample format conversion for you.
-> For low latency application like voice, it is actually better to sample 
-> at high frequencies, e.g. 48000Hz. You then do the sample rate 
-> conversion in your application. This way, not only is the sample rate 
-> conversion much higher quality than alsa-lib can probably do, it can 
-> also be optimised for your application. e.g. VoIP usually uses 20ms of 
-> voice per packet. You can create a very efficient block sample rate 
-> converter when taking all 20ms into account.
-> There is also an option in the api to force the "plug" layer to do 
-> sample format conversion, but not sample rate conversion, thus ensuring 
-> that alsa-lib does not do any sample rate conversion, leaving your 
-> application to do it.
-> 
-> James
-
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1615> 
+======================================================================
+Reported By:                rev_jazz
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1615
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5-10
+Kernel Version:             Linux 2.6.12-9-3
+======================================================================
+Date Submitted:             12-03-2005 17:06 CET
+Last Modified:              12-23-2005 12:40 CET
+======================================================================
+Summary:                    No digital passthrough for Creative Audigy 2 NX
+Description: 
+I tried with alsa1.0.9a (on an ubuntu) to wake work the ac3 passthrough
+(with an extarnal decoder) usiing the coaxial digital out. It didn't work
+fine at all neither using mplayer with -ao alsa:device=default -ac hwac3
+nor with xine. mplayer issues in two ways:
+1- says :
+alsa-init: 1 soundcard found, using: iec958:{CARD 0 AES0 0x02 AES1 0x82
+AES2 0x0 0 AES3 0x02}
+ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM iec958:{CARD
+0 AES0  0x02 AES1 0x82 AES2 0x00 AES3 0x02} definition (id: iec958, value:
+cards.pcm.ie c958)
 
 
-______________________
-Este mensaje, y en su caso, cualquier fichero anexo al mismo,
- puede contener informacion clasificada por su emisor como confidencial
- en el marco de su Sistema de Gestion de Seguridad de la 
-Informacion siendo para uso exclusivo del destinatario, quedando 
-prohibida su divulgacion copia o distribucion a terceros sin la 
-autorizacion expresa del remitente. Si Vd. ha recibido este mensaje 
- erroneamente, se ruega lo notifique al remitente y proceda a su borrado. 
-Gracias por su colaboracion.
-______________________
-This message including any attachments may contain confidential 
-information, according to our Information Security Management System,
- and intended solely for a specific individual to whom they are addressed.
- Any unauthorised copy, disclosure or distribution of this message
- is strictly forbidden. If you have received this transmission in error,
- please notify the sender immediately and delete it.
-______________________
+or
 
-------------=_1135338944-1023-318--
+2- sends to extarnal amplifier lots of crack and gap noise
+
+It seems to be no configuration way to make the ac3/dts digital out
+passthrough work
+
+regards,
+
+jazz
+======================================================================
+
+----------------------------------------------------------------------
+ rev_jazz - 12-03-05 17:10 
+----------------------------------------------------------------------
+PS: alsa default is set to PCM
+
+----------------------------------------------------------------------
+ Faber - 12-23-05 12:40 
+----------------------------------------------------------------------
+The problem seems to be that the usb-audio driver doesn't expose an iec958
+device.
+
+I have AC3 passthrough working on my system (also using Audigy 2 NX) by
+manually patching mplayer to use "hw:0,0" instead of "iec958:AES0=..." and
+setting "audio.device.alsa_passthrough_device:hw:0,0" in .xine/config .
+
+You also need to manually turn on Digital Out, set Digital Out Source to
+PCM and set all volume controls to 100%.
+
+It would be really nice, however, if the usb-audio driver could expose an
+iec958 device and automatically route input to this device around the
+mixer and directly to direct out (like it happens with other drivers).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-03-05 17:06 rev_jazz       New Issue                                    
+12-03-05 17:06 rev_jazz       Distribution              => Ubuntu 5-10     
+12-03-05 17:06 rev_jazz       Kernel Version            => Linux 2.6.12-9-3
+12-03-05 17:06 rev_jazz       Issue Monitored: rev_jazz                    
+12-03-05 17:10 rev_jazz       Note Added: 0006901                          
+12-23-05 12:28 Faber          Issue Monitored: Faber                       
+12-23-05 12:40 Faber          Note Added: 0007133                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
