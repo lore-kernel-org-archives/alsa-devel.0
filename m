@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Sat, 24 Dec 2005 03:28:12 +0100
-Message-ID: <a934384d342d23bf668303dea2f5f173@bugtrack.alsa-project.org>
+Date: Sat, 24 Dec 2005 03:32:29 +0100
+Message-ID: <9325b2fb4edf833cd14787eb4d24b4dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A4A2172
-	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2005 03:28:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D30ED166
+	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2005 03:32:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Breezy
 Kernel Version:             2.6.12-9-686
 ======================================================================
 Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              12-24-2005 03:28 CET
+Last Modified:              12-24-2005 03:32 CET
 ======================================================================
 Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
 Description: 
@@ -61,11 +61,6 @@ I tried the stock drivers provided by the Ubuntu kernel, then I tried
 all cases the result was the same - absolute silence.
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-19-05 02:28 
-----------------------------------------------------------------------
-Please test the latest ALSA release (1.0.11-rc1), this should be fixed.
 
 ----------------------------------------------------------------------
  OnO - 12-24-05 03:28 
@@ -217,6 +212,24 @@ Enable-
 Please fix it ASAP. I believe it is related to this specific model
 connections routing. Thank you for your support.
 
+----------------------------------------------------------------------
+ OnO - 12-24-05 03:32 
+----------------------------------------------------------------------
+Just forget to mention that even AADEBUG reports that ALSA is compiled on
+16th Dec actually modules are compiled from latest CVS HEAD. So it is
+rather not fixed in 1.0.11-rc1 for this laptop model.
+
+js@acer:~$ ls -al /lib/modules/2.6.14-kanotix-6/kernel/sound/pci/hda/
+total 169
+drwxr-xr-x  2 root root    112 Dec 24 02:57 .
+drwxr-xr-x 23 root root   1264 Dec 24 02:57 ..
+-rw-r--r--  1 root root 148312 Dec 24 02:57 snd-hda-codec.ko
+-rw-r--r--  1 root root  18557 Dec 24 02:57 snd-hda-intel.ko
+js@acer:~$
+
+Do we need another model for ALC260 routing hardcoded in sources ?
+Regards.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -226,6 +239,7 @@ Date Modified  Username       Field                    Change
 10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
 12-19-05 02:28 rlrevell       Note Added: 0007083                          
 12-24-05 03:28 OnO            Note Added: 0007139                          
+12-24-05 03:32 OnO            Note Added: 0007140                          
 ======================================================================
 
 
