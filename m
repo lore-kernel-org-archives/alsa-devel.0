@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001575]: Multi ice1712 cards don't work in duplex mode
-Date: Sat, 24 Dec 2005 19:26:19 +0100
-Message-ID: <fd6c96b8d8fcb75cf53e69a57aef5ee5@bugtrack.alsa-project.org>
+Date: Sat, 24 Dec 2005 19:23:12 +0100
+Message-ID: <9003cfc6803fcd828c8bbbeef0f9b4b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D7D4169
-	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2005 19:26:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 344E915C
+	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2005 19:23:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             11-18-2005 01:12 CET
-Last Modified:              12-24-2005 19:26 CET
+Last Modified:              12-24-2005 19:23 CET
 ======================================================================
 Summary:                    Multi ice1712 cards don't work in duplex mode
 Description: 
@@ -77,6 +77,21 @@ it just appears that the multi plugin can't deal with this.
 ======================================================================
 
 ----------------------------------------------------------------------
+ Schafwoller - 12-22-05 17:18 
+----------------------------------------------------------------------
+I tried to use two m-audio delta 1010 in one box:
+
+SuSE 10.0 (kernel 2.6.13)
+jackd 0.100.0+MMAP-patch
+alsa-lib-1.0.10
+alsa-driver-1.0.10
+
+No chance to get duplex-mode running. Also Midi? Getting error-messages
+regarding MIDI when starting apps like qjackctl -> Midi is not available
+in connections-window. Don't see any way to handle midi-connections via
+envy24control, qjackctl or any other App
+
+----------------------------------------------------------------------
  johnrigg - 12-24-05 19:23 
 ----------------------------------------------------------------------
 I just discovered that envy24control has an inverted word clock lock
@@ -86,12 +101,6 @@ use duplex mode using the instructions on the aforementioned web page
 (don't know about MIDI though).
 I tried envy24control versions from alsa-tools-1.0.10 back to 1.0.8 and
 they're all the same.
-
-----------------------------------------------------------------------
- johnrigg - 12-24-05 19:26 
-----------------------------------------------------------------------
-Forgot the link to the web page:
-http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,7 +116,6 @@ Date Modified  Username       Field                    Change
 12-22-05 17:18 Schafwoller    Note Added: 0007128                          
 12-22-05 17:21 Schafwoller    Issue Monitored: Schafwoller                    
 12-24-05 19:23 johnrigg       Note Added: 0007143                          
-12-24-05 19:26 johnrigg       Note Added: 0007144                          
 ======================================================================
 
 
