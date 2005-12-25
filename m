@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001575]: Multi ice1712 cards don't work in duplex mode
-Date: Sat, 24 Dec 2005 19:23:12 +0100
-Message-ID: <9003cfc6803fcd828c8bbbeef0f9b4b8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
+Date: Sun, 25 Dec 2005 02:29:41 +0100
+Message-ID: <293a3027a320b2679d19cb833c4c8347@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 344E915C
-	for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2005 19:23:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88DFC163
+	for <alsa-devel@alsa-project.org>; Sun, 25 Dec 2005 02:29:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,100 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1575> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
 ======================================================================
-Reported By:                johnrigg
-Assigned To:                
+Reported By:                kees
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1575
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1678
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.15-rc6-git4
 ======================================================================
-Date Submitted:             11-18-2005 01:12 CET
-Last Modified:              12-24-2005 19:23 CET
+Date Submitted:             12-25-2005 02:29 CET
+Last Modified:              12-25-2005 02:29 CET
 ======================================================================
-Summary:                    Multi ice1712 cards don't work in duplex mode
+Summary:                    nForce (10de:026c) left channel squeals, right
+channel mostly okay
 Description: 
-ice 1712 cards have 12 capture channels and 10 playback. This prevents
-multi pcm
-plugin from working in duplex mode. If I use following in .asoundrc:
+This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
+is this is an "nForce410" board, with "6-channel HD audio".
 
-slaves.a.pcm "hw:0,0"
-slaves.a.channels 12
-slaves.b.pcm "hw:1,0"
-slaves.b.channels 12
+Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
+snd-hda-intel load fine, but during playback, the left channel squeals,
+while the right seems to play things okay.
 
-I can only start jackd with -C option. Attempting to start with both -C
-and -P
-just produces error message 
-ALSA: no playback configurations available (Invalid argument)
-ALSA: cannot configure playback channel
-
-Similarly if I set channels to 10 I can only start jackd with -P option.
-Using
-both -C and -P gives error
-ALSA: no playback configurations available (invalid argument)
-ALSA: cannot configure capture channel
-
-These cards don't have separate subdevices for capture and playback, so
-it
-isn't possible to define two different multi configs and combine them with
-asym
-plugin. If channels is set to anything other than 10 or 12 (eg. 8) it
-produces error eg. ALSA: cannot set channel count to 8 for capture.
-
-I can use one card at a time in duplex mode with
-`jackd -d alsa -d hw:0'  or `jackd -d alsa -d hw:1'.
-jack is obviously happy to run with 12 capture and 10 playback channels, 
-it just appears that the multi plugin can't deal with this.
+I'm happy to dig around and try whatever needs trying to get this fixed. 
+Thanks!
 ======================================================================
-
-----------------------------------------------------------------------
- Schafwoller - 12-22-05 17:18 
-----------------------------------------------------------------------
-I tried to use two m-audio delta 1010 in one box:
-
-SuSE 10.0 (kernel 2.6.13)
-jackd 0.100.0+MMAP-patch
-alsa-lib-1.0.10
-alsa-driver-1.0.10
-
-No chance to get duplex-mode running. Also Midi? Getting error-messages
-regarding MIDI when starting apps like qjackctl -> Midi is not available
-in connections-window. Don't see any way to handle midi-connections via
-envy24control, qjackctl or any other App
-
-----------------------------------------------------------------------
- johnrigg - 12-24-05 19:23 
-----------------------------------------------------------------------
-I just discovered that envy24control has an inverted word clock lock
-indicator. When it says `No signal' it's locked, and when it says `Locked'
-there's no signal. Set it up to say `No signal' and you should be able to
-use duplex mode using the instructions on the aforementioned web page
-(don't know about MIDI though).
-I tried envy24control versions from alsa-tools-1.0.10 back to 1.0.8 and
-they're all the same.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-18-05 01:12 johnrigg       New Issue                                    
-12-03-05 20:09 johnrigg       Note Added: 0006902                          
-12-03-05 22:56 johnrigg       Note Added: 0006905                          
-12-21-05 23:16 Roman          Issue Monitored: Roman                       
-12-21-05 23:16 Roman          Issue End Monitor: Roman                     
-12-21-05 23:59 Roman          Note Added: 0007113                          
-12-22-05 00:00 Roman          Issue Monitored: Roman                       
-12-22-05 00:57 johnrigg       Note Added: 0007114                          
-12-22-05 17:18 Schafwoller    Note Added: 0007128                          
-12-22-05 17:21 Schafwoller    Issue Monitored: Schafwoller                    
-12-24-05 19:23 johnrigg       Note Added: 0007143                          
+12-25-05 02:29 kees           New Issue                                    
+12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
+12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
 ======================================================================
 
 
