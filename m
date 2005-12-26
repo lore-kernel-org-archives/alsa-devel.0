@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001682]: Errors during install
-Date: Mon, 26 Dec 2005 20:16:11 +0100
-Message-ID: <5cef49a71393f7ab2c0645684f1f420f@bugtrack.alsa-project.org>
+Date: Mon, 26 Dec 2005 20:31:05 +0100
+Message-ID: <d24746910073b26d59116426e8bcde4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F254F9
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 20:16:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D7F314B
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 20:31:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1682> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-26-2005 20:16 CET
-Last Modified:              12-26-2005 20:16 CET
+Last Modified:              12-26-2005 20:31 CET
 ======================================================================
 Summary:                    Errors during install
 Description: 
@@ -51,10 +51,16 @@ Errors during
 Not sure what to do... linux newbie...
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 12-26-05 20:31 
+----------------------------------------------------------------------
+What error do you get?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-26-05 20:16 theskuj        New Issue                                    
+12-26-05 20:31 rlrevell       Note Added: 0007161                          
 ======================================================================
 
 
