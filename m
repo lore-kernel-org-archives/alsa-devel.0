@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001677]: envy24control word clock lock indication is wrong way around
-Date: Mon, 26 Dec 2005 13:12:34 +0100
-Message-ID: <6c370bbb3a0391108dd5832dfb7bc816@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001642]: System lockup when recording
+Date: Mon, 26 Dec 2005 13:25:52 +0100
+Message-ID: <551977c08543d65c13c2dd71aaffa38c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9D14138
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 13:12:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B53613A
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 13:25:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1677> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1642> 
 ======================================================================
-Reported By:                johnrigg
-Assigned To:                
+Reported By:                oryn
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1677
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   1642
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.14.3
 ======================================================================
-Date Submitted:             12-24-2005 18:03 CET
-Last Modified:              12-26-2005 13:12 CET
+Date Submitted:             12-12-2005 00:31 CET
+Last Modified:              12-26-2005 13:25 CET
 ======================================================================
-Summary:                    envy24control word clock lock indication is wrong
-way around
+Summary:                    System lockup when recording
 Description: 
-The word clock `Locked' indication in envy24control's hardware settings is
-backwards. It says `Locked' when there's no signal and `No signal' when
-it's
-locked.
-I'm hoping I'll get a large pot of glue for Christmas so I can stick back
-all the hair I've torn out over the last couple of weeks over this :-)
-
-Merry Christmas
-
-John
+When I try to open a usb device for recording it locks up the system
+I have to power cycle the system to recover.
+It makes no difference what application I use and whether it wants to open
+the alsa device directly or via the oss emulation.
 ======================================================================
 
 ----------------------------------------------------------------------
- johnrigg - 12-26-05 13:12 
+ rlrevell - 12-26-05 02:40 
 ----------------------------------------------------------------------
-The above behaviour happens when syncing clocks via the BNC word clock
-in/out connectors. When syncing via S/PDIF the indicator just says
-`Locked' whether it's locked or not. The only way to tell is if it's
-locked jackd will run, if unlocked it won't.
+CONFIG_USB_BANDWIDTH is enabled in your kernel config.
+
+This option is buggy and not compatible with ALSA's USB audio.  Disable it
+and you should be fine.
+
+----------------------------------------------------------------------
+ oryn - 12-26-05 13:25 
+----------------------------------------------------------------------
+Now that is a great Christmas present :)
+Thank you Soo much
+
+It was exactly as you said :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-24-05 18:03 johnrigg       New Issue                                    
-12-26-05 13:12 johnrigg       Note Added: 0007150                          
+12-12-05 00:31 oryn           New Issue                                    
+12-12-05 00:31 oryn           Distribution              => Debian          
+12-12-05 00:31 oryn           Kernel Version            => 2.6.14.3        
+12-12-05 01:01 rlrevell       Note Added: 0006981                          
+12-12-05 17:23 oryn           Note Added: 0006984                          
+12-12-05 19:41 oryn           File Added: usbsound.jpg                     
+12-12-05 19:48 oryn           Note Added: 0006985                          
+12-26-05 02:20 oryn           Note Added: 0007146                          
+12-26-05 02:21 oryn           Issue Monitored: oryn                        
+12-26-05 02:40 rlrevell       Note Added: 0007147                          
+12-26-05 13:25 oryn           Note Added: 0007151                          
 ======================================================================
 
 
