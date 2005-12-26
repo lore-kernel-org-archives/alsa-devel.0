@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001642]: System lockup when recording
-Date: Mon, 26 Dec 2005 16:38:10 +0100
-Message-ID: <127a140595e1371e9ae122483e59ce31@bugtrack.alsa-project.org>
+From: Mark Salazar <markTheCoder@justmyself.net>
+Subject: [es18xx.c PATCH] #3/4 for Zoom Video - change Hardware Volume interrupt
+ handling
+Date: Mon, 26 Dec 2005 10:45:57 -0500
+Message-ID: <43B01035.7060604@justmyself.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD134143
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 16:38:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +16,114 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Third of 4 es18xx.c patches culminating in Zoom Video support.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1642> 
-======================================================================
-Reported By:                oryn
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1642
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.14.3
-======================================================================
-Date Submitted:             12-12-2005 00:31 CET
-Last Modified:              12-26-2005 16:38 CET
-======================================================================
-Summary:                    System lockup when recording
-Description: 
-When I try to open a usb device for recording it locks up the system
-I have to power cycle the system to recover.
-It makes no difference what application I use and whether it wants to open
-the alsa device directly or via the oss emulation.
-======================================================================
+This patch changes the Hardware Volume support to reflect the fact that 
+not all of the
+supported chipsets have seperate registers dedicated to the Hardware 
+Volume inputs. Although
+all the chipsets can generate an HWV interrupt whenever a Hardware 
+Volume input is received
+only those with seperate HWV registers can split the HWV registers from 
+the Master volume
+registers.
 
-----------------------------------------------------------------------
- oryn - 12-26-05 16:28 
-----------------------------------------------------------------------
-I built my own kernel, have done for years
+Testing:
+This work was initially done on the source from the Debian Sarge ALSA 
+package, then tested
+on an ES1879 and an ES1878 machine. Patches were created against the 
+Sarge code and then edited
+to apply correctly to the ALSA cvs code. Lastly the patched ALSA cvs 
+code was test for
+successful compilation. No additional testing was done on the ALSA cvs 
+version.
 
-----------------------------------------------------------------------
- rlrevell - 12-26-05 16:38 
-----------------------------------------------------------------------
-One more question, which host controller driver was in use (uhci-hcd,
-ehci-hcd, ohci-hcd)?
+Applying:
+cd alsa-driver/
+cat ../../es18xx.CVSmod3.diff |  patch -p1
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-12-05 00:31 oryn           New Issue                                    
-12-12-05 00:31 oryn           Distribution              => Debian          
-12-12-05 00:31 oryn           Kernel Version            => 2.6.14.3        
-12-12-05 01:01 rlrevell       Note Added: 0006981                          
-12-12-05 17:23 oryn           Note Added: 0006984                          
-12-12-05 19:41 oryn           File Added: usbsound.jpg                     
-12-12-05 19:48 oryn           Note Added: 0006985                          
-12-26-05 02:20 oryn           Note Added: 0007146                          
-12-26-05 02:21 oryn           Issue Monitored: oryn                        
-12-26-05 02:40 rlrevell       Note Added: 0007147                          
-12-26-05 13:25 oryn           Note Added: 0007151                          
-12-26-05 13:31 oryn           Note Added: 0007152                          
-12-26-05 16:21 rlrevell       Note Added: 0007153                          
-12-26-05 16:28 oryn           Note Added: 0007156                          
-12-26-05 16:38 rlrevell       Note Added: 0007158                          
-======================================================================
+Signed-off-by: Mark Salazar <markTheCoder@justmyself.net>
 
+------
+diff -Nur ../alsa-driverMod2/alsa-kernel/isa/es18xx.c 
+./alsa-kernel/isa/es18xx.c
+--- ../alsa-driverMod2/alsa-kernel/isa/es18xx.c    2005-12-10 
+13:59:42.000000000 -0500
++++ ./alsa-kernel/isa/es18xx.c    2005-12-10 13:59:52.000000000 -0500
+@@ -140,7 +140,7 @@
+ #define ES18XX_DUPLEX_SAME 0x0010    /* Playback and record must share 
+the same rate */
+ #define ES18XX_NEW_RATE    0x0020    /* More precise rate setting */
+ #define ES18XX_AUXB    0x0040    /* AuxB mixer control */
+-#define ES18XX_HWV    0x0080    /* Has hardware volume */
++#define ES18XX_HWV    0x0080    /* Has seperate hardware volume mixer 
+controls*/
+ #define ES18XX_MONO    0x0100    /* Mono_in mixer control */
+ #define ES18XX_I2S    0x0200    /* I2S mixer control */
+ #define ES18XX_MUTEREC    0x0400    /* Record source can be muted */
+@@ -778,9 +778,12 @@
+ 
+     /* Hardware volume */
+     if (status & HWV_IRQ) {
+-        int split = snd_es18xx_mixer_read(chip, 0x64) & 0x80;
+-        snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, 
+&chip->hw_switch->id);
+-        snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, 
+&chip->hw_volume->id);
++        int split = 0;
++        if (chip->caps & ES18XX_HWV) {
++            split = snd_es18xx_mixer_read(chip, 0x64) & 0x80;
++            snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, 
+&chip->hw_switch->id);
++            snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, 
+&chip->hw_volume->id);
++        }
+         if (!split) {
+             snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, 
+&chip->master_switch->id);
+             snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, 
+&chip->master_volume->id);
+@@ -1609,22 +1612,22 @@
+ 
+     switch (chip->version) {
+     case 0x1868:
+-        chip->caps = ES18XX_DUPLEX_MONO | ES18XX_DUPLEX_SAME | 
+ES18XX_CONTROL | ES18XX_HWV;
++        chip->caps = ES18XX_DUPLEX_MONO | ES18XX_DUPLEX_SAME | 
+ES18XX_CONTROL;
+         break;
+     case 0x1869:
+         chip->caps = ES18XX_PCM2 | ES18XX_SPATIALIZER | ES18XX_RECMIX | 
+ES18XX_NEW_RATE | ES18XX_AUXB | ES18XX_MONO | ES18XX_MUTEREC | 
+ES18XX_CONTROL | ES18XX_HWV;
+         break;
+     case 0x1878:
+-        chip->caps = ES18XX_DUPLEX_MONO | ES18XX_DUPLEX_SAME | 
+ES18XX_I2S | ES18XX_CONTROL | ES18XX_HWV;
++        chip->caps = ES18XX_DUPLEX_MONO | ES18XX_DUPLEX_SAME | 
+ES18XX_I2S | ES18XX_CONTROL;
+         break;
+     case 0x1879:
+         chip->caps = ES18XX_PCM2 | ES18XX_SPATIALIZER | ES18XX_RECMIX | 
+ES18XX_NEW_RATE | ES18XX_AUXB | ES18XX_I2S | ES18XX_CONTROL | ES18XX_HWV;
+         break;
+     case 0x1887:
+-        chip->caps = ES18XX_PCM2 | ES18XX_RECMIX | ES18XX_AUXB | 
+ES18XX_DUPLEX_SAME | ES18XX_HWV;
++        chip->caps = ES18XX_PCM2 | ES18XX_RECMIX | ES18XX_AUXB | 
+ES18XX_DUPLEX_SAME;
+         break;
+     case 0x1888:
+-        chip->caps = ES18XX_PCM2 | ES18XX_RECMIX | ES18XX_AUXB | 
+ES18XX_DUPLEX_SAME | ES18XX_HWV;
++        chip->caps = ES18XX_PCM2 | ES18XX_RECMIX | ES18XX_AUXB | 
+ES18XX_DUPLEX_SAME;
+         break;
+     default:
+                 snd_printk("[0x%lx] unsupported chip ES%x\n",
 
 
 
