@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001642]: System lockup when recording
-Date: Mon, 26 Dec 2005 13:25:52 +0100
-Message-ID: <551977c08543d65c13c2dd71aaffa38c@bugtrack.alsa-project.org>
+Date: Mon, 26 Dec 2005 13:31:18 +0100
+Message-ID: <57bc51123e3289394c052960f628f817@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B53613A
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 13:25:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E76513A
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 13:31:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.14.3
 ======================================================================
 Date Submitted:             12-12-2005 00:31 CET
-Last Modified:              12-26-2005 13:25 CET
+Last Modified:              12-26-2005 13:31 CET
 ======================================================================
 Summary:                    System lockup when recording
 Description: 
@@ -51,20 +51,22 @@ the alsa device directly or via the oss emulation.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-26-05 02:40 
-----------------------------------------------------------------------
-CONFIG_USB_BANDWIDTH is enabled in your kernel config.
-
-This option is buggy and not compatible with ALSA's USB audio.  Disable it
-and you should be fine.
-
-----------------------------------------------------------------------
  oryn - 12-26-05 13:25 
 ----------------------------------------------------------------------
 Now that is a great Christmas present :)
 Thank you Soo much
 
 It was exactly as you said :)
+
+----------------------------------------------------------------------
+ oryn - 12-26-05 13:31 
+----------------------------------------------------------------------
+I guess you can close this issue now :)
+What would be quite cool would be something in the configure script that
+checked the kernel config for CONFIG_USB_BANDWIDTH=y and reported an error
+if found.
+
+May I wish you and all the rest of the ALSA crew a Happy new year :)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -80,6 +82,7 @@ Date Modified  Username       Field                    Change
 12-26-05 02:21 oryn           Issue Monitored: oryn                        
 12-26-05 02:40 rlrevell       Note Added: 0007147                          
 12-26-05 13:25 oryn           Note Added: 0007151                          
+12-26-05 13:31 oryn           Note Added: 0007152                          
 ======================================================================
 
 
