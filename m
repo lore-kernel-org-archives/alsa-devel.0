@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001680]: (DELL) Soundblaster Live 5.1 Digital Model SB0220 displays as unknown SBlive
-Date: Mon, 26 Dec 2005 16:31:49 +0100
-Message-ID: <853a89b9f7f57eca13ca66ec7433fb41@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001642]: System lockup when recording
+Date: Mon, 26 Dec 2005 16:38:10 +0100
+Message-ID: <127a140595e1371e9ae122483e59ce31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35187143
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 16:31:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD134143
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 16:38:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1680> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1642> 
 ======================================================================
-Reported By:                mashaun
-Assigned To:                rlrevell
+Reported By:                oryn
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1680
-Category:                   PCI - emu10k1
+Issue ID:                   1642
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   block
 Priority:                   normal
-Status:                     closed
+Status:                     assigned
 Distribution:               Debian
-Kernel Version:             2.6.14
-Resolution:                 fixed
-Fixed in Version:           
+Kernel Version:             2.6.14.3
 ======================================================================
-Date Submitted:             12-26-2005 16:16 CET
-Last Modified:              12-26-2005 16:31 CET
+Date Submitted:             12-12-2005 00:31 CET
+Last Modified:              12-26-2005 16:38 CET
 ======================================================================
-Summary:                    (DELL) Soundblaster Live 5.1 Digital Model SB0220
-displays as unknown SBlive
+Summary:                    System lockup when recording
 Description: 
-I took this pci sblive 5.1 digital out of a dell machine and put it on an
-Asus board. It is detected and appears to function normally however its ID
-seems to not be in the database.
+When I try to open a usb device for recording it locks up the system
+I have to power cycle the system to recover.
+It makes no difference what application I use and whether it wants to open
+the alsa device directly or via the oss emulation.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 12-26-05 16:25 
+ oryn - 12-26-05 16:28 
 ----------------------------------------------------------------------
-rlrevell: Not yet. But I will add it now.
+I built my own kernel, have done for years
 
-
 ----------------------------------------------------------------------
- jcdutton - 12-26-05 16:31 
+ rlrevell - 12-26-05 16:38 
 ----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.11rc2 or above.
+One more question, which host controller driver was in use (uhci-hcd,
+ehci-hcd, ohci-hcd)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-05 16:16 mashaun        New Issue                                    
-12-26-05 16:16 mashaun        Distribution              => Debian          
-12-26-05 16:16 mashaun        Kernel Version            => 2.6.14          
-12-26-05 16:22 mashaun        Issue Monitored: mashaun                     
-12-26-05 16:22 rlrevell       Status                   new => resolved     
-12-26-05 16:22 rlrevell       Resolution               open => fixed       
-12-26-05 16:22 rlrevell       Assigned To               => rlrevell        
-12-26-05 16:22 rlrevell       Note Added: 0007154                          
-12-26-05 16:25 jcdutton       Note Added: 0007155                          
-12-26-05 16:25 jcdutton       Status                   resolved => acknowledged
-12-26-05 16:31 jcdutton       Status                   acknowledged => closed
-12-26-05 16:31 jcdutton       Note Added: 0007157                          
+12-12-05 00:31 oryn           New Issue                                    
+12-12-05 00:31 oryn           Distribution              => Debian          
+12-12-05 00:31 oryn           Kernel Version            => 2.6.14.3        
+12-12-05 01:01 rlrevell       Note Added: 0006981                          
+12-12-05 17:23 oryn           Note Added: 0006984                          
+12-12-05 19:41 oryn           File Added: usbsound.jpg                     
+12-12-05 19:48 oryn           Note Added: 0006985                          
+12-26-05 02:20 oryn           Note Added: 0007146                          
+12-26-05 02:21 oryn           Issue Monitored: oryn                        
+12-26-05 02:40 rlrevell       Note Added: 0007147                          
+12-26-05 13:25 oryn           Note Added: 0007151                          
+12-26-05 13:31 oryn           Note Added: 0007152                          
+12-26-05 16:21 rlrevell       Note Added: 0007153                          
+12-26-05 16:28 oryn           Note Added: 0007156                          
+12-26-05 16:38 rlrevell       Note Added: 0007158                          
 ======================================================================
 
 
