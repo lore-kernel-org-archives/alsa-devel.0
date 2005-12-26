@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001661]: alsaconf gets everything working but mic input doesn't work after a reboot
-Date: Mon, 26 Dec 2005 07:49:25 +0100
-Message-ID: <0f4d018b288da29fdc47f32923b5d0f8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
+Date: Mon, 26 Dec 2005 11:02:07 +0100
+Message-ID: <ed17dbf4c3ae9f5824e0a89119fdca99@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1D10117
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 07:49:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01BBB140
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 11:02:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
 ======================================================================
-Reported By:                amarsh04
-Assigned To:                
+Reported By:                kees
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1661
-Category:                   PCI - emu10k1
+Issue ID:                   1678
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.14.2-686
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.15-rc6-git4
 ======================================================================
-Date Submitted:             12-20-2005 03:16 CET
-Last Modified:              12-26-2005 07:49 CET
+Date Submitted:             12-25-2005 02:29 CET
+Last Modified:              12-26-2005 11:02 CET
 ======================================================================
-Summary:                    alsaconf gets everything working but mic input
-doesn't work after a reboot
+Summary:                    nForce (10de:026c) left channel squeals, right
+channel mostly okay
 Description: 
-I've finally obtained a SB Live! card that works and alsaconf made
-everything work. However, after a reboot, output still works but not
-microphone input. krecord shows zero input level. Re-running alsaconf
-restores microphone input to a working state.
+This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
+is this is an "nForce410" board, with "6-channel HD audio".
+
+Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
+snd-hda-intel load fine, but during playback, the left channel squeals,
+while the right seems to play things okay.
+
+I'm happy to dig around and try whatever needs trying to get this fixed. 
+Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- amarsh04 - 12-21-05 22:23 
+ kees - 12-26-05 11:02 
 ----------------------------------------------------------------------
-I have attached the output of amixer for both the working and the
-non-working cases, and will also attach the output of lsmod for both the
-working and non-working cases.
+If I do "speaker-test -c4", both front channels work fine.  "speaker-test
+-c2" fails as above: single tone (or silent) on left channel, right
+channel is okay.
 
-----------------------------------------------------------------------
- amarsh04 - 12-26-05 07:49 
-----------------------------------------------------------------------
-After removing ld10k1, and writing a startup script to run asfxload, the SB
-Live! card works fully after reboot.
+Strangely, if I use the rear mobo line out jack (instead of the
+front-panel headphone jack), "speaker-test -c4" fails on the left channel
+too.  Very odd.
+
+And, "speaker-test -c6" doesn't even run.  It bombs out with errors:
+
+ 0 - Front Left
+Write error: -5,Input/output error
+xrun_recovery failed: -5,Input/output error
+Transfer failed: Operation not permitted
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-05 03:16 amarsh04       New Issue                                    
-12-20-05 03:16 amarsh04       Distribution              => Debian          
-12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
-12-20-05 12:44 amarsh04       Note Added: 0007104                          
-12-20-05 20:58 rlrevell       Note Added: 0007105                          
-12-21-05 22:20 amarsh04       File Added: amixerworking.txt                    
-12-21-05 22:21 amarsh04       File Added: amixernotworking.txt                  
- 
-12-21-05 22:23 amarsh04       Note Added: 0007112                          
-12-21-05 22:24 amarsh04       File Added: lsmodworking.txt                    
-12-21-05 22:25 amarsh04       File Added: lsmodnotworking.txt                   
-
-12-26-05 07:49 amarsh04       Note Added: 0007148                          
+12-25-05 02:29 kees           New Issue                                    
+12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
+12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
+12-26-05 11:02 kees           Note Added: 0007149                          
 ======================================================================
 
 
