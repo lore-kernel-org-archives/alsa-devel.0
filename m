@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001642]: System lockup when recording
-Date: Mon, 26 Dec 2005 02:20:09 +0100
-Message-ID: <d4797e86eba86227a8c4df02148787b0@bugtrack.alsa-project.org>
+Date: Mon, 26 Dec 2005 02:40:17 +0100
+Message-ID: <48a9eaf14d237f039359d5c4d7eb6c2d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA692147
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 02:20:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94A78147
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 02:40:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.14.3
 ======================================================================
 Date Submitted:             12-12-2005 00:31 CET
-Last Modified:              12-26-2005 02:20 CET
+Last Modified:              12-26-2005 02:40 CET
 ======================================================================
 Summary:                    System lockup when recording
 Description: 
@@ -49,20 +49,6 @@ I have to power cycle the system to recover.
 It makes no difference what application I use and whether it wants to open
 the alsa device directly or via the oss emulation.
 ======================================================================
-
-----------------------------------------------------------------------
- oryn - 12-12-05 19:48 
-----------------------------------------------------------------------
-I was able to (by using vnc to run my app) to capture an error on the
-console.
-See usbsound.jpg
-I didn't see if there was an oops as the console gets flooded with what
-looks like the following lines:
-"cannot submit datapipe for urb 0, err = -22"
-and
-"cannot submit datapipe for urb 3, err = -28"
-Its going so fast that the 2 errors are blured into one, only by setting a
-fast shutter speed was i able to get this picture.
 
 ----------------------------------------------------------------------
  oryn - 12-26-05 02:20 
@@ -77,6 +63,14 @@ I'm running Linux-2.6.14.4 with cvs alsa 26/DEC/2006
 The audio device is a plantronics DA50 usb headset
 Bus 002 Device 002: ID 047f:0301 Plantronics, Inc.
 
+----------------------------------------------------------------------
+ rlrevell - 12-26-05 02:40 
+----------------------------------------------------------------------
+CONFIG_USB_BANDWIDTH is enabled in your kernel config.
+
+This option is buggy and not compatible with ALSA's USB audio.  Disable it
+and you should be fine.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -88,6 +82,8 @@ Date Modified  Username       Field                    Change
 12-12-05 19:41 oryn           File Added: usbsound.jpg                     
 12-12-05 19:48 oryn           Note Added: 0006985                          
 12-26-05 02:20 oryn           Note Added: 0007146                          
+12-26-05 02:21 oryn           Issue Monitored: oryn                        
+12-26-05 02:40 rlrevell       Note Added: 0007147                          
 ======================================================================
 
 
