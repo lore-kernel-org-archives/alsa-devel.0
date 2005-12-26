@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001642]: System lockup when recording
-Date: Mon, 26 Dec 2005 02:40:17 +0100
-Message-ID: <48a9eaf14d237f039359d5c4d7eb6c2d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001661]: alsaconf gets everything working but mic input doesn't work after a reboot
+Date: Mon, 26 Dec 2005 07:49:25 +0100
+Message-ID: <0f4d018b288da29fdc47f32923b5d0f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94A78147
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 02:40:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1D10117
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 07:49:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1642> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1661> 
 ======================================================================
-Reported By:                oryn
-Assigned To:                Clemens Ladisch
+Reported By:                amarsh04
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1642
-Category:                   USB - usb-audio
+Issue ID:                   1661
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Debian
-Kernel Version:             2.6.14.3
+Kernel Version:             2.6.14.2-686
 ======================================================================
-Date Submitted:             12-12-2005 00:31 CET
-Last Modified:              12-26-2005 02:40 CET
+Date Submitted:             12-20-2005 03:16 CET
+Last Modified:              12-26-2005 07:49 CET
 ======================================================================
-Summary:                    System lockup when recording
+Summary:                    alsaconf gets everything working but mic input
+doesn't work after a reboot
 Description: 
-When I try to open a usb device for recording it locks up the system
-I have to power cycle the system to recover.
-It makes no difference what application I use and whether it wants to open
-the alsa device directly or via the oss emulation.
+I've finally obtained a SB Live! card that works and alsaconf made
+everything work. However, after a reboot, output still works but not
+microphone input. krecord shows zero input level. Re-running alsaconf
+restores microphone input to a working state.
 ======================================================================
 
 ----------------------------------------------------------------------
- oryn - 12-26-05 02:20 
+ amarsh04 - 12-21-05 22:23 
 ----------------------------------------------------------------------
-I would like to add that it seems I cant play sounds to my usb device
-ether
-I get this error:
-ALSA /usr/src/alsa-driver/usb/usbaudio.c:819: cannot submit datapipe for
-urb 5, err = -28
-
-I'm running Linux-2.6.14.4 with cvs alsa 26/DEC/2006
-The audio device is a plantronics DA50 usb headset
-Bus 002 Device 002: ID 047f:0301 Plantronics, Inc.
+I have attached the output of amixer for both the working and the
+non-working cases, and will also attach the output of lsmod for both the
+working and non-working cases.
 
 ----------------------------------------------------------------------
- rlrevell - 12-26-05 02:40 
+ amarsh04 - 12-26-05 07:49 
 ----------------------------------------------------------------------
-CONFIG_USB_BANDWIDTH is enabled in your kernel config.
-
-This option is buggy and not compatible with ALSA's USB audio.  Disable it
-and you should be fine.
+After removing ld10k1, and writing a startup script to run asfxload, the SB
+Live! card works fully after reboot.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-12-05 00:31 oryn           New Issue                                    
-12-12-05 00:31 oryn           Distribution              => Debian          
-12-12-05 00:31 oryn           Kernel Version            => 2.6.14.3        
-12-12-05 01:01 rlrevell       Note Added: 0006981                          
-12-12-05 17:23 oryn           Note Added: 0006984                          
-12-12-05 19:41 oryn           File Added: usbsound.jpg                     
-12-12-05 19:48 oryn           Note Added: 0006985                          
-12-26-05 02:20 oryn           Note Added: 0007146                          
-12-26-05 02:21 oryn           Issue Monitored: oryn                        
-12-26-05 02:40 rlrevell       Note Added: 0007147                          
+12-20-05 03:16 amarsh04       New Issue                                    
+12-20-05 03:16 amarsh04       Distribution              => Debian          
+12-20-05 03:16 amarsh04       Kernel Version            => 2.6.14.2-686    
+12-20-05 12:44 amarsh04       Note Added: 0007104                          
+12-20-05 20:58 rlrevell       Note Added: 0007105                          
+12-21-05 22:20 amarsh04       File Added: amixerworking.txt                    
+12-21-05 22:21 amarsh04       File Added: amixernotworking.txt                  
+ 
+12-21-05 22:23 amarsh04       Note Added: 0007112                          
+12-21-05 22:24 amarsh04       File Added: lsmodworking.txt                    
+12-21-05 22:25 amarsh04       File Added: lsmodnotworking.txt                   
+
+12-26-05 07:49 amarsh04       Note Added: 0007148                          
 ======================================================================
 
 
