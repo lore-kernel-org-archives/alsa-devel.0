@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001642]: System lockup when recording
-Date: Mon, 26 Dec 2005 16:21:30 +0100
-Message-ID: <c839533badf5acbc306bff04b4836bf7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001680]: (DELL) Soundblaster Live 5.1 Digital Model SB0220 displays as unknown SBlive
+Date: Mon, 26 Dec 2005 16:22:52 +0100
+Message-ID: <53dab77be7815a577dfac17284e71122@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C190E147
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 16:21:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E8B2121
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 16:22:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1642> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1680> 
 ======================================================================
-Reported By:                oryn
-Assigned To:                Clemens Ladisch
+Reported By:                mashaun
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1642
-Category:                   USB - usb-audio
+Issue ID:                   1680
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Debian
-Kernel Version:             2.6.14.3
+Kernel Version:             2.6.14
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-12-2005 00:31 CET
-Last Modified:              12-26-2005 16:21 CET
+Date Submitted:             12-26-2005 16:16 CET
+Last Modified:              12-26-2005 16:22 CET
 ======================================================================
-Summary:                    System lockup when recording
+Summary:                    (DELL) Soundblaster Live 5.1 Digital Model SB0220
+displays as unknown SBlive
 Description: 
-When I try to open a usb device for recording it locks up the system
-I have to power cycle the system to recover.
-It makes no difference what application I use and whether it wants to open
-the alsa device directly or via the oss emulation.
+I took this pci sblive 5.1 digital out of a dell machine and put it on an
+Asus board. It is detected and appears to function normally however its ID
+seems to not be in the database.
 ======================================================================
 
 ----------------------------------------------------------------------
- oryn - 12-26-05 13:31 
+ rlrevell - 12-26-05 16:22 
 ----------------------------------------------------------------------
-I guess you can close this issue now :)
-What would be quite cool would be something in the configure script that
-checked the kernel config for CONFIG_USB_BANDWIDTH=y and reported an error
-if found.
-
-May I wish you and all the rest of the ALSA crew a Happy new year :)
-
-----------------------------------------------------------------------
- rlrevell - 12-26-05 16:21 
-----------------------------------------------------------------------
-I reported the problem to the kernel maintainers and they are going to
-clearly document that USB_BANDWIDTH does not work yet.
-
-BTW how did you end up with this enabled?  Did you build your own kernel
-or did your distro set it by default?
+Already fixed in 1.0.11-rc*
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-12-05 00:31 oryn           New Issue                                    
-12-12-05 00:31 oryn           Distribution              => Debian          
-12-12-05 00:31 oryn           Kernel Version            => 2.6.14.3        
-12-12-05 01:01 rlrevell       Note Added: 0006981                          
-12-12-05 17:23 oryn           Note Added: 0006984                          
-12-12-05 19:41 oryn           File Added: usbsound.jpg                     
-12-12-05 19:48 oryn           Note Added: 0006985                          
-12-26-05 02:20 oryn           Note Added: 0007146                          
-12-26-05 02:21 oryn           Issue Monitored: oryn                        
-12-26-05 02:40 rlrevell       Note Added: 0007147                          
-12-26-05 13:25 oryn           Note Added: 0007151                          
-12-26-05 13:31 oryn           Note Added: 0007152                          
-12-26-05 16:21 rlrevell       Note Added: 0007153                          
+12-26-05 16:16 mashaun        New Issue                                    
+12-26-05 16:16 mashaun        Distribution              => Debian          
+12-26-05 16:16 mashaun        Kernel Version            => 2.6.14          
+12-26-05 16:22 mashaun        Issue Monitored: mashaun                     
+12-26-05 16:22 rlrevell       Status                   new => resolved     
+12-26-05 16:22 rlrevell       Resolution               open => fixed       
+12-26-05 16:22 rlrevell       Assigned To               => rlrevell        
+12-26-05 16:22 rlrevell       Note Added: 0007154                          
 ======================================================================
 
 
