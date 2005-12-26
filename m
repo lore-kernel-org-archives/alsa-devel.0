@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001679]: Audigy 4 SE (SB_0570, ca0106) does not work correctly.
-Date: Sun, 25 Dec 2005 21:54:40 +0100
-Message-ID: <32a129f6d30513e17537821e22efaeea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001642]: System lockup when recording
+Date: Mon, 26 Dec 2005 02:20:09 +0100
+Message-ID: <d4797e86eba86227a8c4df02148787b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DAAA150
-	for <alsa-devel@alsa-project.org>; Sun, 25 Dec 2005 21:54:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA692147
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 02:20:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1679> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1642> 
 ======================================================================
-Reported By:                moriak
-Assigned To:                jcdutton
+Reported By:                oryn
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1679
-Category:                   PCI - ca0106
+Issue ID:                   1642
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               standard
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.14.3
 ======================================================================
-Date Submitted:             12-25-2005 17:05 CET
-Last Modified:              12-25-2005 21:54 CET
+Date Submitted:             12-12-2005 00:31 CET
+Last Modified:              12-26-2005 02:20 CET
 ======================================================================
-Summary:                    Audigy 4 SE (SB_0570, ca0106) does not work
-correctly.
+Summary:                    System lockup when recording
 Description: 
-There is no sound, only noise (when sound must play), and somewhy it
-detects as SB Audigy LS.
+When I try to open a usb device for recording it locks up the system
+I have to power cycle the system to recover.
+It makes no difference what application I use and whether it wants to open
+the alsa device directly or via the oss emulation.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 12-25-05 21:54 
+ oryn - 12-12-05 19:48 
 ----------------------------------------------------------------------
-You are correct. You sound card is not recognised, which is probably why it
-does not work. We already have a fix for this problem, and in will be
-fixed in alsa-driver 1.0.11rc2 or above, or in the current alsa-driver
-CVS.
+I was able to (by using vnc to run my app) to capture an error on the
+console.
+See usbsound.jpg
+I didn't see if there was an oops as the console gets flooded with what
+looks like the following lines:
+"cannot submit datapipe for urb 0, err = -22"
+and
+"cannot submit datapipe for urb 3, err = -28"
+Its going so fast that the 2 errors are blured into one, only by setting a
+fast shutter speed was i able to get this picture.
 
+----------------------------------------------------------------------
+ oryn - 12-26-05 02:20 
+----------------------------------------------------------------------
+I would like to add that it seems I cant play sounds to my usb device
+ether
+I get this error:
+ALSA /usr/src/alsa-driver/usb/usbaudio.c:819: cannot submit datapipe for
+urb 5, err = -28
+
+I'm running Linux-2.6.14.4 with cvs alsa 26/DEC/2006
+The audio device is a plantronics DA50 usb headset
+Bus 002 Device 002: ID 047f:0301 Plantronics, Inc.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-25-05 17:05 moriak         New Issue                                    
-12-25-05 17:05 moriak         Distribution              => standard        
-12-25-05 17:05 moriak         Kernel Version            => 2.6.9           
-12-25-05 21:54 jcdutton       Note Added: 0007145                          
-12-25-05 21:54 jcdutton       Status                   assigned => feedback
+12-12-05 00:31 oryn           New Issue                                    
+12-12-05 00:31 oryn           Distribution              => Debian          
+12-12-05 00:31 oryn           Kernel Version            => 2.6.14.3        
+12-12-05 01:01 rlrevell       Note Added: 0006981                          
+12-12-05 17:23 oryn           Note Added: 0006984                          
+12-12-05 19:41 oryn           File Added: usbsound.jpg                     
+12-12-05 19:48 oryn           Note Added: 0006985                          
+12-26-05 02:20 oryn           Note Added: 0007146                          
 ======================================================================
 
 
