@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001682]: Errors during install
-Date: Mon, 26 Dec 2005 21:20:47 +0100
-Message-ID: <0e72c890ac12f707528587dbca8fb5af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001683]: hda sound card not corectly detected
+Date: Mon, 26 Dec 2005 21:35:40 +0100
+Message-ID: <1b63e7dbc4deafdf0eb42ae23085d9cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59B38153
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 21:20:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B077115A
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 21:35:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1682> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1683> 
 ======================================================================
-Reported By:                theskuj
-Assigned To:                perex
+Reported By:                corwyn_astrafall
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1682
-Category:                   0_compilation problem_!!!
+Issue ID:                   1683
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               gentoo
+Kernel Version:             gentoo-2.6.14-R6
 ======================================================================
-Date Submitted:             12-26-2005 20:16 CET
-Last Modified:              12-26-2005 21:20 CET
+Date Submitted:             12-26-2005 21:35 CET
+Last Modified:              12-26-2005 21:35 CET
 ======================================================================
-Summary:                    Errors during install
+Summary:                    hda sound card not corectly detected
 Description: 
-Errors during 
+i've a hda sound card in a notebook with 3 speaker, one mic input, one mic
+integrated, one headphone output with an optical output, and a wheel
+controler for the volume
 
-'./configure --with-cards=indigo --with-sequencer=yes;make;make install'
+lspci -vv output :
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
+        Subsystem: Fujitsu Siemens Computer GmbH Unknown device 107c
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size 08
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at febf8000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-Not sure what to do... linux newbie...
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-26-05 20:31 
-----------------------------------------------------------------------
-What error do you get?
-
-----------------------------------------------------------------------
- theskuj - 12-26-05 21:20 
-----------------------------------------------------------------------
-make -C /usr/src/linux SUBDIRS=/usr/src/alsa/alsa-driver-1.0.10 modules
-make[1]: Entering directory `/usr/src/linux'
-make[1]: *** No rule to make target `modules'. Stop.
-make[1]: Leaving directory `/usr/src/linux'
-make: *** [compile] Error 2
-rm -f /lib/modules/2.6.11/misc/snd*.*o /lib/modules/2.6.11/misc/persist.o
-/lib/m odules/2.6.11/misc/isapnp.o
-make[1]: Entering directory `/usr/src/alsa/alsa-driver-1.0.10/acore'
-mkdir -p /lib/modules/2.6.11/misc/acore
-mkdir: cannot create directory `/lib/modules/2.6.11': Permission denied
-make[1]: *** [modules_install] Error 1
-make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.10/acore'
-make: *** [install-modules] Error 1
-skuj@SkujLaptop:/usr/src/alsa/alsa-driver-1.0.10$
-
-***The entire output is under 'steps to reproduce' in the advanced view.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-05 20:16 theskuj        New Issue                                    
-12-26-05 20:31 rlrevell       Note Added: 0007161                          
-12-26-05 21:20 theskuj        Note Added: 0007162                          
+12-26-05 21:35 corwyn_astrafallNew Issue                                    
+12-26-05 21:35 corwyn_astrafallDistribution              => gentoo          
+12-26-05 21:35 corwyn_astrafallKernel Version            => gentoo-2.6.14-R6
 ======================================================================
 
 
