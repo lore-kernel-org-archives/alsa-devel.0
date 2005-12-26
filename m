@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
-Date: Mon, 26 Dec 2005 11:02:07 +0100
-Message-ID: <ed17dbf4c3ae9f5824e0a89119fdca99@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001677]: envy24control word clock lock indication is wrong way around
+Date: Mon, 26 Dec 2005 13:12:34 +0100
+Message-ID: <6c370bbb3a0391108dd5832dfb7bc816@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01BBB140
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 11:02:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9D14138
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 13:12:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1677> 
 ======================================================================
-Reported By:                kees
-Assigned To:                tiwai
+Reported By:                johnrigg
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1678
-Category:                   PCI - hda-intel
+Project:                    ALSA - tools
+Issue ID:                   1677
+Category:                   envy24control
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.15-rc6-git4
+Status:                     new
 ======================================================================
-Date Submitted:             12-25-2005 02:29 CET
-Last Modified:              12-26-2005 11:02 CET
+Date Submitted:             12-24-2005 18:03 CET
+Last Modified:              12-26-2005 13:12 CET
 ======================================================================
-Summary:                    nForce (10de:026c) left channel squeals, right
-channel mostly okay
+Summary:                    envy24control word clock lock indication is wrong
+way around
 Description: 
-This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
-is this is an "nForce410" board, with "6-channel HD audio".
+The word clock `Locked' indication in envy24control's hardware settings is
+backwards. It says `Locked' when there's no signal and `No signal' when
+it's
+locked.
+I'm hoping I'll get a large pot of glue for Christmas so I can stick back
+all the hair I've torn out over the last couple of weeks over this :-)
 
-Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
-snd-hda-intel load fine, but during playback, the left channel squeals,
-while the right seems to play things okay.
+Merry Christmas
 
-I'm happy to dig around and try whatever needs trying to get this fixed. 
-Thanks!
+John
 ======================================================================
 
 ----------------------------------------------------------------------
- kees - 12-26-05 11:02 
+ johnrigg - 12-26-05 13:12 
 ----------------------------------------------------------------------
-If I do "speaker-test -c4", both front channels work fine.  "speaker-test
--c2" fails as above: single tone (or silent) on left channel, right
-channel is okay.
-
-Strangely, if I use the rear mobo line out jack (instead of the
-front-panel headphone jack), "speaker-test -c4" fails on the left channel
-too.  Very odd.
-
-And, "speaker-test -c6" doesn't even run.  It bombs out with errors:
-
- 0 - Front Left
-Write error: -5,Input/output error
-xrun_recovery failed: -5,Input/output error
-Transfer failed: Operation not permitted
+The above behaviour happens when syncing clocks via the BNC word clock
+in/out connectors. When syncing via S/PDIF the indicator just says
+`Locked' whether it's locked or not. The only way to tell is if it's
+locked jackd will run, if unlocked it won't.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-25-05 02:29 kees           New Issue                                    
-12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
-12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
-12-26-05 11:02 kees           Note Added: 0007149                          
+12-24-05 18:03 johnrigg       New Issue                                    
+12-26-05 13:12 johnrigg       Note Added: 0007150                          
 ======================================================================
 
 
