@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001682]: Errors during install
-Date: Mon, 26 Dec 2005 20:31:05 +0100
-Message-ID: <d24746910073b26d59116426e8bcde4b@bugtrack.alsa-project.org>
+Date: Mon, 26 Dec 2005 21:20:47 +0100
+Message-ID: <0e72c890ac12f707528587dbca8fb5af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D7F314B
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 20:31:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59B38153
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 21:20:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-26-2005 20:16 CET
-Last Modified:              12-26-2005 20:31 CET
+Last Modified:              12-26-2005 21:20 CET
 ======================================================================
 Summary:                    Errors during install
 Description: 
@@ -56,11 +56,32 @@ Not sure what to do... linux newbie...
 ----------------------------------------------------------------------
 What error do you get?
 
+----------------------------------------------------------------------
+ theskuj - 12-26-05 21:20 
+----------------------------------------------------------------------
+make -C /usr/src/linux SUBDIRS=/usr/src/alsa/alsa-driver-1.0.10 modules
+make[1]: Entering directory `/usr/src/linux'
+make[1]: *** No rule to make target `modules'. Stop.
+make[1]: Leaving directory `/usr/src/linux'
+make: *** [compile] Error 2
+rm -f /lib/modules/2.6.11/misc/snd*.*o /lib/modules/2.6.11/misc/persist.o
+/lib/m odules/2.6.11/misc/isapnp.o
+make[1]: Entering directory `/usr/src/alsa/alsa-driver-1.0.10/acore'
+mkdir -p /lib/modules/2.6.11/misc/acore
+mkdir: cannot create directory `/lib/modules/2.6.11': Permission denied
+make[1]: *** [modules_install] Error 1
+make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.10/acore'
+make: *** [install-modules] Error 1
+skuj@SkujLaptop:/usr/src/alsa/alsa-driver-1.0.10$
+
+***The entire output is under 'steps to reproduce' in the advanced view.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-26-05 20:16 theskuj        New Issue                                    
 12-26-05 20:31 rlrevell       Note Added: 0007161                          
+12-26-05 21:20 theskuj        Note Added: 0007162                          
 ======================================================================
 
 
