@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001683]: hda sound card not corectly detected
-Date: Mon, 26 Dec 2005 21:35:40 +0100
-Message-ID: <1b63e7dbc4deafdf0eb42ae23085d9cc@bugtrack.alsa-project.org>
+Date: Mon, 26 Dec 2005 21:56:21 +0100
+Message-ID: <b98fabe0aae2cab6d41aae4b9c97a196@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B077115A
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 21:35:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 177B3153
+	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 21:56:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1683> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-2.6.14-R6
 ======================================================================
 Date Submitted:             12-26-2005 21:35 CET
-Last Modified:              12-26-2005 21:35 CET
+Last Modified:              12-26-2005 21:56 CET
 ======================================================================
 Summary:                    hda sound card not corectly detected
 Description: 
@@ -85,12 +85,18 @@ Port 0
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 12-26-05 21:56 
+----------------------------------------------------------------------
+What exactly does not work?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-26-05 21:35 corwyn_astrafallNew Issue                                    
 12-26-05 21:35 corwyn_astrafallDistribution              => gentoo          
 12-26-05 21:35 corwyn_astrafallKernel Version            => gentoo-2.6.14-R6
+12-26-05 21:56 rlrevell       Note Added: 0007163                          
 ======================================================================
 
 
