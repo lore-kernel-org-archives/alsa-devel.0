@@ -2,15 +2,15 @@ From: Doug McLain <doug@nostar.net>
 Subject: Re: [Jackit-devel] Real-world reports on two Delta 1010LTs/ice1712
  synched?
 Date: Tue, 27 Dec 2005 00:06:34 -0500
-Message-ID: <43B0CBDA.7090000__47508.5686463446$1135660440$gmane$org@nostar.net>
+Message-ID: <43B0CBDA.7090000__15519.4605388262$1135661771$gmane$org@nostar.net>
 References: <20051223225430.GA4995@localhost.localdomain> <43AC826C.1040405@nostar.net> <20051223233816.GA5102@localhost.localdomain> <43AC8990.7040900@nostar.net> <20051224124823.GA4183@localhost.localdomain> <20051224144548.GA4306@localhost.localdomain> <20051224165610.GA4484@localhost.localdomain> <43AE9FA6.2020207@nostar.net> <20051226130327.GA4763@localhost.localdomain> <43B059A3.2050302@nostar.net> <20051227000428.GA3805@localhost.localdomain> <43B0A83F.1040907@nostar.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from dishpan.dreamhost.com (dishpan.dreamhost.com [205.196.218.12])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EAE2139
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 06:06:34 +0100 (MET)
+Received: from axicon01.Axicon.local (i-195-137-87-111.freedom2surf.net [195.137.87.111])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 648C1162
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 06:33:26 +0100 (MET)
 In-Reply-To: <43B0A83F.1040907@nostar.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -70,6 +70,19 @@ driver gurus are listening, please chime in.
 Doug
 --
 http://nostar.net/
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+for problems?  Stop!  Download the new AJAX search engine that makes
+searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+_______________________________________________
+Jackit-devel mailing list
+Jackit-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/jackit-devel
+
+
 
 
 -------------------------------------------------------
