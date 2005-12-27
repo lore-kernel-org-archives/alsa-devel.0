@@ -1,17 +1,17 @@
-From: Doug McLain <doug@nostar.net>
-Subject: Re: [Jackit-devel] Real-world reports on two Delta 1010LTs/ice1712
- synched?
-Date: Tue, 27 Dec 2005 00:06:34 -0500
-Message-ID: <43B0CBDA.7090000__15519.4605388262$1135661771$gmane$org@nostar.net>
-References: <20051223225430.GA4995@localhost.localdomain> <43AC826C.1040405@nostar.net> <20051223233816.GA5102@localhost.localdomain> <43AC8990.7040900@nostar.net> <20051224124823.GA4183@localhost.localdomain> <20051224144548.GA4306@localhost.localdomain> <20051224165610.GA4484@localhost.localdomain> <43AE9FA6.2020207@nostar.net> <20051226130327.GA4763@localhost.localdomain> <43B059A3.2050302@nostar.net> <20051227000428.GA3805@localhost.localdomain> <43B0A83F.1040907@nostar.net>
+From: Prakash Punnoor <prakash@punnoor.de>
+Subject: alsa-lib(-1.0.10) sets wrong path for pkg-config --cflags
+Date: Tue, 27 Dec 2005 09:25:47 +0100
+Message-ID: <200512270925.47901.prakash@punnoor.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: multipart/signed;
+  boundary="nextPart1227785.yoaztxQSO3";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from axicon01.Axicon.local (i-195-137-87-111.freedom2surf.net [195.137.87.111])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 648C1162
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 06:33:26 +0100 (MET)
-In-Reply-To: <43B0A83F.1040907@nostar.net>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.126.177])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84D9D16F
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 09:22:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,68 +21,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: John Rigg <j@sound-man.co.uk>, jackit-devel@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Doug McLain wrote:
+--nextPart1227785.yoaztxQSO3
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> All of the envy24control code treats the 1010 and 1010LT equally
+Hi,
 
-...  Except for one crucial line:
+pkg-config alsa --cflags returns
 
-hardware.c:165:if (card_eeprom.subvendor != ICE1712_SUBDEVICE_DELTA1010)
+=2DI/usr/include/alsa
 
-And this is where my problem begins, and yours, well, never starts. :)
+which is wrong, as you are supposed to include alsa in userspace via
+#include <alsa/asoundlib.h> and not via #include <asoundlib.h>, right?
 
-I first blindly added ICE1712_SUBDEVICE_DELTA1010LT to the if statement 
-hoping for a quick fix, but no luck.  I discovered that the 
-snd_ctl_elem_value "Word Clock Status" is only defined for the 1010 and 
-not the 1010LT in the ice1712 driver code.
+So alsa --cflags should either return nothing or -I/usr/include. Of course
+above "works" with gentoo, as alsa headers are installed in standard locati=
+on,
+so they are found via standard include.
 
-Further digging (starting on line 620 of 
-alsa-kernel/pci/ice1712/delta.c) reveals that the 1010 has 2 seperate 
-gen purpose i/o registers for the word clock. One appears to be read 
-only, for checking status, and the other is the one to set the state. 
-The LT has one, that is either meant to serve both checking status and 
-setting state, or some driver code is missing.
+I am also not so sure whether pkg-config alsa --libs returns way too much=20
+libs.
+(-lasound -lm -ldl -lpthread)
 
-static snd_kcontrol_new_t snd_ice1712_delta1010_wordclock_select 
-__devinitdata =
-ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Sync", 0, 
-ICE1712_DELTA_WORD_CLOCK_SELECT, 1, 0);
-static snd_kcontrol_new_t snd_ice1712_delta1010lt_wordclock_select 
-__devinitdata =
-ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Sync", 0, 
-ICE1712_DELTA_1010LT_WORDCLOCK, 1, 0);
-static snd_kcontrol_new_t snd_ice1712_delta1010_wordclock_status 
-__devinitdata =
-ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Status", 0, 
-ICE1712_DELTA_WORD_CLOCK_STATUS, 1, SNDRV_CTL_ELEM_ACCESS_READ | 
-SNDRV_CTL_ELEM_ACCESS_VOLATILE);
+Unless you are linking statically (-static) you really only need -lasound,=
+=20
+unless you use explicitly use dlopen/math/pthread. But as --libs should=20
+return libs needed only by linking to alsa non-statically, I guess returnin=
+g=20
+=2Dlasound should be enough.
 
+=2D-=20
+(=B0=3D                 =3D=B0)
+//\ Prakash Punnoor /\\
+V_/                 \_V
 
+--nextPart1227785.yoaztxQSO3
+Content-Type: application/pgp-signature
 
-I'm going to experiment blindly to try to determine the answer to this 
-by reading and writing all over the snd_ctl_elem"Word Clock Sync", 
-hoping for something good to happen.  If any of the alsa ice1712/delta 
-driver gurus are listening, please chime in.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
 
-Doug
---
-http://nostar.net/
+iD8DBQBDsPqLxU2n/+9+t5gRAkDfAKCbdMhwqSaiLhT4nz2NFLj5sfHHRwCdH8QU
+UdEJfio9vNmz94AbAg/z798=
+=8A0k
+-----END PGP SIGNATURE-----
 
-
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
-_______________________________________________
-Jackit-devel mailing list
-Jackit-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/jackit-devel
-
-
+--nextPart1227785.yoaztxQSO3--
 
 
 -------------------------------------------------------
