@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001674]: Audigy 2 ZS after suspend no sound line in
-Date: Tue, 27 Dec 2005 20:47:40 +0100
-Message-ID: <8e51e013c082ed94080ed12a48d247a1@bugtrack.alsa-project.org>
+Date: Tue, 27 Dec 2005 21:01:13 +0100
+Message-ID: <4dbbf8ed07fb1fb96f8b14f8636366e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10187178
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 20:47:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBB63128
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 21:01:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2005 21:41 CET
-Last Modified:              12-27-2005 20:47 CET
+Last Modified:              12-27-2005 21:01 CET
 ======================================================================
 Summary:                    Audigy 2 ZS after suspend no sound line in
 Description: 
@@ -49,18 +49,7 @@ installed but only line in is silent. PCM and Mic is OK
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-23-05 20:07 
-----------------------------------------------------------------------
-Probably some register recovery is missing.
-
-To be sure, it is not ac97 could you attach file
-
-/proc/asound/your card/codec97#0/ac97#0-0+regs
-
-before and after suspend ?
-
-----------------------------------------------------------------------
- andreid1303 - 12-27-05 20:47 
+ andreid1303 - 12-27-05 20:49 
 ----------------------------------------------------------------------
 Before susppend:
 lxuser@av27866:~> cat /proc/asound/Audigy2/codec97#0/ac97#0-0+regs
@@ -198,7 +187,23 @@ lxuser@av27866:~> cat /proc/asound/Audigy2/codec97#0/ac97#0-0+regs
 
 I see value for 0:02 is only different. Is it helpful? Thanks in advance.
 
-Same behavour for analog CD-in. /etc/init.d/alsasound restore sound
+Same behavour for analog CD-in. 
+/etc/init.d/alsasound restart restore sound
+
+
+
+----------------------------------------------------------------------
+ pzad - 12-27-05 21:01 
+----------------------------------------------------------------------
+It is helpfull.
+
+02 is master volume for ac97 - and this is cause of problem. Output from
+ac97 is connected to ADC.
+0000 - master volume is set to max -  this is default.
+9f1f - this is probably mute.
+
+CD in - this is same problem as Line in, because they are mixed together
+in ac97 and digitalized in ADC.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -206,6 +211,8 @@ Date Modified  Username       Field                    Change
 12-22-05 21:41 andreid1303    New Issue                                    
 12-23-05 20:07 pzad           Note Added: 0007137                          
 12-27-05 20:47 andreid1303    Note Added: 0007169                          
+12-27-05 20:49 andreid1303    Note Edited: 0007169                         
+12-27-05 21:01 pzad           Note Added: 0007170                          
 ======================================================================
 
 
