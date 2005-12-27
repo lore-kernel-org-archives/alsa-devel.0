@@ -1,17 +1,14 @@
-From: Prakash Punnoor <prakash@punnoor.de>
-Subject: alsa-lib(-1.0.10) sets wrong path for pkg-config --cflags
-Date: Tue, 27 Dec 2005 09:25:47 +0100
-Message-ID: <200512270925.47901.prakash@punnoor.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001679]: Audigy 4 SE (SB_0570, ca0106) does not work correctly.
+Date: Tue, 27 Dec 2005 10:11:13 +0100
+Message-ID: <70321f4c71fa28714b455a9d832584ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1227785.yoaztxQSO3";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.126.177])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84D9D16F
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 09:22:10 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0483B138
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 10:11:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +21,62 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---nextPart1227785.yoaztxQSO3
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1679> 
+======================================================================
+Reported By:                moriak
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1679
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     feedback
+Distribution:               standard
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-25-2005 17:05 CET
+Last Modified:              12-27-2005 10:11 CET
+======================================================================
+Summary:                    Audigy 4 SE (SB_0570, ca0106) does not work
+correctly.
+Description: 
+There is no sound, only noise (when sound must play), and somewhy it
+detects as SB Audigy LS.
+======================================================================
 
-pkg-config alsa --cflags returns
+----------------------------------------------------------------------
+ jcdutton - 12-25-05 21:54 
+----------------------------------------------------------------------
+You are correct. You sound card is not recognised, which is probably why it
+does not work. We already have a fix for this problem, and in will be
+fixed in alsa-driver 1.0.11rc2 or above, or in the current alsa-driver
+CVS.
 
-=2DI/usr/include/alsa
 
-which is wrong, as you are supposed to include alsa in userspace via
-#include <alsa/asoundlib.h> and not via #include <asoundlib.h>, right?
+----------------------------------------------------------------------
+ moriak - 12-27-05 10:11 
+----------------------------------------------------------------------
+Thanks. So, when alsa-driver 1.0.11rc2 is planned to be released?
 
-So alsa --cflags should either return nothing or -I/usr/include. Of course
-above "works" with gentoo, as alsa headers are installed in standard locati=
-on,
-so they are found via standard include.
+[sorry if my english is bad, I am russian =)]
 
-I am also not so sure whether pkg-config alsa --libs returns way too much=20
-libs.
-(-lasound -lm -ldl -lpthread)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-25-05 17:05 moriak         New Issue                                    
+12-25-05 17:05 moriak         Distribution              => standard        
+12-25-05 17:05 moriak         Kernel Version            => 2.6.9           
+12-25-05 21:54 jcdutton       Note Added: 0007145                          
+12-25-05 21:54 jcdutton       Status                   assigned => feedback
+12-27-05 10:11 moriak         Note Added: 0007167                          
+======================================================================
 
-Unless you are linking statically (-static) you really only need -lasound,=
-=20
-unless you use explicitly use dlopen/math/pthread. But as --libs should=20
-return libs needed only by linking to alsa non-statically, I guess returnin=
-g=20
-=2Dlasound should be enough.
 
-=2D-=20
-(=B0=3D                 =3D=B0)
-//\ Prakash Punnoor /\\
-V_/                 \_V
-
---nextPart1227785.yoaztxQSO3
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iD8DBQBDsPqLxU2n/+9+t5gRAkDfAKCbdMhwqSaiLhT4nz2NFLj5sfHHRwCdH8QU
-UdEJfio9vNmz94AbAg/z798=
-=8A0k
------END PGP SIGNATURE-----
-
---nextPart1227785.yoaztxQSO3--
 
 
 -------------------------------------------------------
