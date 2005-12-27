@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001683]: hda sound card not corectly detected
-Date: Tue, 27 Dec 2005 21:25:51 +0100
-Message-ID: <41ff496459abc6183f63bdacb88bbef3@bugtrack.alsa-project.org>
+From: Doug McLain <doug@nostar.net>
+Subject: Re: Re: [Jackit-devel] Real-world reports on two Delta
+ 1010LTs/ice1712 synched?
+Date: Tue, 27 Dec 2005 15:50:02 -0500
+Message-ID: <43B1A8FA.8080408@nostar.net>
+References: <20051223233816.GA5102@localhost.localdomain> <43AC8990.7040900@nostar.net> <20051224124823.GA4183@localhost.localdomain> <20051224144548.GA4306@localhost.localdomain> <20051224165610.GA4484@localhost.localdomain> <43AE9FA6.2020207@nostar.net> <20051226130327.GA4763@localhost.localdomain> <43B059A3.2050302@nostar.net> <20051227000428.GA3805@localhost.localdomain> <43B0A83F.1040907@nostar.net> <20051227130029.GB3770@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------040702060505020800050209"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 605AC181
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 21:25:51 +0100 (MET)
+In-Reply-To: <20051227130029.GB3770@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,99 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: John Rigg <j@sound-man.co.uk>
+Cc: alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1683> 
-======================================================================
-Reported By:                corwyn_astrafall
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1683
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             gentoo-2.6.14-R6
-======================================================================
-Date Submitted:             12-26-2005 21:35 CET
-Last Modified:              12-27-2005 21:25 CET
-======================================================================
-Summary:                    hda sound card not corectly detected
-Description: 
-i've a hda sound card in a notebook with 3 speaker, one mic input, one mic
-integrated, one headphone output with an optical output, and a wheel
-controler for the volume
-
-lspci -vv output :
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-        Subsystem: Fujitsu Siemens Computer GmbH Unknown device 107c
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 08
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at febf8000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-27-05 01:47 
-----------------------------------------------------------------------
-Try the latest ALSA release (1.0.11-rc*)
-
-----------------------------------------------------------------------
- corwyn_astrafall - 12-27-05 21:25 
-----------------------------------------------------------------------
-i'e tried with the latest alsa but it's worth than before. :(
-it doesn't change anithing for the normal detection, and i can't anymore
-force the detection with "options snd-hda-intel model=z71v position_fix=1"
-like in the 1.0.10 for having the spdif
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-05 21:35 corwyn_astrafallNew Issue                                    
-12-26-05 21:35 corwyn_astrafallDistribution              => gentoo          
-12-26-05 21:35 corwyn_astrafallKernel Version            => gentoo-2.6.14-R6
-12-26-05 21:56 rlrevell       Note Added: 0007163                          
-12-27-05 01:29 corwyn_astrafallNote Added: 0007165                          
-12-27-05 01:47 rlrevell       Note Added: 0007166                          
-12-27-05 21:25 corwyn_astrafallNote Added: 0007171                          
-======================================================================
+This is a multi-part message in MIME format.
+--------------040702060505020800050209
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
+> 
+> With 2.6.14 or later kernel, starting envy24control (from alsa-tools-1.0.10)
+> from xterm resulted in a slew of error messages saying "Unable to determine
+> word clock status" scrolling off the xterm. The patch fixed that. Maybe that
+> only happens with the 1010 not the 1010LT. It's possible that with the broken
+> word clock on the 1010LT it wasn't even trying to determine word clock
+> status so it didn't trigger the bug.
+> 
+> John
+
+I asked that before I started studying the mixer and driver code 
+closely.  I now have a good understanding of what the patch does, and 
+why the 1010LT isnt working.  I also don't need any tests done by anyone 
+that I was asking for.
+
+It looks like the driver is the root of the problem.  There doesnt 
+appear to currently be any facility provided for the 1010LT to set and 
+check word clock as the master clock source, and SPDIF In only works by 
+accident.
+
+#define ICE1712_DELTA_1010LT_WORDCLOCK 0x80	/* sample clock source: 0 = 
+Word Clock Input, 1 = S/PDIF Input ??? */
+
+Doesn't appear to be correct, as SPDIF Input works wether I send a 1 or 
+a 0 to the word_clock_sync snd_ctl_elem.  I'm going to keep plugging 
+away at this when I get time to get back on it. For now, here's a patch 
+that should fix the problem of having to press spdif before word clock. 
+  If it does work for you on the regular 1010, then the comments for 
+both the 1010 and 1010lt are backwards (where 0 = word clock and 1 = spdif).
+
+Doug
+--
+http://nostar.net/
+
+
+--------------040702060505020800050209
+Content-Type: text/x-patch;
+ name="envy24control-wcselect.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="envy24control-wcselect.diff"
+
+Index: hardware.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/envy24control/hardware.c,v
+retrieving revision 1.17
+diff -u -r1.17 hardware.c
+--- hardware.c  5 Dec 2005 21:03:06 -0000       1.17
++++ hardware.c  27 Dec 2005 20:47:24 -0000
+@@ -128,6 +128,7 @@
+        } else if (!strcmp(what, "SPDIF")) {
+                internal_clock_set(13);
+        } else if (!strcmp(what, "WordClock")) {
++               internal_clock_set(13); // Hack
+                master_clock_word_select(1);
+        } else {
+                g_print("internal_clock_toggled: %s ???\n", what);
+
+--------------040702060505020800050209--
 
 
 -------------------------------------------------------
