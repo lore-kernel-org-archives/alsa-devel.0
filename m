@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001682]: Errors during install
-Date: Mon, 26 Dec 2005 21:57:31 +0100
-Message-ID: <4df83bc357ff8404960672850b3aab3a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001683]: hda sound card not corectly detected
+Date: Tue, 27 Dec 2005 01:29:16 +0100
+Message-ID: <d48c52e59384cc41527bac8ac7432be5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5429156
-	for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2005 21:57:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDED6162
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 01:29:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1682> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1683> 
 ======================================================================
-Reported By:                theskuj
-Assigned To:                perex
+Reported By:                corwyn_astrafall
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1682
-Category:                   0_compilation problem_!!!
+Issue ID:                   1683
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               gentoo
+Kernel Version:             gentoo-2.6.14-R6
 ======================================================================
-Date Submitted:             12-26-2005 20:16 CET
-Last Modified:              12-26-2005 21:57 CET
+Date Submitted:             12-26-2005 21:35 CET
+Last Modified:              12-27-2005 01:29 CET
 ======================================================================
-Summary:                    Errors during install
+Summary:                    hda sound card not corectly detected
 Description: 
-Errors during 
+i've a hda sound card in a notebook with 3 speaker, one mic input, one mic
+integrated, one headphone output with an optical output, and a wheel
+controler for the volume
 
-'./configure --with-cards=indigo --with-sequencer=yes;make;make install'
+lspci -vv output :
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
+        Subsystem: Fujitsu Siemens Computer GmbH Unknown device 107c
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size 08
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at febf8000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-Not sure what to do... linux newbie...
 ======================================================================
 
 ----------------------------------------------------------------------
- theskuj - 12-26-05 21:20 
+ rlrevell - 12-26-05 21:56 
 ----------------------------------------------------------------------
-make -C /usr/src/linux SUBDIRS=/usr/src/alsa/alsa-driver-1.0.10 modules
-make[1]: Entering directory `/usr/src/linux'
-make[1]: *** No rule to make target `modules'. Stop.
-make[1]: Leaving directory `/usr/src/linux'
-make: *** [compile] Error 2
-rm -f /lib/modules/2.6.11/misc/snd*.*o /lib/modules/2.6.11/misc/persist.o
-/lib/m odules/2.6.11/misc/isapnp.o
-make[1]: Entering directory `/usr/src/alsa/alsa-driver-1.0.10/acore'
-mkdir -p /lib/modules/2.6.11/misc/acore
-mkdir: cannot create directory `/lib/modules/2.6.11': Permission denied
-make[1]: *** [modules_install] Error 1
-make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.10/acore'
-make: *** [install-modules] Error 1
-skuj@SkujLaptop:/usr/src/alsa/alsa-driver-1.0.10$
-
-***The entire output is under 'steps to reproduce' in the advanced view.
+What exactly does not work?
 
 ----------------------------------------------------------------------
- rlrevell - 12-26-05 21:57 
+ corwyn_astrafall - 12-27-05 01:29 
 ----------------------------------------------------------------------
-It sounds like you don't have the kernel sources that match your running
-kernel installed.
+what doesn't work is the detection of the card at the loading of the
+modules and the fact that the way to controle the 3 internal speaker (left
+right and subwoofer) with alsamixer is the headphone volume.
+and if there is a way to know if the integrated wheel can be use to
+controle the volume.
+thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-05 20:16 theskuj        New Issue                                    
-12-26-05 20:31 rlrevell       Note Added: 0007161                          
-12-26-05 21:20 theskuj        Note Added: 0007162                          
-12-26-05 21:57 rlrevell       Note Added: 0007164                          
+12-26-05 21:35 corwyn_astrafallNew Issue                                    
+12-26-05 21:35 corwyn_astrafallDistribution              => gentoo          
+12-26-05 21:35 corwyn_astrafallKernel Version            => gentoo-2.6.14-R6
+12-26-05 21:56 rlrevell       Note Added: 0007163                          
+12-27-05 01:29 corwyn_astrafallNote Added: 0007165                          
 ======================================================================
 
 
