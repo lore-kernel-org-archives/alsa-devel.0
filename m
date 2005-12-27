@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001683]: hda sound card not corectly detected
-Date: Tue, 27 Dec 2005 01:29:16 +0100
-Message-ID: <d48c52e59384cc41527bac8ac7432be5@bugtrack.alsa-project.org>
+Date: Tue, 27 Dec 2005 01:47:16 +0100
+Message-ID: <0f6b4b9a411d058552dbf9451cb0e73d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDED6162
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 01:29:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 168C0162
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 01:47:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-2.6.14-R6
 ======================================================================
 Date Submitted:             12-26-2005 21:35 CET
-Last Modified:              12-27-2005 01:29 CET
+Last Modified:              12-27-2005 01:47 CET
 ======================================================================
 Summary:                    hda sound card not corectly detected
 Description: 
@@ -86,11 +86,6 @@ Port 0
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-26-05 21:56 
-----------------------------------------------------------------------
-What exactly does not work?
-
-----------------------------------------------------------------------
  corwyn_astrafall - 12-27-05 01:29 
 ----------------------------------------------------------------------
 what doesn't work is the detection of the card at the loading of the
@@ -100,6 +95,11 @@ and if there is a way to know if the integrated wheel can be use to
 controle the volume.
 thanks
 
+----------------------------------------------------------------------
+ rlrevell - 12-27-05 01:47 
+----------------------------------------------------------------------
+Try the latest ALSA release (1.0.11-rc*)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -108,6 +108,7 @@ Date Modified  Username       Field                    Change
 12-26-05 21:35 corwyn_astrafallKernel Version            => gentoo-2.6.14-R6
 12-26-05 21:56 rlrevell       Note Added: 0007163                          
 12-27-05 01:29 corwyn_astrafallNote Added: 0007165                          
+12-27-05 01:47 rlrevell       Note Added: 0007166                          
 ======================================================================
 
 
