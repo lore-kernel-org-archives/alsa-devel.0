@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001674]: Audigy 2 ZS after suspend no sound line in
-Date: Tue, 27 Dec 2005 21:01:13 +0100
-Message-ID: <4dbbf8ed07fb1fb96f8b14f8636366e7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001683]: hda sound card not corectly detected
+Date: Tue, 27 Dec 2005 21:25:51 +0100
+Message-ID: <41ff496459abc6183f63bdacb88bbef3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBB63128
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 21:01:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 605AC181
+	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 21:25:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,195 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1674> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1683> 
 ======================================================================
-Reported By:                andreid1303
-Assigned To:                
+Reported By:                corwyn_astrafall
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1674
-Category:                   PCI - emu10k1
+Issue ID:                   1683
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             gentoo-2.6.14-R6
 ======================================================================
-Date Submitted:             12-22-2005 21:41 CET
-Last Modified:              12-27-2005 21:01 CET
+Date Submitted:             12-26-2005 21:35 CET
+Last Modified:              12-27-2005 21:25 CET
 ======================================================================
-Summary:                    Audigy 2 ZS after suspend no sound line in
+Summary:                    hda sound card not corectly detected
 Description: 
-Finally I have got sound working after suspend with alsa 1.0.11rc1
-installed but only line in is silent. PCM and Mic is OK
+i've a hda sound card in a notebook with 3 speaker, one mic input, one mic
+integrated, one headphone output with an optical output, and a wheel
+controler for the volume
+
+lspci -vv output :
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
+        Subsystem: Fujitsu Siemens Computer GmbH Unknown device 107c
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size 08
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at febf8000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- andreid1303 - 12-27-05 20:49 
+ rlrevell - 12-27-05 01:47 
 ----------------------------------------------------------------------
-Before susppend:
-lxuser@av27866:~> cat /proc/asound/Audigy2/codec97#0/ac97#0-0+regs
-0:00 = 6940
-0:02 = 0000
-0:04 = 8000
-0:06 = 801f
-0:08 = 0000
-0:0a = 001a
-0:0c = 801f
-0:0e = 805f
-0:10 = 0f0f
-0:12 = 0909
-0:14 = 9f1f
-0:16 = 0707
-0:18 = 9f1f
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0200
-0:2a = 0080
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 00c4
-0:6e = 000c
-0:70 = 0000
-0:72 = 0000
-0:74 = 0380
-0:76 = 0000
-0:78 = 8380
-0:7a = 0000
-0:7c = 8384
-0:7e = 7609
-
-After suspend:
-lxuser@av27866:~> cat /proc/asound/Audigy2/codec97#0/ac97#0-0+regs
-0:00 = 6940
-0:02 = 9f1f
-0:04 = 8000
-0:06 = 801f
-0:08 = 0000
-0:0a = 001a
-0:0c = 801f
-0:0e = 805f
-0:10 = 0f0f
-0:12 = 0909
-0:14 = 9f1f
-0:16 = 0707
-0:18 = 9f1f
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0200
-0:2a = 0080
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 00c4
-0:6e = 000c
-0:70 = 0000
-0:72 = 0000
-0:74 = 0380
-0:76 = 0000
-0:78 = 8380
-0:7a = 0000
-0:7c = 8384
-0:7e = 7609
-
-I see value for 0:02 is only different. Is it helpful? Thanks in advance.
-
-Same behavour for analog CD-in. 
-/etc/init.d/alsasound restart restore sound
-
-
+Try the latest ALSA release (1.0.11-rc*)
 
 ----------------------------------------------------------------------
- pzad - 12-27-05 21:01 
+ corwyn_astrafall - 12-27-05 21:25 
 ----------------------------------------------------------------------
-It is helpfull.
-
-02 is master volume for ac97 - and this is cause of problem. Output from
-ac97 is connected to ADC.
-0000 - master volume is set to max -  this is default.
-9f1f - this is probably mute.
-
-CD in - this is same problem as Line in, because they are mixed together
-in ac97 and digitalized in ADC.
+i'e tried with the latest alsa but it's worth than before. :(
+it doesn't change anithing for the normal detection, and i can't anymore
+force the detection with "options snd-hda-intel model=z71v position_fix=1"
+like in the 1.0.10 for having the spdif
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 21:41 andreid1303    New Issue                                    
-12-23-05 20:07 pzad           Note Added: 0007137                          
-12-27-05 20:47 andreid1303    Note Added: 0007169                          
-12-27-05 20:49 andreid1303    Note Edited: 0007169                         
-12-27-05 21:01 pzad           Note Added: 0007170                          
+12-26-05 21:35 corwyn_astrafallNew Issue                                    
+12-26-05 21:35 corwyn_astrafallDistribution              => gentoo          
+12-26-05 21:35 corwyn_astrafallKernel Version            => gentoo-2.6.14-R6
+12-26-05 21:56 rlrevell       Note Added: 0007163                          
+12-27-05 01:29 corwyn_astrafallNote Added: 0007165                          
+12-27-05 01:47 rlrevell       Note Added: 0007166                          
+12-27-05 21:25 corwyn_astrafallNote Added: 0007171                          
 ======================================================================
 
 
