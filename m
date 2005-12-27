@@ -1,110 +1,46 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001675]: Shuttle SD11G5 (pentium M) CA0106 sound card
-Date: Tue, 27 Dec 2005 10:49:46 +0100
-Message-ID: <b1da6f88fef6c85e3ab8b6f4bc4829a9@bugtrack.alsa-project.org>
+From: John Rigg <j@sound-man.co.uk>
+Subject: Re: [Alsa-devel] Re: Real-world reports on two Delta 1010LTs/ice1712 synched?
+Date: Tue, 27 Dec 2005 13:00:29 +0000
+Message-ID: <20051227130029.GB3770@localhost.localdomain>
+References: <20051223233816.GA5102@localhost.localdomain> <43AC8990.7040900@nostar.net> <20051224124823.GA4183@localhost.localdomain> <20051224144548.GA4306@localhost.localdomain> <20051224165610.GA4484@localhost.localdomain> <43AE9FA6.2020207@nostar.net> <20051226130327.GA4763@localhost.localdomain> <43B059A3.2050302@nostar.net> <20051227000428.GA3805@localhost.localdomain> <43B0A83F.1040907@nostar.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63AB8176
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 10:49:46 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <43B0A83F.1040907@nostar.net>
+Sender: jackit-devel-admin@lists.sourceforge.net
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: Doug McLain <doug@nostar.net>
+Cc: alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Dec 26, 2005 at 09:34:39PM -0500, Doug McLain wrote:
+> All of the envy24control code treats the 1010 and 1010LT equally, so if 
+> there is a difference, its in the hardware of the devices:
+> 
+> if (card_eeprom.subvendor == ICE1712_SUBDEVICE_DELTA1010 ||
+> 	    card_eeprom.subvendor == ICE1712_SUBDEVICE_DELTA1010LT) {
+> 		delta specific stuff here...
+> 
+> I find it strange that the envy24control patch does not change anything 
+> for me.  What exactly was your issue with envy24control before applying 
+> that patch?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1675> 
-======================================================================
-Reported By:                vava
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1675
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             kernel 2.6.14.4
-======================================================================
-Date Submitted:             12-23-2005 09:45 CET
-Last Modified:              12-27-2005 10:49 CET
-======================================================================
-Summary:                    Shuttle SD11G5 (pentium M) CA0106 sound card
-Description: 
- Recently buy a Shuttle SD11G5 (pentium M)
+With 2.6.14 or later kernel, starting envy24control (from alsa-tools-1.0.10)
+from xterm resulted in a slew of error messages saying "Unable to determine
+word clock status" scrolling off the xterm. The patch fixed that. Maybe that
+only happens with the 1010 not the 1010LT. It's possible that with the broken
+word clock on the 1010LT it wasn't even trying to determine word clock
+status so it didn't trigger the bug.
 
-Sound card reports as :
-0000:02:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
-
-0000:02:09.0 0401: 1102:0007
-        Subsystem: 1297:3041
-        Flags: bus master, medium devsel, latency 32, IRQ 19
-        I/O ports at c000 [size=32]
-        Capabilities: [dc] Power Management version 2
-
-0 [CA0106 ]: CA0106 - CA0106
-                     AudigyLS [Unknown] at 0xc000 irq 19
-
-recompiling my kernel Linux 2.6.14.4
-
-and I got the same behaviour discribe in this bug report.
-sound card seem to works fine, xmms and others players looks like
-playing sound.
-
-but after moving every switch on alsamixer, still no sound.
-
-
-************
-Trying to find out a solution with Bug 1636
-After checking out cvs tree and installing latest version
-still no sound
-
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- vava - 12-27-05 10:49 
-----------------------------------------------------------------------
-0000:02:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
-        Subsystem: Holco Enterprise Co, Ltd/Shuttle Computer: Unknown
-device 3041
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (500ns min, 5000ns max)
-        Interrupt: pin A routed to IRQ 19
-        Region 0: I/O ports at c000 [size=32]
-        Capabilities: [dc] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-23-05 09:45 vava           New Issue                                    
-12-23-05 09:45 vava           Distribution              => Debian          
-12-23-05 09:45 vava           Kernel Version            => kernel 2.6.14.4 
-12-27-05 10:49 vava           Note Added: 0007168                          
-======================================================================
-
-
+John
 
 
 -------------------------------------------------------
