@@ -1,11 +1,14 @@
-From: David Smoot <davidsmoot@gmail.com>
-Subject: Setting up Alsa by hand on an embedded system round 2
-Date: Wed, 28 Dec 2005 16:05:12 -0600
-Message-ID: <b15982770512281405o2d769542s7fbeeb3f3e7030e2@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001691]: Fails to build on LInux 2.4
+Date: Wed, 28 Dec 2005 23:10:12 +0100
+Message-ID: <541dffbd95163ff3556475c9b69f0a39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_5905_18168902.1135807512907"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5904190
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 23:10:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,56 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_5905_18168902.1135807512907
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Thanks to the help of the list I've made a lot of progress.  I'm getting a
-new error message now when I attempt any capture or playback:
-ALSA lib timer_hw.c:269:(snd_timer_hw_open) extended read is not supported
-(SNDRV_TIMER_IOCTL_TREAD)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1691> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1691
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             12-28-2005 22:43 CET
+Last Modified:              12-28-2005 23:10 CET
+======================================================================
+Summary:                    Fails to build on LInux 2.4
+Description: 
+make[3]: Leaving directory `/usr/src/modules/alsa-driver/drivers'
+make[3]: Entering directory `/usr/src/modules/alsa-driver/isa'
+rm -f als100.isapnp
+touch als100.isapnp
+rm -f azt2320.isapnp
+touch azt2320.isapnp
+rm -f dt019x.isapnp
+touch dt019x.isapnp
+rm -f opl3sa2.isapnp
+touch opl3sa2.isapnp
+rm -f cmi8330.isapnp
+touch cmi8330.isapnp
+rm -f es18xx.isapnp
+touch es18xx.isapnp
+rm -f sscape.isapnp
+touch sscape.isapnp
+gcc-3.3 -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
+-I/usr/src/linux/include -I/usr/src/linux/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/usr/src/linux/include/linux/modversions.h  -DKBUILD_BASENAME=cmi8330   -c
+-o cmi8330.o cmi8330.c
+In file included from cmi8330.c:1:
+../alsa-kernel/isa/cmi8330.c: In function `snd_cmi8330_unregister_all':
+../alsa-kernel/isa/cmi8330.c:676: error: `cmi8330_pnpc_driver' undeclared
+(first use in this function)
+../alsa-kernel/isa/cmi8330.c:676: error: (Each undeclared identifier is
+reported only once
+../alsa-kernel/isa/cmi8330.c:676: error: for each function it appears
+in.)
+../alsa-kernel/isa/cmi8330.c: In function `alsa_card_cmi8330_init':
+../alsa-kernel/isa/cmi8330.c:703: error: `cmi8330_pnpc_driver' undeclared
+(first use in this function)
+make[3]: *** [cmi8330.o] Error 1
+make[3]: Leaving directory `/usr/src/modules/alsa-driver/isa'
+make[2]: *** [compile] Error 1
+make[2]: Leaving directory `/usr/src/modules/alsa-driver'
+make[1]: *** [build-stamp] Error 2
+make[1]: Leaving directory `/usr/src/modules/alsa-driver'
+make: *** [kdist_image] Error 2
 
-I've got the timer device created (/dev/snd/timer, owner root, group audio,
-permissions 666, character device with major of 116 and minor 33).  I'm
-trying to find info from the API docs on alsa-project.org but no luck so
-far.
+======================================================================
 
-I see in /usr/share/alsa/alsa.conf it sets some default timer values:
-defaults.timer.class 2
-defaults.timer.sclass 0
-defaults.timer.card 0
-defaults.timer.device 0
-defaults.timer.subdevice 0
+----------------------------------------------------------------------
+ jdthood - 12-28-05 23:10 
+----------------------------------------------------------------------
+The build failed with "--with-isapnp=no".  The build succeeded when I
+changed this to "--with-isapnp=yes".
 
-But I have no idea what these mean or where they are documented.  Can
-someone point me to an expanation of the alsa.conf values?
-David
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-28-05 22:43 jdthood        New Issue                                    
+12-28-05 23:10 jdthood        Note Added: 0007186                          
+======================================================================
 
-------=_Part_5905_18168902.1135807512907
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Thanks to the help of the list I've made a lot of progress.&nbsp; I'm getti=
-ng a new error message now when I attempt any capture or playback:<br>ALSA =
-lib timer_hw.c:269:(snd_timer_hw_open) extended read is not supported (SNDR=
-V_TIMER_IOCTL_TREAD)
-<br><br>I've got the timer device created (/dev/snd/timer, owner root, grou=
-p audio, permissions 666, character device with major of 116 and minor 33).=
-&nbsp; I'm trying to find info from the API docs on <a href=3D"http://alsa-=
-project.org">
-alsa-project.org</a> but no luck so far.<br><br>I see in /usr/share/alsa/al=
-sa.conf it sets some default timer values:<br>defaults.timer.class 2<br>def=
-aults.timer.sclass 0<br>defaults.timer.card 0<br>defaults.timer.device 0
-<br>defaults.timer.subdevice 0<br><br>But I have no idea what these mean or=
- where they are documented.&nbsp; Can someone point me to an expanation of =
-the alsa.conf values?<br>David<br><br>
-
-------=_Part_5905_18168902.1135807512907--
 
 
 -------------------------------------------------------
