@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001181]: ice1724: Invalid EEPROM version 1
-Date: Wed, 28 Dec 2005 21:54:49 +0100
-Message-ID: <24dc5673bf454a7401ae1aa63d6cd2da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000433]: Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
+Date: Wed, 28 Dec 2005 21:57:41 +0100
+Message-ID: <74fa5a9e697edd3feafdd83d0b30ee19@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4E4D190
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:54:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B0C7190
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:57:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,92 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1181> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=433> 
 ======================================================================
-Reported By:                bjl667
+Reported By:                cabbagerat
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1181
+Issue ID:                   433
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo 2005.0
-Kernel Version:             2.6.12-rc4-love2
+Distribution:               Debian Unstable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             06-10-2005 22:28 CEST
-Last Modified:              12-28-2005 21:54 CET
+Date Submitted:             08-09-2004 11:36 CEST
+Last Modified:              12-28-2005 21:57 CET
 ======================================================================
-Summary:                    ice1724: Invalid EEPROM version 1
+Summary:                    Clicking noise on some sample rates with Chaintech
+AV-710 (ICE1724)
 Description: 
- Upon starting alsa, in dmesg I get:
- EcX / # dmesg | grep ice
- ice1724: Invalid EEPROM version 1
-
- EcX / # cat /proc/asound/cards
- 0 [AV710          ]: ICE1724 - Chaintech AV-710
-                      Chaintech AV-710 at 0xa000, irq 16
-
- I can play music in XMMS.. Then close it after that my sound stops
-working I gotta restart alsasound to make it work again. I dunno wtf it is
-my card is a Chaintech AV-710 (ENVY24HT-S)
-
- From what it seems this is another version of the Chaintech card..
+Playing sound at any sample rate other than 48000Hz produces a loud
+clicking sound along with the expected sound. This started with the ALSA
+included with kernel 2.6.7 (worked perfectly in 2.6.6).
+Clicking sound is loudest at 44.1kHz, not present at 48Khz and soft but
+noticeable at 96kHz.
+I have tried playing with alsaplayer, aplay, mpg123 and a variety of
+gstreamer based apps - all display this behavior. Both native alsa and OSS
+emulation display the same problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- bjl667 - 07-08-05 19:51 
+ jdthood - 04-09-05 04:36 
 ----------------------------------------------------------------------
-Yes I tried those options before, I'm still having problems using the alsa
-part of the driver. Alsa oss works but only partially, I setup dmixer
-as-well and I'm still not getting good results.  I included what it tells
-me when I try using alsa itself instead of oss, under xmms.
-
- I tried a few more options (I know this isn't my card but look):
-[ 3336.376279] ice1724: Using board model Albatron K8X800 Pro II 
-
- Its not giving me a warning about a invalid version of the EEPROM using
-this why?  My sound problems still persist..
-
-
+What's the status of this bug?  Any improvement in 2.6.10 or 2.6.11?
+Does alsa-driver from tarball work better?
 
 ----------------------------------------------------------------------
- robhancock - 12-28-05 21:54 
+ robhancock - 12-28-05 21:57 
 ----------------------------------------------------------------------
-I think the "invalid EEPROM version" thing can likely be ignored.
-Supposedly ICE1712 cards should use EEPROM version 1 and ICE1724 cards
-should use version 2, but on many ICE1724 cards (including Chaintech
-AV-710) the EEPROM version indicates version 1. I don't think this really
-affects anything.
+I think this can likely be closed. I saw this in the past but this has not
+been a problem for many kernel versions.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-05 22:28 bjl667         New Issue                                    
-06-10-05 22:28 bjl667         Distribution              => Gentoo 2005.0   
-06-10-05 22:28 bjl667         Kernel Version            => 2.6.12-rc4-love2
-06-14-05 01:56 bjl667         Note Added: 0005014                          
-06-15-05 22:35 bjl667         Note Added: 0005047                          
-06-16-05 00:00 bjl667         Note Edited: 0005047                         
-06-17-05 22:48 bjl667         Note Added: 0005081                          
-06-18-05 12:24 bjl667         Note Edited: 0005081                         
-06-18-05 12:26 bjl667         Note Deleted: 0005014                        
-06-20-05 02:41 bjl667         Note Edited: 0005047                         
-06-25-05 02:12 bjl667         Note Added: 0005255                          
-06-30-05 21:12 bjl667         Note Edited: 0005255                         
-07-04-05 08:46 bjl667         Note Added: 0005381                          
-07-05-05 04:15 bjl667         Note Added: 0005389                          
-07-05-05 04:16 bjl667         Note Deleted: 0005047                        
-07-06-05 21:44 bjl667         Note Deleted: 0005389                        
-07-06-05 21:56 bjl667         Note Edited: 0005381                         
-07-08-05 12:08 tiwai          Note Added: 0005414                          
-07-08-05 19:14 bjl667         Note Added: 0005434                          
-07-08-05 19:14 bjl667         File Added: xmms-snap.jpg                    
-07-08-05 19:51 bjl667         Note Edited: 0005434                         
-07-08-05 19:51 bjl667         Note Edited: 0005434                         
-12-28-05 21:54 robhancock     Note Added: 0007181                          
+08-09-04 11:36 cabbagerat     New Issue                                    
+08-09-04 11:36 cabbagerat     Distribution              => Debian Unstable 
+08-09-04 11:36 cabbagerat     Kernel Version            => 2.6.7           
+08-09-04 11:37 cabbagerat     Issue Monitored: cabbagerat                    
+08-21-04 02:40 av710user      Note Added: 0001603                          
+08-22-04 10:04 cabbagerat     Note Added: 0001608                          
+08-25-04 03:00 av710user      Note Added: 0001616                          
+08-25-04 05:56 av710user      Note Added: 0001618                          
+09-01-04 23:23 cabbagerat     Note Added: 0001681                          
+12-03-04 23:00 escher9694     Issue Monitored: escher9694                    
+04-09-05 04:36 jdthood        Note Added: 0004385                          
+12-28-05 21:57 robhancock     Note Added: 0007182                          
 ======================================================================
 
 
