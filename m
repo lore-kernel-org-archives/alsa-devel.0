@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001688]: midi doesn't work with two ice1712 (M-Audio Delta 1010) Cards
-Date: Wed, 28 Dec 2005 21:05:49 +0100
-Message-ID: <a489b72e2fcc6134151fee7b4c4df679@bugtrack.alsa-project.org>
+Date: Wed, 28 Dec 2005 21:09:28 +0100
+Message-ID: <a6599a9b9ab3a7f4fbaa279581efeec0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EF5618F
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:05:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B4AA12B
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:09:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.13
 ======================================================================
 Date Submitted:             12-28-2005 20:59 CET
-Last Modified:              12-28-2005 21:05 CET
+Last Modified:              12-28-2005 21:09 CET
 ======================================================================
 Summary:                    midi doesn't work with two ice1712 (M-Audio Delta
 1010) Cards
@@ -57,6 +57,11 @@ file or directory.
 ----------------------------------------------------------------------
 In qjackctl there are no midi-devices visible!
 
+----------------------------------------------------------------------
+ rlrevell - 12-28-05 21:09 
+----------------------------------------------------------------------
+Is snd-seq-midi loaded?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -64,6 +69,7 @@ Date Modified  Username       Field                    Change
 12-28-05 20:59 Schafwoller    Kernel Version            => 2.6.13          
 12-28-05 21:02 Schafwoller    Issue Monitored: Schafwoller                    
 12-28-05 21:05 Schafwoller    Note Added: 0007178                          
+12-28-05 21:09 rlrevell       Note Added: 0007179                          
 ======================================================================
 
 
