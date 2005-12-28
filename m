@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001687]: hda-intel 5.1 surround from digital out
-Date: Wed, 28 Dec 2005 17:05:24 +0100
-Message-ID: <651d3db091acb892b0c280c22c4bc587@bugtrack.alsa-project.org>
+From: Dave Raggett <dsr@w3.org>
+Subject: Advice on using ALSA with callbacks?
+Date: Wed, 28 Dec 2005 18:10:11 +0000 (GMT)
+Message-ID: <Pine.LNX.4.61.0512281715520.11482@holly>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0219177
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 17:05:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +14,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1687> 
-======================================================================
-Reported By:                1g0R
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1687
-Category:                   PCI - hda-intel
-Reproducibility:            have not tried
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.14.3
-======================================================================
-Date Submitted:             12-28-2005 17:05 CET
-Last Modified:              12-28-2005 17:05 CET
-======================================================================
-Summary:                    hda-intel 5.1 surround from digital out
-Description: 
-Hi,
-I tried to make 5.1 surround sound from digital out, but unsuccess.
-My receiver (onkyo), said its PCM sound.On windows the receiver says
-DolbyDigital.
-What i need to do ?
-Thanks.
-======================================================================
+I am writing an audio streaming application for speech synthesis and 
+recognition, and wish to take advantage of ALSA (my code currently 
+uses OSS). The networking code is driven by the poll system call 
+(see man poll) and uses ring buffers for reading and writing.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-05 17:05 1g0R           New Issue                                    
-12-28-05 17:05 1g0R           Distribution              => Fedora Core     
-12-28-05 17:05 1g0R           Kernel Version            => 2.6.14.3        
-======================================================================
+I would like to use call backs for when ALSA has captured a frame of 
+audio data from the microphone, or when ALSA is ready for a frame of 
+audio data for playback. I am using single channel audio with 8000 
+samples a second and signed 16 bit linear little endian samples.
 
+My expectation is that I don't need to access ALSA from a separate 
+thread from the networking code that is driven with the poll system 
+call. Once ALSA has been correctly initialized, it would result in 
+asynchronous calls to the call back routines. I could then avoid the 
+need for locks on the ring buffers that these routines share with 
+the network code.
 
+An alternative would be to provide a separate thread and for it to 
+use blocking calls to ALSA, but this doesn't feel like the best way 
+to go. It would also need one thread for playback and another for 
+capture (for use with speech recognition). I am therefore keen to 
+learn how to implement a single threaded callback solution.
+
+The tutorials by Paul Davis are nice and clear, but unfortunately 
+don't cover the use of call backs. Is there a relatively simple 
+example program I could look at for what I need to do?
+
+Any advice would be much appreciated.
+
+- -- 
+  Dave Raggett <dsr@w3.org>  W3C lead for multimodal interaction
+  http://www.w3.org/People/Raggett +44 1225 866240 (or 867351)
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFDstUJb3AdEmxAsUsRAg7SAKDrE/hNJy5NxxAarr753gVOoE6qsgCcDfFR
+KqdWbkiVDyvaEpcHsa5T8P4=
+=jFug
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
