@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - plugins 0001685]: Clicking noises when using the default sound channel for snd-hda-intel, which is a dmix
-Date: Wed, 28 Dec 2005 11:06:33 +0100
-Message-ID: <4d65464ef02b1a604debcbbe723f8fd4@bugtrack.alsa-project.org>
+Date: Wed, 28 Dec 2005 11:07:34 +0100
+Message-ID: <95635e6a34d7350ed877e0f1df6194e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F1D118C
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 11:06:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C46C018C
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 11:07:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1685> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             12-28-2005 11:06 CET
-Last Modified:              12-28-2005 11:06 CET
+Last Modified:              12-28-2005 11:07 CET
 ======================================================================
 Summary:                    Clicking noises when using the default sound channel
 for snd-hda-intel, which is a dmix
@@ -51,10 +51,17 @@ activity in the rest of the system.
 Tested using aplay on a wav file.
 ======================================================================
 
+----------------------------------------------------------------------
+ closey - 12-28-05 11:07 
+----------------------------------------------------------------------
+I probably put this under the wrong category - not sure how I change it.
+Sorry.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-28-05 11:06 closey         New Issue                                    
+12-28-05 11:07 closey         Note Added: 0007173                          
 ======================================================================
 
 
