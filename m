@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001689]: Build warnings
-Date: Wed, 28 Dec 2005 22:04:01 +0100
-Message-ID: <bec6a3cca6c615d253e96b4f69880b5e@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001690]: Build warnings
+Date: Wed, 28 Dec 2005 22:05:14 +0100
+Message-ID: <12b879c55d7b1e9daa426d1742de8163@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBDA7190
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 22:04:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC3EA190
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 22:05:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,23 +22,25 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1689> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1690> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1689
+Issue ID:                   1690
 Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-28-2005 22:01 CET
-Last Modified:              12-28-2005 22:04 CET
+Date Submitted:             12-28-2005 22:04 CET
+Last Modified:              12-28-2005 22:05 CET
 ======================================================================
 Summary:                    Build warnings
 Description: 
@@ -106,22 +108,16 @@ deletion of file config.sub
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-28-05 22:04 
+ jdthood - 12-28-05 22:05 
 ----------------------------------------------------------------------
-I neglected to remove these Debian-specific warnings:
-
-> alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning: Unknown default
-encoding for vi, get it from debian/po/vi.po: UTF-8
-> alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning:Outdated PO file:
-debian/po/ca.po, running
-> alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning: Unknown default
-encoding for vi, get it from debian/po/vi.po: UTF-8
+duplicate
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-05 22:01 jdthood        New Issue                                    
-12-28-05 22:04 jdthood        Note Added: 0007183                          
+12-28-05 22:04 jdthood        New Issue                                    
+12-28-05 22:05 jdthood        Status                   new => closed       
+12-28-05 22:05 jdthood        Note Added: 0007184                          
 ======================================================================
 
 
