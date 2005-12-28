@@ -1,13 +1,14 @@
-From: Dave Raggett <dsr@w3.org>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Advice on using ALSA with callbacks?
-Date: Wed, 28 Dec 2005 18:27:34 +0000 (GMT)
-Message-ID: <Pine.LNX.4.61.0512281819110.11482@holly>
+Date: Wed, 28 Dec 2005 19:39:25 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0512281935160.9509@tm8103.perex-int.cz>
 References: <Pine.LNX.4.61.0512281715520.11482@holly>
  <Pine.LNX.4.61.0512281912160.9509@tm8103.perex-int.cz>
+ <Pine.LNX.4.61.0512281819110.11482@holly>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0512281912160.9509@tm8103.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.61.0512281819110.11482@holly>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: Dave Raggett <dsr@w3.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Wed, 28 Dec 2005, Dave Raggett wrote:
 
-On Wed, 28 Dec 2005, Jaroslav Kysela wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+> 
+> On Wed, 28 Dec 2005, Jaroslav Kysela wrote:
+> 
+> > On Wed, 28 Dec 2005, Dave Raggett wrote:
+> > 
+> > > The tutorials by Paul Davis are nice and clear, but unfortunately
+> > > don't cover the use of call backs. Is there a relatively simple
+> > > example program I could look at for what I need to do?
+> > > 
+> > > Any advice would be much appreciated.
+> > 
+> > My advice is to use poll() also for the audio data. It's not really
+> > required to use an asynchronous source for your application.
+> > 
+> > Jaroslav
+> 
+> Thanks for the swift response.
+> 
+> I am currently using poll() with OSS but don't understand how
+> to get this to make this work with ALSA. In OSS it is easy
+> to get a file descriptor for use with poll by opening /dev/audio.
+> Is there something analogous for use with ALSA?  Can ALSA be
+> set up in such a way that poll only sees the file descriptor
+> as ready for reading when a complete frame is available, and
+> likewise to only become ready for writing when there is space
+> for a complete frame of playback data?
 
-> On Wed, 28 Dec 2005, Dave Raggett wrote:
->
->> The tutorials by Paul Davis are nice and clear, but unfortunately 
->> don't cover the use of call backs. Is there a relatively simple 
->> example program I could look at for what I need to do?
->>
->> Any advice would be much appreciated.
->
-> My advice is to use poll() also for the audio data. It's not really
-> required to use an asynchronous source for your application.
->
-> 						Jaroslav
+Yes, look to the example code - alsa-lib/test/pcm.c and functions
 
-Thanks for the swift response.
+snd_pcm_poll_descriptors_count()
+snd_pcm_poll_descriptors()
+snd_pcm_poll_descriptors_revents()
 
-I am currently using poll() with OSS but don't understand how
-to get this to make this work with ALSA. In OSS it is easy
-to get a file descriptor for use with poll by opening /dev/audio.
-Is there something analogous for use with ALSA?  Can ALSA be
-set up in such a way that poll only sees the file descriptor
-as ready for reading when a complete frame is available, and
-likewise to only become ready for writing when there is space
-for a complete frame of playback data?
+						Jaroslav
 
-Many thanks,
-- -- 
-  Dave Raggett <dsr@w3.org>  W3C lead for multimodal interaction
-  http://www.w3.org/People/Raggett +44 1225 866240 (or 867351)
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFDstkcb3AdEmxAsUsRAqRKAKDSCtSyFjYb+hlwvQWX105kmQ1rtQCgpawS
-Ovz++sL1MJAG6+O7xc5P/UE=
-=SmNZ
------END PGP SIGNATURE-----
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
