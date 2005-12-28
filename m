@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 28 Dec 2005 02:26:02 -0000
-Message-ID: <E1ErR1A-0008Dt-L9@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001684]: no sound with SI7012
+Date: Wed, 28 Dec 2005 08:39:01 +0100
+Message-ID: <f68b55cfe8027b1cffb3a5eaa9e6ee8b@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AEBD141
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 08:39:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +18,168 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1684> 
+======================================================================
+Reported By:                avant
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1684
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             kernel 2.6.14-1.1653_FC4
+======================================================================
+Date Submitted:             12-28-2005 08:39 CET
+Last Modified:              12-28-2005 08:39 CET
+======================================================================
+Summary:                    no sound with SI7012
+Description: 
+I do have some problems with sound on my Asus P4S 533 MX which is based on
+the SIS651 chipset with SI7012 (ADI AD1980 Codecs). Once it worked
+perfectly fine with OSS and FC2.
+OS: Fedora Core 4 fully updated with 
+    kernel 2.6.14-1.1653_FC4 and 
+    ALSA alsa-lib-1.0.10-2.FC4
 
---- Original message follows.
+The FC systemtool system-config-soundcard identifies the soundcard and
+configures it apropriately, but - without playing any sound.
+I've unmuted all channels ans set the volume to max with alsamixer - no
+luck
+I've played with the option ac97_quirk, but again - no luck.
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+Currently I don't know how to proceed
 
-The original message is over 5k.  Message truncated to 1K.
+Currently I'm using the following configuration:
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.232>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta129.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO miujxwoi.net) (64.251.132.84)
-  by mta129.mail.mud.yahoo.com with SMTP; Tue, 27 Dec 2005 18:25:30 -0800
-From: alsa-devel@lists.sourceforge.net
-To: correo_cert@yahoo.com
-Date: Wed, 28 Dec 2005 02:08:05 GMT
-Subject: hi,_ive_a_new_mail_address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <2fbfedfbb.7daa30f@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="==2b04b0.9af1c4be8f7aac"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+/etc/modprobe.conf
+==========================
+alias eth0 sis900
+alias usb-controller ehci-hcd
+alias usb-controller1 ohci-hcd
 
---==2b04b0.9af1c4be8f7aac
+alias char-major-116 snd
+alias snd-card-0 snd-intel8x0
+options snd-card-0 index=0 ac97_quirk=disable
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+alias char-major-14 soundcore
+alias sound-slot-0 snd-intel8x0
 
-plz read and check ...
-cyaaaaaaa
---==2b04b0.9af1c4be8f7aac
-Content-Type: application/octet-str
-*** MESSAGE TRUNCATED ***
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+==========================
+# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: SI7012 [SiS SI7012], device 0: Intel ICH [SiS SI7012]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+==========================
+# lsmod
+Module                  Size  Used by
+parport_pc             27909  1
+lp                     12937  0
+parport                35593  2 parport_pc,lp
+rfcomm                 38745  0
+l2cap                  25921  5 rfcomm
+bluetooth              48069  4 rfcomm,l2cap
+ipt_REJECT              5953  1
+ipt_state               1985  5
+ip_conntrack           51953  1 ipt_state
+nfnetlink               6617  1 ip_conntrack
+iptable_filter          3137  1
+ip_tables              20033  3 ipt_REJECT,ipt_state,iptable_filter
+dm_mod                 57181  0
+video                  16197  0
+button                  6737  0
+battery                 9541  0
+ac                      4933  0
+nvidia               4088432  12
+ipv6                  249761  12
+ohci_hcd               22497  0
+ehci_hcd               34381  0
+i2c_sis96x              5829  0
+i2c_core               22081  1 i2c_sis96x
+snd_intel8x0           32929  0
+snd_ac97_codec         88637  1 snd_intel8x0
+snd_ac97_bus            2497  1 snd_ac97_codec
+snd_seq_dummy           3781  0
+snd_seq_oss            31809  0
+snd_seq_midi_event      7105  1 snd_seq_oss
+snd_seq                49617  5
+snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
+snd_seq_device          9037  3 snd_seq_dummy,snd_seq_oss,snd_seq
+snd_pcm_oss            50545  0
+snd_mixer_oss          17985  1 snd_pcm_oss
+snd_pcm                87493  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer              25029  2 snd_seq,snd_pcm
+snd                    54437  9
+snd_intel8x0,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9889  1 snd
+snd_page_alloc         10697  2 snd_intel8x0,snd_pcm
+sis900                 21697  0
+mii                     5313  1 sis900
+floppy                 61957  0
+ext3                  129993  3
+jbd                    57813  1 ext3
+==========================
+# cat /proc/asound/pcm
+00-00: Intel ICH : SiS SI7012 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : SiS SI7012 - MIC ADC : capture 1
+==========================
+cat /proc/asound/SI7012/intel8x0
+Intel8x0
+
+Global control        : 0x00000002
+Global status         : 0x00300100
+AC'97 codecs ready    : primary
+==========================
+cat /proc/asound/oss/sndstat
+Sound Driver:3.8.1a-980706 (ALSA v1.0.10rc1 emulation code)
+Kernel: Linux bietigheim 2.6.14-1.1653_FC4 #1 Tue Dec 13 21:32:09 EST 2005
+i686
+Config options: 0
+
+Installed drivers:
+Type 10: ALSA emulation
+
+Card config:
+SiS SI7012 with AD1980 at 0x9400, irq 10
+
+Audio devices:
+0: SiS SI7012 (DUPLEX)
+
+Synth devices: NOT ENABLED IN CONFIG
+
+Midi devices: NOT ENABLED IN CONFIG
+
+Timers:
+7: system timer
+
+Mixers:
+0: Analog Devices AD1980
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-28-05 08:39 avant          New Issue                                    
+12-28-05 08:39 avant          Distribution              => Fedora Core 4   
+12-28-05 08:39 avant          Kernel Version            => kernel
+2.6.14-1.1653_FC4
+======================================================================
+
 
 
 
