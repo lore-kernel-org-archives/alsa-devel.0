@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001688]: midi doesn't work with two ice1712 (M-Audio Delta 1010) Cards
-Date: Wed, 28 Dec 2005 21:09:28 +0100
-Message-ID: <a6599a9b9ab3a7f4fbaa279581efeec0@bugtrack.alsa-project.org>
+Date: Wed, 28 Dec 2005 21:36:14 +0100
+Message-ID: <208c3d1c86c1ec4e0f8e12f3105d05dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B4AA12B
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:09:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51BC0181
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:36:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.13
 ======================================================================
 Date Submitted:             12-28-2005 20:59 CET
-Last Modified:              12-28-2005 21:09 CET
+Last Modified:              12-28-2005 21:36 CET
 ======================================================================
 Summary:                    midi doesn't work with two ice1712 (M-Audio Delta
 1010) Cards
@@ -53,14 +53,19 @@ file or directory.
 ======================================================================
 
 ----------------------------------------------------------------------
- Schafwoller - 12-28-05 21:05 
-----------------------------------------------------------------------
-In qjackctl there are no midi-devices visible!
-
-----------------------------------------------------------------------
  rlrevell - 12-28-05 21:09 
 ----------------------------------------------------------------------
 Is snd-seq-midi loaded?
+
+----------------------------------------------------------------------
+ Schafwoller - 12-28-05 21:36 
+----------------------------------------------------------------------
+With one delta1010 midi and MUSE worked!
+
+Following modules are loaded now regarding midi:
+snd_seq_device (used by snd_rawmidi)
+snd_rawmidi (used by snd_mpu401_uart)
+snd_mpu401_uart (finally used by snd_ice1712)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -70,6 +75,7 @@ Date Modified  Username       Field                    Change
 12-28-05 21:02 Schafwoller    Issue Monitored: Schafwoller                    
 12-28-05 21:05 Schafwoller    Note Added: 0007178                          
 12-28-05 21:09 rlrevell       Note Added: 0007179                          
+12-28-05 21:36 Schafwoller    Note Added: 0007180                          
 ======================================================================
 
 
