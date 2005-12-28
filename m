@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000433]: Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
-Date: Wed, 28 Dec 2005 21:57:41 +0100
-Message-ID: <74fa5a9e697edd3feafdd83d0b30ee19@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001689]: Build warnings
+Date: Wed, 28 Dec 2005 22:01:55 +0100
+Message-ID: <ed028c384562ab2236d95e0dac0a4d8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B0C7190
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:57:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C037F184
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 22:01:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,93 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=433> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1689> 
 ======================================================================
-Reported By:                cabbagerat
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   433
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Issue ID:                   1689
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Unstable
-Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-09-2004 11:36 CEST
-Last Modified:              12-28-2005 21:57 CET
+Date Submitted:             12-28-2005 22:01 CET
+Last Modified:              12-28-2005 22:01 CET
 ======================================================================
-Summary:                    Clicking noise on some sample rates with Chaintech
-AV-710 (ICE1724)
+Summary:                    Build warnings
 Description: 
-Playing sound at any sample rate other than 48000Hz produces a loud
-clicking sound along with the expected sound. This started with the ALSA
-included with kernel 2.6.7 (worked perfectly in 2.6.6).
-Clicking sound is loudest at 44.1kHz, not present at 48Khz and soft but
-noticeable at 96kHz.
-I have tried playing with alsaplayer, aplay, mpg123 and a variety of
-gstreamer based apps - all display this behavior. Both native alsa and OSS
-emulation display the same problem.
+$ grep arnin *.build | grep -v 'differ in signedness' | grep -v 'unused
+parameter'|grep -v 'could not be resolved' | grep -v 'remember to run'
+alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning: Unknown default
+encoding for vi, get it from debian/po/vi.po: UTF-8
+alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning:Outdated PO file:
+debian/po/ca.po, running
+alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning: Unknown default
+encoding for vi, get it from debian/po/vi.po: UTF-8
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:dpkg-source: warning: ignoring
+deletion of file config.guess
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:dpkg-source: warning: ignoring
+deletion of file config.sub
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:simple_none.c:1273: warning:
+'type' may be used uninitialized in this function
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:pcm_route.c:348: warning: 'src'
+may be used uninitialized in this function
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:seq.c:4438: warning: assignment
+from incompatible pointer type
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:206: warning: unused
+variable 's'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:214: warning: unused
+variable 's'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:231: warning: unused
+variable 'changed'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:230: warning: unused
+variable 's'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:239: warning: unused
+variable 's'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:247: warning: unused
+variable 's'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:255: warning: unused
+variable 's'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:312: warning: unused
+variable 'count'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:54: warning: 'to_user'
+defined but not used
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:63: warning: 'from_user'
+defined but not used
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:/home/jdthood/src/pkg-alsa/svn-pkg-alsa/trunk/build-area/alsa-lib-1.0.10+1.0.11rc1/include/global.h:131:
+Warning: Member snd_user_file(const char *file, char **result) of group
+Global is not documented.
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:/home/jdthood/src/pkg-alsa/svn-pkg-alsa/trunk/build-area/alsa-lib-1.0.10+1.0.11rc1/include/global.h:131:
+Warning: Member snd_user_file(const char *file, char **result) of group
+Global is not documented.
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
+relinking `smixer-sbase.la'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
+relinking `smixer-ac97.la'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
+relinking `smixer-hda.la'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
+relinking `smixer-sbase.la'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
+relinking `smixer-ac97.la'
+alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
+relinking `smixer-hda.la'
+alsa-utils_1.0.10+1.0.11rc1-1~1_i386.build:dpkg-source: warning: ignoring
+deletion of file config.guess
+alsa-utils_1.0.10+1.0.11rc1-1~1_i386.build:dpkg-source: warning: ignoring
+deletion of file config.sub
+
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 04-09-05 04:36 
-----------------------------------------------------------------------
-What's the status of this bug?  Any improvement in 2.6.10 or 2.6.11?
-Does alsa-driver from tarball work better?
-
-----------------------------------------------------------------------
- robhancock - 12-28-05 21:57 
-----------------------------------------------------------------------
-I think this can likely be closed. I saw this in the past but this has not
-been a problem for many kernel versions.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-09-04 11:36 cabbagerat     New Issue                                    
-08-09-04 11:36 cabbagerat     Distribution              => Debian Unstable 
-08-09-04 11:36 cabbagerat     Kernel Version            => 2.6.7           
-08-09-04 11:37 cabbagerat     Issue Monitored: cabbagerat                    
-08-21-04 02:40 av710user      Note Added: 0001603                          
-08-22-04 10:04 cabbagerat     Note Added: 0001608                          
-08-25-04 03:00 av710user      Note Added: 0001616                          
-08-25-04 05:56 av710user      Note Added: 0001618                          
-09-01-04 23:23 cabbagerat     Note Added: 0001681                          
-12-03-04 23:00 escher9694     Issue Monitored: escher9694                    
-04-09-05 04:36 jdthood        Note Added: 0004385                          
-12-28-05 21:57 robhancock     Note Added: 0007182                          
+12-28-05 22:01 jdthood        New Issue                                    
 ======================================================================
 
 
