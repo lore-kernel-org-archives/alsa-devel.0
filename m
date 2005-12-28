@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001691]: Fails to build on LInux 2.4
-Date: Wed, 28 Dec 2005 23:10:12 +0100
-Message-ID: <541dffbd95163ff3556475c9b69f0a39@bugtrack.alsa-project.org>
+From: "Steve DeRosier" <derosier@pianodisc.com>
+Subject: RE: hw pause in USB
+Date: Wed, 28 Dec 2005 15:37:44 -0800
+Message-ID: <DB99F0250CDF5F438C525F4695C888DC0DA011@exchange01-srv.pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5904190
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 23:10:12 +0100 (MET)
+content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +17,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <ladischc@informatik.uni-halle.de>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Ok, still on the hw pause issue.  I've got it so the "burp" doesn't =
+happen any more. But upon unpause I'm still out of sync.  At first I =
+just figured that my calculations based on delay were off, but at this =
+point I think I'm right.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1691> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1691
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             12-28-2005 22:43 CET
-Last Modified:              12-28-2005 23:10 CET
-======================================================================
-Summary:                    Fails to build on LInux 2.4
-Description: 
-make[3]: Leaving directory `/usr/src/modules/alsa-driver/drivers'
-make[3]: Entering directory `/usr/src/modules/alsa-driver/isa'
-rm -f als100.isapnp
-touch als100.isapnp
-rm -f azt2320.isapnp
-touch azt2320.isapnp
-rm -f dt019x.isapnp
-touch dt019x.isapnp
-rm -f opl3sa2.isapnp
-touch opl3sa2.isapnp
-rm -f cmi8330.isapnp
-touch cmi8330.isapnp
-rm -f es18xx.isapnp
-touch es18xx.isapnp
-rm -f sscape.isapnp
-touch sscape.isapnp
-gcc-3.3 -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
--I/usr/src/linux/include -I/usr/src/linux/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/usr/src/linux/include/linux/modversions.h  -DKBUILD_BASENAME=cmi8330   -c
--o cmi8330.o cmi8330.c
-In file included from cmi8330.c:1:
-../alsa-kernel/isa/cmi8330.c: In function `snd_cmi8330_unregister_all':
-../alsa-kernel/isa/cmi8330.c:676: error: `cmi8330_pnpc_driver' undeclared
-(first use in this function)
-../alsa-kernel/isa/cmi8330.c:676: error: (Each undeclared identifier is
-reported only once
-../alsa-kernel/isa/cmi8330.c:676: error: for each function it appears
-in.)
-../alsa-kernel/isa/cmi8330.c: In function `alsa_card_cmi8330_init':
-../alsa-kernel/isa/cmi8330.c:703: error: `cmi8330_pnpc_driver' undeclared
-(first use in this function)
-make[3]: *** [cmi8330.o] Error 1
-make[3]: Leaving directory `/usr/src/modules/alsa-driver/isa'
-make[2]: *** [compile] Error 1
-make[2]: Leaving directory `/usr/src/modules/alsa-driver'
-make[1]: *** [build-stamp] Error 2
-make[1]: Leaving directory `/usr/src/modules/alsa-driver'
-make: *** [kdist_image] Error 2
+Here's the code:
 
-======================================================================
+            if( device.CanPause )
+            {
+              snd_pcm_pause(device.pcmhandle, 1);
+            }
+            else
+            {
+              /* more complex if we can't do hardware pause. */
+             =20
+              /* First step: get our count */
+              device.PauseFrames =3D 0;
+              err =3D snd_pcm_delay( device.pcmhandle, =
+&device.PauseFrames );
+              if( err )
+                printf( "snd_pcm_delay error: %i\n", err ); =20
+                 =20
+              /* Second, drop the pcm data: */
+              err =3D snd_pcm_drop( device.pcmhandle );
+              if( err )
+                printf( "snd_pcm_drop error: %i", err ); =20
+             =20
+            }
+       =20
+            all_notes_off();
+            while (device.pause.status) {
+              usleep(250000);
+              start_time =3D time(NULL);
+              update_status();
+            }
+           =20
+            if( device.CanPause )
+            {
+              snd_pcm_pause(device.pcmhandle, 0);
+            }
+            else
+            {
+              /* More difficult to do a "software pause" */
+             =20
+              /* Get the data from our ring buffer */
+              ogg_int16_t Buff[ RingBuff_Size( device.PauseBuff ) ];
+             =20
+              int PauseRet =3D RingBuff_GetBuff( device.PauseBuff, Buff, =
+device.PauseFrames *2 );
+             =20
+              if( PauseRet < device.PauseFrames*2 )
+                printf( "DSP Unpause: Frames stored !=3D frames =
+returned.\n" );
+             =20
+               err =3D snd_pcm_prepare( device.pcmhandle );
+               if( err )
+                 printf( "DSP Unpause: snd_pcm_prepare return error: =
+%i.\n", err );
+             =20
+              err =3D snd_pcm_writei( device.pcmhandle, Buff, =
+device.PauseFrames );
+             =20
+              /* since the buffer should be empty, should never overrun. =
+*/
+              if( (err =3D=3D -EAGAIN) )
+              {
+                printf( "DSP Unpause: snd_pcm_writei return -EAGAIN when =
+buffer should be empty.\n" );
+              }
+              else if( err < 0 )
+              {
+                printf( "DSP Unpause: snd_pcm_writei return < 0: %i\n", =
+err );
+              }
 
-----------------------------------------------------------------------
- jdthood - 12-28-05 23:10 
-----------------------------------------------------------------------
-The build failed with "--with-isapnp=no".  The build succeeded when I
-changed this to "--with-isapnp=yes".
+Note, RingBuff_* has been tested to work and returns what I'm asking of =
+it. It handles 16bit words, and since a frame (in this config anyway) is =
+two 16 bit words I'm having to mult frame counts by 2 when I work with =
+it.  When I do my snd_pcm_writei() calls earlier, I always then put the =
+same data into the ring buffer so it is always full of the most current =
+data I did via snd_pcm_writei().
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-05 22:43 jdthood        New Issue                                    
-12-28-05 23:10 jdthood        Note Added: 0007186                          
-======================================================================
+Any sugestions?   =20
 
+Thanks,
+- Steve
 
 
 
