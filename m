@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001689]: Build warnings
-Date: Wed, 28 Dec 2005 22:01:55 +0100
-Message-ID: <ed028c384562ab2236d95e0dac0a4d8f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001690]: Build warnings
+Date: Wed, 28 Dec 2005 22:04:47 +0100
+Message-ID: <0467442516e8fbe77f597a38e88b5410@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C037F184
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 22:01:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 92C38190
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 22:04:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,21 +24,21 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1689> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1690> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1689
+Issue ID:                   1690
 Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             12-28-2005 22:01 CET
-Last Modified:              12-28-2005 22:01 CET
+Date Submitted:             12-28-2005 22:04 CET
+Last Modified:              12-28-2005 22:04 CET
 ======================================================================
 Summary:                    Build warnings
 Description: 
@@ -108,7 +108,7 @@ deletion of file config.sub
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-05 22:01 jdthood        New Issue                                    
+12-28-05 22:04 jdthood        New Issue                                    
 ======================================================================
 
 
