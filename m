@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001688]: midi doesn't work with two ice1712 (M-Audio Delta 1010) Cards
-Date: Wed, 28 Dec 2005 21:36:14 +0100
-Message-ID: <208c3d1c86c1ec4e0f8e12f3105d05dc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001181]: ice1724: Invalid EEPROM version 1
+Date: Wed, 28 Dec 2005 21:54:49 +0100
+Message-ID: <24dc5673bf454a7401ae1aa63d6cd2da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51BC0181
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:36:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4E4D190
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 21:54:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1688> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1181> 
 ======================================================================
-Reported By:                Schafwoller
+Reported By:                bjl667
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1688
-Category:                   PCI - ice1712
+Issue ID:                   1181
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.13
+Distribution:               Gentoo 2005.0
+Kernel Version:             2.6.12-rc4-love2
 ======================================================================
-Date Submitted:             12-28-2005 20:59 CET
-Last Modified:              12-28-2005 21:36 CET
+Date Submitted:             06-10-2005 22:28 CEST
+Last Modified:              12-28-2005 21:54 CET
 ======================================================================
-Summary:                    midi doesn't work with two ice1712 (M-Audio Delta
-1010) Cards
+Summary:                    ice1724: Invalid EEPROM version 1
 Description: 
-When running 2 M-Audio_delta-1010 Cards Midi don't seem to work.
+ Upon starting alsa, in dmesg I get:
+ EcX / # dmesg | grep ice
+ ice1724: Invalid EEPROM version 1
 
-Getting following error while starting muse:
-ALSA lib seq_hw.c:455:(snd_seq_hw_open) open /dev/snd/seq failed: No such
-file or directory.
+ EcX / # cat /proc/asound/cards
+ 0 [AV710          ]: ICE1724 - Chaintech AV-710
+                      Chaintech AV-710 at 0xa000, irq 16
+
+ I can play music in XMMS.. Then close it after that my sound stops
+working I gotta restart alsasound to make it work again. I dunno wtf it is
+my card is a Chaintech AV-710 (ENVY24HT-S)
+
+ From what it seems this is another version of the Chaintech card..
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-28-05 21:09 
+ bjl667 - 07-08-05 19:51 
 ----------------------------------------------------------------------
-Is snd-seq-midi loaded?
+Yes I tried those options before, I'm still having problems using the alsa
+part of the driver. Alsa oss works but only partially, I setup dmixer
+as-well and I'm still not getting good results.  I included what it tells
+me when I try using alsa itself instead of oss, under xmms.
+
+ I tried a few more options (I know this isn't my card but look):
+[ 3336.376279] ice1724: Using board model Albatron K8X800 Pro II 
+
+ Its not giving me a warning about a invalid version of the EEPROM using
+this why?  My sound problems still persist..
+
+
 
 ----------------------------------------------------------------------
- Schafwoller - 12-28-05 21:36 
+ robhancock - 12-28-05 21:54 
 ----------------------------------------------------------------------
-With one delta1010 midi and MUSE worked!
-
-Following modules are loaded now regarding midi:
-snd_seq_device (used by snd_rawmidi)
-snd_rawmidi (used by snd_mpu401_uart)
-snd_mpu401_uart (finally used by snd_ice1712)
+I think the "invalid EEPROM version" thing can likely be ignored.
+Supposedly ICE1712 cards should use EEPROM version 1 and ICE1724 cards
+should use version 2, but on many ICE1724 cards (including Chaintech
+AV-710) the EEPROM version indicates version 1. I don't think this really
+affects anything.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-05 20:59 Schafwoller    New Issue                                    
-12-28-05 20:59 Schafwoller    Kernel Version            => 2.6.13          
-12-28-05 21:02 Schafwoller    Issue Monitored: Schafwoller                    
-12-28-05 21:05 Schafwoller    Note Added: 0007178                          
-12-28-05 21:09 rlrevell       Note Added: 0007179                          
-12-28-05 21:36 Schafwoller    Note Added: 0007180                          
+06-10-05 22:28 bjl667         New Issue                                    
+06-10-05 22:28 bjl667         Distribution              => Gentoo 2005.0   
+06-10-05 22:28 bjl667         Kernel Version            => 2.6.12-rc4-love2
+06-14-05 01:56 bjl667         Note Added: 0005014                          
+06-15-05 22:35 bjl667         Note Added: 0005047                          
+06-16-05 00:00 bjl667         Note Edited: 0005047                         
+06-17-05 22:48 bjl667         Note Added: 0005081                          
+06-18-05 12:24 bjl667         Note Edited: 0005081                         
+06-18-05 12:26 bjl667         Note Deleted: 0005014                        
+06-20-05 02:41 bjl667         Note Edited: 0005047                         
+06-25-05 02:12 bjl667         Note Added: 0005255                          
+06-30-05 21:12 bjl667         Note Edited: 0005255                         
+07-04-05 08:46 bjl667         Note Added: 0005381                          
+07-05-05 04:15 bjl667         Note Added: 0005389                          
+07-05-05 04:16 bjl667         Note Deleted: 0005047                        
+07-06-05 21:44 bjl667         Note Deleted: 0005389                        
+07-06-05 21:56 bjl667         Note Edited: 0005381                         
+07-08-05 12:08 tiwai          Note Added: 0005414                          
+07-08-05 19:14 bjl667         Note Added: 0005434                          
+07-08-05 19:14 bjl667         File Added: xmms-snap.jpg                    
+07-08-05 19:51 bjl667         Note Edited: 0005434                         
+07-08-05 19:51 bjl667         Note Edited: 0005434                         
+12-28-05 21:54 robhancock     Note Added: 0007181                          
 ======================================================================
 
 
