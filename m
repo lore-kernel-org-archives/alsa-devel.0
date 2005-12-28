@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001674]: Audigy 2 ZS after suspend no sound line in
-Date: Tue, 27 Dec 2005 21:51:44 +0100
-Message-ID: <9f3d8e1d539678bf4dae6b88df9477d6@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 28 Dec 2005 02:26:02 -0000
+Message-ID: <E1ErR1A-0008Dt-L9@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD360181
-	for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2005 21:51:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +12,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1674> 
-======================================================================
-Reported By:                andreid1303
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1674
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             12-22-2005 21:41 CET
-Last Modified:              12-27-2005 21:51 CET
-======================================================================
-Summary:                    Audigy 2 ZS after suspend no sound line in
-Description: 
-Finally I have got sound working after suspend with alsa 1.0.11rc1
-installed but only line in is silent. PCM and Mic is OK
-======================================================================
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-----------------------------------------------------------------------
- pzad - 12-27-05 21:01 
-----------------------------------------------------------------------
-It is helpfull.
+--- Original message follows.
 
-02 is master volume for ac97 - and this is cause of problem. Output from
-ac97 is connected to ADC.
-0000 - master volume is set to max -  this is default.
-9f1f - this is probably mute.
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-CD in - this is same problem as Line in, because they are mixed together
-in ac97 and digitalized in ADC.
+The original message is over 5k.  Message truncated to 1K.
 
-----------------------------------------------------------------------
- pzad - 12-27-05 21:51 
-----------------------------------------------------------------------
-Could you try attached patch (pm.patch) ?
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.232>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta129.mail.mud.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO miujxwoi.net) (64.251.132.84)
+  by mta129.mail.mud.yahoo.com with SMTP; Tue, 27 Dec 2005 18:25:30 -0800
+From: alsa-devel@lists.sourceforge.net
+To: correo_cert@yahoo.com
+Date: Wed, 28 Dec 2005 02:08:05 GMT
+Subject: hi,_ive_a_new_mail_address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <2fbfedfbb.7daa30f@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="==2b04b0.9af1c4be8f7aac"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-22-05 21:41 andreid1303    New Issue                                    
-12-23-05 20:07 pzad           Note Added: 0007137                          
-12-27-05 20:47 andreid1303    Note Added: 0007169                          
-12-27-05 20:49 andreid1303    Note Edited: 0007169                         
-12-27-05 21:01 pzad           Note Added: 0007170                          
-12-27-05 21:38 pzad           File Added: pm.patch                         
-12-27-05 21:51 pzad           Note Added: 0007172                          
-======================================================================
+--==2b04b0.9af1c4be8f7aac
 
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--==2b04b0.9af1c4be8f7aac
+Content-Type: application/octet-str
+*** MESSAGE TRUNCATED ***
 
 
 
