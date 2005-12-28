@@ -1,11 +1,14 @@
-From: jc sorm <sorm@pandora.be>
-Subject: M-audio Midisport Uno 1x1
-Date: Wed, 28 Dec 2005 11:42:49 +0100
-Message-ID: <20051228114249.7d7207dd.sorm@pandora.be>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0001686]: Creative Soundblaster audigy SE uses snd-ca0106
+Date: Wed, 28 Dec 2005 13:31:51 +0100
+Message-ID: <57f506cdad86c2b91f140f86c08c3222@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C19518B
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 13:31:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,20 +18,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This midi interface works great on my computer,
-it actually was plug and play (inserted in a usb slot, did a lsusb, and there it was!). 
 
-M-audio Midisport Uno 1x1.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1686> 
+======================================================================
+Reported By:                Petko
+Assigned To:                
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   1686
+Category:                   soundcard matrix
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             12-28-2005 13:31 CET
+Last Modified:              12-28-2005 13:31 CET
+======================================================================
+Summary:                    Creative Soundblaster audigy SE uses snd-ca0106
+Description: 
+Creative Soundblaster audigy SE uses ca0106, not emu10k1 as written here -
+http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix
+======================================================================
 
-My computer:
-Amd 2500Xp, slack 10.2, alsa-driver 1.0.9b, alsa-lib 1.0.9, kernelversion 2.6.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-28-05 13:31 Petko          New Issue                                    
+======================================================================
 
-Thankx!
 
-Hendrik Muylaert.
 
 
 -------------------------------------------------------
