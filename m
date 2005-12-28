@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0001686]: Creative Soundblaster audigy SE uses snd-ca0106
-Date: Wed, 28 Dec 2005 13:31:51 +0100
-Message-ID: <57f506cdad86c2b91f140f86c08c3222@bugtrack.alsa-project.org>
+Date: Wed, 28 Dec 2005 13:38:43 +0100
+Message-ID: <360223cf23475b7cc03358c44da8997c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C19518B
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 13:31:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF963100
+	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 13:38:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1686> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   soundcard matrix
 Reproducibility:            N/A
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-28-2005 13:31 CET
-Last Modified:              12-28-2005 13:31 CET
+Last Modified:              12-28-2005 13:38 CET
 ======================================================================
 Summary:                    Creative Soundblaster audigy SE uses snd-ca0106
 Description: 
@@ -46,10 +48,17 @@ Creative Soundblaster audigy SE uses ca0106, not emu10k1 as written here -
 http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix
 ======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 12-28-05 13:38 
+----------------------------------------------------------------------
+Thank you. Web site now fixed.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-28-05 13:31 Petko          New Issue                                    
+12-28-05 13:38 jcdutton       Status                   new => closed       
+12-28-05 13:38 jcdutton       Note Added: 0007174                          
 ======================================================================
 
 
