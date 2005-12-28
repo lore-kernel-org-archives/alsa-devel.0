@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001685]: Clicking noises when using the default sound channel for snd-hda-intel, which is a dmix
-Date: Wed, 28 Dec 2005 11:07:34 +0100
-Message-ID: <95635e6a34d7350ed877e0f1df6194e3@bugtrack.alsa-project.org>
+From: jc sorm <sorm@pandora.be>
+Subject: M-audio Midisport Uno 1x1
+Date: Wed, 28 Dec 2005 11:42:49 +0100
+Message-ID: <20051228114249.7d7207dd.sorm@pandora.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C46C018C
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 11:07:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This midi interface works great on my computer,
+it actually was plug and play (inserted in a usb slot, did a lsusb, and there it was!). 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1685> 
-======================================================================
-Reported By:                closey
-Assigned To:                
-======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1685
-Category:                   PCM - jack
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             12-28-2005 11:06 CET
-Last Modified:              12-28-2005 11:07 CET
-======================================================================
-Summary:                    Clicking noises when using the default sound channel
-for snd-hda-intel, which is a dmix
-Description: 
-Previously the 'default' pcm would only allow for one stream. Now it allows
-for multiple streams through use of the dmix plugin, but this plugin
-introduces clicking noises into the output - it seems when there is some
-activity in the rest of the system.
+M-audio Midisport Uno 1x1.
 
-Tested using aplay on a wav file.
-======================================================================
+My computer:
+Amd 2500Xp, slack 10.2, alsa-driver 1.0.9b, alsa-lib 1.0.9, kernelversion 2.6.
 
-----------------------------------------------------------------------
- closey - 12-28-05 11:07 
-----------------------------------------------------------------------
-I probably put this under the wrong category - not sure how I change it.
-Sorry.
+Thankx!
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-05 11:06 closey         New Issue                                    
-12-28-05 11:07 closey         Note Added: 0007173                          
-======================================================================
-
-
+Hendrik Muylaert.
 
 
 -------------------------------------------------------
