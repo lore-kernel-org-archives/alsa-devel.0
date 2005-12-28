@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001687]: hda-intel 5.1 surround from digital out
-Date: Wed, 28 Dec 2005 19:24:40 +0100
-Message-ID: <ce178b89a49d316f6060b509552c7866@bugtrack.alsa-project.org>
+From: Dave Raggett <dsr@w3.org>
+Subject: Re: Advice on using ALSA with callbacks?
+Date: Wed, 28 Dec 2005 18:27:34 +0000 (GMT)
+Message-ID: <Pine.LNX.4.61.0512281819110.11482@holly>
+References: <Pine.LNX.4.61.0512281715520.11482@holly>
+ <Pine.LNX.4.61.0512281912160.9509@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BC2618E
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 19:24:41 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.61.0512281912160.9509@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1687> 
-======================================================================
-Reported By:                1g0R
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1687
-Category:                   PCI - hda-intel
-Reproducibility:            have not tried
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.14.3
-======================================================================
-Date Submitted:             12-28-2005 17:05 CET
-Last Modified:              12-28-2005 19:24 CET
-======================================================================
-Summary:                    hda-intel 5.1 surround from digital out
-Description: 
-Hi,
-I tried to make 5.1 surround sound from digital out, but unsuccess.
-My receiver (onkyo), said its PCM sound.On windows the receiver says
-DolbyDigital.
-What i need to do ?
-Thanks.
-======================================================================
+On Wed, 28 Dec 2005, Jaroslav Kysela wrote:
 
-----------------------------------------------------------------------
- 1g0R - 12-28-05 19:24 
-----------------------------------------------------------------------
-Aham,well i tried mplayer with that command:
-mplayer video_with_ac3_audio.avi -ac hwac3 -ao alsa
-and on receiver pcm has changed DolbyDigital.
-How can i do that to default alsa spdif out?
+> On Wed, 28 Dec 2005, Dave Raggett wrote:
+>
+>> The tutorials by Paul Davis are nice and clear, but unfortunately 
+>> don't cover the use of call backs. Is there a relatively simple 
+>> example program I could look at for what I need to do?
+>>
+>> Any advice would be much appreciated.
+>
+> My advice is to use poll() also for the audio data. It's not really
+> required to use an asynchronous source for your application.
+>
+> 						Jaroslav
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-05 17:05 1g0R           New Issue                                    
-12-28-05 17:05 1g0R           Distribution              => Fedora Core     
-12-28-05 17:05 1g0R           Kernel Version            => 2.6.14.3        
-12-28-05 19:24 1g0R           Note Added: 0007177                          
-======================================================================
+Thanks for the swift response.
 
+I am currently using poll() with OSS but don't understand how
+to get this to make this work with ALSA. In OSS it is easy
+to get a file descriptor for use with poll by opening /dev/audio.
+Is there something analogous for use with ALSA?  Can ALSA be
+set up in such a way that poll only sees the file descriptor
+as ready for reading when a complete frame is available, and
+likewise to only become ready for writing when there is space
+for a complete frame of playback data?
 
+Many thanks,
+- -- 
+  Dave Raggett <dsr@w3.org>  W3C lead for multimodal interaction
+  http://www.w3.org/People/Raggett +44 1225 866240 (or 867351)
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFDstkcb3AdEmxAsUsRAqRKAKDSCtSyFjYb+hlwvQWX105kmQ1rtQCgpawS
+Ovz++sL1MJAG6+O7xc5P/UE=
+=SmNZ
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
