@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001682]: Errors during install
-Date: Wed, 28 Dec 2005 22:44:18 +0100
-Message-ID: <24d8f4b99434d93d1a7c563a2593c499@bugtrack.alsa-project.org>
+From: David Smoot <davidsmoot@gmail.com>
+Subject: Setting up Alsa by hand on an embedded system round 2
+Date: Wed, 28 Dec 2005 16:05:12 -0600
+Message-ID: <b15982770512281405o2d769542s7fbeeb3f3e7030e2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_5905_18168902.1135807512907"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F987190
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 22:44:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +15,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_5905_18168902.1135807512907
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1682> 
-======================================================================
-Reported By:                theskuj
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1682
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-26-2005 20:16 CET
-Last Modified:              12-28-2005 22:44 CET
-======================================================================
-Summary:                    Errors during install
-Description: 
-Errors during 
+Thanks to the help of the list I've made a lot of progress.  I'm getting a
+new error message now when I attempt any capture or playback:
+ALSA lib timer_hw.c:269:(snd_timer_hw_open) extended read is not supported
+(SNDRV_TIMER_IOCTL_TREAD)
 
-'./configure --with-cards=indigo --with-sequencer=yes;make;make install'
+I've got the timer device created (/dev/snd/timer, owner root, group audio,
+permissions 666, character device with major of 116 and minor 33).  I'm
+trying to find info from the API docs on alsa-project.org but no luck so
+far.
 
-Not sure what to do... linux newbie...
-======================================================================
+I see in /usr/share/alsa/alsa.conf it sets some default timer values:
+defaults.timer.class 2
+defaults.timer.sclass 0
+defaults.timer.card 0
+defaults.timer.device 0
+defaults.timer.subdevice 0
 
-----------------------------------------------------------------------
- pochini - 12-28-05 14:01 
-----------------------------------------------------------------------
-You must be root, otherwise you can't install anything in /lib/modules .
+But I have no idea what these mean or where they are documented.  Can
+someone point me to an expanation of the alsa.conf values?
+David
 
-----------------------------------------------------------------------
- jdthood - 12-28-05 22:44 
-----------------------------------------------------------------------
-Local issue
+------=_Part_5905_18168902.1135807512907
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-05 20:16 theskuj        New Issue                                    
-12-26-05 20:31 rlrevell       Note Added: 0007161                          
-12-26-05 21:20 theskuj        Note Added: 0007162                          
-12-26-05 21:57 rlrevell       Note Added: 0007164                          
-12-28-05 14:01 pochini        Note Added: 0007175                          
-12-28-05 22:44 jdthood        Status                   assigned => resolved
-12-28-05 22:44 jdthood        Resolution               open => not an issue
-12-28-05 22:44 jdthood        Note Added: 0007185                          
-======================================================================
+Thanks to the help of the list I've made a lot of progress.&nbsp; I'm getti=
+ng a new error message now when I attempt any capture or playback:<br>ALSA =
+lib timer_hw.c:269:(snd_timer_hw_open) extended read is not supported (SNDR=
+V_TIMER_IOCTL_TREAD)
+<br><br>I've got the timer device created (/dev/snd/timer, owner root, grou=
+p audio, permissions 666, character device with major of 116 and minor 33).=
+&nbsp; I'm trying to find info from the API docs on <a href=3D"http://alsa-=
+project.org">
+alsa-project.org</a> but no luck so far.<br><br>I see in /usr/share/alsa/al=
+sa.conf it sets some default timer values:<br>defaults.timer.class 2<br>def=
+aults.timer.sclass 0<br>defaults.timer.card 0<br>defaults.timer.device 0
+<br>defaults.timer.subdevice 0<br><br>But I have no idea what these mean or=
+ where they are documented.&nbsp; Can someone point me to an expanation of =
+the alsa.conf values?<br>David<br><br>
 
-
+------=_Part_5905_18168902.1135807512907--
 
 
 -------------------------------------------------------
