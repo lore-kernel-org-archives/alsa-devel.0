@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001690]: Build warnings
-Date: Wed, 28 Dec 2005 22:05:14 +0100
-Message-ID: <12b879c55d7b1e9daa426d1742de8163@bugtrack.alsa-project.org>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: Re: Re: [Jackit-devel] Real-world reports on two Delta 1010LTs/ice1712 synched?
+Date: Wed, 28 Dec 2005 21:19:35 +0000
+Message-ID: <20051228211935.GA4782@localhost.localdomain>
+References: <20051224124823.GA4183@localhost.localdomain> <20051224144548.GA4306@localhost.localdomain> <20051224165610.GA4484@localhost.localdomain> <43AE9FA6.2020207@nostar.net> <20051226130327.GA4763@localhost.localdomain> <43B059A3.2050302@nostar.net> <20051227000428.GA3805@localhost.localdomain> <43B0A83F.1040907@nostar.net> <20051227130029.GB3770@localhost.localdomain> <43B1A8FA.8080408@nostar.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC3EA190
-	for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2005 22:05:14 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <43B1A8FA.8080408@nostar.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,109 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Doug McLain <doug@nostar.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Dec 27, 2005 at 03:50:02PM -0500, Doug McLain wrote:
+> For now, here's a patch 
+> that should fix the problem of having to press spdif before word clock. 
+>  If it does work for you on the regular 1010, then the comments for 
+> both the 1010 and 1010lt are backwards (where 0 = word clock and 1 = spdif).
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1690> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1690
-Category:                   0_general
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-28-2005 22:04 CET
-Last Modified:              12-28-2005 22:05 CET
-======================================================================
-Summary:                    Build warnings
-Description: 
-$ grep arnin *.build | grep -v 'differ in signedness' | grep -v 'unused
-parameter'|grep -v 'could not be resolved' | grep -v 'remember to run'
-alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning: Unknown default
-encoding for vi, get it from debian/po/vi.po: UTF-8
-alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning:Outdated PO file:
-debian/po/ca.po, running
-alsa-driver_1.0.10+1.0.11rc1-1~1_i386.build:Warning: Unknown default
-encoding for vi, get it from debian/po/vi.po: UTF-8
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:dpkg-source: warning: ignoring
-deletion of file config.guess
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:dpkg-source: warning: ignoring
-deletion of file config.sub
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:simple_none.c:1273: warning:
-'type' may be used uninitialized in this function
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:pcm_route.c:348: warning: 'src'
-may be used uninitialized in this function
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:seq.c:4438: warning: assignment
-from incompatible pointer type
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:206: warning: unused
-variable 's'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:214: warning: unused
-variable 's'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:231: warning: unused
-variable 'changed'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:230: warning: unused
-variable 's'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:239: warning: unused
-variable 's'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:247: warning: unused
-variable 's'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:255: warning: unused
-variable 's'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:312: warning: unused
-variable 'count'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:54: warning: 'to_user'
-defined but not used
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:sbase.c:63: warning: 'from_user'
-defined but not used
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:/home/jdthood/src/pkg-alsa/svn-pkg-alsa/trunk/build-area/alsa-lib-1.0.10+1.0.11rc1/include/global.h:131:
-Warning: Member snd_user_file(const char *file, char **result) of group
-Global is not documented.
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:/home/jdthood/src/pkg-alsa/svn-pkg-alsa/trunk/build-area/alsa-lib-1.0.10+1.0.11rc1/include/global.h:131:
-Warning: Member snd_user_file(const char *file, char **result) of group
-Global is not documented.
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
-relinking `smixer-sbase.la'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
-relinking `smixer-ac97.la'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
-relinking `smixer-hda.la'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
-relinking `smixer-sbase.la'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
-relinking `smixer-ac97.la'
-alsa-lib_1.0.10+1.0.11rc1-1~1_i386.build:libtool: install: warning:
-relinking `smixer-hda.la'
-alsa-utils_1.0.10+1.0.11rc1-1~1_i386.build:dpkg-source: warning: ignoring
-deletion of file config.guess
-alsa-utils_1.0.10+1.0.11rc1-1~1_i386.build:dpkg-source: warning: ignoring
-deletion of file config.sub
+> Index: hardware.c
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-tools/envy24control/hardware.c,v
+> retrieving revision 1.17
+> diff -u -r1.17 hardware.c
+> --- hardware.c  5 Dec 2005 21:03:06 -0000       1.17
+> +++ hardware.c  27 Dec 2005 20:47:24 -0000
+> @@ -128,6 +128,7 @@
+>         } else if (!strcmp(what, "SPDIF")) {
+>                 internal_clock_set(13);
+>         } else if (!strcmp(what, "WordClock")) {
+> +               internal_clock_set(13); // Hack
+>                 master_clock_word_select(1);
+>         } else {
+>                 g_print("internal_clock_toggled: %s ???\n", what);
 
-======================================================================
+The extra line fixes the problem. It makes the buttons behave the way
+I'd expect and I can still select either word clock or S/PDIF for sync input.
 
-----------------------------------------------------------------------
- jdthood - 12-28-05 22:05 
-----------------------------------------------------------------------
-duplicate
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-05 22:04 jdthood        New Issue                                    
-12-28-05 22:05 jdthood        Status                   new => closed       
-12-28-05 22:05 jdthood        Note Added: 0007184                          
-======================================================================
-
-
+Thanks,
+John
 
 
 -------------------------------------------------------
