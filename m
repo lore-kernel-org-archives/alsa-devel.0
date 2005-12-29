@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001692]: sound doesn't work
-Date: Thu, 29 Dec 2005 04:50:02 +0100
-Message-ID: <d74cad6197faa82d458c95dbc787f2a3@bugtrack.alsa-project.org>
+Date: Thu, 29 Dec 2005 05:34:31 +0100
+Message-ID: <e20eeb36b337f791b1b02e673d1f1462@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3F3A193
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2005 04:50:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D60E4193
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2005 05:34:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1692> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 2
 Kernel Version:             2.6.5
 ======================================================================
 Date Submitted:             12-29-2005 04:50 CET
-Last Modified:              12-29-2005 04:50 CET
+Last Modified:              12-29-2005 05:34 CET
 ======================================================================
 Summary:                    sound doesn't work
 Description: 
@@ -57,12 +57,26 @@ BTW: I did check the mixer levels and if it was muted or not and no
 problems there.
 ======================================================================
 
+----------------------------------------------------------------------
+ jra2003 - 12-29-05 05:34 
+----------------------------------------------------------------------
+Here is more info on my snd card
+
+written in pci card:
+
+Sound Blaster Live! 24-bit
+Main chip:  CA0106-DAT
+
+Also, when occasionally detected, FC2 see's the card as a 'SB Audigy LS'
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-29-05 04:50 jra2003        New Issue                                    
 12-29-05 04:50 jra2003        Distribution              => Fedora Core 2   
 12-29-05 04:50 jra2003        Kernel Version            => 2.6.5           
+12-29-05 04:50 jra2003        Issue Monitored: jra2003                     
+12-29-05 05:34 jra2003        Note Added: 0007187                          
 ======================================================================
 
 
