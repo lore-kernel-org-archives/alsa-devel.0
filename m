@@ -1,14 +1,8 @@
-From: Dave Raggett <dsr@w3.org>
-Subject: Re: Advice on using ALSA with callbacks?
-Date: Thu, 29 Dec 2005 10:53:02 +0000 (GMT)
-Message-ID: <Pine.LNX.4.61.0512291044040.11532@holly>
-References: <Pine.LNX.4.61.0512281715520.11482@holly>
- <Pine.LNX.4.61.0512281912160.9509@tm8103.perex-int.cz>
- <Pine.LNX.4.61.0512281819110.11482@holly> <Pine.LNX.4.62.0512291136390.25093@ecabase.localdomain>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 29 Dec 2005 12:53:23 -0000
+Message-ID: <E1ErxHc-0007b6-OO@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.62.0512291136390.25093@ecabase.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +12,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kai Vehmanen <kvehmanen@eca.cx>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-Many thanks. Both you and Jaroslav have been very helpful.
-My goal is to enable network based speech recognition and
-synthesis services for web applications as part of my work
-for W3C. I am exploring passing the audio either as part of
-HTTP requests and responses, or via a separate RTP stream.
-The code will be available under W3C's open source license.
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-On Thu, 29 Dec 2005, Kai Vehmanen wrote:
+--- Original message follows.
 
-> Hello,
->
-> On Wed, 28 Dec 2005, Dave Raggett wrote:
->
->> I am currently using poll() with OSS but don't understand how
->> to get this to make this work with ALSA. In OSS it is easy
->> to get a file descriptor for use with poll by opening /dev/audio.
->> Is there something analogous for use with ALSA?  Can ALSA be
->> set up in such a way that poll only sees the file descriptor
->> as ready for reading when a complete frame is available, and
->> likewise to only become ready for writing when there is space
->> for a complete frame of playback data?
->
-> yes, as Jaroslav already replied, snd_pcm_poll_descriptors() does 
-> just the thing.
->
-> To configure the wake-up threshold, you need to configure the 
-> "avail-min" property with snd_pcm_sw_params_set_avail_min() and 
-> friends. Additionally it's good to set the period size (usually 
-> the interrupt frequency) to match your blocksize with 
-> snd_pcm_hw_params_set_period_*() functions.
->
-> All in all, I've used ALSA in various networked apps that use a 
-> centralized poll/select driven event-loop, and the alsa-lib API is 
-> very nice (things like avail-min are very useful and not supported 
-> by OSS).
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-- -- 
-  Dave Raggett <dsr@w3.org>  W3C lead for multimodal interaction
-  http://www.w3.org/People/Raggett +44 1225 866240 (or 867351)
+The original message is over 5k.  Message truncated to 1K.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.219>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta232.mail.scd.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO eyuchx.net) (64.251.132.84)
+  by mta232.mail.scd.yahoo.com with SMTP; Thu, 29 Dec 2005 04:53:23 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Thu, 29 Dec 2005 12:41:01 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <9980df039a7bc121db@pntvdnos.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=====d55eee175c39"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-iD8DBQFDs8ASb3AdEmxAsUsRAr7MAJ0SIcDACQERcg1EdfZbcDx35AylrwCgusRx
-mMqDafBzOCcqFSGUvdNK4jE=
-=Fkd1
------END PGP SIGNATURE-----
+--=====d55eee175c39
+
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
+
+plz read and check ...
+cyaaaaaaa
+--=====d55eee175c39
+Content-Type: application/octet-stream; name=mailtext.zip
+Content-Transfer-Encoding: base6
+*** MESSAGE TRUNCATED ***
+
 
 
 -------------------------------------------------------
