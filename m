@@ -1,13 +1,18 @@
-From: "Steve DeRosier" <derosier@pianodisc.com>
-Subject: RE: hw pause in USB
-Date: Wed, 28 Dec 2005 15:37:44 -0800
-Message-ID: <DB99F0250CDF5F438C525F4695C888DC0DA011@exchange01-srv.pianodisc.com>
+From: "Quincey Thorn" <quinceyathor@j53.com>
+Subject: Re: triviality deerskin
+Date: Wed, 28 Dec 2005 22:01:18 -0500
+Message-ID: <000001c60c24$237935e0$ec59a8c0@elephantine>
+Reply-To: "Quincey Thorn" <quinceyathor@j53.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C60BFA.3AA32DE0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B42CB194
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2005 04:01:27 +0100 (MET)
+Received: from j53.com (zaq3d73a1c2.zaq.ne.jp [61.115.161.194])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id BD02A74003
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2005 04:01:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,96 +22,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <ladischc@informatik.uni-halle.de>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Neo Munford <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ok, still on the hw pause issue.  I've got it so the "burp" doesn't =
-happen any more. But upon unpause I'm still out of sync.  At first I =
-just figured that my calculations based on delay were off, but at this =
-point I think I'm right.
+This is a multi-part message in MIME format.
 
-Here's the code:
+------=_NextPart_000_0001_01C60BFA.3AA32DE0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-            if( device.CanPause )
-            {
-              snd_pcm_pause(device.pcmhandle, 1);
-            }
-            else
-            {
-              /* more complex if we can't do hardware pause. */
-             =20
-              /* First step: get our count */
-              device.PauseFrames =3D 0;
-              err =3D snd_pcm_delay( device.pcmhandle, =
-&device.PauseFrames );
-              if( err )
-                printf( "snd_pcm_delay error: %i\n", err ); =20
-                 =20
-              /* Second, drop the pcm data: */
-              err =3D snd_pcm_drop( device.pcmhandle );
-              if( err )
-                printf( "snd_pcm_drop error: %i", err ); =20
-             =20
-            }
-       =20
-            all_notes_off();
-            while (device.pause.status) {
-              usleep(250000);
-              start_time =3D time(NULL);
-              update_status();
-            }
-           =20
-            if( device.CanPause )
-            {
-              snd_pcm_pause(device.pcmhandle, 0);
-            }
-            else
-            {
-              /* More difficult to do a "software pause" */
-             =20
-              /* Get the data from our ring buffer */
-              ogg_int16_t Buff[ RingBuff_Size( device.PauseBuff ) ];
-             =20
-              int PauseRet =3D RingBuff_GetBuff( device.PauseBuff, Buff, =
-device.PauseFrames *2 );
-             =20
-              if( PauseRet < device.PauseFrames*2 )
-                printf( "DSP Unpause: Frames stored !=3D frames =
-returned.\n" );
-             =20
-               err =3D snd_pcm_prepare( device.pcmhandle );
-               if( err )
-                 printf( "DSP Unpause: snd_pcm_prepare return error: =
-%i.\n", err );
-             =20
-              err =3D snd_pcm_writei( device.pcmhandle, Buff, =
-device.PauseFrames );
-             =20
-              /* since the buffer should be empty, should never overrun. =
-*/
-              if( (err =3D=3D -EAGAIN) )
-              {
-                printf( "DSP Unpause: snd_pcm_writei return -EAGAIN when =
-buffer should be empty.\n" );
-              }
-              else if( err < 0 )
-              {
-                printf( "DSP Unpause: snd_pcm_writei return < 0: %i\n", =
-err );
-              }
 
-Note, RingBuff_* has been tested to work and returns what I'm asking of =
-it. It handles 16bit words, and since a frame (in this config anyway) is =
-two 16 bit words I'm having to mult frame counts by 2 when I work with =
-it.  When I do my snd_pcm_writei() calls earlier, I always then put the =
-same data into the ring buffer so it is always full of the most current =
-data I did via snd_pcm_writei().
+XA
+VI
+CI
+VA
 
-Any sugestions?   =20
 
-Thanks,
-- Steve
+
+NA
+AG
+
+ALI
+LIU
+
+
+
+X
+
+RA
+S
+
+M
+
+
+=20
+ from $3.33
+
+ from $3.75
+ from $1.21
+
+
+http://www.sychodynam.com
+
+------=_NextPart_000_0001_01C60BFA.3AA32DE0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV style=3D"FLOAT: left"><H1>XA<BR>VI<BR>CI<BR>VA<BR></H1></DIV>
+<DIV style=3D"FLOAT: left"><H1>
+<DIV>NA</DIV>AG<BR>
+<DIV>ALI</DIV>LIU<BR></H1></DIV>
+<DIV style=3D"FLOAT: left"><H1>X<BR>
+<DIV>RA</DIV>S<BR>
+<DIV>M</DIV></H1></DIV>
+<DIV style=3D"FLOAT: left"><H1>
+<DIV>&nbsp;</DIV>&nbsp;from $3.33<BR>
+<DIV>&nbsp;from $3.75</DIV>&nbsp;from $1.21<BR></H1></DIV>
+<DIV style=3D"CLEAR: both"><A =
+href=3D"http://www.sychodynam.com">http://www.sychodynam.com</A></DIV></B=
+ODY></HTML>
+------=_NextPart_000_0001_01C60BFA.3AA32DE0--
+
+
 
 
 
