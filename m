@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000931]: Wish for M-Audio Revolution 5.1 Support
-Date: Thu, 29 Dec 2005 22:07:53 +0100
-Message-ID: <6c538caf5b520e806889c49185cbdc23@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
+Date: Thu, 29 Dec 2005 22:43:45 +0100
+Message-ID: <90fa8f630c3b7a03c76b562f51a9b3e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 998AA199
-	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2005 22:07:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98BC6189
+	for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2005 22:43:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=931> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
 ======================================================================
-Reported By:                Thinky
-Assigned To:                rlrevell
+Reported By:                guido
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   931
-Category:                   PCI - ice1724
+Issue ID:                   1694
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian unstable
-Kernel Version:             2.6.10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian "Sarge" with kernel and alsa from "SID"
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             02-22-2005 10:40 CET
-Last Modified:              12-29-2005 22:07 CET
+Date Submitted:             12-29-2005 22:43 CET
+Last Modified:              12-29-2005 22:43 CET
 ======================================================================
-Summary:                    Wish for M-Audio Revolution 5.1 Support
+Summary:                    snd-intel8x0m unable to initialize the Modem device
+ICH6
 Description: 
-Could you add support for that soundcard?
-I hope parts of the ice1724/12 driver can be reused so that it is not a
-too hard task.
+Dear Maintainer and Reader,
+
+I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
+I found a lot of things recommended in different Mailing lists and blogs
+but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
+kernel Version 2.6.14 with source from Debian "SID".
+The current status is that two modules are loaded during boot,
+snd-intel8x0 and snd-intel8x0m. When both modules are loaded
+the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
+works fine.
+If I additionally load module snd-intel8x0m sound does not work anymore
+and error messages in syslog are printed.
+So I think the error messages are a buck in the snd-intel8x0m module.
+There is no /proc/asound/Modem present when I load the snd-intel8x0m
+module.
+
+In the "Additional Information" Section I paste some debugging output.
+
+Regards
+Guido
 ======================================================================
-
-----------------------------------------------------------------------
- cyan - 12-29-05 21:42 
-----------------------------------------------------------------------
-Great, it works, thank you.
- There is some more work to do (other outputs, volume in alsamixer is now
-separate for left and right chanell...), but these things are just
-details.
-
-----------------------------------------------------------------------
- rlrevell - 12-29-05 22:07 
-----------------------------------------------------------------------
-Great, closing.  Please open new bug reports for any problems.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 10:40 Thinky         New Issue                                    
-02-22-05 10:40 Thinky         Distribution              => Debian unstable 
-02-22-05 10:40 Thinky         Kernel Version            => 2.6.10          
-02-22-05 10:53 perex          Note Added: 0003696                          
-02-27-05 17:42 Thinky         Note Added: 0003742                          
-03-02-05 17:40 Thinky         Note Added: 0003780                          
-12-02-05 11:54 perex          Note Added: 0006888                          
-12-03-05 22:21 cyan           Note Added: 0006904                          
-12-03-05 22:36 cyan           Issue Monitored: cyan                        
-12-06-05 15:58 tiwai          Note Added: 0006928                          
-12-29-05 21:42 cyan           Note Added: 0007189                          
-12-29-05 22:07 rlrevell       Status                   new => resolved     
-12-29-05 22:07 rlrevell       Resolution               open => fixed       
-12-29-05 22:07 rlrevell       Assigned To               => rlrevell        
-12-29-05 22:07 rlrevell       Note Added: 0007190                          
+12-29-05 22:43 guido          New Issue                                    
+12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
+kernel and alsa from "SID"
+12-29-05 22:43 guido          Kernel Version            => 2.6.14          
 ======================================================================
 
 
