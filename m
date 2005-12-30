@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001473]: mic and line-in with very low volume
-Date: Fri, 30 Dec 2005 23:54:05 +0100
-Message-ID: <97b03ef755e75f5cb1128068099403ba@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001266]: Does not detect my sound card as valid
+Date: Fri, 30 Dec 2005 23:55:31 +0100
+Message-ID: <71b060ebb4e5f412cdc89426b3435744@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B14C168
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:54:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3001168
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:55:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1473> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1266> 
 ======================================================================
-Reported By:                oka
+Reported By:                darins
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1473
-Category:                   PCI - intel8x0
+Issue ID:                   1266
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.13
+Distribution:               Fedora Core 3
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-12-2005 09:21 CEST
-Last Modified:              12-30-2005 23:54 CET
+Date Submitted:             07-19-2005 06:37 CEST
+Last Modified:              12-30-2005 23:55 CET
 ======================================================================
-Summary:                    mic and line-in with very low volume
+Summary:                    Does not detect my sound card as valid
 Description: 
-Same issue like bug #1232 and #1346 but with Codec Analog Devices AD1986.
+I have an AudioTrak Prodigy 7.1LT sound card.  Modprobing ice-1724 produces
+the following output in /var/log/messages:
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1346
+Jul 18 23:24:45 coruscant kernel: ice1724: No matching model found for ID
+0x32315441
+Jul 18 23:24:45 coruscant kernel: ice1724: Invalid EEPROM (size = 120)
+Jul 18 23:24:45 coruscant kernel: ICE1724: probe of 0000:00:06.0 failed
+with error -5
 
-Line-in and mic record only with very low volume. I have only rear jacks
-and don't know how they are connected to the board (locked case :-( 
-I've tried Alsa 1.0.9 and 1.0.10-rc1 with no success.
+It looks like the driver just can't identify my card.
+I upgraded to the latest driver available from atrpms, but got the same
+error.
 
+aplay -l doesn't show any devices from this soundcard available, though
+lsmod shows the module loaded and using all the normal stuff.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- oka - 10-16-05 18:11 
+ darins - 07-19-05 06:39 
 ----------------------------------------------------------------------
-I mean record as the captured volume (via krec)
+uname -a output:
+
+Linux coruscant 2.6.11-1.27_FC3 #1 Tue May 17 20:27:37 EDT 2005 i686
+athlon i386 GNU/Linux
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:54 
+ rlrevell - 12-30-05 23:55 
 ----------------------------------------------------------------------
-Any improvement with later releases?
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-12-05 09:21 oka            New Issue                                    
-10-12-05 09:21 oka            File Added: asound.state                     
-10-12-05 09:21 oka            Distribution              => Gentoo          
-10-12-05 09:21 oka            Kernel Version            => 2.6.13          
-10-12-05 13:48 tiwai          Note Added: 0006463                          
-10-16-05 18:11 oka            Note Added: 0006483                          
-12-30-05 23:54 rlrevell       Note Added: 0007303                          
+07-19-05 06:37 darins         New Issue                                    
+07-19-05 06:37 darins         Distribution              => Fedora Core 3   
+07-19-05 06:38 darins         Issue Monitored: darins                      
+07-19-05 06:39 darins         Note Added: 0005525                          
+12-30-05 23:55 rlrevell       Note Added: 0007304                          
 ======================================================================
 
 
