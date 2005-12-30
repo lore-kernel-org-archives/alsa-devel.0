@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Fri, 30 Dec 2005 04:59:13 +0100
-Message-ID: <bac9011e75bbb4903d3327e258c63b0f@bugtrack.alsa-project.org>
+Date: Fri, 30 Dec 2005 05:07:05 +0100
+Message-ID: <56c94f42b572a91de1794df87ebaf258@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA32D1A4
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:59:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0E89178
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:07:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2005 00:33 CEST
-Last Modified:              12-30-2005 04:59 CET
+Last Modified:              12-30-2005 05:07 CET
 ======================================================================
 Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
 failed: Invalid argument
@@ -73,11 +73,6 @@ duplicate of        0001096 no capture with M-Audio Revolution 7.1
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:10 
-----------------------------------------------------------------------
-Were you ever able to get this working?
-
-----------------------------------------------------------------------
  sst4 - 12-30-05 04:59 
 ----------------------------------------------------------------------
 Am I still supposed to compile the patch and the whole ALSA or the patch
@@ -96,6 +91,12 @@ changes in Skype, quality of connection or slightly different kernel
 I hope to make and upgrade to Mandriva 2006 next week, I think it has
 ALSA
 vesrion 1.0.9b.
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 05:07 
+----------------------------------------------------------------------
+I guess you're still supposed to use the patch.  Try it first with
+--dry-run to see if it applies still.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -130,6 +131,7 @@ Date Modified  Username       Field                    Change
 06-29-05 21:40 sst4           Note Added: 0005316                          
 12-30-05 04:10 rlrevell       Note Added: 0007202                          
 12-30-05 04:59 sst4           Note Added: 0007229                          
+12-30-05 05:07 rlrevell       Note Added: 0007230                          
 ======================================================================
 
 
