@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001069]: Scratchy sound through AC3 passthrough with userspace version 1.0.9rc2
-Date: Fri, 30 Dec 2005 04:33:00 +0100
-Message-ID: <38613b5c316761522b8d9ca0cc1e0e52@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000806]: No sound at all
+Date: Fri, 30 Dec 2005 04:36:52 +0100
+Message-ID: <eb0d3948b47d1fbb4289d3981920e05a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1662817A
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:33:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64D9618E
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:36:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1069> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=806> 
 ======================================================================
-Reported By:                Creideiki
+Reported By:                misnagid
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1069
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   806
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-21-2005 21:46 CEST
-Last Modified:              12-30-2005 04:33 CET
+Date Submitted:             01-11-2005 11:18 CET
+Last Modified:              12-30-2005 04:36 CET
 ======================================================================
-Summary:                    Scratchy sound through AC3 passthrough with
-userspace version 1.0.9rc2
+Summary:                    No sound at all
 Description: 
-I have an Audigy 2 ZS sound card connected via S/PDIF to a Logitech Z-680
-decoder/speaker system. After upgrading ALSA userspace (alsa-headers,
-alsa-lib) to 1.0.9rc2, with no configuration changes, all I got when
-trying to play DVD:s using AC3 passthrough was scratchy noises, and the
-external decoder indicated that it did not think it was getting AC3 data.
-Software decoding worked, but not hardware passthrough. Both Xine and
-MPlayer had this problem. I am not running aRts, or any other sound
-server, and have no ~/.asoundrc file.
+Hi guys!
 
-Downgrading to userspace version 1.0.8 made it work again.
+Peter Zubaj helped me with trying to get ALSA to work under Fedora FC3
+with EMU10K1 with a Creative Labs Audigy 2.  Worked fine with Suse, RHEL,
+Mandrake, Debian, you name it, EVERYTHING!  Couldn't get it to work with
+my current distro FC3.  Please see:
 
-I have no idea how to debug ALSA problems, so please let me know how to
-generate any extra information you might require.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749
 
-By the way, the "Product Version" field in Mantis doesn't let me select
-any version higher than 1.0.8.
+I reported it to Fedora.  NO RESPONSE!!!
+
+So I bought a new sound card.  The M-Audio Revolution 7.1
+
+Again no sound, no matter what I do!
+Using a working under all other distro's Asus A7N8X-E Deluxe with latest
+Bios.  Please help??
 ======================================================================
 
 ----------------------------------------------------------------------
- Creideiki - 06-24-05 17:58 
+ jdthood - 04-18-05 23:22 
 ----------------------------------------------------------------------
-This issue still exists in version 1.0.9 final.
-
-I've uploaded the results of `iecset` and `cat
-/proc/asound/Audigy2/codec97#0/ac97#0-0+regs`, which are identical for
-versions 1.0.7 and 1.0.9, and for playing PCM or AC3 passthrough.
+If it only fails to work in one distro then the problem is unlikely to be
+in ALSA.  Have you made any progress with this issue?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:33 
+ rlrevell - 12-30-05 04:36 
 ----------------------------------------------------------------------
-Any improvement with later releases?
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-21-05 21:46 Creideiki      New Issue                                    
-04-22-05 02:06 eradicator     Issue Monitored: eradicator                    
-04-29-05 09:14 mandreiana     Issue Monitored: mandreiana                    
-06-24-05 17:54 Creideiki      File Added: iecset                           
-06-24-05 17:54 Creideiki      File Added: ac97#0-0+regs                    
-06-24-05 17:58 Creideiki      Note Added: 0005244                          
-12-30-05 04:33 rlrevell       Note Added: 0007212                          
+01-11-05 11:18 misnagid       New Issue                                    
+01-11-05 11:18 misnagid       File Added: m-audio.state                    
+01-11-05 11:18 misnagid       Distribution              => Fedora FC3      
+01-11-05 11:18 misnagid       Kernel Version            => 2.6.9           
+04-18-05 23:22 jdthood        Note Added: 0004518                          
+12-30-05 04:36 rlrevell       Status                   new => closed       
+12-30-05 04:36 rlrevell       Note Added: 0007213                          
 ======================================================================
 
 
