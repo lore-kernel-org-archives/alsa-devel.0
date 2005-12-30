@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001066]: autodetection fails
-Date: Fri, 30 Dec 2005 04:42:55 +0100
-Message-ID: <eefea860e675c3235ba802537cace205@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001072]: 'Capture Source' and 'Mic Select' controls cannot be switched
+Date: Fri, 30 Dec 2005 04:44:07 +0100
+Message-ID: <053d6da31e72349b42224ba3a9e2fb06@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 952231A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:42:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39BA61A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:44:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1066> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1072> 
 ======================================================================
-Reported By:                El Santo
+Reported By:                vsu
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1066
+Issue ID:                   1072
 Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               linux from scratch
-Kernel Version:             2.6.11.7
+Distribution:               ALT Linux
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-19-2005 08:54 CEST
-Last Modified:              12-30-2005 04:42 CET
+Date Submitted:             04-23-2005 21:41 CEST
+Last Modified:              12-30-2005 04:44 CET
 ======================================================================
-Summary:                    autodetection fails
+Summary:                    'Capture Source' and 'Mic Select' controls cannot be
+switched
 Description: 
-i own a asus a8v (kt800pro) deluxe motherboard. it has a realtec alc850
-ac97 codec....
+With ALSA CVS snapshots from 2005-04-09 and 2005-04-23 it is not possible
+to select capture source.  I have tried alsamixer, amixer, and even
+"alsactl restore" (by editing the state file directly), but no matter what
+is done, the 'Capture Source' control is still set to 'Mic':
 
-i though this codec was supported
+        control.26 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 2
+                comment.item.0 Mic
+                comment.item.1 CD
+                comment.item.2 Video
+                comment.item.3 Aux
+                comment.item.4 Line
+                comment.item.5 Mix
+                comment.item.6 'Mix Mono'
+                comment.item.7 Phone
+                iface MIXER
+                name 'Capture Source'
+                value.0 Mic
+                value.1 Mic
+        }
 
-when i load the snd-via82xx dont detect it... and none of the alsa modules
-say anything... not in screen, not kernel messages (dmesg), neither in
-/var/log/*...
+However, the AC'97 register 0x1a which should be controlled by this
+control has value which corresponds to 'Phone', not 'Mic':
 
-i have a bt878 tv card (bttv works perfectly) and snd-bt87x have the same
-problem that snd-via82xx... doesnt identify the card... but at least i can
-manually set the boot_all parameter....
-this tv card was correctly detected with my last motherboard asus a7v-600
-(kt600)
+$ cat /proc/asound/card0/codec97\#0/ac97\#0-0+regs | grep 0:1a
+0:1a = 0707
 
-i alsa tried to build alsa into the kernel (not like modules), but i get
-the same results
+Changing the register value directly by writing into the proc file
+produces the desired result - the recording source changes, however, the
+mixer control stays nonfunctional.
 
-any idea?
+I also noticed that the 'Mic Select' control is fixed to 'Mic1' and cannot
+be changed.
+
+With alsa-driver-1.0.8 both controls work. Updating first alsa-lib, then
+alsa-utils from 1.0.8 to the 2005-04-23 CVS snapshot did not change this
+behavior.
 ======================================================================
 
 ----------------------------------------------------------------------
- El Santo - 04-22-05 22:06 
+ vsu - 04-24-05 13:21 
 ----------------------------------------------------------------------
-maybe youre right...
-but i think it could be a problem of the bios itself... it was released
-two days ago and with 1010 the systems runs perfectly stable
-
-i'll wait until asus response
+The attached patch fixes the problem (bitmask calculation was buggy).
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:42 
+ rlrevell - 12-30-05 04:44 
 ----------------------------------------------------------------------
-Any update on this?
+Was this fixed in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-05 08:54 El Santo       New Issue                                    
-04-19-05 08:54 El Santo       Distribution              => linux from scratch
-04-19-05 08:54 El Santo       Kernel Version            => 2.6.11.7        
-04-19-05 17:25 tiwai          Note Added: 0004520                          
-04-20-05 20:28 El Santo       Note Added: 0004544                          
-04-20-05 20:29 El Santo       File Added: lspci-vv                         
-04-22-05 19:18 vsu            Note Added: 0004555                          
-04-22-05 21:28 El Santo       Note Added: 0004557                          
-04-22-05 21:32 rlrevell       Note Added: 0004558                          
-04-22-05 21:55 El Santo       Note Added: 0004559                          
-04-22-05 22:00 rlrevell       Note Added: 0004560                          
-04-22-05 22:06 El Santo       Note Added: 0004561                          
-12-30-05 04:42 rlrevell       Note Added: 0007220                          
+04-23-05 21:41 vsu            New Issue                                    
+04-23-05 21:41 vsu            Distribution              => ALT Linux       
+04-23-05 21:41 vsu            Kernel Version            => 2.6.11          
+04-23-05 21:56 vsu            Note Added: 0004564                          
+04-24-05 13:21 vsu            File Added: ac97-enum-fix.patch                   
+
+04-24-05 13:21 vsu            Note Added: 0004565                          
+12-30-05 04:44 rlrevell       Note Added: 0007221                          
 ======================================================================
 
 
