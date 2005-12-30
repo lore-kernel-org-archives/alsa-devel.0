@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001015]: Static when not playing through the OSS Emulation
-Date: Fri, 30 Dec 2005 05:20:48 +0100
-Message-ID: <ef591f36ed497b12ca9ddfee8968fc41@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001019]: Unresolved symbols for snd-seq-oss.o on gentoo with a kernel 2.4.29
+Date: Fri, 30 Dec 2005 05:21:53 +0100
+Message-ID: <2322d163522ab837d5efa4ee06ed23c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0689193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:20:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 181CDEB
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:21:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,98 +22,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1015> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1019> 
 ======================================================================
-Reported By:                wintermute77
-Assigned To:                rlrevell
+Reported By:                Alinoe
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1015
-Category:                   PCI - ice1724
+Issue ID:                   1019
+Category:                   CORE OSS - sequencer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:              2.6.10-ck5
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.4.29 with grsecurity (but grsecurity doesn't
+matter in this case ;p)
 ======================================================================
-Date Submitted:             03-25-2005 04:00 CET
-Last Modified:              12-30-2005 05:20 CET
+Date Submitted:             03-27-2005 11:47 CEST
+Last Modified:              12-30-2005 05:21 CET
 ======================================================================
-Summary:                    Static when not playing through the OSS Emulation
+Summary:                    Unresolved symbols for snd-seq-oss.o on gentoo with
+a kernel 2.4.29
 Description: 
-I get crackling static coming in when sound is being output to my speakers
-(not when there is nothing playing) using the ice1724 driver with my
-M-Audio Revolution 7.2.  The problem appears to go away if I use OSS
-emulation, but of course this isn't desirable since I cannot use dmix in
-this case.
+# /etc/init.d/alsasound restart
+ * WARNING:  you are stopping a boot service.
+ * Storing ALSA Mixer Levels...                                           
+                                           [ ok ]
+ * Unloading ALSA...                                                      
+                                           [ ok ]
+ * Unloading ALSA modules...                                              
+                                           [ ok ]
+ * Loading ALSA modules...
+ *   Loading: snd-card-0...                                               
+                                           [ ok ]
+ *   Loading: snd-mixer-oss...                                            
+                                           [ ok ]
+ *   Loading: snd-pcm-oss...                                              
+                                           [ ok ]
+ *   Loading: snd-seq-oss...
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+init_module: Device or resource busy
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o: insmod
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o failed
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o: insmod
+snd-seq-oss failed                         [ !! ]
 
-I am using xmms and mplayer to produce the badness.
+ *   Loading: snd-seq...                                                  
+                                           [ ok ]
+ * Restoring Mixer Levels...                                              
+                                           [ ok ]
+
+
+Damn WTF?! :-)
+
+# dmesg [...]
+ALSA mixer_oss.c:1260: unable to register OSS mixer device 0:0
+ALSA pcm_oss.c:2436: unable to register OSS PCM device 0:0
+ALSA seq_oss.c:236: can't register device seq
+
+My mistake? :-/
+
+# insmod
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_no_status_R5c9c7f86
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_free_R9cf69370
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_encode_byte_Rea2835af
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_decode_R7a1ad7c0
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_new_R1e92e146
+
+Urgh no :-/
+
 ======================================================================
 
 ----------------------------------------------------------------------
- wintermute77 - 03-26-05 00:50 
+ rlrevell - 12-30-05 05:21 
 ----------------------------------------------------------------------
-I appear to have resolved my problem.  
-
-I upgraded to 2.6.11-ck2 (which I think had a newer alsa in the kernel)
-and used the following dmix configuration, and it worked flawlessly (so
-far):
-
-/etc/asound.conf
-
-pcm.ossmix {
-    type dmix
-    ipc_key 1024
-    slave {
-        pcm "hw:0,0"
-        period_time 0
-        period_size 1024
-        buffer_size 4096 # buffer size < 6653, but pow(x, 2)
-        rate 44100       # we want to play CDs only
-    }
-    bindings {
-        0 0
-        1 1
-    }
-}
-# Everything shall be dmixed, so redefine "default":
-pcm.!default {
-    type plug
-    slave.pcm "ossmix"
-}
-# OSS via aoss should d(mix)stroyed:
-pcm.dsp0 {    type plug
-    slave.pcm "ossmix"
-}
-ctl.mixer0 {
-    type hw
-    card 0
-}
-
-----------------------------------------------------------------------
- wintermute77 - 03-26-05 00:52 
-----------------------------------------------------------------------
-Also, it appears the static comes back if I remove the "rate 44100" line.
+Were you ever able to get this to work?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 04:00 wintermute77   New Issue                                    
-03-25-05 04:00 wintermute77   Distribution              => Gentoo          
-03-25-05 04:00 wintermute77   Kernel Version            =>  2.6.10-ck5     
-03-25-05 14:57 daspooky       Note Added: 0004207                          
-03-25-05 14:58 daspooky       Note Edited: 0004207                         
-03-26-05 00:09 wintermute77   Note Added: 0004214                          
-03-26-05 00:50 wintermute77   Note Added: 0004215                          
-03-26-05 00:52 wintermute77   Note Added: 0004216                          
-12-30-05 05:20 rlrevell       Status                   new => resolved     
-12-30-05 05:20 rlrevell       Resolution               open => fixed       
-12-30-05 05:20 rlrevell       Assigned To               => rlrevell        
+03-27-05 11:47 Alinoe         New Issue                                    
+03-27-05 11:47 Alinoe         Kernel Version            => 2.4.29 with
+grsecurity (but grsecurity doesn't matter in this case ;p)
+03-28-05 01:29 Alinoe         Issue Monitored: Alinoe                      
+12-30-05 05:21 rlrevell       Note Added: 0007242                          
 ======================================================================
 
 
