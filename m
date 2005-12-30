@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000999]: Right rear channel in cs46xx driver in kernel 2.6.11 doesn't work
-Date: Fri, 30 Dec 2005 04:18:04 +0100
-Message-ID: <d0cf2e904bcc52a6b258efbdb7f02211@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000579]: multi+route distort sound
+Date: Fri, 30 Dec 2005 04:19:34 +0100
+Message-ID: <75d6f3f80aac0e6c05f367da84d28190@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83AFE19F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:18:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B47319F
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:19:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,114 +22,126 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=999> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=579> 
 ======================================================================
-Reported By:                rjmx
-Assigned To:                rlrevell
+Reported By:                ramendik
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   999
-Category:                   PCI - cs46xx
+Project:                    ALSA - lib
+Issue ID:                   579
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian testing (with locally-compiled kernel from
-source)
-Kernel Version:             2.6.11
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             03-19-2005 05:45 CET
-Last Modified:              12-30-2005 04:18 CET
+Date Submitted:             10-11-2004 20:45 CEST
+Last Modified:              12-30-2005 04:19 CET
 ======================================================================
-Summary:                    Right rear channel in cs46xx driver in kernel 2.6.11
-doesn't work
+Summary:                    multi+route distort sound
 Description: 
-I've been using the rear channel of my Turtle Beach Santa Cruz card
-(which uses the cs46xx driver) to drive an external stereo amplifier
-for several years now, with no problems. However, it seems to be
-broken in kernel 2.6.11: there's little or no output from the right rear
-channel. Left channel works fine, and going back to a 2.6.10 kernel
-gets me both rear channels working again.
+I have Intel ICH5, with both analog and spdif output.
 
-I'm not sure if this is a known problem or not, but has anything changed
-in the
-cs46xx code between 2.6.10 and 2.6.11? 
+I have made up /etc/asound.conf to route to both hw:0,0 and hw:0,4; I am
+listening on spdif (hw:0,4). (tiwai: I will try the new patch that may
+make this redundant, but what we have here seems to be another bug and
+might happen in other cases too).
 
-I can see this in the changelog:
+Here's my /etc/asound.conf in its entirety:
 
+pcm.analog {
+    type hw
+    card 0
+    device 0
+}
 
->>    A new mixer control 'Duplicate Front' is added for the board with
->>    a single codec.  This toggles the duplication of front signal to
->>    the rear speakers.
+pcm.digit {
+    type hw
+    card 0
+    device 4
+}
 
+pcm.whole {
+    type multi
+    slaves.a.pcm "hw:0,0"
+    slaves.a.channels 2
+    slaves.b.pcm "hw:0,4"
+    slaves.b.channels 2
+    bindings.0.slave a
+    bindings.0.channel 0
+    bindings.1.slave a
+    bindings.1.channel 1
+    bindings.2.slave b
+    bindings.2.channel 0
+    bindings.3.slave b
+    bindings.3.channel 1
+}
 
-   which may have something to do with it, but I don't see any such
-control in alsamixer. The system runs Debian sarge, and here's the
-current software versions:
+pcm.rt {
+    type route
+    slave.pcm whole
+    slave.channels 4
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
+pcm.!default {
+    type copy
+    slave.pcm rt
+}
 
+ctl.!default {
+    type hw
+    card 0
+}
 
->>  alsa-base      1.0.8-7
->>  alsa-source    1.0.8-7
->>  alsa-utils     1.0.8-4
+When I play to hw:0,4 or "analog", the sound is OK. When I play to "rt",
+it is distorted. Not noisy this time; instead, the pitch is shifted
+somewhat lower. 
 
+Checked with alsaplayer and xmms 1.2.10 . (XMMS 1.2.8 also caused high CPU
+use when playing to "rt", but this may be a CPU bug). Checked with both
+44100 Hz and 48000 Hz files.
 
-Thanks,
-
- .....Ron
-
+This may have something to do with a strange fact. When I play a 48k file,
+iecset still reports a rate of 44100 Hz. And in fact, if I set it to 48000
+Hz manualy and start a 48k file in alsaplayer, it still shifts to 44100 !
+This is true for both playing to hw:0,4 and to "rt". (Not tested with
+XMMS, can test if needed)
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000569 Software mixing to rear channel
 ======================================================================
 
 ----------------------------------------------------------------------
- rjmx - 03-20-05 21:41 
+ ramendik - 03-20-05 13:21 
 ----------------------------------------------------------------------
-This problem seems to have been fixed in kernel patch 2.6.11.5:
-
->From the changelog:
-
-> <dsd@gentoo.org>
-> 	[PATCH] Fix stereo mutes on Surround volume control
-> 	
-> 	As of 2.6.11, I have no output out of the rear right speaker of my 4.1
-> 	surround sound setup. I am using snd-intel8x0 based on a Realtek
->         ALC650F chip on an nvidia motherboard.
-> 	
-> 	A gentoo user with completely different hardware also ran into this:
-> 	http://bugs.gentoo.org/84276
-> 	
-> 	2.6.11-mm3 fixes this problem and I've identified the specific
->       fix, which is already in the ALSA development tree. An ALSA
->       developer asked me to submit the
-> 	fix for 2.6.11.x when I'd found it, so here it is :)
-> 	
-> 	--
-> 	AC97 Codec
-> 	Fix stereo mutes on Surround volume control.
-> 	
-> 	Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> 	Signed-off-by: Chris Wright <chrisw@osdl.org>
-> 	Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+Thanks for reminding! I'll test out with alsa in kernel 2.6.11 and newest
+libs, and report back.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:18 
+ rlrevell - 12-30-05 04:19 
 ----------------------------------------------------------------------
-Fixed in kernel 2.6.11.5
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-05 05:45 rjmx           New Issue                                    
-03-19-05 05:45 rjmx           Distribution              => Debian testing (with
-locally-compiled kernel from source)
-03-19-05 05:45 rjmx           Kernel Version            => 2.6.11          
-03-20-05 21:41 rjmx           Note Added: 0004101                          
-12-30-05 04:18 rlrevell       Status                   new => resolved     
-12-30-05 04:18 rlrevell       Resolution               open => fixed       
-12-30-05 04:18 rlrevell       Assigned To               => rlrevell        
-12-30-05 04:18 rlrevell       Note Added: 0007203                          
+10-11-04 20:45 ramendik       New Issue                                    
+10-11-04 20:45 ramendik       Distribution              => ASP Linux, RH9-based
+10-11-04 20:45 ramendik       Kernel Version            => 2.6.8.1-ck8 , with
+alsa 1.0.7rc1 stuck in and patches from bug 505 put on top
+10-12-04 13:10 tiwai          Note Added: 0002091                          
+10-22-04 16:56 perex          Relationship added       related to 0000569  
+10-22-04 16:58 perex          Project                  ALSA - driver => ALSA -
+lib
+03-20-05 13:05 jdthood        Note Added: 0004077                          
+03-20-05 13:21 ramendik       Note Added: 0004079                          
+12-30-05 04:19 rlrevell       Note Added: 0007204                          
 ======================================================================
 
 
