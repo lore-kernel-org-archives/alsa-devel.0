@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001124]: sound recording does not work
-Date: Fri, 30 Dec 2005 20:52:40 +0100
-Message-ID: <82ed3b8a2715f7919858abd7922de486@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001088]: udev doesn't create alsa device nodes other than timer and controlC0 with 2.6.1[[:digit:]] kernels
+Date: Fri, 30 Dec 2005 21:05:41 +0100
+Message-ID: <0369b59eb05f41171e5d96c2063efaf2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 390CE18F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 20:52:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 547F8190
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 21:05:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1124> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1088> 
 ======================================================================
-Reported By:                demiurg
+Reported By:                tinkster
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1124
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   1088
+Category:                   aconnect
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-24-2005 21:03 CEST
-Last Modified:              12-30-2005 20:52 CET
+Date Submitted:             05-06-2005 12:54 CEST
+Last Modified:              12-30-2005 21:05 CET
 ======================================================================
-Summary:                    sound recording does not work
+Summary:                    udev doesn't create alsa device nodes other than
+timer and controlC0 with 2.6.1[[:digit:]] kernels
 Description: 
-Sorry if this is a duplicate - I could not find a way to search the
-bagtrack 
-system. My email to the mailing list was not answered and I did not find
-anything in the archives, so...
-
-I have an intel 810 based sound card :
-
-00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
-AC'97 Audio Controller (rev 02).
-
-It works great, except that I can't get sound recording to work. It
-does works on windows, so HW is OK. On linux it records nothing but noise.
-I
-checked all the obvious places - mic and capture volumes in alsamixer,
-etc. 
-
-My system :
-
-Vanilla FC3.
-kernel  2.6.11-1.27_FC3smp
-alsa-lib-1.0.6-8
-
-lspci :
-00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER
-(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
-
-CPU : Pentium4
-motherboard : GA-8IPE1000
-sound : onboard Realtek ALC850 CODEC 
-
-amixer  contents :
-see attachment
-
+see summary
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 20:52 
+ tiwai - 05-24-05 12:31 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Can't reproduce here.
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 21:05 
+----------------------------------------------------------------------
+Local issue
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-05 21:03 demiurg        New Issue                                    
-05-24-05 21:03 demiurg        File Added: amixer                           
-12-30-05 20:52 rlrevell       Note Added: 0007260                          
+05-06-05 12:54 tinkster       New Issue                                    
+05-24-05 12:31 tiwai          Note Added: 0004721                          
+12-30-05 21:05 rlrevell       Status                   new => closed       
+12-30-05 21:05 rlrevell       Note Added: 0007261                          
 ======================================================================
 
 
