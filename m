@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000530]: Please add an option that restores "defaults"
-Date: Fri, 30 Dec 2005 03:57:21 +0100
-Message-ID: <5399abe896e8c902bfea3053c00b2b76@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0000708]: Fix CVS envy24control crash on midi 00 control
+Date: Fri, 30 Dec 2005 03:58:21 +0100
+Message-ID: <8fbefe97bc5589a571b637e98bbe181a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 793091AB
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 03:57:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 256181AB
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 03:58:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=530> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=708> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                shadow
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   530
-Category:                   amixer
-Reproducibility:            always
-Severity:                   feature
+Project:                    ALSA - tools
+Issue ID:                   708
+Category:                   envy24control
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-24-2004 06:19 CEST
-Last Modified:              12-30-2005 03:57 CET
+Date Submitted:             12-05-2004 12:36 CET
+Last Modified:              12-30-2005 03:58 CET
 ======================================================================
-Summary:                    Please add an option that restores "defaults"
+Summary:                    Fix CVS envy24control crash on midi 00 control
 Description: 
-I notice /usr/sbin/alsaconf has a "set default mixer volumes"
-section.  Maybe amixer should have a
-
-    $ amixer defaults
-
-to get one's sound working in a jiffy.
+envy24control adds midi support, but if it receives data from a controller
+with ID '0' it will crash.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 03:57 
+ shadow - 12-05-04 15:02 
 ----------------------------------------------------------------------
-ALSA defaults to everything muted.  If a distributor wants the sound to be
-unmuted OOTB, they can just supply their own asound.state.
+this works around the problem, but may break other functionality.   FYI i
+have no clue what is going on in the source code and the last 3 hours are
+enough, i have the work around working, and it's time for a break.
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 03:58 
+----------------------------------------------------------------------
+Is this still broken?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:19 jdthood        New Issue                                    
-12-30-05 03:57 rlrevell       Note Added: 0007193                          
+12-05-04 12:36 shadow         New Issue                                    
+12-05-04 12:36 shadow         File Added:
+cvs_alsa_20041205-envy24control.midi00crash.patch                    
+12-05-04 13:58 shadow         Note Added: 0002721                          
+12-05-04 15:02 shadow         Note Added: 0002722                          
+12-05-04 15:02 shadow         File Added:
+cvs_alsa_20041205-envy24control.midi00crash.patch                    
+12-30-05 03:58 rlrevell       Note Added: 0007194                          
 ======================================================================
 
 
