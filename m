@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001396]: Unable to set capture source
-Date: Fri, 30 Dec 2005 22:51:57 +0100
-Message-ID: <9f3677d31b796065dc42919711be73a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000835]: Possible race condition leading to crash in gnome-volume-control
+Date: Fri, 30 Dec 2005 23:02:10 +0100
+Message-ID: <ad8ccca8b4675f5a13fdea281260b2a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB90B141
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 22:51:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7203718F
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:02:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1396> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=835> 
 ======================================================================
-Reported By:                keirlawson
-Assigned To:                rlrevell
+Reported By:                jcspray
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1396
+Issue ID:                   835
 Category:                   PCI - emu10k1
-Reproducibility:            always
+Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.12
-Resolution:                 fixed
+Status:                     closed
+Distribution:               Ubuntu
+Kernel Version:             2.6.8
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-03-2005 22:53 CEST
-Last Modified:              12-30-2005 22:51 CET
+Date Submitted:             01-18-2005 22:49 CET
+Last Modified:              12-30-2005 23:02 CET
 ======================================================================
-Summary:                    Unable to set capture source
+Summary:                    Possible race condition leading to crash in
+gnome-volume-control
 Description: 
-using amixer, alsamixer or gnome-volume-control it seems to be impossible
-to capture from microphone on my audigy 2 value.  alsamixer does nothign
-when i attempt to select a capture device, the amixer error is below,
-gnome-volume-manager displays only playback volume sliders, no capture
-ones
+The maintainer of the gstreamer-based gnome-volume-control utility believes
+that a crash may be the result of a race condition in ALSA driver.
+
+Please see http://bugzilla.gnome.org/show_bug.cgi?id=156921#c9
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-04-05 00:35 
+ jdthood - 09-15-05 15:05 
 ----------------------------------------------------------------------
-Also you forgot the attachment containing the amixer error.
+A small (better) testcase is needed for debugging.
 
 ----------------------------------------------------------------------
- keirlawson - 09-04-05 14:26 
+ rlrevell - 12-30-05 23:02 
 ----------------------------------------------------------------------
-Sorry, this problem was fixed when i upgraded to kernel 2.6.13
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-03-05 22:53 keirlawson     New Issue                                    
-09-03-05 22:53 keirlawson     Kernel Version            => 2.6.12          
-09-04-05 00:33 rlrevell       Note Added: 0006032                          
-09-04-05 00:35 rlrevell       Note Added: 0006033                          
-09-04-05 14:26 keirlawson     Note Added: 0006037                          
-12-30-05 22:51 rlrevell       Status                   new => resolved     
-12-30-05 22:51 rlrevell       Resolution               open => fixed       
-12-30-05 22:51 rlrevell       Assigned To               => rlrevell        
+01-18-05 22:49 jcspray        New Issue                                    
+01-18-05 22:49 jcspray        Distribution              => Ubuntu          
+01-18-05 22:49 jcspray        Kernel Version            => 2.6.8           
+01-19-05 14:28 tiwai          Note Added: 0003267                          
+09-15-05 15:05 jdthood        Note Added: 0006199                          
+09-15-05 15:05 jdthood        Status                   new => feedback     
+12-30-05 23:02 rlrevell       Status                   feedback => closed  
+12-30-05 23:02 rlrevell       Note Added: 0007273                          
 ======================================================================
 
 
