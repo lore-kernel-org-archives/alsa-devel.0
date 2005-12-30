@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000579]: multi+route distort sound
-Date: Fri, 30 Dec 2005 04:19:34 +0100
-Message-ID: <75d6f3f80aac0e6c05f367da84d28190@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001036]: Replacement SB Live card not detected
+Date: Fri, 30 Dec 2005 04:22:21 +0100
+Message-ID: <da3234e9d2b2ba71b73da44df3eb2487@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B47319F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:19:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C50E1A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:22:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,124 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=579> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1036> 
 ======================================================================
-Reported By:                ramendik
+Reported By:                grolschie
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   579
-Category:                   CORE - pcm
+Project:                    ALSA - driver
+Issue ID:                   1036
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             10-11-2004 20:45 CEST
-Last Modified:              12-30-2005 04:19 CET
+Date Submitted:             04-05-2005 02:10 CEST
+Last Modified:              12-30-2005 04:22 CET
 ======================================================================
-Summary:                    multi+route distort sound
+Summary:                    Replacement SB Live card not detected
 Description: 
-I have Intel ICH5, with both analog and spdif output.
+Hi there.
 
-I have made up /etc/asound.conf to route to both hw:0,0 and hw:0,4; I am
-listening on spdif (hw:0,4). (tiwai: I will try the new patch that may
-make this redundant, but what we have here seems to be another bug and
-might happen in other cases too).
+I have been using my SB Live Value PCI for over a year with ALSA with no
+problems. I recently swapped the card for a newer SB Live 5.1 DE PCI card.
+Even though these cards are pretty much the same, alsaconf cannot detect
+any supported sound cards. lspci shows that the new card is indeed
+detected.
 
-Here's my /etc/asound.conf in its entirety:
-
-pcm.analog {
-    type hw
-    card 0
-    device 0
-}
-
-pcm.digit {
-    type hw
-    card 0
-    device 4
-}
-
-pcm.whole {
-    type multi
-    slaves.a.pcm "hw:0,0"
-    slaves.a.channels 2
-    slaves.b.pcm "hw:0,4"
-    slaves.b.channels 2
-    bindings.0.slave a
-    bindings.0.channel 0
-    bindings.1.slave a
-    bindings.1.channel 1
-    bindings.2.slave b
-    bindings.2.channel 0
-    bindings.3.slave b
-    bindings.3.channel 1
-}
-
-pcm.rt {
-    type route
-    slave.pcm whole
-    slave.channels 4
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-}
-pcm.!default {
-    type copy
-    slave.pcm rt
-}
-
-ctl.!default {
-    type hw
-    card 0
-}
-
-When I play to hw:0,4 or "analog", the sound is OK. When I play to "rt",
-it is distorted. Not noisy this time; instead, the pitch is shifted
-somewhat lower. 
-
-Checked with alsaplayer and xmms 1.2.10 . (XMMS 1.2.8 also caused high CPU
-use when playing to "rt", but this may be a CPU bug). Checked with both
-44100 Hz and 48000 Hz files.
-
-This may have something to do with a strange fact. When I play a 48k file,
-iecset still reports a rate of 44100 Hz. And in fact, if I set it to 48000
-Hz manualy and start a 48k file in alsaplayer, it still shifts to 44100 !
-This is true for both playing to hw:0,4 and to "rt". (Not tested with
-XMMS, can test if needed)
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000569 Software mixing to rear channel
+Regards,
+grolschie
 ======================================================================
 
 ----------------------------------------------------------------------
- ramendik - 03-20-05 13:21 
+ pzad - 04-05-05 10:20 
 ----------------------------------------------------------------------
-Thanks for reminding! I'll test out with alsa in kernel 2.6.11 and newest
-libs, and report back.
+This can by sb live (c) 2003 with STAC9758. Some older alsa versions had
+bug for this card - card was sillent. And proper support was added in alsa
+1.0.5.
+
+kernel 2.6.3 contains old alsa. Try to upgrade to never alsa.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:19 
+ rlrevell - 12-30-05 04:22 
 ----------------------------------------------------------------------
 Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-11-04 20:45 ramendik       New Issue                                    
-10-11-04 20:45 ramendik       Distribution              => ASP Linux, RH9-based
-10-11-04 20:45 ramendik       Kernel Version            => 2.6.8.1-ck8 , with
-alsa 1.0.7rc1 stuck in and patches from bug 505 put on top
-10-12-04 13:10 tiwai          Note Added: 0002091                          
-10-22-04 16:56 perex          Relationship added       related to 0000569  
-10-22-04 16:58 perex          Project                  ALSA - driver => ALSA -
-lib
-03-20-05 13:05 jdthood        Note Added: 0004077                          
-03-20-05 13:21 ramendik       Note Added: 0004079                          
-12-30-05 04:19 rlrevell       Note Added: 0007204                          
+04-05-05 02:10 grolschie      New Issue                                    
+04-05-05 02:10 grolschie      Distribution              => Debian          
+04-05-05 02:10 grolschie      Kernel Version            => 2.6.3           
+04-05-05 02:12 grolschie      Note Added: 0004333                          
+04-05-05 08:30 pzad           Note Added: 0004334                          
+04-05-05 08:55 grolschie      Note Added: 0004335                          
+04-05-05 10:20 pzad           Note Added: 0004336                          
+12-30-05 04:22 rlrevell       Note Added: 0007205                          
 ======================================================================
 
 
