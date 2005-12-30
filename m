@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
-Date: Fri, 30 Dec 2005 23:08:30 +0100
-Message-ID: <0adc44420819067e445f46f53d80f6c4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001385]: sound is low with SIS7012 alc655
+Date: Fri, 30 Dec 2005 23:12:59 +0100
+Message-ID: <91488bff4c5bc720dbef0fb95ae80e64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68DD2AA
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:08:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51D24148
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:12:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1385> 
 ======================================================================
-Reported By:                croiset
+Reported By:                brainstorm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   758
-Category:                   PCI - RME 96
+Issue ID:                   1385
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Redhat 7.2
-Kernel Version:             2.4.7
+Distribution:               
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             12-29-2004 10:15 CET
-Last Modified:              12-30-2005 23:08 CET
+Date Submitted:             08-31-2005 20:42 CEST
+Last Modified:              12-30-2005 23:12 CET
 ======================================================================
-Summary:                    Full duplex is not working in OSS emulation.
+Summary:                    sound is low with SIS7012 alc655
 Description: 
-If I play something with one player, I am unable to record something on the
-same device.
-The same thing ispossible with the other cards I have.
+hello
+I m french and I ve a problem with my notebook (medion 42469). It s
+impossible to have sound in speaker (only a very low sound in headphones-
+same problem with Mandrake 10 - 10.1 mandiva 2005 and now mandriva 2006
+beta 3 with alsa 9)) I saw in the form men with the same problem and one
+have a solution for his computer but it s not good for mine 
+
+( ID 0001274 ....  
+temporarily solution:
+I hop this will help
+
+cat > /proc/asound/IXP/codec97#0/ac97#0-0+regs <<EOF
+00 0000
+02 0a0a
+...... )
+
+Where is the solution ?
+FRED
+
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000521 Jack + Alsa not working in full duplex,...
-======================================================================
 
 ----------------------------------------------------------------------
- croiset - 01-03-05 16:30 
+ rlrevell - 12-30-05 23:12 
 ----------------------------------------------------------------------
-I made some more tests and the error after an ioctl.
-
-line_fd = open(_opt->device, O_RDONLY|O_NONBLOCK )
--> ok
-fcntl(line_fd,F_SETFD,FD_CLOEXEC)
--> ok
-ioctl(line_fd, SNDCTL_DSP_SETFRAGMENT, &frag)
--> ok
-ioctl(line_fd, SNDCTL_DSP_SETFMT, &afmt)
--> return -1 errno = 16 (Device or resource busy)
-ioctl(line_fd, SNDCTL_DSP_CHANNELS,    &channels)
--> return -1 errno = 16 (Device or resource busy)
-ioctl(line_fd, SNDCTL_DSP_SPEED,       &rate)
--> return -1 errno = 16 (Device or resource busy)
-read(line_fd, audio_data, size)
--> return -1 errno = 16 (Device or resource busy)
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 23:08 
-----------------------------------------------------------------------
-This really seems like an application bug.
-
-Any improvement in later ALSA release or with newer apps?
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 10:15 croiset        New Issue                                    
-12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
-12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
-12-29-04 14:17 tiwai          Note Added: 0002998                          
-12-29-04 14:54 croiset        Note Added: 0003000                          
-12-29-04 17:39 tiwai          Note Added: 0003004                          
-12-29-04 17:56 croiset        Note Added: 0003005                          
-12-29-04 17:59 croiset        Note Added: 0003006                          
-12-29-04 18:05 croiset        Note Edited: 0003006                         
-12-29-04 18:18 croiset        Note Edited: 0003006                         
-01-03-05 16:30 croiset        Note Added: 0003067                          
-09-14-05 16:16 jdthood        Relationship added       related to 0000521  
-12-30-05 23:08 rlrevell       Note Added: 0007278                          
+08-31-05 20:42 brainstorm     New Issue                                    
+08-31-05 20:42 brainstorm     Kernel Version            => 2.6.12          
+12-30-05 23:12 rlrevell       Note Added: 0007279                          
 ======================================================================
 
 
