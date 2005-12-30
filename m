@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001072]: 'Capture Source' and 'Mic Select' controls cannot be switched
-Date: Fri, 30 Dec 2005 20:10:16 +0100
-Message-ID: <a07b340402a23c582f49b1392a6f9242@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Fri, 30 Dec 2005 20:31:33 +0100
+Message-ID: <f89338b104fdb01c34cb6380e5e6dd9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE309185
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 20:10:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A72EA18F
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 20:31:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,152 +22,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1072> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                vsu
-Assigned To:                rlrevell
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1072
-Category:                   PCI - via82xx
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               ALT Linux
-Kernel Version:             2.6.11
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             04-23-2005 21:41 CEST
-Last Modified:              12-30-2005 20:10 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              12-30-2005 20:31 CET
 ======================================================================
-Summary:                    'Capture Source' and 'Mic Select' controls cannot be
-switched
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-With ALSA CVS snapshots from 2005-04-09 and 2005-04-23 it is not possible
-to select capture source.  I have tried alsamixer, amixer, and even
-"alsactl restore" (by editing the state file directly), but no matter what
-is done, the 'Capture Source' control is still set to 'Mic':
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-        control.26 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 2
-                comment.item.0 Mic
-                comment.item.1 CD
-                comment.item.2 Video
-                comment.item.3 Aux
-                comment.item.4 Line
-                comment.item.5 Mix
-                comment.item.6 'Mix Mono'
-                comment.item.7 Phone
-                iface MIXER
-                name 'Capture Source'
-                value.0 Mic
-                value.1 Mic
-        }
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
 
-However, the AC'97 register 0x1a which should be controlled by this
-control has value which corresponds to 'Phone', not 'Mic':
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
 
-$ cat /proc/asound/card0/codec97\#0/ac97\#0-0+regs | grep 0:1a
-0:1a = 0707
-
-Changing the register value directly by writing into the proc file
-produces the desired result - the recording source changes, however, the
-mixer control stays nonfunctional.
-
-I also noticed that the 'Mic Select' control is fixed to 'Mic1' and cannot
-be changed.
-
-With alsa-driver-1.0.8 both controls work. Updating first alsa-lib, then
-alsa-utils from 1.0.8 to the 2005-04-23 CVS snapshot did not change this
-behavior.
 ======================================================================
 
 ----------------------------------------------------------------------
- vsu - 12-30-05 20:05 
+ rlrevell - 12-30-05 20:08 
 ----------------------------------------------------------------------
-The patch was committed on 25 Apr 2005 by Jaroslav Kysela (Summary: fix
-behaviour of ac97_enum_mixer elements), with the reference to this bug
-report in the commit message; however, the bug was not closed for some
-reason.
+"It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-Currently the kernel driver works OK in this respect; however, I still see
-some breakage in alsamixer (alsa-lib and alsa-utils 1.0.10; alsa-driver
-was updated to 1.0.11rc1):
+subject: [ALSA UPDATE] 1.0.10rc3
+message-id: <Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>"
 
-$ amixer cget iface=MIXER,name='Capture Source'   
-numid=26,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Mic'
-  ; Item #1 'CD'
-  ; Item #2 'Video'
-  ; Item #3 'Aux'
-  ; Item #4 'Line'
-  ; Item #5 'Mix'
-  ; Item #6 'Mix Mono'
-  ; Item #7 'Phone'
-  : values=0,0
-
-$ alsamixer
-(now I press F4, move to "Phone" and press Space to select it, then press
-Esc to exit from alsamixer)
-
-$ amixer cget iface=MIXER,name='Capture Source'
-numid=26,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Mic'
-  ; Item #1 'CD'
-  ; Item #2 'Video'
-  ; Item #3 'Aux'
-  ; Item #4 'Line'
-  ; Item #5 'Mix'
-  ; Item #6 'Mix Mono'
-  ; Item #7 'Phone'
-  : values=7,0
-
-Notice that just the first value was changed.  However, amixer can change
-both values properly:
-
-$ amixer cset iface=MIXER,name='Capture Source' 5,5
-numid=26,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Mic'
-  ; Item #1 'CD'
-  ; Item #2 'Video'
-  ; Item #3 'Aux'
-  ; Item #4 'Line'
-  ; Item #5 'Mix'
-  ; Item #6 'Mix Mono'
-  ; Item #7 'Phone'
-  : values=5,5
+OK so it broke between 1.0.10-rc2 and 1.0.10-rc3.  Please use ALSA CVS to
+do a binary search ("cvs update -D 2005-11-01 -A", "cvs update -D
+2005-12-01 -A" etc) to identify the patch that broke it.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 20:10 
+ sailfrog - 12-30-05 20:31 
 ----------------------------------------------------------------------
-Fixed.  Please open a separate bug report for the alsamixer issue (if it's
-really a problem)
+rlrevell,
+  Thanks for the feedback. I will spend some time on it this weekend and
+see if I can narrow down the location of the problem. Sorry for the
+negative remarks ( having a bad day). I guess after more than a month with
+the only comment being "probably already fixed" I felt as though nobody
+either believed this was real or cared.
+
+Thanks again,
+Jason
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-05 21:41 vsu            New Issue                                    
-04-23-05 21:41 vsu            Distribution              => ALT Linux       
-04-23-05 21:41 vsu            Kernel Version            => 2.6.11          
-04-23-05 21:56 vsu            Note Added: 0004564                          
-04-24-05 13:21 vsu            File Added: ac97-enum-fix.patch                   
-
-04-24-05 13:21 vsu            Note Added: 0004565                          
-12-30-05 04:44 rlrevell       Note Added: 0007221                          
-12-30-05 20:05 vsu            Note Added: 0007253                          
-12-30-05 20:10 rlrevell       Status                   new => resolved     
-12-30-05 20:10 rlrevell       Resolution               open => fixed       
-12-30-05 20:10 rlrevell       Assigned To               => rlrevell        
-12-30-05 20:10 rlrevell       Note Added: 0007255                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
 ======================================================================
 
 
