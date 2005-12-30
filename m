@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001081]: Clicking noise when short sound files are played.
-Date: Fri, 30 Dec 2005 04:01:50 +0100
-Message-ID: <6834cfdabad65476bbcc50a7faebfedf@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0000206]: Segmentation fault when trying to start envy24control
+Date: Fri, 30 Dec 2005 04:03:07 +0100
+Message-ID: <35507f8b69ac05a5f5bc47ef8ffeb429@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF96C19E
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:01:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC19C19E
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:03:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1081> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=206> 
 ======================================================================
-Reported By:                raid517
+Reported By:                vulture99
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1081
-Category:                   CORE - control
+Project:                    ALSA - tools
+Issue ID:                   206
+Category:                   envy24control
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.11.7
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             04-29-2005 07:39 CEST
-Last Modified:              12-30-2005 04:01 CET
+Date Submitted:             04-13-2004 04:56 CEST
+Last Modified:              12-30-2005 04:03 CET
 ======================================================================
-Summary:                    Clicking noise when short sound files are played.
+Summary:                    Segmentation fault when trying to start
+envy24control
 Description: 
-Hi whenever I play .wav files (or any very short sound files) from sites
-such as the following, the sound plays fine, but it is always followed by
-a slight 'clicking' noise at the exact instant when the sound stops
-playing. What causes this - and how do I prevent it?
-
-(Just an example).
-
-http://www.wavsite.com/
-
-GJ
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000850 Clicking sound at the end of short audi...
+envy24control was working fine for me yesterday (not sure which version of
+alsa I was using - probably 1.0.3 or 1.0.2).  Today I updated to 1.0.4 via
+apt-get using the standard Fedora packages from the kernel.org mirror, and
+when I try to run envy24control, I get a segmentation fault.  I am using
+an M-Audio Audiophile 2496 sound card.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 15:16 
+ tiwai - 12-07-04 18:36 
 ----------------------------------------------------------------------
-Do you still have this problem?
+Yes, the culprit seems different because -m option was introduced far after
+this original report.
 
-What sound hardware do you have?
-
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:01 
+ rlrevell - 12-30-05 04:03 
 ----------------------------------------------------------------------
-No response
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 07:39 raid517        New Issue                                    
-04-29-05 07:39 raid517        Distribution              => Debian          
-04-29-05 07:39 raid517        Kernel Version            => 2.6.11.7        
-09-22-05 15:16 jdthood        Note Added: 0006346                          
-09-22-05 15:17 jdthood        Relationship added       related to 0000850  
-09-29-05 10:15 Lucid          Issue Monitored: Lucid                       
-12-30-05 04:01 rlrevell       Status                   new => closed       
-12-30-05 04:01 rlrevell       Note Added: 0007197                          
+04-13-04 04:56 vulture99      New Issue                                    
+04-13-04 04:58 vulture99      Note Added: 0000786                          
+04-13-04 22:37 vulture99      Note Added: 0000799                          
+04-16-04 12:03 tiwai          Note Added: 0000835                          
+12-05-04 12:44 shadow         Note Added: 0002720                          
+12-07-04 18:36 tiwai          Note Added: 0002756                          
+12-30-05 04:03 rlrevell       Note Added: 0007198                          
 ======================================================================
 
 
