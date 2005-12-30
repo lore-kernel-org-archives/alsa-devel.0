@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000024]: suspend-resume cycle either hardlocks or locks soundcard (reboot necessary)
-Date: Fri, 30 Dec 2005 03:59:49 +0100
-Message-ID: <dc6d712586577845bf3737c4f1cb5071@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000850]: Clicking sound at the end of short audio files on Audigy DE.
+Date: Fri, 30 Dec 2005 04:01:22 +0100
+Message-ID: <84fc63060cf31aecae33d1666ff15d50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22EE218F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 03:59:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63E31190
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:01:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=24> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=850> 
 ======================================================================
-Reported By:                runia
+Reported By:                Lucid
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   24
-Category:                   PCI - intel8x0
+Issue ID:                   850
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               debian
-Kernel Version:             2.4.22
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-01-2004 13:10 CET
-Last Modified:              12-30-2005 03:59 CET
+Date Submitted:             01-27-2005 05:07 CET
+Last Modified:              12-30-2005 04:01 CET
 ======================================================================
-Summary:                    suspend-resume cycle either hardlocks or locks
-soundcard (reboot necessary)
+Summary:                    Clicking sound at the end of short audio files on
+Audigy DE.
 Description: 
-See summary.
+When playing short audio files such as audio notifications there is a short
+clicking sound as the file is closed.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001081 Clicking noise when short sound files a...
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:20 
+ rlrevell - 12-30-05 04:01 
 ----------------------------------------------------------------------
-Does version 1.0.8 of the intel8x0 driver still lock your soundcard or
-your system after resume?
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 03:59 
-----------------------------------------------------------------------
-No response
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-04 13:10 runia          New Issue                                    
-02-02-04 15:23 tiwai          Note Added: 0000107                          
-02-02-04 18:55 runia          File Added: alsadebug.log.bz2                    
-02-02-04 18:56 runia          Note Added: 0000116                          
-02-02-04 18:56 runia          Note Edited: 0000116                         
-02-02-04 19:08 tiwai          Note Added: 0000117                          
-02-02-04 19:22 runia          Note Added: 0000118                          
-03-10-05 15:20 jdthood        Note Added: 0003862                          
-12-30-05 03:59 rlrevell       Status                   new => closed       
-12-30-05 03:59 rlrevell       Note Added: 0007195                          
+01-27-05 05:07 Lucid          New Issue                                    
+01-27-05 05:07 Lucid          Kernel Version            => 2.6.10          
+01-27-05 05:31 Lucid          Issue Monitored: Lucid                       
+09-22-05 15:17 jdthood        Relationship added       related to 0001081  
+12-30-05 04:01 rlrevell       Note Added: 0007196                          
 ======================================================================
 
 
