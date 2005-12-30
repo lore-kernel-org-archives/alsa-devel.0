@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
-Date: Fri, 30 Dec 2005 22:11:54 +0100
-Message-ID: <f41aa1265ecc611080793e4d2144d3fb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000802]: ymfpci seems to export wrong values for period_count/period_size/buffer_size
+Date: Fri, 30 Dec 2005 22:14:25 +0100
+Message-ID: <e2b2e5ff6545cfe88ef6efb90c52f979@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3AB6194
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 22:11:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53331190
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 22:14:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=802> 
 ======================================================================
-Reported By:                abonilla
+Reported By:                slomosnail
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   800
-Category:                   PCI - azx
+Issue ID:                   802
+Category:                   PCI - ymfpci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-10-2005 03:20 CET
-Last Modified:              12-30-2005 22:11 CET
+Date Submitted:             01-10-2005 18:42 CET
+Last Modified:              12-30-2005 22:14 CET
 ======================================================================
-Summary:                    Sound is Corrupted or terribe quality.
+Summary:                    ymfpci seems to export wrong values for
+period_count/period_size/buffer_size
 Description: 
-Sound goes out just like if the jack was not propperly plugged. bad Sound
-Quality.
+See here: http://bugzilla.gnome.org/show_bug.cgi?id=162024
 ======================================================================
 
 ----------------------------------------------------------------------
- pforai - 07-06-05 20:17 
+ jdthood - 09-15-05 15:06 
 ----------------------------------------------------------------------
-how can i set this option?
+Could you create a small testcase to reproduce this?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 22:11 
+ rlrevell - 12-30-05 22:14 
 ----------------------------------------------------------------------
-Any improvement with later ALSA release?
-
-You set the position fix option when the module is loaded (modprobe
-snd-hda-intel position_fix=1).  You can also add it to a config file to
-have this happen automatically but unfortunately this area of Linux is a
-complete mess with every distro using a different file and syntax and
-changing them all the time.
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-10-05 03:20 abonilla       New Issue                                    
-01-10-05 03:20 abonilla       Distribution              => Debian          
-01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
-01-10-05 14:56 tiwai          Note Added: 0003134                          
-03-16-05 13:27 jdthood        Note Added: 0003956                          
-03-18-05 18:23 tiwai          Note Added: 0004003                          
-03-18-05 23:35 allefant       Issue Monitored: allefant                    
-03-18-05 23:36 allefant       Issue End Monitor: allefant                    
-03-19-05 12:42 jdthood        Note Added: 0004036                          
-05-24-05 13:37 jdthood        Note Added: 0004725                          
-05-24-05 13:37 jdthood        Note Edited: 0004725                         
-05-24-05 14:12 tiwai          Note Added: 0004728                          
-05-24-05 14:15 jdthood        Note Edited: 0004725                         
-05-31-05 16:27 pforai         Note Added: 0004836                          
-05-31-05 16:28 pforai         Note Edited: 0004836                         
-06-08-05 16:11 tiwai          Note Added: 0004947                          
-07-06-05 20:17 pforai         Note Added: 0005393                          
-12-30-05 22:11 rlrevell       Note Added: 0007269                          
+01-10-05 18:42 slomosnail     New Issue                                    
+01-11-05 16:48 tiwai          Note Added: 0003156                          
+01-18-05 13:28 LeRoutier      Note Added: 0003248                          
+01-18-05 14:40 LeRoutier      Issue Monitored: LeRoutier                    
+01-19-05 14:32 tiwai          Note Added: 0003270                          
+01-27-05 00:39 adamk75        Issue Monitored: adamk75                     
+09-15-05 15:06 jdthood        Note Added: 0006200                          
+09-15-05 15:06 jdthood        Status                   new => feedback     
+12-30-05 22:14 rlrevell       Status                   feedback => closed  
+12-30-05 22:14 rlrevell       Note Added: 0007270                          
 ======================================================================
 
 
