@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001314]: No SPDIF sound, no SPDIF mixer controls
-Date: Fri, 30 Dec 2005 23:26:48 +0100
-Message-ID: <cf53482b4abcaccd9f8535bc8f2c2bb5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001307]: cs46xx module load error with kernel 2.6.13-rc5
+Date: Fri, 30 Dec 2005 23:30:49 +0100
+Message-ID: <a3f7e5036818fdf2f687f1c21a6632f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90019146
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:26:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02497154
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:30:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,48 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1314> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1307> 
 ======================================================================
-Reported By:                SamiH
+Reported By:                jfeise
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1314
-Category:                   PCI - via82xx
+Issue ID:                   1307
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               BLFS
-Kernel Version:             2.6.11.8
+Status:                     closed
+Distribution:               Slackware 10.1
+Kernel Version:             2.6.13-rc5
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-05-2005 17:41 CEST
-Last Modified:              12-30-2005 23:26 CET
+Date Submitted:             08-03-2005 18:25 CEST
+Last Modified:              12-30-2005 23:30 CET
 ======================================================================
-Summary:                    No SPDIF sound, no SPDIF mixer controls
+Summary:                    cs46xx module load error with kernel 2.6.13-rc5
 Description: 
-  * I have S/PDIF output, but it doesn't work
-  * I don't even have the mixer control for that entry
-  * SPDIF have worked in Fedora Core 2 or something else,
-    but I haven't got it working again even on that system.
+Using Slackware 10.1 with kernel 2.6.13-rc5, the cs46xx module is not
+loaded and reports lots of unknown symbols in dmesg. See the attached file
+with the dmesg output.
+I am using ALSA 1.0.9a.
+On the same machine, using kernel 2.6.10, everything works.
 
-  * Stereo output works fine from the analog output.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:26 
+ rlrevell - 12-30-05 23:30 
 ----------------------------------------------------------------------
-Any improvement in later ALSA releases?
+Local issue
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-05 17:41 SamiH          New Issue                                    
-08-05-05 17:41 SamiH          Distribution              => BLFS            
-08-05-05 17:41 SamiH          Kernel Version            => 2.6.11.8        
-12-30-05 23:26 rlrevell       Note Added: 0007289                          
+08-03-05 18:25 jfeise         New Issue                                    
+08-03-05 18:25 jfeise         File Added: cs46xx.out                       
+08-03-05 18:25 jfeise         Distribution              => Slackware 10.1  
+08-03-05 18:25 jfeise         Kernel Version            => 2.6.13-rc5      
+12-30-05 23:30 rlrevell       Status                   new => closed       
+12-30-05 23:30 rlrevell       Note Added: 0007290                          
 ======================================================================
 
 
