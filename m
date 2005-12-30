@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001088]: udev doesn't create alsa device nodes other than timer and controlC0 with 2.6.1[[:digit:]] kernels
-Date: Fri, 30 Dec 2005 21:05:41 +0100
-Message-ID: <0369b59eb05f41171e5d96c2063efaf2@bugtrack.alsa-project.org>
+Subject: [ALSA - firmware 0001119]: USB headset not working
+Date: Fri, 30 Dec 2005 21:12:22 +0100
+Message-ID: <e3304ec000061ec7834ea6fa9dd44c7b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 547F8190
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 21:05:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF324159
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 21:12:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1088> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1119> 
 ======================================================================
-Reported By:                tinkster
+Reported By:                donlvnv
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1088
-Category:                   aconnect
+Project:                    ALSA - firmware
+Issue ID:                   1119
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             05-06-2005 12:54 CEST
-Last Modified:              12-30-2005 21:05 CET
+Date Submitted:             05-20-2005 08:48 CEST
+Last Modified:              12-30-2005 21:12 CET
 ======================================================================
-Summary:                    udev doesn't create alsa device nodes other than
-timer and controlC0 with 2.6.1[[:digit:]] kernels
+Summary:                    USB headset not working
 Description: 
-see summary
+using ac97 on a Shuttle SFF and suse 9.3 with a Logitech 300 headset.
+The headset won't work. I have tried it with Knoppix 3.8 Livecd.
+Kmix recognizes it and it work under knoppix, but as soon as I run
+alsaconf.
+The Headset stops working and there is no tab for it in Kmix.
+Alsamixer has no place for it under suse or knoppix. I have got it to
+output to the headset in Control Center,Sound & Multimedia,Sound
+System.Hardware tab by overriding device location to /dev/dsp1, and then
+in the general tab and selecting  the test sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-24-05 12:31 
+ rlrevell - 12-30-05 21:12 
 ----------------------------------------------------------------------
-Can't reproduce here.
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 21:05 
-----------------------------------------------------------------------
-Local issue
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 12:54 tinkster       New Issue                                    
-05-24-05 12:31 tiwai          Note Added: 0004721                          
-12-30-05 21:05 rlrevell       Status                   new => closed       
-12-30-05 21:05 rlrevell       Note Added: 0007261                          
+05-20-05 08:48 donlvnv        New Issue                                    
+05-20-05 08:51 donlvnv        Issue Monitored: donlvnv                     
+12-30-05 21:12 rlrevell       Note Added: 0007262                          
 ======================================================================
 
 
