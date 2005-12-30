@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001100]: Driver loaded, no sound card detected
-Date: Sat, 31 Dec 2005 00:09:26 +0100
-Message-ID: <776572199ba4ca9363f69b16e994019a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001253]: My kernel doesn't find my sound cards anymore !!!
+Date: Sat, 31 Dec 2005 00:11:05 +0100
+Message-ID: <9e31a8601c71d75882b7bea8025b8310@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2A04178
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:09:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B26B17A
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:11:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1100> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1253> 
 ======================================================================
-Reported By:                dwatters
+Reported By:                fabien
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1100
-Category:                   PCI - ice1724
+Issue ID:                   1253
+Category:                   PCI - ens1370
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE Linux 9.2
-Kernel Version:             2.6.8-14.24
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             05-11-2005 15:51 CEST
-Last Modified:              12-31-2005 00:09 CET
+Date Submitted:             07-12-2005 14:04 CEST
+Last Modified:              12-31-2005 00:11 CET
 ======================================================================
-Summary:                    Driver loaded, no sound card detected
+Summary:                    My kernel doesn't find my sound cards anymore !!!
 Description: 
-In /var/log/message gives:
-May 11 10:30:43 miro kernel: ACPI: PCI interrupt 0000:05:06.0[A] -> GSI 5
-(level, low) -> IRQ 5
-May 11 10:30:43 miro kernel: ice1724: No matching model found for ID
-0x97123650
-May 11 10:30:43 miro kernel: ice1724: Invalid EEPROM (size = 255)
-May 11 10:30:43 miro kernel: ICE1724: probe of 0000:05:06.0 failed with
-error -5
+My kernel stop working with my soundcards !!!
+It use to work in 2.6.8 (not in 2.6.10, 2.6.11 & 2.6.12)
 
 
+My sound cards :
+- ENS1370
+- SIS 7012
+
+Motherboard :
+- K7S5A
+
+Linux Box :
+- Debian on x86 AMD
 ======================================================================
 
 ----------------------------------------------------------------------
- kaasgaard - 06-15-05 20:36 
+ fabien - 10-24-05 21:20 
 ----------------------------------------------------------------------
-forgot to mention:
+Style the same problem in 2.6.13.4 :
 
-lspci -d 1412:1724 -nvx:
 
-05:06.0 Class 0401: 1412:1724 (rev 01)
-        Subsystem: 1297:5036
-        Flags: medium devsel, IRQ 50
-        I/O ports at a000 [size=32]
-        I/O ports at a400 [size=128]
-        Capabilities: [80] Power Management version 1
-00: 12 14 24 17 01 00 10 02 01 00 01 04 00 20 00 00
-10: 01 a0 00 00 01 a4 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 97 12 36 50
-30: 00 00 00 00 80 00 00 00 00 00 00 00 0c 01 00 00
+$ dmesg
+usbaudio: device 2 audiocontrol interface 1 has 1 input and 0 output
+AudioStreaming interfaces
+usbaudio: device 2 interface 2 altsetting 0 FORMAT_TYPE descriptor not
+found
+usbaudio: valid input sample rate 8000
+usbaudio: valid input sample rate 48000
+usbaudio: valid input sample rate 44100
+usbaudio: valid input sample rate 32000
+usbaudio: valid input sample rate 22050
+usbaudio: valid input sample rate 16000
+usbaudio: valid input sample rate 10257
+usbaudio: device 2 interface 2 altsetting 1: format 0x00000010 sratelo
+8000 sratehi 48000 attributes 0x01
+usbaudio: registered dsp 14,3
+usbaudio: constructing mixer for Terminal 3 type 0x0101
+usbaudio: warning: found 1 of 0 logical channels.
+usbaudio: assuming the channel found is the master channel (got a Philips
+camera?). Should be fine.
+usbaudio: registered mixer 14,0
+usb_audio_parsecontrol: usb_audio_state at dfc588e0
+usbcore: registered new driver audio
+drivers/usb/class/audio.c: v1.0.0:USB Audio Class driver
+Advanced Linux Sound Architecture Driver Version 1.0.9b (Thu Jul 28
+12:20:13 2005 UTC).
+unable to register OSS PCM device 0:0
+unable to register OSS mixer device 0:0
+codec read timeout (final) at 0xd414, reg = 0x7c [0xf00000]
+codec read timeout (final) at 0xd414, reg = 0x7e [0xf00000]
+codec read timeout (final) at 0xd414, reg = 0x0 [0x800000]
+codec read timeout (final) at 0xd414, reg = 0x7c [0xf00000]
+codec read timeout (final) at 0xd414, reg = 0x7e [0xf00000]
+codec read timeout (final) at 0xd414, reg = 0x7c [0xf00000]
+codec read timeout (final) at 0xd414, reg = 0x7e [0xf00000]
+ENS1371: probe of 0000:00:0b.0 failed with error -5
+intel8x0_measure_ac97_clock: measured 50676 usecs
+intel8x0: clocking to 48000
+usbcore: registered new driver snd-usb-audio
+ALSA device list:
+  #0: Dummy 1
+  #1: MPU-401 UART at 0x300, irq 10
+  #2: SiS SI7012 with ALC100,100P at 0xdc00, irq 11
+
+
+$ lspci
+
+0000:00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
+Sound Controller (rev a0)
+0000:00:0b.0 Multimedia audio controller: Ensoniq ES1371 [AudioPCI-97]
+(rev 08)
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:09 
+ rlrevell - 12-31-05 00:11 
 ----------------------------------------------------------------------
 Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-11-05 15:51 dwatters       New Issue                                    
-05-11-05 15:51 dwatters       Distribution              => SuSE Linux 9.2  
-05-11-05 15:51 dwatters       Kernel Version            => 2.6.8-14.24     
-05-11-05 15:53 dwatters       Note Added: 0004637                          
-06-15-05 20:35 kaasgaard      Note Added: 0005043                          
-06-15-05 20:36 kaasgaard      Note Added: 0005044                          
-12-31-05 00:09 rlrevell       Note Added: 0007309                          
+07-12-05 14:04 fabien         New Issue                                    
+07-12-05 14:04 fabien         Distribution              => Debian Sarge    
+07-12-05 14:04 fabien         Kernel Version            => 2.6.12          
+10-24-05 21:20 fabien         Note Added: 0006523                          
+12-31-05 00:11 rlrevell       Note Added: 0007310                          
 ======================================================================
 
 
