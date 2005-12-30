@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001414]: Hercules Digifire - ADC control only mutes left channel
-Date: Fri, 30 Dec 2005 23:31:33 +0100
-Message-ID: <28d35b54affdafaf413e6b9979f53e8e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001437]: Support for Audiotrak Maya Series.
+Date: Fri, 30 Dec 2005 23:32:38 +0100
+Message-ID: <4a303f0315c887774d46e0792cb0a935@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B70A2154
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:31:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE158154
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:32:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1414> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1437> 
 ======================================================================
-Reported By:                a_r_schulz
+Reported By:                Miliardo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1414
-Category:                   PCI - cs46xx
+Issue ID:                   1437
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Mandrivia
-Kernel Version:             2.6.13
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             09-11-2005 19:12 CEST
-Last Modified:              12-30-2005 23:31 CET
+Date Submitted:             09-21-2005 07:27 CEST
+Last Modified:              12-30-2005 23:32 CET
 ======================================================================
-Summary:                    Hercules Digifire - ADC control only mutes left
-channel
+Summary:                    Support for Audiotrak Maya Series.
 Description: 
-I would like to use my card for recording with audacity in LINUX, but it's
-a little hard to get the levels right, since the ADC slider in both
-alsamixer and kmix affect only the left input channel, leaving the right
-channel at full volume. Had this problem with all 2.6 kernel versions so
-far, but did not really care up to now...
+I have a Maya 44 Pro Soundcard, ALSA detected it as a snd1724 Device, but
+it failed to detect it's firmware. It says it have a invaild firmware.
+What shell I do if I want to use it?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:31 
+ rlrevell - 12-30-05 23:32 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Any improvement in later releases?  Is the card listed in the matrix as
+supported?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-11-05 19:12 a_r_schulz     New Issue                                    
-09-11-05 19:12 a_r_schulz     Distribution              => Mandrivia       
-09-11-05 19:12 a_r_schulz     Kernel Version            => 2.6.13          
-12-30-05 23:31 rlrevell       Note Added: 0007291                          
+09-21-05 07:27 Miliardo       New Issue                                    
+09-21-05 07:27 Miliardo       Distribution              => Debian GNU/Linux
+09-21-05 07:27 Miliardo       Kernel Version            => 2.6             
+12-30-05 23:32 rlrevell       Note Added: 0007292                          
 ======================================================================
 
 
