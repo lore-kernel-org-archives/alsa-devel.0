@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001285]: Live! Value [CT4832] high pitched tone instead of sound and interrupt errors
-Date: Fri, 30 Dec 2005 04:29:20 +0100
-Message-ID: <dc542e06d1103c153ae2d5fe3a29380c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001215]: AC3 Passthrough does not work
+Date: Fri, 30 Dec 2005 04:31:12 +0100
+Message-ID: <b9305e7cb58c5ba5fd205598b5a29832@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD7B61A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:29:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F3E21A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:31:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,100 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1285> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1215> 
 ======================================================================
-Reported By:                pilophae
-Assigned To:                
+Reported By:                hugo4711
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1285
+Issue ID:                   1215
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             gentoo-sources-2.6.12-r6
+Status:                     resolved
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369_FC
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-27-2005 20:30 CEST
-Last Modified:              12-30-2005 04:29 CET
+Date Submitted:             06-27-2005 21:59 CEST
+Last Modified:              12-30-2005 04:31 CET
 ======================================================================
-Summary:                    Live! Value [CT4832] high pitched tone instead of
-sound and interrupt errors
+Summary:                    AC3 Passthrough does not work
 Description: 
-Specs:
-ASUS A8N-SLI Deluxe Motherboard
-AMD Athlon64 3200+
-2GB PC3200 DDR
+Since the update from FC3 to FC4 I am not able to use AC3-passthrough. It
+won't work with xine or mplayer. 
 
-Problem:
-Whenever I play a sound, wether direct via ALSA or OSS emulation, a high
-pitched tone is heard through the speakers. This sound can be lowered with
-a mixer. Also, just invoking aplay with an unknown format, causes it to
-play an 8kHz tone, which is noticably lower, so I'm guessing the tone is
-based on the output sampling frequency.
+The AC3-Reciever I am using indicates "No Audio" when playing a DVD with
+AC3-Sound. Before the Update it switches to Dolby AC3 Decoding mode. 
 
-This problem only occurs in this configuration, the sound card works fine
-in my old computer and another tested computer, even together with another
-emu10k1-based card. In Gentoo linux on one, and Windows on the latter.
+When I play a movie with xine, and the driver is switched into
+AC3-passthrough-mode and then I quit xine, the driver is not switched back
+out of the passthrough-mode (which is a bug in xine, I guess). This is
+very anoying, because there is no such thing as to reset the mixer
+settings, unless the previous settings are stored (alsactl
+store/restore).
 
-Also, with kernel 2.6.10 through 2.6.11 I receive different kind of
-interrupt errors when trying to play sound:
-
-2.6.10-vanilla:
-   interrupt: PCI error
-   emu10k1: unhandled interrupt: 0xe7400000
-
-2.6.11-gentoo-r9:
-   interrupt: PCI error
-(using OSS driver emu10k1:
-   emu10k1: Warning, unhandled interrupt: 0xe763fc7f)
-
-2.6.12-gentoo-r[46]:
-   (no messages, some new interrupt patch was applied to this kernel,
-apparently)
-
-During the first attempt at using this card, the second built in NIC on
-the motherboard shared interrupt with the soundcard and when I tried to
-play sounds, the NIC was disabled and spat this at me:
-skge hardware error detected (status 0x400)
-
-I have tried compiling the driver as a module, disabling the onboard audio
-chip, enabling MSI/MSI-X, disabling the conflicting on-board LAN (not
-conflicting anymore?), disabling APIC (both in bios and in kernel),
-swapping between PCI-slots and using OSS module emu10k1, with no avail.
-
-I will try to use another emu10k1-based card in this same setup, to rule
-out specific incompabilities.
-
-Any ideas?
+Another thing is, that I am not able to hear sound from sources which are
+plugged into line-in. Mixer Settings are checked. Every channel is unmuted
+and volume is at 100%. Digital Out is unmuted, IEC-Compliancy is muted.
 ======================================================================
 
 ----------------------------------------------------------------------
- pilophae - 07-27-05 22:02 
+ hugo4711 - 06-30-05 17:16 
 ----------------------------------------------------------------------
-I just tested the problematic Live Value! in another computer, with kernel
-2.6.11 and ALSA 1.0.8, and it works flawlessly. This must be due to a rare
-combination.
-I have seen this issue on a forum also, but that guy said his motherboard
-was broken, but mine most surely is not.
+I tested the 1.0.9a driver. It works now.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:29 
+ rlrevell - 12-30-05 04:31 
 ----------------------------------------------------------------------
-Any improvement with later releases?
+Fixed
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-05 20:30 pilophae       New Issue                                    
-07-27-05 20:30 pilophae       Kernel Version            =>
-gentoo-sources-2.6.12-r6
-07-27-05 20:56 pilophae       Note Added: 0005574                          
-07-27-05 22:02 pilophae       Note Added: 0005575                          
-12-30-05 04:29 rlrevell       Note Added: 0007210                          
+06-27-05 21:59 hugo4711       New Issue                                    
+06-27-05 21:59 hugo4711       Distribution              => Fedora Core 4   
+06-27-05 21:59 hugo4711       Kernel Version            => 2.6.11-1.1369_FC
+06-28-05 20:05 hugo4711       Note Added: 0005299                          
+06-29-05 20:23 tiwai          Note Added: 0005312                          
+06-30-05 17:16 hugo4711       Note Added: 0005327                          
+12-30-05 04:31 rlrevell       Status                   new => resolved     
+12-30-05 04:31 rlrevell       Resolution               open => fixed       
+12-30-05 04:31 rlrevell       Assigned To               => rlrevell        
+12-30-05 04:31 rlrevell       Note Added: 0007211                          
 ======================================================================
 
 
