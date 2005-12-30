@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001485]: Sound disappears occasionally
-Date: Sat, 31 Dec 2005 00:07:43 +0100
-Message-ID: <c7d5d86e97e287dff029bb7b605466f7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001100]: Driver loaded, no sound card detected
+Date: Sat, 31 Dec 2005 00:09:26 +0100
+Message-ID: <776572199ba4ca9363f69b16e994019a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F979178
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:07:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2A04178
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:09:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1485> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1100> 
 ======================================================================
-Reported By:                jza
+Reported By:                dwatters
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1485
-Category:                   PCI - intel8x0
-Reproducibility:            sometimes
+Issue ID:                   1100
+Category:                   PCI - ice1724
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.12
+Distribution:               SuSE Linux 9.2
+Kernel Version:             2.6.8-14.24
 ======================================================================
-Date Submitted:             10-19-2005 20:56 CEST
-Last Modified:              12-31-2005 00:07 CET
+Date Submitted:             05-11-2005 15:51 CEST
+Last Modified:              12-31-2005 00:09 CET
 ======================================================================
-Summary:                    Sound disappears occasionally
+Summary:                    Driver loaded, no sound card detected
 Description: 
-Sound disappears completely when doing rapid consecutive seeks in
-applications (gxine, xmms). Restarting the application a few times usually
-helps, sometimes a complete system freeze is the result.
+In /var/log/message gives:
+May 11 10:30:43 miro kernel: ACPI: PCI interrupt 0000:05:06.0[A] -> GSI 5
+(level, low) -> IRQ 5
+May 11 10:30:43 miro kernel: ice1724: No matching model found for ID
+0x97123650
+May 11 10:30:43 miro kernel: ice1724: Invalid EEPROM (size = 255)
+May 11 10:30:43 miro kernel: ICE1724: probe of 0000:05:06.0 failed with
+error -5
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jza - 10-21-05 09:27 
+ kaasgaard - 06-15-05 20:36 
 ----------------------------------------------------------------------
-When the bug appears, the player sometimes freezes.
+forgot to mention:
+
+lspci -d 1412:1724 -nvx:
+
+05:06.0 Class 0401: 1412:1724 (rev 01)
+        Subsystem: 1297:5036
+        Flags: medium devsel, IRQ 50
+        I/O ports at a000 [size=32]
+        I/O ports at a400 [size=128]
+        Capabilities: [80] Power Management version 1
+00: 12 14 24 17 01 00 10 02 01 00 01 04 00 20 00 00
+10: 01 a0 00 00 01 a4 00 00 00 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 97 12 36 50
+30: 00 00 00 00 80 00 00 00 00 00 00 00 0c 01 00 00
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:07 
+ rlrevell - 12-31-05 00:09 
 ----------------------------------------------------------------------
 Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-19-05 20:56 jza            New Issue                                    
-10-19-05 20:56 jza            Distribution              => Debian          
-10-19-05 20:56 jza            Kernel Version            => 2.6.12          
-10-20-05 09:57 jza            Note Added: 0006499                          
-10-21-05 09:27 jza            Note Added: 0006510                          
-12-31-05 00:07 rlrevell       Note Added: 0007308                          
+05-11-05 15:51 dwatters       New Issue                                    
+05-11-05 15:51 dwatters       Distribution              => SuSE Linux 9.2  
+05-11-05 15:51 dwatters       Kernel Version            => 2.6.8-14.24     
+05-11-05 15:53 dwatters       Note Added: 0004637                          
+06-15-05 20:35 kaasgaard      Note Added: 0005043                          
+06-15-05 20:36 kaasgaard      Note Added: 0005044                          
+12-31-05 00:09 rlrevell       Note Added: 0007309                          
 ======================================================================
 
 
