@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000268]: High frequency tones placed on DAC2 outputs (Revo7.1)
-Date: Fri, 30 Dec 2005 05:11:18 +0100
-Message-ID: <7e669a78aedd1b795960f1795ac5650f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000220]: KDE sound totally fsked...
+Date: Fri, 30 Dec 2005 05:12:01 +0100
+Message-ID: <4e8510e4f917407ffa3872278fbc5ccc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9213193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:11:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F366E193
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:12:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=268> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=220> 
 ======================================================================
-Reported By:                MWP
+Reported By:                subdude
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   268
-Category:                   PCI - ice1724
+Issue ID:                   220
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               LFS
-Kernel Version:             2.6.6
+Distribution:               Slackware Current
+Kernel Version:             2.4.25 and 2.4.26
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-10-2004 16:11 CEST
-Last Modified:              12-30-2005 05:11 CET
+Date Submitted:             04-19-2004 08:32 CEST
+Last Modified:              12-30-2005 05:12 CET
 ======================================================================
-Summary:                    High frequency tones placed on DAC2 outputs
-(Revo7.1)
+Summary:                    KDE sound totally fsked...
 Description: 
-On playing audio to any of the ICE1724 ouputs through ALSA enabled
-software, a high pitched constant tone (at a guess ~3/8 of sample rate) is
-played through the secondary DAC's (2,3,4 stereo pairs) ouputs (and mixed
-with audio if playing through those outputs).
-The tone is not present on the first DAC (front) analog outputs.
+All modules load - mpg123 on CLI sounds fine. 
 
-The tone is not effected by volume settings of the DAC2 output pairs.
+All PCM output severely distorted.
+Crashes artsd after a few system sounds.
+Have reproduced with multiple installs.
 
-The tone however is not produced when using JACK to play audio to the
-card.
+Master volume is really "Headphone" otherwise no sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-03-05 20:08 
+ jdthood - 04-03-05 11:51 
 ----------------------------------------------------------------------
-> So it is a problem with using the pcm2p subdevices to access the DAC2
-channels.
-
-Did you get any further in figuring out the problem?
+Submitter: Was there any improvement in later ALSA releases?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:11 
+ rlrevell - 12-30-05 05:12 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-10-04 16:11 MWP            New Issue                                    
-05-10-04 16:11 MWP            Distribution              => LFS             
-05-10-04 16:11 MWP            Kernel Version            => 2.6.6           
-05-10-04 16:13 MWP            Note Added: 0001079                          
-05-11-04 14:56 tiwai          Note Added: 0001085                          
-05-11-04 16:53 MWP            Note Added: 0001086                          
-05-12-04 19:02 MWP            Note Added: 0001095                          
-05-12-04 19:12 tiwai          Note Added: 0001096                          
-05-12-04 19:34 MWP            Note Added: 0001099                          
-05-13-04 11:37 MWP            Note Added: 0001101                          
-05-13-04 11:38 MWP            Note Edited: 0001101                         
-05-17-04 17:24 MWP            Note Added: 0001134                          
-05-17-04 17:28 MWP            Note Added: 0001135                          
-05-18-04 11:27 tiwai          Note Added: 0001138                          
-05-18-04 12:38 MWP            Note Added: 0001139                          
-05-18-04 13:03 tiwai          Note Added: 0001140                          
-05-18-04 13:28 MWP            Note Added: 0001141                          
-04-03-05 20:08 jdthood        Note Added: 0004318                          
-12-30-05 05:11 rlrevell       Status                   new => closed       
-12-30-05 05:11 rlrevell       Note Added: 0007233                          
+04-19-04 08:32 subdude        New Issue                                    
+04-19-04 08:32 subdude        Distribution              => Slackware Current
+04-19-04 08:32 subdude        Kernel Version            => 2.4.25 and 2.4.26
+04-03-05 11:51 jdthood        Note Added: 0004305                          
+04-03-05 12:34 pawelkoniec    Issue Monitored: pawelkoniec                    
+12-30-05 05:12 rlrevell       Status                   new => closed       
+12-30-05 05:12 rlrevell       Note Added: 0007234                          
 ======================================================================
 
 
