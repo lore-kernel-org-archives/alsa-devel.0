@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001304]: Speaker test hangs
-Date: Fri, 30 Dec 2005 23:24:52 +0100
-Message-ID: <1565f7f2f4094a5fc5ceba45e9b1b60b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001314]: No SPDIF sound, no SPDIF mixer controls
+Date: Fri, 30 Dec 2005 23:26:48 +0100
+Message-ID: <cf53482b4abcaccd9f8535bc8f2c2bb5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20CAB148
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:24:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90019146
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:26:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1314> 
 ======================================================================
-Reported By:                herby
+Reported By:                SamiH
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1304
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1314
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               BLFS
+Kernel Version:             2.6.11.8
 ======================================================================
-Date Submitted:             08-03-2005 02:46 CEST
-Last Modified:              12-30-2005 23:24 CET
+Date Submitted:             08-05-2005 17:41 CEST
+Last Modified:              12-30-2005 23:26 CET
 ======================================================================
-Summary:                    Speaker test hangs
+Summary:                    No SPDIF sound, no SPDIF mixer controls
 Description: 
-After applying the patch to the library that took out the check for a
-proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
-or so), I attempted to try a speaker test again.  It hung right after
-outputting "0 - Front Left".  I did an strace and the results are included
-in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
-with little luck.  The wierd thing is that I can execute 'aplay' (with the
-default device) and get a '.wav' file to play nicely.  I can even get a
-multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
-speaker-test doesn't work is beyond me.  The problem is that I appear to
-use similar techniques in my own programming as speaker-test, and my
-program doesen't do that well.  Being as how speaker-test IS part of ALSA,
-I thought I would submit the bug report against it.
+  * I have S/PDIF output, but it doesn't work
+  * I don't even have the mixer control for that entry
+  * SPDIF have worked in Fedora Core 2 or something else,
+    but I haven't got it working again even on that system.
 
-If other tests need be preformed, I'd be VERY happy to do them.
+  * Stereo output works fine from the analog output.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-12-05 15:47 
+ rlrevell - 12-30-05 23:26 
 ----------------------------------------------------------------------
-ICE1724 has the restriction regarding period and buffer size alignment. 
-It's aligned to 32byte.
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 23:24 
-----------------------------------------------------------------------
-Any improvement in later releases?
+Any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 02:46 herby          New Issue                                    
-08-03-05 02:46 herby          File Added: speaker-trace                    
-08-03-05 12:18 tiwai          Note Added: 0005621                          
-08-04-05 03:21 herby          Note Added: 0005638                          
-08-04-05 14:10 jcdutton       Note Added: 0005648                          
-08-04-05 20:21 herby          Note Added: 0005652                          
-08-09-05 06:58 herby          Note Added: 0005718                          
-08-12-05 08:12 herby          Note Added: 0005765                          
-08-12-05 15:47 tiwai          Note Added: 0005773                          
-12-30-05 23:24 rlrevell       Note Added: 0007288                          
+08-05-05 17:41 SamiH          New Issue                                    
+08-05-05 17:41 SamiH          Distribution              => BLFS            
+08-05-05 17:41 SamiH          Kernel Version            => 2.6.11.8        
+12-30-05 23:26 rlrevell       Note Added: 0007289                          
 ======================================================================
 
 
