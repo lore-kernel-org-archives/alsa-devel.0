@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000606]: Sound loops around every 1/2 second or so,
-Date: Fri, 30 Dec 2005 05:09:08 +0100
-Message-ID: <900e5b3e32b5dd5e1e8d738b055da096@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000616]: codec read/write timeout is reported on module load, and card is not detected
+Date: Fri, 30 Dec 2005 05:10:10 +0100
+Message-ID: <71f6e742a3e389c10d86a3b75c563cbf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FCE1193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:09:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F82D193
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:10:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=606> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=616> 
 ======================================================================
-Reported By:                deggy
+Reported By:                jcpetruzza
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   606
-Category:                   PCI - via82xx
+Issue ID:                   616
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Arch Linux
-Kernel Version:             2.4.9
+Distribution:               
+Kernel Version:             2.6.8-gentoo-r3
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-26-2004 18:38 CEST
-Last Modified:              12-30-2005 05:09 CET
+Date Submitted:             10-29-2004 17:09 CEST
+Last Modified:              12-30-2005 05:10 CET
 ======================================================================
-Summary:                    Sound loops around every 1/2 second or so,
+Summary:                    codec read/write timeout is reported on module load,
+and card is not detected
 Description: 
-When I try to play a sound alsa loops the audio every 1/2 second or so.
-Sounds a bit like a sampler looping the same 1/2 second again and again
-and again.
+My Ensoniq 1371 rev 7 based card is not detected.
+
+dmesg shows:
+
+PCI: Found IRQ 12 for device 0000:00:09.0
+codec write timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+.
+.
+.
+codec write timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+AC'97 0 does not respond - RESET
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+AC'97 0 access is not valid [0x0], removing mixer.
+ENS1371: probe of 0000:00:09.0 failed with error -5
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 16:52 
+ tiwai - 04-12-05 17:43 
 ----------------------------------------------------------------------
-Submitter: Were you able to solve the problem by turning off ACPI?
+I'd bet rather an ACPI-related problem.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:09 
+ rlrevell - 12-30-05 05:10 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-26-04 18:38 deggy          New Issue                                    
-10-26-04 18:38 deggy          Distribution              => Arch Linux      
-10-26-04 18:38 deggy          Kernel Version            => 2.4.9           
-10-27-04 00:08 chomwitt       Issue Monitored: chomwitt                    
-11-09-04 19:20 tiwai          Note Added: 0002343                          
-11-26-04 12:28 richmc         Issue Monitored: richmc                      
-04-09-05 16:52 jdthood        Note Added: 0004416                          
-12-30-05 05:09 rlrevell       Status                   new => closed       
-12-30-05 05:09 rlrevell       Note Added: 0007231                          
+10-29-04 17:09 jcpetruzza     New Issue                                    
+10-29-04 17:09 jcpetruzza     Kernel Version            => 2.6.8-gentoo-r3 
+11-12-04 15:12 jcpetruzza     Note Added: 0002397                          
+04-09-05 17:03 jdthood        Note Added: 0004417                          
+04-12-05 17:43 tiwai          Note Added: 0004455                          
+12-30-05 05:10 rlrevell       Status                   new => closed       
+12-30-05 05:10 rlrevell       Note Added: 0007232                          
 ======================================================================
 
 
