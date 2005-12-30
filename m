@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
-Date: Fri, 30 Dec 2005 23:22:56 +0100
-Message-ID: <f97098faa02d6a4493af394fb8749866@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000935]: M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device open
+Date: Fri, 30 Dec 2005 23:23:35 +0100
+Message-ID: <307bedd6af643b4810ea3d2147607b21@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 650B4148
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:22:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02D9A148
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:23:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=935> 
 ======================================================================
-Reported By:                roothorick
+Reported By:                stever8
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1319
-Category:                   PCI - emu10k1
+Issue ID:                   935
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     closed
+Distribution:               Redhat Linux 7.3, modified
+Kernel Version:             2.4.26
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-08-2005 05:38 CEST
-Last Modified:              12-30-2005 23:22 CET
+Date Submitted:             02-23-2005 20:09 CET
+Last Modified:              12-30-2005 23:23 CET
 ======================================================================
-Summary:                    MIDI I/O (MPU-401) works for output only, not input
+Summary:                    M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device
+open
 Description: 
-I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
-such as keyboards, only works for output (from the soundcard to other
-devices). When I try to do input (from those devices to the soundcard) no
-events get through at all.
+Our original report:
+
+When we first load the alsa drivers, we see a S/PDIF output signal from
+the 1010LT 
+on an oscilloscope. A minidisc player also sees this as a valid signal (it
+is all 
+zeros, silence).
+
+As soon as our program opens the audio device, however, the signal goes
+to 0V on the oscilloscope, and the minidisc of course sees "no signal".
+We can't output S/PDIF, no matter what settings we try in Envy24control.
+
+Strangely enough, if we do the following, we do get S/PDIF output :
+. Plug in an external S/PDIF input source (which is muted so as not to
+mix
+with our sound).
+. In Envy24control, set the Master Clock to "Word Clock". (it doesn't work
+if the 
+master clock is set to "S/PDIF")
+
+
+Jaroslav Kysela suggested:
+Strange. Could you try to comment lines:
+        //if (reset)        
+        //        snd_cs8427_reset(cs8427);
+
+in alsa-kernel/i2c/cs8427.c and test if the signal is present after this
+change?
+
+Which I did. The S/PDIF signal no longer goes away (it appears on the
+scope, and the minidisc player recognizes it as a valid signal) however it
+just contains silence.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- roothorick - 08-12-05 16:38 
+ jdthood - 09-19-05 10:06 
 ----------------------------------------------------------------------
-Passing the option enable_ir=1 had no effect whatsoever.
+stever8: Were you able to solve this problem?  Have you tried playing with
+the various mixer switches listed by amixer?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:22 
+ rlrevell - 12-30-05 23:23 
 ----------------------------------------------------------------------
-Any improvement in later ALSA releases?
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-05 05:38 roothorick     New Issue                                    
-08-11-05 14:31 tiwai          Note Added: 0005759                          
-08-11-05 17:41 roothorick     Note Added: 0005761                          
-08-12-05 15:53 tiwai          Note Added: 0005776                          
-08-12-05 16:17 roothorick     Note Added: 0005779                          
-08-12-05 16:30 Clemens LadischNote Added: 0005780                          
-08-12-05 16:38 roothorick     Note Added: 0005781                          
-12-30-05 23:22 rlrevell       Note Added: 0007286                          
+02-23-05 20:09 stever8        New Issue                                    
+02-23-05 20:09 stever8        Distribution              => Redhat Linux 7.3,
+modified
+02-23-05 20:09 stever8        Kernel Version            => 2.4.26          
+09-19-05 10:06 jdthood        Note Added: 0006284                          
+12-30-05 23:23 rlrevell       Status                   new => closed       
+12-30-05 23:23 rlrevell       Note Added: 0007287                          
 ======================================================================
 
 
