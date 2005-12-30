@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001406]: Need help
-Date: Fri, 30 Dec 2005 23:06:22 +0100
-Message-ID: <4ca2576e2c3e0a8e443f8414dc59737c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
+Date: Fri, 30 Dec 2005 23:08:30 +0100
+Message-ID: <0adc44420819067e445f46f53d80f6c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7DEE19A
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:06:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68DD2AA
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:08:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1406> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
 ======================================================================
-Reported By:                jlway
+Reported By:                croiset
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1406
-Category:                   1_OTHERS
+Issue ID:                   758
+Category:                   PCI - RME 96
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Sarge i386
-Kernel Version:             2.4.27
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7
 ======================================================================
-Date Submitted:             09-09-2005 05:01 CEST
-Last Modified:              12-30-2005 23:06 CET
+Date Submitted:             12-29-2004 10:15 CET
+Last Modified:              12-30-2005 23:08 CET
 ======================================================================
-Summary:                    Need help
+Summary:                    Full duplex is not working in OSS emulation.
 Description: 
-Where may I get help to complete installation?
-I have compiled and installed but unable to get sound.
-Perhaps your driver does not support my on-board sound: Analog
-Devices SoundMax Integrated Digital Audio
-Windows XP driver 5.12.1.3630 by Sensaura Ltd.
-Is there a chat room where I can get help?
-Thanks, John Way
+If I play something with one player, I am unable to record something on the
+same device.
+The same thing ispossible with the other cards I have.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000521 Jack + Alsa not working in full duplex,...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-11-05 20:51 
+ croiset - 01-03-05 16:30 
 ----------------------------------------------------------------------
-Did you use alsamixer to unmute all channels and raise the volumes?
+I made some more tests and the error after an ioctl.
 
-Also you can't just install the alsa-driver package, you also need
-alsa-kernel and alsa-lib.
+line_fd = open(_opt->device, O_RDONLY|O_NONBLOCK )
+-> ok
+fcntl(line_fd,F_SETFD,FD_CLOEXEC)
+-> ok
+ioctl(line_fd, SNDCTL_DSP_SETFRAGMENT, &frag)
+-> ok
+ioctl(line_fd, SNDCTL_DSP_SETFMT, &afmt)
+-> return -1 errno = 16 (Device or resource busy)
+ioctl(line_fd, SNDCTL_DSP_CHANNELS,    &channels)
+-> return -1 errno = 16 (Device or resource busy)
+ioctl(line_fd, SNDCTL_DSP_SPEED,       &rate)
+-> return -1 errno = 16 (Device or resource busy)
+read(line_fd, audio_data, size)
+-> return -1 errno = 16 (Device or resource busy)
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:06 
+ rlrevell - 12-30-05 23:08 
 ----------------------------------------------------------------------
-No response
+This really seems like an application bug.
+
+Any improvement in later ALSA release or with newer apps?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 05:01 jlway          New Issue                                    
-09-09-05 05:01 jlway          Distribution              => Sarge i386      
-09-09-05 05:01 jlway          Kernel Version            => 2.4.27          
-09-11-05 15:14 csabo2         Note Added: 0006140                          
-09-11-05 17:05 jlway          Note Added: 0006141                          
-09-11-05 20:51 rlrevell       Note Added: 0006143                          
-09-12-05 02:11 jlway          Note Edited: 0006141                         
-09-13-05 04:27 jlway          Note Edited: 0006141                         
-12-30-05 23:06 rlrevell       Status                   new => closed       
-12-30-05 23:06 rlrevell       Note Added: 0007277                          
+12-29-04 10:15 croiset        New Issue                                    
+12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
+12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
+12-29-04 14:17 tiwai          Note Added: 0002998                          
+12-29-04 14:54 croiset        Note Added: 0003000                          
+12-29-04 17:39 tiwai          Note Added: 0003004                          
+12-29-04 17:56 croiset        Note Added: 0003005                          
+12-29-04 17:59 croiset        Note Added: 0003006                          
+12-29-04 18:05 croiset        Note Edited: 0003006                         
+12-29-04 18:18 croiset        Note Edited: 0003006                         
+01-03-05 16:30 croiset        Note Added: 0003067                          
+09-14-05 16:16 jdthood        Relationship added       related to 0000521  
+12-30-05 23:08 rlrevell       Note Added: 0007278                          
 ======================================================================
 
 
