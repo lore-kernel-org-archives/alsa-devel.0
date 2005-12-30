@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001124]: sound recording does not work
-Date: Fri, 30 Dec 2005 21:41:47 +0100
-Message-ID: <5f68cbce75db1176a5d71687e426bf29@bugtrack.alsa-project.org>
+Date: Fri, 30 Dec 2005 21:43:28 +0100
+Message-ID: <c438327eded0dcc9b956c86658e58a35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01642184
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 21:41:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E23A4184
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 21:43:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1124> 
 ======================================================================
 Reported By:                demiurg
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1124
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             05-24-2005 21:03 CEST
-Last Modified:              12-30-2005 21:41 CET
+Last Modified:              12-30-2005 21:43 CET
 ======================================================================
 Summary:                    sound recording does not work
 Description: 
@@ -96,6 +98,9 @@ Date Modified  Username       Field                    Change
 05-24-05 21:03 demiurg        File Added: amixer                           
 12-30-05 20:52 rlrevell       Note Added: 0007260                          
 12-30-05 21:41 demiurg        Note Added: 0007263                          
+12-30-05 21:43 rlrevell       Status                   new => resolved     
+12-30-05 21:43 rlrevell       Resolution               open => fixed       
+12-30-05 21:43 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
