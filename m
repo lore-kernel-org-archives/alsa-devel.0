@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 30 Dec 2005 02:49:35 -0000
-Message-ID: <E1EsAKr-0002In-4Z@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000130]: Realtek ALC202 rev 0: hanging playback on plughw:0,4
+Date: Fri, 30 Dec 2005 03:52:40 +0100
+Message-ID: <81a8812789752f9bf4a1b9cfb358e55e@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE1FD1A6
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 03:52:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,57 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<mspss@yahoo.com>:
-Sorry your message to mspss@yahoo.com cannot be delivered. This account has been disabled or discontinued [#102].
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=130> 
+======================================================================
+Reported By:                Csan
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   130
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian GNU/Linux sid
+Kernel Version:             2.6.3-1-686
+======================================================================
+Date Submitted:             03-13-2004 07:32 CET
+Last Modified:              12-30-2005 03:52 CET
+======================================================================
+Summary:                    Realtek ALC202 rev 0: hanging playback on plughw:0,4
+Description: 
+while 'aplay -D plughw:0,0 test.wav' works, when I try to use the other
+playback device playback hangs
 
+======================================================================
 
-<freedb-submit@yahoo.com>:
-This user doesn't have a yahoo.com account (freedb-submit@yahoo.com) [-15]
+----------------------------------------------------------------------
+ Csan - 07-01-04 17:00 
+----------------------------------------------------------------------
+Yes it does work:
 
+# aplay -Dspdif foo.wav
+Playing WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
 
---- Original message follows.
+as also does:
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+# aplay -D plughw:0,0 test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
 
-The original message is over 5k.  Message truncated to 1K.
+but plughw:0,4 hangs (also in xmms - xmms doesn't list 'spdif'):
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=206.190.53.244>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta141.mail.re2.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO iuinktseo.net) (64.251.132.84)
-  by mta141.mail.re2.yahoo.com with SMTP; Thu, 29 Dec 2005 18:22:44 -0800
-From: alsa-devel@lists.sourceforge.net
-Date: Fri, 30 Dec 2005 02:02:49 GMT
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <393a3d.fbf2e67aedb@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="==79b0aebdfa07c0c0d6"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+# aplay -D plughw:0,4 test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+Aborted by signal Interrupt...
 
---==79b0aebdfa07c0c0d6
+# cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.5a.
+Compiled on Jun 22 2004 for kernel 2.6.6-2-686.
+csanote:~# alsactl --version
+alsactl version 1.0.5
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 03:52 
+----------------------------------------------------------------------
+Any improvement in later releases?
 
-plz read and check ...
-cyaaaaaaa
---==79b0aebdfa07c0c0d6
-Content-Type: application/octet-stream; name=mailtext.zip
-Content-Tr
-*** MESSAGE TRUNCATED ***
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-13-04 07:32 Csan           New Issue                                    
+03-13-04 07:32 Csan           Distribution              => Debian GNU/Linux sid
+03-13-04 07:32 Csan           Kernel Version            => 2.6.3-1-686     
+03-13-04 07:43 Csan           Note Added: 0000590                          
+03-13-04 07:48 Csan           Note Added: 0000591                          
+03-13-04 17:47 perex          Severity                 major => feature    
+03-13-04 17:49 perex          Note Added: 0000595                          
+05-18-04 16:47 Csan           Note Added: 0001142                          
+05-25-04 15:09 tiwai          Note Added: 0001214                          
+07-01-04 17:00 Csan           Note Added: 0001372                          
+12-30-05 03:52 rlrevell       Note Added: 0007191                          
+======================================================================
+
 
 
 
