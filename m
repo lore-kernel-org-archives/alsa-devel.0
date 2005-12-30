@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Fri, 30 Dec 2005 20:34:19 +0100
-Message-ID: <25ed2eb02c9708c82eb4070d569fab33@bugtrack.alsa-project.org>
+Date: Fri, 30 Dec 2005 20:41:26 +0100
+Message-ID: <9c8d86646e6e93a912f7ae492cc66688@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 688E118F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 20:34:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40BDA157
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 20:41:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
 Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              12-30-2005 20:34 CET
+Last Modified:              12-30-2005 20:41 CET
 ======================================================================
 Summary:                    No sound from Soundblaster Live USB since updating
 kernel drivers to 1.0.10.rc3
@@ -65,19 +65,6 @@ home theater system. I'm running debian unstable on a Toshiba laptop.
 ======================================================================
 
 ----------------------------------------------------------------------
- sailfrog - 12-30-05 20:31 
-----------------------------------------------------------------------
-rlrevell,
-  Thanks for the feedback. I will spend some time on it this weekend and
-see if I can narrow down the location of the problem. Sorry for the
-negative remarks ( having a bad day). I guess after more than a month with
-the only comment being "probably already fixed" I felt as though nobody
-either believed this was real or cared.
-
-Thanks again,
-Jason
-
-----------------------------------------------------------------------
  rlrevell - 12-30-05 20:34 
 ----------------------------------------------------------------------
 Yeah there are a LOT of bugs in the tracker and we don't have the manpower
@@ -85,6 +72,27 @@ to handle them all promptly sometimes.
 
 FYI you should have given this BLOCK severity rather than MAJOR as you
 have no sound at all and it's a definite regression.
+
+----------------------------------------------------------------------
+ sailfrog - 12-30-05 20:41 
+----------------------------------------------------------------------
+> Yeah there are a LOT of bugs in the tracker and we don't have the
+manpower to
+> handle them all promptly sometimes.
+
+Understood. I will do what I can on my end. Not much of a kernel hacker
+but I can feel my way around. Who knows maybe I will get lucky :)
+
+> FYI you should have given this BLOCK severity rather than MAJOR as you
+have no 
+> sound at all and it's a definite regression. 
+
+I will keep that in mind next time, thanks. btw, I wonder if the problem
+might be SPDIF related. I have not dragged home a pair of speakers and
+hooked them directly to the card, but I will. Perhaps that would help
+identify the source of the issue.
+
+Jason
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +111,7 @@ mm2, rc2)
 12-30-05 20:08 rlrevell       Note Added: 0007254                          
 12-30-05 20:31 sailfrog       Note Added: 0007256                          
 12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
 ======================================================================
 
 
