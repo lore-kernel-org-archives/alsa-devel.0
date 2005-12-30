@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000856]: Surround sound only in the two front channels; no CD play
-Date: Fri, 30 Dec 2005 23:22:01 +0100
-Message-ID: <a5733b4303a6ac6d3b2ed139d8f3f1a2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
+Date: Fri, 30 Dec 2005 23:22:56 +0100
+Message-ID: <f97098faa02d6a4493af394fb8749866@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71335148
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:22:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 650B4148
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:22:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=856> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
 ======================================================================
-Reported By:                mab
+Reported By:                roothorick
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   856
-Category:                   PCI - azx
+Issue ID:                   1319
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.741_FC3smp
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-28-2005 15:03 CET
+Date Submitted:             08-08-2005 05:38 CEST
 Last Modified:              12-30-2005 23:22 CET
 ======================================================================
-Summary:                    Surround sound only in the two front channels; no CD
-play
+Summary:                    MIDI I/O (MPU-401) works for output only, not input
 Description: 
-
-In 5.1 mode only front speakers works
-
-I can't reproduce CDs with any desktop applications
-
-alsamixer is unmutted, ch=6, only slilders in PCM and PC SPEAKERS (see
-screenshot) 
-
-aplay alsa.wav (two channels wave file), works in  6 speakers
-xmms alsa.wav the same
-
-xmms chokes (could' open audio) when a surround 5.1 wave file
-(chain-id.wav)
-
-% aplay chain-id.wav                  <<<<< only front speakers works
-with the following message:
-Playing WAVE '/root/Desktop/Surround-SDL-testfiles/chan-id.wav' : Signed
-16 bit Little Endian, Rate 44100 Hz, Channels 6
-
-in speaker-test only front spekeakers works
-
-In Windows XP  everything works fine. 
-
+I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
+such as keyboards, only works for output (from the soundcard to other
+devices). When I try to do input (from those devices to the soundcard) no
+events get through at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-15-05 16:16 
+ roothorick - 08-12-05 16:38 
 ----------------------------------------------------------------------
-Submitter: Do you still have this problem?
+Passing the option enable_ir=1 had no effect whatsoever.
 
 ----------------------------------------------------------------------
  rlrevell - 12-30-05 23:22 
 ----------------------------------------------------------------------
-No response
+Any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-05 15:03 mab            New Issue                                    
-01-28-05 15:03 mab            File Added: alsamixer.png                    
-01-28-05 15:03 mab            Distribution              => Fedora Core 3   
-01-28-05 15:03 mab            Kernel Version            => 2.6.10-1.741_FC3smp
-02-06-05 21:22 mab            Issue Monitored: mab                         
-04-17-05 23:38 maranik        Issue Monitored: maranik                     
-09-15-05 16:16 jdthood        Note Added: 0006215                          
-12-30-05 23:22 rlrevell       Status                   new => closed       
-12-30-05 23:22 rlrevell       Note Added: 0007285                          
+08-08-05 05:38 roothorick     New Issue                                    
+08-11-05 14:31 tiwai          Note Added: 0005759                          
+08-11-05 17:41 roothorick     Note Added: 0005761                          
+08-12-05 15:53 tiwai          Note Added: 0005776                          
+08-12-05 16:17 roothorick     Note Added: 0005779                          
+08-12-05 16:30 Clemens LadischNote Added: 0005780                          
+08-12-05 16:38 roothorick     Note Added: 0005781                          
+12-30-05 23:22 rlrevell       Note Added: 0007286                          
 ======================================================================
 
 
