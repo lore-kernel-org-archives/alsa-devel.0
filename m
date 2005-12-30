@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000196]: full duplex doesn't work any more
-Date: Fri, 30 Dec 2005 05:26:07 +0100
-Message-ID: <1a01c6d1109c93e7d88b25aa20092c50@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001040]: ice1724: Invalid EEPROM (size = 255)
+Date: Fri, 30 Dec 2005 05:28:19 +0100
+Message-ID: <56a278335b1b5cbe0f4f527d9c815f07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A6C33193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:26:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E93B9193
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:28:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=196> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1040> 
 ======================================================================
-Reported By:                nathanel
+Reported By:                lorenb
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   196
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1040
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-08-2004 20:59 CEST
-Last Modified:              12-30-2005 05:26 CET
+Date Submitted:             04-08-2005 14:10 CEST
+Last Modified:              12-30-2005 05:28 CET
 ======================================================================
-Summary:                    full duplex doesn't work any more
+Summary:                    ice1724: Invalid EEPROM (size = 255)
 Description: 
-I'm using the attached .asoundrc to separate front an rear speakers of my
-Soundblaster Live! to dsp and dsp1 respectively. I have my headphones
-connected to the rear speaker output and running gnomemeeting with
-alsa-oss on dsp1. Unfortunately this setup stopped working with alsa-oss
-version 1.0.3 or higher (Different versions of alsa-libs didn't make any
-difference). Playing music solely on dsp1 still works (tried with xmms
-OSS) and recording also works (other people can hear me in gnomemeeting),
-but both at the same time is no longer functioning (read: I can't hear my
-dialog partner). As gnomemeering opens the audio device for recording
-first, i suspect that full duplex support got broken somewhere between
-1.0.2 and 1.0.3.
+Have a Shuttle SN25P based system:
+http://global.shuttle.com/Product/Barebone/SN25P.asp
+
+It comes with VIA Envy24PT audio controller:
+http://www.via.com.tw/en/products/audio/controllers/envy24pt/
+
+Every time I tried and load the ice1724 driver I get an error about
+invalid EEPROM size.
+
+I saw this old bug:
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000142
+
+Which indicated this issue was resolved in 1.0.5a.  I'm using v1.0.9rc2.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- nathanel - 03-21-05 16:15 
+ lorenb - 04-12-05 21:11 
 ----------------------------------------------------------------------
-Unfortunately no. Meanwhile I had some look at the changes between alsa-oss
-1.0.2 and 1.0.3 and it seems to me that some major rewrite/refactoring was
-going on at that time, making it quite hard to spot any differences that
-could be the cause. I eventually gave up and for now I'm still sticking to
-the old version.
+I came across this blog entry, where someone with the same system as me was
+having the same ice1724 issue:
+
+http://www.nakack.net/?p=19
+
+He wrote a patch and made it available:
+http://www.nakack.net/?p=20
+
+I tried it out and it works for me.  The modules load and I have sound
+working on my system. 
+
+The only thing not working is esound. It complains it can't open the sound
+device for various modes (8-bit|16-bit + mono|stereo).  That just means I
+can't listen to sound effects in GNOME, not really a big loss to me.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:26 
+ rlrevell - 12-30-05 05:28 
 ----------------------------------------------------------------------
 Any improvement with later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-08-04 20:59 nathanel       New Issue                                    
-04-08-04 20:59 nathanel       File Added: .asoundrc                        
-03-20-05 23:59 jdthood        Note Added: 0004104                          
-03-21-05 16:15 nathanel       Note Added: 0004119                          
-03-22-05 09:37 jdthood        Note Edited: 0004104                         
-03-22-05 09:38 jdthood        Status                   new => feedback     
-12-30-05 05:26 rlrevell       Note Added: 0007246                          
+04-08-05 14:10 lorenb         New Issue                                    
+04-08-05 14:10 lorenb         Distribution              => Gentoo          
+04-08-05 14:10 lorenb         Kernel Version            => 2.6.11          
+04-09-05 19:09 ungod          Note Added: 0004427                          
+04-12-05 21:11 lorenb         Note Added: 0004464                          
+12-30-05 05:28 rlrevell       Note Added: 0007247                          
 ======================================================================
 
 
