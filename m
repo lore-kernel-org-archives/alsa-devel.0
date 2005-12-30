@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001463]: recording does not work
-Date: Fri, 30 Dec 2005 23:47:04 +0100
-Message-ID: <42938de22b2577af6520712df582bfb5@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001295]: async capture doesn't seem to work
+Date: Fri, 30 Dec 2005 23:48:30 +0100
+Message-ID: <241b617636f2478ede9cd378409496f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0CCD168
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:47:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27706168
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:48:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1463> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1295> 
 ======================================================================
-Reported By:                vladak
-Assigned To:                rlrevell
+Reported By:                arunarunarun
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1463
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Issue ID:                   1295
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Advanced Linux Sound Architecture Driver Version
-1.0.9b
-Kernel Version:             Linux erazim.devnull-lab.cz 2.6.13-1.1524_FC4 #1 Wed
-Sep 21 00:00:00 EDT 2005 i686 athlon i386 GNU/Linux
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             09-26-2005 20:59 CEST
-Last Modified:              12-30-2005 23:47 CET
+Date Submitted:             07-31-2005 22:28 CEST
+Last Modified:              12-30-2005 23:48 CET
 ======================================================================
-Summary:                    recording does not work
+Summary:                    async capture doesn't seem to work
 Description: 
-Even if this issue was marked resolved (see bug 0001216), recording on
-Sound Blaster Live 5.1 Live! does not work.
-
-I have tried skype, audacity, arecord/aplay, ... nothing works.
-
-I am able to hear myself in the headphones when I talk into the
-microphone, but the sound cannot be recorded.
+I've got a little program up at
+http://nemesis.accosted.net/misc/capture2.cpp that initialises pcm for
+capture, sets up an async callback and then busy-waits. The callback never
+gets called, even though everything else seems to be going fine. Any help
+would be appreciated.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:47 
+ arunarunarun - 09-06-05 09:16 
 ----------------------------------------------------------------------
-This was fixed by adding the SB0222 (possibly SB0220) detection
+Hi there,
+Remember me? Ford_Prefect on Freenode. Could you please help me find the
+correct assignee for this bug? Thanks in advance!
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 23:48 
+----------------------------------------------------------------------
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-05 20:59 vladak         New Issue                                    
-09-26-05 20:59 vladak         Distribution              => Advanced Linux Sound
-Architecture Driver Version 1.0.9b
-09-26-05 20:59 vladak         Kernel Version            => Linux
-erazim.devnull-lab.cz 2.6.13-1.1524_FC4 #1 Wed Sep 21 00:00:00 EDT 2005 i686
-athlon i386 GNU/Linux
-09-26-05 21:00 vladak         File Added: amixer.out                       
-12-30-05 23:47 rlrevell       Status                   new => resolved     
-12-30-05 23:47 rlrevell       Resolution               open => fixed       
-12-30-05 23:47 rlrevell       Assigned To               => rlrevell        
-12-30-05 23:47 rlrevell       Note Added: 0007297                          
+07-31-05 22:28 arunarunarun   New Issue                                    
+07-31-05 22:28 arunarunarun   File Added: capture.cpp                      
+09-06-05 09:09 arunarunarun   Issue Monitored: arunarunarun                    
+09-06-05 09:16 arunarunarun   Issue Monitored: jcdutton                    
+09-06-05 09:16 arunarunarun   Note Added: 0006042                          
+12-30-05 23:48 rlrevell       Note Added: 0007298                          
 ======================================================================
 
 
