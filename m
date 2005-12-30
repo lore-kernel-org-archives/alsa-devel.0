@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001564]: default 'External Amplifier' sound setting
-Date: Sat, 31 Dec 2005 00:24:27 +0100
-Message-ID: <2735bdc7de01f08413f3d1f3bfd795f2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001036]: Replacement SB Live card not detected
+Date: Sat, 31 Dec 2005 00:32:38 +0100
+Message-ID: <593de76e0eeef22f9c5d21cde24e5a70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58F63194
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:24:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E37412B
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:32:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1564> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1036> 
 ======================================================================
-Reported By:                Miguel
+Reported By:                grolschie
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1564
-Category:                   PCI - intel8x0
+Issue ID:                   1036
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.14-1.1637_FC4
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             11-16-2005 16:23 CET
-Last Modified:              12-31-2005 00:24 CET
+Date Submitted:             04-05-2005 02:10 CEST
+Last Modified:              12-31-2005 00:32 CET
 ======================================================================
-Summary:                    default 'External Amplifier' sound setting
+Summary:                    Replacement SB Live card not detected
 Description: 
-I am a sound newbie. I apologize for this FAQ ... I searched through
-bugzilla but was unable to piece together the answer. 
+Hi there.
 
-This bug seems related, but it looked like to me that you were waiting for
-information from the submitter:
+I have been using my SB Live Value PCI for over a year with ALSA with no
+problems. I recently swapped the card for a newer SB Live 5.1 DE PCI card.
+Even though these cards are pretty much the same, alsaconf cannot detect
+any supported sound cards. lspci shows that the new card is indeed
+detected.
 
-  https://bugtrack.alsa-project.org/alsa-bug/view.php?id=79
-
-On Dell Latitude D600 and D400 laptops, with a clean install of FC4 ... or
-with all the updates, there is no sound from the built-in speakers. 
-
-Headphones do produce sound. 
-
-Using alsamixer and typing 'm' on the 'External Amplifier' *does* enable
-the built-in speakers. 
-
-I filed a bug at bugzilla.redhat.com ... 
-
-  https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=173250
-
-... they essentially rejected it, saying that some systems need it ON and
-other systems need it OFF
-
-
-Q: Was this answer from RedHat correct? 
-
-
->From messages I have seen on mailing lists, this is a problem on more
-systems than just Dell Systems. 
-
-I would like to understand this problem a bit more and try to assist in
-getting it resolved. 
+Regards,
+grolschie
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:24 
+ rlrevell - 12-30-05 04:22 
 ----------------------------------------------------------------------
-This is correct - some systems need it on and some need it off so there's
-no good default.  It's important to try all mixer settings if you don't
-get any sound.
+Any improvement with later releases?
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 00:32 
+----------------------------------------------------------------------
+Try attached patch
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-16-05 16:23 Miguel         New Issue                                    
-11-16-05 16:23 Miguel         Distribution              => Fedora Core 4   
-11-16-05 16:23 Miguel         Kernel Version            => 2.6.14-1.1637_FC4
-11-17-05 15:59 Miguel         Issue Monitored: Miguel                      
-12-31-05 00:24 rlrevell       Status                   new => closed       
-12-31-05 00:24 rlrevell       Note Added: 0007317                          
+04-05-05 02:10 grolschie      New Issue                                    
+04-05-05 02:10 grolschie      Distribution              => Debian          
+04-05-05 02:10 grolschie      Kernel Version            => 2.6.3           
+04-05-05 02:12 grolschie      Note Added: 0004333                          
+04-05-05 08:30 pzad           Note Added: 0004334                          
+04-05-05 08:55 grolschie      Note Added: 0004335                          
+04-05-05 10:20 pzad           Note Added: 0004336                          
+12-30-05 04:22 rlrevell       Note Added: 0007205                          
+12-31-05 00:32 rlrevell       File Added: 8067.patch                       
+12-31-05 00:32 rlrevell       Note Added: 0007318                          
 ======================================================================
 
 
