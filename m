@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Fri, 30 Dec 2005 22:09:26 +0100
-Message-ID: <a2697ef1de532d7115aff9affff48b05@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
+Date: Fri, 30 Dec 2005 22:11:54 +0100
+Message-ID: <f41aa1265ecc611080793e4d2144d3fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BBC8194
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 22:09:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3AB6194
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 22:11:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,113 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
 ======================================================================
-Reported By:                christophe
+Reported By:                abonilla
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   917
-Category:                   PCI - intel8x0
+Issue ID:                   800
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ununtu
-Kernel Version:             2.6.11-rc3
+Distribution:               Debian
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              12-30-2005 22:09 CET
+Date Submitted:             01-10-2005 03:20 CET
+Last Modified:              12-30-2005 22:11 CET
 ======================================================================
-Summary:                    intel8x0 ACPI suspend/resume trouble
+Summary:                    Sound is Corrupted or terribe quality.
 Description: 
-I have a problem with the driver for my soundcard after
-ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
-problem with prior kernels, I first tried with 2.6.8).
-
-This is a IBM x40 laptop (23865FU) with an intel chipset.
-
-The relevant lspci line is:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
-Audio Controller (rev
-+01)
-
-The driver I use is snd_intel8x0.
-
-The problem is that after a suspend/resume cycle the sound
-output is either off or only on one side or with statics.
-
-I tried to do:
-
-~$ alsactl power off
-~$ alsactl power on
-
-without any change.
-
-If I suspend/resume multiple time I can get the sound output
-a little better (like on one side instead of off). But so far
-to get the correct sound back I need to reboot.
-
-Is it a known problem?
-Is there a way to force the driver to reinitialized the chipset?
-
-Thanks for alsa,
-Christophe
-
+Sound goes out just like if the jack was not propperly plugged. bad Sound
+Quality.
 ======================================================================
 
 ----------------------------------------------------------------------
- christophe - 06-29-05 23:17 
+ pforai - 07-06-05 20:17 
 ----------------------------------------------------------------------
-I started to think that perhaps my intel chipset had a problem (especially
-now that the registers are correctly restored) so I tried again everything
-from the beginning. I tried with the oss driver and discovered to my
-surprise that the bug appeared after some suspend/resume cycles (not
-always but it happens). Then I tried apm instead of acpi and it looks like
-the bug is not there.
-So it looks like an ACPI bug.
+how can i set this option?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 22:09 
+ rlrevell - 12-30-05 22:11 
 ----------------------------------------------------------------------
-Any improvement with later ALSA releases?  Did you report the bug upstream
-to the ACPI maintainers?
+Any improvement with later ALSA release?
+
+You set the position fix option when the module is loaded (modprobe
+snd-hda-intel position_fix=1).  You can also add it to a config file to
+have this happen automatically but unfortunately this area of Linux is a
+complete mess with every distro using a different file and syntax and
+changing them all the time.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-05 20:16 christophe     New Issue                                    
-02-17-05 20:16 christophe     Distribution              => Ununtu          
-02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
-02-17-05 20:30 tiwai          Note Added: 0003636                          
-02-17-05 21:01 christophe     Note Added: 0003639                          
-02-17-05 21:06 christophe     Note Added: 0003640                          
-02-17-05 22:38 christophe     Note Added: 0003643                          
-02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
-02-18-05 09:41 alexs81        Note Added: 0003649                          
-02-18-05 18:00 christophe     Note Added: 0003657                          
-02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
-               
-02-18-05 20:35 alexs81        Note Added: 0003659                          
-02-18-05 20:50 christophe     Note Added: 0003660                          
-02-18-05 21:13 alexs81        Note Added: 0003661                          
-02-18-05 21:16 christophe     Note Added: 0003662                          
-02-18-05 21:32 alexs81        Note Added: 0003663                          
-02-18-05 21:39 rlrevell       Note Added: 0003664                          
-02-19-05 02:40 christophe     Note Added: 0003668                          
-02-19-05 12:07 alexs81        Note Added: 0003669                          
-02-19-05 22:15 christophe     Note Added: 0003671                          
-02-19-05 22:16 christophe     Note Added: 0003672                          
-02-21-05 19:16 christophe     Note Added: 0003681                          
-02-21-05 19:21 christophe     Note Added: 0003682                          
-06-28-05 16:49 christophe     Note Added: 0005298                          
-06-29-05 16:04 christophe     Note Added: 0005306                          
-06-29-05 20:05 tiwai          Note Added: 0005308                          
-06-29-05 20:05 tiwai          File Added: ich-resume-fix.diff                   
-
-06-29-05 20:28 christophe     Note Added: 0005313                          
-06-29-05 23:17 christophe     Note Added: 0005320                          
-12-30-05 22:09 rlrevell       Note Added: 0007268                          
+01-10-05 03:20 abonilla       New Issue                                    
+01-10-05 03:20 abonilla       Distribution              => Debian          
+01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
+01-10-05 14:56 tiwai          Note Added: 0003134                          
+03-16-05 13:27 jdthood        Note Added: 0003956                          
+03-18-05 18:23 tiwai          Note Added: 0004003                          
+03-18-05 23:35 allefant       Issue Monitored: allefant                    
+03-18-05 23:36 allefant       Issue End Monitor: allefant                    
+03-19-05 12:42 jdthood        Note Added: 0004036                          
+05-24-05 13:37 jdthood        Note Added: 0004725                          
+05-24-05 13:37 jdthood        Note Edited: 0004725                         
+05-24-05 14:12 tiwai          Note Added: 0004728                          
+05-24-05 14:15 jdthood        Note Edited: 0004725                         
+05-31-05 16:27 pforai         Note Added: 0004836                          
+05-31-05 16:28 pforai         Note Edited: 0004836                         
+06-08-05 16:11 tiwai          Note Added: 0004947                          
+07-06-05 20:17 pforai         Note Added: 0005393                          
+12-30-05 22:11 rlrevell       Note Added: 0007269                          
 ======================================================================
 
 
