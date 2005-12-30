@@ -1,7 +1,7 @@
 From: MAILER-DAEMON@yahoo.com
 Subject: failure delivery
-Date: 30 Dec 2005 08:50:26 -0000
-Message-ID: <E1EsFy3-0002YD-9W@mail.sourceforge.net>
+Date: 30 Dec 2005 10:31:22 -0000
+Message-ID: <E1EsHXm-0005GS-3R@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -29,34 +29,34 @@ The original message is over 5k.  Message truncated to 1K.
 
 X-Rocket-Spam: 64.251.132.84
 X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.218>
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.194.200>
 X-Originating-IP: [64.251.132.84]
 Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta350.mail.scd.yahoo.com
+Authentication-Results: mta357.mail.mud.yahoo.com
   from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO vvuxqt.net) (64.251.132.84)
-  by mta350.mail.scd.yahoo.com with SMTP; Fri, 30 Dec 2005 00:50:25 -0800
+Received: from 64.251.132.84  (HELO pendp.net) (64.251.132.84)
+  by mta357.mail.mud.yahoo.com with SMTP; Fri, 30 Dec 2005 02:31:21 -0800
 From: alsa-devel@lists.sourceforge.net
-Date: Fri, 30 Dec 2005 08:34:40 UTC
-Subject: hi, ive a new mail address
+To: x-Recipient@yahoo.com
+Date: Fri, 30 Dec 2005 10:19:24 GMT
+Subject: hi,_ive_a_new_mail_address
 Importance: Normal
 X-Priority: 3 (Normal)
-Message-ID: <cfadec1d7f.e2c74d1a@lists.sourceforge.net>
+Message-ID: <7c16a.f8cbed85b4e4@lists.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="======bfec0bba6e42ca595b"
+Content-Type: multipart/mixed; boundary="====e0929a.fc071f"
 Content-Transfer-Encoding: 7bit
 This is a multi-part message in MIME format.
 
---======bfec0bba6e42ca595b
+--====e0929a.fc071f
 
 hey its me, my old address dont work at time. i dont know why?!
 in the last days ive got some mails. i' think thaz your mails but im not sure!
 
 plz read and check ...
 cyaaaaaaa
---======bfec0bba6e42ca595b
-Content-Type: application/octet-stream; name=mailtext.zip
-C
+--====e0929a.fc071f
+Content-Type: application/octet-stream; name=mailtext.z
 *** MESSAGE TRUNCATED ***
 
 
