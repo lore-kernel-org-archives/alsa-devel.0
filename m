@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 30 Dec 2005 10:31:22 -0000
-Message-ID: <E1EsHXm-0005GS-3R@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001695]: device have some options wich wrong configured or not yet aveilable
+Date: Fri, 30 Dec 2005 12:32:18 +0100
+Message-ID: <a412e1d841b8658e5fe108d1cb89f327@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B99D51A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 12:32:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,52 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1695> 
+======================================================================
+Reported By:                fishor
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1695
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             12-30-2005 12:32 CET
+Last Modified:              12-30-2005 12:32 CET
+======================================================================
+Summary:                    device have some options wich wrong configured or
+not yet aveilable
+Description: 
+This device have some options wich wrong configured or not yet aveilable:
+SUBVENOR_ID = 1043; SUBDEVICE_ID = 8138
+It's possible to cheng Headphone Playback Volume but this module provide
+only
+"Headphone Playback Switch"  (- 1.0.10, with wertion 1.0.11rc1 there is no
+swithc at all) and mixed with "Front Playback Volume" but they must
+be independ.  
+It's looks like you working with multi-playback (great!!! :-) if i can
+prowide
+you some more information ore tests i will do it):
 
---- Original message follows.
+lex@zwerg:~/Desktop$ cat /proc/asound/pcm
+00-00: ALC882 Analog : ALC882 Analog : playback 1 : capture 2
+00-01: ALC882 Digital : ALC882 Digital : playback 1 : capture 1
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+This device must privide two Analog. , one for back Rear and one for Front
+Rear.
+======================================================================
 
-The original message is over 5k.  Message truncated to 1K.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-30-05 12:32 fishor         New Issue                                    
+12-30-05 12:32 fishor         Kernel Version            => 2.6.14          
+======================================================================
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.194.200>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta357.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO pendp.net) (64.251.132.84)
-  by mta357.mail.mud.yahoo.com with SMTP; Fri, 30 Dec 2005 02:31:21 -0800
-From: alsa-devel@lists.sourceforge.net
-To: x-Recipient@yahoo.com
-Date: Fri, 30 Dec 2005 10:19:24 GMT
-Subject: hi,_ive_a_new_mail_address
-Importance: Normal
-X-Priority: 3 (Normal)
-Message-ID: <7c16a.f8cbed85b4e4@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="====e0929a.fc071f"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
-
---====e0929a.fc071f
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---====e0929a.fc071f
-Content-Type: application/octet-stream; name=mailtext.z
-*** MESSAGE TRUNCATED ***
 
 
 
