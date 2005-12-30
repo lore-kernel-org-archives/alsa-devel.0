@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001695]: device have some options wich wrong configured or not yet aveilable
-Date: Fri, 30 Dec 2005 12:32:18 +0100
-Message-ID: <a412e1d841b8658e5fe108d1cb89f327@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001066]: autodetection fails
+Date: Fri, 30 Dec 2005 13:35:02 +0100
+Message-ID: <a05a8919e799f9ce20d28116c0e84c5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B99D51A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 12:32:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 190F6178
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 13:35:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1695> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1066> 
 ======================================================================
-Reported By:                fishor
-Assigned To:                tiwai
+Reported By:                El Santo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1695
-Category:                   PCI - hda-intel
+Issue ID:                   1066
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.14
+Status:                     new
+Distribution:               linux from scratch
+Kernel Version:             2.6.11.7
 ======================================================================
-Date Submitted:             12-30-2005 12:32 CET
-Last Modified:              12-30-2005 12:32 CET
+Date Submitted:             04-19-2005 08:54 CEST
+Last Modified:              12-30-2005 13:35 CET
 ======================================================================
-Summary:                    device have some options wich wrong configured or
-not yet aveilable
+Summary:                    autodetection fails
 Description: 
-This device have some options wich wrong configured or not yet aveilable:
-SUBVENOR_ID = 1043; SUBDEVICE_ID = 8138
-It's possible to cheng Headphone Playback Volume but this module provide
-only
-"Headphone Playback Switch"  (- 1.0.10, with wertion 1.0.11rc1 there is no
-swithc at all) and mixed with "Front Playback Volume" but they must
-be independ.  
-It's looks like you working with multi-playback (great!!! :-) if i can
-prowide
-you some more information ore tests i will do it):
+i own a asus a8v (kt800pro) deluxe motherboard. it has a realtec alc850
+ac97 codec....
 
-lex@zwerg:~/Desktop$ cat /proc/asound/pcm
-00-00: ALC882 Analog : ALC882 Analog : playback 1 : capture 2
-00-01: ALC882 Digital : ALC882 Digital : playback 1 : capture 1
+i though this codec was supported
 
-This device must privide two Analog. , one for back Rear and one for Front
-Rear.
+when i load the snd-via82xx dont detect it... and none of the alsa modules
+say anything... not in screen, not kernel messages (dmesg), neither in
+/var/log/*...
+
+i have a bt878 tv card (bttv works perfectly) and snd-bt87x have the same
+problem that snd-via82xx... doesnt identify the card... but at least i can
+manually set the boot_all parameter....
+this tv card was correctly detected with my last motherboard asus a7v-600
+(kt600)
+
+i alsa tried to build alsa into the kernel (not like modules), but i get
+the same results
+
+any idea?
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 04:42 
+----------------------------------------------------------------------
+Any update on this?
+
+----------------------------------------------------------------------
+ El Santo - 12-30-05 13:35 
+----------------------------------------------------------------------
+ASUS response was that onboard sound is disabled when pci sound card is
+preset due to chipset's limitations.... They said that is a chipset
+limitation not a bios limitation (or feature). Personally i dont belive
+that.
+
+Finally, i gave up and removed the maxi sound isis and installed in
+another machine.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-30-05 12:32 fishor         New Issue                                    
-12-30-05 12:32 fishor         Kernel Version            => 2.6.14          
+04-19-05 08:54 El Santo       New Issue                                    
+04-19-05 08:54 El Santo       Distribution              => linux from scratch
+04-19-05 08:54 El Santo       Kernel Version            => 2.6.11.7        
+04-19-05 17:25 tiwai          Note Added: 0004520                          
+04-20-05 20:28 El Santo       Note Added: 0004544                          
+04-20-05 20:29 El Santo       File Added: lspci-vv                         
+04-22-05 19:18 vsu            Note Added: 0004555                          
+04-22-05 21:28 El Santo       Note Added: 0004557                          
+04-22-05 21:32 rlrevell       Note Added: 0004558                          
+04-22-05 21:55 El Santo       Note Added: 0004559                          
+04-22-05 22:00 rlrevell       Note Added: 0004560                          
+04-22-05 22:06 El Santo       Note Added: 0004561                          
+12-30-05 04:42 rlrevell       Note Added: 0007220                          
+12-30-05 13:35 El Santo       Note Added: 0007249                          
 ======================================================================
 
 
