@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001426]: only mono sound available on via82xx
-Date: Fri, 30 Dec 2005 23:16:59 +0100
-Message-ID: <8bcd183f53d819d44e97a0fc65ac31be@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001374]: unplug usb audio device while streaming will lock up the usb kernel
+Date: Fri, 30 Dec 2005 23:18:20 +0100
+Message-ID: <d865ba6abea12b05bbb9f0ae5b394264@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB152148
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:16:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E75E4148
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:18:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,41 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1426> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1374> 
 ======================================================================
-Reported By:                netset99
+Reported By:                byuan
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1426
-Category:                   PCI - via82xx
+Project:                    ALSA - lib
+Issue ID:                   1374
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             09-15-2005 22:12 CEST
-Last Modified:              12-30-2005 23:16 CET
+Date Submitted:             08-27-2005 23:53 CEST
+Last Modified:              12-30-2005 23:18 CET
 ======================================================================
-Summary:                    only mono sound available on via82xx
+Summary:                    unplug usb audio device while streaming will lock up
+the usb kernel
 Description: 
-Only get mono sound with alsa. This is shown by the fact that I cannot
-change the master stereo volume e.g. in alsamixer, only mute or unmute
-it.
-
-Tried with kernels 2.6.12, 2.6.13, both compiled into the kernel or as
-modules. Also happens with the drivers from the alsa homepage
-(1.0.10_rc1). Tried live CD's from Gentoo (2.6.12 kernel) and from Knoppix
-(2.6.11). dxs_support 1-5 and ac97_quirk parameters didn't solve the
-problem. Neither did changing volume / muting and unmuting a combination
-of controls in alsamixer.
-
-However: A Ubuntu Live CD (Kernel 2.6.10) gives me normal stereo sound.
+unplug usb audio device while streaming will lock up the usb kernel, the
+snd_pcm_close() doesn't help, unless the process that called the
+snd_pcm_open be closed.
 ======================================================================
 
 ----------------------------------------------------------------------
- netset99 - 09-15-05 22:47 
-----------------------------------------------------------------------
-I just wanted to add that in fact I can hear sound and it is stereo, I just
-cannot change the master stereo volume, just the PCM one.
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 23:16 
+ rlrevell - 12-30-05 23:18 
 ----------------------------------------------------------------------
 Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-05 22:12 netset99       New Issue                                    
-09-15-05 22:12 netset99       Distribution              => gentoo          
-09-15-05 22:12 netset99       Kernel Version            => 2.6.13          
-09-15-05 22:47 netset99       Note Added: 0006226                          
-12-30-05 23:16 rlrevell       Note Added: 0007282                          
+08-27-05 23:53 byuan          New Issue                                    
+08-27-05 23:55 byuan          Issue Monitored: byuan                       
+12-30-05 23:18 rlrevell       Note Added: 0007283                          
 ======================================================================
 
 
