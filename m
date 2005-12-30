@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001040]: ice1724: Invalid EEPROM (size = 255)
-Date: Fri, 30 Dec 2005 05:32:32 +0100
-Message-ID: <7dcf550677dff93e543dc15843a1dab1@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 30 Dec 2005 08:50:26 -0000
+Message-ID: <E1EsFy3-0002YD-9W@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CB0A193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:32:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +12,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1040> 
-======================================================================
-Reported By:                lorenb
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1040
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             04-08-2005 14:10 CEST
-Last Modified:              12-30-2005 05:32 CET
-======================================================================
-Summary:                    ice1724: Invalid EEPROM (size = 255)
-Description: 
-Have a Shuttle SN25P based system:
-http://global.shuttle.com/Product/Barebone/SN25P.asp
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-It comes with VIA Envy24PT audio controller:
-http://www.via.com.tw/en/products/audio/controllers/envy24pt/
+--- Original message follows.
 
-Every time I tried and load the ice1724 driver I get an error about
-invalid EEPROM size.
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-I saw this old bug:
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000142
+The original message is over 5k.  Message truncated to 1K.
 
-Which indicated this issue was resolved in 1.0.5a.  I'm using v1.0.9rc2.
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.218>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta350.mail.scd.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO vvuxqt.net) (64.251.132.84)
+  by mta350.mail.scd.yahoo.com with SMTP; Fri, 30 Dec 2005 00:50:25 -0800
+From: alsa-devel@lists.sourceforge.net
+Date: Fri, 30 Dec 2005 08:34:40 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+Message-ID: <cfadec1d7f.e2c74d1a@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="======bfec0bba6e42ca595b"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-======================================================================
+--======bfec0bba6e42ca595b
 
-----------------------------------------------------------------------
- rlrevell - 12-30-05 05:28 
-----------------------------------------------------------------------
-Any improvement with later ALSA releases?
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-----------------------------------------------------------------------
- lorenb - 12-30-05 05:32 
-----------------------------------------------------------------------
-Yeah the card now works fine with the current ALSA in the Linux kernel. You
-can close the bug.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-08-05 14:10 lorenb         New Issue                                    
-04-08-05 14:10 lorenb         Distribution              => Gentoo          
-04-08-05 14:10 lorenb         Kernel Version            => 2.6.11          
-04-09-05 19:09 ungod          Note Added: 0004427                          
-04-12-05 21:11 lorenb         Note Added: 0004464                          
-12-30-05 05:28 rlrevell       Note Added: 0007247                          
-12-30-05 05:32 lorenb         Note Added: 0007248                          
-======================================================================
-
+plz read and check ...
+cyaaaaaaa
+--======bfec0bba6e42ca595b
+Content-Type: application/octet-stream; name=mailtext.zip
+C
+*** MESSAGE TRUNCATED ***
 
 
 
