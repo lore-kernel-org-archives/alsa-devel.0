@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000854]: Can't load module snd-cs4236, snd-cs4236 or snd-sb8
-Date: Fri, 30 Dec 2005 05:22:51 +0100
-Message-ID: <82a55db79ab617bbad201f5357207d9b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000282]: ES1688 driver assumes inappropriate port for OPL3; no way to change
+Date: Fri, 30 Dec 2005 05:24:22 +0100
+Message-ID: <f225c02b7beb20cd32585b7f7749960a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03C83125
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:22:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16B0218F
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:24:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,111 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=854> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=282> 
 ======================================================================
-Reported By:                mrpee
+Reported By:                jessleah
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   854
-Category:                   ISA - cs4236
+Issue ID:                   282
+Category:                   ISA - es1688
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8-2-386
+Distribution:               Debian GNU/Linux 3.0 (Woody) for i386
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             01-28-2005 13:18 CET
-Last Modified:              12-30-2005 05:22 CET
+Date Submitted:             05-19-2004 05:22 CEST
+Last Modified:              12-30-2005 05:24 CET
 ======================================================================
-Summary:                    Can't load module snd-cs4236, snd-cs4236 or snd-sb8
+Summary:                    ES1688 driver assumes inappropriate port for OPL3;
+no way to change
 Description: 
-I can't load any modules for my sound carc Cirrus Logic cs4237b on my Dell
-Latitude CP M233XT. I tried snd-cs4236, snd-cs4236 and also the
-soundblaster module snd-sb8 with the same result "no such device".
+On a ThinkPad 560 (which uses an ES1688 chip), the OPL3 should use the port
+range 0x388-0x38b. However, ALSA 1.0.4 for some reason assumes that the
+port you specify for the ES1688 (i.e. 0x220, in my case) is the base port
+of the OPL3 chip, which is just plain wrong.
 
-I think I'll tried everything, kernel 2.4 with alsamodules, 2.6.1, alsa
-1.0.7-2. half/full duplex, changing irq, dma etc.
+I go:
+modprobe snd-es1688-lib
+modprobe snd-mpu401-uart
+modprobe snd-opl3-lib
+modprobe snd-es1688 port=0x220 irq=7 dma8=1 mpu_port=0x330 mpu_irq=9
 
-Here is a link from another forum whith the same problem:
-http://www.talkaboutsoftware.com/group/linux.debian.laptop/messages/7049.html
+And when I cat /proc/ioports | grep -i opl, I get:
+
+0220-0221 : OPL2/3 (left)
+0222-0223 : OPL2/3 (right)
+
+Needless to say, MIDI doesn't work!
+
+The OSS/Free driver works fine with my OPL3, and the same command (cat
+/proc/ioports | grep -i opl) yields:
+
+0388-038b : Yamaha OPL3
+
+MIDI works fine with the OSS/Free driver.
+
+Heeeeeeeeeeeeeeeeeeeeeeeeelp...
 ======================================================================
 
 ----------------------------------------------------------------------
- mrpee - 03-30-05 09:49 
+ jdthood - 04-04-05 22:23 
 ----------------------------------------------------------------------
-After running alsaconf I have these modules:
-
-# lsmod
-Module                  Size  Used by
-snd_pcm_oss            48168  0
-snd_mixer_oss          16640  1 snd_pcm_oss
-snd_pcm                85384  1 snd_pcm_oss
-snd_page_alloc         11144  1 snd_pcm
-snd_timer              23172  1 snd_pcm
-snd                    50660  4
-snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9824  1 snd
-lp                     10408  0
-ipv6                  229764  14
-orinoco_cs              9096  1
-ds                     17796  5 orinoco_cs
-nfsd                  181024  8
-exportfs                6144  1 nfsd
-lockd                  56520  2 nfsd
-sunrpc                137060  2 nfsd,lockd
-af_packet              20872  2
-floppy                 54992  0
-parport_pc             33348  1
-parport                37320  2 lp,parport_pc
-rtc                    12088  0
-tsdev                   7168  0
-mousedev                9996  1
-joydev                  9536  0
-evdev                   9088  0
-pcspkr                  3816  0
-psmouse                17800  0
-3c59x                  36776  0
-yenta_socket           19200  2
-pcmcia_core            63028  3 orinoco_cs,ds,yenta_socket
-uhci_hcd               29328  0
-usbcore               104164  3 uhci_hcd
-dm_mod                 51068  0
-capability              4872  0
-commoncap               7168  1 capability
-orinoco                38284  1 orinoco_cs
-hermes                  7936  2 orinoco_cs,orinoco
-ide_cd                 38176  0
-cdrom                  35740  1 ide_cd
-ext3                  109672  1
-jbd                    54552  1 ext3
-ide_generic             1664  0
-piix                   12448  1
-ide_disk               16768  3
-ide_core              125028  4 ide_cd,ide_generic,piix,ide_disk
-unix                   26036  302
-font                    8576  0
-vesafb                  6688  0
-cfbcopyarea             3840  1 vesafb
-cfbimgblt               3200  1 vesafb
-cfbfillrect             3712  1 vesafb
+It isn't apparent to me that anything has been done about this.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:22 
+ rlrevell - 12-30-05 05:24 
 ----------------------------------------------------------------------
-Any improvement with later ALSA releases?
+Has there been any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-05 13:18 mrpee          New Issue                                    
-01-28-05 13:18 mrpee          Distribution              => Debian          
-01-28-05 13:18 mrpee          Kernel Version            => 2.6.8-2-386     
-01-28-05 13:23 mrpee          Note Added: 0003426                          
-03-28-05 04:23 jdthood        Note Added: 0004233                          
-03-30-05 09:49 mrpee          Note Added: 0004264                          
-12-30-05 05:22 rlrevell       Note Added: 0007243                          
+05-19-04 05:22 jessleah       New Issue                                    
+05-19-04 05:22 jessleah       Distribution              => Debian GNU/Linux 3.0
+(Woody) for i386
+05-19-04 05:22 jessleah       Kernel Version            => 2.4.25          
+05-19-04 14:20 jessleah       Issue Monitored: jessleah                    
+04-04-05 22:23 jdthood        Note Added: 0004331                          
+12-30-05 05:24 rlrevell       Note Added: 0007244                          
 ======================================================================
 
 
