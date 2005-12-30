@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001487]: AudioScience cards show as NOT supported.
-Date: Sat, 31 Dec 2005 00:00:45 +0100
-Message-ID: <1be71a46bf64e8f14a304b9319b3ec7e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001271]: Changes in ALSA driver between 2.6.11.10 and 2.6.12.3 mean echo-cancelling mics fail
+Date: Sat, 31 Dec 2005 00:01:51 +0100
+Message-ID: <6d3feeadc6682884261c9c31d38591f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7D4E171
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:00:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB3DE176
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:01:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1487> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1271> 
 ======================================================================
-Reported By:                dbx
-Assigned To:                rlrevell
+Reported By:                dcpiper
+Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1487
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Issue ID:                   1271
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12.3
 ======================================================================
-Date Submitted:             10-21-2005 01:50 CEST
-Last Modified:              12-31-2005 00:00 CET
+Date Submitted:             07-21-2005 18:50 CEST
+Last Modified:              12-31-2005 00:01 CET
 ======================================================================
-Summary:                    AudioScience cards show as NOT supported.
+Summary:                    Changes in ALSA driver between 2.6.11.10 and
+2.6.12.3 mean echo-cancelling mics fail
 Description: 
-AudioScience entries in the matrix should be supported.
-Attaching an updated version of the xml card description file.
+Under 2.6.12.3, terrible feedback happens when the echo-cancelling
+microphone (A ClearOne AccuMic II) is enabled. No matter if the microphone
+is set to mute or not through alsamixer or gnome-volume-control there is
+persistent feedback that howls increasingly louder until the microphone's
+own enable button is turned off again.
+
+Rebooting solved nothing, as did resetting the power on the microphone.
+Reboot to 2.6.11.10 and the problem is gone again. Something changed in
+ALSA somewhere between those kernel versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:00 
+ rlrevell - 12-31-05 00:01 
 ----------------------------------------------------------------------
-They show as supported by snd-asihpi now
-
-http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-AudioScience#matrix
+Was this resolved in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-05 01:50 dbx            New Issue                                    
-10-21-05 01:50 dbx            File Added: vendor-AudioScience.xml               
-    
-12-31-05 00:00 rlrevell       Status                   new => resolved     
-12-31-05 00:00 rlrevell       Resolution               open => fixed       
-12-31-05 00:00 rlrevell       Assigned To               => rlrevell        
-12-31-05 00:00 rlrevell       Note Added: 0007306                          
+07-21-05 18:50 dcpiper        New Issue                                    
+07-21-05 18:50 dcpiper        Distribution              => Debian Sarge    
+07-21-05 18:50 dcpiper        Kernel Version            => 2.6.12.3        
+12-31-05 00:01 rlrevell       Note Added: 0007307                          
 ======================================================================
 
 
