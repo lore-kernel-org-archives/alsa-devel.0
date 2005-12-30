@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000835]: Possible race condition leading to crash in gnome-volume-control
-Date: Fri, 30 Dec 2005 23:02:10 +0100
-Message-ID: <ad8ccca8b4675f5a13fdea281260b2a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000763]: I can't make the emulation of /dev/dsp work;  the driver "executes" but reports errors;  there is no sound output.
+Date: Fri, 30 Dec 2005 23:03:06 +0100
+Message-ID: <deb6e7fd6a90e0e5660b194ab69bd450@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7203718F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:02:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F42818F
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:03:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=835> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=763> 
 ======================================================================
-Reported By:                jcspray
+Reported By:                lovett
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   835
-Category:                   PCI - emu10k1
-Reproducibility:            sometimes
+Issue ID:                   763
+Category:                   CORE OSS - pcm
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Ubuntu
-Kernel Version:             2.6.8
+Distribution:               
+Kernel Version:             
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-18-2005 22:49 CET
-Last Modified:              12-30-2005 23:02 CET
+Date Submitted:             12-30-2004 22:48 CET
+Last Modified:              12-30-2005 23:03 CET
 ======================================================================
-Summary:                    Possible race condition leading to crash in
-gnome-volume-control
+Summary:                    I can't make the emulation of /dev/dsp work;  the
+driver "executes" but reports errors;  there is no sound output.
 Description: 
-The maintainer of the gstreamer-based gnome-volume-control utility believes
-that a crash may be the result of a race condition in ALSA driver.
-
-Please see http://bugzilla.gnome.org/show_bug.cgi?id=156921#c9
+I have a "Sound Blaster" card.  /proc/asound/cards says:
+0 [Live           ]: EMU10K1 - Sound Blaster Live!
+                     Sound Blaster Live! (rev.8, serial:0x80641102) at
+0x8c00, irq 23
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-15-05 15:05 
+ jdthood - 09-14-05 16:22 
 ----------------------------------------------------------------------
-A small (better) testcase is needed for debugging.
+Submitter: Did you ever manage to solve this problem?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:02 
+ rlrevell - 12-30-05 23:03 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-18-05 22:49 jcspray        New Issue                                    
-01-18-05 22:49 jcspray        Distribution              => Ubuntu          
-01-18-05 22:49 jcspray        Kernel Version            => 2.6.8           
-01-19-05 14:28 tiwai          Note Added: 0003267                          
-09-15-05 15:05 jdthood        Note Added: 0006199                          
-09-15-05 15:05 jdthood        Status                   new => feedback     
-12-30-05 23:02 rlrevell       Status                   feedback => closed  
-12-30-05 23:02 rlrevell       Note Added: 0007273                          
+12-30-04 22:48 lovett         New Issue                                    
+01-03-05 12:05 tiwai          Note Added: 0003052                          
+01-03-05 18:12 lovett         File Added: dspFailure                       
+01-03-05 23:35 lovett         Note Added: 0003076                          
+01-14-05 17:25 lovett         Note Added: 0003208                          
+09-14-05 16:22 jdthood        Note Added: 0006183                          
+12-30-05 23:03 rlrevell       Status                   new => closed       
+12-30-05 23:03 rlrevell       Note Added: 0007274                          
 ======================================================================
 
 
