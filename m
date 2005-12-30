@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000145]: Nforce2 Audio - Bacon Fry ssZzZZZZzzle
-Date: Fri, 30 Dec 2005 04:48:48 +0100
-Message-ID: <5709d9962cb5f9c2bf2d324f95cb10ad@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000850]: Clicking sound at the end of short audio files on Audigy DE.
+Date: Fri, 30 Dec 2005 04:49:48 +0100
+Message-ID: <1d85e678483ba92cc65c9347f87fbb6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED854125
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:48:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEB21183
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:49:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=145> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=850> 
 ======================================================================
-Reported By:                onemaN
+Reported By:                Lucid
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   145
-Category:                   PCI - intel8x0
+Issue ID:                   850
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               slackware!
-Kernel Version:             2.6.4
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             03-18-2004 09:07 CET
-Last Modified:              12-30-2005 04:48 CET
+Date Submitted:             01-27-2005 05:07 CET
+Last Modified:              12-30-2005 04:49 CET
 ======================================================================
-Summary:                    Nforce2 Audio - Bacon Fry ssZzZZZZzzle
+Summary:                    Clicking sound at the end of short audio files on
+Audigy DE.
 Description: 
-Im using 2.6.4 with an abit nf7-s 2.0. Bacon fry is apparent on both analog
-and spdif output (exactly the same effect). When playing music the pitch
-is correct (with 2.6.2 everything was speeded up 20% it seemed) 
-
-It does this every time when I play mp3 or flac files with xmms or any
-other player. 
-
-OK so when I got on this bug system I saw there was allready many bugs
-listed simaler to this. The reason im making effort here, is because Im
-willing to be contacted and work with you guys to get this one right, I
-want of course to use this linux box as a half terabyte flac jukebox, and
-I cant do that if the sound is anything less than perfect. ;P 
-
-Let me know! I will do what I can to help debug!
-
--David 
-david@wdtp.com
+When playing short audio files such as audio notifications there is a short
+clicking sound as the file is closed.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001081 Clicking noise when short sound files a...
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 14:36 
+ rlrevell - 12-30-05 04:01 
 ----------------------------------------------------------------------
-Submitter: Does this solve the problem?:
-
-> amixer set "Surround Down Mix" off
+Any improvement with later releases?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:48 
+ Lucid - 12-30-05 04:49 
 ----------------------------------------------------------------------
-No response
+I no longer have Linux installed on this pc so I can't tell you.  If I need
+to install it for next semester I can check this issue then.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-04 09:07 onemaN         New Issue                                    
-03-18-04 09:07 onemaN         Distribution              => slackware!      
-03-18-04 09:07 onemaN         Kernel Version            => 2.6.4           
-03-18-04 09:11 onemaN         Note Added: 0000640                          
-03-18-04 09:36 onemaN         Issue Monitored: onemaN                      
-03-23-04 16:20 perex          Note Added: 0000666                          
-03-23-04 18:15 onemaN         Note Added: 0000674                          
-03-23-04 18:42 perex          Note Added: 0000686                          
-03-23-04 19:16 onemaN         Note Added: 0000691                          
-03-23-04 19:26 onemaN         Note Added: 0000692                          
-07-22-04 05:44 cosmix         Note Added: 0001466                          
-07-31-04 17:11 mcbridematt    Note Added: 0001510                          
-09-28-04 02:57 rotech         Note Added: 0001944                          
-09-28-04 16:17 djtm           Note Added: 0001951                          
-04-09-05 14:36 jdthood        Note Added: 0004401                          
-12-30-05 04:48 rlrevell       Status                   new => closed       
-12-30-05 04:48 rlrevell       Note Added: 0007224                          
+01-27-05 05:07 Lucid          New Issue                                    
+01-27-05 05:07 Lucid          Kernel Version            => 2.6.10          
+01-27-05 05:31 Lucid          Issue Monitored: Lucid                       
+09-22-05 15:17 jdthood        Relationship added       related to 0001081  
+12-30-05 04:01 rlrevell       Note Added: 0007196                          
+12-30-05 04:49 Lucid          Note Added: 0007225                          
 ======================================================================
 
 
