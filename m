@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001020]: Driver only records left channel when requested to record in stereo from Line-In
-Date: Fri, 30 Dec 2005 05:15:09 +0100
-Message-ID: <1ca44cc69e5203cf5f6ab56d7fe3c22f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000536]: Sound no longer works on IBM ThinkPad 600x after waking from sleep
+Date: Fri, 30 Dec 2005 05:16:17 +0100
+Message-ID: <23d61b29093f9b47d007d3981e5b5333@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03B2F193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:15:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18373193
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:16:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,94 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1020> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=536> 
 ======================================================================
-Reported By:                David Klusacek
+Reported By:                bkendig
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1020
-Category:                   CORE - pcm
+Issue ID:                   536
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
+Distribution:               FC2
+Kernel Version:             2.6.9-rc2
 ======================================================================
-Date Submitted:             03-29-2005 14:13 CEST
-Last Modified:              12-30-2005 05:15 CET
+Date Submitted:             09-24-2004 16:23 CEST
+Last Modified:              12-30-2005 05:16 CET
 ======================================================================
-Summary:                    Driver only records left channel when requested to
-record in stereo from Line-In
+Summary:                    Sound no longer works on IBM ThinkPad 600x after
+waking from sleep
 Description: 
+After booting this laptop, sound works fine; but after putting the system
+to sleep and waking it, sound will no longer work until the system is
+rebooted.  No error messages are displayed.
 
-When recording analog source, only one channel is really being captured,
-while the other returns some garbage (usually zeroes), regardless of the
-program being used for recording. As it appears on at least three
-different soundcards (snd-ens1371, snd-via82xx and snd-intel8x0 (intel
-records left and omits right channel)), I think that the cause might have
-something to do with the pcm core. 
+This is an IBM ThinkPad 600x, which has a feature where it will cut power
+to the PCI bus to save battery when the bus is not being used.  I believe
+this is what's killing ALSA.
 
-Note also, that drivers for ens1371 and via82xx worked well in the older
-(0.5.10b) versions of ALSA.
+This system is running Fedora Core 2 with kernel version 2.6.9-rc2, but
+the problem has occurred with every version of 2.6 since its release.
+
+The sound modules can not be unloaded because the system believes they're
+still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR: Module snd_cs46xx
+is in use".
 
 
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000226 Sound hangs after APM resume
+======================================================================
 
 ----------------------------------------------------------------------
- David Klusacek - 03-30-05 19:28 
+ sboehler - 03-28-05 15:49 
 ----------------------------------------------------------------------
-Of course that I checked the cable (and it is working since it works with
-old kernel and old alsa). I even tried three diffrent machines, hence the
-bug is quite independent of CPU and chipset used. 
+I have the same problem with a Thinkpad T22, ACPI and kernel 2.6.11.2. Even
+though reloading the module after ACPI resume works, it is a pain because
+all the applications using sound have to be killed. I'm willing to assist
+in solving this problem, is anybody working on this? Do you guys have data
+books for this soundcard?
 
-Unfortunately I do not have any /etc/asound.state file on my machine (what
-is it good for, anyway?). If you doubt about my mixer setting I attached
-the output of amixer program  (file amixer.out). Hope this helps.
+Soundcard:
+
+0000:00:05.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
+[CrystalClear SoundFusion Audio Accelerator] (rev 01)
+        Subsystem: IBM: Unknown device 0153
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (1000ns min, 6000ns max)
+        Interrupt: pin A routed to IRQ 11
+        Region 0: Memory at e8122000 (32-bit, non-prefetchable) [size=4K]
+        Region 1: Memory at e8000000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:15 
+ rlrevell - 12-30-05 05:16 
 ----------------------------------------------------------------------
-Any updates on this?
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-05 14:13 David Klusacek New Issue                                    
-03-29-05 14:13 David Klusacek Kernel Version            => 2.6.11          
-03-29-05 17:14 tiwai          Note Added: 0004248                          
-03-29-05 20:14 David Klusacek Note Added: 0004257                          
-03-29-05 20:19 tiwai          Note Added: 0004258                          
-03-30-05 19:28 David Klusacek Note Added: 0004272                          
-03-30-05 19:29 David Klusacek File Added: amixer.out                       
-12-30-05 05:15 rlrevell       Note Added: 0007237                          
+09-24-04 16:23 bkendig        New Issue                                    
+09-24-04 16:23 bkendig        Distribution              => FC2             
+09-24-04 16:23 bkendig        Kernel Version            => 2.6.9-rc2       
+10-01-04 17:07 tiwai          Note Added: 0002002                          
+01-17-05 11:01 jdthood        Note Added: 0003228                          
+03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
+03-28-05 15:49 sboehler       Note Added: 0004241                          
+06-20-05 02:00 tromer         Issue Monitored: tromer                      
+12-12-05 11:11 bheung         Issue Monitored: bheung                      
+12-30-05 05:16 rlrevell       Note Added: 0007238                          
 ======================================================================
 
 
