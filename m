@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0001119]: USB headset not working
-Date: Fri, 30 Dec 2005 21:12:22 +0100
-Message-ID: <e3304ec000061ec7834ea6fa9dd44c7b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001124]: sound recording does not work
+Date: Fri, 30 Dec 2005 21:41:47 +0100
+Message-ID: <5f68cbce75db1176a5d71687e426bf29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF324159
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 21:12:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01642184
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 21:41:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1119> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1124> 
 ======================================================================
-Reported By:                donlvnv
+Reported By:                demiurg
 Assigned To:                
 ======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   1119
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1124
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-20-2005 08:48 CEST
-Last Modified:              12-30-2005 21:12 CET
+Date Submitted:             05-24-2005 21:03 CEST
+Last Modified:              12-30-2005 21:41 CET
 ======================================================================
-Summary:                    USB headset not working
+Summary:                    sound recording does not work
 Description: 
-using ac97 on a Shuttle SFF and suse 9.3 with a Logitech 300 headset.
-The headset won't work. I have tried it with Knoppix 3.8 Livecd.
-Kmix recognizes it and it work under knoppix, but as soon as I run
-alsaconf.
-The Headset stops working and there is no tab for it in Kmix.
-Alsamixer has no place for it under suse or knoppix. I have got it to
-output to the headset in Control Center,Sound & Multimedia,Sound
-System.Hardware tab by overriding device location to /dev/dsp1, and then
-in the general tab and selecting  the test sound.
+Sorry if this is a duplicate - I could not find a way to search the
+bagtrack 
+system. My email to the mailing list was not answered and I did not find
+anything in the archives, so...
+
+I have an intel 810 based sound card :
+
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
+AC'97 Audio Controller (rev 02).
+
+It works great, except that I can't get sound recording to work. It
+does works on windows, so HW is OK. On linux it records nothing but noise.
+I
+checked all the obvious places - mic and capture volumes in alsamixer,
+etc. 
+
+My system :
+
+Vanilla FC3.
+kernel  2.6.11-1.27_FC3smp
+alsa-lib-1.0.6-8
+
+lspci :
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+
+CPU : Pentium4
+motherboard : GA-8IPE1000
+sound : onboard Realtek ALC850 CODEC 
+
+amixer  contents :
+see attachment
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 21:12 
+ rlrevell - 12-30-05 20:52 
 ----------------------------------------------------------------------
 Any improvement in later releases?
+
+----------------------------------------------------------------------
+ demiurg - 12-30-05 21:41 
+----------------------------------------------------------------------
+Yep, it was actually cured in one of the latest updates to FC4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-20-05 08:48 donlvnv        New Issue                                    
-05-20-05 08:51 donlvnv        Issue Monitored: donlvnv                     
-12-30-05 21:12 rlrevell       Note Added: 0007262                          
+05-24-05 21:03 demiurg        New Issue                                    
+05-24-05 21:03 demiurg        File Added: amixer                           
+12-30-05 20:52 rlrevell       Note Added: 0007260                          
+12-30-05 21:41 demiurg        Note Added: 0007263                          
 ======================================================================
 
 
