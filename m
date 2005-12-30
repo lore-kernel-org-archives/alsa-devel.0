@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000301]: No sound though everything looks fine
-Date: Fri, 30 Dec 2005 04:40:45 +0100
-Message-ID: <267d4e4c3c3e17fc10d01eb6dba54173@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000573]: no SPDIF output with vt82xx/ICEnsemble VT1616i
+Date: Fri, 30 Dec 2005 04:39:57 +0100
+Message-ID: <bbc61387c840f425980f1086bc006baf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 093281A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:40:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCC911A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:39:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=301> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=573> 
 ======================================================================
-Reported By:                kevkim55
+Reported By:                vladimir
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   301
-Category:                   PCI - intel8x0
+Issue ID:                   573
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.4.22-14
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora Core 3 test 2
+Kernel Version:             2.6.8-1.541, as shipped with FC3t2
 ======================================================================
-Date Submitted:             05-24-2004 13:05 CEST
-Last Modified:              12-30-2005 04:40 CET
+Date Submitted:             10-09-2004 00:59 CEST
+Last Modified:              12-30-2005 04:39 CET
 ======================================================================
-Summary:                    No sound though everything looks fine
+Summary:                    no SPDIF output with vt82xx/ICEnsemble VT1616i
 Description: 
-I installed Mandrake Linux 9.2 on my BenQ JoyBook 3000 Laptop. The setup
-program detected the soundcard correctly as ALi M5455 with AC'97 codecs
-and installed the intel8x0 as the driver. The settings are allright, the
-driver and other sound core modules load properly without any problem and
-at boot time I can see the lines 
- * Loading intel8x0 sound module ..
- * Using alsactl to restore mixer settings..
- * Loading mixer settings ...
- The output of dmesg looks fine with absolutely no errrors. I set all of
-the mixer settings at 100% and unmuted by using amix/alsamixer. The
-utilities like Kaboodle, mpeg123 etc play without complaining, BUT THERE'S
-NO SOUND. 
- I just don't understand what's wrong with my settings as everything seems
-allright. The output of asound files in /proc directory shows the
-settings, which seem allright to me, except the out put pcm0C0D1c and
-pcm0C0D1p, which out -> :closed
-  Catting sound files to pcm0C0D0c and pcm0C0D0p or to /dev/dsp,
-/dev/audio result in nothing as the I hear no sound nor I get the command
-prompt back, Ihave to hit Ctrl-C to terminate 'cat'. When I try the same
-thing with pcm0C0D1c and pcm0C0D1p I get an error message like invalid
-operation.
+With alsa 1.0.6 (in kernel), 1.0.7rc1, or CVS, I'm unable to reliably get
+SPDIF output to work -- it might work once out of a dozen or so times. 
+The attached patch improves things -- ignoring the cached values in
+ac97_read_cache gives me working spdif playbac.  The values I see printed
+with the printk added in ac97_read_cache by the patch are:
+
+AC97_read_cache: register 0x002a has real value 0x01f1 cached 0x05f1 
+AC97_read_cache: register 0x002a has real value 0x05f1 cached 0x01f1 
+
+which indicates a change in the read-only SPCV bit.  Perhaps registers
+with read-only status bits shouldn't be cached?  I'm not sure if that's
+the fix, or if there's a deeper issue here.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 16:07 
+ vladimir - 04-10-05 06:05 
 ----------------------------------------------------------------------
-Please send the output of
-
-   lsmod
-   uname -a
-   lspci
-   cat /proc/asound/version
-   cat /proc/asound/cards
+I ended up RMA'ing my EPIA ME6000 for an identical one, and just recently
+got around to setting the machine up. Reinstalling stock FC3, and updating
+to the latest kernel -- kernel-2.6.10-1.770_FC3 -- and now I've yet to get
+any SPDIF output at all.  Trying to track it down..
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:40 
+ rlrevell - 12-30-05 04:39 
 ----------------------------------------------------------------------
-No response
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-04 13:05 kevkim55       New Issue                                    
-05-24-04 13:05 kevkim55       Kernel Version            => 2.4.22-14       
-03-23-05 16:07 jdthood        Note Added: 0004174                          
-12-30-05 04:40 rlrevell       Status                   new => closed       
-12-30-05 04:40 rlrevell       Note Added: 0007217                          
+10-09-04 00:59 vladimir       New Issue                                    
+10-09-04 00:59 vladimir       File Added: ac97_codec-no-readcache.patch         
+          
+10-09-04 00:59 vladimir       Distribution              => Fedora Core 3 test 2
+10-09-04 00:59 vladimir       Kernel Version            => 2.6.8-1.541, as
+shipped with FC3t2
+10-11-04 08:21 vladimir       Note Added: 0002070                          
+10-11-04 12:54 tiwai          Note Added: 0002076                          
+10-11-04 19:46 vladimir       Note Added: 0002083                          
+10-12-04 14:31 tiwai          Note Added: 0002092                          
+10-12-04 14:31 tiwai          File Added: ac97-spcv-debug.diff                  
+ 
+10-12-04 19:44 vladimir       Note Added: 0002107                          
+10-13-04 11:16 tiwai          Note Added: 0002118                          
+10-13-04 11:17 tiwai          File Added: ac97-ea-fix.diff                    
+04-09-05 16:17 jdthood        Note Added: 0004409                          
+04-10-05 06:05 vladimir       Note Added: 0004432                          
+12-30-05 04:39 rlrevell       Note Added: 0007216                          
 ======================================================================
 
 
