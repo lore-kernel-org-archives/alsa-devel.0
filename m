@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001385]: sound is low with SIS7012 alc655
-Date: Fri, 30 Dec 2005 23:12:59 +0100
-Message-ID: <91488bff4c5bc720dbef0fb95ae80e64@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
+Date: Fri, 30 Dec 2005 23:14:25 +0100
+Message-ID: <cf6bc960d3a27e92ade2683527595737@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51D24148
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:12:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F4BA148
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:14:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1385> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1421> 
 ======================================================================
-Reported By:                brainstorm
+Reported By:                do13
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1385
-Category:                   PCI - intel8x0
+Issue ID:                   1421
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             2.6.12
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             08-31-2005 20:42 CEST
-Last Modified:              12-30-2005 23:12 CET
+Date Submitted:             09-14-2005 22:12 CEST
+Last Modified:              12-30-2005 23:14 CET
 ======================================================================
-Summary:                    sound is low with SIS7012 alc655
+Summary:                    AC97 device name changed in ac97_codec.c
 Description: 
-hello
-I m french and I ve a problem with my notebook (medion 42469). It s
-impossible to have sound in speaker (only a very low sound in headphones-
-same problem with Mandrake 10 - 10.1 mandiva 2005 and now mandriva 2006
-beta 3 with alsa 9)) I saw in the form men with the same problem and one
-have a solution for his computer but it s not good for mine 
+Bug #0001334 changed the device name on the AC97-bus into card#-# this
+prevents external drivers to access the AC97 codec.
+The basic idea of the AC97-bus was to bind external drivers to an codec to
+use their extended features (touchscreen, AD- converter etc). With this
+naming change we can't bind drivers to the codec, because the device name
+isn't the name of the driver.
 
-( ID 0001274 ....  
-temporarily solution:
-I hop this will help
-
-cat > /proc/asound/IXP/codec97#0/ac97#0-0+regs <<EOF
-00 0000
-02 0a0a
-...... )
-
-Where is the solution ?
-FRED
+Andy ideas about this?
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:12 
+ liam - 09-15-05 17:12 
 ----------------------------------------------------------------------
-Any improvement with later releases?
+Does anybody object to :-
+
+card1-0:WM9713
+
+This way the card number, ac97 bus id and codec id are preserved.
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 23:14 
+----------------------------------------------------------------------
+Any news on this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-05 20:42 brainstorm     New Issue                                    
-08-31-05 20:42 brainstorm     Kernel Version            => 2.6.12          
-12-30-05 23:12 rlrevell       Note Added: 0007279                          
+09-14-05 22:12 do13           New Issue                                    
+09-14-05 22:12 do13           Kernel Version            => 2.6.13          
+09-15-05 14:18 Clemens LadischNote Added: 0006195                          
+09-15-05 16:07 tiwai          Note Added: 0006212                          
+09-15-05 17:04 liam           Note Added: 0006216                          
+09-15-05 17:12 liam           Note Added: 0006217                          
+12-30-05 23:14 rlrevell       Note Added: 0007280                          
 ======================================================================
 
 
