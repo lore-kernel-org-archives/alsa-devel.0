@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001040]: ice1724: Invalid EEPROM (size = 255)
-Date: Fri, 30 Dec 2005 05:28:19 +0100
-Message-ID: <56a278335b1b5cbe0f4f527d9c815f07@bugtrack.alsa-project.org>
+Date: Fri, 30 Dec 2005 05:32:32 +0100
+Message-ID: <7dcf550677dff93e543dc15843a1dab1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E93B9193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:28:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CB0A193
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:32:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             04-08-2005 14:10 CEST
-Last Modified:              12-30-2005 05:28 CET
+Last Modified:              12-30-2005 05:32 CET
 ======================================================================
 Summary:                    ice1724: Invalid EEPROM (size = 255)
 Description: 
@@ -61,27 +61,15 @@ Which indicated this issue was resolved in 1.0.5a.  I'm using v1.0.9rc2.
 ======================================================================
 
 ----------------------------------------------------------------------
- lorenb - 04-12-05 21:11 
-----------------------------------------------------------------------
-I came across this blog entry, where someone with the same system as me was
-having the same ice1724 issue:
-
-http://www.nakack.net/?p=19
-
-He wrote a patch and made it available:
-http://www.nakack.net/?p=20
-
-I tried it out and it works for me.  The modules load and I have sound
-working on my system. 
-
-The only thing not working is esound. It complains it can't open the sound
-device for various modes (8-bit|16-bit + mono|stereo).  That just means I
-can't listen to sound effects in GNOME, not really a big loss to me.
-
-----------------------------------------------------------------------
  rlrevell - 12-30-05 05:28 
 ----------------------------------------------------------------------
 Any improvement with later ALSA releases?
+
+----------------------------------------------------------------------
+ lorenb - 12-30-05 05:32 
+----------------------------------------------------------------------
+Yeah the card now works fine with the current ALSA in the Linux kernel. You
+can close the bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -92,6 +80,7 @@ Date Modified  Username       Field                    Change
 04-09-05 19:09 ungod          Note Added: 0004427                          
 04-12-05 21:11 lorenb         Note Added: 0004464                          
 12-30-05 05:28 rlrevell       Note Added: 0007247                          
+12-30-05 05:32 lorenb         Note Added: 0007248                          
 ======================================================================
 
 
