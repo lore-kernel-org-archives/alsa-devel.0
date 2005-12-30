@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001278]: fails to read volume for software volume control
-Date: Fri, 30 Dec 2005 23:38:07 +0100
-Message-ID: <0b3ea4b5a62f0d27d59aed9eb8dcd3ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
+Date: Fri, 30 Dec 2005 23:43:29 +0100
+Message-ID: <f35766cbcfed570b71af84b4421f1508@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD483154
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:38:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BDAC157
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:43:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,153 +24,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1278> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                ianw1234
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1278
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   772
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.9-1.681_FC3
 ======================================================================
-Date Submitted:             07-23-2005 18:23 CEST
-Last Modified:              12-30-2005 23:38 CET
+Date Submitted:             12-31-2004 23:02 CET
+Last Modified:              12-30-2005 23:43 CET
 ======================================================================
-Summary:                    fails to read volume for software volume control
+Summary:                    Analog/Digital output not working.
 Description: 
-From: http://bugs.debian.org/319628:
+I've been unable to get my SB Live! to send analog pcm out through the
+Analog/Digital port. It's connected through this port to my receiver, and
+while AC3 over the digital port works fine, I can't get anything else to
+go over the line. I have a 48kHz wave file I've been testing, and I've
+tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
+and hw0,2 (no effect). 
 
-Package: alsa-oss
-Version: 1.0.8-1
+I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
+Analog/Digital Output Jack all either unmuted or set to max volume. I've
+tried loading the snd_pcm_oss module with various snd_dsp_map settings
+without success.
 
-Hi,
-
-My MacMini's audio chip seems to have no hardware volume control (or it 
-is unsupported in the kernel I use), so I use software volume control, 
-with the attached .asoundrc. (I'm still a newbie about alsa, there may 
-be some mistakes in my .soundrc file.)
-
-While trying to use hotkeys (that only understands oss) with aoss, I 
-discovered that aoss did not allow to read the volume control, while it 
-can write it flawlessly.
-
-After a few tests, I discovered that it was related to the failing 
-snd_mixer_selem_get_playback_switch function call, and I could 
-workaround the issue with the attached trivial quick&dirty patch.
-
-
-Cheers,
-
-Nicolas Boullis
-
-
--- System Information:
-Debian Release: 3.1
-Architecture: powerpc (ppc)
-Kernel: Linux 2.6.12-irma
-Locale: LANG=C, LC_CTYPE=C (charmap=ANSI_X3.4-1968)
-
-Versions of packages alsa-oss depends on:
-ii  libasound2                  1.0.8-3      ALSA library
-ii  libc6                       2.3.2.ds1-22 GNU C Library: Shared
-libraries an
-
--- no debconf information
-
-
-
-pcm.!default {
-  type plug
-  slave {
-    pcm {
-      type softvol
-      slave {
-        pcm {
-	  type dmix
-	  ipc_key 7666
-	  slave {
-	    pcm "hw:0,0"
-	    period_time 0
-	    period_size 1024
-	    buffer_size 8192
-	    rate 44100
-	  }
-	}
-      }
-      control {
-        name Master
-        card 0
-      }
-    }
-  }
-}
-
-pcm.dsp0 {
-  type plug
-  slave.pcm "!default"
-}
-
-
-
-
-only in patch2:
-unchanged:
---- alsa-oss-1.0.8.orig/alsa/mixer.c
-+++ alsa-oss-1.0.8/alsa/mixer.c
-@@ -487,9 +487,7 @@
- 				break;
- 			}
- 			err = snd_mixer_selem_get_playback_switch(elem,
-SND_MIXER_SCHN_FRONT_LEFT, &sw);
--			if (err < 0) 
--				break;
--			if (sw) {
-+			if ((err < 0) || (sw)) {
- 				err = snd_mixer_selem_get_playback_volume(elem,
-SND_MIXER_SCHN_FRONT_LEFT, &lvol);
- 				if (err < 0) 
- 					break;
-@@ -499,9 +497,7 @@
- 				rvol = lvol;
- 			} else {
- 				err = snd_mixer_selem_get_playback_switch(elem,
-SND_MIXER_SCHN_FRONT_RIGHT, &sw);
--				if (err < 0) 
--					break;
--				if (sw) {
-+				if ((err < 0) || (sw)) { 
- 					err = snd_mixer_selem_get_playback_volume(elem,
-SND_MIXER_SCHN_FRONT_RIGHT, &rvol);
- 					if (err < 0) 
- 						break;
-
-
-
+I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
+the past, so I don't know if this was broken in the upgrade to 1.0.7
+(which I had to do because AC3 passthrough didn't work in the version that
+came with the 2.6.9 kernel) or whether I have some strange
+misconfiguration. Help is appreciated! Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 08-01-05 08:09 
+ razer1 - 09-24-05 17:47 
 ----------------------------------------------------------------------
-No, the submitter reports that the bug is still present in 1.0.9.
+I've a similar bug too : geexbox distrib (multimedia usage :
+www.geexbox.org), based on kernel 2.6.12, mplayer 1.0-pre7 & alsa 1.0.9. 
+I try to use this SB Live 5.1 in 6 channels analog mode.
+2 channels mode works, the rear output duplicates the front, but no output
+via LFE/Center Jack Output (used for spdif too).
+In Surround5.1 mode, the card give an uggly noise instead of movie sound
+or music
+All different amixer config give same result
+Note : the card was working fine in this mode with an 2.6.7 on gentoo
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:38 
+ rlrevell - 12-30-05 23:43 
 ----------------------------------------------------------------------
-Was this ever resolved?
-
-(BTW The ALSA bug tracker should have a PATCH status)
+Any improvement in later ALSA releases?  These bugs are thought to have
+been fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-23-05 18:23 jdthood        New Issue                                    
-07-29-05 18:02 tiwai          Note Added: 0005584                          
-08-01-05 08:09 jdthood        Note Added: 0005594                          
-12-30-05 23:38 rlrevell       Note Added: 0007295                          
+12-31-04 23:02 ianw1234       New Issue                                    
+12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
+01-01-05 00:33 ianw1234       Note Added: 0003028                          
+01-01-05 02:28 rlrevell       Note Added: 0003030                          
+01-01-05 10:01 pzad           Note Added: 0003031                          
+01-01-05 22:48 ianw1234       Note Added: 0003039                          
+01-01-05 23:03 pzad           Note Added: 0003041                          
+01-02-05 19:15 jukkat         Note Added: 0003046                          
+01-02-05 19:20 jukkat         Note Edited: 0003046                         
+01-04-05 21:57 visit0r        Issue Monitored: visit0r                     
+04-18-05 23:16 jdthood        Note Added: 0004516                          
+09-24-05 17:47 razer1         Note Added: 0006373                          
+09-26-05 12:59 razer1         Issue Monitored: razer1                      
+12-30-05 23:43 rlrevell       Note Added: 0007296                          
 ======================================================================
 
 
