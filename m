@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000850]: Clicking sound at the end of short audio files on Audigy DE.
-Date: Fri, 30 Dec 2005 04:52:14 +0100
-Message-ID: <6750c0e37bc2a9218d40447d785796f7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000651]: via82xxx No Sound Kernel 2.6.10-rc2
+Date: Fri, 30 Dec 2005 04:53:36 +0100
+Message-ID: <339fdbf5eb81d46d436ac84b03d99688@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B54A51A3
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:52:14 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 323291A3
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:53:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=850> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=651> 
 ======================================================================
-Reported By:                Lucid
-Assigned To:                rlrevell
+Reported By:                glen
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   850
-Category:                   PCI - emu10k1
+Issue ID:                   651
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.10
-Resolution:                 fixed
+Status:                     closed
+Distribution:               Slackware 10.0 + Dropline Gnome 2.8.0
+Kernel Version:             2.6.10-rc2
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-27-2005 05:07 CET
-Last Modified:              12-30-2005 04:52 CET
+Date Submitted:             11-17-2004 19:03 CET
+Last Modified:              12-30-2005 04:53 CET
 ======================================================================
-Summary:                    Clicking sound at the end of short audio files on
-Audigy DE.
+Summary:                    via82xxx No Sound Kernel 2.6.10-rc2
 Description: 
-When playing short audio files such as audio notifications there is a short
-clicking sound as the file is closed.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001081 Clicking noise when short sound files a...
+Upgraded to kernel 2.6.10-rc2 from 2.6.10-rc1 with identical config.  No
+compile problems.  No boot up problems.  No sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- Lucid - 12-30-05 04:49 
+ jdthood - 03-23-05 15:25 
 ----------------------------------------------------------------------
-I no longer have Linux installed on this pc so I can't tell you.  If I need
-to install it for next semester I can check this issue then.
+Submitter: What happens if you build ALSA modules from the alsa-driver
+tarball and use those instead of the modules that come with your kernel?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:52 
+ rlrevell - 12-30-05 04:53 
 ----------------------------------------------------------------------
-I am pretty sure we fixed this bug a long time ago.  Reopen it if the
-problem recurs.
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-27-05 05:07 Lucid          New Issue                                    
-01-27-05 05:07 Lucid          Kernel Version            => 2.6.10          
-01-27-05 05:31 Lucid          Issue Monitored: Lucid                       
-09-22-05 15:17 jdthood        Relationship added       related to 0001081  
-12-30-05 04:01 rlrevell       Note Added: 0007196                          
-12-30-05 04:49 Lucid          Note Added: 0007225                          
-12-30-05 04:52 rlrevell       Status                   new => resolved     
-12-30-05 04:52 rlrevell       Resolution               open => fixed       
-12-30-05 04:52 rlrevell       Assigned To               => rlrevell        
-12-30-05 04:52 rlrevell       Note Added: 0007226                          
+11-17-04 19:03 glen           New Issue                                    
+11-17-04 19:03 glen           File Added: config-2.6.10-rc2                    
+11-17-04 19:03 glen           Distribution              => Slackware 10.0 +
+Dropline Gnome 2.8.0
+11-17-04 19:03 glen           Kernel Version            => 2.6.10-rc2      
+11-17-04 19:05 glen           Note Added: 0002439                          
+11-17-04 19:06 glen           File Added: lspci.txt                        
+11-18-04 19:48 tiwai          Note Added: 0002466                          
+11-19-04 01:04 glen           File Added: asound.state                     
+11-19-04 01:04 glen           File Added: ac97#0-0                         
+11-19-04 01:04 glen           File Added: ac97#0-0+regs                    
+11-19-04 01:20 glen           Note Added: 0002473                          
+03-23-05 15:25 jdthood        Note Added: 0004159                          
+12-30-05 04:53 rlrevell       Status                   new => closed       
+12-30-05 04:53 rlrevell       Note Added: 0007228                          
 ======================================================================
 
 
