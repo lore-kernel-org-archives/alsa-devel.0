@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001066]: autodetection fails
-Date: Fri, 30 Dec 2005 19:38:46 +0100
-Message-ID: <b445401d067dd63790d23fae5ebf6670@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Fri, 30 Dec 2005 19:48:43 +0100
+Message-ID: <89b64849a13015eb95106fe00b081b40@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2313F178
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 19:38:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D402135
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 19:48:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,89 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1066> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                El Santo
-Assigned To:                
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1066
-Category:                   PCI - via82xx
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               linux from scratch
-Kernel Version:             2.6.11.7
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             04-19-2005 08:54 CEST
-Last Modified:              12-30-2005 19:38 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              12-30-2005 19:48 CET
 ======================================================================
-Summary:                    autodetection fails
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-i own a asus a8v (kt800pro) deluxe motherboard. it has a realtec alc850
-ac97 codec....
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-i though this codec was supported
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
 
-when i load the snd-via82xx dont detect it... and none of the alsa modules
-say anything... not in screen, not kernel messages (dmesg), neither in
-/var/log/*...
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
 
-i have a bt878 tv card (bttv works perfectly) and snd-bt87x have the same
-problem that snd-via82xx... doesnt identify the card... but at least i can
-manually set the boot_all parameter....
-this tv card was correctly detected with my last motherboard asus a7v-600
-(kt600)
-
-i alsa tried to build alsa into the kernel (not like modules), but i get
-the same results
-
-any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- El Santo - 12-30-05 14:13 
+ sailfrog - 12-22-05 02:25 
 ----------------------------------------------------------------------
-ASUS response was that onboard sound is disabled when a pci sound card is
-present due to chipset's limitations.... They said that is a chipset
-limitation not a bios limitation (or "feature"). Personally i dont belive
-that.
+I just tried ALSA 1.0.11rc1 with a 2.6.15-rc6 kernel and the problem
+persists :/
 
-Finally, i gave up and removed the maxi sound isis and installed in
-another machine.
-
-
+Jason
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 19:38 
+ sailfrog - 12-30-05 19:48 
 ----------------------------------------------------------------------
-That's unfortunate.  Closed -> broken hardware.
+If anyone is interested I built the latest ALSA CVS against
+2.6.15-rc7-ck1:
+
+jason@jackass ~$ uname -a
+Linux jackass 2.6.15-rc7-ck1 #20 SMP PREEMPT Wed Dec 28 12:05:42 CST 2005
+i686 GNU/Linux
+
+jason@jackass ~$ cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.11rc1.
+Compiled on Dec 28 2005 for kernel 2.6.15-rc7-ck1 (SMP).
+
+The USB sound card still does not work :(
+Exact same results as the initial bug report.
+
+I guess if I want to stay with current kernels I will have to revert alsa
+to < 1.0.10 if I want USB sound to work :(
+
+Jason
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-05 08:54 El Santo       New Issue                                    
-04-19-05 08:54 El Santo       Distribution              => linux from scratch
-04-19-05 08:54 El Santo       Kernel Version            => 2.6.11.7        
-04-19-05 17:25 tiwai          Note Added: 0004520                          
-04-20-05 20:28 El Santo       Note Added: 0004544                          
-04-20-05 20:29 El Santo       File Added: lspci-vv                         
-04-22-05 19:18 vsu            Note Added: 0004555                          
-04-22-05 21:28 El Santo       Note Added: 0004557                          
-04-22-05 21:32 rlrevell       Note Added: 0004558                          
-04-22-05 21:55 El Santo       Note Added: 0004559                          
-04-22-05 22:00 rlrevell       Note Added: 0004560                          
-04-22-05 22:06 El Santo       Note Added: 0004561                          
-12-30-05 04:42 rlrevell       Note Added: 0007220                          
-12-30-05 13:35 El Santo       Note Added: 0007249                          
-12-30-05 14:13 El Santo       Note Edited: 0007249                         
-12-30-05 19:38 rlrevell       Status                   new => closed       
-12-30-05 19:38 rlrevell       Note Added: 0007250                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
 ======================================================================
 
 
