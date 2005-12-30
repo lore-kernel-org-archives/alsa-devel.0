@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000935]: M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device open
-Date: Fri, 30 Dec 2005 23:23:35 +0100
-Message-ID: <307bedd6af643b4810ea3d2147607b21@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001304]: Speaker test hangs
+Date: Fri, 30 Dec 2005 23:24:52 +0100
+Message-ID: <1565f7f2f4094a5fc5ceba45e9b1b60b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02D9A148
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:23:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20CAB148
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:24:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=935> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
 ======================================================================
-Reported By:                stever8
+Reported By:                herby
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   935
-Category:                   PCI - ice1712
+Project:                    ALSA - utils
+Issue ID:                   1304
+Category:                   speakertest
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Redhat Linux 7.3, modified
-Kernel Version:             2.4.26
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             02-23-2005 20:09 CET
-Last Modified:              12-30-2005 23:23 CET
+Date Submitted:             08-03-2005 02:46 CEST
+Last Modified:              12-30-2005 23:24 CET
 ======================================================================
-Summary:                    M-Audio Delta 1010-LT; S/PDIF out = 0Volts on device
-open
+Summary:                    Speaker test hangs
 Description: 
-Our original report:
+After applying the patch to the library that took out the check for a
+proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
+or so), I attempted to try a speaker test again.  It hung right after
+outputting "0 - Front Left".  I did an strace and the results are included
+in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
+with little luck.  The wierd thing is that I can execute 'aplay' (with the
+default device) and get a '.wav' file to play nicely.  I can even get a
+multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
+speaker-test doesn't work is beyond me.  The problem is that I appear to
+use similar techniques in my own programming as speaker-test, and my
+program doesen't do that well.  Being as how speaker-test IS part of ALSA,
+I thought I would submit the bug report against it.
 
-When we first load the alsa drivers, we see a S/PDIF output signal from
-the 1010LT 
-on an oscilloscope. A minidisc player also sees this as a valid signal (it
-is all 
-zeros, silence).
-
-As soon as our program opens the audio device, however, the signal goes
-to 0V on the oscilloscope, and the minidisc of course sees "no signal".
-We can't output S/PDIF, no matter what settings we try in Envy24control.
-
-Strangely enough, if we do the following, we do get S/PDIF output :
-. Plug in an external S/PDIF input source (which is muted so as not to
-mix
-with our sound).
-. In Envy24control, set the Master Clock to "Word Clock". (it doesn't work
-if the 
-master clock is set to "S/PDIF")
-
-
-Jaroslav Kysela suggested:
-Strange. Could you try to comment lines:
-        //if (reset)        
-        //        snd_cs8427_reset(cs8427);
-
-in alsa-kernel/i2c/cs8427.c and test if the signal is present after this
-change?
-
-Which I did. The S/PDIF signal no longer goes away (it appears on the
-scope, and the minidisc player recognizes it as a valid signal) however it
-just contains silence.
-
+If other tests need be preformed, I'd be VERY happy to do them.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-19-05 10:06 
+ tiwai - 08-12-05 15:47 
 ----------------------------------------------------------------------
-stever8: Were you able to solve this problem?  Have you tried playing with
-the various mixer switches listed by amixer?
+ICE1724 has the restriction regarding period and buffer size alignment. 
+It's aligned to 32byte.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:23 
+ rlrevell - 12-30-05 23:24 
 ----------------------------------------------------------------------
-No response
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-05 20:09 stever8        New Issue                                    
-02-23-05 20:09 stever8        Distribution              => Redhat Linux 7.3,
-modified
-02-23-05 20:09 stever8        Kernel Version            => 2.4.26          
-09-19-05 10:06 jdthood        Note Added: 0006284                          
-12-30-05 23:23 rlrevell       Status                   new => closed       
-12-30-05 23:23 rlrevell       Note Added: 0007287                          
+08-03-05 02:46 herby          New Issue                                    
+08-03-05 02:46 herby          File Added: speaker-trace                    
+08-03-05 12:18 tiwai          Note Added: 0005621                          
+08-04-05 03:21 herby          Note Added: 0005638                          
+08-04-05 14:10 jcdutton       Note Added: 0005648                          
+08-04-05 20:21 herby          Note Added: 0005652                          
+08-09-05 06:58 herby          Note Added: 0005718                          
+08-12-05 08:12 herby          Note Added: 0005765                          
+08-12-05 15:47 tiwai          Note Added: 0005773                          
+12-30-05 23:24 rlrevell       Note Added: 0007288                          
 ======================================================================
 
 
