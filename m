@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000651]: via82xxx No Sound Kernel 2.6.10-rc2
-Date: Fri, 30 Dec 2005 04:53:36 +0100
-Message-ID: <339fdbf5eb81d46d436ac84b03d99688@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
+Date: Fri, 30 Dec 2005 04:59:13 +0100
+Message-ID: <bac9011e75bbb4903d3327e258c63b0f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 323291A3
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:53:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA32D1A4
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:59:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,114 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=651> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
 ======================================================================
-Reported By:                glen
+Reported By:                sst4
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   651
-Category:                   PCI - via82xx
+Project:                    ALSA - liboss
+Issue ID:                   1164
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Slackware 10.0 + Dropline Gnome 2.8.0
-Kernel Version:             2.6.10-rc2
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             11-17-2004 19:03 CET
-Last Modified:              12-30-2005 04:53 CET
+Date Submitted:             06-07-2005 00:33 CEST
+Last Modified:              12-30-2005 04:59 CET
 ======================================================================
-Summary:                    via82xxx No Sound Kernel 2.6.10-rc2
+Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
+failed: Invalid argument
 Description: 
-Upgraded to kernel 2.6.10-rc2 from 2.6.10-rc1 with identical config.  No
-compile problems.  No boot up problems.  No sound.
+I've tried 'skype' with my M-Audio Revolution 7.1.
+
+Soon (probably in a second) after this command line:
+
+aoss skype &
+
+the terminal window gets filled with
+
+volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
+
+messages, and I do not hear anything in 'skype' connecting to their
+automated 'echo123' service.
+
+The message is not quite clear, and I believe it shouldn't flood the
+screen.
+
+I mean, the code should first check capabilities of the card and its
+configuration and
+issue the message once.
+
+
+What is IGAIN in the message above ? Input gain ? That is, capture gain ?
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001096 no capture with M-Audio Revolution 7.1
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:25 
+ rlrevell - 12-30-05 04:10 
 ----------------------------------------------------------------------
-Submitter: What happens if you build ALSA modules from the alsa-driver
-tarball and use those instead of the modules that come with your kernel?
+Were you ever able to get this working?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:53 
+ sst4 - 12-30-05 04:59 
 ----------------------------------------------------------------------
-No response
+Am I still supposed to compile the patch and the whole ALSA or the patch
+is already in the main code ?
+
+Anyway, now even with non-redirected STODUT/STDERR and lot of
+
+volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
+
+messages the sound with Skype is smooth; I do not know whether it's due
+to
+changes in Skype, quality of connection or slightly different kernel
+- now it's 2.6.11-6mdk-i686-up-4GB instead of 2.6.11-6mdk-i586-up-1GB.
+
+
+I hope to make and upgrade to Mandriva 2006 next week, I think it has
+ALSA
+vesrion 1.0.9b.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-17-04 19:03 glen           New Issue                                    
-11-17-04 19:03 glen           File Added: config-2.6.10-rc2                    
-11-17-04 19:03 glen           Distribution              => Slackware 10.0 +
-Dropline Gnome 2.8.0
-11-17-04 19:03 glen           Kernel Version            => 2.6.10-rc2      
-11-17-04 19:05 glen           Note Added: 0002439                          
-11-17-04 19:06 glen           File Added: lspci.txt                        
-11-18-04 19:48 tiwai          Note Added: 0002466                          
-11-19-04 01:04 glen           File Added: asound.state                     
-11-19-04 01:04 glen           File Added: ac97#0-0                         
-11-19-04 01:04 glen           File Added: ac97#0-0+regs                    
-11-19-04 01:20 glen           Note Added: 0002473                          
-03-23-05 15:25 jdthood        Note Added: 0004159                          
-12-30-05 04:53 rlrevell       Status                   new => closed       
-12-30-05 04:53 rlrevell       Note Added: 0007228                          
+06-07-05 00:33 sst4           New Issue                                    
+06-08-05 14:50 tiwai          Note Added: 0004923                          
+06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
+
+06-08-05 14:53 tiwai          Note Added: 0004926                          
+06-08-05 14:54 tiwai          File Added: aoss-igain-fix2.diff                  
+ 
+06-08-05 14:55 tiwai          File Deleted: aoss-igain-fix.diff                 
+  
+06-12-05 19:35 sst4           Note Added: 0004999                          
+06-13-05 13:03 tiwai          Note Added: 0005006                          
+06-13-05 14:12 sst4           Note Added: 0005009                          
+06-13-05 14:30 tiwai          Note Added: 0005010                          
+06-13-05 15:55 sst4           File Added: asound.state.geberated_by_alsaconf    
+               
+06-13-05 15:59 sst4           File Added: asound.state.generated_by_alsaconf    
+               
+06-13-05 16:05 sst4           Note Added: 0005012                          
+06-15-05 08:25 sst4           Note Added: 0005021                          
+06-15-05 15:44 tiwai          Note Added: 0005035                          
+06-22-05 01:48 rlrevell       Relationship added       duplicate of 0001096
+06-28-05 00:59 sst4           Note Added: 0005290                          
+06-28-05 01:14 sst4           Note Added: 0005291                          
+06-28-05 12:45 tiwai          Note Added: 0005297                          
+06-28-05 23:45 sst4           Note Added: 0005301                          
+06-29-05 00:08 sst4           Note Added: 0005302                          
+06-29-05 20:22 tiwai          Note Added: 0005311                          
+06-29-05 21:40 sst4           Note Added: 0005316                          
+12-30-05 04:10 rlrevell       Note Added: 0007202                          
+12-30-05 04:59 sst4           Note Added: 0007229                          
 ======================================================================
 
 
