@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001307]: cs46xx module load error with kernel 2.6.13-rc5
-Date: Fri, 30 Dec 2005 23:30:49 +0100
-Message-ID: <a3f7e5036818fdf2f687f1c21a6632f0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001414]: Hercules Digifire - ADC control only mutes left channel
+Date: Fri, 30 Dec 2005 23:31:33 +0100
+Message-ID: <28d35b54affdafaf413e6b9979f53e8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02497154
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:30:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B70A2154
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:31:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1307> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1414> 
 ======================================================================
-Reported By:                jfeise
+Reported By:                a_r_schulz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1307
+Issue ID:                   1414
 Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.13-rc5
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Mandrivia
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             08-03-2005 18:25 CEST
-Last Modified:              12-30-2005 23:30 CET
+Date Submitted:             09-11-2005 19:12 CEST
+Last Modified:              12-30-2005 23:31 CET
 ======================================================================
-Summary:                    cs46xx module load error with kernel 2.6.13-rc5
+Summary:                    Hercules Digifire - ADC control only mutes left
+channel
 Description: 
-Using Slackware 10.1 with kernel 2.6.13-rc5, the cs46xx module is not
-loaded and reports lots of unknown symbols in dmesg. See the attached file
-with the dmesg output.
-I am using ALSA 1.0.9a.
-On the same machine, using kernel 2.6.10, everything works.
-
+I would like to use my card for recording with audacity in LINUX, but it's
+a little hard to get the levels right, since the ADC slider in both
+alsamixer and kmix affect only the left input channel, leaving the right
+channel at full volume. Had this problem with all 2.6 kernel versions so
+far, but did not really care up to now...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:30 
+ rlrevell - 12-30-05 23:31 
 ----------------------------------------------------------------------
-Local issue
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 18:25 jfeise         New Issue                                    
-08-03-05 18:25 jfeise         File Added: cs46xx.out                       
-08-03-05 18:25 jfeise         Distribution              => Slackware 10.1  
-08-03-05 18:25 jfeise         Kernel Version            => 2.6.13-rc5      
-12-30-05 23:30 rlrevell       Status                   new => closed       
-12-30-05 23:30 rlrevell       Note Added: 0007290                          
+09-11-05 19:12 a_r_schulz     New Issue                                    
+09-11-05 19:12 a_r_schulz     Distribution              => Mandrivia       
+09-11-05 19:12 a_r_schulz     Kernel Version            => 2.6.13          
+12-30-05 23:31 rlrevell       Note Added: 0007291                          
 ======================================================================
 
 
