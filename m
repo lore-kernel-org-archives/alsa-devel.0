@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000616]: codec read/write timeout is reported on module load, and card is not detected
-Date: Fri, 30 Dec 2005 05:10:10 +0100
-Message-ID: <71f6e742a3e389c10d86a3b75c563cbf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000268]: High frequency tones placed on DAC2 outputs (Revo7.1)
+Date: Fri, 30 Dec 2005 05:11:18 +0100
+Message-ID: <7e669a78aedd1b795960f1795ac5650f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F82D193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:10:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9213193
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:11:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=616> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=268> 
 ======================================================================
-Reported By:                jcpetruzza
+Reported By:                MWP
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   616
-Category:                   PCI - ens1371
+Issue ID:                   268
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.6.8-gentoo-r3
+Distribution:               LFS
+Kernel Version:             2.6.6
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-29-2004 17:09 CEST
-Last Modified:              12-30-2005 05:10 CET
+Date Submitted:             05-10-2004 16:11 CEST
+Last Modified:              12-30-2005 05:11 CET
 ======================================================================
-Summary:                    codec read/write timeout is reported on module load,
-and card is not detected
+Summary:                    High frequency tones placed on DAC2 outputs
+(Revo7.1)
 Description: 
-My Ensoniq 1371 rev 7 based card is not detected.
+On playing audio to any of the ICE1724 ouputs through ALSA enabled
+software, a high pitched constant tone (at a guess ~3/8 of sample rate) is
+played through the secondary DAC's (2,3,4 stereo pairs) ouputs (and mixed
+with audio if playing through those outputs).
+The tone is not present on the first DAC (front) analog outputs.
 
-dmesg shows:
+The tone is not effected by volume settings of the DAC2 output pairs.
 
-PCI: Found IRQ 12 for device 0000:00:09.0
-codec write timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-.
-.
-.
-codec write timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-AC'97 0 does not respond - RESET
-es1371: codec read timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-AC'97 0 access is not valid [0x0], removing mixer.
-ENS1371: probe of 0000:00:09.0 failed with error -5
-
+The tone however is not produced when using JACK to play audio to the
+card.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 17:43 
+ jdthood - 04-03-05 20:08 
 ----------------------------------------------------------------------
-I'd bet rather an ACPI-related problem.
+> So it is a problem with using the pcm2p subdevices to access the DAC2
+channels.
+
+Did you get any further in figuring out the problem?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:10 
+ rlrevell - 12-30-05 05:11 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-29-04 17:09 jcpetruzza     New Issue                                    
-10-29-04 17:09 jcpetruzza     Kernel Version            => 2.6.8-gentoo-r3 
-11-12-04 15:12 jcpetruzza     Note Added: 0002397                          
-04-09-05 17:03 jdthood        Note Added: 0004417                          
-04-12-05 17:43 tiwai          Note Added: 0004455                          
-12-30-05 05:10 rlrevell       Status                   new => closed       
-12-30-05 05:10 rlrevell       Note Added: 0007232                          
+05-10-04 16:11 MWP            New Issue                                    
+05-10-04 16:11 MWP            Distribution              => LFS             
+05-10-04 16:11 MWP            Kernel Version            => 2.6.6           
+05-10-04 16:13 MWP            Note Added: 0001079                          
+05-11-04 14:56 tiwai          Note Added: 0001085                          
+05-11-04 16:53 MWP            Note Added: 0001086                          
+05-12-04 19:02 MWP            Note Added: 0001095                          
+05-12-04 19:12 tiwai          Note Added: 0001096                          
+05-12-04 19:34 MWP            Note Added: 0001099                          
+05-13-04 11:37 MWP            Note Added: 0001101                          
+05-13-04 11:38 MWP            Note Edited: 0001101                         
+05-17-04 17:24 MWP            Note Added: 0001134                          
+05-17-04 17:28 MWP            Note Added: 0001135                          
+05-18-04 11:27 tiwai          Note Added: 0001138                          
+05-18-04 12:38 MWP            Note Added: 0001139                          
+05-18-04 13:03 tiwai          Note Added: 0001140                          
+05-18-04 13:28 MWP            Note Added: 0001141                          
+04-03-05 20:08 jdthood        Note Added: 0004318                          
+12-30-05 05:11 rlrevell       Status                   new => closed       
+12-30-05 05:11 rlrevell       Note Added: 0007233                          
 ======================================================================
 
 
