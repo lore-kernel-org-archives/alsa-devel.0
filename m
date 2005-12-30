@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Fri, 30 Dec 2005 20:43:58 +0100
-Message-ID: <4ab098d3befdea046801e26622250e11@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001124]: sound recording does not work
+Date: Fri, 30 Dec 2005 20:52:40 +0100
+Message-ID: <82ed3b8a2715f7919858abd7922de486@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E59718F
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 20:43:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 390CE18F
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 20:52:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1124> 
 ======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
+Reported By:                demiurg
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
+Issue ID:                   1124
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              12-30-2005 20:43 CET
+Date Submitted:             05-24-2005 21:03 CEST
+Last Modified:              12-30-2005 20:52 CET
 ======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
+Summary:                    sound recording does not work
 Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+Sorry if this is a duplicate - I could not find a way to search the
+bagtrack 
+system. My email to the mailing list was not answered and I did not find
+anything in the archives, so...
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+I have an intel 810 based sound card :
 
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
+AC'97 Audio Controller (rev 02).
+
+It works great, except that I can't get sound recording to work. It
+does works on windows, so HW is OK. On linux it records nothing but noise.
+I
+checked all the obvious places - mic and capture volumes in alsamixer,
+etc. 
+
+My system :
+
+Vanilla FC3.
+kernel  2.6.11-1.27_FC3smp
+alsa-lib-1.0.6-8
+
+lspci :
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+
+CPU : Pentium4
+motherboard : GA-8IPE1000
+sound : onboard Realtek ALC850 CODEC 
+
+amixer  contents :
+see attachment
 
 ======================================================================
 
 ----------------------------------------------------------------------
- sailfrog - 12-30-05 20:41 
+ rlrevell - 12-30-05 20:52 
 ----------------------------------------------------------------------
-> Yeah there are a LOT of bugs in the tracker and we don't have the
-manpower to
-> handle them all promptly sometimes.
-
-Understood. I will do what I can on my end. Not much of a kernel hacker
-but I can feel my way around. Who knows maybe I will get lucky :)
-
-> FYI you should have given this BLOCK severity rather than MAJOR as you
-have no 
-> sound at all and it's a definite regression. 
-
-I will keep that in mind next time, thanks. btw, I wonder if the problem
-might be SPDIF related. I have not dragged home a pair of speakers and
-hooked them directly to the card, but I will. Perhaps that would help
-identify the source of the issue.
-
-Jason
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 20:43 
-----------------------------------------------------------------------
-Yes definitely, I didn't see that you only tried the SPDIF.
-
-Headphones might be easier than speakers ;-)
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
-12-30-05 19:48 sailfrog       Note Added: 0007251                          
-12-30-05 20:01 rlrevell       Note Added: 0007252                          
-12-30-05 20:08 rlrevell       Note Added: 0007254                          
-12-30-05 20:31 sailfrog       Note Added: 0007256                          
-12-30-05 20:34 rlrevell       Note Added: 0007257                          
-12-30-05 20:41 sailfrog       Note Added: 0007258                          
-12-30-05 20:43 rlrevell       Note Added: 0007259                          
+05-24-05 21:03 demiurg        New Issue                                    
+05-24-05 21:03 demiurg        File Added: amixer                           
+12-30-05 20:52 rlrevell       Note Added: 0007260                          
 ======================================================================
 
 
