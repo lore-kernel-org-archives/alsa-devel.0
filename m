@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000536]: Sound no longer works on IBM ThinkPad 600x after waking from sleep
-Date: Fri, 30 Dec 2005 05:16:17 +0100
-Message-ID: <23d61b29093f9b47d007d3981e5b5333@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000197]: No sound from speakers
+Date: Fri, 30 Dec 2005 05:17:03 +0100
+Message-ID: <ac1a7fe0ca7ab0ad1a7262c9fe9b728a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18373193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:16:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4F41193
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:17:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,96 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=536> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=197> 
 ======================================================================
-Reported By:                bkendig
+Reported By:                edhall
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   536
-Category:                   PCI - cs46xx
+Issue ID:                   197
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               FC2
-Kernel Version:             2.6.9-rc2
+Status:                     closed
+Distribution:               Debian
+Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 16:23 CEST
-Last Modified:              12-30-2005 05:16 CET
+Date Submitted:             04-09-2004 15:03 CEST
+Last Modified:              12-30-2005 05:17 CET
 ======================================================================
-Summary:                    Sound no longer works on IBM ThinkPad 600x after
-waking from sleep
+Summary:                    No sound from speakers
 Description: 
-After booting this laptop, sound works fine; but after putting the system
-to sleep and waking it, sound will no longer work until the system is
-rebooted.  No error messages are displayed.
+Debian distribution with KDE 3.2.1 No sound from speakers.
 
-This is an IBM ThinkPad 600x, which has a feature where it will cut power
-to the PCI bus to save battery when the bus is not being used.  I believe
-this is what's killing ALSA.
+I get this message from the control panel
 
-This system is running Fedora Core 2 with kernel version 2.6.9-rc2, but
-the problem has occurred with every version of 2.6 since its release.
+Sound server informational message:
+Error while initializing the sound driver:
+device: default can't be opened for playback (No such file or directory)
+The sound server will continue, using the null output device.
 
-The sound modules can not be unloaded because the system believes they're
-still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR: Module snd_cs46xx
-is in use".
-
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000226 Sound hangs after APM resume
+I think I hear system sounds through the speaker on the MB.
 ======================================================================
 
 ----------------------------------------------------------------------
- sboehler - 03-28-05 15:49 
+ jdthood - 03-23-05 16:03 
 ----------------------------------------------------------------------
-I have the same problem with a Thinkpad T22, ACPI and kernel 2.6.11.2. Even
-though reloading the module after ACPI resume works, it is a pain because
-all the applications using sound have to be killed. I'm willing to assist
-in solving this problem, is anybody working on this? Do you guys have data
-books for this soundcard?
+Please send the output of
 
-Soundcard:
-
-0000:00:05.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
-[CrystalClear SoundFusion Audio Accelerator] (rev 01)
-        Subsystem: IBM: Unknown device 0153
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (1000ns min, 6000ns max)
-        Interrupt: pin A routed to IRQ 11
-        Region 0: Memory at e8122000 (32-bit, non-prefetchable) [size=4K]
-        Region 1: Memory at e8000000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: [40] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+   lsmod
+   uname -a
+   lspci
+   cat /proc/asound/version
+   cat /proc/asound/cards
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:16 
+ rlrevell - 12-30-05 05:17 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 16:23 bkendig        New Issue                                    
-09-24-04 16:23 bkendig        Distribution              => FC2             
-09-24-04 16:23 bkendig        Kernel Version            => 2.6.9-rc2       
-10-01-04 17:07 tiwai          Note Added: 0002002                          
-01-17-05 11:01 jdthood        Note Added: 0003228                          
-03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
-03-28-05 15:49 sboehler       Note Added: 0004241                          
-06-20-05 02:00 tromer         Issue Monitored: tromer                      
-12-12-05 11:11 bheung         Issue Monitored: bheung                      
-12-30-05 05:16 rlrevell       Note Added: 0007238                          
+04-09-04 15:03 edhall         New Issue                                    
+04-09-04 15:03 edhall         Distribution              => Debian          
+03-23-05 15:42 jdthood        Note Added: 0004164                          
+03-23-05 16:03 jdthood        Note Added: 0004170                          
+12-30-05 05:17 rlrevell       Status                   new => closed       
+12-30-05 05:17 rlrevell       Note Added: 0007239                          
 ======================================================================
 
 
