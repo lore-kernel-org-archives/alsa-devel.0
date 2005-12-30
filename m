@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001271]: Changes in ALSA driver between 2.6.11.10 and 2.6.12.3 mean echo-cancelling mics fail
-Date: Sat, 31 Dec 2005 00:01:51 +0100
-Message-ID: <6d3feeadc6682884261c9c31d38591f4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001485]: Sound disappears occasionally
+Date: Sat, 31 Dec 2005 00:07:43 +0100
+Message-ID: <c7d5d86e97e287dff029bb7b605466f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB3DE176
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:01:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F979178
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:07:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1271> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1485> 
 ======================================================================
-Reported By:                dcpiper
+Reported By:                jza
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1271
-Category:                   PCI - emu10k1
-Reproducibility:            always
+Issue ID:                   1485
+Category:                   PCI - intel8x0
+Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.12.3
+Distribution:               Debian
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             07-21-2005 18:50 CEST
-Last Modified:              12-31-2005 00:01 CET
+Date Submitted:             10-19-2005 20:56 CEST
+Last Modified:              12-31-2005 00:07 CET
 ======================================================================
-Summary:                    Changes in ALSA driver between 2.6.11.10 and
-2.6.12.3 mean echo-cancelling mics fail
+Summary:                    Sound disappears occasionally
 Description: 
-Under 2.6.12.3, terrible feedback happens when the echo-cancelling
-microphone (A ClearOne AccuMic II) is enabled. No matter if the microphone
-is set to mute or not through alsamixer or gnome-volume-control there is
-persistent feedback that howls increasingly louder until the microphone's
-own enable button is turned off again.
-
-Rebooting solved nothing, as did resetting the power on the microphone.
-Reboot to 2.6.11.10 and the problem is gone again. Something changed in
-ALSA somewhere between those kernel versions.
+Sound disappears completely when doing rapid consecutive seeks in
+applications (gxine, xmms). Restarting the application a few times usually
+helps, sometimes a complete system freeze is the result.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:01 
+ jza - 10-21-05 09:27 
 ----------------------------------------------------------------------
-Was this resolved in later releases?
+When the bug appears, the player sometimes freezes.
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 00:07 
+----------------------------------------------------------------------
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-21-05 18:50 dcpiper        New Issue                                    
-07-21-05 18:50 dcpiper        Distribution              => Debian Sarge    
-07-21-05 18:50 dcpiper        Kernel Version            => 2.6.12.3        
-12-31-05 00:01 rlrevell       Note Added: 0007307                          
+10-19-05 20:56 jza            New Issue                                    
+10-19-05 20:56 jza            Distribution              => Debian          
+10-19-05 20:56 jza            Kernel Version            => 2.6.12          
+10-20-05 09:57 jza            Note Added: 0006499                          
+10-21-05 09:27 jza            Note Added: 0006510                          
+12-31-05 00:07 rlrevell       Note Added: 0007308                          
 ======================================================================
 
 
