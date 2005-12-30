@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001253]: My kernel doesn't find my sound cards anymore !!!
-Date: Sat, 31 Dec 2005 00:11:05 +0100
-Message-ID: <9e31a8601c71d75882b7bea8025b8310@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001009]: NVidia CK8S 8ch: a center speaker is always silent in native alsa mode (through alsa-lib), works with oss emulation though
+Date: Sat, 31 Dec 2005 00:13:23 +0100
+Message-ID: <ee36fe9e05c92de55eb673323cbdbd64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B26B17A
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:11:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA41D190
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:13:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,111 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1253> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1009> 
 ======================================================================
-Reported By:                fabien
+Reported By:                modax
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1253
-Category:                   PCI - ens1370
+Issue ID:                   1009
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.12
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.11.5 with self-compiled alsa-driver
+1.0.9rc1
 ======================================================================
-Date Submitted:             07-12-2005 14:04 CEST
-Last Modified:              12-31-2005 00:11 CET
+Date Submitted:             03-22-2005 22:34 CET
+Last Modified:              12-31-2005 00:13 CET
 ======================================================================
-Summary:                    My kernel doesn't find my sound cards anymore !!!
+Summary:                    NVidia CK8S 8ch: a center speaker is always silent
+in native alsa mode (through alsa-lib), works with oss emulation though
 Description: 
-My kernel stop working with my soundcards !!!
-It use to work in 2.6.8 (not in 2.6.10, 2.6.11 & 2.6.12)
-
-
-My sound cards :
-- ENS1370
-- SIS 7012
-
-Motherboard :
-- K7S5A
-
-Linux Box :
-- Debian on x86 AMD
+A center speaker stays quiet while playing 5.1 audio directly through
+alsa-lib (eg. with kaffeine (xine) or mplayer using alsa plugin). As a
+result, I'm unable to hear what people are speaking in movies because the
+speech is usually sent to the center speaker (correct me if i'm wrong. i'm
+new to all this 5.1 business). Anyway, adjusting the volume,
+muting/unmuting "Center" section, enabling/disabling "Mic As Center/LFE"
+doesn't have any effect on the center speaker. It stays silent. However,
+as I noted in the summary, the center speaker works with oss audio driver
+of xine/mplayer (using oss emulation). However, that mode is not perfect
+as the center speaker plays the role of left surround and vice versa. In
+addition, a right surround speaker stays always silent (i guess that's
+because the RS channel needs to be swapped with LFE; at least I got this
+impression by having a look at
+/usr/share/alsa/cards/NForce.conf:surround51). To sum up, my problem is
+that I can't get the center speaker (which, I guess, is channel 2 on my
+hardware) working with native alsa apps playing ac3/5.1 audio.
 ======================================================================
 
 ----------------------------------------------------------------------
- fabien - 10-24-05 21:20 
+ modax - 04-25-05 00:03 
 ----------------------------------------------------------------------
-Style the same problem in 2.6.13.4 :
+I've tested alsa-driver and alsa-lib CVS as of 2005-04-24 and I really like
+the new way of surround jacks management. I can confim, that "Independent"
+works as expected here, not sure about "Shared", but I can test it if you
+wish. Thanks for your work on this issue. 
 
-
-$ dmesg
-usbaudio: device 2 audiocontrol interface 1 has 1 input and 0 output
-AudioStreaming interfaces
-usbaudio: device 2 interface 2 altsetting 0 FORMAT_TYPE descriptor not
-found
-usbaudio: valid input sample rate 8000
-usbaudio: valid input sample rate 48000
-usbaudio: valid input sample rate 44100
-usbaudio: valid input sample rate 32000
-usbaudio: valid input sample rate 22050
-usbaudio: valid input sample rate 16000
-usbaudio: valid input sample rate 10257
-usbaudio: device 2 interface 2 altsetting 1: format 0x00000010 sratelo
-8000 sratehi 48000 attributes 0x01
-usbaudio: registered dsp 14,3
-usbaudio: constructing mixer for Terminal 3 type 0x0101
-usbaudio: warning: found 1 of 0 logical channels.
-usbaudio: assuming the channel found is the master channel (got a Philips
-camera?). Should be fine.
-usbaudio: registered mixer 14,0
-usb_audio_parsecontrol: usb_audio_state at dfc588e0
-usbcore: registered new driver audio
-drivers/usb/class/audio.c: v1.0.0:USB Audio Class driver
-Advanced Linux Sound Architecture Driver Version 1.0.9b (Thu Jul 28
-12:20:13 2005 UTC).
-unable to register OSS PCM device 0:0
-unable to register OSS mixer device 0:0
-codec read timeout (final) at 0xd414, reg = 0x7c [0xf00000]
-codec read timeout (final) at 0xd414, reg = 0x7e [0xf00000]
-codec read timeout (final) at 0xd414, reg = 0x0 [0x800000]
-codec read timeout (final) at 0xd414, reg = 0x7c [0xf00000]
-codec read timeout (final) at 0xd414, reg = 0x7e [0xf00000]
-codec read timeout (final) at 0xd414, reg = 0x7c [0xf00000]
-codec read timeout (final) at 0xd414, reg = 0x7e [0xf00000]
-ENS1371: probe of 0000:00:0b.0 failed with error -5
-intel8x0_measure_ac97_clock: measured 50676 usecs
-intel8x0: clocking to 48000
-usbcore: registered new driver snd-usb-audio
-ALSA device list:
-  #0: Dummy 1
-  #1: MPU-401 UART at 0x300, irq 10
-  #2: SiS SI7012 with ALC100,100P at 0xdc00, irq 11
-
-
-$ lspci
-
-0000:00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
-Sound Controller (rev a0)
-0000:00:0b.0 Multimedia audio controller: Ensoniq ES1371 [AudioPCI-97]
-(rev 08)
+In addition, I want to propose a suggestion to make surround support
+completely flawless. The "Duplicate Front" switch makes no sence in
+surround{40,51} modes because it replaces real sound information going to
+surround channels with front speaker soundstream. "Duplicate Front" is
+acceptible only in 2ch mode as these is no original surround soundstream.
+But in 4ch and 6ch it results in original surround soundstream loss. So
+I've prepared a patch to NFORCE.conf, which resolves the issue by
+disabling "Duplicate Front" in 4ch and 6ch modes. The patch is against
+alsa-lib CVS 2005-04-24.
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:11 
+ rlrevell - 12-31-05 00:13 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Bug seems to be fixed, should the patch be applied?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-12-05 14:04 fabien         New Issue                                    
-07-12-05 14:04 fabien         Distribution              => Debian Sarge    
-07-12-05 14:04 fabien         Kernel Version            => 2.6.12          
-10-24-05 21:20 fabien         Note Added: 0006523                          
-12-31-05 00:11 rlrevell       Note Added: 0007310                          
+03-22-05 22:34 modax          New Issue                                    
+03-22-05 22:34 modax          Distribution              => Debian unstable 
+03-22-05 22:34 modax          Kernel Version            => vanilla 2.6.11.5 with
+self-compiled alsa-driver 1.0.9rc1
+03-23-05 13:01 tiwai          Note Added: 0004156                          
+03-25-05 00:37 modax          Note Added: 0004204                          
+03-25-05 00:37 modax          File Added: bug-1009.tar.gz                    
+03-30-05 18:22 tiwai          Note Added: 0004268                          
+03-30-05 18:22 tiwai          File Added: nforce-conf-test.diff                 
+  
+03-30-05 23:28 modax          Note Added: 0004275                          
+04-03-05 17:47 modax          Note Added: 0004311                          
+04-04-05 09:59 modax          Note Added: 0004324                          
+04-07-05 16:28 tiwai          Note Added: 0004358                          
+04-08-05 01:55 modax          Note Added: 0004371                          
+04-25-05 00:03 modax          Note Added: 0004568                          
+04-25-05 00:04 modax          File Added: duplicate-front.diff                  
+ 
+12-31-05 00:13 rlrevell       Note Added: 0007311                          
 ======================================================================
 
 
