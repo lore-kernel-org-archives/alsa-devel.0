@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
-Date: Fri, 30 Dec 2005 23:51:24 +0100
-Message-ID: <2fc30d3071f9a89b8aedf025914ded0d@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001305]: some odd conditions cause gnomemeeting to crash on takeoff - they blame libasound
+Date: Fri, 30 Dec 2005 23:53:09 +0100
+Message-ID: <a90bae4e38f0a5f0adafd6780a19dbfa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64756168
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:51:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CB15168
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:53:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,152 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1305> 
 ======================================================================
-Reported By:                johnz
+Reported By:                zsd
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   978
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1305
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               FC3
-Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
 ======================================================================
-Date Submitted:             03-10-2005 06:37 CET
-Last Modified:              12-30-2005 23:51 CET
+Date Submitted:             08-03-2005 03:42 CEST
+Last Modified:              12-30-2005 23:53 CET
 ======================================================================
-Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
-alsa 1.0.8
+Summary:                    some odd conditions cause gnomemeeting to crash on
+takeoff - they blame libasound
 Description: 
-On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
-kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
-mixer control works; volume sliders have no effect.)  There is no sound
-when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
-2.6.10 kernels with 1.0.8 alsa.
+Here is what I reported to the gnomemeeting people:
+
+Steps to reproduce the crash:
+1. start it
+
+Expected Results:
+It should run
+
+How often does this happen?
+Every time
+
+Admittedly, this was vague, and I finally tracked it down (see "Steps to
+reproduce" below).
+
+But first, here was the gnomemeeting traceback:
+
+Backtrace was generated from '/usr/bin/gnomemeeting'
+
+(no debugging symbols found)...Using host libthread_db library
+"/lib/libthread_db.so.1".
+(no debugging symbols found)...(no debugging symbols found)...(no
+debugging symbols found)...(no debugging symbols found)...(no debugging
+symbols found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...[Thread debugging using
+libthread_db enabled]
+[New Thread 16384 (LWP 16377)]
+0x41498497 in waitpid () from /lib/libpthread.so.0
+#0  0x41498497 in waitpid () from /lib/libpthread.so.0
+#1  0x400985c4 in libgnomeui_module_info_get () from
+/usr/lib/libgnomeui-2.so.0
+#2  0x41496be5 in __pthread_sighandler () from /lib/libpthread.so.0
+#3  <signal handler called>
+#4  0x4183beda in snd_ctl_close () from /usr/lib/libasound.so.2
+#5  0x41bf9155 in PSoundChannelALSA::UpdateDictionary ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+#6  0x41bf919a in PSoundChannelALSA::GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+#7  0x41bf88a5 in PSoundChannelALSA_GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+#8  0x41340fea in PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+#9  0x413411a9 in PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+#10 0x41341229 in PSoundChannel::GetDefaultDevice ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+#11 0x40fe98fe in H323EndPoint::H323EndPoint ()
+   from /usr/lib/libh323_linux_x86_r.so.1.15.2
+#12 0x0807c832 in GMH323EndPoint::GMH323EndPoint ()
+#13 0x08079852 in GnomeMeeting::GnomeMeeting ()
+#14 0x080941b2 in main ()
+
+Thread 1 (Thread 16384 (LWP 16377)):
+#0  0x41498497 in waitpid () from /lib/libpthread.so.0
+No symbol table info available.
+#1  0x400985c4 in libgnomeui_module_info_get () from
+/usr/lib/libgnomeui-2.so.0
+No symbol table info available.
+#2  0x41496be5 in __pthread_sighandler () from /lib/libpthread.so.0
+No symbol table info available.
+#3  <signal handler called>
+No symbol table info available.
+#4  0x4183beda in snd_ctl_close () from /usr/lib/libasound.so.2
+No symbol table info available.
+#5  0x41bf9155 in PSoundChannelALSA::UpdateDictionary ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+#6  0x41bf919a in PSoundChannelALSA::GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+#7  0x41bf88a5 in PSoundChannelALSA_GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+#8  0x41340fea in PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+#9  0x413411a9 in PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+#10 0x41341229 in PSoundChannel::GetDefaultDevice ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+#11 0x40fe98fe in H323EndPoint::H323EndPoint ()
+   from /usr/lib/libh323_linux_x86_r.so.1.15.2
+No symbol table info available.
+#12 0x0807c832 in GMH323EndPoint::GMH323EndPoint ()
+No symbol table info available.
+#13 0x08079852 in GnomeMeeting::GnomeMeeting ()
+No symbol table info available.
+#14 0x080941b2 in main ()
+No symbol table info available.
+#0  0x41498497 in waitpid () from /lib/libpthread.so.0
+
+
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001381 No sound on Thinkpad T40p
-======================================================================
 
 ----------------------------------------------------------------------
- johnz - 09-27-05 04:43 
+ schorpp - 08-03-05 08:58 
 ----------------------------------------------------------------------
-Problem is still present in most current fedora core 3 kernel and alsa
-module.
-uname -r
-2.6.12-1.1378_FC3
+i know this backtrace from debian-pre-sarge times a few months ago and also
+had some problems with alsa 1.0.8.
 
-rpm -q alsa-kmdl-2.6.12-1.1378_FC3
-alsa-kmdl-2.6.12-1.1378_FC3-1.0.9rfb-40.rhfc3.at
-
-
-0:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] Sound
-Controller (rev a0)
-        Subsystem: ASRock Incorporation: Unknown device 7012
-        Flags: bus master, medium devsel, latency 32, IRQ 10
-        I/O ports at c800 [size=256]
-        I/O ports at c400 [size=128]
-        Capabilities: [48] Power Management version 2
+use gm >= 1.2.1 and alsa >= 1.0.9 and update your system libs.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:51 
+ rlrevell - 12-30-05 23:53 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Is this fixed in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-10-05 06:37 johnz          New Issue                                    
-03-10-05 06:37 johnz          File Added: asound.state                     
-03-10-05 06:37 johnz          Distribution              => FC3             
-03-10-05 06:37 johnz          Kernel Version            =>
-kernel-2.6.10-1.770_14.rhfc3.at
-03-10-05 06:39 johnz          Issue Monitored: johnz                       
-03-10-05 06:43 johnz          File Added: lsmod                            
-03-10-05 14:39 tiwai          Note Added: 0003853                          
-03-11-05 03:19 johnz          Note Added: 0003879                          
-09-22-05 15:03 jdthood        Note Added: 0006342                          
-09-27-05 04:43 johnz          Note Added: 0006403                          
-09-29-05 12:02 jdthood        Relationship added       related to 0001381  
-12-30-05 23:51 rlrevell       Note Added: 0007301                          
+08-03-05 03:42 zsd            New Issue                                    
+08-03-05 04:01 zsd            Note Added: 0005611                          
+08-03-05 08:58 schorpp        Note Added: 0005612                          
+12-30-05 23:53 rlrevell       Note Added: 0007302                          
 ======================================================================
 
 
