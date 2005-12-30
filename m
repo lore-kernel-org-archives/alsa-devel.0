@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Fri, 30 Dec 2005 19:48:43 +0100
-Message-ID: <89b64849a13015eb95106fe00b081b40@bugtrack.alsa-project.org>
+Date: Fri, 30 Dec 2005 20:01:35 +0100
+Message-ID: <066ffb0bf70d8c4fce1bfccfb99e141b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D402135
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 19:48:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBE02181
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 20:01:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
 Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              12-30-2005 19:48 CET
+Last Modified:              12-30-2005 20:01 CET
 ======================================================================
 Summary:                    No sound from Soundblaster Live USB since updating
 kernel drivers to 1.0.10.rc3
@@ -65,14 +65,6 @@ home theater system. I'm running debian unstable on a Toshiba laptop.
 ======================================================================
 
 ----------------------------------------------------------------------
- sailfrog - 12-22-05 02:25 
-----------------------------------------------------------------------
-I just tried ALSA 1.0.11rc1 with a 2.6.15-rc6 kernel and the problem
-persists :/
-
-Jason
-
-----------------------------------------------------------------------
  sailfrog - 12-30-05 19:48 
 ----------------------------------------------------------------------
 If anyone is interested I built the latest ALSA CVS against
@@ -94,6 +86,14 @@ to < 1.0.10 if I want USB sound to work :(
 
 Jason
 
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 20:01 
+----------------------------------------------------------------------
+"I guess if I want to stay with current kernels I will have to revert alsa
+to < 1.0.10 if I want USB sound to work :("
+
+Um, no, you'll just have to wait for this bug to be fixed.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -107,6 +107,7 @@ mm2, rc2)
 12-09-05 16:46 smithbone      Note Added: 0006968                          
 12-22-05 02:25 sailfrog       Note Added: 0007117                          
 12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
 ======================================================================
 
 
