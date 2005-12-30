@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000740]: SPDIF Broken
-Date: Fri, 30 Dec 2005 04:38:42 +0100
-Message-ID: <732900cb5766293066c7a7e1a9431836@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000301]: No sound though everything looks fine
+Date: Fri, 30 Dec 2005 04:40:45 +0100
+Message-ID: <267d4e4c3c3e17fc10d01eb6dba54173@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D982E1A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:38:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 093281A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:40:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=740> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=301> 
 ======================================================================
-Reported By:                nostar
+Reported By:                kevkim55
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   740
-Category:                   PCI - ice1712
+Issue ID:                   301
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
 Distribution:               
-Kernel Version:             2.6.9
+Kernel Version:             2.4.22-14
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-21-2004 23:55 CET
-Last Modified:              12-30-2005 04:38 CET
+Date Submitted:             05-24-2004 13:05 CEST
+Last Modified:              12-30-2005 04:40 CET
 ======================================================================
-Summary:                    SPDIF Broken
+Summary:                    No sound though everything looks fine
 Description: 
-S/PDIF appears to be broken in the ice1712 driver on recent versions of
-alsa.  I used to use it fine on 2.4 kernels (alsa 1.0 - 1.0.3), then I
-quit using it for a while.  Now on 2.6 / 1.0.7 (cvs) I can't get S/PDIF to
-work. I get silence untill I start screwing with Master Clock settings in
-envy24control, then I get loud white noise.  I was able to get correct
-sound once, by doing the following:
-
-Revert from 1.0.7(cvs) to 1.0.4 (driver, lib, and envy24control).  I load
-the driver, then I start jack, then I play a file via xmms (using
-xmms-jack of course), then run envy24control, and click 'Word Clock' as
-Master Clock.  If I do this in exactly this order I get sound.  If I click
-any other Clock setting I get white noise that cant be reversed untill I
-unload the driver.
-
-I went back to 1.0.7 (cvs) to do the same thing, but when I click Word
-Clock it doesnt stay, it immediately jumps back to its original state
-(usually Internal 48000).  I can hear the audio for a split second
-everytime I click Word Clock.
-
+I installed Mandrake Linux 9.2 on my BenQ JoyBook 3000 Laptop. The setup
+program detected the soundcard correctly as ALi M5455 with AC'97 codecs
+and installed the intel8x0 as the driver. The settings are allright, the
+driver and other sound core modules load properly without any problem and
+at boot time I can see the lines 
+ * Loading intel8x0 sound module ..
+ * Using alsactl to restore mixer settings..
+ * Loading mixer settings ...
+ The output of dmesg looks fine with absolutely no errrors. I set all of
+the mixer settings at 100% and unmuted by using amix/alsamixer. The
+utilities like Kaboodle, mpeg123 etc play without complaining, BUT THERE'S
+NO SOUND. 
+ I just don't understand what's wrong with my settings as everything seems
+allright. The output of asound files in /proc directory shows the
+settings, which seem allright to me, except the out put pcm0C0D1c and
+pcm0C0D1p, which out -> :closed
+  Catting sound files to pcm0C0D0c and pcm0C0D0p or to /dev/dsp,
+/dev/audio result in nothing as the I hear no sound nor I get the command
+prompt back, Ihave to hit Ctrl-C to terminate 'cat'. When I try the same
+thing with pcm0C0D1c and pcm0C0D1p I get an error message like invalid
+operation.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 17:32 
+ jdthood - 03-23-05 16:07 
 ----------------------------------------------------------------------
-Submitter: Do you see any improvement in the 1.0.8 release?
+Please send the output of
+
+   lsmod
+   uname -a
+   lspci
+   cat /proc/asound/version
+   cat /proc/asound/cards
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:38 
+ rlrevell - 12-30-05 04:40 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-21-04 23:55 nostar         New Issue                                    
-12-21-04 23:55 nostar         Kernel Version            => 2.6.9           
-04-09-05 17:32 jdthood        Note Added: 0004425                          
-12-30-05 04:38 rlrevell       Status                   new => closed       
-12-30-05 04:38 rlrevell       Note Added: 0007215                          
+05-24-04 13:05 kevkim55       New Issue                                    
+05-24-04 13:05 kevkim55       Kernel Version            => 2.4.22-14       
+03-23-05 16:07 jdthood        Note Added: 0004174                          
+12-30-05 04:40 rlrevell       Status                   new => closed       
+12-30-05 04:40 rlrevell       Note Added: 0007217                          
 ======================================================================
 
 
