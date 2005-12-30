@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001044]: Heavily distorted audio
-Date: Fri, 30 Dec 2005 04:42:13 +0100
-Message-ID: <b656164b4e8efc3d9ba8a809dc087c86@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001066]: autodetection fails
+Date: Fri, 30 Dec 2005 04:42:55 +0100
+Message-ID: <eefea860e675c3235ba802537cace205@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C30191A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:42:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 952231A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:42:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1044> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1066> 
 ======================================================================
-Reported By:                jefferai
+Reported By:                El Santo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1044
-Category:                   PCI - intel8x0
+Issue ID:                   1066
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11-ck3
+Distribution:               linux from scratch
+Kernel Version:             2.6.11.7
 ======================================================================
-Date Submitted:             04-11-2005 17:41 CEST
+Date Submitted:             04-19-2005 08:54 CEST
 Last Modified:              12-30-2005 04:42 CET
 ======================================================================
-Summary:                    Heavily distorted audio
+Summary:                    autodetection fails
 Description: 
-I have a laptop that is fine by itself, but when plugged into my docking
-station I get heavily distorted audio when something plays either
-directly to hw0:0 or through the OSS emulation. The problem seems to be
-with sample rate conversion -- if I create my own dmix-based device that
-resamples audio to 48KHz and then plays it to hw0:0, and I have an
-ALSA-aware app that lets me define which device to use and set it to
-that device, the audio is beautiful both on and off of the docking
-station.  Unfortunately, not all apps allow these settings, so things such
-as RealPlayer and Flash (in Firefox) sound horrid if I'm on my docking
-station, which is most of the time.
+i own a asus a8v (kt800pro) deluxe motherboard. it has a realtec alc850
+ac97 codec....
 
-I've seen this same problem through three Linux distributions now
-(Gentoo, SuSE, and Fedora Core 3) on the same laptop so I know it's an
-ALSA issue (or configuration issue) and not distribution-specific.
+i though this codec was supported
 
-I've hard-set the ac97 clock option in the snd-intel8x0 module to 48000
-but this
-doesn't help, and my clock is detected as being 48000Hz anyways.  I
-don't know what to do.  Some people have said to point OSS apps to
-/dev/adsp but apps complain it's not a valid device, and anyways pointing
-to anything but /dev/dsp doesn't seem to be an option for all apps. 
-Besides, I'd still have the ALSA issues for apps that don't let you define
-which device to use.
+when i load the snd-via82xx dont detect it... and none of the alsa modules
+say anything... not in screen, not kernel messages (dmesg), neither in
+/var/log/*...
 
-Following are relevant snippets of files.  I'm on up-to-date Gentoo
-linux using the Gentoo alsa-driver, alsa-tools, alsa-headers, alsa-lib,
-and alsa-oss ebuilds, all 1.0.8.  Configuration files are the defaults
-(I added the extra device with a .asoundrc).
+i have a bt878 tv card (bttv works perfectly) and snd-bt87x have the same
+problem that snd-via82xx... doesnt identify the card... but at least i can
+manually set the boot_all parameter....
+this tv card was correctly detected with my last motherboard asus a7v-600
+(kt600)
 
-TIA,
-Jeff
+i alsa tried to build alsa into the kernel (not like modules), but i get
+the same results
+
+any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 18:39 
+ El Santo - 04-22-05 22:06 
 ----------------------------------------------------------------------
-Both alsa-driver and alsa-lib must be updated to the same version.
-Especially, 1.0.9rc2 alsa-lib might lead to a kernel Oops with the older
-alsa-driver.  alsa-utils can be kept old, though.
+maybe youre right...
+but i think it could be a problem of the bios itself... it was released
+two days ago and with 1010 the systems runs perfectly stable
+
+i'll wait until asus response
 
 ----------------------------------------------------------------------
  rlrevell - 12-30-05 04:42 
 ----------------------------------------------------------------------
-Any improvement with later releases?
+Any update on this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-11-05 17:41 jefferai       New Issue                                    
-04-11-05 17:41 jefferai       Distribution              => Gentoo          
-04-11-05 17:41 jefferai       Kernel Version            => 2.6.11-ck3      
-04-12-05 16:32 tiwai          Note Added: 0004448                          
-04-12-05 18:13 jefferai       Note Added: 0004457                          
-04-12-05 18:39 tiwai          Note Added: 0004458                          
-12-30-05 04:42 rlrevell       Note Added: 0007219                          
+04-19-05 08:54 El Santo       New Issue                                    
+04-19-05 08:54 El Santo       Distribution              => linux from scratch
+04-19-05 08:54 El Santo       Kernel Version            => 2.6.11.7        
+04-19-05 17:25 tiwai          Note Added: 0004520                          
+04-20-05 20:28 El Santo       Note Added: 0004544                          
+04-20-05 20:29 El Santo       File Added: lspci-vv                         
+04-22-05 19:18 vsu            Note Added: 0004555                          
+04-22-05 21:28 El Santo       Note Added: 0004557                          
+04-22-05 21:32 rlrevell       Note Added: 0004558                          
+04-22-05 21:55 El Santo       Note Added: 0004559                          
+04-22-05 22:00 rlrevell       Note Added: 0004560                          
+04-22-05 22:06 El Santo       Note Added: 0004561                          
+12-30-05 04:42 rlrevell       Note Added: 0007220                          
 ======================================================================
 
 
