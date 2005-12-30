@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000869]: alsa-oss-1.0.8rc1 can't find module linkages
-Date: Fri, 30 Dec 2005 04:37:46 +0100
-Message-ID: <c4242901b9296182b43358b468fa30bb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000740]: SPDIF Broken
+Date: Fri, 30 Dec 2005 04:38:42 +0100
+Message-ID: <732900cb5766293066c7a7e1a9431836@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BFBB1A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:37:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D982E1A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:38:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=740> 
 ======================================================================
-Reported By:                lovett
+Reported By:                nostar
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   869
-Category:                   PCI - emu10k1
+Issue ID:                   740
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.9
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-31-2005 18:30 CET
-Last Modified:              12-30-2005 04:37 CET
+Date Submitted:             12-21-2004 23:55 CET
+Last Modified:              12-30-2005 04:38 CET
 ======================================================================
-Summary:                    alsa-oss-1.0.8rc1 can't find module linkages
+Summary:                    SPDIF Broken
 Description: 
-alsa-driver-1.0.8rc1 | alsa-lib-1.0.8rc1 | alsa-utils-1.0.8rc1
-alsa-oss-1.0.8rc1 all compiled from source and installed without
-fatal compliant.
+S/PDIF appears to be broken in the ice1712 driver on recent versions of
+alsa.  I used to use it fine on 2.4 kernels (alsa 1.0 - 1.0.3), then I
+quit using it for a while.  Now on 2.6 / 1.0.7 (cvs) I can't get S/PDIF to
+work. I get silence untill I start screwing with Master Clock settings in
+envy24control, then I get loud white noise.  I was able to get correct
+sound once, by doing the following:
 
-Booting enters this error into syslog
-	kernel: Error seeking in /dev/kmem 
-	kernel: Symbol #snd-page-alloc, value 002c4000 
-	kernel: Error adding kernel module table entry.
-	modprobe: modprobe: Can't locate module snd-seq-client-62
-	
-Now invoking the most recent TiMidity gives an error message:
-	# /usr/local/bin/timidity -p64:0 file.mid   -->
-Requested buffer size 32768, fragment size 8192
-ALSA pcm 'default' can't set hw_params
+Revert from 1.0.7(cvs) to 1.0.4 (driver, lib, and envy24control).  I load
+the driver, then I start jack, then I play a file via xmms (using
+xmms-jack of course), then run envy24control, and click 'Word Clock' as
+Master Clock.  If I do this in exactly this order I get sound.  If I click
+any other Clock setting I get white noise that cant be reversed untill I
+unload the driver.
 
-Now invoking aplaymidi runs in the sense that CPU cycles are
-consumed, but no sound is produced and syslog reports (several times)
-	# aplaymidi -p65:0 file.mid   -->
-	kernel: ALSA pcm_oss.c:450: HW_PARAMS failed: -12
-
-How should I go about finding what is missing?
+I went back to 1.0.7 (cvs) to do the same thing, but when I click Word
+Clock it doesnt stay, it immediately jumps back to its original state
+(usually Internal 48000).  I can hear the audio for a split second
+everytime I click Word Clock.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-13-05 17:18 
+ jdthood - 04-09-05 17:32 
 ----------------------------------------------------------------------
-Submitter: Do you see the same problem in 1.0.8 and 1.0.9rc2?
+Submitter: Do you see any improvement in the 1.0.8 release?
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:37 
+ rlrevell - 12-30-05 04:38 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 18:30 lovett         New Issue                                    
-04-13-05 17:18 jdthood        Note Added: 0004472                          
-12-30-05 04:37 rlrevell       Status                   new => closed       
-12-30-05 04:37 rlrevell       Note Added: 0007214                          
+12-21-04 23:55 nostar         New Issue                                    
+12-21-04 23:55 nostar         Kernel Version            => 2.6.9           
+04-09-05 17:32 jdthood        Note Added: 0004425                          
+12-30-05 04:38 rlrevell       Status                   new => closed       
+12-30-05 04:38 rlrevell       Note Added: 0007215                          
 ======================================================================
 
 
