@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000200]: White noise when sound driver is loaded
-Date: Fri, 30 Dec 2005 05:14:00 +0100
-Message-ID: <7d0b78e4f2fb47b5880c44d949ab1e21@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001020]: Driver only records left channel when requested to record in stereo from Line-In
+Date: Fri, 30 Dec 2005 05:15:09 +0100
+Message-ID: <1ca44cc69e5203cf5f6ab56d7fe3c22f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B795193
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:14:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03B2F193
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 05:15:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=200> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1020> 
 ======================================================================
-Reported By:                mbribeiro
+Reported By:                David Klusacek
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   200
-Category:                   PCI - ens1371
+Issue ID:                   1020
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               gentoo-linux
-Kernel Version:             2.6.5
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-11-2004 19:55 CEST
-Last Modified:              12-30-2005 05:13 CET
+Date Submitted:             03-29-2005 14:13 CEST
+Last Modified:              12-30-2005 05:15 CET
 ======================================================================
-Summary:                    White noise when sound driver is loaded
+Summary:                    Driver only records left channel when requested to
+record in stereo from Line-In
 Description: 
-Since kernel 2.6.3 I started to have problem with sound. In 2.6.3 sound
-stoped working and locked up artsd in kde, in 2.6.5 worked again but the
-sound is very poor with a background noise and very, very poor to use with
-xmame and artsd as I used to do. I have an ens1371 SB and I worked fine
-with winxp and alsa, now it just works fine with winxp (no hardware
-problem I guess). In kernel 2.6.5 I tried to use the latest version
-available and installed alsa 1.0.4-r1 from gentoo's ebuild and the problem
-is still there.
+
+When recording analog source, only one channel is really being captured,
+while the other returns some garbage (usually zeroes), regardless of the
+program being used for recording. As it appears on at least three
+different soundcards (snd-ens1371, snd-via82xx and snd-intel8x0 (intel
+records left and omits right channel)), I think that the cause might have
+something to do with the pcm core. 
+
+Note also, that drivers for ens1371 and via82xx worked well in the older
+(0.5.10b) versions of ALSA.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-01-05 22:50 
+ David Klusacek - 03-30-05 19:28 
 ----------------------------------------------------------------------
-Submitter: Has there been any improvement in later ALSA releases?
+Of course that I checked the cable (and it is working since it works with
+old kernel and old alsa). I even tried three diffrent machines, hence the
+bug is quite independent of CPU and chipset used. 
+
+Unfortunately I do not have any /etc/asound.state file on my machine (what
+is it good for, anyway?). If you doubt about my mixer setting I attached
+the output of amixer program  (file amixer.out). Hope this helps.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:13 
+ rlrevell - 12-30-05 05:15 
 ----------------------------------------------------------------------
-No response
+Any updates on this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-11-04 19:55 mbribeiro      New Issue                                    
-04-11-04 19:55 mbribeiro      Distribution              => gentoo-linux    
-04-11-04 19:55 mbribeiro      Kernel Version            => 2.6.5           
-04-01-05 22:50 jdthood        Note Added: 0004291                          
-12-30-05 05:13 rlrevell       Status                   new => closed       
-12-30-05 05:13 rlrevell       Note Added: 0007236                          
+03-29-05 14:13 David Klusacek New Issue                                    
+03-29-05 14:13 David Klusacek Kernel Version            => 2.6.11          
+03-29-05 17:14 tiwai          Note Added: 0004248                          
+03-29-05 20:14 David Klusacek Note Added: 0004257                          
+03-29-05 20:19 tiwai          Note Added: 0004258                          
+03-30-05 19:28 David Klusacek Note Added: 0004272                          
+03-30-05 19:29 David Klusacek File Added: amixer.out                       
+12-30-05 05:15 rlrevell       Note Added: 0007237                          
 ======================================================================
 
 
