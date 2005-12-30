@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001036]: Replacement SB Live card not detected
-Date: Fri, 30 Dec 2005 04:22:21 +0100
-Message-ID: <da3234e9d2b2ba71b73da44df3eb2487@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001061]: can't test audio with aplay using 16-bit signed LE format; 1.0.7 however works
+Date: Fri, 30 Dec 2005 04:24:11 +0100
+Message-ID: <189592d29dec08a9b44c9bd96cdffdf1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C50E1A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:22:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EB071A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:24:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1036> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1061> 
 ======================================================================
-Reported By:                grolschie
+Reported By:                ukr
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1036
-Category:                   PCI - emu10k1
+Issue ID:                   1061
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.3
+Distribution:               Fedora Core 3
+Kernel Version:             Linux 2.6.11
 ======================================================================
-Date Submitted:             04-05-2005 02:10 CEST
-Last Modified:              12-30-2005 04:22 CET
+Date Submitted:             04-18-2005 03:24 CEST
+Last Modified:              12-30-2005 04:24 CET
 ======================================================================
-Summary:                    Replacement SB Live card not detected
+Summary:                    can't test audio with aplay using 16-bit signed LE
+format; 1.0.7 however works
 Description: 
-Hi there.
+I usually test my speakers with aplay using
 
-I have been using my SB Live Value PCI for over a year with ALSA with no
-problems. I recently swapped the card for a newer SB Live 5.1 DE PCI card.
-Even though these cards are pretty much the same, alsaconf cannot detect
-any supported sound cards. lspci shows that the new card is indeed
-detected.
+aplay -t raw -f S16_LE -c 6 -r 48000 -Dsurround51
 
-Regards,
-grolschie
+With 1.0.8, when I do this, nothing goes to any of the speakers. However,
+when I revert to alsa-driver 1.0.7, it works correctly. I have Intel ICH5
+audio with Realtek ALC650F chip with 5.1 channel audio.
+
+Thanks,
+            Uday.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 04-05-05 10:20 
+ ukr - 04-23-05 02:08 
 ----------------------------------------------------------------------
-This can by sb live (c) 2003 with STAC9758. Some older alsa versions had
-bug for this card - card was sillent. And proper support was added in alsa
-1.0.5.
-
-kernel 2.6.3 contains old alsa. Try to upgrade to never alsa.
+I would like to add that surround51 is working correctly but not ch51dup
+and ch41dup (which I had set up using the route plug-in in .asoundrc).
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:22 
+ rlrevell - 12-30-05 04:24 
 ----------------------------------------------------------------------
 Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-05-05 02:10 grolschie      New Issue                                    
-04-05-05 02:10 grolschie      Distribution              => Debian          
-04-05-05 02:10 grolschie      Kernel Version            => 2.6.3           
-04-05-05 02:12 grolschie      Note Added: 0004333                          
-04-05-05 08:30 pzad           Note Added: 0004334                          
-04-05-05 08:55 grolschie      Note Added: 0004335                          
-04-05-05 10:20 pzad           Note Added: 0004336                          
-12-30-05 04:22 rlrevell       Note Added: 0007205                          
+04-18-05 03:24 ukr            New Issue                                    
+04-18-05 03:24 ukr            Distribution              => Fedora Core 3   
+04-18-05 03:24 ukr            Kernel Version            => Linux 2.6.11    
+04-19-05 02:30 ukr            Issue Monitored: ukr                         
+04-19-05 17:39 tiwai          Note Added: 0004524                          
+04-19-05 17:52 ukr            Note Added: 0004530                          
+04-19-05 17:58 tiwai          Note Added: 0004531                          
+04-19-05 18:45 ukr            Note Added: 0004538                          
+04-19-05 18:46 ukr            File Added: debug.output                     
+04-23-05 02:08 ukr            Note Added: 0004562                          
+12-30-05 04:24 rlrevell       Note Added: 0007206                          
 ======================================================================
 
 
