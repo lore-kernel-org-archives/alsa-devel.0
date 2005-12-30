@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001046]: after some time, the alsa system is not accessible
-Date: Sat, 31 Dec 2005 00:16:26 +0100
-Message-ID: <4ed7a4ccfa15cc83e2492f4572bfa19f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001482]: Front channels distorsions in Phase 28
+Date: Sat, 31 Dec 2005 00:17:31 +0100
+Message-ID: <65e27e5685678e1eadf1e91ae4c6a8c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC06C16A
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:16:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3882B181
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:17:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,139 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1046> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1482> 
 ======================================================================
-Reported By:                wilsotc
+Reported By:                eric
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1046
-Category:                   PCI - cs46xx
+Issue ID:                   1482
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               gentoo
-Kernel Version:             2.6.11-r5
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1 Custom epia
 ======================================================================
-Date Submitted:             04-12-2005 16:05 CEST
-Last Modified:              12-31-2005 00:16 CET
+Date Submitted:             10-18-2005 11:45 CEST
+Last Modified:              12-31-2005 00:17 CET
 ======================================================================
-Summary:                    after some time, the alsa system is not accessible
+Summary:                    Front channels distorsions in Phase 28
 Description: 
-If I remote SSH an aplay command, the problem can occur.
+Hello , i have problems on Terratec Phase 28 :
 
-This command:
-ssh USERNAME@host.com 'aplay /usr/kde/3.3/share/sounds/KDE_Notify.wav'
+front channels distortions, other no problems (rear , center , side ...)
 
-from a remote system can cause the problem to occur.  The command will
-produce audio for weeks, then subsequent commands will cause an error that
-looks like this:
+you can view for sample screenshots of 1000Hz signal applied of front and
+rear channels
 
-ALSA lib confmisc.c:550:(snd_determine_driver) could not open control for
-card 0
-ALSA lib conf.c:3463:(_snd_config_evaluate) function snd_func_card_driver
-returned error: Permission denied
-ALSA lib confmisc.c:387:(snd_func_concat) error evaluating strings
-ALSA lib conf.c:3463:(_snd_config_evaluate) function snd_func_concat
-returned error: Permission denied
-ALSA lib confmisc.c:945:(snd_func_refer) error evaluating name
-ALSA lib conf.c:3463:(_snd_config_evaluate) function snd_func_refer
-returned error: Permission denied
-ALSA lib conf.c:3932:(snd_config_expand) Evaluate error: Permission
-denied
-ALSA lib pcm.c:2068:(snd_pcm_open_noupdate) Unknown PCM default
+I use last alsa drivers 1.0.9b and last library on Debian sarge 3.1
 
-the user is a member of the audio group as evidenced by the many
-successful audio commands prior to the error.
+thanks 
 ======================================================================
 
 ----------------------------------------------------------------------
- wilsotc - 05-03-05 22:01 
+ eric - 10-25-05 20:05 
 ----------------------------------------------------------------------
-I have to run the hourly crontab job:
-0 * * * *       chmod g+rw /dev/snd/*
+Hi , with last alsa cvs , same problem.
 
-To change my audio rights from this:
-calvin root # ls -la /dev/snd/
-total 0
-drwxrwxr-x  1 root audio       0 Dec 31  1969 .
-drwxr-xr-x  1 root root        0 Dec 31  1969 ..
-crw-------  1 root audio 116,  0 Dec 31  1969 controlC0
-crw-------  1 root audio 116,  8 Dec 31  1969 midiC0D0
-crw-------  1 root audio 116, 24 Dec 31  1969 pcmC0D0c
-crw-------  1 root audio 116, 16 Dec 31  1969 pcmC0D0p
-crw-------  1 root audio 116, 17 Dec 31  1969 pcmC0D1p
-crw-------  1 root audio 116, 18 Dec 31  1969 pcmC0D2p
-crw-------  1 root audio 116,  1 Dec 31  1969 seq
-crw-------  1 root audio 116, 33 Dec 31  1969 timer
+i don't understand why six channels works perfectly and two have strange 
+distortion.
 
-back to this:
-calvin root # ls -la /dev/snd/
-total 0
-drwxrwxr-x  1 root audio       0 Dec 31  1969 .
-drwxr-xr-x  1 root root        0 Dec 31  1969 ..
-crw-rw----  1 root audio 116,  0 Dec 31  1969 controlC0
-crw-rw----  1 root audio 116,  8 Dec 31  1969 midiC0D0
-crw-rw----  1 root audio 116, 24 Dec 31  1969 pcmC0D0c
-crw-rw----  1 root audio 116, 16 Dec 31  1969 pcmC0D0p
-crw-rw----  1 root audio 116, 17 Dec 31  1969 pcmC0D1p
-crw-rw----  1 root audio 116, 18 Dec 31  1969 pcmC0D2p
-crw-rw----  1 root audio 116,  1 Dec 31  1969 seq
-crw-rw----  1 root audio 116, 33 Dec 31  1969 timer
-
-I am using ALSA 1.0.8 on Gentoo Linux with Kernel 2.6.10-r6
-*  media-sound/alsa-headers
-      Latest version available: 1.0.8
-      Latest version installed: 1.0.8
-      Size of downloaded files: 1,881 kB
-      Homepage:    http://www.alsa-project.org/
-      Description: Header files for Advanced Linux Sound Architecture
-kernel modules
-*  media-sound/alsa-utils
-      Latest version available: 1.0.8
-      Latest version installed: 1.0.8
-      Size of downloaded files: 219 kB
-      Homepage:    http://www.alsa-project.org/
-      Description: Advanced Linux Sound Architecture Utils (alsactl,
-alsamixer, etc.)
-*  media-sound/alsa-driver
-      Latest version available: 1.0.8
-      Latest version installed: [ Not Installed ]
-      Size of downloaded files: 1,881 kB
-      Homepage:    http://www.alsa-project.org/
-      Description: Advanced Linux Sound Architecture kernel modules
-*  media-libs/alsa-lib
-      Latest version available: 1.0.8
-      Latest version installed: 1.0.8
-      Size of downloaded files: 666 kB
-      Homepage:    http://www.alsa-project.org/
-      Description: Advanced Linux Sound Architecture Library
-
-The rights seem to disappear randomly when I run an aplay command via SSH
-from another host.
-
-I'm using devfsd not udev
+thanks
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:16 
+ rlrevell - 12-31-05 00:17 
 ----------------------------------------------------------------------
-devfs has been removed from the kernel
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 16:05 wilsotc        New Issue                                    
-04-12-05 16:05 wilsotc        Distribution              => gentoo          
-04-12-05 16:05 wilsotc        Kernel Version            => 2.6.11-r5       
-04-12-05 16:25 tiwai          Note Added: 0004446                          
-05-03-05 22:01 wilsotc        Note Added: 0004585                          
-12-31-05 00:16 rlrevell       Status                   new => closed       
-12-31-05 00:16 rlrevell       Note Added: 0007312                          
+10-18-05 11:45 eric           New Issue                                    
+10-18-05 11:45 eric           File Added: screenshot.zip                    
+10-18-05 11:45 eric           Kernel Version            => 2.6.8.1 Custom epia
+10-25-05 20:05 eric           Note Added: 0006550                          
+10-25-05 20:06 eric           Note Added: 0006551                          
+10-25-05 20:09 eric           Note Deleted: 0006551                        
+12-31-05 00:17 rlrevell       Note Added: 0007313                          
 ======================================================================
 
 
