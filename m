@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001374]: unplug usb audio device while streaming will lock up the usb kernel
-Date: Fri, 30 Dec 2005 23:18:20 +0100
-Message-ID: <d865ba6abea12b05bbb9f0ae5b394264@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000877]: balance problem with ALC880 (Intel HD Audio)
+Date: Fri, 30 Dec 2005 23:21:04 +0100
+Message-ID: <3d27e0959c96cd0217f06f4dafdeee26@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E75E4148
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:18:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7290F148
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 23:21:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1374> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=877> 
 ======================================================================
-Reported By:                byuan
+Reported By:                alphacc
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1374
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   877
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               Scientific Linux 3.03 (close to Redhat ES 3)
+Kernel Version:             2.4.21
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-27-2005 23:53 CEST
-Last Modified:              12-30-2005 23:18 CET
+Date Submitted:             02-02-2005 11:32 CET
+Last Modified:              12-30-2005 23:21 CET
 ======================================================================
-Summary:                    unplug usb audio device while streaming will lock up
-the usb kernel
+Summary:                    balance problem with ALC880 (Intel HD Audio)
 Description: 
-unplug usb audio device while streaming will lock up the usb kernel, the
-snd_pcm_close() doesn't help, unless the process that called the
-snd_pcm_open be closed.
+module : snd-azx
+
+When I try to change the Front balance (left/right), the Front volume is
+going up or down randomly.
+Tested with xmms, alsamixer, gnome-alsamixer.
+
+Is it a known problem with other platforms / modules ?
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:18 
+ jdthood - 09-19-05 09:58 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+alphacc: Is there any improvement in later ALSA versions?
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 23:21 
+----------------------------------------------------------------------
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-27-05 23:53 byuan          New Issue                                    
-08-27-05 23:55 byuan          Issue Monitored: byuan                       
-12-30-05 23:18 rlrevell       Note Added: 0007283                          
+02-02-05 11:32 alphacc        New Issue                                    
+02-02-05 11:32 alphacc        Distribution              => Scientific Linux 3.03
+(close to Redhat ES 3)
+02-02-05 11:32 alphacc        Kernel Version            => 2.4.21          
+09-19-05 09:58 jdthood        Note Added: 0006278                          
+12-30-05 23:21 rlrevell       Status                   new => closed       
+12-30-05 23:21 rlrevell       Note Added: 0007284                          
 ======================================================================
 
 
