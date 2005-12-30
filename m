@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001325]: Support for CMMS for SB Live!/Audigy series
-Date: Fri, 30 Dec 2005 04:27:45 +0100
-Message-ID: <80bc2b471fdb29ac5e34a4d1990abb31@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0000708]: Fix CVS envy24control crash on midi 00 control
+Date: Fri, 30 Dec 2005 04:28:51 +0100
+Message-ID: <993326a4bdc5906520aff0e9784ec2f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37D5E1A1
-	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:27:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9620F1A1
+	for <alsa-devel@alsa-project.org>; Fri, 30 Dec 2005 04:28:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1325> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=708> 
 ======================================================================
-Reported By:                lolliestick
+Reported By:                shadow
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1325
-Category:                   alsamixer
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - tools
+Issue ID:                   708
+Category:                   envy24control
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             08-10-2005 00:38 CEST
-Last Modified:              12-30-2005 04:27 CET
+Date Submitted:             12-05-2004 12:36 CET
+Last Modified:              12-30-2005 04:28 CET
 ======================================================================
-Summary:                    Support for CMMS for SB Live!/Audigy series
+Summary:                    Fix CVS envy24control crash on midi 00 control
 Description: 
-Hi,
-
-On my Windows system i always use the default settings for my SB Audigy.
-In Linux i also use the default settings. The difference between this two
-is that on Windows CMMS is enabled wich isn't the clue with Linux. The
-result of that is the huge difference in volume and sound quality.
-Ofcourse many people should say to avoid CMMS, but i'm glad it's there and
-i use it. Is there a way to implement this feature into Alsa?
-
-Thanks
+envy24control adds midi support, but if it receives data from a controller
+with ID '0' it will crash.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:27 
+ rlrevell - 12-30-05 03:58 
 ----------------------------------------------------------------------
-CMMS is not a hardware feature, it's software upmixing that's done in the
-Windows driver.
+Is this still broken?
+
+----------------------------------------------------------------------
+ shadow - 12-30-05 04:28 
+----------------------------------------------------------------------
+I havent used midi function of envy24control in many months. I cannot say
+if this issue exists or has been resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-10-05 00:38 lolliestick    New Issue                                    
-10-19-05 16:43 lolliestick    Issue Monitored: lolliestick                    
-12-30-05 04:27 rlrevell       Status                   new => closed       
-12-30-05 04:27 rlrevell       Note Added: 0007208                          
+12-05-04 12:36 shadow         New Issue                                    
+12-05-04 12:36 shadow         File Added:
+cvs_alsa_20041205-envy24control.midi00crash.patch                    
+12-05-04 13:58 shadow         Note Added: 0002721                          
+12-05-04 15:02 shadow         Note Added: 0002722                          
+12-05-04 15:02 shadow         File Added:
+cvs_alsa_20041205-envy24control.midi00crash.patch                    
+12-30-05 03:58 rlrevell       Note Added: 0007194                          
+12-30-05 04:28 shadow         Note Added: 0007209                          
 ======================================================================
 
 
