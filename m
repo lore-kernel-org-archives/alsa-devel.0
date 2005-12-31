@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Sat, 31 Dec 2005 20:38:47 +0100
-Message-ID: <bc8086a678409c7a3504031c50363b74@bugtrack.alsa-project.org>
+Date: Sat, 31 Dec 2005 21:32:26 +0100
+Message-ID: <663c506bbada2e8cff9f9bf34a23d9a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F1E9155
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 20:38:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABF0A167
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 21:32:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              12-31-2005 20:38 CET
+Last Modified:              12-31-2005 21:32 CET
 ======================================================================
 Summary:                    xmms/beep "couldn't open audio" on song change
 Description: 
@@ -87,11 +87,6 @@ Attached is my asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:15 
-----------------------------------------------------------------------
-Any improvement in later releases?
-
-----------------------------------------------------------------------
  skandalfo - 12-31-05 20:38 
 ----------------------------------------------------------------------
 No change at the version of alsa-lib 1.0.10 (at least as distributed by
@@ -99,6 +94,11 @@ Gentoo)...
 
 I still have to remove the dmix bit in order for xine to properly switch
 audio modes.
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 21:32 
+----------------------------------------------------------------------
+What about 1.0.11-rc*?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -131,6 +131,7 @@ direct PCM plugins (dmix+)
    
 12-30-05 23:15 rlrevell       Note Added: 0007281                          
 12-31-05 20:38 skandalfo      Note Added: 0007358                          
+12-31-05 21:32 rlrevell       Note Added: 0007359                          
 ======================================================================
 
 
