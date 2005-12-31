@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000441]: Master volume not doing anything
-Date: Sat, 31 Dec 2005 04:05:58 +0100
-Message-ID: <dfd3e5db2ce6d56fa961137eca9361f8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000446]: System freezes everytime when I start recording.
+Date: Sat, 31 Dec 2005 04:07:34 +0100
+Message-ID: <566bc7ed8b0a6977748417f995b84275@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10C2D15D
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:05:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DE7215C
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:07:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=441> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=446> 
 ======================================================================
-Reported By:                Simon
+Reported By:                Marc_R
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   441
-Category:                   PCI - emu10k1
+Issue ID:                   446
+Category:                   PCI - es1938
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.
+Status:                     closed
+Distribution:               Debian GNU/Linux / DeMuDi
+Kernel Version:             every kernel I tried 2.4.x / 2.6.x
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-14-2004 20:49 CEST
-Last Modified:              12-31-2005 04:05 CET
+Date Submitted:             08-16-2004 22:24 CEST
+Last Modified:              12-31-2005 04:07 CET
 ======================================================================
-Summary:                    Master volume not doing anything
+Summary:                    System freezes everytime when I start recording.
 Description: 
-I have sound, everything works, but the master volume control doesn't have
-any effect on the actual volume output.
+I have a Terratec 128i PCI soundcard which works great as long as I don't
+record something.
+I tried recording from cd, microphone, and mix via arecord and Audacity.
+The capture devices were set correctly.
+As soon as the recording begins, the system freezes immediately. Even the
+Magic SysRq doesn't work so I have to reset the PC.
+I had this problem with every Linux-kernel version I tried from 2.4.x to
+2.6.8.1.
+I even installed DeMuDi but had the same problem there.
 
-Running Soundblaster Live! 5.1 dolby surround system
+After some more testing I found out that recording works more or less,
+when I unload the usb-module (uhci_hcd). But I have to unload it when X is
+not running (?!), otherwise the system still crashes.
+
+I then borrowed another soundcard (SB 128) and got it working with no
+problems. So it seems that there is some bug in the recording part of the
+es1938-driver...
+
+If there's additional information needed, please ask.
 ======================================================================
 
 ----------------------------------------------------------------------
- Simon - 07-16-05 21:20 
+ jdthood - 04-09-05 04:26 
 ----------------------------------------------------------------------
-It works now for only the subwoofer and the left front and rear... it's an
-improvement
-
-Current kernel version running:
-2.6.8-24.16 or 2.6.11.9
-
-Latest ALSA driver
-
-
+Submitter: Do you see any improvement in later ALSA releases?
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 04:05 
+ rlrevell - 12-31-05 04:07 
 ----------------------------------------------------------------------
-Do you consider the bug fixed?
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-04 20:49 Simon          New Issue                                    
-08-14-04 20:49 Simon          Distribution              => Slackware       
-08-14-04 20:49 Simon          Kernel Version            => 2.              
-07-16-05 17:14 jdthood        Note Added: 0005499                          
-07-16-05 21:19 Simon          Note Added: 0005502                          
-07-16-05 21:20 Simon          Note Edited: 0005502                         
-08-03-05 12:24 perex          Category                 CORE - control => PCI -
-emu10k1
-12-31-05 04:05 rlrevell       Note Added: 0007336                          
+08-16-04 22:24 Marc_R         New Issue                                    
+08-16-04 22:24 Marc_R         Distribution              => Debian GNU/Linux /
+DeMuDi
+08-16-04 22:24 Marc_R         Kernel Version            => every kernel I tried
+2.4.x / 2.6.x
+04-09-05 04:26 jdthood        Note Added: 0004382                          
+12-31-05 04:07 rlrevell       Status                   new => closed       
+12-31-05 04:07 rlrevell       Note Added: 0007338                          
 ======================================================================
 
 
