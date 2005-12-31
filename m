@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000219]: Only pcm-2 (headphone) volume control works, others muted(?)
-Date: Sat, 31 Dec 2005 03:18:04 +0100
-Message-ID: <362fb04e0f9239d1155cf28513fa255d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001440]: headphone output loops to microphone input
+Date: Sat, 31 Dec 2005 03:20:54 +0100
+Message-ID: <554360ec8bc5d4d81ed30b0ce0faba8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AF4217A
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:18:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 783FF121
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:20:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1440> 
 ======================================================================
-Reported By:                JonB
+Reported By:                dyfrgi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   219
+Issue ID:                   1440
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Slackware 9.1
-Kernel Version:             2.4.24
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.13.1
 ======================================================================
-Date Submitted:             04-17-2004 12:23 CEST
-Last Modified:              12-31-2005 03:18 CET
+Date Submitted:             09-22-2005 00:13 CEST
+Last Modified:              12-31-2005 03:20 CET
 ======================================================================
-Summary:                    Only pcm-2 (headphone) volume control works, others
-muted(?)
+Summary:                    headphone output loops to microphone input
 Description: 
-Tried various applications from CLI and Dropline GNOME 2.6.0 to get sound
-output. Dell Inspiron 5150 laptop with 82801DBICH4.
+I cannot use the headphone port when using full duplex on my laptop. Here
+are four scenarios, and the results:
 
-Master volume control, PCM, CD, Video have no effect on sound volume - no
-sound output from external speakers. Plugin headphones and can vary sound
-through headphones using the headphone control (also known as pcm-2 in
-aumix).
+1. System speakers, no microphone plugged in
+RESULTS:
+When recording from the microphone input, there is no sound. As expected.
 
-Playing any CD with the GNOME CD Player does not produce any sound through
-headphones or speakers.
+2. System speakers, microphone plugged in
+RESULTS:
+Only the sound that should be picked up by the microphone is recorded
+through the microphone input. As expected.
 
-Playing through headphones - only the headphone control has any effect.
-The master control has no effect.
+3. Headphones plugged in, microphone not plugged in.
+RESULTS:
+No sound when recording. As expected.
 
-Have included output from various parts of the system including lspci,
-asound.state and some information in /proc/asound/card0.
+4. Headphones plugged in, microphone plugged in.
+RESULTS:
+Audio coming in through the microphone input is a combination of the
+expected audio and the audio that is being played through the headphone
+output. This is the problem.
 
-Sound was working in 1.0.2 (except PCM control was intermittent) -
-internal speakers worked, master volume control worked, etc.
+Could this be an ALSA issue, or should I have the laptop hardware looked
+at? I should note that this also happens if I use the OSS driver. That
+doesn't mean it's not a driver issue, though; it could be that some
+register is not being set up properly.
+
+The loopbacked volume is lower than if I set Mix or Mix Mono to be the
+capture channel. I'm using jaaa with noise output turned on to monitor.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000079 Dell Inspiron 8500 ICH4 no sound throug...
-======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-29-05 12:13 
+ rlrevell - 12-31-05 03:20 
 ----------------------------------------------------------------------
-Submitter: Does switching on 'External Amplifier' fix the problem?
-
-----------------------------------------------------------------------
- rlrevell - 12-31-05 03:18 
-----------------------------------------------------------------------
-No response
+Any improvement with later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-04 12:23 JonB           New Issue                                    
-04-17-04 12:23 JonB           File Added: intel8x0                         
-04-17-04 12:23 JonB           Distribution              => Slackware 9.1   
-04-17-04 12:23 JonB           Kernel Version            => 2.4.24          
-03-23-05 16:06 jdthood        Note Added: 0004171                          
-09-29-05 12:13 jdthood        Note Added: 0006418                          
-09-29-05 12:15 jdthood        Relationship added       related to 0000079  
-12-31-05 03:18 rlrevell       Status                   new => closed       
-12-31-05 03:18 rlrevell       Note Added: 0007323                          
+09-22-05 00:13 dyfrgi         New Issue                                    
+09-22-05 00:13 dyfrgi         Distribution              => Gentoo          
+09-22-05 00:13 dyfrgi         Kernel Version            => 2.6.13.1        
+12-31-05 03:20 rlrevell       Note Added: 0007324                          
 ======================================================================
 
 
