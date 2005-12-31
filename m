@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Sat, 31 Dec 2005 05:33:12 +0100
-Message-ID: <563c4160bd1945deb34c1f8e04986297@bugtrack.alsa-project.org>
+Date: Sat, 31 Dec 2005 05:37:16 +0100
+Message-ID: <fabd1283f841395bc8865123513a8499@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4E74165
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 05:33:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AAAE16E
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 05:37:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
 Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              12-31-2005 05:33 CET
+Last Modified:              12-31-2005 05:37 CET
 ======================================================================
 Summary:                    No sound from Soundblaster Live USB since updating
 kernel drivers to 1.0.10.rc3
@@ -65,15 +65,16 @@ home theater system. I'm running debian unstable on a Toshiba laptop.
 ======================================================================
 
 ----------------------------------------------------------------------
- smithbone - 12-31-05 05:31 
-----------------------------------------------------------------------
-Is the patch a fix or just for reference?  If I reverse the patch then I
-get unresolved symbols.  This was against 2.6.15-rc7
-
-----------------------------------------------------------------------
  rlrevell - 12-31-05 05:33 
 ----------------------------------------------------------------------
 It's just for reference.
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 05:37 
+----------------------------------------------------------------------
+Try adding printks to prepare_startup_playback_urb() and
+snd_usb_pcm_playback_trigger() in sound/usb/usbaudio.c, do they both get
+called when you play something?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +101,7 @@ mm2, rc2)
 12-31-05 03:47 rlrevell       Note Added: 0007331                          
 12-31-05 05:31 smithbone      Note Added: 0007343                          
 12-31-05 05:33 rlrevell       Note Added: 0007344                          
+12-31-05 05:37 rlrevell       Note Added: 0007345                          
 ======================================================================
 
 
