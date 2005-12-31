@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001036]: Replacement SB Live card not detected
-Date: Sat, 31 Dec 2005 00:32:38 +0100
-Message-ID: <593de76e0eeef22f9c5d21cde24e5a70@bugtrack.alsa-project.org>
+From: "Sepi Berard" <berardsepi@vesta.no>
+Subject: Re: elongation sweet
+Date: Fri, 30 Dec 2005 20:24:38 -0500
+Message-ID: <000001c60da8$f75ea680$ec6fa8c0@son>
+Reply-To: "Sepi Berard" <berardsepi@vesta.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C60D7F.0E889E80"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E37412B
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 00:32:38 +0100 (MET)
+Received: from vesta.no (220-135-0-158.HINET-IP.hinet.net [220.135.0.158])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8562B13D
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 02:24:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +19,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Marion Clarkson <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1036> 
-======================================================================
-Reported By:                grolschie
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1036
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.3
-======================================================================
-Date Submitted:             04-05-2005 02:10 CEST
-Last Modified:              12-31-2005 00:32 CET
-======================================================================
-Summary:                    Replacement SB Live card not detected
-Description: 
-Hi there.
+------=_NextPart_000_0001_01C60D7F.0E889E80
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I have been using my SB Live Value PCI for over a year with ALSA with no
-problems. I recently swapped the card for a newer SB Live 5.1 DE PCI card.
-Even though these cards are pretty much the same, alsaconf cannot detect
-any supported sound cards. lspci shows that the new card is indeed
-detected.
 
-Regards,
-grolschie
-======================================================================
+CI
+VA
+XA
 
-----------------------------------------------------------------------
- rlrevell - 12-30-05 04:22 
-----------------------------------------------------------------------
-Any improvement with later releases?
+VI
 
-----------------------------------------------------------------------
- rlrevell - 12-31-05 00:32 
-----------------------------------------------------------------------
-Try attached patch
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-05-05 02:10 grolschie      New Issue                                    
-04-05-05 02:10 grolschie      Distribution              => Debian          
-04-05-05 02:10 grolschie      Kernel Version            => 2.6.3           
-04-05-05 02:12 grolschie      Note Added: 0004333                          
-04-05-05 08:30 pzad           Note Added: 0004334                          
-04-05-05 08:55 grolschie      Note Added: 0004335                          
-04-05-05 10:20 pzad           Note Added: 0004336                          
-12-30-05 04:22 rlrevell       Note Added: 0007205                          
-12-31-05 00:32 rlrevell       File Added: 8067.patch                       
-12-31-05 00:32 rlrevell       Note Added: 0007318                          
-======================================================================
+ALI
+LIU
+
+NA
+AG
+
+
+S
+M
+X
+
+RA
+
+
+ from $3.75
+ from $1.21
+=20
+ from $3.33
+
+http://www.oclarifare.com
+
+------=_NextPart_000_0001_01C60D7F.0E889E80
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV style=3D"FLOAT: left"><H1>CI<BR>VA<BR>XA<BR>
+<DIV>VI</DIV></H1></DIV>
+<DIV style=3D"FLOAT: left"><H1>
+<DIV>ALI</DIV>LIU<BR>
+<DIV>NA</DIV>
+<DIV>AG</DIV></H1></DIV>
+<DIV style=3D"FLOAT: left"><H1>
+<DIV>S</DIV>
+<DIV>M</DIV>X<BR>
+<DIV>RA</DIV></H1></DIV>
+<DIV style=3D"FLOAT: left"><H1>
+<DIV>&nbsp;from $3.75</DIV>
+<DIV>&nbsp;from $1.21</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;from $3.33</DIV></H1></DIV>
+<DIV style=3D"CLEAR: both"><A =
+href=3D"http://www.oclarifare.com">http://www.oclarifare.com</A></DIV></B=
+ODY></HTML>
+------=_NextPart_000_0001_01C60D7F.0E889E80--
+
 
 
 
