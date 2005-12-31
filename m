@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000444]: Need a way to select analog I/O levels on Delta66/44
-Date: Sat, 31 Dec 2005 07:21:26 +0100
-Message-ID: <7a1f6d858707a089a07ca0f16f94c1b0@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000429]: Feature: Ability to cap the volume
+Date: Sat, 31 Dec 2005 07:26:58 +0100
+Message-ID: <89ff6284d3500bb5b254bebac079cce3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE61F176
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:21:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A901A17A
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:26:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=444> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=429> 
 ======================================================================
-Reported By:                c0ff
+Reported By:                morgoth
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   444
-Category:                   PCI - ice1712
+Project:                    ALSA - utils
+Issue ID:                   429
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.8-rc4
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             08-15-2004 17:21 CEST
-Last Modified:              12-31-2005 07:21 CET
+Date Submitted:             08-07-2004 23:39 CEST
+Last Modified:              12-31-2005 07:26 CET
 ======================================================================
-Summary:                    Need a way to select analog I/O levels on Delta66/44
+Summary:                    Feature: Ability to cap the volume
 Description: 
-Delta66/44 cards support 3 analog level settings (+4dBu, Consumer, -10dBV).
-One setting for all outputs, and per-input settings. We need a way to
-change them :). Thank you.
-
+For my soundcard (SB Live! 1024) I can't have the PCM higher then 74%
+before I get some werd noises. If there was a way to cap or lock the
+volume so that _no_ programs (like xmms or mplayer) could turn it higher.
+That would be great :)
+I don't know why all programs try to adjust the PCM instead of Master or
+any of the others. But a cap would be a start ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- c0ff - 08-30-04 15:15 
+ afran - 08-08-04 19:52 
 ----------------------------------------------------------------------
-Thanks a lot. You are right. That input levels are called IPGA-levels in
-alsa dirver. But where is the output level control? Or it is another
-simplification for poor windoze users who don't even get a chance to get
-what they want from their own hardware? ;)
+Just wanted to say that I have the same problem here with my Soundblaster
+Live 5.1. Unfortunately, I don't know how to solve this: but in any case,
+internally mapping the before-mentioned 74% to a mixer setting of 100%
+could be a temporary solution. But of course, any real solution to this
+problem would be very nice. :-)
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 07:21 
+ rlrevell - 12-31-05 07:26 
 ----------------------------------------------------------------------
-Not a bug
+Is this still a problem with the latest ALSA release?  I cannot reproduce
+it (setting volume to 100% with my Audigy2 ZS is loud but not distorted).
+
+Make sure bass and treble controls are set to the middle position.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-15-04 17:21 c0ff           New Issue                                    
-08-15-04 17:21 c0ff           Distribution              => Gentoo          
-08-15-04 17:21 c0ff           Kernel Version            => 2.6.8-rc4       
-08-27-04 22:17 edrz           Note Added: 0001658                          
-08-30-04 15:15 c0ff           Note Added: 0001669                          
-12-31-05 07:21 rlrevell       Status                   new => closed       
-12-31-05 07:21 rlrevell       Note Added: 0007349                          
+08-07-04 23:39 morgoth        New Issue                                    
+08-08-04 19:41 afran          Issue Monitored: afran                       
+08-08-04 19:52 afran          Note Added: 0001545                          
+12-31-05 07:26 rlrevell       Note Added: 0007350                          
 ======================================================================
 
 
