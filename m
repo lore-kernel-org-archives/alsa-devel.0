@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000325]: Attempted use of arecord causes complete system lockup. Only a hard reset recovers.
-Date: Sat, 31 Dec 2005 04:09:07 +0100
-Message-ID: <3fa6b8df0921a0f7fb7cc72c3e5c91da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000131]: Sound is very bad in kernel 2.6.* with Intel 82801CA/CAM AC'97 Audio
+Date: Sat, 31 Dec 2005 04:10:20 +0100
+Message-ID: <b00670a9a66147ae703f63c89a344a79@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C350155
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:09:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6AB76167
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:10:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=325> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=131> 
 ======================================================================
-Reported By:                meg
+Reported By:                Ahmad
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   325
-Category:                   ISA - sb16/sbawe
+Issue ID:                   131
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5-1.358
+Distribution:               Gentoo
+Kernel Version:             2.6.3
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-06-2004 23:49 CEST
-Last Modified:              12-31-2005 04:09 CET
+Date Submitted:             03-13-2004 19:42 CET
+Last Modified:              12-31-2005 04:10 CET
 ======================================================================
-Summary:                    Attempted use of arecord causes complete system
-lockup. Only a hard reset recovers.
+Summary:                    Sound is very bad in kernel 2.6.* with Intel
+82801CA/CAM AC'97 Audio
 Description: 
-This is a bone stock Fedora Core 2 system. The sound card is a SB16 P&P.
-Any attempted use of arecord, either from a console or xterm, results in a
-complete system lockup. It is 100% reproducible. aplay can play a test
-sound. alsamixer seems to work as well. The microphone can be heard
-through the speakers and can be adjusted using alsamixer.
+Using Alsa in kernel 2.6.* with Intel 82801CA/CAM AC'97 Audio gives me very
+bad sound and produce many many errors in /var/log/messages
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-07-05 00:07 
+ jdthood - 04-01-05 22:55 
 ----------------------------------------------------------------------
-Submitter: Was there any improvement in later ALSA releases?
+Submitter: Did you see any improvement with "acpi=off"?  Does the problem
+still exist in later versions of the ALSA driver?
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 04:09 
+ rlrevell - 12-31-05 04:10 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 23:49 meg            New Issue                                    
-06-06-04 23:49 meg            Distribution              => Fedora Core 2   
-06-06-04 23:49 meg            Kernel Version            => 2.6.5-1.358     
-06-07-04 06:02 meg            Issue Monitored: meg                         
-04-07-05 00:07 jdthood        Note Added: 0004352                          
-12-31-05 04:09 rlrevell       Status                   new => closed       
-12-31-05 04:09 rlrevell       Note Added: 0007340                          
+03-13-04 19:42 Ahmad          New Issue                                    
+03-13-04 19:42 Ahmad          Distribution              => Gentoo          
+03-13-04 19:42 Ahmad          Kernel Version            => 2.6.3           
+03-14-04 19:45 perex          Note Added: 0000602                          
+03-14-04 19:45 perex          Category                 CORE - pcm => PCI -
+intel8x0
+03-15-04 05:07 Ahmad          Note Added: 0000607                          
+03-15-04 12:11 perex          Note Added: 0000608                          
+04-20-04 20:07 ilia           Issue Monitored: ilia                        
+04-20-04 20:11 ilia           Note Added: 0000889                          
+04-20-04 20:13 ilia           Note Edited: 0000889                         
+04-20-04 20:33 ilia           Note Deleted: 0000889                        
+04-26-04 22:24 segoh          Issue Monitored: segoh                       
+04-01-05 22:55 jdthood        Note Added: 0004295                          
+12-31-05 04:10 rlrevell       Status                   new => closed       
+12-31-05 04:10 rlrevell       Note Added: 0007341                          
 ======================================================================
 
 
