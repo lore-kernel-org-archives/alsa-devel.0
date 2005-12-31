@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000205]: Any MIDI access hard locks the system.
-Date: Sat, 31 Dec 2005 04:05:03 +0100
-Message-ID: <1f807d23b1df3382ae9e94431f799d42@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000937]: No sound unless using OSS driver
+Date: Sat, 31 Dec 2005 04:06:49 +0100
+Message-ID: <6fc01d968f24cf46217aa9561abf309a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 504F215D
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:05:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9CEE15E
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:06:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=205> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=937> 
 ======================================================================
-Reported By:                wsippel
+Reported By:                ruffasdagut
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   205
-Category:                   PCI - ice1712
+Issue ID:                   937
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               gentoo
-Kernel Version:             gentoo-dev-sources-2.6.4
+Distribution:               Fedora
+Kernel Version:             2.6
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-13-2004 00:32 CEST
-Last Modified:              12-31-2005 04:05 CET
+Date Submitted:             02-24-2005 01:14 CET
+Last Modified:              12-31-2005 04:06 CET
 ======================================================================
-Summary:                    Any MIDI access hard locks the system.
+Summary:                    No sound unless using OSS driver
 Description: 
-On AMD64, everytime an application tries to access the MIDI port of my
-Terratec EWX24/96, my system crashes.
-It doesn't matter if that particular app is 32bit or 64bit - I checked eg
-Bristol (32bit) and Rosegarden-4 (64bit).
-This is very easy to verify using JACK with qjackctl: starting an
-application that doesn't enumerate the MIDI ports at startup (eg
-fluidsynth) works, but, as soon as I connect the application to the MIDI
-port of my EWX24/96, the system locks. There's no warning, no message, no
-entry in dmesg, nada. Routing MIDI to another application instead of a
-hardware port works without problems...
+I have no sound from the system unless using the OSS option in gstreamer
+properties. If I do this I get sound but no control over the volume or
+mute. I dont really need all the digital parts, but just the Basic sound
+would be nice. I am going to include the ouput from the alsa debug program
+I found online. Thanks for looking into this issue.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-01-05 22:51 
+ jdthood - 04-13-05 17:24 
 ----------------------------------------------------------------------
-Submitter: Has there been any improvement in more recent ALSA releases?
+Submitter: Any improvement in the 1.0.9rc2 release?
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 04:05 
+ rlrevell - 12-31-05 04:06 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-04 00:32 wsippel        New Issue                                    
-04-13-04 00:32 wsippel        Distribution              => gentoo          
-04-13-04 00:32 wsippel        Kernel Version            =>
-gentoo-dev-sources-2.6.4
-04-13-04 00:33 wsippel        Issue Monitored: wsippel                     
-04-13-04 03:05 wsippel        Note Added: 0000785                          
-04-01-05 22:51 jdthood        Note Added: 0004292                          
-12-31-05 04:05 rlrevell       Status                   new => closed       
-12-31-05 04:05 rlrevell       Note Added: 0007335                          
+02-24-05 01:14 ruffasdagut    New Issue                                    
+02-24-05 01:14 ruffasdagut    File Added: debug.log                        
+02-24-05 01:14 ruffasdagut    Distribution              => Fedora          
+02-24-05 01:14 ruffasdagut    Kernel Version            => 2.6             
+02-24-05 22:00 tiwai          Note Added: 0003725                          
+02-24-05 23:27 ruffasdagut    Note Added: 0003730                          
+02-24-05 23:29 ruffasdagut    Issue Monitored: ruffasdagut                    
+02-24-05 23:29 ruffasdagut    Issue End Monitor: ruffasdagut                    
+04-13-05 17:24 jdthood        Note Added: 0004475                          
+12-31-05 04:06 rlrevell       Status                   new => closed       
+12-31-05 04:06 rlrevell       Note Added: 0007337                          
 ======================================================================
 
 
