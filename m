@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001113]: application crash
-Date: Sat, 31 Dec 2005 03:29:48 +0100
-Message-ID: <3e607ed5c72dbab60b7e32421f748c8b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001603]: via8235 no sound since kernel 2.6.13
+Date: Sat, 31 Dec 2005 03:38:34 +0100
+Message-ID: <cf8fb89fc6a47535db9d295bdff8dd7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1FF0C12B
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:29:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91AA2139
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:38:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1113> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
 ======================================================================
-Reported By:                Yota_VGA
+Reported By:                picobyte
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1113
-Category:                   PCI - emu10k1
+Issue ID:                   1603
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               gentoo
-Kernel Version:             2.6.8-gentoo-r9
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               slackware 10.2
+Kernel Version:             2.6.13 - 2.6.14.2
 ======================================================================
-Date Submitted:             05-16-2005 19:52 CEST
-Last Modified:              12-31-2005 03:29 CET
+Date Submitted:             11-27-2005 15:06 CET
+Last Modified:              12-31-2005 03:38 CET
 ======================================================================
-Summary:                    application crash
+Summary:                    via8235 no sound since kernel 2.6.13
 Description: 
-Some applications crash when i listen a wave with aplay (and in some other
-circostances, i've not be tested very well), like as xmms (when I use the
-alsa plugin and I play a song) and alsamixer.
+I have no sound after a kernel upgrade. I seem to have lost it in 2.6.13.
+Sound was available in 2.6.12. 2.6.14.2 didn't give sound either. The
+problem is in 1.0.9b and 1.0.10. The modules are loaded as supposed
+without error messages and alsamixer is set to volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 05-28-05 12:33 
+ rlrevell - 12-31-05 03:38 
 ----------------------------------------------------------------------
-This is most likely a bug in xmms.
-
-----------------------------------------------------------------------
- rlrevell - 12-31-05 03:29 
-----------------------------------------------------------------------
-Application bug
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-16-05 19:52 Yota_VGA       New Issue                                    
-05-16-05 19:52 Yota_VGA       Distribution              => gentoo          
-05-16-05 19:52 Yota_VGA       Kernel Version            => 2.6.8-gentoo-r9 
-05-27-05 12:12 Stephan Wurm   Note Added: 0004745                          
-05-27-05 12:13 Stephan Wurm   Issue Monitored: Stephan Wurm                    
-05-27-05 12:13 Stephan Wurm   Note Added: 0004746                          
-05-28-05 12:33 jcdutton       Note Added: 0004773                          
-12-31-05 03:29 rlrevell       Status                   new => closed       
-12-31-05 03:29 rlrevell       Note Added: 0007328                          
+11-27-05 15:06 picobyte       New Issue                                    
+11-27-05 15:06 picobyte       Distribution              => slackware 10.2  
+11-27-05 15:06 picobyte       Kernel Version            => 2.6.13 - 2.6.14.2
+12-31-05 03:38 rlrevell       Note Added: 0007330                          
 ======================================================================
 
 
