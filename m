@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001036]: Replacement SB Live card not detected
-Date: Sat, 31 Dec 2005 02:42:03 +0100
-Message-ID: <799e2fb7f5b8c3e6cfdae4951381100b@bugtrack.alsa-project.org>
+Date: Sat, 31 Dec 2005 03:09:20 +0100
+Message-ID: <923ed228f4a06611085044e8f6d93279@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D33B165
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 02:42:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A7D9176
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:09:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1036> 
 ======================================================================
 Reported By:                grolschie
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1036
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Debian
 Kernel Version:             2.6.3
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-05-2005 02:10 CEST
-Last Modified:              12-31-2005 02:42 CET
+Last Modified:              12-31-2005 03:09 CET
 ======================================================================
 Summary:                    Replacement SB Live card not detected
 Description: 
@@ -84,6 +86,9 @@ Date Modified  Username       Field                    Change
 12-31-05 00:32 rlrevell       File Added: 8067.patch                       
 12-31-05 00:32 rlrevell       Note Added: 0007318                          
 12-31-05 02:42 grolschie      Note Added: 0007320                          
+12-31-05 03:09 rlrevell       Status                   new => resolved     
+12-31-05 03:09 rlrevell       Resolution               open => fixed       
+12-31-05 03:09 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
