@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
-Date: Sat, 31 Dec 2005 10:16:56 +0100
-Message-ID: <1d391149820e6bffd06f306c1a0cc642@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 31 Dec 2005 13:47:28 -0000
+Message-ID: <E1Esh53-00048B-IQ@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC3CD121
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 10:16:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,100 +12,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
-======================================================================
-Reported By:                kees
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1678
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.15-rc6-git4
-======================================================================
-Date Submitted:             12-25-2005 02:29 CET
-Last Modified:              12-31-2005 10:16 CET
-======================================================================
-Summary:                    nForce (10de:026c) left channel squeals, right
-channel mostly okay
-Description: 
-This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
-is this is an "nForce410" board, with "6-channel HD audio".
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
-snd-hda-intel load fine, but during playback, the left channel squeals,
-while the right seems to play things okay.
+--- Original message follows.
 
-I'm happy to dig around and try whatever needs trying to get this fixed. 
-Thanks!
-======================================================================
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
-----------------------------------------------------------------------
- morgoth666 - 12-30-05 23:50 
-----------------------------------------------------------------------
-Hi all
+The original message is over 5k.  Message truncated to 1K.
 
-Just for completeness: I have the same problem on ASUS A8N-VM-CSM mobo
-(with AD1986A chip), kernel 2.6.15-rc7, alsa CVS downloaded on Dec,30
-2005.
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.216>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta277.mail.scd.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO cvpdntb.net) (64.251.132.84)
+  by mta277.mail.scd.yahoo.com with SMTP; Sat, 31 Dec 2005 05:47:27 -0800
+From: alsa-devel@lists.sourceforge.net
+To: Etu3FxI@yahoo.com
+Date: Sat, 31 Dec 2005 13:42:46 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Priority: 3 (Normal)
+X-MSMail-Priority: Normal
+Message-ID: <b4800a69c6baede422d@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=====bac81c8.b0ed4beebcd"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-my lspci gives the same as in previous note (with more capabilities !):
-0000:00:10.1 0403: 10de:026c (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        Memory at febd8000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [44] Power Management version 2
-        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [6c] #08 [a802]
+--=====bac81c8.b0ed4beebcd
 
-It seems that the problem is related to surround sound: see a quick
-workaround here =>
-http://www.nabble.com/Intel-HDA-AD1986A-without-surround-t595968.html
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-Hope this helps !
-
-----------------------------------------------------------------------
- kees - 12-31-05 10:16 
-----------------------------------------------------------------------
-Confirmed.  My /proc/asound/card0/codec#0 matches:
-
-$ head /proc/asound/card0/codec#0 
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x104381b3
-Revision Id: 0x100400
-
-Applying the patch fixes stereo sound -- I'm not interested in digital
-surround yet, so I can wait.  THANK YOU morgoth666!  :)  I had found that
-patch earlier, but couldn't re-locate later on.  :):)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-25-05 02:29 kees           New Issue                                    
-12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
-12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
-12-26-05 11:02 kees           Note Added: 0007149                          
-12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
-12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:50 morgoth666     Note Added: 0007300                          
-12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
-12-31-05 10:16 kees           Note Added: 0007355                          
-======================================================================
-
+plz read and check ...
+cyaaaaaaa
+--=====bac81c8.b0ed4beebcd
+Content-Ty
+*** MESSAGE TRUNCATED ***
 
 
 
