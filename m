@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Sat, 31 Dec 2005 03:23:36 +0100
-Message-ID: <8fd0980a1e205ce36b294ed1622772da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001522]: unable to mute line in while recording(capturing) line in.
+Date: Sat, 31 Dec 2005 03:28:52 +0100
+Message-ID: <064e2b47bc8fabff15ad5507adbbdcf2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C96712B
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:23:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA77112B
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:28:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,104 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1522> 
 ======================================================================
-Reported By:                vedran
+Reported By:                penguinz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
+Issue ID:                   1522
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
+Status:                     closed
+Distribution:               Ubuntu 5.10(Breezy)
+Kernel Version:             2.6.12-9-k7
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              12-31-2005 03:23 CET
+Date Submitted:             11-01-2005 16:00 CET
+Last Modified:              12-31-2005 03:28 CET
 ======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Summary:                    unable to mute line in while recording(capturing)
+line in.
 Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
-
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
-
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
-
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
-
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
-
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001094 nforce4 - optical spdif out not working
+Unable to mute line in while recording line in. I have a Mythtv system
+runing, and since the upgrade from Ubuntu 5.04(Warty) to Ubuntu
+5.10(Breezy) I can not mute line in. I tried it on my desktop machine and
+get the same results, but also duel boots back into 5.04 so I can test it
+both ways.
 ======================================================================
 
 ----------------------------------------------------------------------
- gilesjuk - 07-20-05 02:12 
+ pzad - 11-22-05 21:45 
 ----------------------------------------------------------------------
-Fixing the output to 48Khz allows me to play mp3s fine.
-
-Eg.
-
-mplayer -ao alsa:device=hw=0,2 -srate 48000 <file>
-
-Of if using KDE setup arts to use OSS emulation layer (ALSA mode in arts
-doesn't seem to work for me) and fix the rate at 48000. Anything using
-arts will then work fine.
-
-
+Set capture on "Capture" and your source ("Line In" or "Mic").
+Changing (mute) Line In (or Mic) volume can not affect recorded signal -
+this will change only playback volume (if you have SB Live). Make sure,
+you have set "Wave Capture" to 0.
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 03:23 
+ rlrevell - 12-31-05 03:28 
 ----------------------------------------------------------------------
-Is this fixed in later ALSA releases?
+Mixer settings
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
-06-01-05 16:53 tiwai          Note Added: 0004862                          
-06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
-06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
-06-03-05 00:31 Human          Note Added: 0004880                          
-06-03-05 00:32 Human          Issue Monitored: Human                       
-06-06-05 23:30 Human          Note Added: 0004910                          
-06-08-05 15:01 tiwai          Note Added: 0004928                          
-06-10-05 18:07 Human          Note Added: 0004984                          
-06-19-05 16:07 gilesjuk       Note Added: 0005090                          
-06-21-05 00:50 gilesjuk       Note Added: 0005099                          
-06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
-06-21-05 11:19 tiwai          Note Added: 0005102                          
-06-26-05 13:18 gilesjuk       Note Added: 0005263                          
-06-26-05 13:19 gilesjuk       Note Edited: 0005263                         
-06-27-05 16:56 tiwai          Note Added: 0005280                          
-07-20-05 01:37 gilesjuk       Note Added: 0005531                          
-07-20-05 02:12 gilesjuk       Note Edited: 0005531                         
-12-31-05 03:23 rlrevell       Note Added: 0007325                          
+11-01-05 16:00 penguinz       New Issue                                    
+11-01-05 16:00 penguinz       Distribution              => Ubuntu 5.10(Breezy)
+11-01-05 16:00 penguinz       Kernel Version            => 2.6.12-9-k7     
+11-22-05 21:26 penguinz       Note Added: 0006800                          
+11-22-05 21:45 pzad           Note Added: 0006803                          
+12-31-05 03:28 rlrevell       Status                   new => closed       
+12-31-05 03:28 rlrevell       Note Added: 0007327                          
 ======================================================================
 
 
