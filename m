@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000032]: PLS include this driver
-Date: Sat, 31 Dec 2005 07:29:19 +0100
-Message-ID: <26df82a1e89daf225e6ea9a4550b2276@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001440]: headphone output loops to microphone input
+Date: Sat, 31 Dec 2005 07:47:12 +0100
+Message-ID: <3364eaf2de3fabd946b4e22207d06bc2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C02AF8
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:29:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 362D9132
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:47:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=32> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1440> 
 ======================================================================
-Reported By:                cijoml
+Reported By:                dyfrgi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   32
-Category:                   1_OTHERS
-Reproducibility:            have not tried
-Severity:                   feature
+Issue ID:                   1440
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.13.1
 ======================================================================
-Date Submitted:             02-03-2004 10:11 CET
-Last Modified:              12-31-2005 07:29 CET
+Date Submitted:             09-22-2005 00:13 CEST
+Last Modified:              12-31-2005 07:47 CET
 ======================================================================
-Summary:                    PLS include this driver
+Summary:                    headphone output loops to microphone input
 Description: 
-On this site, there is driver for bluez-sco. Could you pls include finally
-into main ALSA tree? I use it about 4 mounths without any problem
+I cannot use the headphone port when using full duplex on my laptop. Here
+are four scenarios, and the results:
 
-http://www.dcs.gla.ac.uk/~jp/snd-bluez-sco/
+1. System speakers, no microphone plugged in
+RESULTS:
+When recording from the microphone input, there is no sound. As expected.
+
+2. System speakers, microphone plugged in
+RESULTS:
+Only the sound that should be picked up by the microphone is recorded
+through the microphone input. As expected.
+
+3. Headphones plugged in, microphone not plugged in.
+RESULTS:
+No sound when recording. As expected.
+
+4. Headphones plugged in, microphone plugged in.
+RESULTS:
+Audio coming in through the microphone input is a combination of the
+expected audio and the audio that is being played through the headphone
+output. This is the problem.
+
+Could this be an ALSA issue, or should I have the laptop hardware looked
+at? I should note that this also happens if I use the OSS driver. That
+doesn't mean it's not a driver issue, though; it could be that some
+register is not being set up properly.
+
+The loopbacked volume is lower than if I set Mix or Mix Mono to be the
+capture channel. I'm using jaaa with noise output turned on to monitor.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-10-05 15:24 
+ rlrevell - 12-31-05 03:20 
 ----------------------------------------------------------------------
-Well, this patch wasn't submitted.
-
-IIRC, the latest bluez CVS includes the external ALSA PCM plugin to
-support similar stuff without kernel driver.
+Any improvement with later ALSA releases?
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 07:29 
+ dyfrgi - 12-31-05 07:47 
 ----------------------------------------------------------------------
-Kernel driver is not needed
+Ah. Yes. Turns out to have been an issue with my microphone - it's just
+hideously leaky, I suppose. If I use a different mic, there's no problem.
+Sorry for not checking back after I determined this.
+
+On the plus side, the bug can now be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-04 10:11 cijoml         New Issue                                    
-02-03-04 10:11 cijoml         File Added: snd-bluez-sco-2003-09-15.tar.gz       
-            
-02-06-04 18:34 tiwai          Note Added: 0000197                          
-03-10-05 15:19 jdthood        Note Added: 0003861                          
-03-10-05 15:24 tiwai          Note Added: 0003863                          
-12-31-05 07:29 rlrevell       Status                   new => closed       
-12-31-05 07:29 rlrevell       Note Added: 0007351                          
+09-22-05 00:13 dyfrgi         New Issue                                    
+09-22-05 00:13 dyfrgi         Distribution              => Gentoo          
+09-22-05 00:13 dyfrgi         Kernel Version            => 2.6.13.1        
+12-31-05 03:20 rlrevell       Note Added: 0007324                          
+12-31-05 07:47 dyfrgi         Note Added: 0007352                          
 ======================================================================
 
 
