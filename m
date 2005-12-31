@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000077]: Device busy or Can't find it!
-Date: Sat, 31 Dec 2005 04:17:56 +0100
-Message-ID: <441c39f9e67c0ba188fc525c146ba406@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Sat, 31 Dec 2005 05:31:34 +0100
+Message-ID: <6f03d9a79758d562104ed071a2be7e7b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81333171
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:17:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DA6316F
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 05:31:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=77> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                boyod
-Assigned To:                
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   77
-Category:                   ISA - cs4236
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               1.02c
-Kernel Version:             2.6.3
-Resolution:                 reopened
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             02-21-2004 17:43 CET
-Last Modified:              12-31-2005 04:17 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              12-31-2005 05:31 CET
 ======================================================================
-Summary:                    Device busy or Can't find it!
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-Device busy or Can't find it!
-Kernel is 2.6.3,Don't use default alsa in it.
-Download newer 1.02c
-At kernel 2.4.23,samed as 2.6.3.
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 15:29 
+ rlrevell - 12-31-05 03:47 
 ----------------------------------------------------------------------
-Are you sure that the cport value is correct?
+OK it seems pretty clear that the attached ~300 line patch extracted from
+alsa-git-2005-11-07 contains the change that broke it.  Does this help?
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 04:17 
+ smithbone - 12-31-05 05:31 
 ----------------------------------------------------------------------
-No response
+Is the patch a fix or just for reference?  If I reverse the patch then I
+get unresolved symbols.  This was against 2.6.15-rc7
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-21-04 17:43 boyod          New Issue                                    
-02-21-04 17:44 boyod          Issue Monitored: boyod                       
-02-21-04 19:15 perex          Status                   new => assigned     
-02-21-04 19:15 perex          Assigned To               => perex           
-02-21-04 19:16 perex          Note Added: 0000284                          
-03-13-04 18:33 perex          Status                   assigned => resolved
-03-13-04 18:33 perex          Resolution               open => won't fix   
-03-13-04 18:33 perex          Note Added: 0000597                          
-04-24-04 13:00 boyod          Status                   resolved => feedback
-04-24-04 13:00 boyod          Resolution               won't fix => reopened
-04-24-04 13:00 boyod          Note Added: 0000921                          
-04-24-04 13:19 boyod          File Added: isapnp.log                       
-04-24-04 14:05 perex          Note Added: 0000922                          
-04-24-04 14:05 perex          Status                   feedback => assigned
-04-26-04 14:25 boyod          Note Added: 0000948                          
-04-26-04 14:30 perex          Note Added: 0000949                          
-04-26-04 14:35 boyod          Note Added: 0000950                          
-04-26-04 15:13 perex          Note Added: 0000952                          
-05-01-04 06:14 boyod          Note Added: 0000987                          
-05-01-04 06:14 boyod          File Added: lsmod.log                        
-05-01-04 06:14 boyod          File Added: message.log                      
-05-01-04 06:21 boyod          Note Added: 0000988                          
-05-01-04 09:11 boyod          Note Added: 0000989                          
-10-22-04 16:36 perex          Assigned To              perex =>            
-10-22-04 16:38 perex          Status                   assigned => new     
-03-19-05 15:29 jdthood        Note Added: 0004050                          
-12-31-05 04:17 rlrevell       Status                   new => closed       
-12-31-05 04:17 rlrevell       Note Added: 0007342                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
+12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
+12-30-05 20:43 rlrevell       Note Added: 0007259                          
+12-31-05 02:32 smithbone      Note Added: 0007319                          
+12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
+               
+12-31-05 03:47 rlrevell       Note Added: 0007331                          
+12-31-05 05:31 smithbone      Note Added: 0007343                          
 ======================================================================
 
 
