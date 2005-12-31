@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Sat, 31 Dec 2005 03:47:11 +0100
-Message-ID: <2cd7ff9e4b1395db290ddf38ccd7782a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000253]: There's sound from only one way (left or right)
+Date: Sat, 31 Dec 2005 03:56:59 +0100
+Message-ID: <3a6dc5284581acd188c563947b0fd734@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5361139
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:47:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C599915C
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:56:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +22,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=253> 
 ======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
+Reported By:                sjoyeux
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
+Issue ID:                   253
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Status:                     closed
+Distribution:               Debian i386
+Kernel Version:             2.6.5
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              12-31-2005 03:47 CET
+Date Submitted:             05-04-2004 18:33 CEST
+Last Modified:              12-31-2005 03:56 CET
 ======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
+Summary:                    There's sound from only one way (left or right)
 Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+When the modules is first loaded, I have a clear sound on only one way
+(left or right, it depends), the other one has a sound of very bad quality
+(low volume, quirks)
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+I have to manually unload it and reload it in order to get a good quality
+on both.
 
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
+It's fully reproducible on my system. I have the problem from quite a long
+time now (even though I only report it now)
+
+I use the alsa version which comes with Linux 2.6.5 (1.0.4rc2)
+
+Soundcard is a fortissimo 2, lspci -v says :
+Cirrus Logic CS 4614/22/24 [CrystalClear SoundFusion Audio Accelerator]
+(rev 01)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- smithbone - 12-31-05 02:32 
+ jdthood - 03-19-05 15:03 
 ----------------------------------------------------------------------
-I have the same problem and I'm not using the SPDIF.  Neither line out or
-headphones work.
+Submitter: Do you still have this problem with the Debian testing 1.0.8
+versions of the ALSA packages?
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 03:47 
+ rlrevell - 12-31-05 03:56 
 ----------------------------------------------------------------------
-OK it seems pretty clear that the attached ~300 line patch extracted from
-alsa-git-2005-11-07 contains the change that broke it.  Does this help?
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
-12-30-05 19:48 sailfrog       Note Added: 0007251                          
-12-30-05 20:01 rlrevell       Note Added: 0007252                          
-12-30-05 20:08 rlrevell       Note Added: 0007254                          
-12-30-05 20:31 sailfrog       Note Added: 0007256                          
-12-30-05 20:34 rlrevell       Note Added: 0007257                          
-12-30-05 20:41 sailfrog       Note Added: 0007258                          
-12-30-05 20:43 rlrevell       Note Added: 0007259                          
-12-31-05 02:32 smithbone      Note Added: 0007319                          
-12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
-               
-12-31-05 03:47 rlrevell       Note Added: 0007331                          
+05-04-04 18:33 sjoyeux        New Issue                                    
+05-04-04 18:33 sjoyeux        Distribution              => Debian i386     
+05-04-04 18:33 sjoyeux        Kernel Version            => 2.6.5           
+03-19-05 15:03 jdthood        Note Added: 0004047                          
+12-31-05 03:56 rlrevell       Status                   new => closed       
+12-31-05 03:56 rlrevell       Note Added: 0007332                          
 ======================================================================
 
 
