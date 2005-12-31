@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001440]: headphone output loops to microphone input
-Date: Sat, 31 Dec 2005 07:47:12 +0100
-Message-ID: <3364eaf2de3fabd946b4e22207d06bc2@bugtrack.alsa-project.org>
+Date: Sat, 31 Dec 2005 07:56:54 +0100
+Message-ID: <8b1c7bbd1daff70009abee0ccff3f663@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 362D9132
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:47:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D95BA171
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:56:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1440> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
 Distribution:               Gentoo
 Kernel Version:             2.6.13.1
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             09-22-2005 00:13 CEST
-Last Modified:              12-31-2005 07:47 CET
+Last Modified:              12-31-2005 07:56 CET
 ======================================================================
 Summary:                    headphone output loops to microphone input
 Description: 
@@ -97,6 +99,7 @@ Date Modified  Username       Field                    Change
 09-22-05 00:13 dyfrgi         Kernel Version            => 2.6.13.1        
 12-31-05 03:20 rlrevell       Note Added: 0007324                          
 12-31-05 07:47 dyfrgi         Note Added: 0007352                          
+12-31-05 07:56 rlrevell       Status                   new => closed       
 ======================================================================
 
 
