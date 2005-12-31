@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000409]: No bass & treble control
-Date: Sat, 31 Dec 2005 07:19:49 +0100
-Message-ID: <25c538eca67703202441fdd69090178b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000444]: Need a way to select analog I/O levels on Delta66/44
+Date: Sat, 31 Dec 2005 07:21:26 +0100
+Message-ID: <7a1f6d858707a089a07ca0f16f94c1b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6479A176
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:19:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE61F176
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:21:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=409> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=444> 
 ======================================================================
-Reported By:                skamp
+Reported By:                c0ff
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   409
-Category:                   PCI - ice1724
+Issue ID:                   444
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               LFS 5.1.1, BLFS 5.1
-Kernel Version:             2.4.26
+Distribution:               Gentoo
+Kernel Version:             2.6.8-rc4
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-27-2004 18:42 CEST
-Last Modified:              12-31-2005 07:19 CET
+Date Submitted:             08-15-2004 17:21 CEST
+Last Modified:              12-31-2005 07:21 CET
 ======================================================================
-Summary:                    No bass & treble control
+Summary:                    Need a way to select analog I/O levels on Delta66/44
 Description: 
-There is no control in alsa-mixer or any other mixer for bass & treble,
-which I really miss.
+Delta66/44 cards support 3 analog level settings (+4dBu, Consumer, -10dBV).
+One setting for all outputs, and per-input settings. We need a way to
+change them :). Thank you.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-30-04 16:55 
+ c0ff - 08-30-04 15:15 
 ----------------------------------------------------------------------
-There is likely no hardware bass & treble controls on this board.
+Thanks a lot. You are right. That input levels are called IPGA-levels in
+alsa dirver. But where is the output level control? Or it is another
+simplification for poor windoze users who don't even get a chance to get
+what they want from their own hardware? ;)
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 07:19 
+ rlrevell - 12-31-05 07:21 
 ----------------------------------------------------------------------
 Not a bug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-04 18:42 skamp          New Issue                                    
-07-27-04 18:42 skamp          File Added: aadebug                          
-07-27-04 18:42 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
-07-27-04 18:42 skamp          Kernel Version            => 2.4.26          
-07-30-04 16:55 tiwai          Note Added: 0001492                          
-12-31-05 07:19 rlrevell       Status                   new => closed       
-12-31-05 07:19 rlrevell       Note Added: 0007348                          
+08-15-04 17:21 c0ff           New Issue                                    
+08-15-04 17:21 c0ff           Distribution              => Gentoo          
+08-15-04 17:21 c0ff           Kernel Version            => 2.6.8-rc4       
+08-27-04 22:17 edrz           Note Added: 0001658                          
+08-30-04 15:15 c0ff           Note Added: 0001669                          
+12-31-05 07:21 rlrevell       Status                   new => closed       
+12-31-05 07:21 rlrevell       Note Added: 0007349                          
 ======================================================================
 
 
