@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000706]: SERR: Status=4210 followed by NMI reason 34 leading to reboot
-Date: Sat, 31 Dec 2005 08:22:16 +0100
-Message-ID: <239fdc64d1e24ca88c6d3666161b3e0a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Sat, 31 Dec 2005 08:54:15 +0100
+Message-ID: <1b9fb14c8f5b29e99548ecd28327de83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 34DA516E
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 08:22:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3B17121
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 08:54:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=706> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                dlc
-Assigned To:                
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   706
-Category:                   PCI - ice1712
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               DeMuDi1.2.0
-Kernel Version:             2.4.25
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             12-04-2004 00:36 CET
-Last Modified:              12-31-2005 08:22 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              12-31-2005 08:54 CET
 ======================================================================
-Summary:                    SERR: Status=4210 followed by NMI reason 34 leading
-to reboot
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-System reboots when attempting to install a game under Wine.
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 17:23 
+ smithbone - 12-31-05 07:10 
 ----------------------------------------------------------------------
-Submitter: Do you have any new information about this problem?
+yes they both get called:
+
+Dec 31 00:06:14 Vedit kernel: snd_usb_pcm_playback_trigger()
+Dec 31 00:06:17 Vedit kernel: prepare_startup_playbak_urb()
+Dec 31 00:06:17 Vedit kernel: prepare_startup_playbak_urb()
+Dec 31 00:06:17 Vedit kernel: snd_usb_pcm_playback_trigger()
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 08:22 
+ afran - 12-31-05 08:54 
 ----------------------------------------------------------------------
-No response
+Just wanted to let you know, I've got the same problem here with my
+Terratec Phase 26 USB (since kernel release 2.6.15-rc1, now running
+2.6.14.4 and ALSA 1.0.10rc1 without problems): Everything loads up fine
+but no sound is played, not even at the card's own headphone connector (so
+it's not a problem with SPDIF).
+
+But there is some other yet similar problem, I've recognized earlier:
+Sometimes (perhaps once in 2 weeks, happens quite randomly) everything
+would load up fine, but the card would not give any sound (as above). When
+this happens I have to plug the card's USB cable and reconnect (just
+resetting volume level and mute doesn't work, I've not been able to check
+whether reloading the driver as kernel module would help).
+
+Unfortunately, I've not been able to reproduce the latter problem as it
+seems to be happening without any clue as to what may have caused it, plus
+it only occurs very seldomly, about every 30th or 40th reboot.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-04 00:36 dlc            New Issue                                    
-12-04-04 00:36 dlc            Distribution              => DeMuDi1.2.0     
-12-04-04 00:36 dlc            Kernel Version            => 2.4.25          
-12-07-04 18:52 tiwai          Note Added: 0002760                          
-12-07-04 19:22 dlc            Note Added: 0002763                          
-12-16-04 17:45 dlc            Note Added: 0002830                          
-12-16-04 18:22 tiwai          Note Added: 0002832                          
-12-16-04 21:46 dlc            Note Added: 0002842                          
-04-09-05 17:23 jdthood        Note Added: 0004422                          
-12-31-05 08:22 rlrevell       Status                   new => closed       
-12-31-05 08:22 rlrevell       Note Added: 0007353                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
+12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
+12-30-05 20:43 rlrevell       Note Added: 0007259                          
+12-31-05 02:32 smithbone      Note Added: 0007319                          
+12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
+               
+12-31-05 03:47 rlrevell       Note Added: 0007331                          
+12-31-05 05:31 smithbone      Note Added: 0007343                          
+12-31-05 05:33 rlrevell       Note Added: 0007344                          
+12-31-05 05:37 rlrevell       Note Added: 0007345                          
+12-31-05 07:10 smithbone      Note Added: 0007347                          
+12-31-05 08:54 afran          Note Added: 0007354                          
 ======================================================================
 
 
