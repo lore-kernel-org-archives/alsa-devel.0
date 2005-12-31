@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000362]: System freeze while playing music on AWE32 PnP
-Date: Sat, 31 Dec 2005 04:08:23 +0100
-Message-ID: <c5e60ebc737d08b9252a180f28f3e32e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000325]: Attempted use of arecord causes complete system lockup. Only a hard reset recovers.
+Date: Sat, 31 Dec 2005 04:09:07 +0100
+Message-ID: <3fa6b8df0921a0f7fb7cc72c3e5c91da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CC6B15D
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:08:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C350155
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:09:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=362> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=325> 
 ======================================================================
-Reported By:                Theo
+Reported By:                meg
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   362
+Issue ID:                   325
 Category:                   ISA - sb16/sbawe
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     closed
 Distribution:               Fedora Core 2
-Kernel Version:             Linux CC695620-a 2.6.6-1.435.2.1
-Resolution:                 unable to duplicate
+Kernel Version:             2.6.5-1.358
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-02-2004 23:02 CEST
-Last Modified:              12-31-2005 04:08 CET
+Date Submitted:             06-06-2004 23:49 CEST
+Last Modified:              12-31-2005 04:09 CET
 ======================================================================
-Summary:                    System freeze while playing music on AWE32 PnP
+Summary:                    Attempted use of arecord causes complete system
+lockup. Only a hard reset recovers.
 Description: 
-This is a clean install of Fedora Core 2. Sound card is a ISA Sound Blaster
-AWE32 PnP. The system freezes while playing music (and ONLY while playing
-music) after about 1-15 minutes. The music keeps playing until the song
-ends, but the system itself is frozen.
+This is a bone stock Fedora Core 2 system. The sound card is a SB16 P&P.
+Any attempted use of arecord, either from a console or xterm, results in a
+complete system lockup. It is 100% reproducible. aplay can play a test
+sound. alsamixer seems to work as well. The microphone can be heard
+through the speakers and can be adjusted using alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- Theo - 04-08-05 09:34 
+ jdthood - 04-07-05 00:07 
 ----------------------------------------------------------------------
-I'm sorry, I don't have this system anymore, so I can't check :(
+Submitter: Was there any improvement in later ALSA releases?
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 04:08 
+ rlrevell - 12-31-05 04:09 
 ----------------------------------------------------------------------
-User can't test further
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-02-04 23:02 Theo           New Issue                                    
-07-02-04 23:02 Theo           Distribution              => Fedora Core 2   
-07-02-04 23:02 Theo           Kernel Version            => Linux CC695620-a
-2.6.6-1.435.2.1
-04-07-05 20:58 jdthood        Note Added: 0004366                          
-04-08-05 09:34 Theo           Note Added: 0004372                          
-04-08-05 13:43 jdthood        Resolution               open => unable to
-duplicate
-12-31-05 04:08 rlrevell       Status                   new => closed       
-12-31-05 04:08 rlrevell       Note Added: 0007339                          
+06-06-04 23:49 meg            New Issue                                    
+06-06-04 23:49 meg            Distribution              => Fedora Core 2   
+06-06-04 23:49 meg            Kernel Version            => 2.6.5-1.358     
+06-07-04 06:02 meg            Issue Monitored: meg                         
+04-07-05 00:07 jdthood        Note Added: 0004352                          
+12-31-05 04:09 rlrevell       Status                   new => closed       
+12-31-05 04:09 rlrevell       Note Added: 0007340                          
 ======================================================================
 
 
