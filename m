@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001440]: headphone output loops to microphone input
-Date: Sat, 31 Dec 2005 03:20:54 +0100
-Message-ID: <554360ec8bc5d4d81ed30b0ce0faba8f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
+Date: Sat, 31 Dec 2005 03:23:36 +0100
+Message-ID: <8fd0980a1e205ce36b294ed1622772da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 783FF121
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:20:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C96712B
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 03:23:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,102 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1440> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
 ======================================================================
-Reported By:                dyfrgi
+Reported By:                vedran
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1440
+Issue ID:                   1083
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.13.1
+Distribution:               Debian sid
+Kernel Version:             2.6.10-ac12
 ======================================================================
-Date Submitted:             09-22-2005 00:13 CEST
-Last Modified:              12-31-2005 03:20 CET
+Date Submitted:             04-29-2005 15:33 CEST
+Last Modified:              12-31-2005 03:23 CET
 ======================================================================
-Summary:                    headphone output loops to microphone input
+Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
 Description: 
-I cannot use the headphone port when using full duplex on my laptop. Here
-are four scenarios, and the results:
+We're using a motherboard with nVidia nforce2IGP chipset, and the sound
+device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
+is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
+realtek drivers.
 
-1. System speakers, no microphone plugged in
-RESULTS:
-When recording from the microphone input, there is no sound. As expected.
+On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
+kernel.
 
-2. System speakers, microphone plugged in
-RESULTS:
-Only the sound that should be picked up by the microphone is recorded
-through the microphone input. As expected.
+I've been able to make a 2 channel  pre-decoded SPDIF output work by using
+the hw:0,2 device. If I use the default device, there is no sound on
+SPDIF, regardless of the SPDIF related controls in mixer. The controls in
+the mixer are:
 
-3. Headphones plugged in, microphone not plugged in.
-RESULTS:
-No sound when recording. As expected.
+However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
+alsa-tools CVS, and I get no sound.
 
-4. Headphones plugged in, microphone plugged in.
-RESULTS:
-Audio coming in through the microphone input is a combination of the
-expected audio and the audio that is being played through the headphone
-output. This is the problem.
+I'm attaching the archive with the output of iecset and
+/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
+idle.
 
-Could this be an ALSA issue, or should I have the laptop hardware looked
-at? I should note that this also happens if I use the OSS driver. That
-doesn't mean it's not a driver issue, though; it could be that some
-register is not being set up properly.
-
-The loopbacked volume is lower than if I set Mix or Mix Mono to be the
-capture channel. I'm using jaaa with noise output turned on to monitor.
+Maybe the fact that decoded SPDIF output is not working until I pass it
+through the hw:0,2 has something to do with this, how can I make ac3dec -C
+use hw:0,2?
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001094 nforce4 - optical spdif out not working
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 03:20 
+ gilesjuk - 07-20-05 02:12 
 ----------------------------------------------------------------------
-Any improvement with later ALSA releases?
+Fixing the output to 48Khz allows me to play mp3s fine.
+
+Eg.
+
+mplayer -ao alsa:device=hw=0,2 -srate 48000 <file>
+
+Of if using KDE setup arts to use OSS emulation layer (ALSA mode in arts
+doesn't seem to work for me) and fix the rate at 48000. Anything using
+arts will then work fine.
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 03:23 
+----------------------------------------------------------------------
+Is this fixed in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-05 00:13 dyfrgi         New Issue                                    
-09-22-05 00:13 dyfrgi         Distribution              => Gentoo          
-09-22-05 00:13 dyfrgi         Kernel Version            => 2.6.13.1        
-12-31-05 03:20 rlrevell       Note Added: 0007324                          
+04-29-05 15:33 vedran         New Issue                                    
+04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
+     
+04-29-05 15:33 vedran         Distribution              => Debian sid      
+04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
+05-30-05 13:21 vedran         Note Added: 0004809                          
+06-01-05 16:53 tiwai          Note Added: 0004862                          
+06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
+06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
+06-03-05 00:31 Human          Note Added: 0004880                          
+06-03-05 00:32 Human          Issue Monitored: Human                       
+06-06-05 23:30 Human          Note Added: 0004910                          
+06-08-05 15:01 tiwai          Note Added: 0004928                          
+06-10-05 18:07 Human          Note Added: 0004984                          
+06-19-05 16:07 gilesjuk       Note Added: 0005090                          
+06-21-05 00:50 gilesjuk       Note Added: 0005099                          
+06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
+06-21-05 11:19 tiwai          Note Added: 0005102                          
+06-26-05 13:18 gilesjuk       Note Added: 0005263                          
+06-26-05 13:19 gilesjuk       Note Edited: 0005263                         
+06-27-05 16:56 tiwai          Note Added: 0005280                          
+07-20-05 01:37 gilesjuk       Note Added: 0005531                          
+07-20-05 02:12 gilesjuk       Note Edited: 0005531                         
+12-31-05 03:23 rlrevell       Note Added: 0007325                          
 ======================================================================
 
 
