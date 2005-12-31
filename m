@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001304]: Speaker test hangs
-Date: Sat, 31 Dec 2005 22:07:12 +0100
-Message-ID: <770c1f9faa2fe3c6554fcb22f4d928c8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001182]: Audigy Recording has crackles/distortion
+Date: Sat, 31 Dec 2005 22:20:33 +0100
+Message-ID: <813bd4baadc372c5ffad9d6d79ccd1d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA4D2167
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 22:07:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9236168
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 22:20:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1182> 
 ======================================================================
-Reported By:                herby
-Assigned To:                rlrevell
+Reported By:                netslayer
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1304
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1182
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             08-03-2005 02:46 CEST
-Last Modified:              12-31-2005 22:07 CET
+Date Submitted:             06-11-2005 07:14 CEST
+Last Modified:              12-31-2005 22:20 CET
 ======================================================================
-Summary:                    Speaker test hangs
+Summary:                    Audigy Recording has crackles/distortion
 Description: 
-After applying the patch to the library that took out the check for a
-proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
-or so), I attempted to try a speaker test again.  It hung right after
-outputting "0 - Front Left".  I did an strace and the results are included
-in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
-with little luck.  The wierd thing is that I can execute 'aplay' (with the
-default device) and get a '.wav' file to play nicely.  I can even get a
-multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
-speaker-test doesn't work is beyond me.  The problem is that I appear to
-use similar techniques in my own programming as speaker-test, and my
-program doesen't do that well.  Being as how speaker-test IS part of ALSA,
-I thought I would submit the bug report against it.
+I have several audigy (emu10k1) cards that I use for recording tv with
+mythtv. They worked perfectly in kernel 2.6.7 love sources and most likely
+any with that alsa version. As soon as I upgraded to newer kernels such as
+2.6.11 and I think 2.6.9 had the problem as well I get this problem. While
+recording through the line in connector I get crackling/distortion
+occurring on both left and right channels. This is not an audio cable or
+ground problem, as now it has happened on all boxes I have after upgrading
+kernels. 
 
-If other tests need be preformed, I'd be VERY happy to do them.
+I actually found it to be so bad that I switched audio cards on one of my
+boxes and now that I did a network wide update for kernels I realized it
+was a alsa bug.
+
+I'm currently running 2.6.11 gentoo sources (previously called gentoo dev
+sources) on all my boxes.
+
+0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy (rev
+03)
+        Subsystem: Creative Labs SB0090 Audigy Player/OEM
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        I/O ports at a400
+        Capabilities: [dc] Power Management version 2
+
+Alsa history:
+     Mon Jun  7 12:52:46 2004 >>> media-libs/alsa-lib-1.0.3b-r2
+     Sun Jun 13 00:14:49 2004 >>> media-libs/alsa-oss-1.0.3a
+     Sun Jun 13 00:15:28 2004 >>> media-sound/alsa-utils-1.0.3
+     Sun Jun 13 15:08:34 2004 >>> media-sound/alsa-driver-1.0.5
+     Sun Jun 13 17:18:23 2004 >>> media-sound/alsa-utils-1.0.5
+     Sun Jun 13 17:21:12 2004 >>> media-libs/alsa-lib-1.0.5
+     Sun Jun 13 17:23:14 2004 >>> media-libs/alsa-oss-1.0.5
+     Sun Jun 13 21:15:59 2004 >>> media-sound/alsa-driver-1.0.5
+     Mon May 30 21:27:33 2005 >>> media-sound/alsa-headers-1.0.8
+     Mon May 30 21:30:57 2005 >>> media-libs/alsa-lib-1.0.8
+     Mon May 30 21:31:42 2005 >>> media-sound/alsa-utils-1.0.8
+     Mon May 30 21:38:14 2005 >>> media-libs/alsa-oss-1.0.8-r1
+
+kernel history:
+lrwxrwxrwx   1 root root   31 Jun  1 22:21 linux ->
+/usr/src/linux-2.6.11-gentoo-r9
+drwxr-xr-x  19 root root 1312 Jun  2 00:05 linux-2.6.11-gentoo-r9
+drwxr-xr-x  19 root root 1216 Jun  1 22:30 linux-2.6.7-rc2-love2
+
+2.6.7 worked perfectly!
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:24 
+ rlrevell - 12-30-05 23:57 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Any improvement with later releases?
 
 ----------------------------------------------------------------------
- herby - 12-31-05 21:38 
+ netslayer - 12-31-05 22:20 
 ----------------------------------------------------------------------
-I had no problems with later versions.
+maybe i'll give it a try again. I currently have two soundcards in each
+box, one audigy for playback and one onboard for recording.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-05 02:46 herby          New Issue                                    
-08-03-05 02:46 herby          File Added: speaker-trace                    
-08-03-05 12:18 tiwai          Note Added: 0005621                          
-08-04-05 03:21 herby          Note Added: 0005638                          
-08-04-05 14:10 jcdutton       Note Added: 0005648                          
-08-04-05 20:21 herby          Note Added: 0005652                          
-08-09-05 06:58 herby          Note Added: 0005718                          
-08-12-05 08:12 herby          Note Added: 0005765                          
-08-12-05 15:47 tiwai          Note Added: 0005773                          
-12-30-05 23:24 rlrevell       Note Added: 0007288                          
-12-31-05 21:38 herby          Note Added: 0007360                          
-12-31-05 22:07 rlrevell       Status                   new => resolved     
-12-31-05 22:07 rlrevell       Resolution               open => fixed       
-12-31-05 22:07 rlrevell       Assigned To               => rlrevell        
+06-11-05 07:14 netslayer      New Issue                                    
+06-11-05 07:14 netslayer      File Added: Dateline NBC.mp3                    
+06-11-05 07:14 netslayer      Distribution              => Gentoo          
+06-11-05 07:14 netslayer      Kernel Version            => 2.6.11          
+06-11-05 08:37 pzad           Note Added: 0004986                          
+06-12-05 20:29 netslayer      Note Added: 0005000                          
+12-30-05 23:57 rlrevell       Note Added: 0007305                          
+12-31-05 22:20 netslayer      Note Added: 0007361                          
 ======================================================================
 
 
