@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
-Date: Sat, 31 Dec 2005 17:12:51 +0100
-Message-ID: <06cff9f962911843e4dda130f2008dce@bugtrack.alsa-project.org>
+From: =?ISO-8859-2?Q?Piotr_Tajdu=B6?= <aegis@op.pl>
+Subject: ld10k1 equalizer patch
+Date: Sat, 31 Dec 2005 18:23:29 +0100
+Message-ID: <43B6BE91.80705@op.pl>
+References: <43909E54.20503@op.pl>	<s5h3bl7mkj3.wl%tiwai@suse.de>	<43974589.1070502@op.pl> <s5hirtzft0h.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------080807020504000508040001"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DFACF8
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 17:12:51 +0100 (MET)
+Received: from smtp8.poczta.onet.pl (smtp8.poczta.onet.pl [213.180.130.48])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 457C212C
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 18:22:31 +0100 (MET)
+In-Reply-To: <s5hirtzft0h.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,116 +23,68 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------080807020504000508040001
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
-======================================================================
-Reported By:                kees
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1678
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.15-rc6-git4
-======================================================================
-Date Submitted:             12-25-2005 02:29 CET
-Last Modified:              12-31-2005 17:12 CET
-======================================================================
-Summary:                    nForce (10de:026c) left channel squeals, right
-channel mostly okay
-Description: 
-This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
-is this is an "nForce410" board, with "6-channel HD audio".
+There were problems with EQ10 on Sound Blaster (caused by ACCUM or macmv=20
+instruction, i am not sure), so i made some changes. Now equalizer=20
+should work also with SB Live.
 
-Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
-snd-hda-intel load fine, but during playback, the left channel squeals,
-while the right seems to play things okay.
-
-I'm happy to dig around and try whatever needs trying to get this fixed. 
-Thanks!
-======================================================================
-
-----------------------------------------------------------------------
- kees - 12-31-05 10:16 
-----------------------------------------------------------------------
-Confirmed.  My /proc/asound/card0/codec#0 matches:
-
-$ head /proc/asound/card0/codec#0 
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x104381b3
-Revision Id: 0x100400
-
-Applying the patch fixes stereo sound -- I'm not interested in digital
-surround yet, so I can wait.  THANK YOU morgoth666!  :)  I had found that
-patch earlier, but couldn't re-locate later on.  :):)
-
-----------------------------------------------------------------------
- Dr Hotdog - 12-31-05 17:12 
-----------------------------------------------------------------------
-I can confirm the problems with the ASUS A8N-VM CSM and its AD1986A sound
-chip.  Kernel 2.6.15rc7 with ALSA 1.0.11rc1 hda-intel results in high
-pitched squealing from the front left speaker whenever there is sound
-being played over any channel.  Results of using speaker-test are the same
-as those reported by kees for the ASUS A8N-VM-UAYGZ mobo.
-
-lspci -nvv:
-
-00:10.1 Class 0403: 10de:026c (rev a2)
-        Subsystem: 10de:cb84
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0 (500ns min, 1250ns max)
-        Interrupt: pin B routed to IRQ 233
-        Region 0: Memory at febd8000 (32-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [44] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [6c] HyperTransport: MSI Mapping
-
-head /proc/asound/card0/code#0:
-
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x104381b3
-Revision Id: 0x100400
-
-Unfortunately I am interested in surround sound (this is a motherboard
-designed with HTPC use in mind, stereo only output just doesn't cut it) so
-the patch morgoth666 linked to is an incomplete solution at best.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-25-05 02:29 kees           New Issue                                    
-12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
-12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
-12-26-05 11:02 kees           Note Added: 0007149                          
-12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
-12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:50 morgoth666     Note Added: 0007300                          
-12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
-12-31-05 10:16 kees           Note Added: 0007355                          
-12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
-======================================================================
+Piotr Tajdu=B6
 
 
+
+--------------080807020504000508040001
+Content-Type: text/x-patch;
+ name="eq10.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="eq10.patch"
+
+diff -N -u -r ld10k1.orig/setup/effects/eq10.asm ld10k1/setup/effects/eq10.asm
+--- ld10k1.orig/setup/effects/eq10.asm	2005-12-31 18:00:13.000000000 +0100
++++ ld10k1/setup/effects/eq10.asm	2005-12-31 18:16:24.000000000 +0100
+@@ -42,7 +42,7 @@
+ inlfe	io
+ toutlfe	equ inlfe
+ 
+-Equalizer control 0,0,#1
++Equalizer control #0,0,#1
+ F0_31Hz control #0.5,0,#1
+ F1_62Hz control #0.5,0,#1	
+ F2_125Hz control #0.5,0,#1	
+@@ -75,12 +75,12 @@
+ 
+ ;;; Band Pass Filter Macro:
+ BPF	macro   OUT , IN , DELAY , DLXCB , COEF , GAIN
+-		macs1	ACCUM,C_0,COEF+1,DLXCB+1
+-    		macs	ACCUM,ACCUM,COEF+1,IN
+-		macs	ACCUM,ACCUM,COEF+2,DELAY
+-		macs1	ACCUM,ACCUM,COEF,DELAY+1
+-		macmv	DELAY+1,DELAY,C_0,C_0
+-		macints	DELAY,C_0,ACCUM,sco
++		macs1	tmp2,C_0,COEF+1,DLXCB+1
++    		macs	tmp2,tmp2,COEF+1,IN
++		macs	tmp2,tmp2,COEF+2,DELAY
++		macs1	tmp2,tmp2,COEF,DELAY+1
++		macs	DELAY+1,DELAY,C_0,C_0
++		macints	DELAY,C_0,tmp2,sco
+ 		macs	OUT,OUT,DELAY,GAIN
+ 	endm
+ 
+@@ -109,8 +109,5 @@
+ 	IIR	toutrr,inrr,dlx3,dly3
+ 	IIR	toutc,inc,dlx4,dly4
+ 	IIR	toutlfe,inlfe,dlx5,dly5
+-;	macmv	toutlfe,inlfe,C_0,C_0
+ 
+ 	end
+-
+-
+
+--------------080807020504000508040001--
 
 
 -------------------------------------------------------
