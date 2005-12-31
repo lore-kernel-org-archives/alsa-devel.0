@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 31 Dec 2005 13:47:28 -0000
-Message-ID: <E1Esh53-00048B-IQ@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
+Date: Sat, 31 Dec 2005 17:12:51 +0100
+Message-ID: <06cff9f962911843e4dda130f2008dce@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DFACF8
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 17:12:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,53 +18,118 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
+======================================================================
+Reported By:                kees
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1678
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.15-rc6-git4
+======================================================================
+Date Submitted:             12-25-2005 02:29 CET
+Last Modified:              12-31-2005 17:12 CET
+======================================================================
+Summary:                    nForce (10de:026c) left channel squeals, right
+channel mostly okay
+Description: 
+This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
+is this is an "nForce410" board, with "6-channel HD audio".
 
---- Original message follows.
+Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
+snd-hda-intel load fine, but during playback, the left channel squeals,
+while the right seems to play things okay.
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+I'm happy to dig around and try whatever needs trying to get this fixed. 
+Thanks!
+======================================================================
 
-The original message is over 5k.  Message truncated to 1K.
+----------------------------------------------------------------------
+ kees - 12-31-05 10:16 
+----------------------------------------------------------------------
+Confirmed.  My /proc/asound/card0/codec#0 matches:
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=66.218.86.216>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta277.mail.scd.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO cvpdntb.net) (64.251.132.84)
-  by mta277.mail.scd.yahoo.com with SMTP; Sat, 31 Dec 2005 05:47:27 -0800
-From: alsa-devel@lists.sourceforge.net
-To: Etu3FxI@yahoo.com
-Date: Sat, 31 Dec 2005 13:42:46 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Priority: 3 (Normal)
-X-MSMail-Priority: Normal
-Message-ID: <b4800a69c6baede422d@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=====bac81c8.b0ed4beebcd"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+$ head /proc/asound/card0/codec#0 
+Codec: Analog Devices AD1986A
+Address: 0
+Vendor Id: 0x11d41986
+Subsystem Id: 0x104381b3
+Revision Id: 0x100400
 
---=====bac81c8.b0ed4beebcd
+Applying the patch fixes stereo sound -- I'm not interested in digital
+surround yet, so I can wait.  THANK YOU morgoth666!  :)  I had found that
+patch earlier, but couldn't re-locate later on.  :):)
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+----------------------------------------------------------------------
+ Dr Hotdog - 12-31-05 17:12 
+----------------------------------------------------------------------
+I can confirm the problems with the ASUS A8N-VM CSM and its AD1986A sound
+chip.  Kernel 2.6.15rc7 with ALSA 1.0.11rc1 hda-intel results in high
+pitched squealing from the front left speaker whenever there is sound
+being played over any channel.  Results of using speaker-test are the same
+as those reported by kees for the ASUS A8N-VM-UAYGZ mobo.
 
-plz read and check ...
-cyaaaaaaa
---=====bac81c8.b0ed4beebcd
-Content-Ty
-*** MESSAGE TRUNCATED ***
+lspci -nvv:
+
+00:10.1 Class 0403: 10de:026c (rev a2)
+        Subsystem: 10de:cb84
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0 (500ns min, 1250ns max)
+        Interrupt: pin B routed to IRQ 233
+        Region 0: Memory at febd8000 (32-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [44] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [6c] HyperTransport: MSI Mapping
+
+head /proc/asound/card0/code#0:
+
+Codec: Analog Devices AD1986A
+Address: 0
+Vendor Id: 0x11d41986
+Subsystem Id: 0x104381b3
+Revision Id: 0x100400
+
+Unfortunately I am interested in surround sound (this is a motherboard
+designed with HTPC use in mind, stereo only output just doesn't cut it) so
+the patch morgoth666 linked to is an incomplete solution at best.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-25-05 02:29 kees           New Issue                                    
+12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
+12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
+12-26-05 11:02 kees           Note Added: 0007149                          
+12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
+12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:50 morgoth666     Note Added: 0007300                          
+12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
+12-31-05 10:16 kees           Note Added: 0007355                          
+12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
+======================================================================
+
 
 
 
