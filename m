@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Sat, 31 Dec 2005 07:10:37 +0100
-Message-ID: <61acd4e23cebdbaca9cd83aca6bb4ffe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000409]: No bass & treble control
+Date: Sat, 31 Dec 2005 07:19:49 +0100
+Message-ID: <25c538eca67703202441fdd69090178b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBE5B176
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:10:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6479A176
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:19:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,92 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=409> 
 ======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
+Reported By:                skamp
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
+Issue ID:                   409
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Status:                     closed
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              12-31-2005 07:10 CET
+Date Submitted:             07-27-2004 18:42 CEST
+Last Modified:              12-31-2005 07:19 CET
 ======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
+Summary:                    No bass & treble control
 Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
-
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
-
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
-
+There is no control in alsa-mixer or any other mixer for bass & treble,
+which I really miss.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 05:37 
+ tiwai - 07-30-04 16:55 
 ----------------------------------------------------------------------
-Try adding printks to prepare_startup_playback_urb() and
-snd_usb_pcm_playback_trigger() in sound/usb/usbaudio.c, do they both get
-called when you play something?
+There is likely no hardware bass & treble controls on this board.
 
 ----------------------------------------------------------------------
- smithbone - 12-31-05 07:10 
+ rlrevell - 12-31-05 07:19 
 ----------------------------------------------------------------------
-yes they both get called:
-
-Dec 31 00:06:14 Vedit kernel: snd_usb_pcm_playback_trigger()
-Dec 31 00:06:17 Vedit kernel: prepare_startup_playbak_urb()
-Dec 31 00:06:17 Vedit kernel: prepare_startup_playbak_urb()
-Dec 31 00:06:17 Vedit kernel: snd_usb_pcm_playback_trigger()
+Not a bug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
-12-30-05 19:48 sailfrog       Note Added: 0007251                          
-12-30-05 20:01 rlrevell       Note Added: 0007252                          
-12-30-05 20:08 rlrevell       Note Added: 0007254                          
-12-30-05 20:31 sailfrog       Note Added: 0007256                          
-12-30-05 20:34 rlrevell       Note Added: 0007257                          
-12-30-05 20:41 sailfrog       Note Added: 0007258                          
-12-30-05 20:43 rlrevell       Note Added: 0007259                          
-12-31-05 02:32 smithbone      Note Added: 0007319                          
-12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
-               
-12-31-05 03:47 rlrevell       Note Added: 0007331                          
-12-31-05 05:31 smithbone      Note Added: 0007343                          
-12-31-05 05:33 rlrevell       Note Added: 0007344                          
-12-31-05 05:37 rlrevell       Note Added: 0007345                          
-12-31-05 07:10 smithbone      Note Added: 0007347                          
+07-27-04 18:42 skamp          New Issue                                    
+07-27-04 18:42 skamp          File Added: aadebug                          
+07-27-04 18:42 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:42 skamp          Kernel Version            => 2.4.26          
+07-30-04 16:55 tiwai          Note Added: 0001492                          
+12-31-05 07:19 rlrevell       Status                   new => closed       
+12-31-05 07:19 rlrevell       Note Added: 0007348                          
 ======================================================================
 
 
