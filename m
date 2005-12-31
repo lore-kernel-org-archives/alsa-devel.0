@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000426]: Motu 896hd firewire card not supported by alsa
-Date: Sat, 31 Dec 2005 06:29:35 +0100
-Message-ID: <ec6adc778d35afc51be199d5d2c3ea76@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Sat, 31 Dec 2005 07:10:37 +0100
+Message-ID: <61acd4e23cebdbaca9cd83aca6bb4ffe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC909171
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 06:29:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBE5B176
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:10:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=426> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                ludwiglaisne
-Assigned To:                
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   426
-Category:                   1_OTHERS
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               agnula
-Kernel Version:             2.4.25
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             08-06-2004 14:43 CEST
-Last Modified:              12-31-2005 06:29 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              12-31-2005 07:10 CET
 ======================================================================
-Summary:                    Motu 896hd firewire card not supported by alsa
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-motu 896hd firwire audio card is not supported by alsa 1.0.5a
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-And motu 828 mkII firewire card is supported
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 06:29 
+ rlrevell - 12-31-05 05:37 
 ----------------------------------------------------------------------
-No MOTU products are supported and are not likely to ever be - a driver
-would have to be completely reverse engineered.
+Try adding printks to prepare_startup_playback_urb() and
+snd_usb_pcm_playback_trigger() in sound/usb/usbaudio.c, do they both get
+called when you play something?
+
+----------------------------------------------------------------------
+ smithbone - 12-31-05 07:10 
+----------------------------------------------------------------------
+yes they both get called:
+
+Dec 31 00:06:14 Vedit kernel: snd_usb_pcm_playback_trigger()
+Dec 31 00:06:17 Vedit kernel: prepare_startup_playbak_urb()
+Dec 31 00:06:17 Vedit kernel: prepare_startup_playbak_urb()
+Dec 31 00:06:17 Vedit kernel: snd_usb_pcm_playback_trigger()
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-06-04 14:43 ludwiglaisne   New Issue                                    
-08-06-04 14:43 ludwiglaisne   Distribution              => agnula          
-08-06-04 14:43 ludwiglaisne   Kernel Version            => 2.4.25          
-12-31-05 06:29 rlrevell       Status                   new => closed       
-12-31-05 06:29 rlrevell       Note Added: 0007346                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
+12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
+12-30-05 20:43 rlrevell       Note Added: 0007259                          
+12-31-05 02:32 smithbone      Note Added: 0007319                          
+12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
+               
+12-31-05 03:47 rlrevell       Note Added: 0007331                          
+12-31-05 05:31 smithbone      Note Added: 0007343                          
+12-31-05 05:33 rlrevell       Note Added: 0007344                          
+12-31-05 05:37 rlrevell       Note Added: 0007345                          
+12-31-05 07:10 smithbone      Note Added: 0007347                          
 ======================================================================
 
 
