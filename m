@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Sat, 31 Dec 2005 21:32:26 +0100
-Message-ID: <663c506bbada2e8cff9f9bf34a23d9a1@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001304]: Speaker test hangs
+Date: Sat, 31 Dec 2005 21:38:01 +0100
+Message-ID: <e0f7743494e758215869bb9ac739643b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABF0A167
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 21:32:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D76C167
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 21:38:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,114 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
 ======================================================================
-Reported By:                Xero
-Assigned To:                perex
+Reported By:                herby
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - utils
+Issue ID:                   1304
+Category:                   speakertest
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     new
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              12-31-2005 21:32 CET
+Date Submitted:             08-03-2005 02:46 CEST
+Last Modified:              12-31-2005 21:38 CET
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    Speaker test hangs
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+After applying the patch to the library that took out the check for a
+proper "start_threshold" (file .../alsa-lib/src/pcm/pcm.c around lines 834
+or so), I attempted to try a speaker test again.  It hung right after
+outputting "0 - Front Left".  I did an strace and the results are included
+in the file attached.  I attempted to vary the sample rate (to 44.1 kHz)
+with little luck.  The wierd thing is that I can execute 'aplay' (with the
+default device) and get a '.wav' file to play nicely.  I can even get a
+multi-channel (4 to be exact) ".wav" file to go thru 'aplay'.  Why
+speaker-test doesn't work is beyond me.  The problem is that I appear to
+use similar techniques in my own programming as speaker-test, and my
+program doesen't do that well.  Being as how speaker-test IS part of ALSA,
+I thought I would submit the bug report against it.
 
-This starts showing up when I start pressing play again:
-
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-
-
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
-
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
-
-Attached is my asoundrc.
+If other tests need be preformed, I'd be VERY happy to do them.
 ======================================================================
 
 ----------------------------------------------------------------------
- skandalfo - 12-31-05 20:38 
+ rlrevell - 12-30-05 23:24 
 ----------------------------------------------------------------------
-No change at the version of alsa-lib 1.0.10 (at least as distributed by
-Gentoo)...
-
-I still have to remove the dmix bit in order for xine to properly switch
-audio modes.
+Any improvement in later releases?
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 21:32 
+ herby - 12-31-05 21:38 
 ----------------------------------------------------------------------
-What about 1.0.11-rc*?
+I had no problems with later versions.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-06-26-05 22:08 Xero           Note Added: 0005267                          
-06-27-05 16:22 tiwai          Note Added: 0005275                          
-06-27-05 22:05 Xero           Note Added: 0005288                          
-06-27-05 22:41 Xero           Note Added: 0005289                          
-08-01-05 23:43 skandalfo      Note Added: 0005597                          
-08-01-05 23:50 Xero           Note Added: 0005598                          
-08-15-05 14:59 perex          Status                   new => assigned     
-08-15-05 14:59 perex          Assigned To               => perex           
-08-15-05 15:03 perex          Category                 0_general => 1_pcm_d -
-direct PCM plugins (dmix+)
-08-18-05 12:00 perex          Note Added: 0005842                          
-08-18-05 13:06 perex          Note Added: 0005845                          
-08-18-05 13:10 perex          Status                   assigned => feedback
-08-18-05 18:31 Xero           Note Added: 0005850                          
-09-15-05 21:02 skandalfo      Note Added: 0006222                          
-09-15-05 21:07 skandalfo      File Added: xine-bugged-output.txt                
-   
-12-30-05 23:15 rlrevell       Note Added: 0007281                          
-12-31-05 20:38 skandalfo      Note Added: 0007358                          
-12-31-05 21:32 rlrevell       Note Added: 0007359                          
+08-03-05 02:46 herby          New Issue                                    
+08-03-05 02:46 herby          File Added: speaker-trace                    
+08-03-05 12:18 tiwai          Note Added: 0005621                          
+08-04-05 03:21 herby          Note Added: 0005638                          
+08-04-05 14:10 jcdutton       Note Added: 0005648                          
+08-04-05 20:21 herby          Note Added: 0005652                          
+08-09-05 06:58 herby          Note Added: 0005718                          
+08-12-05 08:12 herby          Note Added: 0005765                          
+08-12-05 15:47 tiwai          Note Added: 0005773                          
+12-30-05 23:24 rlrevell       Note Added: 0007288                          
+12-31-05 21:38 herby          Note Added: 0007360                          
 ======================================================================
 
 
