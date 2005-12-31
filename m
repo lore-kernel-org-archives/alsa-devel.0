@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000446]: System freezes everytime when I start recording.
-Date: Sat, 31 Dec 2005 04:07:34 +0100
-Message-ID: <566bc7ed8b0a6977748417f995b84275@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000362]: System freeze while playing music on AWE32 PnP
+Date: Sat, 31 Dec 2005 04:08:23 +0100
+Message-ID: <c5e60ebc737d08b9252a180f28f3e32e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DE7215C
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:07:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CC6B15D
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 04:08:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=446> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=362> 
 ======================================================================
-Reported By:                Marc_R
+Reported By:                Theo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   446
-Category:                   PCI - es1938
+Issue ID:                   362
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian GNU/Linux / DeMuDi
-Kernel Version:             every kernel I tried 2.4.x / 2.6.x
-Resolution:                 open
+Distribution:               Fedora Core 2
+Kernel Version:             Linux CC695620-a 2.6.6-1.435.2.1
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-16-2004 22:24 CEST
-Last Modified:              12-31-2005 04:07 CET
+Date Submitted:             07-02-2004 23:02 CEST
+Last Modified:              12-31-2005 04:08 CET
 ======================================================================
-Summary:                    System freezes everytime when I start recording.
+Summary:                    System freeze while playing music on AWE32 PnP
 Description: 
-I have a Terratec 128i PCI soundcard which works great as long as I don't
-record something.
-I tried recording from cd, microphone, and mix via arecord and Audacity.
-The capture devices were set correctly.
-As soon as the recording begins, the system freezes immediately. Even the
-Magic SysRq doesn't work so I have to reset the PC.
-I had this problem with every Linux-kernel version I tried from 2.4.x to
-2.6.8.1.
-I even installed DeMuDi but had the same problem there.
-
-After some more testing I found out that recording works more or less,
-when I unload the usb-module (uhci_hcd). But I have to unload it when X is
-not running (?!), otherwise the system still crashes.
-
-I then borrowed another soundcard (SB 128) and got it working with no
-problems. So it seems that there is some bug in the recording part of the
-es1938-driver...
-
-If there's additional information needed, please ask.
+This is a clean install of Fedora Core 2. Sound card is a ISA Sound Blaster
+AWE32 PnP. The system freezes while playing music (and ONLY while playing
+music) after about 1-15 minutes. The music keeps playing until the song
+ends, but the system itself is frozen.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 04:26 
+ Theo - 04-08-05 09:34 
 ----------------------------------------------------------------------
-Submitter: Do you see any improvement in later ALSA releases?
+I'm sorry, I don't have this system anymore, so I can't check :(
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 04:07 
+ rlrevell - 12-31-05 04:08 
 ----------------------------------------------------------------------
-No response
+User can't test further
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-16-04 22:24 Marc_R         New Issue                                    
-08-16-04 22:24 Marc_R         Distribution              => Debian GNU/Linux /
-DeMuDi
-08-16-04 22:24 Marc_R         Kernel Version            => every kernel I tried
-2.4.x / 2.6.x
-04-09-05 04:26 jdthood        Note Added: 0004382                          
-12-31-05 04:07 rlrevell       Status                   new => closed       
-12-31-05 04:07 rlrevell       Note Added: 0007338                          
+07-02-04 23:02 Theo           New Issue                                    
+07-02-04 23:02 Theo           Distribution              => Fedora Core 2   
+07-02-04 23:02 Theo           Kernel Version            => Linux CC695620-a
+2.6.6-1.435.2.1
+04-07-05 20:58 jdthood        Note Added: 0004366                          
+04-08-05 09:34 Theo           Note Added: 0004372                          
+04-08-05 13:43 jdthood        Resolution               open => unable to
+duplicate
+12-31-05 04:08 rlrevell       Status                   new => closed       
+12-31-05 04:08 rlrevell       Note Added: 0007339                          
 ======================================================================
 
 
