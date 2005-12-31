@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Sat, 31 Dec 2005 02:32:21 +0100
-Message-ID: <aa00b9b6439ef920d67687e63f655ec2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001036]: Replacement SB Live card not detected
+Date: Sat, 31 Dec 2005 02:42:03 +0100
+Message-ID: <799e2fb7f5b8c3e6cfdae4951381100b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 383F8165
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 02:32:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D33B165
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 02:42:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1036> 
 ======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
+Reported By:                grolschie
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
+Issue ID:                   1036
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              12-31-2005 02:32 CET
+Date Submitted:             04-05-2005 02:10 CEST
+Last Modified:              12-31-2005 02:42 CET
 ======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
+Summary:                    Replacement SB Live card not detected
 Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+Hi there.
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+I have been using my SB Live Value PCI for over a year with ALSA with no
+problems. I recently swapped the card for a newer SB Live 5.1 DE PCI card.
+Even though these cards are pretty much the same, alsaconf cannot detect
+any supported sound cards. lspci shows that the new card is indeed
+detected.
 
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
-
+Regards,
+grolschie
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 20:43 
+ rlrevell - 12-31-05 00:32 
 ----------------------------------------------------------------------
-Yes definitely, I didn't see that you only tried the SPDIF.
-
-Headphones might be easier than speakers ;-)
+Try attached patch
 
 ----------------------------------------------------------------------
- smithbone - 12-31-05 02:32 
+ grolschie - 12-31-05 02:42 
 ----------------------------------------------------------------------
-I have the same problem and I'm not using the SPDIF.  Neither line out or
-headphones work.
+Sorry, I never got back to you. No excuse really. After doing an 'apt-get
+upgrade' which probably installed a newer version of ALSA and the Kernel,
+and then running alsa-config, sound is now back. I am running Debian "Sid"
+so somewhere a kernel version and alsa-version were not in sync after a
+previous update? Or a bug was resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
-12-30-05 19:48 sailfrog       Note Added: 0007251                          
-12-30-05 20:01 rlrevell       Note Added: 0007252                          
-12-30-05 20:08 rlrevell       Note Added: 0007254                          
-12-30-05 20:31 sailfrog       Note Added: 0007256                          
-12-30-05 20:34 rlrevell       Note Added: 0007257                          
-12-30-05 20:41 sailfrog       Note Added: 0007258                          
-12-30-05 20:43 rlrevell       Note Added: 0007259                          
-12-31-05 02:32 smithbone      Note Added: 0007319                          
+04-05-05 02:10 grolschie      New Issue                                    
+04-05-05 02:10 grolschie      Distribution              => Debian          
+04-05-05 02:10 grolschie      Kernel Version            => 2.6.3           
+04-05-05 02:12 grolschie      Note Added: 0004333                          
+04-05-05 08:30 pzad           Note Added: 0004334                          
+04-05-05 08:55 grolschie      Note Added: 0004335                          
+04-05-05 10:20 pzad           Note Added: 0004336                          
+12-30-05 04:22 rlrevell       Note Added: 0007205                          
+12-31-05 00:32 rlrevell       File Added: 8067.patch                       
+12-31-05 00:32 rlrevell       Note Added: 0007318                          
+12-31-05 02:42 grolschie      Note Added: 0007320                          
 ======================================================================
 
 
