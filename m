@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001440]: headphone output loops to microphone input
-Date: Sat, 31 Dec 2005 07:56:54 +0100
-Message-ID: <8b1c7bbd1daff70009abee0ccff3f663@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000706]: SERR: Status=4210 followed by NMI reason 34 leading to reboot
+Date: Sat, 31 Dec 2005 08:22:16 +0100
+Message-ID: <239fdc64d1e24ca88c6d3666161b3e0a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D95BA171
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 07:56:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 34DA516E
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 08:22:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1440> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=706> 
 ======================================================================
-Reported By:                dyfrgi
+Reported By:                dlc
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1440
-Category:                   PCI - intel8x0
+Issue ID:                   706
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.13.1
+Distribution:               DeMuDi1.2.0
+Kernel Version:             2.4.25
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-22-2005 00:13 CEST
-Last Modified:              12-31-2005 07:56 CET
+Date Submitted:             12-04-2004 00:36 CET
+Last Modified:              12-31-2005 08:22 CET
 ======================================================================
-Summary:                    headphone output loops to microphone input
+Summary:                    SERR: Status=4210 followed by NMI reason 34 leading
+to reboot
 Description: 
-I cannot use the headphone port when using full duplex on my laptop. Here
-are four scenarios, and the results:
-
-1. System speakers, no microphone plugged in
-RESULTS:
-When recording from the microphone input, there is no sound. As expected.
-
-2. System speakers, microphone plugged in
-RESULTS:
-Only the sound that should be picked up by the microphone is recorded
-through the microphone input. As expected.
-
-3. Headphones plugged in, microphone not plugged in.
-RESULTS:
-No sound when recording. As expected.
-
-4. Headphones plugged in, microphone plugged in.
-RESULTS:
-Audio coming in through the microphone input is a combination of the
-expected audio and the audio that is being played through the headphone
-output. This is the problem.
-
-Could this be an ALSA issue, or should I have the laptop hardware looked
-at? I should note that this also happens if I use the OSS driver. That
-doesn't mean it's not a driver issue, though; it could be that some
-register is not being set up properly.
-
-The loopbacked volume is lower than if I set Mix or Mix Mono to be the
-capture channel. I'm using jaaa with noise output turned on to monitor.
+System reboots when attempting to install a game under Wine.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 03:20 
+ jdthood - 04-09-05 17:23 
 ----------------------------------------------------------------------
-Any improvement with later ALSA releases?
+Submitter: Do you have any new information about this problem?
 
 ----------------------------------------------------------------------
- dyfrgi - 12-31-05 07:47 
+ rlrevell - 12-31-05 08:22 
 ----------------------------------------------------------------------
-Ah. Yes. Turns out to have been an issue with my microphone - it's just
-hideously leaky, I suppose. If I use a different mic, there's no problem.
-Sorry for not checking back after I determined this.
-
-On the plus side, the bug can now be closed.
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-05 00:13 dyfrgi         New Issue                                    
-09-22-05 00:13 dyfrgi         Distribution              => Gentoo          
-09-22-05 00:13 dyfrgi         Kernel Version            => 2.6.13.1        
-12-31-05 03:20 rlrevell       Note Added: 0007324                          
-12-31-05 07:47 dyfrgi         Note Added: 0007352                          
-12-31-05 07:56 rlrevell       Status                   new => closed       
+12-04-04 00:36 dlc            New Issue                                    
+12-04-04 00:36 dlc            Distribution              => DeMuDi1.2.0     
+12-04-04 00:36 dlc            Kernel Version            => 2.4.25          
+12-07-04 18:52 tiwai          Note Added: 0002760                          
+12-07-04 19:22 dlc            Note Added: 0002763                          
+12-16-04 17:45 dlc            Note Added: 0002830                          
+12-16-04 18:22 tiwai          Note Added: 0002832                          
+12-16-04 21:46 dlc            Note Added: 0002842                          
+04-09-05 17:23 jdthood        Note Added: 0004422                          
+12-31-05 08:22 rlrevell       Status                   new => closed       
+12-31-05 08:22 rlrevell       Note Added: 0007353                          
 ======================================================================
 
 
