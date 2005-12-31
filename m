@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001304]: Speaker test hangs
-Date: Sat, 31 Dec 2005 21:38:01 +0100
-Message-ID: <e0f7743494e758215869bb9ac739643b@bugtrack.alsa-project.org>
+Date: Sat, 31 Dec 2005 22:07:12 +0100
+Message-ID: <770c1f9faa2fe3c6554fcb22f4d928c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D76C167
-	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 21:38:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA4D2167
+	for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2005 22:07:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1304> 
 ======================================================================
 Reported By:                herby
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - utils
 Issue ID:                   1304
@@ -35,10 +35,12 @@ Category:                   speakertest
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             08-03-2005 02:46 CEST
-Last Modified:              12-31-2005 21:38 CET
+Last Modified:              12-31-2005 22:07 CET
 ======================================================================
 Summary:                    Speaker test hangs
 Description: 
@@ -82,6 +84,9 @@ Date Modified  Username       Field                    Change
 08-12-05 15:47 tiwai          Note Added: 0005773                          
 12-30-05 23:24 rlrevell       Note Added: 0007288                          
 12-31-05 21:38 herby          Note Added: 0007360                          
+12-31-05 22:07 rlrevell       Status                   new => resolved     
+12-31-05 22:07 rlrevell       Resolution               open => fixed       
+12-31-05 22:07 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
