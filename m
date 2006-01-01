@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001697]: Sound does not work
-Date: Sun, 1 Jan 2006 10:27:15 +0100
-Message-ID: <797b35d181610a7b66501f46957e751f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001100]: Driver loaded, no sound card detected
+Date: Sun, 1 Jan 2006 11:24:22 +0100
+Message-ID: <9c8d8871ed189817d645c37e4c646144@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17921181
-	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 10:27:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12166175
+	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 11:24:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1697> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1100> 
 ======================================================================
-Reported By:                rkoenig
-Assigned To:                sashak
+Reported By:                dwatters
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1697
-Category:                   PCI - intel8x0m
+Issue ID:                   1100
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               doesn't matter
-Kernel Version:             doesn't matter
+Status:                     new
+Distribution:               SuSE Linux 9.2
+Kernel Version:             2.6.8-14.24
 ======================================================================
-Date Submitted:             01-01-2006 10:27 CET
-Last Modified:              01-01-2006 10:27 CET
+Date Submitted:             05-11-2005 15:51 CEST
+Last Modified:              01-01-2006 11:24 CET
 ======================================================================
-Summary:                    Sound does not work
+Summary:                    Driver loaded, no sound card detected
 Description: 
-The SiS 7012 based sound controllers on all the mainboards of Fujitsu
-Siemens Computers refuse to work. 
-
-The reason is that the hardware setup is done in a way so that the codec
-is the tertiary codec. Problem is that during initialisation the
-snd_intel8x0 driver checks the ready bit for the tertiary codec on bit 28
-of the global status register, but on SiS 7012 the codec ready status is
-set in bit 18. But even fixing that in source doesn't help much because
-the driver has to many branches that are depending on the chip type
-(INTEL, SIS, whatever) so that I get a codec ready, but then subsequent
-errors from the codecs.
+In /var/log/message gives:
+May 11 10:30:43 miro kernel: ACPI: PCI interrupt 0000:05:06.0[A] -> GSI 5
+(level, low) -> IRQ 5
+May 11 10:30:43 miro kernel: ice1724: No matching model found for ID
+0x97123650
+May 11 10:30:43 miro kernel: ice1724: Invalid EEPROM (size = 255)
+May 11 10:30:43 miro kernel: ICE1724: probe of 0000:05:06.0 failed with
+error -5
 
 
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 00:09 
+----------------------------------------------------------------------
+Any improvement in later releases?
+
+----------------------------------------------------------------------
+ kaasgaard - 01-01-06 11:24 
+----------------------------------------------------------------------
+indeed there is, i have a working system now, with the following:
+
+alsa: 1.0.10
+kernel: kernel-2.6.14-1.1800_FC5
+distro: fedora core 4.90 (pre 5)
+mb: shuttle FN25
+
+<pre>
+# cat /proc/asound/cards
+0 [SN25P          ]: ICE1724 - Shuttle SN25P
+                     Shuttle SN25P at 0xa000, irq 50
+
+
+# lspci -d 1412:1724 -nvx
+05:06.0 0401: 1412:1724 (rev 01)
+        Subsystem: 1297:5036
+        Flags: bus master, medium devsel, latency 32, IRQ 50
+        I/O ports at a000 [size=32]
+        I/O ports at a400 [size=128]
+        Capabilities: [80] Power Management version 1
+00: 12 14 24 17 05 00 10 02 01 00 01 04 00 20 00 00
+10: 01 a0 00 00 01 a4 00 00 00 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 97 12 36 50
+30: 00 00 00 00 80 00 00 00 00 00 00 00 0c 01 00 00
+
+</pre>
+
+whoever fixed this thanks a bundle
+
+// Kaasgaard
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-01-06 10:27 rkoenig        New Issue                                    
-01-01-06 10:27 rkoenig        Distribution              => doesn't matter  
-01-01-06 10:27 rkoenig        Kernel Version            => doesn't matter  
+05-11-05 15:51 dwatters       New Issue                                    
+05-11-05 15:51 dwatters       Distribution              => SuSE Linux 9.2  
+05-11-05 15:51 dwatters       Kernel Version            => 2.6.8-14.24     
+05-11-05 15:53 dwatters       Note Added: 0004637                          
+06-15-05 20:35 kaasgaard      Note Added: 0005043                          
+06-15-05 20:36 kaasgaard      Note Added: 0005044                          
+12-31-05 00:09 rlrevell       Note Added: 0007309                          
+01-01-06 11:24 kaasgaard      Note Added: 0007364                          
 ======================================================================
 
 
