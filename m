@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Sun, 1 Jan 2006 07:15:59 +0100
-Message-ID: <d83cf4cc4188f1da30ffc7fc7209c543@bugtrack.alsa-project.org>
+Date: Sun, 1 Jan 2006 08:11:25 +0100
+Message-ID: <b95589ef749620460de642a6b3e1b82b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33C8F160
-	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 07:16:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17BB716D
+	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 08:11:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              01-01-2006 07:15 CET
+Last Modified:              01-01-2006 08:11 CET
 ======================================================================
 Summary:                    xmms/beep "couldn't open audio" on song change
 Description: 
@@ -87,11 +87,6 @@ Attached is my asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 21:32 
-----------------------------------------------------------------------
-What about 1.0.11-rc*?
-
-----------------------------------------------------------------------
  skandalfo - 01-01-06 07:15 
 ----------------------------------------------------------------------
 alsa-lib 1.0.11-rc1 keeps failing.
@@ -99,6 +94,19 @@ alsa-lib 1.0.11-rc1 keeps failing.
 I think that's the latest and only 1.0.11-rc* version at the moment...
 
 :-(
+
+----------------------------------------------------------------------
+ rlrevell - 01-01-06 08:11 
+----------------------------------------------------------------------
+OK.  So, just to clarify, you no longer get the:
+
+(make_local_socket) connect failed: /tmp/alsa-dmix-foo-blah
+
+errors when changing songs with xmms/beep, but you do get:
+
+snd_pcm_open() of surround51 failed: Device or resource busy
+
+when switching from 2.0 to 5.1 in xine?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -133,6 +141,7 @@ direct PCM plugins (dmix+)
 12-31-05 20:38 skandalfo      Note Added: 0007358                          
 12-31-05 21:32 rlrevell       Note Added: 0007359                          
 01-01-06 07:15 skandalfo      Note Added: 0007362                          
+01-01-06 08:11 rlrevell       Note Added: 0007363                          
 ======================================================================
 
 
