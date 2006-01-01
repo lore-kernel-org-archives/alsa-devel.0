@@ -1,7 +1,10 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 1 Jan 2006 02:05:49 -0000
-Message-ID: <E1Essba-0006gO-9U@mail.sourceforge.net>
+From: Brent Cook <busterbcook@yahoo.com>
+Subject: Support for EDIROL UM-3ex
+Date: Sat, 31 Dec 2005 21:54:35 -0600
+Message-ID: <200512312154.35173.busterbcook@yahoo.com>
+Mime-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_7J1tDihvX+bssMF"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,50 +18,82 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
-
-<admin@yahoo.com>:
-This address no longer accepts mail.
-
---- Original message follows.
-
-Return-Path: <alsa-devel@lists.sourceforge.net>
-
-The original message is over 5k.  Message truncated to 1K.
-
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;ipts:ER;sv:ER<err=transport>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta128.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO qfgvy.net) (64.251.132.84)
-  by mta128.mail.mud.yahoo.com with SMTP; Sat, 31 Dec 2005 18:05:48 -0800
-From: alsa-devel@lists.sourceforge.net
-Date: Sun, 01 Jan 2006 01:29:16 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Mailer: SpeedMail_V1.15
-X-Priority: 3 (Normal)
-X-MSMail-Priority: Normal
-Message-ID: <be4dabb79f.a2b79b3d@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="==6c8fe9c41.f82b9d8b6a928ac"
+--Boundary-00=_7J1tDihvX+bssMF
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
+Content-Disposition: inline
 
---==6c8fe9c41.f82b9d8b6a928ac
+Dear all,
 
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
+This is my naive attempt at adding ALSA device support. The attached patch 
+provides support for the EDIROL UM-3ex. This is a 3-port USB midi interface 
+with a built-in USB hub and the ability to chain 2 other UM-3x's in a 
+master-slave configuration. I only have one, so I do not know how this works 
+in practice.
 
-plz read and check ...
-cyaaaaaaa
---==6c8fe9c41.f82b9d8b6a
-*** MESSAGE TRUNCATED ***
+Though this is a 3-port device, I had to throw in that 4th 'Control' interface 
+to the definition in order to make the 3rd port work. If I set in/out_cables 
+to 0x000b, a 3rd interface appears on the driver, but it does nothing. 
+Changing it to 0x000f allows the 3rd interface to work, but of course 
+interface 4 does not work because it does not exist.
 
+ - Brent
+
+--Boundary-00=_7J1tDihvX+bssMF
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="edirol_um-3ex.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="edirol_um-3ex.patch"
+
+diff -urN linux-2.6.15-rc7/sound/usb/usbmidi.c linux-2.6.15-rc7.dev/sound/usb/usbmidi.c
+--- linux-2.6.15-rc7/sound/usb/usbmidi.c	2005-12-31 20:14:15.000000000 -0600
++++ linux-2.6.15-rc7.dev/sound/usb/usbmidi.c	2005-12-31 21:47:23.000000000 -0600
+@@ -1095,6 +1095,8 @@
+ 	{ USB_ID(0x086a, 0x0001), 8, "%s Broadcast" },
+ 	{ USB_ID(0x086a, 0x0002), 8, "%s Broadcast" },
+ 	{ USB_ID(0x086a, 0x0003), 4, "%s Broadcast" },
++	/* Edirol UM-3ex */
++	{ USB_ID(0x0582, 0x009a), 3, "%s Control" },
+ };
+ 
+ static void snd_usbmidi_init_substream(snd_usb_midi_t* umidi,
+diff -urN linux-2.6.15-rc7/sound/usb/usbquirks.h linux-2.6.15-rc7.dev/sound/usb/usbquirks.h
+--- linux-2.6.15-rc7/sound/usb/usbquirks.h	2005-12-31 20:14:15.000000000 -0600
++++ linux-2.6.15-rc7.dev/sound/usb/usbquirks.h	2005-12-31 21:40:15.000000000 -0600
+@@ -204,6 +204,28 @@
+ 	}
+ },
+ {
++	USB_DEVICE(0x0582, 0x009a),
++	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
++		.vendor_name = "EDIROL",
++		.product_name = "UM-3ex",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const snd_usb_audio_quirk_t[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_MIDI_FIXED_ENDPOINT,
++				.data = & (const snd_usb_midi_endpoint_info_t) {
++					.out_cables = 0x000f,
++					.in_cables  = 0x000f
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
++{
+ 	USB_DEVICE(0x0582, 0x0002),
+ 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
+ 		.vendor_name = "EDIROL",
+
+--Boundary-00=_7J1tDihvX+bssMF--
 
 
 -------------------------------------------------------
