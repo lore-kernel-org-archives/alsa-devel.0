@@ -1,15 +1,14 @@
-From: Brent Cook <busterbcook@yahoo.com>
-Subject: Re: Support for EDIROL UM-3ex
-Date: Sat, 31 Dec 2005 22:06:18 -0600
-Message-ID: <200512312206.18365.busterbcook@yahoo.com>
-References: <200512312154.35173.busterbcook@yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
+Date: Sun, 1 Jan 2006 07:15:59 +0100
+Message-ID: <d83cf4cc4188f1da30ffc7fc7209c543@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200512312154.35173.busterbcook@yahoo.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33C8F160
+	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 07:16:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,41 +18,124 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 31 December 2005 21:54, Brent Cook wrote:
-> Dear all,
->
-> This is my naive attempt at adding ALSA device support. The attached patch
-> provides support for the EDIROL UM-3ex. This is a 3-port USB midi interface
-> with a built-in USB hub and the ability to chain 2 other UM-3x's in a
-> master-slave configuration. I only have one, so I do not know how this
-> works in practice.
->
-> Though this is a 3-port device, I had to throw in that 4th 'Control'
-> interface to the definition in order to make the 3rd port work. If I set
-> in/out_cables to 0x000b, a 3rd interface appears on the driver, but it does
-> nothing. Changing it to 0x000f allows the 3rd interface to work, but of
-> course interface 4 does not work because it does not exist.
->
->  - Brent
 
-Oh, and here is the relevant USB info for the device; maybe it explains the 
-3rd port quirk.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+======================================================================
+Reported By:                Xero
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1184
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+======================================================================
+Date Submitted:             06-11-2005 21:14 CEST
+Last Modified:              01-01-2006 07:15 CET
+======================================================================
+Summary:                    xmms/beep "couldn't open audio" on song change
+Description: 
+When playing a song in beep sometimes it'll pop up a "couldn't open audio"
+box as if the device is in use. This is using dmix, however, so that
+seemed a bit weird. I normally have to close and reopen beep to resolve
+this. I believe xmms does the same thing because I've read about people
+having the exact same issue with xmms.
 
-T:  Bus=04 Lev=02 Prnt=02 Port=00 Cnt=01 Dev#=  3 Spd=12  MxCh= 0
-D:  Ver= 1.10 Cls=ff(vend.) Sub=00 Prot=ff MxPS=64 #Cfgs=  1
-P:  Vendor=0582 ProdID=009a Rev= 1.00
-S:  Manufacturer=EDIROL
-S:  Product=UM-3
-C:* #Ifs= 1 Cfg#= 1 Atr=80 MxPwr= 90mA
-I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=03 Prot=00 Driver=snd-usb-audio
-E:  Ad=01(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:  If#= 0 Alt= 1 #EPs= 2 Cls=ff(vend.) Sub=03 Prot=00 Driver=snd-usb-audio
-E:  Ad=01(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=1ms
+This starts showing up when I start pressing play again:
+
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+
+
+However one thing which I've never seen mentioned in the previous reports,
+is that when trying to use another app through dmix it doesn't work
+either. Here's what mplayer says, when trying to play a video:
+
+alsa-init: 1 soundcard found, using: default
+ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
+/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
+alsa-init: playback open error: No such file or directory
+Could not open/initialize audio device -> no sound.
+Audio: no sound
+
+so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
+closed beep, all other applications started working properly again, and
+when I start it back up again, it works fine again too, until it does this
+again. It seems to do it sporadically so it's somewhat hard to test for.
+
+Attached is my asoundrc.
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 21:32 
+----------------------------------------------------------------------
+What about 1.0.11-rc*?
+
+----------------------------------------------------------------------
+ skandalfo - 01-01-06 07:15 
+----------------------------------------------------------------------
+alsa-lib 1.0.11-rc1 keeps failing.
+
+I think that's the latest and only 1.0.11-rc* version at the moment...
+
+:-(
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-11-05 21:14 Xero           New Issue                                    
+06-11-05 21:14 Xero           File Added: asoundrc                         
+06-11-05 21:14 Xero           Note Added: 0004994                          
+06-15-05 15:03 tiwai          Note Added: 0005030                          
+06-15-05 22:31 Xero           Note Added: 0005046                          
+06-15-05 23:55 Xero           Note Added: 0005049                          
+06-22-05 18:22 tiwai          Note Added: 0005142                          
+06-22-05 19:01 Xero           Note Added: 0005144                          
+06-23-05 02:47 Xero           Note Added: 0005162                          
+06-26-05 22:08 Xero           Note Added: 0005267                          
+06-27-05 16:22 tiwai          Note Added: 0005275                          
+06-27-05 22:05 Xero           Note Added: 0005288                          
+06-27-05 22:41 Xero           Note Added: 0005289                          
+08-01-05 23:43 skandalfo      Note Added: 0005597                          
+08-01-05 23:50 Xero           Note Added: 0005598                          
+08-15-05 14:59 perex          Status                   new => assigned     
+08-15-05 14:59 perex          Assigned To               => perex           
+08-15-05 15:03 perex          Category                 0_general => 1_pcm_d -
+direct PCM plugins (dmix+)
+08-18-05 12:00 perex          Note Added: 0005842                          
+08-18-05 13:06 perex          Note Added: 0005845                          
+08-18-05 13:10 perex          Status                   assigned => feedback
+08-18-05 18:31 Xero           Note Added: 0005850                          
+09-15-05 21:02 skandalfo      Note Added: 0006222                          
+09-15-05 21:07 skandalfo      File Added: xine-bugged-output.txt                
+   
+12-30-05 23:15 rlrevell       Note Added: 0007281                          
+12-31-05 20:38 skandalfo      Note Added: 0007358                          
+12-31-05 21:32 rlrevell       Note Added: 0007359                          
+01-01-06 07:15 skandalfo      Note Added: 0007362                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
