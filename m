@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Sun, 1 Jan 2006 08:11:25 +0100
-Message-ID: <b95589ef749620460de642a6b3e1b82b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001697]: Sound does not work
+Date: Sun, 1 Jan 2006 10:27:15 +0100
+Message-ID: <797b35d181610a7b66501f46957e751f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17BB716D
-	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 08:11:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17921181
+	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 10:27:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,126 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1697> 
 ======================================================================
-Reported By:                Xero
-Assigned To:                perex
+Reported By:                rkoenig
+Assigned To:                sashak
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1184
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1697
+Category:                   PCI - intel8x0m
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
+Distribution:               doesn't matter
+Kernel Version:             doesn't matter
 ======================================================================
-Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              01-01-2006 08:11 CET
+Date Submitted:             01-01-2006 10:27 CET
+Last Modified:              01-01-2006 10:27 CET
 ======================================================================
-Summary:                    xmms/beep "couldn't open audio" on song change
+Summary:                    Sound does not work
 Description: 
-When playing a song in beep sometimes it'll pop up a "couldn't open audio"
-box as if the device is in use. This is using dmix, however, so that
-seemed a bit weird. I normally have to close and reopen beep to resolve
-this. I believe xmms does the same thing because I've read about people
-having the exact same issue with xmms.
+The SiS 7012 based sound controllers on all the mainboards of Fujitsu
+Siemens Computers refuse to work. 
 
-This starts showing up when I start pressing play again:
-
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: Connection refused
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
+The reason is that the hardware setup is done in a way so that the codec
+is the tertiary codec. Problem is that during initialisation the
+snd_intel8x0 driver checks the ready bit for the tertiary codec on bit 28
+of the global status register, but on SiS 7012 the codec ready status is
+set in bit 18. But even fixing that in source doesn't help much because
+the driver has to many branches that are depending on the chip type
+(INTEL, SIS, whatever) so that I get a codec ready, but then subsequent
+errors from the codecs.
 
 
-However one thing which I've never seen mentioned in the previous reports,
-is that when trying to use another app through dmix it doesn't work
-either. Here's what mplayer says, when trying to play a video:
-
-alsa-init: 1 soundcard found, using: default
-ALSA lib pcm_direct.c:196:(make_local_socket) connect failed:
-/tmp/alsa-dmix-30443-1118514847-814284: No such file or directory
-ALSA lib pcm_dmix.c:834:(snd_pcm_dmix_open) unable to connect client
-alsa-init: playback open error: No such file or directory
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-
-so apparently something went wrong with /tmp/alsa-dmix-*. As soon as I
-closed beep, all other applications started working properly again, and
-when I start it back up again, it works fine again too, until it does this
-again. It seems to do it sporadically so it's somewhat hard to test for.
-
-Attached is my asoundrc.
 ======================================================================
-
-----------------------------------------------------------------------
- skandalfo - 01-01-06 07:15 
-----------------------------------------------------------------------
-alsa-lib 1.0.11-rc1 keeps failing.
-
-I think that's the latest and only 1.0.11-rc* version at the moment...
-
-:-(
-
-----------------------------------------------------------------------
- rlrevell - 01-01-06 08:11 
-----------------------------------------------------------------------
-OK.  So, just to clarify, you no longer get the:
-
-(make_local_socket) connect failed: /tmp/alsa-dmix-foo-blah
-
-errors when changing songs with xmms/beep, but you do get:
-
-snd_pcm_open() of surround51 failed: Device or resource busy
-
-when switching from 2.0 to 5.1 in xine?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-05 21:14 Xero           New Issue                                    
-06-11-05 21:14 Xero           File Added: asoundrc                         
-06-11-05 21:14 Xero           Note Added: 0004994                          
-06-15-05 15:03 tiwai          Note Added: 0005030                          
-06-15-05 22:31 Xero           Note Added: 0005046                          
-06-15-05 23:55 Xero           Note Added: 0005049                          
-06-22-05 18:22 tiwai          Note Added: 0005142                          
-06-22-05 19:01 Xero           Note Added: 0005144                          
-06-23-05 02:47 Xero           Note Added: 0005162                          
-06-26-05 22:08 Xero           Note Added: 0005267                          
-06-27-05 16:22 tiwai          Note Added: 0005275                          
-06-27-05 22:05 Xero           Note Added: 0005288                          
-06-27-05 22:41 Xero           Note Added: 0005289                          
-08-01-05 23:43 skandalfo      Note Added: 0005597                          
-08-01-05 23:50 Xero           Note Added: 0005598                          
-08-15-05 14:59 perex          Status                   new => assigned     
-08-15-05 14:59 perex          Assigned To               => perex           
-08-15-05 15:03 perex          Category                 0_general => 1_pcm_d -
-direct PCM plugins (dmix+)
-08-18-05 12:00 perex          Note Added: 0005842                          
-08-18-05 13:06 perex          Note Added: 0005845                          
-08-18-05 13:10 perex          Status                   assigned => feedback
-08-18-05 18:31 Xero           Note Added: 0005850                          
-09-15-05 21:02 skandalfo      Note Added: 0006222                          
-09-15-05 21:07 skandalfo      File Added: xine-bugged-output.txt                
-   
-12-30-05 23:15 rlrevell       Note Added: 0007281                          
-12-31-05 20:38 skandalfo      Note Added: 0007358                          
-12-31-05 21:32 rlrevell       Note Added: 0007359                          
-01-01-06 07:15 skandalfo      Note Added: 0007362                          
-01-01-06 08:11 rlrevell       Note Added: 0007363                          
+01-01-06 10:27 rkoenig        New Issue                                    
+01-01-06 10:27 rkoenig        Distribution              => doesn't matter  
+01-01-06 10:27 rkoenig        Kernel Version            => doesn't matter  
 ======================================================================
 
 
