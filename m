@@ -1,13 +1,14 @@
-From: John Rigg <ad@sound-man.co.uk>
-Subject: Re: Re: [Jackit-devel] Real-world reports on two Delta 1010LTs/ice1712 synched?
-Date: Sun, 1 Jan 2006 19:58:15 +0000
-Message-ID: <20060101195815.GA4162@localhost.localdomain>
-References: <20051224165610.GA4484@localhost.localdomain> <43AE9FA6.2020207@nostar.net> <20051226130327.GA4763@localhost.localdomain> <43B059A3.2050302@nostar.net> <20051227000428.GA3805@localhost.localdomain> <43B0A83F.1040907@nostar.net> <20051227130029.GB3770@localhost.localdomain> <43B1A8FA.8080408@nostar.net> <20051228211935.GA4782@localhost.localdomain> <43B7D15D.8080802@nostar.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001615]: No digital passthrough for Creative Audigy 2 NX
+Date: Sun, 1 Jan 2006 21:54:47 +0100
+Message-ID: <79add01085fbe17f7cb618e4a40c0f90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <43B7D15D.8080802@nostar.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D393E14B
+	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 21:54:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,96 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Doug McLain <doug@nostar.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 01, 2006 at 07:55:57AM -0500, Doug McLain wrote:
-> I'm hard at work trying to fix the word clock selection on the delta 
-> 1010LT.  Can you do me a favor and send the output of cat 
-> /proc/asound/M1010/ice1712 on your machine?  The heart of the difference 
-> appears to be in the configuration of the GPIO register.
 
-Here's the output from
-cat /proc/asound/M1010/ice1712 and
-cat /proc/asound/M1010_1/ice1712
-
-These are with jackd running in multi duplex mode at 96kHz, 32 frames,
-2 periods with the first card (irq 17) running on its internal clock
-and the second card (irq 18) synced to the word clock input.
-The only difference between them is in the RATE registers.
-
-John
-__________________________________________________________                           
-
-M Audio Delta 1010 at 0xb000, irq 17
-
-EEPROM:
-  Subvendor        : 0x121430d6
-  Size             : 29 bytes
-  Version          : 1
-  Codec            : 0x1f
-  ACLink           : 0x80
-  I2S ID           : 0x1
-  S/PDIF           : 0x3
-  GPIO mask        : 0x22
-  GPIO state       : 0xd0
-  GPIO direction   : 0xdd
-  AC'97 main       : 0x0
-  AC'97 pcm        : 0x0
-  AC'97 record     : 0x0
-  AC'97 record src : 0x44
-  DAC ID #0        : 0x1
-  DAC ID #1        : 0x1
-  DAC ID #2        : 0x1
-  DAC ID #3        : 0x1
-  ADC ID #0        : 0x2
-  ADC ID #1        : 0x2
-  ADC ID #2        : 0x2
-  ADC ID #3        : 0x2
-  Extra #28        : 0x0
-
-Registers:
-  PSDOUT03         : 0x0000
-  CAPTURE          : 0x00000000
-  SPDOUT           : 0x0000
-  RATE             : 0x07
-
-__________________________________________
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1615> 
+======================================================================
+Reported By:                rev_jazz
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1615
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5-10
+Kernel Version:             Linux 2.6.12-9-3
+======================================================================
+Date Submitted:             12-03-2005 17:06 CET
+Last Modified:              01-01-2006 21:54 CET
+======================================================================
+Summary:                    No digital passthrough for Creative Audigy 2 NX
+Description: 
+I tried with alsa1.0.9a (on an ubuntu) to wake work the ac3 passthrough
+(with an extarnal decoder) usiing the coaxial digital out. It didn't work
+fine at all neither using mplayer with -ao alsa:device=default -ac hwac3
+nor with xine. mplayer issues in two ways:
+1- says :
+alsa-init: 1 soundcard found, using: iec958:{CARD 0 AES0 0x02 AES1 0x82
+AES2 0x0 0 AES3 0x02}
+ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM iec958:{CARD
+0 AES0  0x02 AES1 0x82 AES2 0x00 AES3 0x02} definition (id: iec958, value:
+cards.pcm.ie c958)
 
 
-M Audio Delta 1010 at 0xc000, irq 18
+or
 
-EEPROM:
-  Subvendor        : 0x121430d6
-  Size             : 29 bytes
-  Version          : 1
-  Codec            : 0x1f
-  ACLink           : 0x80
-  I2S ID           : 0x1
-  S/PDIF           : 0x3
-  GPIO mask        : 0x22
-  GPIO state       : 0xd0
-  GPIO direction   : 0xdd
-  AC'97 main       : 0x0
-  AC'97 pcm        : 0x0
-  AC'97 record     : 0x0
-  AC'97 record src : 0x44
-  DAC ID #0        : 0x1
-  DAC ID #1        : 0x1
-  DAC ID #2        : 0x1
-  DAC ID #3        : 0x1
-  ADC ID #0        : 0x2
-  ADC ID #1        : 0x2
-  ADC ID #2        : 0x2
-  ADC ID #3        : 0x2
-  Extra #28        : 0x0
+2- sends to extarnal amplifier lots of crack and gap noise
 
-Registers:
-  PSDOUT03         : 0x0000
-  CAPTURE          : 0x00000000
-  SPDOUT           : 0x0000
-  RATE             : 0x17
+It seems to be no configuration way to make the ac3/dts digital out
+passthrough work
+
+regards,
+
+jazz
+======================================================================
+
+----------------------------------------------------------------------
+ Faber - 12-23-05 12:40 
+----------------------------------------------------------------------
+The problem seems to be that the usb-audio driver doesn't expose an iec958
+device.
+
+I have AC3 passthrough working on my system (also using Audigy 2 NX) by
+manually patching mplayer to use "hw:0,0" instead of "iec958:AES0=..." and
+setting "audio.device.alsa_passthrough_device:hw:0,0" in .xine/config .
+
+You also need to manually turn on Digital Out, set Digital Out Source to
+PCM and set all volume controls to 100%.
+
+It would be really nice, however, if the usb-audio driver could expose an
+iec958 device and automatically route input to this device around the
+mixer and directly to direct out (like it happens with other drivers).
+
+----------------------------------------------------------------------
+ rev_jazz - 01-01-06 21:54 
+----------------------------------------------------------------------
+It still don't work for me. Which version of kernel and alsa driver do you
+use?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-03-05 17:06 rev_jazz       New Issue                                    
+12-03-05 17:06 rev_jazz       Distribution              => Ubuntu 5-10     
+12-03-05 17:06 rev_jazz       Kernel Version            => Linux 2.6.12-9-3
+12-03-05 17:06 rev_jazz       Issue Monitored: rev_jazz                    
+12-03-05 17:10 rev_jazz       Note Added: 0006901                          
+12-23-05 12:28 Faber          Issue Monitored: Faber                       
+12-23-05 12:40 Faber          Note Added: 0007133                          
+01-01-06 21:54 rev_jazz       Note Added: 0007366                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
