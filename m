@@ -1,7 +1,7 @@
 From: MAILER-DAEMON@yahoo.com
 Subject: failure delivery
-Date: 31 Dec 2005 23:26:44 -0000
-Message-ID: <E1Esq7e-00083t-BP@mail.sourceforge.net>
+Date: 1 Jan 2006 02:05:49 -0000
+Message-ID: <E1Essba-0006gO-9U@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -29,35 +29,34 @@ The original message is over 5k.  Message truncated to 1K.
 
 X-Rocket-Spam: 64.251.132.84
 X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.202.239>
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;ipts:ER;sv:ER<err=transport>
 X-Originating-IP: [64.251.132.84]
 Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta326.mail.mud.yahoo.com
+Authentication-Results: mta128.mail.mud.yahoo.com
   from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO wrtpcpfe.net) (64.251.132.84)
-  by mta326.mail.mud.yahoo.com with SMTP; Sat, 31 Dec 2005 15:26:44 -0800
+Received: from 64.251.132.84  (HELO qfgvy.net) (64.251.132.84)
+  by mta128.mail.mud.yahoo.com with SMTP; Sat, 31 Dec 2005 18:05:48 -0800
 From: alsa-devel@lists.sourceforge.net
-To: admin@yahoo.com
-Date: Sat, 31 Dec 2005 23:20:04 GMT
+Date: Sun, 01 Jan 2006 01:29:16 UTC
 Subject: hi, ive a new mail address
 Importance: Normal
-X-Mailer: SpeedMail_V7.89
+X-Mailer: SpeedMail_V1.15
 X-Priority: 3 (Normal)
-Message-ID: <b9262f.abab86c6a3e@lists.sourceforge.net>
+X-MSMail-Priority: Normal
+Message-ID: <be4dabb79f.a2b79b3d@lists.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=====35fe31.54bdbdfcb70"
+Content-Type: multipart/mixed; boundary="==6c8fe9c41.f82b9d8b6a928ac"
 Content-Transfer-Encoding: 7bit
 This is a multi-part message in MIME format.
 
---=====35fe31.54bdbdfcb70
+--==6c8fe9c41.f82b9d8b6a928ac
 
 hey its me, my old address dont work at time. i dont know why?!
 in the last days ive got some mails. i' think thaz your mails but im not sure!
 
 plz read and check ...
 cyaaaaaaa
---=====35fe31.54bdbdfcb70
-Content-Type: 
+--==6c8fe9c41.f82b9d8b6a
 *** MESSAGE TRUNCATED ***
 
 
