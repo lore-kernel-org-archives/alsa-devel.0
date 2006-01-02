@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001671]: THIS DRIVER FRICKEN SUCKS
-Date: Mon, 2 Jan 2006 08:50:39 +0100
-Message-ID: <1ad9064044bcdbbf739fc579ecf66c6d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
+Date: Mon, 2 Jan 2006 09:12:04 +0100
+Message-ID: <d4a687b4ea370662ec0bb3eec6b9a08c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE4A9142
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 08:50:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76D57E8
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 09:12:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1671> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
 ======================================================================
-Reported By:                Flyinprogramer
-Assigned To:                tiwai
+Reported By:                croiset
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1671
-Category:                   PCI - nm256
+Issue ID:                   758
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             Kernel 2.6.14-r5
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7
 ======================================================================
-Date Submitted:             12-22-2005 02:50 CET
-Last Modified:              01-02-2006 08:50 CET
+Date Submitted:             12-29-2004 10:15 CET
+Last Modified:              01-02-2006 09:12 CET
 ======================================================================
-Summary:                    THIS DRIVER FRICKEN SUCKS
+Summary:                    Full duplex is not working in OSS emulation.
 Description: 
-WHAT THE HELL WERE YOU GUYS THINKING? YOU WEREN'T!!!! This has got to be
-one of the shitest drivers i've ever used. o i know lets make a driver
-that crashes 99% of the time. it sucks, why the hell should you put it in
-if it sucks? please make this driver better, its a common card, and you
-are so close to a sucessfull driver, i know you can do it!
+If I play something with one player, I am unable to record something on the
+same device.
+The same thing ispossible with the other cards I have.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000521 Jack + Alsa not working in full duplex,...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-22-05 03:04 
+ rlrevell - 12-30-05 23:08 
 ----------------------------------------------------------------------
-Did you ever consider that the ALSA developers don't have access to every
-device they have drivers for?
+This really seems like an application bug.
 
-Anyway this isn't a bug report, please tell us exactly what's wrong with
-it.
+Any improvement in later ALSA release or with newer apps?
 
 ----------------------------------------------------------------------
- perex - 01-02-06 08:50 
+ croiset - 01-02-06 09:12 
 ----------------------------------------------------------------------
-A rude bug report without any additional information. Closed.
+My last test was made with alsa 1.0.10rc1 and it was not working also. I
+didn't try yet with a newer release.
+
+The same application is working well with all other sound cards I tested.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 02:50 Flyinprogramer New Issue                                    
-12-22-05 02:50 Flyinprogramer Distribution              => Gentoo          
-12-22-05 02:50 Flyinprogramer Kernel Version            => Kernel 2.6.14-r5
-12-22-05 03:04 rlrevell       Note Added: 0007118                          
-01-02-06 08:50 perex          Status                   assigned => closed  
-01-02-06 08:50 perex          Note Added: 0007367                          
+12-29-04 10:15 croiset        New Issue                                    
+12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
+12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
+12-29-04 14:17 tiwai          Note Added: 0002998                          
+12-29-04 14:54 croiset        Note Added: 0003000                          
+12-29-04 17:39 tiwai          Note Added: 0003004                          
+12-29-04 17:56 croiset        Note Added: 0003005                          
+12-29-04 17:59 croiset        Note Added: 0003006                          
+12-29-04 18:05 croiset        Note Edited: 0003006                         
+12-29-04 18:18 croiset        Note Edited: 0003006                         
+01-03-05 16:30 croiset        Note Added: 0003067                          
+09-14-05 16:16 jdthood        Relationship added       related to 0000521  
+12-30-05 23:08 rlrevell       Note Added: 0007278                          
+01-02-06 09:12 croiset        Note Added: 0007368                          
 ======================================================================
 
 
