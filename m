@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001059]: dsx_support and APIC interaction
-Date: Mon, 2 Jan 2006 20:27:58 +0100
-Message-ID: <b187733a104941c4960eab2e11745df0@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001172]: speaker-test:option -p and -f ignored
+Date: Mon, 2 Jan 2006 20:29:12 +0100
+Message-ID: <1c5fcd7194638c7ca6242783f42fdc77@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04D4B162
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:27:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36606BB
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:29:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,116 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1059> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1172> 
 ======================================================================
-Reported By:                systemloc
+Reported By:                norbert
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1059
-Category:                   PCI - via82xx
-Reproducibility:            have not tried
-Severity:                   minor
+Project:                    ALSA - utils
+Issue ID:                   1172
+Category:                   speakertest
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Slackware 10.0
-Kernel Version:             2.6.11.7
-Resolution:                 fixed
+Status:                     closed
+Resolution:                 reopened
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-17-2005 20:41 CEST
-Last Modified:              01-02-2006 20:27 CET
+Date Submitted:             06-08-2005 15:40 CEST
+Last Modified:              01-02-2006 20:29 CET
 ======================================================================
-Summary:                    dsx_support and APIC interaction
+Summary:                    speaker-test:option -p and -f ignored
 Description: 
-I was using the 2.6.7 kernel without APIC or ACPI support, and the via82xx
+speaker-test: options -p and -f are ignored
 
-driver worked perfectly, compiled as a module, without any options. I
-built a 
-new 2.6.7 kernel on the same hardware with APIC and ACPI support in the 
-kernel, as the board supports it, and the driver did not work correctly.
-When 
-sound was played, a short, 1 second long bit of the sound to be played was
+> speaker-test -c6 -p100 -f200 -Dsurround51
 
-looped. Possibly this is the clicking noise described by some people? The
+speaker-test 0.0.8
 
-driver works fine with this new kernel after adding the option 
-"dxs_support=1". I hope this interaction with ACPI and APIC sheds some
-light 
-on some of the troubles with this driver. I can provide more information
-if 
-anyone wants it. Please CC me, I'm not on the list.
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 6 to 5461
+Period size range from 3 to 2730
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 5460
+To choose period_size = 1365
+was set period_size = 1365
+was set buffer_size = 5460
+ 0 - Front Left
+ 4 - Center
 
-TJ
-
-
+(sorry for choosing category aplay, but no speaker-test found)
 ======================================================================
 
 ----------------------------------------------------------------------
- vsu - 04-22-05 19:49 
+ norbert - 06-23-05 13:42 
 ----------------------------------------------------------------------
-The "irq XX: nobody cared!" message means that some device in your system
-signaled that IRQ, but the loaded drivers did not handle it. (Actually,
-this triggers after 99900 out of 100000 interrupts were unhandled, but
-because PCI interrupts are level-triggered, this happens instantly
-whenever some IRQ cannot be reset by existing interrupt handlers). Linux
-2.6.x turns off the IRQ in this case - the devices using that IRQ stop
-working, but at least the complete system lockup is avoided.
+due to -f makes sense only if sine-wave, so you can cancel -t at all.
 
-Common causes of "IRQ disabled" messages:
-
-- The interrupt is shared with another device, the driver for which is not
-loaded, and for some reason that device generates an interrupt. In many
-cases loading the module for that device (even if it is not really used)
-fixes this.
-
-- Some BIOS tables are broken, and Linux gets wrong IRQ numbers. Upgrading
-BIOS  helps sometimes (it could also make (other) things worse, however).
-
-BTW, if you really get messages about IRQ 12, probably the IO-APIC support
-was not activated (PCI IRQ numbers with IO-APIC are usually 16 or higher).
-The configuration definitely does not correspond to the lspci output
-posted earlier.
-
-This part looks like an ACPI problem, which should be reported at
-bugme.osdl.org (Category=ACPI, Component=Config-Interrupts); only the
-"best dxs_support value for your board" part seems to be relevant for the
-ALSA bugtracker.
+just an idea...
 
 ----------------------------------------------------------------------
- systemloc - 05-01-05 19:57 
+ rlrevell - 01-02-06 20:29 
 ----------------------------------------------------------------------
-Ah, it is as you said. There was a device sharing the IRQ which did not
-have a loaded driver. After removing the device, sound worked just fine
-without any dsx_support settings at all. 
-
-Please close this issue :)
-
-Thanks!
-TJ Harrell
+Does not seem to be a bug?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-05 20:41 systemloc      New Issue                                    
-04-17-05 20:41 systemloc      Distribution              => Slackware 10.0  
-04-17-05 20:41 systemloc      Kernel Version            => 2.6.7           
-04-17-05 20:42 systemloc      Note Added: 0004510                          
-04-17-05 21:44 systemloc      Note Added: 0004511                          
-04-19-05 17:45 tiwai          Status                   new => resolved     
-04-19-05 17:45 tiwai          Resolution               open => fixed       
-04-19-05 17:45 tiwai          Assigned To               => tiwai           
-04-20-05 06:22 systemloc      Kernel Version           2.6.7 => 2.6.11.7   
-04-20-05 06:22 systemloc      Status                   resolved => feedback
-04-20-05 06:22 systemloc      Resolution               fixed => reopened   
-04-20-05 06:22 systemloc      Note Added: 0004540                          
-04-20-05 06:23 systemloc      Note Edited: 0004540                         
-04-22-05 19:49 vsu            Note Added: 0004556                          
-05-01-05 19:57 systemloc      Note Added: 0004582                          
-01-02-06 20:27 rlrevell       Status                   feedback => resolved
-01-02-06 20:27 rlrevell       Resolution               reopened => fixed   
+06-08-05 15:40 norbert        New Issue                                    
+06-08-05 15:47 perex          Category                 aplay/arecord =>
+speakertest
+06-23-05 12:12 tiwai          Status                   new => resolved     
+06-23-05 12:12 tiwai          Resolution               open => not an issue
+06-23-05 12:12 tiwai          Assigned To               => tiwai           
+06-23-05 12:12 tiwai          Note Added: 0005178                          
+06-23-05 12:41 norbert        Status                   resolved => feedback
+06-23-05 12:41 norbert        Resolution               not an issue => reopened
+06-23-05 12:41 norbert        Note Added: 0005181                          
+06-23-05 13:42 norbert        Note Added: 0005185                          
+01-02-06 20:29 rlrevell       Status                   feedback => closed  
+01-02-06 20:29 rlrevell       Note Added: 0007383                          
 ======================================================================
 
 
