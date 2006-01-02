@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000332]: Unable to enable 'Mic as Center/LFE'
-Date: Mon, 2 Jan 2006 20:31:14 +0100
-Message-ID: <42a5caf91138c2f25ac092191eda8195@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001352]: 5.1 support in alsa 1.0.9a
+Date: Mon, 2 Jan 2006 20:32:25 +0100
+Message-ID: <b7e6f590aba500154524e910394c357e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B98C9BB
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:31:14 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 023B0BB
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:32:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=332> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1352> 
 ======================================================================
-Reported By:                Johan Gorter
+Reported By:                saa_1973
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   332
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1352
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
+Status:                     feedback
+Distribution:               
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             06-11-2004 09:12 CEST
-Last Modified:              01-02-2006 20:31 CET
+Date Submitted:             08-21-2005 14:51 CEST
+Last Modified:              01-02-2006 20:32 CET
 ======================================================================
-Summary:                    Unable to enable 'Mic as Center/LFE'
+Summary:                    5.1 support in alsa 1.0.9a
 Description: 
-In the alsa versions I have used thus far (1.0.3 and 1.0.5) I am unable to
-enable the 'Mic as Center/LFE' option of my onboard AC '97. Alsamixer
-cannot change its value from 0 and record / mute is also disabled. I
-tracked the problem by using alsactl to store the settings. This results
-in a file where this option (nr 47 on my system) is an Integer with the
-comment that the value may be from 0 to 0. On other systems I found out
-that this is supposed to be a Boolean which can be switched on and off.
+How do i get 5.1 audio support through alsa drivers. This is the
+information of my audio hardware.
+
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
+AC'97 Audio Controller (rev 02)
+
+Please advise.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 06-08-05 20:40 
+ saa_1973 - 08-25-05 19:20 
 ----------------------------------------------------------------------
-I asked the submitter of Debian bug report #307087 to test alsa-utils
-version 1.0.9a.  He says:
-
-The bug seems to be half fixed: in [All] mode of alsamixer it is still
-[not] present (no control to select Mic for recording), while in [Capture]
-mode the control is present.  Also the recording volume is very low, even
-at 100%, but this might be because of the sound card (though I don't now
-how to check that).
+0 [ICH5           ]: ICH4 - Intel ICH5
+                     Intel ICH5 with AD1985 at 0xffa7f800, irq 3
 
 ----------------------------------------------------------------------
- jdthood - 06-30-05 13:52 
+ rlrevell - 01-02-06 20:32 
 ----------------------------------------------------------------------
-I am waiting for the submitter of the Debian bug report to confirm that the
-control really does not appear in the "capture" view.  I find that a bit
-hard to believe.
-
-If there are no further additions to this report in a couple of weeks then
-please feel free to close it.
+Any news on this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-04 09:12 Johan Gorter   New Issue                                    
-01-22-05 03:26 rhal           Issue Monitored: rhal                        
-03-20-05 15:45 jdthood        Note Added: 0004093                          
-03-31-05 20:23 jdthood        Note Added: 0004284                          
-05-02-05 11:10 jdthood        Note Added: 0004584                          
-06-08-05 20:40 jdthood        Note Added: 0004972                          
-06-30-05 13:52 jdthood        Note Added: 0005325                          
-06-30-05 13:52 jdthood        Status                   new => feedback     
-01-02-06 20:31 rlrevell       Status                   feedback => closed  
+08-21-05 14:51 saa_1973       New Issue                                    
+08-21-05 14:51 saa_1973       Kernel Version            => 2.6.9           
+08-22-05 13:08 Clemens LadischNote Added: 0005894                          
+08-22-05 13:08 Clemens LadischStatus                   new => feedback     
+08-25-05 19:20 saa_1973       Note Added: 0005943                          
+01-02-06 20:32 rlrevell       Note Added: 0007384                          
 ======================================================================
 
 
