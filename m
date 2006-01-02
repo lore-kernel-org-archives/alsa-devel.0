@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001701]: Audigy LS (or SE) doen't work probably
-Date: Mon, 2 Jan 2006 19:19:43 +0100
-Message-ID: <7aaa203108bd0cc86f4439a11117b572@bugtrack.alsa-project.org>
+Date: Mon, 2 Jan 2006 19:28:29 +0100
+Message-ID: <990c9e9e9058fa14cac441daa837b61b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BD2115A
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 19:19:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 434D415A
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 19:28:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been set as DUPLICATE OF issue 0001579.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1701> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               SuSE 9.3 PRO
 Kernel Version:             2.6.X
 ======================================================================
 Date Submitted:             01-02-2006 19:19 CET
-Last Modified:              01-02-2006 19:19 CET
+Last Modified:              01-02-2006 19:28 CET
 ======================================================================
 Summary:                    Audigy LS (or SE) doen't work probably
 Description: 
@@ -53,6 +53,10 @@ Useing OSS - shipped with SuSE, not downloaded! - there's a strange noise
 
 Can anyone help me? PLEASE!!!
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001579 code.c test uses x86 asm, it should be ...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -60,6 +64,7 @@ Date Modified  Username       Field                    Change
 01-02-06 19:19 gambacherkalbensteinNew Issue                                    
 01-02-06 19:19 gambacherkalbensteinDistribution              => SuSE 9.3 PRO    
 01-02-06 19:19 gambacherkalbensteinKernel Version            => 2.6.X           
+01-02-06 19:28 rlrevell       Relationship added       duplicate of 0001579
 ======================================================================
 
 
