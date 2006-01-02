@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001224]: artsd-like style
-Date: Mon, 2 Jan 2006 18:47:47 +0100
-Message-ID: <3c8d2758fa1bf25a49597ad9d3b263f8@bugtrack.alsa-project.org>
+Date: Mon, 2 Jan 2006 18:53:53 +0100
+Message-ID: <da5b9bcee4b0d48b24ec41ea3336237d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6E2615A
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 18:47:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70F2D15A
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 18:53:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1224> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - ens1370
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
 Distribution:               
 Kernel Version:             2.6.x
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             07-01-2005 14:49 CEST
-Last Modified:              01-02-2006 18:47 CET
+Last Modified:              01-02-2006 18:53 CET
 ======================================================================
 Summary:                    artsd-like style
 Description: 
@@ -50,20 +52,26 @@ windows) style, i mean, multiple streams at once.
 that could be very important for example using skype voip and listening
 music at the same time.
 ======================================================================
-Relazioni           ID      Riassunto
+Relationships       ID      Summary
 ----------------------------------------------------------------------
-é duplicata da      0001228 Skype Does not work with aoss
+has duplicate       0001228 Skype Does not work with aoss
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-31-05 00:18 
-----------------------------------------------------------------------
-Any improvement with later releases?
 
 ----------------------------------------------------------------------
  Hetfield - 01-02-06 18:47 
 ----------------------------------------------------------------------
 no significant or noticable changes.
+
+----------------------------------------------------------------------
+ rlrevell - 01-02-06 18:53 
+----------------------------------------------------------------------
+OK but this bug report is getting out of hand, it has covered too many
+topics.
+
+I'm closing this as the bug is really "Skype does not work with aoss" (see
+bug # 1224), it has nothing to do with artsd, dmix, or multiple streams.
+
+Please append any further information to bug # 1224
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -152,6 +160,8 @@ Date Modified  Username       Field                    Change
 11-01-05 11:11 Hetfield       Note Added: 0006592                          
 12-31-05 00:18 rlrevell       Note Added: 0007314                          
 01-02-06 18:47 Hetfield       Note Added: 0007373                          
+01-02-06 18:53 rlrevell       Status                   new => closed       
+01-02-06 18:53 rlrevell       Note Added: 0007374                          
 ======================================================================
 
 
