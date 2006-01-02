@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001352]: 5.1 support in alsa 1.0.9a
-Date: Mon, 2 Jan 2006 20:32:25 +0100
-Message-ID: <b7e6f590aba500154524e910394c357e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000079]: Dell Inspiron 8500 ICH4 no sound through internal speakers unless "External Amplifier" switched on
+Date: Mon, 2 Jan 2006 20:34:05 +0100
+Message-ID: <6c8ca6565a056488b6d3e79ee70a11e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 023B0BB
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:32:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F59FBB
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:34:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1352> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=79> 
 ======================================================================
-Reported By:                saa_1973
+Reported By:                rocco
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1352
-Category:                   1_OTHERS
+Issue ID:                   79
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             2.6.9
+Status:                     closed
+Distribution:               Debian
+Kernel Version:             2.6.3
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-21-2005 14:51 CEST
-Last Modified:              01-02-2006 20:32 CET
+Date Submitted:             02-22-2004 21:40 CET
+Last Modified:              01-02-2006 20:34 CET
 ======================================================================
-Summary:                    5.1 support in alsa 1.0.9a
+Summary:                    Dell Inspiron 8500 ICH4 no sound through internal
+speakers unless "External Amplifier" switched on
 Description: 
-How do i get 5.1 audio support through alsa drivers. This is the
-information of my audio hardware.
-
-00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
-AC'97 Audio Controller (rev 02)
-
-Please advise.
+Alsa from kernel tree 2.6.3. Internal speakers of the laptop are not
+working, when pluggin in something in the headphone output sound is
+working. Mixer volume looks ok.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000219 Only pcm-2 (headphone) volume control w...
 ======================================================================
 
 ----------------------------------------------------------------------
- saa_1973 - 08-25-05 19:20 
+ jdthood - 09-29-05 12:09 
 ----------------------------------------------------------------------
-0 [ICH5           ]: ICH4 - Intel ICH5
-                     Intel ICH5 with AD1985 at 0xffa7f800, irq 3
+Submitter: What is the default External Amplifier state now?
 
 ----------------------------------------------------------------------
- rlrevell - 01-02-06 20:32 
+ rlrevell - 01-02-06 20:34 
 ----------------------------------------------------------------------
-Any news on this?
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-05 14:51 saa_1973       New Issue                                    
-08-21-05 14:51 saa_1973       Kernel Version            => 2.6.9           
-08-22-05 13:08 Clemens LadischNote Added: 0005894                          
-08-22-05 13:08 Clemens LadischStatus                   new => feedback     
-08-25-05 19:20 saa_1973       Note Added: 0005943                          
-01-02-06 20:32 rlrevell       Note Added: 0007384                          
+02-22-04 21:40 rocco          New Issue                                    
+02-26-04 13:00 rocco          Note Added: 0000346                          
+03-01-04 20:13 tiwai          Note Added: 0000424                          
+03-10-04 17:57 tiwai          Note Added: 0000565                          
+03-10-05 15:24 jdthood        Note Added: 0003864                          
+09-29-05 12:09 jdthood        Note Added: 0006416                          
+09-29-05 12:09 jdthood        Status                   new => feedback     
+09-29-05 12:13 jdthood        Summary                  Dell Inspiron 8500 ICH4
+no sound through internal speakers, headphone ok. => Dell Inspiron 8500 ICH4 no
+sound through internal speakers unless "External Amplifier" switched on
+09-29-05 12:15 jdthood        Relationship added       related to 0000219  
+01-02-06 20:34 rlrevell       Status                   feedback => closed  
+01-02-06 20:34 rlrevell       Note Added: 0007385                          
 ======================================================================
 
 
