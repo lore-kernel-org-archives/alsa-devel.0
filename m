@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001404]: (Apparently) no microphone support
-Date: Mon, 2 Jan 2006 20:45:25 +0100
-Message-ID: <02d714f45f4e202ffcc6776d8172af25@bugtrack.alsa-project.org>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: [ALSA - driver 0001671]: THIS DRIVER FRICKEN SUCKS
+Date: Mon, 02 Jan 2006 20:59:56 +0100
+Message-ID: <1136231996.3307.4.camel@localhost.localdomain>
+References: <1ad9064044bcdbbf739fc579ecf66c6d@bugtrack.alsa-project.org>
+	 <ad2655cb0601020410v22a206eev@mail.gmail.com>
+	 <1136230693.17329.12.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25F5413E
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:45:26 +0100 (MET)
+Received: from arkady.gaya.sk (arkady.gaya.sk [62.168.75.2])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57E6513E
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:46:31 +0100 (MET)
+In-Reply-To: <1136230693.17329.12.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +22,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: James Courtier-Dutton <james.dutton@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I know one another report that this driver locks and oss driver works on
+same machine with same kernel.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1404> 
-======================================================================
-Reported By:                Twey
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1404
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.13-homegrown
-======================================================================
-Date Submitted:             09-08-2005 18:40 CEST
-Last Modified:              01-02-2006 20:45 CET
-======================================================================
-Summary:                    (Apparently) no microphone support
-Description: 
-My SB Live! 24-Bit has no microphone-related channels.  Using any mixer
-(tried: alsamixer, kmix, gnome-volume-control), it seems not to support
-microphones.
-Audacity shows very small (pixel-size) distortions in the recording graph
-at times.  I presume this means that the input is being received, but is
-too miniscule to make a difference.  I can't do anything about this; there
-are no appropriate sliders or "mic boost" in any mixer application.
-======================================================================
+Unfortunately this is pentium 2 chipset (hardware is no more produced),
+and I think there is no on who can (want) fix this.
 
-----------------------------------------------------------------------
- Twey - 12-08-05 10:59 
-----------------------------------------------------------------------
-With the stable .10 release, the original issue persists.
+Peter Zubaj
 
-
-
-----------------------------------------------------------------------
- rlrevell - 01-02-06 20:45 
-----------------------------------------------------------------------
-Any improvement with the 1.0.11-rc2 release?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-08-05 18:40 Twey           New Issue                                    
-09-08-05 18:40 Twey           Distribution              => Fedora Core 4   
-09-08-05 18:40 Twey           Kernel Version            => 2.6.13-homegrown
-09-08-05 18:43 Twey           Issue Monitored: Twey                        
-09-08-05 18:46 rlrevell       Note Added: 0006074                          
-09-08-05 18:55 Twey           Note Added: 0006075                          
-09-08-05 19:11 Twey           Note Added: 0006079                          
-09-10-05 10:41 jcdutton       Note Added: 0006110                          
-09-10-05 10:41 jcdutton       Status                   assigned => feedback
-09-10-05 10:46 Twey           Note Added: 0006112                          
-12-07-05 20:58 Twey           Note Added: 0006947                          
-12-08-05 10:59 Twey           Note Edited: 0006947                         
-01-02-06 20:45 rlrevell       Note Added: 0007389                          
-======================================================================
+On Mon, 2006-01-02 at 14:38 -0500, Lee Revell wrote:
+> On Mon, 2006-01-02 at 12:10 +0000, James Courtier-Dutton wrote:
+> > On 02/01/06, bugtrack@alsa-project.org <bugtrack@alsa-project.org>
+> > wrote:
+> >         
+> >         Summary:                    THIS DRIVER FRICKEN SUCKS
+> >         Description:
+> >         WHAT THE HELL WERE YOU GUYS THINKING? YOU WEREN'T!!!! This has
+> >         got to be 
+> >         one of the shitest drivers i've ever used. o i know lets make
+> >         a driver
+> >         that crashes 99% of the time. it sucks, why the hell should
+> >         you put it in
+> >         if it sucks? please make this driver better, its a common
+> >         card, and you 
+> >         are so close to a sucessfull driver, i know you can do it!
+> >         ======================================================================
+> >         
+> >         ----------------------------------------------------------------------
+> >         perex - 01-02-06 08:50 
+> >         ----------------------------------------------------------------------
+> >         A rude bug report without any additional information. Closed.
+> >         
+> > 
+> > Yes, my ISPs spam trap deleted this before I even saw it! 
+> > 
+> 
+> He was probably referring to this bug:
+> 
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328
+> 
+> The submitter may have a point...
+> 
+> Lee
 
 
 
