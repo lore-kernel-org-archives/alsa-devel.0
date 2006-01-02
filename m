@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001549]: Any chance for SPDIF support soon with the ALC880?
-Date: Mon, 2 Jan 2006 20:43:07 +0100
-Message-ID: <3ee92daac9f68906700dbbd561f909a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001404]: (Apparently) no microphone support
+Date: Mon, 2 Jan 2006 20:45:25 +0100
+Message-ID: <02d714f45f4e202ffcc6776d8172af25@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DA9613E
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:43:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25F5413E
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:45:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1549> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1404> 
 ======================================================================
-Reported By:                dvlierop
-Assigned To:                perex
+Reported By:                Twey
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1549
-Category:                   PCI - hda-intel
+Issue ID:                   1404
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     feedback
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.13-homegrown
 ======================================================================
-Date Submitted:             11-12-2005 11:05 CET
-Last Modified:              01-02-2006 20:43 CET
+Date Submitted:             09-08-2005 18:40 CEST
+Last Modified:              01-02-2006 20:45 CET
 ======================================================================
-Summary:                    Any chance for SPDIF support soon with the ALC880?
+Summary:                    (Apparently) no microphone support
 Description: 
-On my Shuttle ST20G5 I don't get any digital output at all so I guess It's
-not supported. Any outlook for SPDIF support? (or is it already included
-and is something wrong with my system?)
-
-Specs: Shuttle ST20G5 barebone with Realtek ALC880, AMD Athlon 64 3000+
+My SB Live! 24-Bit has no microphone-related channels.  Using any mixer
+(tried: alsamixer, kmix, gnome-volume-control), it seems not to support
+microphones.
+Audacity shows very small (pixel-size) distortions in the recording graph
+at times.  I presume this means that the input is being received, but is
+too miniscule to make a difference.  I can't do anything about this; there
+are no appropriate sliders or "mic boost" in any mixer application.
 ======================================================================
 
 ----------------------------------------------------------------------
- dvlierop - 11-18-05 18:32 
+ Twey - 12-08-05 10:59 
 ----------------------------------------------------------------------
-Thanks, that did the trick! Maybe I should have read the documentation more
-carefully...
+With the stable .10 release, the original issue persists.
+
+
 
 ----------------------------------------------------------------------
- rlrevell - 01-02-06 20:43 
+ rlrevell - 01-02-06 20:45 
 ----------------------------------------------------------------------
-dvlierop, can you supply the requested information so this can be made to
-work by default?
+Any improvement with the 1.0.11-rc2 release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-05 11:05 dvlierop       New Issue                                    
-11-14-05 11:07 perex          Note Added: 0006715                          
-11-14-05 11:07 perex          Assigned To              tiwai => perex      
-11-14-05 11:07 perex          Status                   assigned => feedback
-11-18-05 18:32 dvlierop       Note Added: 0006755                          
-01-02-06 20:43 rlrevell       Note Added: 0007388                          
+09-08-05 18:40 Twey           New Issue                                    
+09-08-05 18:40 Twey           Distribution              => Fedora Core 4   
+09-08-05 18:40 Twey           Kernel Version            => 2.6.13-homegrown
+09-08-05 18:43 Twey           Issue Monitored: Twey                        
+09-08-05 18:46 rlrevell       Note Added: 0006074                          
+09-08-05 18:55 Twey           Note Added: 0006075                          
+09-08-05 19:11 Twey           Note Added: 0006079                          
+09-10-05 10:41 jcdutton       Note Added: 0006110                          
+09-10-05 10:41 jcdutton       Status                   assigned => feedback
+09-10-05 10:46 Twey           Note Added: 0006112                          
+12-07-05 20:58 Twey           Note Added: 0006947                          
+12-08-05 10:59 Twey           Note Edited: 0006947                         
+01-02-06 20:45 rlrevell       Note Added: 0007389                          
 ======================================================================
 
 
