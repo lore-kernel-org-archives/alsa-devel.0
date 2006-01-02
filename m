@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001184]: xmms/beep "couldn't open audio" on song change
-Date: Mon, 2 Jan 2006 10:21:22 +0100
-Message-ID: <11cb97f94279cdd147b5adc4e1b311ac@bugtrack.alsa-project.org>
+Date: Mon, 2 Jan 2006 10:22:25 +0100
+Message-ID: <00dcedc81d55714e151f66b837b8b4a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3DBF142
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 10:21:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F02C8146
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 10:22:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1184> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             06-11-2005 21:14 CEST
-Last Modified:              01-02-2006 10:21 CET
+Last Modified:              01-02-2006 10:22 CET
 ======================================================================
 Summary:                    xmms/beep "couldn't open audio" on song change
 Description: 
@@ -171,6 +173,7 @@ direct PCM plugins (dmix+)
 01-01-06 08:11 rlrevell       Note Added: 0007363                          
 01-01-06 13:20 skandalfo      Note Added: 0007365                          
 01-02-06 10:21 perex          Note Added: 0007370                          
+01-02-06 10:22 perex          Status                   feedback => resolved
 ======================================================================
 
 
