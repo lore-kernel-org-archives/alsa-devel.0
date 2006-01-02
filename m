@@ -1,18 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: [ALSA - driver 0001671]: THIS DRIVER FRICKEN SUCKS
-Date: Mon, 02 Jan 2006 20:59:56 +0100
-Message-ID: <1136231996.3307.4.camel@localhost.localdomain>
-References: <1ad9064044bcdbbf739fc579ecf66c6d@bugtrack.alsa-project.org>
-	 <ad2655cb0601020410v22a206eev@mail.gmail.com>
-	 <1136230693.17329.12.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001549]: Any chance for SPDIF support soon with the ALC880?
+Date: Mon, 2 Jan 2006 21:53:45 +0100
+Message-ID: <fc45c48451aaedeea9a9be645094011a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from arkady.gaya.sk (arkady.gaya.sk [62.168.75.2])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57E6513E
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:46:31 +0100 (MET)
-In-Reply-To: <1136230693.17329.12.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90B1D146
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 21:53:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: James Courtier-Dutton <james.dutton@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I know one another report that this driver locks and oss driver works on
-same machine with same kernel.
 
-Unfortunately this is pentium 2 chipset (hardware is no more produced),
-and I think there is no on who can (want) fix this.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1549> 
+======================================================================
+Reported By:                dvlierop
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1549
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-12-2005 11:05 CET
+Last Modified:              01-02-2006 21:53 CET
+======================================================================
+Summary:                    Any chance for SPDIF support soon with the ALC880?
+Description: 
+On my Shuttle ST20G5 I don't get any digital output at all so I guess It's
+not supported. Any outlook for SPDIF support? (or is it already included
+and is something wrong with my system?)
 
-Peter Zubaj
+Specs: Shuttle ST20G5 barebone with Realtek ALC880, AMD Athlon 64 3000+
+======================================================================
 
-On Mon, 2006-01-02 at 14:38 -0500, Lee Revell wrote:
-> On Mon, 2006-01-02 at 12:10 +0000, James Courtier-Dutton wrote:
-> > On 02/01/06, bugtrack@alsa-project.org <bugtrack@alsa-project.org>
-> > wrote:
-> >         
-> >         Summary:                    THIS DRIVER FRICKEN SUCKS
-> >         Description:
-> >         WHAT THE HELL WERE YOU GUYS THINKING? YOU WEREN'T!!!! This has
-> >         got to be 
-> >         one of the shitest drivers i've ever used. o i know lets make
-> >         a driver
-> >         that crashes 99% of the time. it sucks, why the hell should
-> >         you put it in
-> >         if it sucks? please make this driver better, its a common
-> >         card, and you 
-> >         are so close to a sucessfull driver, i know you can do it!
-> >         ======================================================================
-> >         
-> >         ----------------------------------------------------------------------
-> >         perex - 01-02-06 08:50 
-> >         ----------------------------------------------------------------------
-> >         A rude bug report without any additional information. Closed.
-> >         
-> > 
-> > Yes, my ISPs spam trap deleted this before I even saw it! 
-> > 
-> 
-> He was probably referring to this bug:
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328
-> 
-> The submitter may have a point...
-> 
-> Lee
+----------------------------------------------------------------------
+ rlrevell - 01-02-06 20:43 
+----------------------------------------------------------------------
+dvlierop, can you supply the requested information so this can be made to
+work by default?
+
+----------------------------------------------------------------------
+ dvlierop - 01-02-06 21:53 
+----------------------------------------------------------------------
+That file is empty! Is this of any help for you?
+
+[diedenrezi@ShuttleST20G5 ~]$ ls /proc/asound/card0 -l
+total 0
+-r--r--r--  1 root root 0 Jan  2 21:52 codec#0
+-r--r--r--  1 root root 0 Jan  2 21:52 id
+-rw-r--r--  1 root root 0 Jan  2 21:52 oss_mixer
+dr-xr-xr-x  4 root root 0 Jan  2 21:52 pcm0c
+dr-xr-xr-x  3 root root 0 Jan  2 21:52 pcm0p
+dr-xr-xr-x  3 root root 0 Jan  2 21:52 pcm1p
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-12-05 11:05 dvlierop       New Issue                                    
+11-14-05 11:07 perex          Note Added: 0006715                          
+11-14-05 11:07 perex          Assigned To              tiwai => perex      
+11-14-05 11:07 perex          Status                   assigned => feedback
+11-18-05 18:32 dvlierop       Note Added: 0006755                          
+01-02-06 20:43 rlrevell       Note Added: 0007388                          
+01-02-06 21:53 dvlierop       Note Added: 0007390                          
+======================================================================
 
 
 
