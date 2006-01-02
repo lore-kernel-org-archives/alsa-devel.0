@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Mon, 2 Jan 2006 21:55:10 +0100
-Message-ID: <2ba61ebbd4eb4b956146db946a1aeaeb@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001677]: envy24control word clock lock indication is wrong way around
+Date: Mon, 2 Jan 2006 21:55:12 +0100
+Message-ID: <17bea621ff378b211bfb3b164b33efbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45F3E146
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 21:55:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 60E87161
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 21:55:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1677> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                johnrigg
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
+Project:                    ALSA - tools
+Issue ID:                   1677
+Category:                   envy24control
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Status:                     new
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
+Date Submitted:             12-24-2005 18:03 CET
 Last Modified:              01-02-2006 21:55 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    envy24control word clock lock indication is wrong
+way around
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+The word clock `Locked' indication in envy24control's hardware settings is
+backwards. It says `Locked' when there's no signal and `No signal' when
+it's
+locked.
+I'm hoping I'll get a large pot of glue for Christmas so I can stick back
+all the hair I've torn out over the last couple of weeks over this :-)
+
+Merry Christmas
+
+John
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-05 02:11 
+ johnrigg - 12-26-05 13:12 
 ----------------------------------------------------------------------
-Please try the latest CVS again, many hda-intel bugs are likely to be
-fixed.
+The above behaviour happens when syncing clocks via the BNC word clock
+in/out connectors. When syncing via S/PDIF the indicator just says
+`Locked' whether it's locked or not. The only way to tell is if it's
+locked jackd will run, if unlocked it won't.
 
 ----------------------------------------------------------------------
- robertw - 01-02-06 21:55 
+ johnrigg - 01-02-06 21:55 
 ----------------------------------------------------------------------
-I tried again today, but still the same: The driver loads, but no sound.
-
-dmesg says:
-
-[4321385.309000] ALSA
-/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3030:
-hda_codec: Unknown model for ALC260
+Now fixed in CVS. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
+12-24-05 18:03 johnrigg       New Issue                                    
+12-26-05 13:12 johnrigg       Note Added: 0007150                          
+01-02-06 21:55 johnrigg       Note Added: 0007392                          
 ======================================================================
 
 
