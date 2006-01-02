@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000984]: No Sound
-Date: Mon, 2 Jan 2006 20:25:02 +0100
-Message-ID: <f335947ee2bc550761a5f19aa767dcbd@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000398]: aplay produces no sound on short wav files through dmix
+Date: Mon, 2 Jan 2006 20:26:08 +0100
+Message-ID: <4d4c9bff3705e45c88c28b11626f2192@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 014D8162
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:25:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3F6A162
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:26:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=984> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=398> 
 ======================================================================
-Reported By:                mailavj
-Assigned To:                tiwai
+Reported By:                raveng
+Assigned To:                rlrevell
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   984
-Category:                   CORE - pcm
+Project:                    ALSA - utils
+Issue ID:                   398
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.7-2
-Resolution:                 reopened
+Status:                     resolved
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-12-2005 19:09 CET
-Last Modified:              01-02-2006 20:25 CET
+Date Submitted:             07-19-2004 16:21 CEST
+Last Modified:              01-02-2006 20:26 CET
 ======================================================================
-Summary:                    No Sound
+Summary:                    aplay produces no sound on short wav files through
+dmix
 Description: 
-my sound card is Sound MAX integrated Audio with Intel D865 GBF
-motherboard..
-i'm not getting sound output..
-kernel version is 2.6.7-2 and my alsa driver version is 1.0.6-a
-Is there any way to get sound out put on this card using this driver.. 
-please help
+Wav files shorter than about 0.157 seconds produce no sound under aplay and
+dmix. No error message is given, and it looks like it should be working.
+If I add silence to the file to make the duration longer, it plays fine.
+Also, if I direct aplay to use the hardware directly, it plays the
+original file just fine.  Tested on both ens1371 and i810 audio.
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000970 No Sound
+Other media players (xmms, mplayer, and artsplay) all play the same file
+correctly with dmix. It is only the ALSA-provided aplay that seems to have
+difficulty.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 16:02 
+ jdthood - 03-28-05 04:02 
 ----------------------------------------------------------------------
-Please send the output of 
-
-   lsmod
-   uname -a
-   lspci
-   cat /proc/asound/version
-   cat /proc/asound/cards
+Please try 1.0.9rc2
 
 ----------------------------------------------------------------------
- rlrevell - 01-02-06 20:25 
+ rlrevell - 01-02-06 20:26 
 ----------------------------------------------------------------------
-No response
+No response (probably fixed)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 19:09 mailavj        New Issue                                    
-03-16-05 13:00 tiwai          Note Added: 0003952                          
-03-16-05 14:56 tiwai          Relationship added       duplicate of 0000970
-03-16-05 14:56 tiwai          Duplicate ID             0 => 970            
-03-16-05 14:56 tiwai          Status                   new => resolved     
-03-16-05 14:56 tiwai          Resolution               open => duplicate   
-03-16-05 14:56 tiwai          Assigned To               => tiwai           
-03-16-05 14:56 tiwai          Assigned To              tiwai =>            
-03-17-05 18:49 mailavj        Distribution              => Debian          
-03-17-05 18:49 mailavj        Kernel Version            => 2.6.7-2         
-03-17-05 18:49 mailavj        Status                   resolved => feedback
-03-17-05 18:49 mailavj        Resolution               duplicate => reopened
-03-17-05 18:49 mailavj        Note Added: 0003981                          
-03-17-05 18:49 mailavj        Assigned To               => tiwai           
-03-17-05 18:50 mailavj        Note Added: 0003982                          
-03-17-05 18:55 rlrevell       Note Added: 0003983                          
-03-18-05 18:14 tiwai          Note Added: 0003999                          
-03-23-05 16:02 jdthood        Note Added: 0004169                          
-01-02-06 20:25 rlrevell       Status                   feedback => closed  
-01-02-06 20:25 rlrevell       Note Added: 0007380                          
+07-19-04 16:21 raveng         New Issue                                    
+07-28-04 02:08 lesieur        Note Added: 0001478                          
+12-07-04 03:24 leahcim        Issue Monitored: leahcim                     
+12-07-04 03:58 leahcim        Note Added: 0002745                          
+03-20-05 15:49 jdthood        Note Added: 0004095                          
+03-21-05 03:16 leahcim        Note Added: 0004111                          
+03-21-05 09:20 Clemens LadischNote Added: 0004116                          
+03-28-05 04:02 jdthood        Note Added: 0004229                          
+03-28-05 04:02 jdthood        Status                   new => feedback     
+01-02-06 20:26 rlrevell       Status                   feedback => resolved
+01-02-06 20:26 rlrevell       Resolution               open => fixed       
+01-02-06 20:26 rlrevell       Assigned To               => rlrevell        
+01-02-06 20:26 rlrevell       Note Added: 0007381                          
 ======================================================================
 
 
