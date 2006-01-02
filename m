@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Mon, 2 Jan 2006 18:56:40 +0100
-Message-ID: <a5bae513346b3fd5e7315f0ba42bade5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001701]: Audigy LS (or SE) doen't work probably
+Date: Mon, 2 Jan 2006 19:19:43 +0100
+Message-ID: <7aaa203108bd0cc86f4439a11117b572@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 830D2146
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 18:56:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BD2115A
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 19:19:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1228> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1701> 
 ======================================================================
-Reported By:                hil
-Assigned To:                
+Reported By:                gambacherkalbenstein
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1228
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1701
+Category:                   PCI - audigyls
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               SuSE 9.3 PRO
+Kernel Version:             2.6.X
 ======================================================================
-Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              01-02-2006 18:56 CET
+Date Submitted:             01-02-2006 19:19 CET
+Last Modified:              01-02-2006 19:19 CET
 ======================================================================
-Summary:                    Skype Does not work with aoss
+Summary:                    Audigy LS (or SE) doen't work probably
 Description: 
-I downloaded alsa-oss-1.0.9rc2 and install by
-# ./configure --with-aoss=yes && make && make install
-as root. Virtually every program works except skype
-(http://www.skype.com/) version 1.1.0.13_API. I downloaded the Fedora
-version of skype from the skype official website. Skype only uses
-/dev/dsp. I guess skype uses /dev/dsp as microphone input as well. I could
-not hear anything and the microphone did not work as well if I run  skype
-like aoss /usr/bin/skype. If I run skype without aoss, then skype works
-just fine.
+I installed all drivers as described on the page, but YAST dont't thinks
+about useing this card. There's always an error while autoinstalling
+Audigy. 
+And of course I don't know how to solve this problem... :-(
+Useing OSS - shipped with SuSE, not downloaded! - there's a strange noise
+- as reported by others - you can identify as the sound you are playing.
+
+Can anyone help me? PLEASE!!!
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001224 artsd-like style
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-31-05 00:19 
-----------------------------------------------------------------------
-Is this still broken with the latest ALSA and Skype release?
-
-----------------------------------------------------------------------
- rlrevell - 01-02-06 18:56 
-----------------------------------------------------------------------
-Update: Skype + aoss is still broken with the latest ALSA release.
-
-Has anyone looked at this lately?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-03-05 09:09 hil            New Issue                                    
-08-09-05 15:33 rapand         Note Added: 0005732                          
-08-10-05 00:49 rlrevell       Relationship added       duplicate of 0001224
-08-10-05 00:50 rlrevell       Note Added: 0005740                          
-12-31-05 00:19 rlrevell       Note Added: 0007315                          
-01-02-06 18:54 rlrevell       Relationship deleted     duplicate of 0001224
-01-02-06 18:55 rlrevell       Relationship added       related to 0001224  
-01-02-06 18:56 rlrevell       Note Added: 0007375                          
+01-02-06 19:19 gambacherkalbensteinNew Issue                                    
+01-02-06 19:19 gambacherkalbensteinDistribution              => SuSE 9.3 PRO    
+01-02-06 19:19 gambacherkalbensteinKernel Version            => 2.6.X           
 ======================================================================
 
 
