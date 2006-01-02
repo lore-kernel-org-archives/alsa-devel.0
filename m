@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0000429]: Feature: Ability to cap the volume
-Date: Mon, 2 Jan 2006 20:01:55 +0100
-Message-ID: <b048c5a91f8c94e88bf43a346f8bec61@bugtrack.alsa-project.org>
+Date: Mon, 2 Jan 2006 20:12:23 +0100
+Message-ID: <f2316dc714165a92c69ea9d9b01b4814@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4A27B3
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:01:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 963EC15A
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:12:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             08-07-2004 23:39 CEST
-Last Modified:              01-02-2006 20:01 CET
+Last Modified:              01-02-2006 20:12 CET
 ======================================================================
 Summary:                    Feature: Ability to cap the volume
 Description: 
@@ -51,40 +51,6 @@ any of the others. But a cap would be a start ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- afran - 01-02-06 19:36 
-----------------------------------------------------------------------
-Yes, this still seems to be a problem, at least on my card (Creative Labs
-SB Live! EMU10k1, rev 08). I've tested it with ALSA driver version
-1.0.11rc1 (I hope that's the latest release, you have mentioned), and
-still get distorted noises when PCM is set to more than 74%.
-
-I recorded the output of my Creative card with my Terratec Phase 26 (all
-mixers except Master and PCM left on their default settings) and uploaded
-the results [1]. You should notice the noise in every file with PCM set to
-100% (Master doesn't seem to have any influence on the noise, just makes
-output louder):
-
-- sb.074.074.wav: SB Live! playing at Master 74%, PCM 74%.
-- sb.074.100.wav: SB Live! playing at Master 74%, PCM 100%.
-- sb.100.074.wav: SB Live! playing at Master 100%, PCM 74%.
-- sb.100.100.wav: SB Live! playing at Master 100%, PCM 100%.
-
-And just for reference the same original file played with my Phase 26 and
-recorded with the very same card (that card has only one mixer control, so
-no volume for Master is given):
-
-- phase.086.wav: Phase 26 playing at PCM 86% (default).
-- phase.100.wav: Phase 26 playing at PCM 100%.
-
-[1] http://tmp.afran.de/alsa/
-
---
-PS: Please, could someone with more privileges upload the files posted
-above onto this Mantis bug tracker or some other more stable server? I
-don't want to leave those files on my server (limited bandwidth) forever,
-so I probably have to remove them some day without further warning.
-
-----------------------------------------------------------------------
  pzad - 01-02-06 20:01 
 ----------------------------------------------------------------------
 Audigy 2 ZS has diffrent mixer and signal routing.
@@ -92,6 +58,15 @@ Audigy 2 ZS has diffrent mixer and signal routing.
 On sb live
 PCM on 75 % should be 0 db
 PCM on 100 % is +12 db
+
+----------------------------------------------------------------------
+ rlrevell - 01-02-06 20:12 
+----------------------------------------------------------------------
+Ah ok.  Well jcdutton's work to make alsa mixer use DB values might help. 
+Then it would be up to the app to not do silly things like play back .wav
+files with the gain to +12 DB.
+
+pzad, what do you think the status of this bug should be?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -102,6 +77,7 @@ Date Modified  Username       Field                    Change
 12-31-05 07:26 rlrevell       Note Added: 0007350                          
 01-02-06 19:36 afran          Note Added: 0007377                          
 01-02-06 20:01 pzad           Note Added: 0007378                          
+01-02-06 20:12 rlrevell       Note Added: 0007379                          
 ======================================================================
 
 
