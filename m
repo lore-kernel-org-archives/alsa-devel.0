@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001615]: No digital passthrough for Creative Audigy 2 NX
-Date: Sun, 1 Jan 2006 21:54:47 +0100
-Message-ID: <79add01085fbe17f7cb618e4a40c0f90@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001671]: THIS DRIVER FRICKEN SUCKS
+Date: Mon, 2 Jan 2006 08:50:39 +0100
+Message-ID: <1ad9064044bcdbbf739fc579ecf66c6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D393E14B
-	for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2006 21:54:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE4A9142
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 08:50:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1615> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1671> 
 ======================================================================
-Reported By:                rev_jazz
-Assigned To:                Clemens Ladisch
+Reported By:                Flyinprogramer
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1615
-Category:                   USB - usb-audio
+Issue ID:                   1671
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5-10
-Kernel Version:             Linux 2.6.12-9-3
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             Kernel 2.6.14-r5
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-03-2005 17:06 CET
-Last Modified:              01-01-2006 21:54 CET
+Date Submitted:             12-22-2005 02:50 CET
+Last Modified:              01-02-2006 08:50 CET
 ======================================================================
-Summary:                    No digital passthrough for Creative Audigy 2 NX
+Summary:                    THIS DRIVER FRICKEN SUCKS
 Description: 
-I tried with alsa1.0.9a (on an ubuntu) to wake work the ac3 passthrough
-(with an extarnal decoder) usiing the coaxial digital out. It didn't work
-fine at all neither using mplayer with -ao alsa:device=default -ac hwac3
-nor with xine. mplayer issues in two ways:
-1- says :
-alsa-init: 1 soundcard found, using: iec958:{CARD 0 AES0 0x02 AES1 0x82
-AES2 0x0 0 AES3 0x02}
-ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM iec958:{CARD
-0 AES0  0x02 AES1 0x82 AES2 0x00 AES3 0x02} definition (id: iec958, value:
-cards.pcm.ie c958)
-
-
-or
-
-2- sends to extarnal amplifier lots of crack and gap noise
-
-It seems to be no configuration way to make the ac3/dts digital out
-passthrough work
-
-regards,
-
-jazz
+WHAT THE HELL WERE YOU GUYS THINKING? YOU WEREN'T!!!! This has got to be
+one of the shitest drivers i've ever used. o i know lets make a driver
+that crashes 99% of the time. it sucks, why the hell should you put it in
+if it sucks? please make this driver better, its a common card, and you
+are so close to a sucessfull driver, i know you can do it!
 ======================================================================
 
 ----------------------------------------------------------------------
- Faber - 12-23-05 12:40 
+ rlrevell - 12-22-05 03:04 
 ----------------------------------------------------------------------
-The problem seems to be that the usb-audio driver doesn't expose an iec958
-device.
+Did you ever consider that the ALSA developers don't have access to every
+device they have drivers for?
 
-I have AC3 passthrough working on my system (also using Audigy 2 NX) by
-manually patching mplayer to use "hw:0,0" instead of "iec958:AES0=..." and
-setting "audio.device.alsa_passthrough_device:hw:0,0" in .xine/config .
-
-You also need to manually turn on Digital Out, set Digital Out Source to
-PCM and set all volume controls to 100%.
-
-It would be really nice, however, if the usb-audio driver could expose an
-iec958 device and automatically route input to this device around the
-mixer and directly to direct out (like it happens with other drivers).
+Anyway this isn't a bug report, please tell us exactly what's wrong with
+it.
 
 ----------------------------------------------------------------------
- rev_jazz - 01-01-06 21:54 
+ perex - 01-02-06 08:50 
 ----------------------------------------------------------------------
-It still don't work for me. Which version of kernel and alsa driver do you
-use?
+A rude bug report without any additional information. Closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-05 17:06 rev_jazz       New Issue                                    
-12-03-05 17:06 rev_jazz       Distribution              => Ubuntu 5-10     
-12-03-05 17:06 rev_jazz       Kernel Version            => Linux 2.6.12-9-3
-12-03-05 17:06 rev_jazz       Issue Monitored: rev_jazz                    
-12-03-05 17:10 rev_jazz       Note Added: 0006901                          
-12-23-05 12:28 Faber          Issue Monitored: Faber                       
-12-23-05 12:40 Faber          Note Added: 0007133                          
-01-01-06 21:54 rev_jazz       Note Added: 0007366                          
+12-22-05 02:50 Flyinprogramer New Issue                                    
+12-22-05 02:50 Flyinprogramer Distribution              => Gentoo          
+12-22-05 02:50 Flyinprogramer Kernel Version            => Kernel 2.6.14-r5
+12-22-05 03:04 rlrevell       Note Added: 0007118                          
+01-02-06 08:50 perex          Status                   assigned => closed  
+01-02-06 08:50 perex          Note Added: 0007367                          
 ======================================================================
 
 
