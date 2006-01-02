@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001698]: Opening not-dmix pcm immediately after closing dmix-pcm fails.
-Date: Mon, 2 Jan 2006 10:57:26 +0100
-Message-ID: <2d822abf79a0a4bf0ee57b757242a078@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001253]: My kernel doesn't find my sound cards anymore !!!
+Date: Mon, 2 Jan 2006 12:36:36 +0100
+Message-ID: <0fb50cfafb1c11c5e5eb26ea7f2c4975@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FDD7156
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 10:57:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5A6B13B
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 12:36:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1698> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1253> 
 ======================================================================
-Reported By:                skandalfo
-Assigned To:                perex
+Reported By:                fabien
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1698
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1253
+Category:                   PCI - ens1370
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             01-02-2006 10:57 CET
-Last Modified:              01-02-2006 10:57 CET
+Date Submitted:             07-12-2005 14:04 CEST
+Last Modified:              01-02-2006 12:36 CET
 ======================================================================
-Summary:                    Opening not-dmix pcm immediately after closing
-dmix-pcm fails.
+Summary:                    My kernel doesn't find my sound cards anymore !!!
 Description: 
-As reported additionally in closed
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001184 I'm having
-problems with the
-default configuration supplied for NFORCE cards when xine switches from
-2.0 to 5.1 audio when playing DVD's.
+My kernel stop working with my soundcards !!!
+It use to work in 2.6.8 (not in 2.6.10, 2.6.11 & 2.6.12)
 
-See the report for the bug in xine-lib here:
-https://sourceforge.net/tracker/index.php?func=detail&aid=1226595&group_id=9655&atid=109655
 
+My sound cards :
+- ENS1370
+- SIS 7012
+
+Motherboard :
+- K7S5A
+
+Linux Box :
+- Debian on x86 AMD
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 00:11 
+----------------------------------------------------------------------
+Any improvement in later releases?
+
+----------------------------------------------------------------------
+ fabien - 01-02-06 12:36 
+----------------------------------------------------------------------
+Unfortunatly no. I'am in 2.6.14.4 kernel release.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-06 10:57 skandalfo      New Issue                                    
+07-12-05 14:04 fabien         New Issue                                    
+07-12-05 14:04 fabien         Distribution              => Debian Sarge    
+07-12-05 14:04 fabien         Kernel Version            => 2.6.12          
+10-24-05 21:20 fabien         Note Added: 0006523                          
+12-31-05 00:11 rlrevell       Note Added: 0007310                          
+01-02-06 12:36 fabien         Note Added: 0007371                          
 ======================================================================
 
 
