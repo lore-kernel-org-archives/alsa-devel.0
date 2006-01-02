@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001701]: Audigy LS (or SE) doen't work probably
-Date: Mon, 2 Jan 2006 19:30:15 +0100
-Message-ID: <0f4145c4421885d7d76197cc35e99109@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000429]: Feature: Ability to cap the volume
+Date: Mon, 2 Jan 2006 19:36:27 +0100
+Message-ID: <29548c848d97ecf71f20daf749202b56@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C12A142
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 19:30:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3BED15A
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 19:36:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1701> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=429> 
 ======================================================================
-Reported By:                gambacherkalbenstein
-Assigned To:                jcdutton
+Reported By:                morgoth
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1701
-Category:                   PCI - audigyls
+Project:                    ALSA - utils
+Issue ID:                   429
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               SuSE 9.3 PRO
-Kernel Version:             2.6.X
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             01-02-2006 19:19 CET
-Last Modified:              01-02-2006 19:30 CET
+Date Submitted:             08-07-2004 23:39 CEST
+Last Modified:              01-02-2006 19:36 CET
 ======================================================================
-Summary:                    Audigy LS (or SE) doen't work probably
+Summary:                    Feature: Ability to cap the volume
 Description: 
-I installed all drivers as described on the page, but YAST dont't thinks
-about useing this card. There's always an error while autoinstalling
-Audigy. 
-And of course I don't know how to solve this problem... :-(
-Useing OSS - shipped with SuSE, not downloaded! - there's a strange noise
-- as reported by others - you can identify as the sound you are playing.
-
-Can anyone help me? PLEASE!!!
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001679 Audigy 4 SE (SB_0570, ca0106) does not ...
+For my soundcard (SB Live! 1024) I can't have the PCM higher then 74%
+before I get some werd noises. If there was a way to cap or lock the
+volume so that _no_ programs (like xmms or mplayer) could turn it higher.
+That would be great :)
+I don't know why all programs try to adjust the PCM instead of Master or
+any of the others. But a cap would be a start ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-02-06 19:30 
+ rlrevell - 12-31-05 07:26 
 ----------------------------------------------------------------------
-Closed -> dupe of 1679.  Please search the bug trackers for existing bugs
-before submitting a new one.
+Is this still a problem with the latest ALSA release?  I cannot reproduce
+it (setting volume to 100% with my Audigy2 ZS is loud but not distorted).
+
+Make sure bass and treble controls are set to the middle position.
+
+----------------------------------------------------------------------
+ afran - 01-02-06 19:36 
+----------------------------------------------------------------------
+Yes, this still seems to be a problem, at least on my card (Creative Labs
+SB Live! EMU10k1, rev 08). I've tested it with ALSA driver version
+1.0.11rc1 (I hope that's the latest release, you have mentioned), and
+still get distorted noises when PCM is set to more than 74%.
+
+I recorded the output of my Creative card with my Terratec Phase 26 (all
+mixers except Master and PCM left on their default settings) and uploaded
+the results [1]. You should notice the noise in every file with PCM set to
+100% (Master doesn't seem to have any influence on the noise, just makes
+output louder):
+
+- sb.074.074.wav: SB Live! playing at Master 74%, PCM 74%.
+- sb.074.100.wav: SB Live! playing at Master 74%, PCM 100%.
+- sb.100.074.wav: SB Live! playing at Master 100%, PCM 74%.
+- sb.100.100.wav: SB Live! playing at Master 100%, PCM 100%.
+
+And just for reference the same original file played with my Phase 26 and
+recorded with the very same card (that card has only one mixer control, so
+no volume for Master is given):
+
+- phase.086.wav: Phase 26 playing at PCM 86% (default).
+- phase.100.wav: Phase 26 playing at PCM 100%.
+
+[1] http://tmp.afran.de/alsa/
+
+--
+PS: Please, could someone with more privileges upload the files posted
+above onto this Mantis bug tracker or some other more stable server? I
+don't want to leave those files on my server (limited bandwidth) forever,
+so I probably have to remove them some day without further warning.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-06 19:19 gambacherkalbensteinNew Issue                                    
-01-02-06 19:19 gambacherkalbensteinDistribution              => SuSE 9.3 PRO    
-01-02-06 19:19 gambacherkalbensteinKernel Version            => 2.6.X           
-01-02-06 19:28 rlrevell       Relationship added       duplicate of 0001579
-01-02-06 19:28 rlrevell       Relationship deleted     duplicate of 0001579
-01-02-06 19:29 rlrevell       Relationship added       duplicate of 0001679
-01-02-06 19:30 rlrevell       Status                   assigned => closed  
-01-02-06 19:30 rlrevell       Note Added: 0007376                          
+08-07-04 23:39 morgoth        New Issue                                    
+08-08-04 19:41 afran          Issue Monitored: afran                       
+08-08-04 19:52 afran          Note Added: 0001545                          
+12-31-05 07:26 rlrevell       Note Added: 0007350                          
+01-02-06 19:36 afran          Note Added: 0007377                          
 ======================================================================
 
 
