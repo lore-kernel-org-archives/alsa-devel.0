@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001677]: envy24control word clock lock indication is wrong way around
-Date: Mon, 2 Jan 2006 22:38:48 +0100
-Message-ID: <8affeca7ae0a451c110eaaa25f6d68eb@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001659]: dmix not working with ice1712
+Date: Mon, 2 Jan 2006 23:07:15 +0100
+Message-ID: <2672c3d254ada3d85a6a9fcc2eba3063@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32E8F158
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 22:38:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDAD7161
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 23:07:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,105 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1677> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1659> 
 ======================================================================
-Reported By:                johnrigg
-Assigned To:                rlrevell
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1677
-Category:                   envy24control
+Project:                    ALSA - lib
+Issue ID:                   1659
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             12-24-2005 18:03 CET
-Last Modified:              01-02-2006 22:38 CET
+Date Submitted:             12-18-2005 21:07 CET
+Last Modified:              01-02-2006 23:07 CET
 ======================================================================
-Summary:                    envy24control word clock lock indication is wrong
-way around
+Summary:                    dmix not working with ice1712
 Description: 
-The word clock `Locked' indication in envy24control's hardware settings is
-backwards. It says `Locked' when there's no signal and `No signal' when
-it's
-locked.
-I'm hoping I'll get a large pot of glue for Christmas so I can stick back
-all the hair I've torn out over the last couple of weeks over this :-)
+In Debian bug 342026 the submitter reports:
 
-Merry Christmas
+> After an upgrade today [to 1.0.10rc1?], the dmix plugin stopped
+working.
+> 
+>     $ mocp 	# or any other program trying to use alsa
+>     ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave)
+requested or auto-format is not available
+>     ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize
+slave
+> 
+> My ~/.asoundrc is the example configuration for using dmix with the
+> ICE1712 chip (found e.g. at
+http://alsa.opensrc.org/index.php?page=DmixPlugin).
+> 
+> # cat ~/.asoundrc
+> # our ICE1712 dmix:
+> pcm.ossmix {
+>     type dmix
+>     ipc_key 1024
+>     slave {
+>     pcm "hw:0,0"
+>         period_time 0
+>         period_size 1024
+>         buffer_size 4096 # buffer size < 6653, but pow(x, 2)
+>         rate 44100 # we want to play CDs only
+>     }
+>     bindings {
+>         0 0
+>         1 1
+>     }
+> }
+> # Everything shall be dmixed, so redefine "default":
+> pcm.!default {
+>     type plug
+>     slave.pcm "ossmix"
+> }
+> # OSS via aoss should d(mix)stroyed:
+> pcm.dsp0 {
+>     type plug
+>     slave.pcm "ossmix"
+> }
+> ctl.mixer0 {
+>     type hw
+>     card 0
+> }
 
-John
+
+He says that this config worked in ALSA 1.0.9.
+
+He later adds:
+
+> Adding 'format S32_LE' in the original .asoundrc seems to have fixed
+> the problem. Apparently the default format (for ice1712 or generally?)
+> has been changed to something that doesn't work.
+
+As always, see http://bugs.debian.org/342026 for the complete log.
 ======================================================================
 
 ----------------------------------------------------------------------
- johnrigg - 01-02-06 21:55 
+ rlrevell - 12-18-05 22:31 
 ----------------------------------------------------------------------
-Now fixed in CVS. Thanks.
+Remove your .asoundrc and apply the attached patch.
+
+Maintainers, please apply for 1.0.11 release.  Another user has confirmed
+the patch fixes the problem.
 
 ----------------------------------------------------------------------
- rlrevell - 01-02-06 22:38 
+ jdthood - 01-02-06 23:07 
 ----------------------------------------------------------------------
-Fixed in upcoming 1.0.11 release
+I notice that this patch was not applied in 1.0.11rc2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-24-05 18:03 johnrigg       New Issue                                    
-12-26-05 13:12 johnrigg       Note Added: 0007150                          
-01-02-06 21:55 johnrigg       Note Added: 0007392                          
-01-02-06 22:38 rlrevell       Status                   new => resolved     
-01-02-06 22:38 rlrevell       Resolution               open => fixed       
-01-02-06 22:38 rlrevell       Assigned To               => rlrevell        
-01-02-06 22:38 rlrevell       Note Added: 0007393                          
+12-18-05 21:07 jdthood        New Issue                                    
+12-18-05 22:30 rlrevell       File Added: ICE1712-dmix.patch                    
+12-18-05 22:31 rlrevell       Note Added: 0007072                          
+01-02-06 23:07 jdthood        Note Added: 0007394                          
 ======================================================================
 
 
