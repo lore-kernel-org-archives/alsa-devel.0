@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Mon, 2 Jan 2006 18:54:55 +0100
-Message-ID: <7198c5bf3e7ec06f115de0eab8e36850@bugtrack.alsa-project.org>
+Date: Mon, 2 Jan 2006 18:55:14 +0100
+Message-ID: <217d929ed94402a0992a8f3dabdfabf0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F93415A
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 18:54:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1E24C1
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 18:55:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UNset as DUPLICATE OF issue 0001224.
+The following issue has been set as RELATED TO issue 0001224.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1228> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              01-02-2006 18:54 CET
+Last Modified:              01-02-2006 18:55 CET
 ======================================================================
 Summary:                    Skype Does not work with aoss
 Description: 
@@ -51,6 +51,10 @@ version of skype from the skype official website. Skype only uses
 not hear anything and the microphone did not work as well if I run  skype
 like aoss /usr/bin/skype. If I run skype without aoss, then skype works
 just fine.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001224 artsd-like style
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -84,6 +88,7 @@ Date Modified  Username       Field                    Change
 08-10-05 00:50 rlrevell       Note Added: 0005740                          
 12-31-05 00:19 rlrevell       Note Added: 0007315                          
 01-02-06 18:54 rlrevell       Relationship deleted     duplicate of 0001224
+01-02-06 18:55 rlrevell       Relationship added       related to 0001224  
 ======================================================================
 
 
