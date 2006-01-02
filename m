@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001701]: Audigy LS (or SE) doen't work probably
-Date: Mon, 2 Jan 2006 19:28:29 +0100
-Message-ID: <990c9e9e9058fa14cac441daa837b61b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001579]: code.c test uses x86 asm, it should be x86/amd64 only
+Date: Mon, 2 Jan 2006 19:28:30 +0100
+Message-ID: <6e10aa3a4aa4d5b7366247fc6bdcc28b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 434D415A
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 19:28:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F27CE2
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 19:28:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001579.
+The issue 0001701 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1701> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1579> 
 ======================================================================
-Reported By:                gambacherkalbenstein
-Assigned To:                jcdutton
+Reported By:                Flameeyes
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1701
-Category:                   PCI - audigyls
+Project:                    ALSA - lib
+Issue ID:                   1579
+Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE 9.3 PRO
-Kernel Version:             2.6.X
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-02-2006 19:19 CET
-Last Modified:              01-02-2006 19:28 CET
+Date Submitted:             11-19-2005 20:17 CET
+Last Modified:              11-23-2005 17:36 CET
 ======================================================================
-Summary:                    Audigy LS (or SE) doen't work probably
+Summary:                    code.c test uses x86 asm, it should be x86/amd64
+only
 Description: 
-I installed all drivers as described on the page, but YAST dont't thinks
-about useing this card. There's always an error while autoinstalling
-Audigy. 
-And of course I don't know how to solve this problem... :-(
-Useing OSS - shipped with SuSE, not downloaded! - there's a strange noise
-- as reported by others - you can identify as the sound you are playing.
+As per summary, the code.c test can't be built for any other system but x86
+or amd64, as it uses inline asm focused on i386.
 
-Can anyone help me? PLEASE!!!
+The attached patch makes it conditional to those arches.
+
+HTH,
+Diego
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001579 code.c test uses x86 asm, it should be ...
+has duplicate       0001701 Audigy LS (or SE) doen't work probably
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 11-23-05 17:34 
+----------------------------------------------------------------------
+It's easier just to remove code from check_PROGRAMS.  It's nothing but a
+test code for dmix, and shouldn't be used as "check".
+
+----------------------------------------------------------------------
+ tiwai - 11-23-05 17:36 
+----------------------------------------------------------------------
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-06 19:19 gambacherkalbensteinNew Issue                                    
-01-02-06 19:19 gambacherkalbensteinDistribution              => SuSE 9.3 PRO    
-01-02-06 19:19 gambacherkalbensteinKernel Version            => 2.6.X           
-01-02-06 19:28 rlrevell       Relationship added       duplicate of 0001579
+11-19-05 20:17 Flameeyes      New Issue                                    
+11-19-05 20:17 Flameeyes      File Added: alsa-lib-1.0.10-test-ppc.patch        
+           
+11-23-05 17:34 tiwai          Note Added: 0006817                          
+11-23-05 17:36 tiwai          Status                   new => resolved     
+11-23-05 17:36 tiwai          Resolution               open => fixed       
+11-23-05 17:36 tiwai          Assigned To               => tiwai           
+11-23-05 17:36 tiwai          Note Added: 0006818                          
+01-02-06 19:28 rlrevell       Relationship added       has duplicate 0001701
 ======================================================================
 
 
