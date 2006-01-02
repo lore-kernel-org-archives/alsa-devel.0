@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
-Date: Mon, 2 Jan 2006 09:12:04 +0100
-Message-ID: <d4a687b4ea370662ec0bb3eec6b9a08c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001593]: au88x0 wt synth
+Date: Mon, 2 Jan 2006 09:54:27 +0100
+Message-ID: <9bed38266da1129c5ff1aa942fd02d18@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76D57E8
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 09:12:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3558C152
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 09:54:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593> 
 ======================================================================
-Reported By:                croiset
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   758
-Category:                   PCI - RME 96
+Issue ID:                   1593
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Redhat 7.2
-Kernel Version:             2.4.7
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             12-29-2004 10:15 CET
-Last Modified:              01-02-2006 09:12 CET
+Date Submitted:             11-23-2005 17:16 CET
+Last Modified:              01-02-2006 09:54 CET
 ======================================================================
-Summary:                    Full duplex is not working in OSS emulation.
+Summary:                    au88x0 wt synth
 Description: 
-If I play something with one player, I am unable to record something on the
-same device.
-The same thing ispossible with the other cards I have.
+After applied the patch as described in 
+
+http://article.gmane.org/gmane.linux.alsa.devel/27095
+
+Sound (like a monster roaring) is heard when using aplay through device 3
+of au8830 with the mono files from alsa-utils-1.0.10/speaker-test/samples
+
+The sound repeat 7 times and stop.
+
+Refer to the strace, 
+
+Do the DMA transfer occur when using hw:0,3 ?
+
+
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000521 Jack + Alsa not working in full duplex,...
-======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:08 
+ Raymond - 12-21-05 10:10 
 ----------------------------------------------------------------------
-This really seems like an application bug.
+Can anyone explain the usage of the function precise_resolution in
+snd_timer_hardware ?
 
-Any improvement in later ALSA release or with newer apps?
+The hardware timer (VORTEX_SMP_TIMER) in au88x0 chips seem to have 48000Hz
+resolution and it also has a high-resolution clock ( VORTEX_SMP_TIME )
+which is 256x48000 Hz.
 
 ----------------------------------------------------------------------
- croiset - 01-02-06 09:12 
+ Raymond - 01-02-06 09:54 
 ----------------------------------------------------------------------
-My last test was made with alsa 1.0.10rc1 and it was not working also. I
-didn't try yet with a newer release.
-
-The same application is working well with all other sound cards I tested.
+How should the synth driver allocate memory for the 5 MBytes samples (DMA
+controller can access 32-bits address space only) ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 10:15 croiset        New Issue                                    
-12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
-12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
-12-29-04 14:17 tiwai          Note Added: 0002998                          
-12-29-04 14:54 croiset        Note Added: 0003000                          
-12-29-04 17:39 tiwai          Note Added: 0003004                          
-12-29-04 17:56 croiset        Note Added: 0003005                          
-12-29-04 17:59 croiset        Note Added: 0003006                          
-12-29-04 18:05 croiset        Note Edited: 0003006                         
-12-29-04 18:18 croiset        Note Edited: 0003006                         
-01-03-05 16:30 croiset        Note Added: 0003067                          
-09-14-05 16:16 jdthood        Relationship added       related to 0000521  
-12-30-05 23:08 rlrevell       Note Added: 0007278                          
-01-02-06 09:12 croiset        Note Added: 0007368                          
+11-23-05 17:16 Raymond        New Issue                                    
+11-23-05 17:16 Raymond        Distribution              => Fedora Core 1   
+11-23-05 17:16 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+11-23-05 20:54 mjander        Note Added: 0006832                          
+11-25-05 07:57 Raymond        Note Added: 0006847                          
+11-30-05 08:48 Raymond        Note Added: 0006875                          
+12-11-05 13:21 Raymond        Note Added: 0006976                          
+12-21-05 10:10 Raymond        Note Added: 0007108                          
+01-02-06 09:06 Raymond        Note Deleted: 0006976                        
+01-02-06 09:54 Raymond        Note Added: 0007369                          
 ======================================================================
 
 
