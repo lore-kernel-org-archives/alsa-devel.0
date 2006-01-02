@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000429]: Feature: Ability to cap the volume
-Date: Mon, 2 Jan 2006 20:12:23 +0100
-Message-ID: <f2316dc714165a92c69ea9d9b01b4814@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000984]: No Sound
+Date: Mon, 2 Jan 2006 20:25:02 +0100
+Message-ID: <f335947ee2bc550761a5f19aa767dcbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 963EC15A
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:12:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 014D8162
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:25:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=429> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=984> 
 ======================================================================
-Reported By:                morgoth
-Assigned To:                
+Reported By:                mailavj
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   429
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   984
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               Debian
+Kernel Version:             2.6.7-2
+Resolution:                 reopened
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-07-2004 23:39 CEST
-Last Modified:              01-02-2006 20:12 CET
+Date Submitted:             03-12-2005 19:09 CET
+Last Modified:              01-02-2006 20:25 CET
 ======================================================================
-Summary:                    Feature: Ability to cap the volume
+Summary:                    No Sound
 Description: 
-For my soundcard (SB Live! 1024) I can't have the PCM higher then 74%
-before I get some werd noises. If there was a way to cap or lock the
-volume so that _no_ programs (like xmms or mplayer) could turn it higher.
-That would be great :)
-I don't know why all programs try to adjust the PCM instead of Master or
-any of the others. But a cap would be a start ;)
+my sound card is Sound MAX integrated Audio with Intel D865 GBF
+motherboard..
+i'm not getting sound output..
+kernel version is 2.6.7-2 and my alsa driver version is 1.0.6-a
+Is there any way to get sound out put on this card using this driver.. 
+please help
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000970 No Sound
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-02-06 20:01 
+ jdthood - 03-23-05 16:02 
 ----------------------------------------------------------------------
-Audigy 2 ZS has diffrent mixer and signal routing.
+Please send the output of 
 
-On sb live
-PCM on 75 % should be 0 db
-PCM on 100 % is +12 db
+   lsmod
+   uname -a
+   lspci
+   cat /proc/asound/version
+   cat /proc/asound/cards
 
 ----------------------------------------------------------------------
- rlrevell - 01-02-06 20:12 
+ rlrevell - 01-02-06 20:25 
 ----------------------------------------------------------------------
-Ah ok.  Well jcdutton's work to make alsa mixer use DB values might help. 
-Then it would be up to the app to not do silly things like play back .wav
-files with the gain to +12 DB.
-
-pzad, what do you think the status of this bug should be?
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-07-04 23:39 morgoth        New Issue                                    
-08-08-04 19:41 afran          Issue Monitored: afran                       
-08-08-04 19:52 afran          Note Added: 0001545                          
-12-31-05 07:26 rlrevell       Note Added: 0007350                          
-01-02-06 19:36 afran          Note Added: 0007377                          
-01-02-06 20:01 pzad           Note Added: 0007378                          
-01-02-06 20:12 rlrevell       Note Added: 0007379                          
+03-12-05 19:09 mailavj        New Issue                                    
+03-16-05 13:00 tiwai          Note Added: 0003952                          
+03-16-05 14:56 tiwai          Relationship added       duplicate of 0000970
+03-16-05 14:56 tiwai          Duplicate ID             0 => 970            
+03-16-05 14:56 tiwai          Status                   new => resolved     
+03-16-05 14:56 tiwai          Resolution               open => duplicate   
+03-16-05 14:56 tiwai          Assigned To               => tiwai           
+03-16-05 14:56 tiwai          Assigned To              tiwai =>            
+03-17-05 18:49 mailavj        Distribution              => Debian          
+03-17-05 18:49 mailavj        Kernel Version            => 2.6.7-2         
+03-17-05 18:49 mailavj        Status                   resolved => feedback
+03-17-05 18:49 mailavj        Resolution               duplicate => reopened
+03-17-05 18:49 mailavj        Note Added: 0003981                          
+03-17-05 18:49 mailavj        Assigned To               => tiwai           
+03-17-05 18:50 mailavj        Note Added: 0003982                          
+03-17-05 18:55 rlrevell       Note Added: 0003983                          
+03-18-05 18:14 tiwai          Note Added: 0003999                          
+03-23-05 16:02 jdthood        Note Added: 0004169                          
+01-02-06 20:25 rlrevell       Status                   feedback => closed  
+01-02-06 20:25 rlrevell       Note Added: 0007380                          
 ======================================================================
 
 
