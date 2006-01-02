@@ -1,11 +1,14 @@
-From: Mail Delivery Subsystem <postmaster@d84rs29g.com>
-Subject: Returned mail
-Date: Mon, 2 Jan 2006 14:26:37 +0100
-Message-ID: <E1EtSeG-0007Bm-Bs@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001700]: CMI 9880 not detected and not implemented yet
+Date: Mon, 2 Jan 2006 17:40:20 +0100
+Message-ID: <ec7574c1f14bbcf0edf2e3fe3af2cec0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="KMS-67667061-2363-delim"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C059162
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 17:40:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,50 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---KMS-67667061-2363-delim
-Content-Type: text/plain; charset="us-ascii"
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1700> 
+======================================================================
+Reported By:                mitcoes
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1700
+Category:                   1_OTHERS
+Reproducibility:            unable to duplicate
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Breezy Ubuntu
+Kernel Version:             all
+======================================================================
+Date Submitted:             01-02-2006 17:40 CET
+Last Modified:              01-02-2006 17:40 CET
+======================================================================
+Summary:                    CMI 9880 not detected and not implemented yet
+Description: 
+CMI 9880 that comes integrated with ASUS P5AD2 Premium and others doesn't
+work.
+
+I have read 
+>> know mine is running under an "i810_audio" module. << at
+http://hardware.mcse.ms/archive13-2005-1-137173.html
+but it does not give a complete performance.
 
 
-This is an informative message sent by Kerio MailServer 5.6.4 at d84rs29g.com.
-The server was not able to deliver your mail message to the following addresses:
 
-  <alsa-devel@lists.sourceforge.net> (externalmx-1.sourceforge.net: 550-"For the time being, we are blocking all mail with the .zip extension.
-550-If this this is a problem, please open a Support Request on the SF.net
-550 webite.")
---KMS-67667061-2363-delim
-Content-Type: message/delivery-status
+======================================================================
 
-Reporting-MTA: dns; d84rs29g.com
-Arrival-Date: Mon, 2 Jan 2006 11:11:07 +0100
-
-Final-Recipient: rfc822;alsa-devel@lists.sourceforge.net
-Action: failed
-Status: 5.6.0
-Remote-MTA: externalmx-1.sourceforge.net
-Diagnostic-Code: SMTP; 550-"For the time being, we are blocking all mail with the .zip extension.
-
-550-If this this is a problem, please open a Support Request on the SF.net
-550 webite."
---KMS-67667061-2363-delim
-Content-Type: text/rfc822-headers
-
-X-Spam-Status: No, hits=0.0 required=5.0
-X-Spam-Level: 
-Received: from 192.168.1.1 ([192.168.1.1])
-	by d84rs29g.com
-	for alsa-devel@lists.sourceforge.net;
-	Mon, 2 Jan 2006 11:11:07 +0100
-From: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
-Subject: alsa-devel@lists.sourceforge.net
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-1451934252-992792781=:22818"
-Content-Length: 5783
-
---KMS-67667061-2363-delim--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-02-06 17:40 mitcoes        New Issue                                    
+01-02-06 17:40 mitcoes        Distribution              => Breezy Ubuntu   
+01-02-06 17:40 mitcoes        Kernel Version            => all             
+======================================================================
 
 
 
