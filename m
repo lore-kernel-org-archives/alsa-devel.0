@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001699]: Alsa 1.0.11rc2 and Unknown symbol
-Date: Mon, 2 Jan 2006 16:38:32 +0100
-Message-ID: <1cf330135595ea216c6150dc1d213832@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001698]: Opening not-dmix pcm immediately after closing dmix-pcm fails.
+Date: Mon, 2 Jan 2006 16:42:31 +0100
+Message-ID: <0198c88166215f5393493de68d983ac0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D15DD134
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 16:38:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E214B125
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 16:42:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1699> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1698> 
 ======================================================================
-Reported By:                kratz00
-Assigned To:                
+Reported By:                skandalfo
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1699
-Category:                   1_OTHERS
+Project:                    ALSA - lib
+Issue ID:                   1698
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
 ======================================================================
-Date Submitted:             01-02-2006 16:38 CET
-Last Modified:              01-02-2006 16:38 CET
+Date Submitted:             01-02-2006 10:57 CET
+Last Modified:              01-02-2006 16:42 CET
 ======================================================================
-Summary:                    Alsa 1.0.11rc2 and Unknown symbol
+Summary:                    Opening not-dmix pcm immediately after closing
+dmix-pcm fails.
 Description: 
-Alsa 1.0.10 is working on the same system/configuration but 1.0.11rc1 and
-rc2
-produce the following error output:
+As reported additionally in closed
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001184 I'm having
+problems with the
+default configuration supplied for NFORCE cards when xine switches from
+2.0 to 5.1 audio when playing DVD's.
 
-FATAL: Error inserting snd
-(/lib/modules/2.6.15-rc7/kernel/drivers/sound/acore/snd.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
+See the report for the bug in xine-lib here:
+https://sourceforge.net/tracker/index.php?func=detail&aid=1226595&group_id=9655&atid=109655
 
-output from dmesg:
-snd: Unknown symbol pm_register
-snd: Unknown symbol pm_unregister
-
-I found out if I disable ACPI in my kernel then it's also working with
-1.0.11rc*
-but I need ACPI support and it's working fine with 1.0.10 so there must be
-a problem with 1.0.11rc*
-
-# Power management options (ACPI, APM)
-CONFIG_PM=y
-
-<->
-
-# Power management options (ACPI, APM)
-# CONFIG_PM is not set
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 01-02-06 16:42 
+----------------------------------------------------------------------
+Did you read the resolution to bug #1184?
+
+"Well, the dmix resource manager keeps the device allocated for a while
+(up to 0.5sec). This has nothing related to audio bufferring. It would be
+better to check for -EBUSY error code and keep trying to reopen audio
+device about one or two seconds in xine-lib before giving up."
+
+So it's a bug in xine-lib.  Rather than giving up immediately when it gets
+"Device or resource busy" it should try again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-06 16:38 kratz00        New Issue                                    
+01-02-06 10:57 skandalfo      New Issue                                    
+01-02-06 10:59 skandalfo      Issue Monitored: skandalfo                    
+01-02-06 16:42 rlrevell       Note Added: 0007372                          
 ======================================================================
 
 
