@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0000429]: Feature: Ability to cap the volume
-Date: Mon, 2 Jan 2006 19:36:27 +0100
-Message-ID: <29548c848d97ecf71f20daf749202b56@bugtrack.alsa-project.org>
+Date: Mon, 2 Jan 2006 20:01:55 +0100
+Message-ID: <b048c5a91f8c94e88bf43a346f8bec61@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3BED15A
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 19:36:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4A27B3
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:01:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             08-07-2004 23:39 CEST
-Last Modified:              01-02-2006 19:36 CET
+Last Modified:              01-02-2006 20:01 CET
 ======================================================================
 Summary:                    Feature: Ability to cap the volume
 Description: 
@@ -49,14 +49,6 @@ That would be great :)
 I don't know why all programs try to adjust the PCM instead of Master or
 any of the others. But a cap would be a start ;)
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-31-05 07:26 
-----------------------------------------------------------------------
-Is this still a problem with the latest ALSA release?  I cannot reproduce
-it (setting volume to 100% with my Audigy2 ZS is loud but not distorted).
-
-Make sure bass and treble controls are set to the middle position.
 
 ----------------------------------------------------------------------
  afran - 01-02-06 19:36 
@@ -92,6 +84,15 @@ above onto this Mantis bug tracker or some other more stable server? I
 don't want to leave those files on my server (limited bandwidth) forever,
 so I probably have to remove them some day without further warning.
 
+----------------------------------------------------------------------
+ pzad - 01-02-06 20:01 
+----------------------------------------------------------------------
+Audigy 2 ZS has diffrent mixer and signal routing.
+
+On sb live
+PCM on 75 % should be 0 db
+PCM on 100 % is +12 db
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -100,6 +101,7 @@ Date Modified  Username       Field                    Change
 08-08-04 19:52 afran          Note Added: 0001545                          
 12-31-05 07:26 rlrevell       Note Added: 0007350                          
 01-02-06 19:36 afran          Note Added: 0007377                          
+01-02-06 20:01 pzad           Note Added: 0007378                          
 ======================================================================
 
 
