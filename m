@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001444]: sb16: unable to compile driver and wrong build order
-Date: Mon, 2 Jan 2006 20:39:06 +0100
-Message-ID: <eb7dd26ec71a3175e598de2075df9ec2@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000429]: Feature: Ability to cap the volume
+Date: Mon, 2 Jan 2006 20:40:00 +0100
+Message-ID: <565a0618d6b2613262b48265e20a7c62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3642F13E
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:39:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C811F13E
+	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 20:40:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1444> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=429> 
 ======================================================================
-Reported By:                slashlos
-Assigned To:                perex
+Reported By:                morgoth
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1444
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   429
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.4.20-31smp
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             09-23-2005 13:31 CEST
+Date Submitted:             08-07-2004 23:39 CEST
 Last Modified:              01-02-2006 20:39 CET
 ======================================================================
-Summary:                    sb16: unable to compile driver and wrong build order
+Summary:                    Feature: Ability to cap the volume
 Description: 
-this this might be a noob issue, but the order suggested for build should
-be lib, util then driver; it seems driver needs some utils?
-
-Anyhow, when trying to build driver, I get this:
-
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/alsa/alsa-driver-1.0.10rc1/include 
--I/lib/modules/2.4.20-31.9smp/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -D__SMP__ -DCONFIG_SMP -DLINUX
--Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include -DMODVERSIONS -include
-/lib/modules/2.4.20-31.9smp/build/include/linux/modversions.h
--I/usr/src/alsa/alsa-driver-1.0.10rc1/alsa-kernel/core/oss
--fno-omit-frame-pointer  -DEXPORT_SYMTAB -c mixer_oss.c
-mixer_oss.c:397: unknown field `unlocked_ioctl' specified in initializer
-mixer_oss.c:397: warning: initialization from incompatible pointer type
-mixer_oss.c:398: unknown field `compat_ioctl' specified in initializer
-make[2]: *** [mixer_oss.o] Error 1
-make[2]: Leaving directory
-`/usr/src/alsa/alsa-driver-1.0.10rc1/acore/oss'
-make[1]: *** [_modsubdir_oss] Error 2
-make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.10rc1/acore'
-make: *** [compile] Error 1
-
+For my soundcard (SB Live! 1024) I can't have the PCM higher then 74%
+before I get some werd noises. If there was a way to cap or lock the
+volume so that _no_ programs (like xmms or mplayer) could turn it higher.
+That would be great :)
+I don't know why all programs try to adjust the PCM instead of Master or
+any of the others. But a cap would be a start ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 11-14-05 10:20 
+ rlrevell - 01-02-06 20:12 
 ----------------------------------------------------------------------
-Could you try 1.0.10rc3 packages?
+Ah ok.  Well jcdutton's work to make alsa mixer use DB values might help. 
+Then it would be up to the app to not do silly things like play back .wav
+files with the gain to +12 DB.
+
+pzad, what do you think the status of this bug should be?
 
 ----------------------------------------------------------------------
- rlrevell - 01-02-06 20:39 
+ pzad - 01-02-06 20:39 
 ----------------------------------------------------------------------
-No response
+I don't know. "PCM" on sb live is not good name, because it controls volume
+of front speakers (not only PCM playback but all other sources too). Maybe
+solution is to remove "PCM" control from ac97 (and set it to 0 db) and
+rename "Wave" to "PCM". This means only inputs will be controlable and not
+outputs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-05 13:31 slashlos       New Issue                                    
-09-23-05 13:31 slashlos       Kernel Version            => 2.4.20-31smp    
-10-14-05 03:50 slashlos       Issue Monitored: slashlos                    
-11-14-05 10:20 perex          Note Added: 0006702                          
-11-14-05 10:20 perex          Status                   assigned => feedback
-01-02-06 20:39 rlrevell       Status                   feedback => closed  
-01-02-06 20:39 rlrevell       Note Added: 0007386                          
+08-07-04 23:39 morgoth        New Issue                                    
+08-08-04 19:41 afran          Issue Monitored: afran                       
+08-08-04 19:52 afran          Note Added: 0001545                          
+12-31-05 07:26 rlrevell       Note Added: 0007350                          
+01-02-06 19:36 afran          Note Added: 0007377                          
+01-02-06 20:01 pzad           Note Added: 0007378                          
+01-02-06 20:12 rlrevell       Note Added: 0007379                          
+01-02-06 20:39 pzad           Note Added: 0007387                          
 ======================================================================
 
 
