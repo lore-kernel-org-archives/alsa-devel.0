@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001669]: ppc/tumbler.patch does not apply on 1.0.11rc1 drivers
-Date: Tue, 3 Jan 2006 18:31:22 +0100
-Message-ID: <c7d79bd69c04e8fc39f1d25722c44c35@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
+Date: Tue, 3 Jan 2006 18:42:12 +0100
+Message-ID: <fb9fbc77aa7abf4034cfd15cbfa2a5b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 007D616D
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 18:31:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CADCE16D
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 18:42:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1669> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
 ======================================================================
-Reported By:                Flameeyes
-Assigned To:                perex
+Reported By:                alsarealist
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1669
-Category:                   0_compilation problem_!!!
+Issue ID:                   1703
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.15_rc5
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               self burned
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-22-2005 02:16 CET
-Last Modified:              01-03-2006 18:31 CET
+Date Submitted:             01-03-2006 18:42 CET
+Last Modified:              01-03-2006 18:42 CET
 ======================================================================
-Summary:                    ppc/tumbler.patch does not apply on 1.0.11rc1
-drivers
+Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
+not working
 Description: 
-The ppc/tumbler.patch fails to apply on 1.0.11rc1 drivers on PPC.
-Attached there's a patch that fixes the patch, allowing alsa-driver to
-build on PPC.
+Pass-through with xine is not working.
+PCM Stereo downmix works fine
 
-(it still does not load on 2.6.15 for now).
+
+00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller (rev a2)
+
+gcc (GCC) 4.0.2
+alsa version 1.0.11rc2
+Linux 2.6.15
+
 ======================================================================
-
-----------------------------------------------------------------------
- Flameeyes - 01-03-06 09:11 
-----------------------------------------------------------------------
-This is fixed in 1.0.11_rc2, feel free to close.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 02:16 Flameeyes      New Issue                                    
-12-22-05 02:16 Flameeyes      File Added: alsa-driver-1.0.11_rc1-ppc.patch      
-             
-12-22-05 02:16 Flameeyes      Distribution              => Gentoo Linux    
-12-22-05 02:16 Flameeyes      Kernel Version            => 2.6.15_rc5      
-01-03-06 09:11 Flameeyes      Note Added: 0007399                          
-01-03-06 18:31 rlrevell       Status                   assigned => resolved
-01-03-06 18:31 rlrevell       Resolution               open => fixed       
+01-03-06 18:42 alsarealist    New Issue                                    
+01-03-06 18:42 alsarealist    Distribution              => self burned     
 ======================================================================
 
 
