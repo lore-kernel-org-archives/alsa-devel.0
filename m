@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001659]: dmix not working with ice1712
-Date: Mon, 2 Jan 2006 23:07:15 +0100
-Message-ID: <2672c3d254ada3d85a6a9fcc2eba3063@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
+Date: Tue, 3 Jan 2006 02:06:08 +0100
+Message-ID: <184ac82de72a3a6b75d265fe8096f934@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDAD7161
-	for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2006 23:07:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79AED162
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 02:06:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,103 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1659> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                gflash
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1659
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   927
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-18-2005 21:07 CET
-Last Modified:              01-02-2006 23:07 CET
+Date Submitted:             02-20-2005 08:53 CET
+Last Modified:              01-03-2006 02:06 CET
 ======================================================================
-Summary:                    dmix not working with ice1712
+Summary:                    Support for Creative SB Audigy 2 ZS Notebook
 Description: 
-In Debian bug 342026 the submitter reports:
+Is this PCMCIA Souncard supported or will it be supported in the next time?
+I haven't heard any positive reports yet...
 
-> After an upgrade today [to 1.0.10rc1?], the dmix plugin stopped
-working.
-> 
->     $ mocp 	# or any other program trying to use alsa
->     ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave)
-requested or auto-format is not available
->     ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize
-slave
-> 
-> My ~/.asoundrc is the example configuration for using dmix with the
-> ICE1712 chip (found e.g. at
-http://alsa.opensrc.org/index.php?page=DmixPlugin).
-> 
-> # cat ~/.asoundrc
-> # our ICE1712 dmix:
-> pcm.ossmix {
->     type dmix
->     ipc_key 1024
->     slave {
->     pcm "hw:0,0"
->         period_time 0
->         period_size 1024
->         buffer_size 4096 # buffer size < 6653, but pow(x, 2)
->         rate 44100 # we want to play CDs only
->     }
->     bindings {
->         0 0
->         1 1
->     }
-> }
-> # Everything shall be dmixed, so redefine "default":
-> pcm.!default {
->     type plug
->     slave.pcm "ossmix"
-> }
-> # OSS via aoss should d(mix)stroyed:
-> pcm.dsp0 {
->     type plug
->     slave.pcm "ossmix"
-> }
-> ctl.mixer0 {
->     type hw
->     card 0
-> }
-
-
-He says that this config worked in ALSA 1.0.9.
-
-He later adds:
-
-> Adding 'format S32_LE' in the original .asoundrc seems to have fixed
-> the problem. Apparently the default format (for ice1712 or generally?)
-> has been changed to something that doesn't work.
-
-As always, see http://bugs.debian.org/342026 for the complete log.
+Thank you!
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-18-05 22:31 
+ bubbleguuum - 12-21-05 18:12 
 ----------------------------------------------------------------------
-Remove your .asoundrc and apply the attached patch.
+Many thanks for this !
 
-Maintainers, please apply for 1.0.11 release.  Another user has confirmed
-the patch fixes the problem.
+I just tested and I have sound. However:
+
+- At low volume the sound is badly distorded with some noise. I suppose it
+might be the case at higher volume too. There's also this constant volume
+white noise at all volume level : listen to some quiet music at high
+volume to hear it. Test done using xmms + alsa out plug in
+Just for reference using windows you can put the card to 0db in the
+creative mixer (ie all the way to the max) and the sound is crystal
+clear)
+
+- Output is very loud, a lot louder at the same settings that the internal
+intel hda card (which I always found a bit low)
+
+- If you go too high with the Master or PCM slider clicks appears
+
+- front, rear and center outputs give no sound but I suppose this is
+expected
 
 ----------------------------------------------------------------------
- jdthood - 01-02-06 23:07 
+ xavimetal - 01-03-06 02:06 
 ----------------------------------------------------------------------
-I notice that this patch was not applied in 1.0.11rc2.
+How can i apply this patch?
+
+thnks!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-18-05 21:07 jdthood        New Issue                                    
-12-18-05 22:30 rlrevell       File Added: ICE1712-dmix.patch                    
-12-18-05 22:31 rlrevell       Note Added: 0007072                          
-01-02-06 23:07 jdthood        Note Added: 0007394                          
+02-20-05 08:53 gflash         New Issue                                    
+02-20-05 12:32 jcdutton       Note Added: 0003673                          
+02-20-05 14:06 gflash         Note Added: 0003674                          
+02-20-05 14:39 jcdutton       Note Added: 0003675                          
+02-20-05 14:47 jcdutton       Note Edited: 0003675                         
+07-25-05 17:43 dale           Note Added: 0005564                          
+07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
+08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
+10-30-05 21:08 jcdutton       Note Added: 0006577                          
+10-31-05 00:55 buckvitulli    Note Added: 0006578                          
+10-31-05 12:43 jcdutton       Status                   new => assigned     
+10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
+11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
+11-30-05 15:58 bubbleguuum    Issue Monitored: bubbleguuum                    
+12-06-05 02:55 hades          Issue Monitored: hades                       
+12-06-05 02:56 hades          Note Added: 0006918                          
+12-06-05 13:26 jpeak          Issue End Monitor: jpeak                     
+12-13-05 12:15 jcdutton       Note Added: 0006990                          
+12-21-05 16:07 jcdutton       File Added: audigy2-notebook-sound-fix.diff       
+            
+12-21-05 16:09 jcdutton       Note Added: 0007109                          
+12-21-05 16:31 jcdutton       File Added: audigy-notebook-speakers-enable.diff  
+                 
+12-21-05 16:32 jcdutton       Note Added: 0007110                          
+12-21-05 18:12 bubbleguuum    Note Added: 0007111                          
+12-24-05 19:34 maiku          Issue Monitored: maiku                       
+01-03-06 02:06 xavimetal      Note Added: 0007395                          
 ======================================================================
 
 
