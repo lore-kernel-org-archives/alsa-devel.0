@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Tue, 3 Jan 2006 04:04:40 +0100
-Message-ID: <2aa5da153b9e1f602398ec3cf505fba3@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: MAILER-DAEMON@yahoo.com
+Subject: failure delivery
+Date: 3 Jan 2006 06:06:11 -0000
+Message-ID: <E1EtfJI-0001Jp-NX@mail.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 678F3146
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 04:04:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,145 +12,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Message from  yahoo.com.
+Unable to deliver message to the following address(es).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
-======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              01-03-2006 04:04 CET
-======================================================================
-Summary:                    module hangs at seemingly random times
-Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+<admin@yahoo.com>:
+This address no longer accepts mail.
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
+--- Original message follows.
 
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
+Return-Path: <alsa-devel@lists.sourceforge.net>
 
+The original message is over 5k.  Message truncated to 1K.
 
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
+X-Rocket-Spam: 64.251.132.84
+X-YahooFilteredBulk: 64.251.132.84
+X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.194.212>
+X-Originating-IP: [64.251.132.84]
+Return-Path: <alsa-devel@lists.sourceforge.net>
+Authentication-Results: mta254.mail.mud.yahoo.com
+  from=lists.sourceforge.net; domainkeys=neutral (no sig)
+Received: from 64.251.132.84  (HELO fimuih.net) (64.251.132.84)
+  by mta254.mail.mud.yahoo.com with SMTP; Mon, 02 Jan 2006 22:06:11 -0800
+From: alsa-devel@lists.sourceforge.net
+To: address@yahoo.com
+Date: Tue, 03 Jan 2006 06:05:50 UTC
+Subject: hi, ive a new mail address
+Importance: Normal
+X-Mailer: SpeedMail_V7.43
+X-Priority: 3 (Normal)
+Message-ID: <869b97.e6be216e93bf@lists.sourceforge.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="====1e7f8d7dcef33b3.a08175e"
+Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
+--====1e7f8d7dcef33b3.a08175e
 
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
-======================================================================
+hey its me, my old address dont work at time. i dont know why?!
+in the last days ive got some mails. i' think thaz your mails but im not sure!
 
-----------------------------------------------------------------------
- Raymond - 10-27-05 02:27 
-----------------------------------------------------------------------
-It looks like au88x0_gameport.c need patch too.
-
-static int
-vortex_game_cooked_read(struct gameport *gameport, int *axes, int
-*buttons)
-{
-	vortex_t *vortex = gameport_get_port_data(gameport);
-	int i;
-
-	*buttons = (~hwread(vortex->mmio, VORTEX_GAME_LEGACY) >> 4) & 0xf;
-
-	for (i = 0; i < 4; i++) {
-		axes[i] =
-		    hwread(vortex->mmio, VORTEX_GAME_AXIS + (i * AXIS_SIZE));
-		if (axes[i] == AXIS_RANGE)
-			axes[i] = -1;
-	}
-	return 0;
-}
-
-----------------------------------------------------------------------
- Raymond - 01-03-06 04:04 
-----------------------------------------------------------------------
-"if (vortex_adbdma_bufshift(vortex, i)) ;"
-
-It look like snd_pcm_period_elapsed() was called for those substreams
-which interrupt have not occurred.
-
-
-	if (source & IRQ_PCMOUT) {
-		/* ALSA period acknowledge. */
-		spin_lock(&vortex->lock);
-		for (i = 0; i < NR_ADB; i++) {
-			if (vortex->dma_adb[i].fifo_status == FIFO_START) {
-				if (vortex_adbdma_bufshift(vortex, i)) ;
-				spin_unlock(&vortex->lock);
-				snd_pcm_period_elapsed(vortex->dma_adb[i].
-						       substream);
-				spin_lock(&vortex->lock);
-			}
-		}
-#ifndef CHIP_AU8810
-		for (i = 0; i < NR_WT; i++) {
-			if (vortex->dma_wt[i].fifo_status == FIFO_START) {
-				if (vortex_wtdma_bufshift(vortex, i)) ;
-				spin_unlock(&vortex->lock);
-				snd_pcm_period_elapsed(vortex->dma_wt[i].
-						       substream);
-				spin_lock(&vortex->lock);
-			}
-		}
-#endif
-		spin_unlock(&vortex->lock);
-		handled = 1;
-	}
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-======================================================================
-
+plz read and check ...
+cyaaaaaaa
+--====1e7f8d7dcef33b3.a08175e
+C
+*** MESSAGE TRUNCATED ***
 
 
 
