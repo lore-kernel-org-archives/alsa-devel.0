@@ -1,11 +1,13 @@
-From: "Oscar Bowman" <EEGLGLMXLODIE@cooltainers.co.nz>
-Subject: Purchase Confirmation
-Date: Tue, 03 Jan 2006 19:29:26 +0400
-Message-ID: <33141.3677930415$1136302414@news.gmane.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: alsa-friendly app which decodes dts over s/pdif?
+Date: Tue, 03 Jan 2006 12:30:11 -0500
+Message-ID: <1136309412.24703.25.camel@mindpipe>
+References: <43BA6ED1.9080901@ku24.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ODAP-62-0-86-44.bb.netvision.net.il (ODAP-62-0-86-44.bb.netvision.net.il [62.0.86.44])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 25B02146
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 16:32:26 +0100 (MET)
+In-Reply-To: <43BA6ED1.9080901@ku24.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,39 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Darrell Berry <darrell@ku24.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
--Sensattional revolution in meedicine!
+On Tue, 2006-01-03 at 12:32 +0000, Darrell Berry wrote:
+> i'm looking for any *software* which will take an incoming s/pdif stream 
+> and decode to discrete channels (and hence physical interfaces on an 
+> audiocard(s)) -- any thoughts?
 
--E-nlarge your p-enis up to 10 cm or up to 4 inches!
+Well ac3dec does this for AC3.  I have no idea how that's different from
+DTS.
 
--It's herbal solution what hasn't side effect, but has 100% guaranteed results!
+Lee
 
--Don't loose your chance and but know wihtout doubts, you will be impressed with results!
-
-Clisk h-ere: http://halrf.info
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-         
-        
-          
-       
-       
-       
 
 
 -------------------------------------------------------
