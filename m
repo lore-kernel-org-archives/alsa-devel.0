@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
-Date: Tue, 3 Jan 2006 18:42:12 +0100
-Message-ID: <fb9fbc77aa7abf4034cfd15cbfa2a5b4@bugtrack.alsa-project.org>
+Date: Tue, 3 Jan 2006 19:05:31 +0100
+Message-ID: <00d905e3b9e662b2e673bfdc043cf3a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CADCE16D
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 18:42:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A658C7
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 19:05:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               self burned
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-03-2006 18:42 CET
-Last Modified:              01-03-2006 18:42 CET
+Last Modified:              01-03-2006 19:05 CET
 ======================================================================
 Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
 not working
@@ -58,11 +58,18 @@ Linux 2.6.15
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 01-03-06 19:05 
+----------------------------------------------------------------------
+Please give more details.  How exactly does it "not work"?  What did you
+try to get it working?  Did this ever work with any previous version?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-03-06 18:42 alsarealist    New Issue                                    
 01-03-06 18:42 alsarealist    Distribution              => self burned     
+01-03-06 19:05 rlrevell       Note Added: 0007403                          
 ======================================================================
 
 
