@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001707]: Better support for new USB-Microphone Samson C01U
-Date: Tue, 3 Jan 2006 22:42:27 +0100
-Message-ID: <16de7f6bb723eebced727ab433446918@bugtrack.alsa-project.org>
+From: LWATCDR <lwatcdr@gmail.com>
+Subject: Simple question.
+Date: Tue, 3 Jan 2006 16:42:26 -0500
+Message-ID: <8c38cea40601031342s7b3158e2k99de34c50c4fb6ff@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_26824_17245597.1136324546262"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D02C6158
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 22:42:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +15,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_26824_17245597.1136324546262
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1707> 
-======================================================================
-Reported By:                Toph
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1707
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.15-ck1
-======================================================================
-Date Submitted:             01-03-2006 22:42 CET
-Last Modified:              01-03-2006 22:42 CET
-======================================================================
-Summary:                    Better support for new USB-Microphone Samson C01U
-Description: 
-I recently bought this microphone:
-http://www.samsontech.com/products/productpage.cfm?prodID=1810&brandID=2
-and have been quite pleased to see that it kind of works with alsa. I've
-only been puzzled by a few oddities: Although the mic is mono, I get a
-stereo input with 2 controls, which did even influence the sound on both
-channels separatly, but in a not-so-clear way.
+I am just starting to work with Alsa I compiled a test program from one of
+the tutorials and I am getting this error message.
+Unknown Error 126.
+Does anyone know what error 126 is?
+I am using "plughw:0,0" as the device name.
+and this is the segment of code that generates the error.
 
-Since neither the windows, nor the OSX usb-audio driver are able to fully
-control the device, especially the internal gain-control, Samson has
-published a modified driver & tool to control such parameters. I have
-investigated that tool with an usb-traffic sniffer (usbsnoop).
-
-I did also do some experiments with the alsa driver to see, what the
-controls really do and how the device might be designed internally. I have
-found out about everything needed to make the device fully supported, I
-just don't really know how to implement it, so I'm hoping someone will
-guide and help me. Although I'd really like to, I'm not a kernel hacker.
-
-What I basically want to do is remap and rename the mixer-controls and
-output lines alsa exposes. Is that what the quirks are for?
-
-Details about the device and my findings follow below:
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-06 22:42 Toph           New Issue                                    
-01-03-06 22:42 Toph           Distribution              => gentoo          
-01-03-06 22:42 Toph           Kernel Version            => 2.6.15-ck1      
-======================================================================
+for (i =3D 0; i < 10; ++i) {
+if ((err =3D snd_pcm_writei (playback_handle, buf, 128)) !=3D 128) {
+    fprintf (stderr, "write to audio interface failed (%s)\n", snd_strerror
+(err));
+    exit (1);
+    }
+}
 
 
+I am running Suse 9.3+kde 3.5
+
+I hope this is the correct list to ask this.
+
+------=_Part_26824_17245597.1136324546262
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+I am just starting to work with Alsa I compiled a test program from one of =
+the tutorials and I am getting this error message.<br>Unknown Error 126.<br=
+>Does anyone know what error 126 is?<br>I am using &quot;plughw:0,0&quot; a=
+s the device name.
+<br>and this is the segment of code that generates the error.<br><br>for (i=
+ =3D 0; i &lt; 10; ++i) {<br>if ((err =3D snd_pcm_writei (playback_handle, =
+buf, 128)) !=3D 128) {<br>&nbsp;&nbsp;&nbsp; fprintf (stderr, &quot;write t=
+o audio interface failed (%s)\n&quot;, snd_strerror (err));
+<br>&nbsp;&nbsp;&nbsp; exit (1);<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br><br>I =
+am running Suse 9.3+kde 3.5<br><br>I hope this is the correct list to ask t=
+his.<br>
+
+------=_Part_26824_17245597.1136324546262--
 
 
 -------------------------------------------------------
