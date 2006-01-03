@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Tue, 3 Jan 2006 02:06:08 +0100
-Message-ID: <184ac82de72a3a6b75d265fe8096f934@bugtrack.alsa-project.org>
+Date: Tue, 3 Jan 2006 03:37:19 +0100
+Message-ID: <b798d853fb382b66a04d6ea0a51593d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79AED162
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 02:06:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91B09125
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 03:37:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              01-03-2006 02:06 CET
+Last Modified:              01-03-2006 03:37 CET
 ======================================================================
 Summary:                    Support for Creative SB Audigy 2 ZS Notebook
 Description: 
@@ -51,34 +51,16 @@ Thank you!
 ======================================================================
 
 ----------------------------------------------------------------------
- bubbleguuum - 12-21-05 18:12 
-----------------------------------------------------------------------
-Many thanks for this !
-
-I just tested and I have sound. However:
-
-- At low volume the sound is badly distorded with some noise. I suppose it
-might be the case at higher volume too. There's also this constant volume
-white noise at all volume level : listen to some quiet music at high
-volume to hear it. Test done using xmms + alsa out plug in
-Just for reference using windows you can put the card to 0db in the
-creative mixer (ie all the way to the max) and the sound is crystal
-clear)
-
-- Output is very loud, a lot louder at the same settings that the internal
-intel hda card (which I always found a bit low)
-
-- If you go too high with the Master or PCM slider clicks appears
-
-- front, rear and center outputs give no sound but I suppose this is
-expected
-
-----------------------------------------------------------------------
  xavimetal - 01-03-06 02:06 
 ----------------------------------------------------------------------
 How can i apply this patch?
 
 thnks!
+
+----------------------------------------------------------------------
+ rlrevell - 01-03-06 03:37 
+----------------------------------------------------------------------
+The patch should already be in the 1.0.11-rc2 release, just try that.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +92,7 @@ Date Modified  Username       Field                    Change
 12-21-05 18:12 bubbleguuum    Note Added: 0007111                          
 12-24-05 19:34 maiku          Issue Monitored: maiku                       
 01-03-06 02:06 xavimetal      Note Added: 0007395                          
+01-03-06 03:37 rlrevell       Note Added: 0007396                          
 ======================================================================
 
 
