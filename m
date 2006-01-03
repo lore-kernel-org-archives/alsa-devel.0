@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001076]: Can't use mmap with device
-Date: Tue, 3 Jan 2006 12:39:34 +0100
-Message-ID: <d6a38e88946a167221b91b71e52870a2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001188]: quake3 crashes, capture not working
+Date: Tue, 3 Jan 2006 12:41:23 +0100
+Message-ID: <71dbdf03c5fdc6a1de85a342f3b39e87@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 393D2162
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 12:39:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 840B516E
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 12:41:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been set as RELATED TO issue 0000373.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1076> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1188> 
 ======================================================================
-Reported By:                nachoexr
-Assigned To:                
+Reported By:                gnarlie
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1076
-Category:                   PCI - via82xx
+Issue ID:                   1188
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu Linux 4.05 Hoary
-Kernel Version:             2.6.11.7
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.8.1 with the voluntary preempt patch
 ======================================================================
-Date Submitted:             04-25-2005 00:08 CEST
-Last Modified:              04-25-2005 00:08 CEST
+Date Submitted:             06-13-2005 19:41 CEST
+Last Modified:              09-10-2005 13:09 CEST
 ======================================================================
-Summary:                    Can't use mmap with device
+Summary:                    quake3 crashes, capture not working
 Description: 
-Detected with the Quake 3 (Q3 1.32b linux-i386 Nov 14 2002) that can't
-initialize audio with this error:
-
-------- sound initialization -------
-Could not mmap dma buffer PROT_WRITE|PROT_READ
-trying mmap PROT_WRITE (with associated better compatibility / less
-performance code)
-/dev/dsp: Input/output error
-Could not mmap /dev/dsp
-------------------------------------
-
-after many tests the audio works except in applications using mmap. 
+The card is a sb live 24bit pci.
+quake3 crashes me after a map has loaded, oddly one map works but crashes
+everytime when I finish the map. The sounds in the menus work. Tried my
+mic
+with the mic-in and all possible mixer settings, no dice.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0000373 Sound in Quake 3 does not work
 ======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 09-10-05 13:09 
+----------------------------------------------------------------------
+The ca0106 based sound card is currently unsuitable for any linux based
+games.
+The card cannot do 44100 Hz sound, and all games like Doom3 and Quake3 use
+44100 Hz sound. I would suggest using a different sound card for now, or
+wait until the alsa-lib resamplers have improved in order to support
+this.
+The improvements needed to the alsa-lib resamplers are rather complicated,
+so don't expect it to happen any time soon.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-25-05 00:08 nachoexr       New Issue                                    
-04-25-05 00:08 nachoexr       Distribution              => Ubuntu Linux 4.05
-Hoary
-04-25-05 00:08 nachoexr       Kernel Version            => 2.6.11.7        
-05-01-05 20:27 JHM2           Issue Monitored: JHM2                        
-01-03-06 12:39 perex          Relationship added       related to 0000373  
+06-13-05 19:41 gnarlie        New Issue                                    
+06-13-05 19:41 gnarlie        Distribution              => gentoo          
+06-13-05 19:41 gnarlie        Kernel Version            => 2.6.8.1 with the
+voluntary preempt patch
+09-10-05 13:09 jcdutton       Note Added: 0006117                          
+01-03-06 12:41 perex          Relationship added       related to 0000373  
 ======================================================================
 
 
