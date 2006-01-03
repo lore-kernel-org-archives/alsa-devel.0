@@ -1,8 +1,14 @@
-From: MAILER-DAEMON@yahoo.com
-Subject: failure delivery
-Date: 3 Jan 2006 06:06:11 -0000
-Message-ID: <E1EtfJI-0001Jp-NX@mail.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001669]: ppc/tumbler.patch does not apply on 1.0.11rc1 drivers
+Date: Tue, 3 Jan 2006 09:11:27 +0100
+Message-ID: <41fc27850de279a47d0cd34fd8604037@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C151167
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 09:11:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,53 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Message from  yahoo.com.
-Unable to deliver message to the following address(es).
 
-<admin@yahoo.com>:
-This address no longer accepts mail.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1669> 
+======================================================================
+Reported By:                Flameeyes
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1669
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.15_rc5
+======================================================================
+Date Submitted:             12-22-2005 02:16 CET
+Last Modified:              01-03-2006 09:11 CET
+======================================================================
+Summary:                    ppc/tumbler.patch does not apply on 1.0.11rc1
+drivers
+Description: 
+The ppc/tumbler.patch fails to apply on 1.0.11rc1 drivers on PPC.
+Attached there's a patch that fixes the patch, allowing alsa-driver to
+build on PPC.
 
---- Original message follows.
+(it still does not load on 2.6.15 for now).
+======================================================================
 
-Return-Path: <alsa-devel@lists.sourceforge.net>
+----------------------------------------------------------------------
+ Flameeyes - 01-03-06 09:11 
+----------------------------------------------------------------------
+This is fixed in 1.0.11_rc2, feel free to close.
 
-The original message is over 5k.  Message truncated to 1K.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-22-05 02:16 Flameeyes      New Issue                                    
+12-22-05 02:16 Flameeyes      File Added: alsa-driver-1.0.11_rc1-ppc.patch      
+             
+12-22-05 02:16 Flameeyes      Distribution              => Gentoo Linux    
+12-22-05 02:16 Flameeyes      Kernel Version            => 2.6.15_rc5      
+01-03-06 09:11 Flameeyes      Note Added: 0007399                          
+======================================================================
 
-X-Rocket-Spam: 64.251.132.84
-X-YahooFilteredBulk: 64.251.132.84
-X-Rocket-Track: cat=BK; info=ip:BK<ip=64.251.132.84,policy=g-w0,n0,g100>;sv:UK<ip=68.142.194.212>
-X-Originating-IP: [64.251.132.84]
-Return-Path: <alsa-devel@lists.sourceforge.net>
-Authentication-Results: mta254.mail.mud.yahoo.com
-  from=lists.sourceforge.net; domainkeys=neutral (no sig)
-Received: from 64.251.132.84  (HELO fimuih.net) (64.251.132.84)
-  by mta254.mail.mud.yahoo.com with SMTP; Mon, 02 Jan 2006 22:06:11 -0800
-From: alsa-devel@lists.sourceforge.net
-To: address@yahoo.com
-Date: Tue, 03 Jan 2006 06:05:50 UTC
-Subject: hi, ive a new mail address
-Importance: Normal
-X-Mailer: SpeedMail_V7.43
-X-Priority: 3 (Normal)
-Message-ID: <869b97.e6be216e93bf@lists.sourceforge.net>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="====1e7f8d7dcef33b3.a08175e"
-Content-Transfer-Encoding: 7bit
-This is a multi-part message in MIME format.
-
---====1e7f8d7dcef33b3.a08175e
-
-hey its me, my old address dont work at time. i dont know why?!
-in the last days ive got some mails. i' think thaz your mails but im not sure!
-
-plz read and check ...
-cyaaaaaaa
---====1e7f8d7dcef33b3.a08175e
-C
-*** MESSAGE TRUNCATED ***
 
 
 
