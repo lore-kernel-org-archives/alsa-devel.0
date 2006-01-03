@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001668]: speaker-test.c should include <byteswap.h> while building on be machines
-Date: Tue, 3 Jan 2006 18:31:06 +0100
-Message-ID: <641ac3746daf00349139f65dc156ebd6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001669]: ppc/tumbler.patch does not apply on 1.0.11rc1 drivers
+Date: Tue, 3 Jan 2006 18:31:22 +0100
+Message-ID: <c7d79bd69c04e8fc39f1d25722c44c35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D80FB16D
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 18:31:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 007D616D
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 18:31:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,31 +24,34 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1668> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1669> 
 ======================================================================
 Reported By:                Flameeyes
-Assigned To:                rlrevell
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1668
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1669
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.15_rc5
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-22-2005 01:54 CET
+Date Submitted:             12-22-2005 02:16 CET
 Last Modified:              01-03-2006 18:31 CET
 ======================================================================
-Summary:                    speaker-test.c should include <byteswap.h> while
-building on be machines
+Summary:                    ppc/tumbler.patch does not apply on 1.0.11rc1
+drivers
 Description: 
-The attached patch adds inclusion of byteswap.h header when building on big
-endian machines (such as PPC), or it fails with undefined references to
-bswap_* functions (they are defines, not functions).
+The ppc/tumbler.patch fails to apply on 1.0.11rc1 drivers on PPC.
+Attached there's a patch that fixes the patch, allowing alsa-driver to
+build on PPC.
 
+(it still does not load on 2.6.15 for now).
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -59,13 +62,14 @@ This is fixed in 1.0.11_rc2, feel free to close.
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 01:54 Flameeyes      New Issue                                    
-12-22-05 01:54 Flameeyes      File Added: alsa-utils-1.0.11_rc1-bigendian.patch 
-                  
-01-03-06 09:11 Flameeyes      Note Added: 0007398                          
-01-03-06 18:31 rlrevell       Status                   new => resolved     
+12-22-05 02:16 Flameeyes      New Issue                                    
+12-22-05 02:16 Flameeyes      File Added: alsa-driver-1.0.11_rc1-ppc.patch      
+             
+12-22-05 02:16 Flameeyes      Distribution              => Gentoo Linux    
+12-22-05 02:16 Flameeyes      Kernel Version            => 2.6.15_rc5      
+01-03-06 09:11 Flameeyes      Note Added: 0007399                          
+01-03-06 18:31 rlrevell       Status                   assigned => resolved
 01-03-06 18:31 rlrevell       Resolution               open => fixed       
-01-03-06 18:31 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
