@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001702]: No sound in front speakers emu10k1
-Date: Tue, 3 Jan 2006 09:47:16 +0100
-Message-ID: <b0df7c35fb842a195f3399a501e7d41b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001426]: only mono sound available on via82xx
+Date: Tue, 3 Jan 2006 10:25:22 +0100
+Message-ID: <dea16ca21550d52cefc464337b61bc7e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C936816A
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 09:47:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAA4216B
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 10:25:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1702> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1426> 
 ======================================================================
-Reported By:                pupp3tmast3r
+Reported By:                netset99
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1702
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Issue ID:                   1426
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             01-03-2006 09:41 CET
-Last Modified:              01-03-2006 09:47 CET
+Date Submitted:             09-15-2005 22:12 CEST
+Last Modified:              01-03-2006 10:25 CET
 ======================================================================
-Summary:                    No sound in front speakers emu10k1
+Summary:                    only mono sound available on via82xx
 Description: 
-Card: SBLive! Value [CT4832]
-Chip: Cirrus Logic CS4297A rev 4
+Only get mono sound with alsa. This is shown by the fact that I cannot
+change the master stereo volume e.g. in alsamixer, only mute or unmute
+it.
 
-When playing in surroud mode with mplayer (-af surround) or audio streams
-of 4 or more channels there is no front audio just rear.
+Tried with kernels 2.6.12, 2.6.13, both compiled into the kernel or as
+modules. Also happens with the drivers from the alsa homepage
+(1.0.10_rc1). Tried live CD's from Gentoo (2.6.12 kernel) and from Knoppix
+(2.6.11). dxs_support 1-5 and ac97_quirk parameters didn't solve the
+problem. Neither did changing volume / muting and unmuting a combination
+of controls in alsamixer.
 
-This card does only 4 channels playing since is one of the very first
-models.
-
-The bug appears in versions of mplayer from 1.0pre7try2 to CVS2005-12-15
+However: A Ubuntu Live CD (Kernel 2.6.10) gives me normal stereo sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-03-06 09:47 
+ rlrevell - 12-30-05 23:16 
 ----------------------------------------------------------------------
-Make sure, you have same alsa-lib and alsa-driver version.
-What is in /proc/asound/version ?
-Make sure, you have set "Front" volume.
+Any improvement in later releases?
+
+----------------------------------------------------------------------
+ netset99 - 01-03-06 10:25 
+----------------------------------------------------------------------
+Just tried with it 2.6.14 gentoo kernel. Still the same thing, it just
+doesn't bother me anymore.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-06 09:41 pupp3tmast3r   New Issue                                    
-01-03-06 09:47 pzad           Note Added: 0007400                          
+09-15-05 22:12 netset99       New Issue                                    
+09-15-05 22:12 netset99       Distribution              => gentoo          
+09-15-05 22:12 netset99       Kernel Version            => 2.6.13          
+09-15-05 22:47 netset99       Note Added: 0006226                          
+12-30-05 23:16 rlrevell       Note Added: 0007282                          
+01-03-06 10:25 netset99       Note Added: 0007401                          
 ======================================================================
 
 
