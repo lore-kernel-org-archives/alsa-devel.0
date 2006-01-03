@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Tue, 3 Jan 2006 03:37:19 +0100
-Message-ID: <b798d853fb382b66a04d6ea0a51593d0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Tue, 3 Jan 2006 04:04:40 +0100
+Message-ID: <2aa5da153b9e1f602398ec3cf505fba3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91B09125
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 03:37:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 678F3146
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 04:04:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,137 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                gflash
-Assigned To:                jcdutton
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   927
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              01-03-2006 03:37 CET
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              01-03-2006 04:04 CET
 ======================================================================
-Summary:                    Support for Creative SB Audigy 2 ZS Notebook
+Summary:                    module hangs at seemingly random times
 Description: 
-Is this PCMCIA Souncard supported or will it be supported in the next time?
-I haven't heard any positive reports yet...
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-Thank you!
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
+
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
+
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- xavimetal - 01-03-06 02:06 
+ Raymond - 10-27-05 02:27 
 ----------------------------------------------------------------------
-How can i apply this patch?
+It looks like au88x0_gameport.c need patch too.
 
-thnks!
+static int
+vortex_game_cooked_read(struct gameport *gameport, int *axes, int
+*buttons)
+{
+	vortex_t *vortex = gameport_get_port_data(gameport);
+	int i;
+
+	*buttons = (~hwread(vortex->mmio, VORTEX_GAME_LEGACY) >> 4) & 0xf;
+
+	for (i = 0; i < 4; i++) {
+		axes[i] =
+		    hwread(vortex->mmio, VORTEX_GAME_AXIS + (i * AXIS_SIZE));
+		if (axes[i] == AXIS_RANGE)
+			axes[i] = -1;
+	}
+	return 0;
+}
 
 ----------------------------------------------------------------------
- rlrevell - 01-03-06 03:37 
+ Raymond - 01-03-06 04:04 
 ----------------------------------------------------------------------
-The patch should already be in the 1.0.11-rc2 release, just try that.
+"if (vortex_adbdma_bufshift(vortex, i)) ;"
+
+It look like snd_pcm_period_elapsed() was called for those substreams
+which interrupt have not occurred.
+
+
+	if (source & IRQ_PCMOUT) {
+		/* ALSA period acknowledge. */
+		spin_lock(&vortex->lock);
+		for (i = 0; i < NR_ADB; i++) {
+			if (vortex->dma_adb[i].fifo_status == FIFO_START) {
+				if (vortex_adbdma_bufshift(vortex, i)) ;
+				spin_unlock(&vortex->lock);
+				snd_pcm_period_elapsed(vortex->dma_adb[i].
+						       substream);
+				spin_lock(&vortex->lock);
+			}
+		}
+#ifndef CHIP_AU8810
+		for (i = 0; i < NR_WT; i++) {
+			if (vortex->dma_wt[i].fifo_status == FIFO_START) {
+				if (vortex_wtdma_bufshift(vortex, i)) ;
+				spin_unlock(&vortex->lock);
+				snd_pcm_period_elapsed(vortex->dma_wt[i].
+						       substream);
+				spin_lock(&vortex->lock);
+			}
+		}
+#endif
+		spin_unlock(&vortex->lock);
+		handled = 1;
+	}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-20-05 08:53 gflash         New Issue                                    
-02-20-05 12:32 jcdutton       Note Added: 0003673                          
-02-20-05 14:06 gflash         Note Added: 0003674                          
-02-20-05 14:39 jcdutton       Note Added: 0003675                          
-02-20-05 14:47 jcdutton       Note Edited: 0003675                         
-07-25-05 17:43 dale           Note Added: 0005564                          
-07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
-08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
-10-30-05 21:08 jcdutton       Note Added: 0006577                          
-10-31-05 00:55 buckvitulli    Note Added: 0006578                          
-10-31-05 12:43 jcdutton       Status                   new => assigned     
-10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
-11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
-11-30-05 15:58 bubbleguuum    Issue Monitored: bubbleguuum                    
-12-06-05 02:55 hades          Issue Monitored: hades                       
-12-06-05 02:56 hades          Note Added: 0006918                          
-12-06-05 13:26 jpeak          Issue End Monitor: jpeak                     
-12-13-05 12:15 jcdutton       Note Added: 0006990                          
-12-21-05 16:07 jcdutton       File Added: audigy2-notebook-sound-fix.diff       
-            
-12-21-05 16:09 jcdutton       Note Added: 0007109                          
-12-21-05 16:31 jcdutton       File Added: audigy-notebook-speakers-enable.diff  
-                 
-12-21-05 16:32 jcdutton       Note Added: 0007110                          
-12-21-05 18:12 bubbleguuum    Note Added: 0007111                          
-12-24-05 19:34 maiku          Issue Monitored: maiku                       
-01-03-06 02:06 xavimetal      Note Added: 0007395                          
-01-03-06 03:37 rlrevell       Note Added: 0007396                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
 ======================================================================
 
 
