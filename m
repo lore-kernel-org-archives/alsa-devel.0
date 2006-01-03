@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Tue, 3 Jan 2006 14:00:38 +0100
-Message-ID: <23024c7f734ed1b0267f742d4f1e1d21@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: [2.6 patch] schedule obsolete OSS drivers for removal
+Date: Tue, 3 Jan 2006 14:14:06 +0100
+Message-ID: <20060103131406.GC3831__22861.243671696$1136294130$gmane$org@stusta.de>
+References: <20050726150837.GT3160@stusta.de> <1122393073.18884.29.camel@mindpipe> <42E65D50.3040808@pobox.com> <20050727182427.GH3160@stusta.de> <20050727203150.GF22686@tuxdriver.com> <42E7F1F9.2050105@pobox.com> <1122559208.32126.8.camel@localhost.localdomain> <Pine.LNX.4.61.0507281542420.8458@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66A6D173
-	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 14:00:39 +0100 (MET)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3874B173
+	for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2006 14:14:07 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0507281542420.8458@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,91 +20,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Jeff Garzik <jgarzik@pobox.com>, LKML <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jul 28, 2005 at 03:43:49PM +0200, Jaroslav Kysela wrote:
+> On Thu, 28 Jul 2005, Alan Cox wrote:
+> 
+> > On Mer, 2005-07-27 at 16:43 -0400, Jeff Garzik wrote:
+> > > ISTR Alan saying there was some ALi hardware that either wasn't in ALSA, 
+> > > or most likely didn't work in ALSA.  If Alan says I'm smoking crack, 
+> > > then you all can ignore me :)
+> > 
+> > The only big thing I know that still needed OSS (and may still do so) is
+> > the support for AC97 wired touchscreens and the like. Has that been
+> > ported to ALSA ?
+> 
+> We're working on this issue right now.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
-======================================================================
-Reported By:                gflash
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   927
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              01-03-2006 14:00 CET
-======================================================================
-Summary:                    Support for Creative SB Audigy 2 ZS Notebook
-Description: 
-Is this PCMCIA Souncard supported or will it be supported in the next time?
-I haven't heard any positive reports yet...
+What's the current status of this issue?
 
-Thank you!
-======================================================================
+> 						Jaroslav
 
-----------------------------------------------------------------------
- rlrevell - 01-03-06 03:37 
-----------------------------------------------------------------------
-The patch should already be in the 1.0.11-rc2 release, just try that.
+cu
+Adrian
 
-----------------------------------------------------------------------
- scoobydu - 01-03-06 14:00 
-----------------------------------------------------------------------
-Great work getting this card going! Thanks :)
+-- 
 
-I'm testing on a Powerbook 5,6 15" and have the same distortion mentioned,
-but can't test 1.0.11-rc2 due to module errors occuring with snd (will be
-upodating here when I see if I can isolate the problem)
-
-Keep up the good work.
-
-cheers
-scooby
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-20-05 08:53 gflash         New Issue                                    
-02-20-05 12:32 jcdutton       Note Added: 0003673                          
-02-20-05 14:06 gflash         Note Added: 0003674                          
-02-20-05 14:39 jcdutton       Note Added: 0003675                          
-02-20-05 14:47 jcdutton       Note Edited: 0003675                         
-07-25-05 17:43 dale           Note Added: 0005564                          
-07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
-08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
-10-30-05 21:08 jcdutton       Note Added: 0006577                          
-10-31-05 00:55 buckvitulli    Note Added: 0006578                          
-10-31-05 12:43 jcdutton       Status                   new => assigned     
-10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
-11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
-11-30-05 15:58 bubbleguuum    Issue Monitored: bubbleguuum                    
-12-06-05 02:55 hades          Issue Monitored: hades                       
-12-06-05 02:56 hades          Note Added: 0006918                          
-12-06-05 13:26 jpeak          Issue End Monitor: jpeak                     
-12-13-05 12:15 jcdutton       Note Added: 0006990                          
-12-21-05 16:07 jcdutton       File Added: audigy2-notebook-sound-fix.diff       
-            
-12-21-05 16:09 jcdutton       Note Added: 0007109                          
-12-21-05 16:31 jcdutton       File Added: audigy-notebook-speakers-enable.diff  
-                 
-12-21-05 16:32 jcdutton       Note Added: 0007110                          
-12-21-05 18:12 bubbleguuum    Note Added: 0007111                          
-12-24-05 19:34 maiku          Issue Monitored: maiku                       
-01-03-06 02:06 xavimetal      Note Added: 0007395                          
-01-03-06 03:37 rlrevell       Note Added: 0007396                          
-01-03-06 14:00 scoobydu       Note Added: 0007402                          
-======================================================================
-
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
