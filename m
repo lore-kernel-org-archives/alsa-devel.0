@@ -1,11 +1,15 @@
-From: LWATCDR <lwatcdr@gmail.com>
-Subject: Simple question.
-Date: Tue, 3 Jan 2006 16:42:26 -0500
-Message-ID: <8c38cea40601031342s7b3158e2k99de34c50c4fb6ff@mail.gmail.com>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: re: Envy24control -changes on screen
+Date: Tue, 3 Jan 2006 22:06:40 +0000
+Message-ID: <200601032206.40446.gineera@aspect135.co.uk>
+References: <200512162315.43124.gineera@aspect135.co.uk> <s5hhd8mrfgu.wl%tiwai@suse.de> <s5hy81yzji5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_26824_17245597.1136324546262"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hy81yzji5.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,52 +19,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_26824_17245597.1136324546262
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Monday 02 January 2006 16:23, you wrote:
+> At Mon, 02 Jan 2006 13:17:53 +0100,
+>
+> I wrote:
+> > > > Also, I got many compile warnings after your patch.  Could you fix
+> > > > them, too?
+> > >
+> > > I have no warnings at all (otherwise the patch would not have been
+> > > submitted). Can you list them and I will have a go.
+> >
+> > I got the following from gcc-4.0.2 (prerelease).
+> >
+> > envy24control.c: In function 'create_inputs_mixer':
+> > envy24control.c:290: warning: unused variable 'drawing'
+> > envy24control.c:289: warning: unused variable 'frame'
+> > envy24control.c: In function 'create_pcms_mixer':
+> > envy24control.c:344: warning: unused variable 'drawing'
+> > envy24control.c:343: warning: unused variable 'frame'
+> > envy24control.c: In function 'create_hardware':
+> > envy24control.c:1329: warning: unused variable 'vbox2'
+> > envy24control.c: In function 'create_outer':
+> > envy24control.c:1937: warning: unused variable 'hbox'
 
-I am just starting to work with Alsa I compiled a test program from one of
-the tutorials and I am getting this error message.
-Unknown Error 126.
-Does anyone know what error 126 is?
-I am using "plughw:0,0" as the device name.
-and this is the segment of code that generates the error.
+ConfirmI have checked -all are unneccessary definitions left as a result of 
+moving sections of code.  Presumably these have been deleted.
 
-for (i =3D 0; i < 10; ++i) {
-if ((err =3D snd_pcm_writei (playback_handle, buf, 128)) !=3D 128) {
-    fprintf (stderr, "write to audio interface failed (%s)\n", snd_strerror
-(err));
-    exit (1);
-    }
-}
+> > envy24control.c: In function 'main':
+> > envy24control.c:2063: warning: type defaults to 'int' in declaration of
+> > 'chanwidth'
+> > envy24control.c:2064: warning: type defaults to 'int' in declaration of
+> > 'fixwidth'
 
+Is 'const' not accepted?  The intention is to ensure the value cannot be 
+changed during program execution.
 
-I am running Suse 9.3+kde 3.5
+> OK, I fixed them by myself.  Now your patch is on CVS.
+> Thanks.
+>
+>
+> Takashi
 
-I hope this is the correct list to ask this.
+Thanks to you also.
+Will this result in envy24control version number being raised?  It has been at 
+0.5.0 since at least alsa1.0.8?
 
-------=_Part_26824_17245597.1136324546262
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Alan
 
-I am just starting to work with Alsa I compiled a test program from one of =
-the tutorials and I am getting this error message.<br>Unknown Error 126.<br=
->Does anyone know what error 126 is?<br>I am using &quot;plughw:0,0&quot; a=
-s the device name.
-<br>and this is the segment of code that generates the error.<br><br>for (i=
- =3D 0; i &lt; 10; ++i) {<br>if ((err =3D snd_pcm_writei (playback_handle, =
-buf, 128)) !=3D 128) {<br>&nbsp;&nbsp;&nbsp; fprintf (stderr, &quot;write t=
-o audio interface failed (%s)\n&quot;, snd_strerror (err));
-<br>&nbsp;&nbsp;&nbsp; exit (1);<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br><br>I =
-am running Suse 9.3+kde 3.5<br><br>I hope this is the correct list to ask t=
-his.<br>
-
-------=_Part_26824_17245597.1136324546262--
 
 
 -------------------------------------------------------
