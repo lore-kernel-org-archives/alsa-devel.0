@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001702]: No sound in front speakers emu10k1
-Date: Wed, 4 Jan 2006 01:21:52 +0100
-Message-ID: <881e18d6c38ba25d2ae5bd3cbf7edba8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
+Date: Wed, 4 Jan 2006 01:45:14 +0100
+Message-ID: <66ba681bb54b19ee2ce435b1abcafb9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E553117A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 01:21:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 020A8BD
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 01:45:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,85 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1702> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
 ======================================================================
-Reported By:                pupp3tmast3r
+Reported By:                alsarealist
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1702
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Issue ID:                   1703
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               self burned
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-03-2006 09:41 CET
-Last Modified:              01-04-2006 01:21 CET
+Date Submitted:             01-03-2006 18:42 CET
+Last Modified:              01-04-2006 01:45 CET
 ======================================================================
-Summary:                    No sound in front speakers emu10k1
+Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
+not working
 Description: 
-Card: SBLive! Value [CT4832]
-Chip: Cirrus Logic CS4297A rev 4
+Pass-through with xine is not working.
+PCM Stereo downmix works fine
 
-When playing in surroud mode with mplayer (-af surround) or audio streams
-of 4 or more channels there is no front audio just rear.
 
-This card does only 4 channels playing since is one of the very first
-models.
+00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller (rev a2)
 
-The bug appears in versions of mplayer from 1.0pre7try2 to CVS2005-12-15
+gcc (GCC) 4.0.2
+alsa version 1.0.11rc2
+Linux 2.6.15
+
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-03-06 20:59 
+ rlrevell - 01-03-06 19:05 
 ----------------------------------------------------------------------
-Or you have alsa-lib >= 1.0.10rc2 and your alsa-driver is 1.0.10rc1.
+Please give more details.  How exactly does it "not work"?  What did you
+try to get it working?  Did this ever work with any previous version?
 
 ----------------------------------------------------------------------
- pupp3tmast3r - 01-04-06 01:21 
+ alsarealist - 01-04-06 01:45 
 ----------------------------------------------------------------------
-Until 10.0.10rc1 it was
+Steps To Reproduce:
+ -> start xine
+ -> configure passthrough
+ -> start DVD dolby 5.1
+ -> receiver detects 5.1 but plays no sound
 
-{
-   interface PCM
-   device 0
-   name "EMU10K1 PCM Send Routing"
-   index { @func private_pcm_subdevice }
-   lock true
-   optional true
-   value [ 6 7 0 0 6 7 0 0 6 7 0 0 ]
-}
-
-Wich is currenlty working (from version 10.0.9), but I have compiled
-driver and libs 1.0.10 from alsa's ftp and I had the same problem, that is
-why I rolled back to kernel version (10.0.10rc1)and libs 10.0.9 from
-alsa's ftp to, Another problem is debian version package
-libasound2_1.0.10-2.deb shiping the file with the new conf "value [ 8 9 0
-0 8 9 0 0 8 9 0 0 ]" so after an update it will stop working again.
-
-I will check compilling driver 1.0.10 again from alsa's ftp and a
-combination of the libs: from debian package, and compiled from alsa's
-ftp.
-
-I hope the problem is just the value in the conf file and to get it
-working with the ftp driver version and debian's libs
-
-Once I have tested it will let you know the results.
-
-Any way which alsa's version is running the new kernel 2.6.15? this could
-fix the problem.
+same problem seems to exist in:
+alsa 1.0.11rc1
+and 
+alsa 1.0.10
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-06 09:41 pupp3tmast3r   New Issue                                    
-01-03-06 09:47 pzad           Note Added: 0007400                          
-01-03-06 20:10 pupp3tmast3r   File Added: asound.state                     
-01-03-06 20:13 pupp3tmast3r   Note Added: 0007404                          
-01-03-06 20:39 pzad           Note Added: 0007405                          
-01-03-06 20:59 pzad           Note Added: 0007407                          
-01-04-06 01:21 pupp3tmast3r   Note Added: 0007408                          
+01-03-06 18:42 alsarealist    New Issue                                    
+01-03-06 18:42 alsarealist    Distribution              => self burned     
+01-03-06 19:05 rlrevell       Note Added: 0007403                          
+01-04-06 01:45 alsarealist    Note Added: 0007409                          
 ======================================================================
 
 
