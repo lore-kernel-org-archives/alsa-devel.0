@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Wed, 4 Jan 2006 22:00:42 +0100
-Message-ID: <dd2f12ac0cc05277cd4b1e65e87e9ba9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001681]: (MIXER,'Front Playback Volume',0,0,0) appears twice or more
+Date: Wed, 4 Jan 2006 22:03:02 +0100
+Message-ID: <f56113d90f6abba40f7b5e2caf37552e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39C43181
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 22:00:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B0B8128
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 22:03:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,148 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1681> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                jcdutton
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
+Issue ID:                   1681
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              01-04-2006 22:00 CET
+Date Submitted:             12-26-2005 17:13 CET
+Last Modified:              01-04-2006 22:03 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    (MIXER,'Front Playback Volume',0,0,0) appears twice
+or more
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+Reported in "mashaun".
+
+0 [Live           ]: EMU10K1 - SB Live [Unknown]
+                     SB Live [Unknown] (rev.10, serial:0x80661102) at
+0xc800, irq 5
+
+the emu10k1 gives the following error when one tries to run alsamixer
+ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
+Volume',0,0,0) appears twice or more
+
+amixer controls                                       
+numid=43,iface=MIXER,name='Master Playback Switch'
+numid=44,iface=MIXER,name='Master Playback Volume'
+numid=91,iface=MIXER,name='Headphone +3dB Boost'
+numid=89,iface=MIXER,name='Headphone Amp'
+numid=40,iface=MIXER,name='Headphone Center Playback Switch',index=1
+numid=41,iface=MIXER,name='Headphone LFE Playback Switch',index=1
+numid=39,iface=MIXER,name='Headphone Playback Volume',index=1
+numid=35,iface=MIXER,name='Tone Control - Bass'
+numid=37,iface=MIXER,name='Tone Control - Switch'
+numid=36,iface=MIXER,name='Tone Control - Treble'
+numid=76,iface=MIXER,name='3D Control - Switch'
+numid=79,iface=MIXER,name='3D Control Sigmatel - Depth'
+numid=70,iface=MIXER,name='PCM Playback Switch'
+numid=71,iface=MIXER,name='PCM Playback Volume'
+numid=66,iface=MIXER,name='Surround Mix Playback Switch'
+numid=67,iface=MIXER,name='Surround Mix Playback Volume'
+numid=10,iface=MIXER,name='Surround Playback Volume'
+numid=12,iface=MIXER,name='Surround Capture Switch'
+numid=11,iface=MIXER,name='Surround Capture Volume'
+numid=86,iface=MIXER,name='Center/LFE Jack'
+numid=13,iface=MIXER,name='Center Playback Volume'
+numid=14,iface=MIXER,name='LFE Playback Volume'
+numid=7,iface=MIXER,name='Synth Playback Volume'
+numid=9,iface=MIXER,name='Synth Capture Switch'
+numid=8,iface=MIXER,name='Synth Capture Volume'
+numid=3,iface=MIXER,name='Wave Center Playback Volume'
+numid=4,iface=MIXER,name='Wave LFE Playback Volume'
+numid=2,iface=MIXER,name='Wave Surround Playback Volume'
+numid=1,iface=MIXER,name='Wave Playback Volume'
+numid=6,iface=MIXER,name='Wave Capture Switch'
+numid=5,iface=MIXER,name='Wave Capture Volume'
+numid=88,iface=MIXER,name='Line Input Source'
+numid=28,iface=MIXER,name='Line LiveDrive Capture Switch'
+numid=27,iface=MIXER,name='Line LiveDrive Capture Volume'
+numid=26,iface=MIXER,name='Line LiveDrive Playback Volume'
+numid=34,iface=MIXER,name='Line2 LiveDrive Capture Switch',index=1
+numid=33,iface=MIXER,name='Line2 LiveDrive Capture Volume',index=1
+numid=32,iface=MIXER,name='Line2 LiveDrive Playback Volume',index=1
+numid=83,iface=MIXER,name='LineIn Jack'
+numid=62,iface=MIXER,name='Line Playback Switch'
+numid=63,iface=MIXER,name='Line Playback Volume'
+numid=64,iface=MIXER,name='CD Playback Switch'
+numid=65,iface=MIXER,name='CD Playback Volume'
+numid=61,iface=MIXER,name='Mic Boost (+20dB)'
+numid=87,iface=MIXER,name='Mic Input Source'
+numid=78,iface=MIXER,name='Mic Select'
+numid=82,iface=MIXER,name='Mic1 Jack'
+numid=59,iface=MIXER,name='Mic Playback Switch'
+numid=60,iface=MIXER,name='Mic Playback Volume'
+numid=57,iface=MIXER,name='Phone Playback Switch'
+numid=58,iface=MIXER,name='Phone Playback Volume'
+numid=55,iface=MIXER,name='PC Speaker Playback Switch'
+numid=56,iface=MIXER,name='PC Speaker Playback Volume'
+numid=68,iface=MIXER,name='Aux Playback Switch'
+numid=69,iface=MIXER,name='Aux Playback Volume'
+numid=72,iface=MIXER,name='Capture Source'
+numid=73,iface=MIXER,name='Capture Switch'
+numid=74,iface=MIXER,name='Capture Volume'
+numid=31,iface=MIXER,name='IEC958 Coaxial Capture Switch'
+numid=30,iface=MIXER,name='IEC958 Coaxial Capture Volume'
+numid=29,iface=MIXER,name='IEC958 Coaxial Playback Volume'
+numid=25,iface=MIXER,name='IEC958 LiveDrive Capture Switch'
+numid=24,iface=MIXER,name='IEC958 LiveDrive Capture Volume'
+numid=23,iface=MIXER,name='IEC958 LiveDrive Playback Volume'
+numid=38,iface=MIXER,name='IEC958 Optical Raw Playback Switch'
+numid=22,iface=MIXER,name='IEC958 TTL Capture Switch'
+numid=21,iface=MIXER,name='IEC958 TTL Capture Volume'
+numid=20,iface=MIXER,name='IEC958 TTL Playback Volume'
+numid=19,iface=MIXER,name='AC97 Capture Volume'
+numid=18,iface=MIXER,name='AC97 Playback Volume'
+numid=90,iface=MIXER,name='Exchange Center/LFE'
+numid=92,iface=MIXER,name='External Amplifier'
+numid=17,iface=MIXER,name='Front Capture Switch'
+numid=16,iface=MIXER,name='Front Capture Volume'
+numid=84,iface=MIXER,name='Front Jack'
+numid=51,iface=MIXER,name='Front Playback Switch'
+numid=15,iface=MIXER,name='Front Playback Volume'
+numid=52,iface=MIXER,name='Front Playback Volume'
+numid=85,iface=MIXER,name='Rear Jack'
+numid=245,iface=MIXER,name='SB Live Analog/Digital Output Jack'
+numid=80,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
+numid=81,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
+numid=42,iface=PCM,name='Captured FX8010 Outputs',device=2
+numid=241,iface=PCM,name='IEC958 Playback Default',device=2
+numid=242,iface=PCM,name='IEC958 Playback Default',index=1,device=2
+numid=243,iface=PCM,name='IEC958 Playback Default',index=2,device=2
+numid=244,iface=PCM,name='IEC958 Playback Default',index=3,device=2
+numid=237,iface=PCM,name='IEC958 Playback Mask',device=2
+numid=238,iface=PCM,name='IEC958 Playback Mask',index=1,device=2
+numid=239,iface=PCM,name='IEC958 Playback Mask',index=2,device=2
+numid=240,iface=PCM,name='IEC958 Playback Mask',index=3,device=2
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:29 
+ alien999999999 - 01-04-06 22:03 
 ----------------------------------------------------------------------
-Specify "model=fujitsu" module option with ALSA 1.0.11rc2 or CVS.
+also have this problem:
 
-----------------------------------------------------------------------
- robertw - 01-04-06 22:00 
-----------------------------------------------------------------------
-I tried CVS and the 1.0.11rc2-version. Nothing new here:
+[alien@queen alien-libbt]$ alsamixer -c 1
+ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
+Volume',0,0,0) appears twice or more
 
-[4300394.183000] ALSA
-/home/robert/Desktop/alsa-driver-1.0.11rc2/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3030:
-hda_codec: Unknown model for ALC260
-
-So I edited a bit in alsa-kernel/pci/hda/patch_realtek.c:
-
-------------
-        /*if (board_config < 0 || board_config >= ALC260_MODEL_LAST) {
-                snd_printd(KERN_INFO "hda_codec: Unknown model for
-ALC260\n");
-                board_config = ALC260_AUTO;
-        }
-
-        if (board_config == ALC260_AUTO) {
-                * automatic parse from the BIOS config *
-                err = alc260_parse_auto_config(codec);
-                if (err < 0) {
-                        alc_free(codec);
-                        return err;
-                } else if (! err) {
-                        printk(KERN_INFO "hda_codec: Cannot set up
-configuration from BIOS.  Using base mode...\n");
-                        board_config = ALC260_BASIC;
-                }
-        }*/
-        board_config = ALC260_FUJITSU_S702X;
-----------
-This are lines 3029 until 3045
-
-With this litte changes, I have soundoutput on the line-out-jack
-(controlled in alsamixer with 'headphones') and of course no warning in
-dmesg. But I still have no sound through the internal speakers or the
-headphones-jack.
+alsamixer: function snd_mixer_load failed: Invalid argument
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
-01-04-06 22:00 robertw        Note Added: 0007453                          
+12-26-05 17:13 jcdutton       New Issue                                    
+01-04-06 22:03 alien999999999 Note Added: 0007454                          
 ======================================================================
 
 
