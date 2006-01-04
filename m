@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001674]: Audigy 2 ZS after suspend no sound line in
-Date: Wed, 4 Jan 2006 17:01:03 +0100
-Message-ID: <ca47fcc8a4097b0fd8a0c0f40162a986@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001274]: alc655: low volume
+Date: Wed, 4 Jan 2006 17:02:45 +0100
+Message-ID: <2727a79ff863b637c1d184a50d6d1590@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 636D4184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:01:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 283CC146
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:02:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1674> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1274> 
 ======================================================================
-Reported By:                andreid1303
+Reported By:                vitja
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1674
-Category:                   PCI - emu10k1
+Issue ID:                   1274
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             12-22-2005 21:41 CET
-Last Modified:              01-04-2006 17:01 CET
+Date Submitted:             07-22-2005 10:46 CEST
+Last Modified:              01-04-2006 17:02 CET
 ======================================================================
-Summary:                    Audigy 2 ZS after suspend no sound line in
+Summary:                    alc655: low volume
 Description: 
-Finally I have got sound working after suspend with alsa 1.0.11rc1
-installed but only line in is silent. PCM and Mic is OK
+I have ATI IXP400 sound in my notebook. codec is realtek's alc655. The
+problem is I couldn't hear anything from internal speaker. When I plug
+earphones in I hear very-very low music signal, so driver actually works
+but. By the way under xp with realtek's drivers thats all right.. Is there
+a way to see dump of ac97's registers under xp? May be XP driver uses some
+proprietary features of alc655?
 ======================================================================
 
 ----------------------------------------------------------------------
- andreid1303 - 01-04-06 13:39 
+ vitja - 01-04-06 12:47 
 ----------------------------------------------------------------------
-I have applied the patch. Now all analog inputs are working fine after
-suspend. Thank you very much!
+I can't reproduce this bug with 2.6.14 kernel, alsa version 1.0.10rc1,
+sound works ot of the box.
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:01 
+ tiwai - 01-04-06 17:02 
 ----------------------------------------------------------------------
-I applied the patch (and more fixes) on CVS.  Thanks.
+Both of you can compare /etc/asound.state to check the mixer status.  After
+that, compare ac97#0-0+regs proc files.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 21:41 andreid1303    New Issue                                    
-12-23-05 20:07 pzad           Note Added: 0007137                          
-12-27-05 20:47 andreid1303    Note Added: 0007169                          
-12-27-05 20:49 andreid1303    Note Edited: 0007169                         
-12-27-05 21:01 pzad           Note Added: 0007170                          
-12-27-05 21:38 pzad           File Added: pm.patch                         
-12-27-05 21:51 pzad           Note Added: 0007172                          
-01-04-06 13:39 andreid1303    Note Added: 0007417                          
-01-04-06 17:01 tiwai          Status                   new => resolved     
-01-04-06 17:01 tiwai          Resolution               open => fixed       
-01-04-06 17:01 tiwai          Assigned To               => tiwai           
-01-04-06 17:01 tiwai          Note Added: 0007432                          
+07-22-05 10:46 vitja          New Issue                                    
+07-22-05 20:32 vitja          File Added: codec                            
+07-24-05 22:19 vitja          Note Added: 0005560                          
+07-29-05 18:01 tiwai          Note Added: 0005583                          
+07-30-05 09:11 vitja          Note Added: 0005591                          
+01-04-06 12:24 UnrealX        Note Added: 0007414                          
+01-04-06 12:25 UnrealX        Note Edited: 0007414                         
+01-04-06 12:47 vitja          Note Added: 0007415                          
+01-04-06 17:02 tiwai          Note Added: 0007433                          
 ======================================================================
 
 
