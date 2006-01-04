@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
-Date: Wed, 4 Jan 2006 17:33:19 +0100
-Message-ID: <89fe22b802060edea4f85f7ae23c7e7e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001699]: Alsa 1.0.11rc2 and Unknown symbol
+Date: Wed, 4 Jan 2006 17:34:39 +0100
+Message-ID: <36c2aa9db04beeac522542fa4aaf063d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B1EC154
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:33:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05EA5154
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:34:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1699> 
 ======================================================================
-Reported By:                alsarealist
-Assigned To:                
+Reported By:                kratz00
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1703
-Category:                   PCI - intel8x0
+Issue ID:                   1699
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               self burned
+Status:                     resolved
+Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-03-2006 18:42 CET
-Last Modified:              01-04-2006 17:33 CET
+Date Submitted:             01-02-2006 16:38 CET
+Last Modified:              01-04-2006 17:34 CET
 ======================================================================
-Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
-not working
+Summary:                    Alsa 1.0.11rc2 and Unknown symbol
 Description: 
-Pass-through with xine is not working.
-PCM Stereo downmix works fine
+Alsa 1.0.10 is working on the same system/configuration but 1.0.11rc1 and
+rc2
+produce the following error output:
 
+FATAL: Error inserting snd
+(/lib/modules/2.6.15-rc7/kernel/drivers/sound/acore/snd.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
 
-00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller (rev a2)
+output from dmesg:
+snd: Unknown symbol pm_register
+snd: Unknown symbol pm_unregister
 
-gcc (GCC) 4.0.2
-alsa version 1.0.11rc2
-Linux 2.6.15
+I found out if I disable ACPI in my kernel then it's also working with
+1.0.11rc*
+but I need ACPI support and it's working fine with 1.0.10 so there must be
+a problem with 1.0.11rc*
 
+# Power management options (ACPI, APM)
+CONFIG_PM=y
+
+<->
+
+# Power management options (ACPI, APM)
+# CONFIG_PM is not set
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:11 
+ tiwai - 01-04-06 17:34 
 ----------------------------------------------------------------------
-Please upgrade to 1.0.11rc2.
-If still doesn't work, attach /etc/asoud.state and
-/proc/asound/card0/codec97#0/* files for debugging.  You can test with
-"ac3dec -C somefile.ac3" (to be sure).
-
-----------------------------------------------------------------------
- alsarealist - 01-04-06 17:33 
-----------------------------------------------------------------------
-This case is against 1.0.11rc2!
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-06 18:42 alsarealist    New Issue                                    
-01-03-06 18:42 alsarealist    Distribution              => self burned     
-01-03-06 19:05 rlrevell       Note Added: 0007403                          
-01-04-06 01:45 alsarealist    Note Added: 0007409                          
-01-04-06 17:11 tiwai          Note Added: 0007436                          
-01-04-06 17:32 alsarealist    File Added: asound.state                     
-01-04-06 17:33 alsarealist    Note Added: 0007443                          
+01-02-06 16:38 kratz00        New Issue                                    
+01-04-06 17:34 tiwai          Status                   new => resolved     
+01-04-06 17:34 tiwai          Resolution               open => fixed       
+01-04-06 17:34 tiwai          Assigned To               => tiwai           
+01-04-06 17:34 tiwai          Note Added: 0007445                          
 ======================================================================
 
 
