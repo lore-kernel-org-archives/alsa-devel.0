@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
-Date: Wed, 4 Jan 2006 17:42:26 +0100
-Message-ID: <edfc0c9b6998ee862214b42d1c049abd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001700]: CMI 9880 not detected and not implemented yet
+Date: Wed, 4 Jan 2006 17:33:47 +0100
+Message-ID: <373b00ff244f9894f43e39e9c7957a55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B807184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:42:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91863154
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:33:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1700> 
 ======================================================================
-Reported By:                alsarealist
+Reported By:                mitcoes
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1703
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1700
+Category:                   1_OTHERS
+Reproducibility:            unable to duplicate
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               self burned
-Kernel Version:             
+Distribution:               Breezy Ubuntu
+Kernel Version:             all
 ======================================================================
-Date Submitted:             01-03-2006 18:42 CET
-Last Modified:              01-04-2006 17:42 CET
+Date Submitted:             01-02-2006 17:40 CET
+Last Modified:              01-04-2006 17:33 CET
 ======================================================================
-Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
-not working
+Summary:                    CMI 9880 not detected and not implemented yet
 Description: 
-Pass-through with xine is not working.
-PCM Stereo downmix works fine
+CMI 9880 that comes integrated with ASUS P5AD2 Premium and others doesn't
+work.
+
+I have read 
+>> know mine is running under an "i810_audio" module. << at
+http://hardware.mcse.ms/archive13-2005-1-137173.html
+but it does not give a complete performance.
 
 
-00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller (rev a2)
-
-gcc (GCC) 4.0.2
-alsa version 1.0.11rc2
-Linux 2.6.15
 
 ======================================================================
 
 ----------------------------------------------------------------------
- alsarealist - 01-04-06 17:33 
+ tiwai - 01-04-06 17:33 
 ----------------------------------------------------------------------
-This case is against 1.0.11rc2!
-
-----------------------------------------------------------------------
- alsarealist - 01-04-06 17:42 
-----------------------------------------------------------------------
-I added /etc/asound.state and /proc/asound/card0/codec97#0/*
-during playing a 5.1 DVD with xine configured as pass through.
-
-Maybe you wanna see iecset?
-
-idefix:/usr/src # iecset
-Mode: consumer
-Data: non-audio
-Rate: 48000 Hz
-Copyright: permitted
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
+CMI9880 is for HD-audio.  Use snd-hda-intel driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-06 18:42 alsarealist    New Issue                                    
-01-03-06 18:42 alsarealist    Distribution              => self burned     
-01-03-06 19:05 rlrevell       Note Added: 0007403                          
-01-04-06 01:45 alsarealist    Note Added: 0007409                          
-01-04-06 17:11 tiwai          Note Added: 0007436                          
-01-04-06 17:32 alsarealist    File Added: asound.state                     
-01-04-06 17:33 alsarealist    Note Added: 0007443                          
-01-04-06 17:38 alsarealist    File Added: proc-asound                      
-01-04-06 17:42 alsarealist    Note Added: 0007447                          
+01-02-06 17:40 mitcoes        New Issue                                    
+01-02-06 17:40 mitcoes        Distribution              => Breezy Ubuntu   
+01-02-06 17:40 mitcoes        Kernel Version            => all             
+01-04-06 17:33 tiwai          Note Added: 0007444                          
 ======================================================================
 
 
