@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Wed, 4 Jan 2006 16:30:36 +0100
-Message-ID: <c9257b22e35a82c01964209ce266aacb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001253]: My kernel doesn't find my sound cards anymore !!!
+Date: Wed, 4 Jan 2006 16:41:45 +0100
+Message-ID: <6269a55fee76ae15b015946247350198@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48A8A140
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:30:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A90BF188
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:41:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,101 +24,134 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1253> 
 ======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
+Reported By:                fabien
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
+Issue ID:                   1253
+Category:                   PCI - ens1370
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              01-04-2006 16:30 CET
+Date Submitted:             07-12-2005 14:04 CEST
+Last Modified:              01-04-2006 16:41 CET
 ======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
+Summary:                    My kernel doesn't find my sound cards anymore !!!
 Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+My kernel stop working with my soundcards !!!
+It use to work in 2.6.8 (not in 2.6.10, 2.6.11 & 2.6.12)
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
 
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
+My sound cards :
+- ENS1370
+- SIS 7012
 
+Motherboard :
+- K7S5A
+
+Linux Box :
+- Debian on x86 AMD
 ======================================================================
 
 ----------------------------------------------------------------------
- afran - 01-04-06 13:15 
+ fabien - 01-04-06 15:38 
 ----------------------------------------------------------------------
-I applied your patch 'alsa-usbaudio-2.6.15-revert-008.patch' and it works
-for my Terratec Phase 26 USB.
+I can't have it work either in 2.6.15
+
+xxx@matou:~$ dmesg | grep -iE "ALSA|sound|ens13|intel8|ac97|si7012|#"
+Linux version 2.6.15 (root@matou) (gcc version 4.0.3 20051201 (prerelease)
+(Debian 4.0.2-5)) #1 PREEMPT Tue Jan 3 20:14:39 CET 2006
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7c [0xf00000]
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7e [0xf00000] 
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x0 [0x800000]
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7c [0xf00000]
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7e [0xf00000] 
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7c [0xf00000]
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7e [0xf00000]
+ALSA sound/pci/ac97/ac97_codec.c:1938: AC'97 0 access is not valid [0x0],
+removing mixer. 
+ENS1371: probe of 0000:00:0b.0 failed with error -5
+intel8x0_measure_ac97_clock: measured 50652 usecs
+intel8x0: clocking to 48000
+ALSA device list:
+  #0: Dummy 1
+  #1: MPU-401 UART at 0x300, irq 10
+  #2: SiS SI7012 with ALC100,100P at 0xdc00, irq 11 
+  #3: Camera at usb-0000:00:02.2-1, full speed
+
+
+xxx@matou:~$ lspci
+0000:00:00.0 Host bridge: Silicon Integrated Systems [SiS] 735 Host (rev
+01)
+0000:00:01.0 PCI bridge: Silicon Integrated Systems [SiS] Virtual
+PCI-to-PCI bridge (AGP) 
+0000:00:02.0 ISA bridge: Silicon Integrated Systems [SiS] SiS85C503/5513
+(LPC Bridge)
+0000:00:02.1 SMBus: Silicon Integrated Systems [SiS] SiS961/2 SMBus
+Controller
+0000:00:02.2 USB Controller: Silicon Integrated Systems [SiS] USB 1.0
+Controller (rev 07)
+0000:00:02.3 USB Controller: Silicon Integrated Systems [SiS] USB 1.0
+Controller (rev 07)
+0000:00:02.5 IDE interface: Silicon Integrated Systems [SiS] 5513 [IDE]
+(rev d0)
+0000:00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
+Sound Controller (rev a0) 
+0000:00:0b.0 Multimedia audio controller: Ensoniq ES1371 [AudioPCI-97]
+(rev 08)
+
+xxx@matou:/proc/asound$ ls -l
+total 4
+lrwxrwxrwx 1 root root 5 2006-01-03 23:58 Camera -> card3
+dr-xr-xr-x 4 root root 0 2006-01-03 23:58 card0 
+dr-xr-xr-x 2 root root 0 2006-01-03 23:58 card1
+dr-xr-xr-x 6 root root 0 2006-01-03 23:58 card2
+dr-xr-xr-x 3 root root 0 2006-01-03 23:58 card3
+-r--r--r-- 1 root root 0 2006-01-03 23:58 cards
+-r--r--r-- 1 root root 0 2006-01-03 23:58 devices 
+lrwxrwxrwx 1 root root 5 2006-01-03 23:58 Dummy -> card0
+-r--r--r-- 1 root root 0 2006-01-03 23:58 hwdep
+dr-xr-xr-x 2 root root 0 2006-01-03 23:58 oss
+-r--r--r-- 1 root root 0 2006-01-03 23:58 pcm
+dr-xr-xr-x 2 root root 0 2006-01-03 23:58 seq 
+lrwxrwxrwx 1 root root 5 2006-01-03 23:58 SI7012 -> card2
+-r--r--r-- 1 root root 0 2006-01-03 23:58 timers
+lrwxrwxrwx 1 root root 5 2006-01-03 23:58 UART -> card1
+-r--r--r-- 1 root root 0 2006-01-03 23:58 version
 
 ----------------------------------------------------------------------
- sailfrog - 01-04-06 16:30 
+ tiwai - 01-04-06 16:41 
 ----------------------------------------------------------------------
-bryanr,
- I will try your patch tonight and let you know the result.
-
-thanks,
-
-Jason
+Try to build drivers as modules and load _only_ snd-ens1371 module.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
-12-30-05 19:48 sailfrog       Note Added: 0007251                          
-12-30-05 20:01 rlrevell       Note Added: 0007252                          
-12-30-05 20:08 rlrevell       Note Added: 0007254                          
-12-30-05 20:31 sailfrog       Note Added: 0007256                          
-12-30-05 20:34 rlrevell       Note Added: 0007257                          
-12-30-05 20:41 sailfrog       Note Added: 0007258                          
-12-30-05 20:43 rlrevell       Note Added: 0007259                          
-12-31-05 02:32 smithbone      Note Added: 0007319                          
-12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
-               
-12-31-05 03:47 rlrevell       Note Added: 0007331                          
-12-31-05 05:31 smithbone      Note Added: 0007343                          
-12-31-05 05:33 rlrevell       Note Added: 0007344                          
-12-31-05 05:37 rlrevell       Note Added: 0007345                          
-12-31-05 07:10 smithbone      Note Added: 0007347                          
-12-31-05 08:54 afran          Note Added: 0007354                          
-12-31-05 08:55 afran          Issue Monitored: afran                       
-12-31-05 08:56 afran          Note Edited: 0007354                         
-01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
-                  
-01-04-06 09:58 bryanr         Note Added: 0007411                          
-01-04-06 10:04 bryanr         Issue Monitored: bryanr                      
-01-04-06 10:50 bryanr         File Added: alsa-usbaudio-2.6.15-revert-008.patch 
-                  
-01-04-06 11:06 bryanr         Note Added: 0007412                          
-01-04-06 13:15 afran          Note Added: 0007416                          
-01-04-06 16:30 sailfrog       Note Added: 0007424                          
+07-12-05 14:04 fabien         New Issue                                    
+07-12-05 14:04 fabien         Distribution              => Debian Sarge    
+07-12-05 14:04 fabien         Kernel Version            => 2.6.12          
+10-24-05 21:20 fabien         Note Added: 0006523                          
+12-31-05 00:11 rlrevell       Note Added: 0007310                          
+01-02-06 12:36 fabien         Note Added: 0007371                          
+01-03-06 10:10 fabien         Note Edited: 0007371                         
+01-03-06 10:11 fabien         Note Edited: 0007371                         
+01-04-06 15:38 fabien         Note Added: 0007423                          
+01-04-06 16:41 tiwai          Note Added: 0007425                          
 ======================================================================
 
 
