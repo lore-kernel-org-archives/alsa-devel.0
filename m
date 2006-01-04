@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
-Date: Wed, 4 Jan 2006 23:11:36 +0100
-Message-ID: <a6fa3b2b5d927fedbc5350420db4da30@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Envy24control -tidy declarations after patches
+Date: Wed, 4 Jan 2006 22:11:45 +0000
+Message-ID: <200601042211.45775.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_hgEvDnI3wAQnV2u"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A64E175
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 23:11:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,88 +15,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
-======================================================================
-Reported By:                alsarealist
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1703
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               self burned
-Kernel Version:             
-======================================================================
-Date Submitted:             01-03-2006 18:42 CET
-Last Modified:              01-04-2006 23:11 CET
-======================================================================
-Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
-not working
-Description: 
-Pass-through with xine is not working.
-PCM Stereo downmix works fine
+--Boundary-00=_hgEvDnI3wAQnV2u
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
+I have noticed other redundant declarations in envy24control.c and .h 
+following my previous patches, and prepared the following patch to tidy this 
+up.
 
-00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller (rev a2)
+Summary: Tidy up redundant declarations.
 
-gcc (GCC) 4.0.2
-alsa version 1.0.11rc2
-Linux 2.6.15
+Remove declarations in envy24control not needed following my previous patches.
 
-======================================================================
+Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
 
-----------------------------------------------------------------------
- alsarealist - 01-04-06 17:42 
-----------------------------------------------------------------------
-I added /etc/asound.state and /proc/asound/card0/codec97#0/*
-during playing a 5.1 DVD with xine configured as pass through.
+--Boundary-00=_hgEvDnI3wAQnV2u
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="e24c-1.0.10-AHmod3.6h.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="e24c-1.0.10-AHmod3.6h.patch"
 
-Maybe you wanna see iecset?
+--- Denvy24control/envy24control.c	2006-01-04 17:12:56.000000000 +0000
++++ Aenvy24control/envy24control.c	2006-01-04 17:36:40.000000000 +0000
+@@ -105,21 +112,16 @@
+ 
+ GtkWidget *hw_spdif_input_coaxial_radio;
+ GtkWidget *hw_spdif_input_optical_radio;
++GtkWidget *hw_spdif_switch_off_radio;
+ 
+ GtkWidget *input_interface_internal;
+ GtkWidget *input_interface_front_input;
+ GtkWidget *input_interface_rear_input;
+ GtkWidget *input_interface_wavetable;
+ 
+-GtkWidget *hw_breakbox_led_on_radio;
+-GtkWidget *hw_breakbox_led_off_radio;
+-
+ GtkWidget *hw_phono_input_on_radio;
+ GtkWidget *hw_phono_input_off_radio;
+ 
+-GtkWidget *hw_spdif_switch_on_radio;
+-GtkWidget *hw_spdif_switch_off_radio;
+-
+ GtkObject *av_dac_volume_adj[10];
+ GtkObject *av_adc_volume_adj[10];
+ GtkObject *av_ipga_volume_adj[10];
+diff -ru Denvy24control/envy24control.h Aenvy24control/envy24control.h
+--- Denvy24control/envy24control.h	2004-05-16 14:36:30.000000000 +0100
++++ Aenvy24control/envy24control.h	2006-01-04 17:34:51.000000000 +0000
+@@ -142,16 +142,11 @@
+ 
+ extern GtkWidget *hw_spdif_input_coaxial_radio;
+ extern GtkWidget *hw_spdif_input_optical_radio;
+-
+-extern GtkWidget *hw_breakbox_led_on_radio;
+-extern GtkWidget *hw_breakbox_led_off_radio;
++extern GtkWidget *hw_spdif_switch_off_radio;
+ 
+ extern GtkWidget *hw_phono_input_on_radio;
+ extern GtkWidget *hw_phono_input_off_radio;
+ 
+-extern GtkWidget *hw_spdif_switch_on_radio;
+-extern GtkWidget *hw_spdif_switch_off_radio;
+-
+ extern GtkWidget *input_interface_internal;
+ extern GtkWidget *input_interface_front_input;
+ extern GtkWidget *input_interface_rear_input;
+@@ -210,8 +208,6 @@
+ void spdif_input_update(void);
+ void spdif_input_toggled(GtkWidget *togglebutton, gpointer data);
+ void analog_input_select_toggled(GtkWidget *togglebutton, gpointer data);
+-void breakbox_led_toggled(GtkWidget *togglebutton, gpointer data);
+-void spdif_on_off_toggled(GtkWidget *togglebutton, gpointer data);
+ void phono_input_toggled(GtkWidget *togglebutton, gpointer data);
+ 
+ void hardware_init(void);
 
-idefix:/usr/src # iecset
-Mode: consumer
-Data: non-audio
-Rate: 48000 Hz
-Copyright: permitted
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
-
-----------------------------------------------------------------------
- alsarealist - 01-04-06 23:11 
-----------------------------------------------------------------------
-/proc/asound/card0/codec97#0/ac97#0-0+regs |grep 0:3a
-0:3a = 2822
-
-The ALC 850 chip contain in bit 15 register 3ah a validity control flag
-for SPDIF? Should this bit be set when playing DTS or Dolby 5.1 streams?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-06 18:42 alsarealist    New Issue                                    
-01-03-06 18:42 alsarealist    Distribution              => self burned     
-01-03-06 19:05 rlrevell       Note Added: 0007403                          
-01-04-06 01:45 alsarealist    Note Added: 0007409                          
-01-04-06 17:11 tiwai          Note Added: 0007436                          
-01-04-06 17:32 alsarealist    File Added: asound.state                     
-01-04-06 17:33 alsarealist    Note Added: 0007443                          
-01-04-06 17:38 alsarealist    File Added: proc-asound                      
-01-04-06 17:42 alsarealist    Note Added: 0007447                          
-01-04-06 23:11 alsarealist    Note Added: 0007459                          
-======================================================================
-
+--Boundary-00=_hgEvDnI3wAQnV2u--
 
 
 
