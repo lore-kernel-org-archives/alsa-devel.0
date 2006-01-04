@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001710]: warning: implicit declaration of function &#8216;pm_register&#8217;
-Date: Wed, 4 Jan 2006 16:55:37 +0100
-Message-ID: <7f58e54912b8418cab53b15b9600344c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001711]: warning: &#8216;src&#8217; may be used uninitialized in this function
+Date: Wed, 4 Jan 2006 16:56:34 +0100
+Message-ID: <d69b19dc26dacf4d8f47bc471d23faaa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B5C6184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:55:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 128FE184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:56:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1710> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1711> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1710
+Issue ID:                   1711
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
@@ -38,43 +38,35 @@ Priority:                   normal
 Status:                     resolved
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
+Resolution:                 won't fix
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-04-2006 14:16 CET
-Last Modified:              01-04-2006 16:55 CET
+Date Submitted:             01-04-2006 14:18 CET
+Last Modified:              01-04-2006 16:56 CET
 ======================================================================
-Summary:                    warning: implicit declaration of function
-&#8216;pm_register&#8217;
+Summary:                    warning: &#8216;src&#8217; may be used uninitialized
+in this function
 Description: 
-  CC [M]  /usr/src/modules/alsa-driver/acore/misc_driver.o
-/usr/src/modules/alsa-driver/acore/misc_driver.c: In function
-&#8216;register_pnp_pm_callback&#8217;:
-/usr/src/modules/alsa-driver/acore/misc_driver.c:687: warning: implicit
-declaration of function &#8216;pm_register&#8217;
-/usr/src/modules/alsa-driver/acore/misc_driver.c:687: warning: assignment
-makes pointer from integer without a cast
-/usr/src/modules/alsa-driver/acore/misc_driver.c: In function
-&#8216;unregister_pnp_pm_callback&#8217;:
-/usr/src/modules/alsa-driver/acore/misc_driver.c:706: warning: implicit
-declaration of function &#8216;pm_unregister&#8217;
-
+  CC [M]  /usr/src/modules/alsa-driver/acore/oss/route.o
+In file included from /usr/src/modules/alsa-driver/acore/oss/route.c:2:
+/usr/src/modules/alsa-driver/include/../alsa-kernel/core/oss/route.c: In
+function &#8216;route_to_channel&#8217;:
+/usr/src/modules/alsa-driver/include/../alsa-kernel/core/oss/route.c:208:
+warning: &#8216;src&#8217; may be used uninitialized in this function
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 16:55 
+ tiwai - 01-04-06 16:56 
 ----------------------------------------------------------------------
-Fixed on CVS.  For enabling PM with ISA PnP, you'll need CONFIG_PM_LEGACY=y
-in kernel config.
+It's a compiler's fault.  The code is correct.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 14:16 jdthood        New Issue                                    
-01-04-06 14:19 jdthood        Additional Information Updated                    
-01-04-06 16:55 tiwai          Status                   assigned => resolved
-01-04-06 16:55 tiwai          Resolution               open => fixed       
-01-04-06 16:55 tiwai          Note Added: 0007430                          
+01-04-06 14:18 jdthood        New Issue                                    
+01-04-06 16:56 tiwai          Status                   assigned => resolved
+01-04-06 16:56 tiwai          Resolution               open => won't fix   
+01-04-06 16:56 tiwai          Note Added: 0007431                          
 ======================================================================
 
 
