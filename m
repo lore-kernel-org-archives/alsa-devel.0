@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001691]: Fails to build on LInux 2.4
-Date: Wed, 4 Jan 2006 16:44:55 +0100
-Message-ID: <69311a219284462eb06ce7d427dd2cf3@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
+Date: Wed, 4 Jan 2006 16:47:00 +0100
+Message-ID: <ce2febb3a8a15462685c3b04794848ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BEFA188
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:44:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C500184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:47:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,220 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1691> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                lilbudda
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1691
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   1657
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             12-28-2005 22:43 CET
-Last Modified:              01-04-2006 16:44 CET
+Date Submitted:             12-17-2005 18:44 CET
+Last Modified:              01-04-2006 16:47 CET
 ======================================================================
-Summary:                    Fails to build on LInux 2.4
+Summary:                    no iec958 controls for hda-intel
 Description: 
-make[3]: Leaving directory `/usr/src/modules/alsa-driver/drivers'
-make[3]: Entering directory `/usr/src/modules/alsa-driver/isa'
-rm -f als100.isapnp
-touch als100.isapnp
-rm -f azt2320.isapnp
-touch azt2320.isapnp
-rm -f dt019x.isapnp
-touch dt019x.isapnp
-rm -f opl3sa2.isapnp
-touch opl3sa2.isapnp
-rm -f cmi8330.isapnp
-touch cmi8330.isapnp
-rm -f es18xx.isapnp
-touch es18xx.isapnp
-rm -f sscape.isapnp
-touch sscape.isapnp
-gcc-3.3 -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
--I/usr/src/linux/include -I/usr/src/linux/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/usr/src/linux/include/linux/modversions.h  -DKBUILD_BASENAME=cmi8330   -c
--o cmi8330.o cmi8330.c
-In file included from cmi8330.c:1:
-../alsa-kernel/isa/cmi8330.c: In function `snd_cmi8330_unregister_all':
-../alsa-kernel/isa/cmi8330.c:676: error: `cmi8330_pnpc_driver' undeclared
-(first use in this function)
-../alsa-kernel/isa/cmi8330.c:676: error: (Each undeclared identifier is
-reported only once
-../alsa-kernel/isa/cmi8330.c:676: error: for each function it appears
-in.)
-../alsa-kernel/isa/cmi8330.c: In function `alsa_card_cmi8330_init':
-../alsa-kernel/isa/cmi8330.c:703: error: `cmi8330_pnpc_driver' undeclared
-(first use in this function)
-make[3]: *** [cmi8330.o] Error 1
-make[3]: Leaving directory `/usr/src/modules/alsa-driver/isa'
-make[2]: *** [compile] Error 1
-make[2]: Leaving directory `/usr/src/modules/alsa-driver'
-make[1]: *** [build-stamp] Error 2
-make[1]: Leaving directory `/usr/src/modules/alsa-driver'
-make: *** [kdist_image] Error 2
+When trying to configure sound to pass through the spdif port, alsamixer
+does not show any controls for the iec958.
 
+Sound plays fine from rear headphone jack.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-04-06 14:43 
+ lilbudda - 12-30-05 22:46 
 ----------------------------------------------------------------------
-I just tried to build 1.0.11rc2 against Linux 2.4.27 with
-"--with-isapnp=yes" and the build failed.
+No the Realtek driver did not work.
 
-make[4]: Entering directory `/usr/src/modules/alsa-driver/acore'
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
--I/usr/src/kernel-source-2.4.27/include
--I/usr/src/kernel-source-2.4.27/include -O2 -mpreferred-stack-boundary=2
--march=i686 -Wdeclaration-after-statement -Wno-pointer-sign -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include -DMODVERSIONS -include
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h  
--DEXPORT_SYMTAB -c hwdep.c
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/kernel.h:15,
-                 from
-/usr/src/kernel-source-2.4.27/include/asm/system.h:5,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/spinlock.h:6,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/module.h:12,
-                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
-                 from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:14: warning: type
-qualifiers ignored on function return type
-/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:30: warning: type
-qualifiers ignored on function return type
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/little_endian.h:11,
-                 from
-/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:65,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/kernel.h:15,
-                 from
-/usr/src/kernel-source-2.4.27/include/asm/system.h:5,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/spinlock.h:6,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/module.h:12,
-                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
-                 from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:160: warning:
-type qualifiers ignored on function return type
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:173: warning:
-type qualifiers ignored on function return type
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:186: warning:
-type qualifiers ignored on function return type
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:200: warning:
-type qualifiers ignored on function return type
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/prefetch.h:13,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/list.h:6,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/module.h:13,
-                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
-                 from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/kernel-source-2.4.27/include/asm/processor.h:75: error: array
-type has incomplete element type
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:160: error: redefinition of
-'PDE'
-/usr/src/kernel-source-2.4.27/include/linux/proc_fs.h:214: error: previous
-definition of 'PDE' was here
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:325:1: warning: "snprintf"
-redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:684:1:
-warning: this is the location of the previous definition
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:330:1: warning: "vsnprintf"
-redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:690:1:
-warning: this is the location of the previous definition
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:342:1: warning: "sscanf"
-redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:686:1:
-warning: this is the location of the previous definition
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:343:1: warning: "vsscanf"
-redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:692:1:
-warning: this is the location of the previous definition
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:620:1: warning:
-"vmalloc_to_page" redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:70:1:
-warning: this is the location of the previous definition
-make[4]: *** [hwdep.o] Error 1
-make[4]: Leaving directory `/usr/src/modules/alsa-driver/acore'
-make[3]: *** [compile] Error 1
-make[3]: Leaving directory `/usr/src/modules/alsa-driver'
-make[2]: *** [build-stamp] Error 2
-make[2]: Leaving directory `/usr/src/modules/alsa-driver'
-make[1]: *** [kdist_image] Error 2
-make[1]: Leaving directory `/usr/src/modules/alsa-driver'
-Module /usr/src/modules/alsa-driver failed.
+I have not been able to use plugins with programs (mplayer, xine, or
+aplayer) or anything else to get sound from the spdif port. No mixer
+controls in alsamixer relating to digital out or IEC958.
+
+
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 16:44 
+ lilbudda - 01-04-06 16:47 
 ----------------------------------------------------------------------
-The compile errors without pnp are fixed on CVS now.
-
-The errors with pnp seem to come from the configure stuff.  Please check
-config.log.  You must have any error during the detection of PDE.
+I am now able to see the IEC958 control with the latest (Jan 03, 2006) CVS.
+Still working on getting sound but this bug can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-05 22:43 jdthood        New Issue                                    
-12-28-05 23:10 jdthood        Note Added: 0007186                          
-01-04-06 14:43 jdthood        Note Added: 0007422                          
-01-04-06 16:44 tiwai          Note Added: 0007426                          
+12-17-05 18:44 lilbudda       New Issue                                    
+12-19-05 08:05 rlrevell       Note Added: 0007091                          
+12-19-05 16:39 lilbudda       Note Added: 0007095                          
+12-19-05 16:50 rlrevell       Note Added: 0007096                          
+12-20-05 06:14 lilbudda       File Added: lspci.txt                        
+12-20-05 06:20 lilbudda       Note Added: 0007102                          
+12-23-05 18:16 lilbudda       Note Added: 0007134                          
+12-23-05 19:35 rlrevell       Note Added: 0007136                          
+12-24-05 00:54 lilbudda       Note Added: 0007138                          
+12-30-05 22:46 lilbudda       Note Edited: 0007138                         
+01-04-06 16:47 lilbudda       Note Added: 0007427                          
 ======================================================================
 
 
