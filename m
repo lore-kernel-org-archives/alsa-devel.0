@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001716]: aoss not working with audacity
-Date: Wed, 4 Jan 2006 23:06:51 +0100
-Message-ID: <9cdd26d21014b3565c300338a91f7fef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
+Date: Wed, 4 Jan 2006 23:11:36 +0100
+Message-ID: <a6fa3b2b5d927fedbc5350420db4da30@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49D7616A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 23:06:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A64E175
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 23:11:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1716> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
 ======================================================================
-Reported By:                ajs1984
+Reported By:                alsarealist
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1716
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1703
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               self burned
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-04-2006 23:04 CET
-Last Modified:              01-04-2006 23:06 CET
+Date Submitted:             01-03-2006 18:42 CET
+Last Modified:              01-04-2006 23:11 CET
 ======================================================================
-Summary:                    aoss not working with audacity
+Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
+not working
 Description: 
-Following up from a recent LKML thread, I'm going to report a number of
-aoss incompatibilities with softwares on Linux.
+Pass-through with xine is not working.
+PCM Stereo downmix works fine
 
-First up is audacity, which has no ALSA port. snd-pcm/mixer-oss aren't
-loaded.
+
+00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller (rev a2)
+
+gcc (GCC) 4.0.2
+alsa version 1.0.11rc2
+Linux 2.6.15
 
 ======================================================================
 
 ----------------------------------------------------------------------
- ajs1984 - 01-04-06 23:06 
+ alsarealist - 01-04-06 17:42 
 ----------------------------------------------------------------------
-Bug tracker sucks. Where did "steps to reproduce go"? Fix that first.
+I added /etc/asound.state and /proc/asound/card0/codec97#0/*
+during playing a 5.1 DVD with xine configured as pass through.
+
+Maybe you wanna see iecset?
+
+idefix:/usr/src # iecset
+Mode: consumer
+Data: non-audio
+Rate: 48000 Hz
+Copyright: permitted
+Emphasis: none
+Category: PCM coder
+Original: original
+Clock: 1000 ppm
 
 ----------------------------------------------------------------------
- ajs1984 - 01-04-06 23:06 
+ alsarealist - 01-04-06 23:11 
 ----------------------------------------------------------------------
-[alistair] 22:06 [~/bin/audacity] aoss ./audacity
-Pa_SetLatency: could not SNDCTL_DSP_SETFRAGMENT
-Pa_SetLatency: numBuffers = 2, framesPerBuffer = 512, powerOfTwo = 11
-Pa_SetupDeviceFormat: could not SNDCTL_DSP_SETFMT
+/proc/asound/card0/codec97#0/ac97#0-0+regs |grep 0:3a
+0:3a = 2822
+
+The ALC 850 chip contain in bit 15 register 3ah a validity control flag
+for SPDIF? Should this bit be set when playing DTS or Dolby 5.1 streams?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 23:04 ajs1984        New Issue                                    
-01-04-06 23:06 ajs1984        Note Added: 0007457                          
-01-04-06 23:06 ajs1984        Note Added: 0007458                          
+01-03-06 18:42 alsarealist    New Issue                                    
+01-03-06 18:42 alsarealist    Distribution              => self burned     
+01-03-06 19:05 rlrevell       Note Added: 0007403                          
+01-04-06 01:45 alsarealist    Note Added: 0007409                          
+01-04-06 17:11 tiwai          Note Added: 0007436                          
+01-04-06 17:32 alsarealist    File Added: asound.state                     
+01-04-06 17:33 alsarealist    Note Added: 0007443                          
+01-04-06 17:38 alsarealist    File Added: proc-asound                      
+01-04-06 17:42 alsarealist    Note Added: 0007447                          
+01-04-06 23:11 alsarealist    Note Added: 0007459                          
 ======================================================================
 
 
