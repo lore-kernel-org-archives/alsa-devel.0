@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001713]: ALC260 no input
-Date: Wed, 4 Jan 2006 17:24:52 +0100
-Message-ID: <4a8b07c729a429d9e201d5e2012392f2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001704]: M-audio Revolution 5.1 does not work !
+Date: Wed, 4 Jan 2006 17:25:06 +0100
+Message-ID: <c2c40915e91ee1209ee72ccde3d0ca3c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E01B9154
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:24:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09138154
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:25:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,38 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1713> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1704> 
 ======================================================================
-Reported By:                hweigel
+Reported By:                lazybones
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1713
-Category:                   PCI - hda-intel
+Issue ID:                   1704
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.12
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-04-2006 17:24 CET
-Last Modified:              01-04-2006 17:24 CET
+Date Submitted:             01-03-2006 19:17 CET
+Last Modified:              01-04-2006 17:25 CET
 ======================================================================
-Summary:                    ALC260 no input
+Summary:                    M-audio Revolution 5.1 does not work !
 Description: 
-My FSC Lifebook S-7020 has the ALC260. While 
-all sound output seems to work fine with 
-alsa 1.0.10, the microphone produces only very 
-weak sound (just infinitesimally more than zero).
+Alsaconf found my sound card correctly, but sound was VERY bad 
+I don`t know what to do :( 
+
+Sorry fo my english :) 
+I write form Russia  
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-04-06 17:25 
+----------------------------------------------------------------------
+Already fixed recently.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 17:24 hweigel        New Issue                                    
+01-03-06 19:17 lazybones      New Issue                                    
+01-03-06 19:17 lazybones      Kernel Version            => 2.6.12          
+01-04-06 17:25 tiwai          Status                   new => resolved     
+01-04-06 17:25 tiwai          Resolution               open => fixed       
+01-04-06 17:25 tiwai          Assigned To               => tiwai           
+01-04-06 17:25 tiwai          Note Added: 0007439                          
 ======================================================================
 
 
