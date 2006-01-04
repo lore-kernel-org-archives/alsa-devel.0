@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001370]: Please apply patch to Rules.make
-Date: Wed, 4 Jan 2006 16:52:42 +0100
-Message-ID: <b152cce3f7c2cded9f6634a0732c6d93@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
+Date: Wed, 4 Jan 2006 16:54:10 +0100
+Message-ID: <3ef3b9a56b825dfcb84b1fb22044ecf4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED9A2184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:52:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 500C8184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:54:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,111 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1370> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                lilbudda
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1370
-Category:                   1_OTHERS
+Project:                    ALSA - utils
+Issue ID:                   1657
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-25-2005 14:12 CEST
-Last Modified:              01-04-2006 16:52 CET
+Date Submitted:             12-17-2005 18:44 CET
+Last Modified:              01-04-2006 16:54 CET
 ======================================================================
-Summary:                    Please apply patch to Rules.make
+Summary:                    no iec958 controls for hda-intel
 Description: 
-In Debian we have to patch Rules.make so that it puts a temporary file
-at a different location.  (Details: we use the mktemp program to create
-the file and return the name of the file.)  It would be nice if upstream
-would apply a patch to make our patch smaller.
+When trying to configure sound to pass through the spdif port, alsamixer
+does not show any controls for the iec958.
 
-Here is the proposed patch, which applies against 1.0.10rc1.  It
-shouldn't
-change any behavior by default, but when applied it allows distros to
-change the location of the temporary file with a one-line patch.
-
-diff -urNad alsa-driver-1.0.8/Rules.make
-/tmp/dpep.jldRsB/alsa-driver-1.0.8/Rules.make
---- alsa-driver-1.0.8/Rules.make        2004-12-09 20:39:11.000000000
-+0100
-+++ /tmp/dpep.jldRsB/alsa-driver-1.0.8/Rules.make       2005-01-16
-15:04:22.000000000 +0100
-@@ -287,7 +287,7 @@
-        genksyms_smp_prefix :=
- endif
-
--$(MODINCL)/$(MODPREFIX)%.ver: %.c
-+$(MODINCL)/$(MODPREFIX)%.ver: %.c update-sndvers
-        @if [ ! -r $(MODINCL)/$(MODPREFIX)$*.stamp -o
-$(MODINCL)/$(MODPREFIX)$*.stamp -ot $< ]; then \
-                if [ ! -f
-$(CONFIG_SND_KERNELDIR)/include/linux/modules/$*.stamp ]; then \
-                echo '$(CC) -D__KERNEL__ $(CFLAGS) $(EXTRA_CFLAGS) -E
--D__GENKSYMS__ $<'; \
-@@ -308,7 +308,8 @@
- endif # export-objs
-
- define update-sndvers
--       @(echo "#ifndef _LINUX_SNDVERSIONS_H"; \
-+       (tmpfile=`echo $(SNDVERSIONS).tmp`; \
-+       (echo "#ifndef _LINUX_SNDVERSIONS_H"; \
-          echo "#define _LINUX_SNDVERSIONS_H"; \
-          echo "#include <linux/modsetver.h>"; \
-          cd $(TOPDIR)/include/modules; \
-@@ -316,14 +317,14 @@
-            if [ -f $$f ]; then echo "#include \"modules/$${f}\""; fi; \
-          done; \
-          echo "#endif"; \
--       ) > $(SNDVERSIONS).tmp
--       @if [ -r $(SNDVERSIONS) ] && cmp -s $(SNDVERSIONS)
-$(SNDVERSIONS).tmp; then \
-+       ) > $${tmpfile}; \
-+       if [ -r $(SNDVERSIONS) ] && cmp -s $(SNDVERSIONS) $${tmpfile};
-then \
-                echo $(SNDVERSIONS) was not updated; \
--               rm -f $(SNDVERSIONS).tmp; \
-+               rm -f $${tmpfile}; \
-        else \
-                echo $(SNDVERSIONS) was updated; \
--               mv -f $(SNDVERSIONS).tmp $(SNDVERSIONS); \
--       fi
-+               mv -f $${tmpfile} $(SNDVERSIONS); \
-+       fi)
- endef
-
- $(SNDVERSIONS):
+Sound plays fine from rear headphone jack.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-04-06 14:39 
+ lilbudda - 01-04-06 16:47 
 ----------------------------------------------------------------------
-We are still hoping for this.
+I am now able to see the IEC958 control with the latest (Jan 03, 2006) CVS.
+Still working on getting sound but this bug can be closed.
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 16:52 
+ tiwai - 01-04-06 16:54 
 ----------------------------------------------------------------------
-Applied to CVS.  Thanks.
+OK, closing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-25-05 14:12 jdthood        New Issue                                    
-08-25-05 14:13 jdthood        File Added:
-move-tmp-file-in-rules_20050825jdth1.patch                    
-01-04-06 14:39 jdthood        Note Added: 0007420                          
-01-04-06 16:52 tiwai          Status                   new => resolved     
-01-04-06 16:52 tiwai          Resolution               open => fixed       
-01-04-06 16:52 tiwai          Assigned To               => tiwai           
-01-04-06 16:52 tiwai          Note Added: 0007428                          
+12-17-05 18:44 lilbudda       New Issue                                    
+12-19-05 08:05 rlrevell       Note Added: 0007091                          
+12-19-05 16:39 lilbudda       Note Added: 0007095                          
+12-19-05 16:50 rlrevell       Note Added: 0007096                          
+12-20-05 06:14 lilbudda       File Added: lspci.txt                        
+12-20-05 06:20 lilbudda       Note Added: 0007102                          
+12-23-05 18:16 lilbudda       Note Added: 0007134                          
+12-23-05 19:35 rlrevell       Note Added: 0007136                          
+12-24-05 00:54 lilbudda       Note Added: 0007138                          
+12-30-05 22:46 lilbudda       Note Edited: 0007138                         
+01-04-06 16:47 lilbudda       Note Added: 0007427                          
+01-04-06 16:54 tiwai          Status                   new => resolved     
+01-04-06 16:54 tiwai          Resolution               open => fixed       
+01-04-06 16:54 tiwai          Assigned To               => tiwai           
+01-04-06 16:54 tiwai          Note Added: 0007429                          
 ======================================================================
 
 
