@@ -1,11 +1,11 @@
-From: patrick.pub@nerim.net
-Subject: Alsamixer controls
-Date: Wed, 4 Jan 2006 12:13:05 +0100 (CET)
-Message-ID: <36251.8917456784$1136373267@news.gmane.org>
+From: Eduard Bloch <edi@gmx.de>
+Subject: dxs_support=5 OK on 1106:3059 (rev 60)
+Date: Wed, 4 Jan 2006 12:11:29 +0100
+Message-ID: <20060104111129.GA18616@zombie.inka.de>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,18 +18,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks:
+Good morning,
 
-I am writing some emu10k1 dsp softwares, how to declare a control in whic=
-h
-the patch can modify the value of a control?
+I report success with the VIA onboard sound chip listed below, setting
+the dxs_support=5 parameter and testing with different rates with
+brec/bplay.
 
-Is it also possible to prohib the user to change a control, in other hand=
-s
-can a control be used to display a result?
+Eduard.
 
-Best regards
+0000:00:11.5 0401: 1106:3059 (rev 60)
+	Subsystem: 1043:8174
+	Flags: medium devsel, IRQ 25
+	I/O ports at e400 [size=256]
+	Capabilities: [c0] Power Management version 2
 
+
+-- 
+Das Paradies habe ich mir immer als eine Art Bibliothek vorgestellt.
+		-- Jorge Luis Borges
 
 
 -------------------------------------------------------
