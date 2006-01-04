@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001370]: Please apply patch to Rules.make
-Date: Wed, 4 Jan 2006 14:39:21 +0100
-Message-ID: <f70d091b374e82f344faddd31da70063@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001691]: Fails to build on LInux 2.4
+Date: Wed, 4 Jan 2006 14:43:02 +0100
+Message-ID: <1495dd358880aa606b048339d8782532@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21FDE184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 14:39:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C36F2184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 14:43:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,217 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1370> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1691> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1370
-Category:                   1_OTHERS
+Issue ID:                   1691
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-25-2005 14:12 CEST
-Last Modified:              01-04-2006 14:39 CET
+Date Submitted:             12-28-2005 22:43 CET
+Last Modified:              01-04-2006 14:43 CET
 ======================================================================
-Summary:                    Please apply patch to Rules.make
+Summary:                    Fails to build on LInux 2.4
 Description: 
-In Debian we have to patch Rules.make so that it puts a temporary file
-at a different location.  (Details: we use the mktemp program to create
-the file and return the name of the file.)  It would be nice if upstream
-would apply a patch to make our patch smaller.
+make[3]: Leaving directory `/usr/src/modules/alsa-driver/drivers'
+make[3]: Entering directory `/usr/src/modules/alsa-driver/isa'
+rm -f als100.isapnp
+touch als100.isapnp
+rm -f azt2320.isapnp
+touch azt2320.isapnp
+rm -f dt019x.isapnp
+touch dt019x.isapnp
+rm -f opl3sa2.isapnp
+touch opl3sa2.isapnp
+rm -f cmi8330.isapnp
+touch cmi8330.isapnp
+rm -f es18xx.isapnp
+touch es18xx.isapnp
+rm -f sscape.isapnp
+touch sscape.isapnp
+gcc-3.3 -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
+-I/usr/src/linux/include -I/usr/src/linux/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/usr/src/linux/include/linux/modversions.h  -DKBUILD_BASENAME=cmi8330   -c
+-o cmi8330.o cmi8330.c
+In file included from cmi8330.c:1:
+../alsa-kernel/isa/cmi8330.c: In function `snd_cmi8330_unregister_all':
+../alsa-kernel/isa/cmi8330.c:676: error: `cmi8330_pnpc_driver' undeclared
+(first use in this function)
+../alsa-kernel/isa/cmi8330.c:676: error: (Each undeclared identifier is
+reported only once
+../alsa-kernel/isa/cmi8330.c:676: error: for each function it appears
+in.)
+../alsa-kernel/isa/cmi8330.c: In function `alsa_card_cmi8330_init':
+../alsa-kernel/isa/cmi8330.c:703: error: `cmi8330_pnpc_driver' undeclared
+(first use in this function)
+make[3]: *** [cmi8330.o] Error 1
+make[3]: Leaving directory `/usr/src/modules/alsa-driver/isa'
+make[2]: *** [compile] Error 1
+make[2]: Leaving directory `/usr/src/modules/alsa-driver'
+make[1]: *** [build-stamp] Error 2
+make[1]: Leaving directory `/usr/src/modules/alsa-driver'
+make: *** [kdist_image] Error 2
 
-Here is the proposed patch, which applies against 1.0.10rc1.  It
-shouldn't
-change any behavior by default, but when applied it allows distros to
-change the location of the temporary file with a one-line patch.
-
-diff -urNad alsa-driver-1.0.8/Rules.make
-/tmp/dpep.jldRsB/alsa-driver-1.0.8/Rules.make
---- alsa-driver-1.0.8/Rules.make        2004-12-09 20:39:11.000000000
-+0100
-+++ /tmp/dpep.jldRsB/alsa-driver-1.0.8/Rules.make       2005-01-16
-15:04:22.000000000 +0100
-@@ -287,7 +287,7 @@
-        genksyms_smp_prefix :=
- endif
-
--$(MODINCL)/$(MODPREFIX)%.ver: %.c
-+$(MODINCL)/$(MODPREFIX)%.ver: %.c update-sndvers
-        @if [ ! -r $(MODINCL)/$(MODPREFIX)$*.stamp -o
-$(MODINCL)/$(MODPREFIX)$*.stamp -ot $< ]; then \
-                if [ ! -f
-$(CONFIG_SND_KERNELDIR)/include/linux/modules/$*.stamp ]; then \
-                echo '$(CC) -D__KERNEL__ $(CFLAGS) $(EXTRA_CFLAGS) -E
--D__GENKSYMS__ $<'; \
-@@ -308,7 +308,8 @@
- endif # export-objs
-
- define update-sndvers
--       @(echo "#ifndef _LINUX_SNDVERSIONS_H"; \
-+       (tmpfile=`echo $(SNDVERSIONS).tmp`; \
-+       (echo "#ifndef _LINUX_SNDVERSIONS_H"; \
-          echo "#define _LINUX_SNDVERSIONS_H"; \
-          echo "#include <linux/modsetver.h>"; \
-          cd $(TOPDIR)/include/modules; \
-@@ -316,14 +317,14 @@
-            if [ -f $$f ]; then echo "#include \"modules/$${f}\""; fi; \
-          done; \
-          echo "#endif"; \
--       ) > $(SNDVERSIONS).tmp
--       @if [ -r $(SNDVERSIONS) ] && cmp -s $(SNDVERSIONS)
-$(SNDVERSIONS).tmp; then \
-+       ) > $${tmpfile}; \
-+       if [ -r $(SNDVERSIONS) ] && cmp -s $(SNDVERSIONS) $${tmpfile};
-then \
-                echo $(SNDVERSIONS) was not updated; \
--               rm -f $(SNDVERSIONS).tmp; \
-+               rm -f $${tmpfile}; \
-        else \
-                echo $(SNDVERSIONS) was updated; \
--               mv -f $(SNDVERSIONS).tmp $(SNDVERSIONS); \
--       fi
-+               mv -f $${tmpfile} $(SNDVERSIONS); \
-+       fi)
- endef
-
- $(SNDVERSIONS):
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-04-06 14:39 
+ jdthood - 12-28-05 23:10 
 ----------------------------------------------------------------------
-We are still hoping for this.
+The build failed with "--with-isapnp=no".  The build succeeded when I
+changed this to "--with-isapnp=yes".
+
+----------------------------------------------------------------------
+ jdthood - 01-04-06 14:43 
+----------------------------------------------------------------------
+I just tried to build 1.0.11rc2 against Linux 2.4.27 with
+"--with-isapnp=yes" and the build failed.
+
+make[4]: Entering directory `/usr/src/modules/alsa-driver/acore'
+gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
+-I/usr/src/kernel-source-2.4.27/include
+-I/usr/src/kernel-source-2.4.27/include -O2 -mpreferred-stack-boundary=2
+-march=i686 -Wdeclaration-after-statement -Wno-pointer-sign -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include -DMODVERSIONS -include
+/usr/src/kernel-source-2.4.27/include/linux/modversions.h  
+-DEXPORT_SYMTAB -c hwdep.c
+In file included from
+/usr/src/kernel-source-2.4.27/include/linux/kernel.h:15,
+                 from
+/usr/src/kernel-source-2.4.27/include/asm/system.h:5,
+                 from
+/usr/src/kernel-source-2.4.27/include/linux/spinlock.h:6,
+                 from
+/usr/src/kernel-source-2.4.27/include/linux/module.h:12,
+                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
+                 from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:14: warning: type
+qualifiers ignored on function return type
+/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:30: warning: type
+qualifiers ignored on function return type
+In file included from
+/usr/src/kernel-source-2.4.27/include/linux/byteorder/little_endian.h:11,
+                 from
+/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:65,
+                 from
+/usr/src/kernel-source-2.4.27/include/linux/kernel.h:15,
+                 from
+/usr/src/kernel-source-2.4.27/include/asm/system.h:5,
+                 from
+/usr/src/kernel-source-2.4.27/include/linux/spinlock.h:6,
+                 from
+/usr/src/kernel-source-2.4.27/include/linux/module.h:12,
+                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
+                 from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:160: warning:
+type qualifiers ignored on function return type
+/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:173: warning:
+type qualifiers ignored on function return type
+/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:186: warning:
+type qualifiers ignored on function return type
+/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:200: warning:
+type qualifiers ignored on function return type
+In file included from
+/usr/src/kernel-source-2.4.27/include/linux/prefetch.h:13,
+                 from
+/usr/src/kernel-source-2.4.27/include/linux/list.h:6,
+                 from
+/usr/src/kernel-source-2.4.27/include/linux/module.h:13,
+                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
+                 from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/kernel-source-2.4.27/include/asm/processor.h:75: error: array
+type has incomplete element type
+In file included from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/modules/alsa-driver/include/adriver.h:160: error: redefinition of
+'PDE'
+/usr/src/kernel-source-2.4.27/include/linux/proc_fs.h:214: error: previous
+definition of 'PDE' was here
+In file included from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/modules/alsa-driver/include/adriver.h:325:1: warning: "snprintf"
+redefined
+In file included from
+/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
+                 from <command line>:1:
+/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:684:1:
+warning: this is the location of the previous definition
+In file included from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/modules/alsa-driver/include/adriver.h:330:1: warning: "vsnprintf"
+redefined
+In file included from
+/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
+                 from <command line>:1:
+/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:690:1:
+warning: this is the location of the previous definition
+In file included from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/modules/alsa-driver/include/adriver.h:342:1: warning: "sscanf"
+redefined
+In file included from
+/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
+                 from <command line>:1:
+/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:686:1:
+warning: this is the location of the previous definition
+In file included from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/modules/alsa-driver/include/adriver.h:343:1: warning: "vsscanf"
+redefined
+In file included from
+/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
+                 from <command line>:1:
+/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:692:1:
+warning: this is the location of the previous definition
+In file included from
+/usr/src/modules/alsa-driver/include/sound/driver.h:47,
+                 from hwdep.c:22:
+/usr/src/modules/alsa-driver/include/adriver.h:620:1: warning:
+"vmalloc_to_page" redefined
+In file included from
+/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
+                 from <command line>:1:
+/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:70:1:
+warning: this is the location of the previous definition
+make[4]: *** [hwdep.o] Error 1
+make[4]: Leaving directory `/usr/src/modules/alsa-driver/acore'
+make[3]: *** [compile] Error 1
+make[3]: Leaving directory `/usr/src/modules/alsa-driver'
+make[2]: *** [build-stamp] Error 2
+make[2]: Leaving directory `/usr/src/modules/alsa-driver'
+make[1]: *** [kdist_image] Error 2
+make[1]: Leaving directory `/usr/src/modules/alsa-driver'
+Module /usr/src/modules/alsa-driver failed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-25-05 14:12 jdthood        New Issue                                    
-08-25-05 14:13 jdthood        File Added:
-move-tmp-file-in-rules_20050825jdth1.patch                    
-01-04-06 14:39 jdthood        Note Added: 0007420                          
+12-28-05 22:43 jdthood        New Issue                                    
+12-28-05 23:10 jdthood        Note Added: 0007186                          
+01-04-06 14:43 jdthood        Note Added: 0007422                          
 ======================================================================
 
 
