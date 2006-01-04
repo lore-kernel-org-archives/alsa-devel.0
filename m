@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001708]: Onboard sound using the intel-hda driver does not work on P5GD1-VM motherboards
-Date: Wed, 4 Jan 2006 17:07:29 +0100
-Message-ID: <ee7d74c8efe724ca0af08af189a99225@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001712]: ALSA sound/ppc/tumbler.c:244: failed to set volume
+Date: Wed, 4 Jan 2006 17:09:32 +0100
+Message-ID: <853289ec36eec349bc31b1fc58620ed4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 153CE184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:07:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40284184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:09:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1708> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1712> 
 ======================================================================
-Reported By:                keith81
+Reported By:                schwab
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1708
-Category:                   PCI - hda-intel
+Issue ID:                   1712
+Category:                   PPC - powermac
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               SuSE Linux
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-04-2006 10:57 CET
-Last Modified:              01-04-2006 17:07 CET
+Date Submitted:             01-04-2006 17:09 CET
+Last Modified:              01-04-2006 17:09 CET
 ======================================================================
-Summary:                    Onboard sound using the intel-hda driver does not
-work on P5GD1-VM motherboards
+Summary:                    ALSA sound/ppc/tumbler.c:244: failed to set volume
 Description: 
-I raised this issue back in July or August and received no helpful
-feedback.  If you google the P5GD1-VMmobo name, along with alsa, you see
-that many people with this mobo have not been able to get sound to work on
-their installations of various distributions of linux.
-
-Are there any future plans to include support for P5GD1-VM motherboards? 
-No sound is a deal-breaker for me when it comes to migrating. 
-
-I appreciate any feedback, whether it's getting sound to work on my
-system, or someone saying support is in the pipes, or someone explaining
-why support won't be coming.
-
-Thanks!  Happy new year!
+When I suspend the iBook I'm getting this error, and after wakeup the
+Master mixer is muted.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-04-06 17:07 
-----------------------------------------------------------------------
-First, try the latest ALSA release (1.0.11rc2 o CVS version).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 10:57 keith81        New Issue                                    
-01-04-06 17:07 tiwai          Note Added: 0007435                          
+01-04-06 17:09 schwab         New Issue                                    
+01-04-06 17:09 schwab         Distribution              => SuSE Linux      
+01-04-06 17:09 schwab         Kernel Version            => 2.6.15          
 ======================================================================
 
 
