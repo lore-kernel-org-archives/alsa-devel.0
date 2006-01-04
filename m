@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001709]: 5.1 doesn't work
-Date: Wed, 4 Jan 2006 13:50:07 +0100
-Message-ID: <490f9bc83ed06acaad86998d8bbfce97@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001710]: warning: implicit declaration of function &#8216;pm_register&#8217;
+Date: Wed, 4 Jan 2006 14:16:00 +0100
+Message-ID: <0b9d7ff959783ed151a6e4a171e3848a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 326DC184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 13:50:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D3F5146
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 14:16:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1709> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1710> 
 ======================================================================
-Reported By:                piezo
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1709
-Category:                   PCI - emu10k1
+Issue ID:                   1710
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.11-1.1369
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-04-2006 13:50 CET
-Last Modified:              01-04-2006 13:50 CET
+Date Submitted:             01-04-2006 14:16 CET
+Last Modified:              01-04-2006 14:16 CET
 ======================================================================
-Summary:                    5.1 doesn't work
+Summary:                    warning: implicit declaration of function
+&#8216;pm_register&#8217;
 Description: 
-I'm new to linux.  I've been googling for a awnser to this problem for a
-week now.  found a few with the same sort of problems but no awnsers.
+  CC [M]  /usr/src/modules/alsa-driver/acore/misc_driver.o
+/usr/src/modules/alsa-driver/acore/misc_driver.c: In function
+&#8216;register_pnp_pm_callback&#8217;:
+/usr/src/modules/alsa-driver/acore/misc_driver.c:687: warning: implicit
+declaration of function &#8216;pm_register&#8217;
+/usr/src/modules/alsa-driver/acore/misc_driver.c:687: warning: assignment
+makes pointer from integer without a cast
+/usr/src/modules/alsa-driver/acore/misc_driver.c: In function
+&#8216;unregister_pnp_pm_callback&#8217;:
+/usr/src/modules/alsa-driver/acore/misc_driver.c:706: warning: implicit
+declaration of function &#8216;pm_unregister&#8217;
 
-I can get sterio sound but not 5.1 surround.  This is very irritating as I
-bought a Audity2 soundcard for the purpose of using it's 5.1 sound
-capability.
-
-initially xine kept telling me that another process was using the PCM
-device.  found how to fix this.  using
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 13:50 piezo          New Issue                                    
-01-04-06 13:50 piezo          Distribution              => Fedora Core 4   
-01-04-06 13:50 piezo          Kernel Version            => 2.6.11-1.1369   
+01-04-06 14:16 jdthood        New Issue                                    
 ======================================================================
 
 
