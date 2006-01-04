@@ -1,15 +1,14 @@
-From: "Joandra Finneran" <fin@kibo.co.kr>
-Subject: Re: Pharamaceugtical
-Date: Wed, 4 Jan 2006 11:36:24 -0500
-Message-ID: <000001c6114d$00a8bc10$d036a8c0@horseman>
-Reply-To: "Joandra Finneran" <fin@kibo.co.kr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
+Date: Wed, 4 Jan 2006 17:40:29 +0100
+Message-ID: <0794d46c85e921f3cbe2b078bb07e245@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C61123.17D2B410"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from kibo.co.kr (ppp85-140-36-16.pppoe.mtu-net.ru [85.140.36.16])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 530ED184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:37:14 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2E07184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:40:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,156 +18,121 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gu Vick <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0002_01C61123.17D2B410"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
+======================================================================
+Reported By:                kees
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1678
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.15-rc6-git4
+======================================================================
+Date Submitted:             12-25-2005 02:29 CET
+Last Modified:              01-04-2006 17:40 CET
+======================================================================
+Summary:                    nForce (10de:026c) left channel squeals, right
+channel mostly okay
+Description: 
+This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
+is this is an "nForce410" board, with "6-channel HD audio".
+
+Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
+snd-hda-intel load fine, but during playback, the left channel squeals,
+while the right seems to play things okay.
+
+I'm happy to dig around and try whatever needs trying to get this fixed. 
+Thanks!
+======================================================================
+
+----------------------------------------------------------------------
+ Dr Hotdog - 12-31-05 17:30 
+----------------------------------------------------------------------
+I can confirm the problems with the ASUS A8N-VM CSM and its AD1986A sound
+chip.  Kernel 2.6.15rc7 with ALSA 1.0.11rc1 hda-intel results in high
+pitched squealing from the front left speaker whenever there is sound
+being played over any channel.  Results of using speaker-test are the same
+as those reported by kees for the ASUS A8N-VM-UAYGZ mobo.
+
+lspci -nvv:
+
+00:10.1 Class 0403: 10de:026c (rev a2)
+        Subsystem: 10de:cb84
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0 (500ns min, 1250ns max)
+        Interrupt: pin B routed to IRQ 233
+        Region 0: Memory at febd8000 (32-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [44] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [6c] HyperTransport: MSI Mapping
+
+head /proc/asound/card0/code#0:
+
+Codec: Analog Devices AD1986A
+Address: 0
+Vendor Id: 0x11d41986
+Subsystem Id: 0x104381b3
+Revision Id: 0x100400
+
+Unfortunately I am interested in surround sound (this is a motherboard
+designed with HTPC use in mind, stereo only output just doesn't cut it) so
+the patch morgoth666 linked to is an incomplete solution at best.
+
+EDIT:
+
+In addition, sound will stop working entirely and apparently randomly,
+reboot is the only way to restore it.  Nothing in dmesg or
+/var/log/messages when this occurs.  After this happens speaker-test will
+run as normal, without error messages, but no sound is heard.  Possibly
+related to bug #1415, however there is no obvious correlation with volume
+adjustments, volume adjustments can be made without failure of the sound
+system and the sound can fail at other times when no volume adjustments
+are being made.
 
 
-------=_NextPart_001_0002_01C61123.17D2B410
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-oma
-CALIS
-eridia
-Amien
-Propcia
-Xanx
-VALUM
-VIGRA
-Levita
-Pail
-http://www.bestvalour.com
+----------------------------------------------------------------------
+ tiwai - 01-04-06 17:40 
+----------------------------------------------------------------------
+Could you try ALSA 1.0.11rc2?
 
-------=_NextPart_001_0002_01C61123.17D2B410
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D3><IMG =
-src=3D"cid:000101c6114c$ffb0d144$d036a8c0@horseman">oma</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>C<IMG =
-src=3D"cid:000201c6114c$ffb0d144$d036a8c0@horseman">ALIS</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3><IMG =
-src=3D"cid:000301c6114c$ffb0d144$d036a8c0@horseman">eridia</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>Am<IMG =
-src=3D"cid:000401c6114c$ffb0d144$d036a8c0@horseman">ien</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>Prop<IMG =
-src=3D"cid:000501c6114c$ffb0d144$d036a8c0@horseman">cia</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>Xan<IMG =
-src=3D"cid:000601c6114c$ffb0d144$d036a8c0@horseman">x</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>VAL<IMG =
-src=3D"cid:000201c6114c$ffb0d144$d036a8c0@horseman">UM</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>VI<IMG =
-src=3D"cid:000701c6114c$ffb0d144$d036a8c0@horseman">GRA</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>Levit<IMG =
-src=3D"cid:000801c6114c$ffb0d144$d036a8c0@horseman">a</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>Pa<IMG =
-src=3D"cid:000901c6114c$ffb0d144$d036a8c0@horseman">il</FONT></DIV>
-<DIV><A =
-href=3D"http://www.bestvalour.com">http://www.bestvalour.com</A></DIV></B=
-ODY></HTML>
-
-------=_NextPart_001_0002_01C61123.17D2B410--
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000701c6114c$ffb0d144$d036a8c0@horseman>
-
-R0lGODdhDAAYAMIAAP///xADBqWgoWlhY+Hf30tCRC0iJcPAwCwAAAAADAAYAAADNgi63P4wykmr
-vZiKIOL4UUAEkFAARecMnTA8IjA65pI2Q6DrL2MQC4KBcTgxCocFq+FaDB3PBAA7
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000201c6114c$ffb0d144$d036a8c0@horseman>
-Content-Disposition: inline
-
-R0lGODdhBQAVAIAAAP///wkGBywAAAAABQAVAAACEISPqcsNgeCRhr6IZ677mgIAOw==
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000301c6114c$ffb0d144$d036a8c0@horseman>
-Content-Disposition: inline
-
-R0lGODdhDgASAOMAAP///wEPEUBLTJ+lpd/h4SAtLoCHiGBpar/DwwAAAAAAAAAAAAAAAAAAAAAA
-AAAAACwAAAAADgASAAAERRDISau9OOvNrxjXIEyBQFREEZCDURnGKq1FVRAysB6gNBw6EgAxkggQ
-wZnkNqwlkwbgwfWUpa7KLOAgAGpziADyS/FmIwA7
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000101c6114c$ffb0d144$d036a8c0@horseman>
-Content-Disposition: inline
-
-R0lGODdhDAAQAOMAAP///wUCEcC/w0NBTCQhLqGgpd/f4WJgaoKAiAAAAAAAAAAAAAAAAAAAAAAA
-AAAAACwAAAAADAAQAAAENxDISau9OFcxSCCDQBWhZBREMRFGZRBTIGaoSn9HIcxbcXg2DAKWMQRW
-vNWk1gIIDkmOJ1CSRAAAOw==
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000601c6114c$ffb0d144$d036a8c0@horseman>
-Content-Disposition: inline
-
-R0lGODdhCgAWAOMAAP///wECBoCAgiAhJWBgY9/f30BBRL+/wJ+goQAAAAAAAAAAAAAAAAAAAAAA
-AAAAACwAAAAACgAWAAAENBDISau9OOvNu/+cMAQBUUyCcRbpNJxTUB2HKEvHMBBCcQMDBOX3AyB+
-hp5xNCkYSIbDLQIAOw==
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000401c6114c$ffb0d144$d036a8c0@horseman>
-Content-Disposition: inline
-
-R0lGODdhCgAWAMIAAP///wkFDKKhoyckKkZDSMHAwmViZ+Df4CwAAAAACgAWAAADLgi63P4wykmr
-DBFD/YIYAVEwwTAW5uItgqEeyzGoDRfAiqwKrKuUpwEO4AGJFgkAOw==
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000501c6114c$ffb0d144$d036a8c0@horseman>
-Content-Disposition: inline
-
-R0lGODdhCgAVAMIAAP///wULB8DCwSQpJmJmZKGjot/g4ENIRSwAAAAACgAVAAADKwi63P4wykmr
-vUqMMATTHrgQxVIQy2AsxrAEcByk60OybtYBxlEuGs4PkAAAOw==
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000801c6114c$ffb0d144$d036a8c0@horseman>
-Content-Disposition: inline
-
-R0lGODdhBgAMAMIAAP///wEGDb/AwiAlK0BESWBjZ9/f4AAAACwAAAAABgAMAAADEQi63BxiEBUK
-MBSv0Pjr4LckADs=
-
-------=_NextPart_000_0001_01C61123.17D2B410
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000901c6114c$ffb0d144$d036a8c0@horseman>
-Content-Disposition: inline
-
-R0lGODdhCQAOAMIAAP///w4ODGhoZ6Sko+Dg4CwsKgAAAAAAACwAAAAACQAOAAADIAi63P4wirGG
-UKQQkLeywNQIpEMEHkNeDChiGheH1McmADs=
-
-------=_NextPart_000_0001_01C61123.17D2B410--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-25-05 02:29 kees           New Issue                                    
+12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
+12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
+12-26-05 11:02 kees           Note Added: 0007149                          
+12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
+12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:50 morgoth666     Note Added: 0007300                          
+12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
+12-31-05 10:16 kees           Note Added: 0007355                          
+12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
+12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
+01-04-06 17:40 tiwai          Note Added: 0007446                          
+======================================================================
 
 
 
