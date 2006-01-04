@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001700]: CMI 9880 not detected and not implemented yet
-Date: Wed, 4 Jan 2006 17:33:47 +0100
-Message-ID: <373b00ff244f9894f43e39e9c7957a55@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
+Date: Wed, 4 Jan 2006 17:46:35 +0100
+Message-ID: <736f6e9e9b6dc215c8a6d46eac717710@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91863154
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:33:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96942184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:46:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1700> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1421> 
 ======================================================================
-Reported By:                mitcoes
-Assigned To:                
+Reported By:                do13
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1700
+Issue ID:                   1421
 Category:                   1_OTHERS
-Reproducibility:            unable to duplicate
-Severity:                   feature
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Breezy Ubuntu
-Kernel Version:             all
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.13
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-02-2006 17:40 CET
-Last Modified:              01-04-2006 17:33 CET
+Date Submitted:             09-14-2005 22:12 CEST
+Last Modified:              01-04-2006 17:46 CET
 ======================================================================
-Summary:                    CMI 9880 not detected and not implemented yet
+Summary:                    AC97 device name changed in ac97_codec.c
 Description: 
-CMI 9880 that comes integrated with ASUS P5AD2 Premium and others doesn't
-work.
+Bug #0001334 changed the device name on the AC97-bus into card#-# this
+prevents external drivers to access the AC97 codec.
+The basic idea of the AC97-bus was to bind external drivers to an codec to
+use their extended features (touchscreen, AD- converter etc). With this
+naming change we can't bind drivers to the codec, because the device name
+isn't the name of the driver.
 
-I have read 
->> know mine is running under an "i810_audio" module. << at
-http://hardware.mcse.ms/archive13-2005-1-137173.html
-but it does not give a complete performance.
-
+Andy ideas about this?
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:33 
+ rlrevell - 12-30-05 23:14 
 ----------------------------------------------------------------------
-CMI9880 is for HD-audio.  Use snd-hda-intel driver.
+Any news on this?
+
+----------------------------------------------------------------------
+ tiwai - 01-04-06 17:46 
+----------------------------------------------------------------------
+It shows now like 0-0:WM9713.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-06 17:40 mitcoes        New Issue                                    
-01-02-06 17:40 mitcoes        Distribution              => Breezy Ubuntu   
-01-02-06 17:40 mitcoes        Kernel Version            => all             
-01-04-06 17:33 tiwai          Note Added: 0007444                          
+09-14-05 22:12 do13           New Issue                                    
+09-14-05 22:12 do13           Kernel Version            => 2.6.13          
+09-15-05 14:18 Clemens LadischNote Added: 0006195                          
+09-15-05 16:07 tiwai          Note Added: 0006212                          
+09-15-05 17:04 liam           Note Added: 0006216                          
+09-15-05 17:12 liam           Note Added: 0006217                          
+12-30-05 23:14 rlrevell       Note Added: 0007280                          
+01-04-06 17:46 tiwai          Status                   new => resolved     
+01-04-06 17:46 tiwai          Resolution               open => fixed       
+01-04-06 17:46 tiwai          Assigned To               => tiwai           
+01-04-06 17:46 tiwai          Note Added: 0007448                          
 ======================================================================
 
 
