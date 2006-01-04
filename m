@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Wed, 4 Jan 2006 11:06:44 +0100
-Message-ID: <e67de43cfa6384a99149093b18c25618@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001659]: dmix not working with ice1712
+Date: Wed, 4 Jan 2006 11:16:57 +0100
+Message-ID: <8afbf59ee33a9d0b8ff9f56608546399@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF20C173
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 11:06:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 800B1173
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 11:16:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,103 +24,151 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1659> 
 ======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
+Project:                    ALSA - lib
+Issue ID:                   1659
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Status:                     new
 ======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              01-04-2006 11:06 CET
+Date Submitted:             12-18-2005 21:07 CET
+Last Modified:              01-04-2006 11:16 CET
 ======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
+Summary:                    dmix not working with ice1712
 Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+In Debian bug 342026 the submitter reports:
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+> After an upgrade today [to 1.0.10rc1?], the dmix plugin stopped
+working.
+> 
+>     $ mocp 	# or any other program trying to use alsa
+>     ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave)
+requested or auto-format is not available
+>     ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize
+slave
+> 
+> My ~/.asoundrc is the example configuration for using dmix with the
+> ICE1712 chip (found e.g. at
+http://alsa.opensrc.org/index.php?page=DmixPlugin).
+> 
+> # cat ~/.asoundrc
+> # our ICE1712 dmix:
+> pcm.ossmix {
+>     type dmix
+>     ipc_key 1024
+>     slave {
+>     pcm "hw:0,0"
+>         period_time 0
+>         period_size 1024
+>         buffer_size 4096 # buffer size < 6653, but pow(x, 2)
+>         rate 44100 # we want to play CDs only
+>     }
+>     bindings {
+>         0 0
+>         1 1
+>     }
+> }
+> # Everything shall be dmixed, so redefine "default":
+> pcm.!default {
+>     type plug
+>     slave.pcm "ossmix"
+> }
+> # OSS via aoss should d(mix)stroyed:
+> pcm.dsp0 {
+>     type plug
+>     slave.pcm "ossmix"
+> }
+> ctl.mixer0 {
+>     type hw
+>     card 0
+> }
 
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
 
+He says that this config worked in ALSA 1.0.9.
+
+He later adds:
+
+> Adding 'format S32_LE' in the original .asoundrc seems to have fixed
+> the problem. Apparently the default format (for ice1712 or generally?)
+> has been changed to something that doesn't work.
+
+As always, see http://bugs.debian.org/342026 for the complete log.
 ======================================================================
 
 ----------------------------------------------------------------------
- bryanr - 01-04-06 09:58 
+ jdthood - 01-02-06 23:07 
 ----------------------------------------------------------------------
-Effects Edirol UA-5 as well. Can be temporarily repaired
-by applying alsa-usbaudio-2.6.15-revert-001.patch to
-kernel.org 2.6.15 (reverts all of alsa-git-2005-11-07-usbaudio.patch
-except for its vmalloc/vfree changes, which are needed in 2.6.15).
-
-I am currently narrowing down which specific chunk(s) within that
-patch are responsible.
+I notice that this patch was not applied in 1.0.11rc2.
 
 ----------------------------------------------------------------------
- bryanr - 01-04-06 11:06 
+ jdthood - 01-04-06 11:16 
 ----------------------------------------------------------------------
-alsa-usbaudio-2.6.15-revert-008.patch seems to be a minimal fix for
-2.6.15.
+-------- Original Message --------
+Subject: [Pkg-alsa-devel] Bug#342026: alsa-utils: Dmix stopped working.
+Resent-Date: Wed, 04 Jan 2006 09:48:13 UTC,	Wed, 04 Jan 2006 01:48:14
+-0800
+Date: Wed, 04 Jan 2006 10:37:54 +0100
+From: Laurent Bonnaud
+[...]
 
-I'd appreciate test results from other users, and additional
-comments from a more experienced ALSA developer.
+Hi,
+
+I have a similar problem with my "Terratec Aureon Sky" soundcard (with
+the snd_ice1724 driver).  Here is how it is listed by lspci:
+
+0000:00:0c.0 Multimedia audio controller: VIA Technologies Inc.
+VT1720/24 [Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+
+I have no .asoundrc or /etc/asound.conf file and dmix does not work: a
+second program that tries to output sound blocks.
+
+I tried this patch:
+
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=969&type=bug
+
+that I applied to the /usr/share/alsa/cards/ICE1724.conf file.  dmix
+still does not work.
+
+Let me add that dmix used to work with older versions of alsa and the
+sample dmix configuration given
+in /usr/share/doc/libasound2/examples/asound.conf_dmix.  This is
+therefore a regression.
+
+
+Package: libasound2
+Version: 1.0.10+1.0.11rc1-1
+
+-- System Information:
+Debian Release: testing/unstable
+  APT prefers unstable
+  APT policy: (100, 'unstable')
+Architecture: amd64 (x86_64)
+Shell:  /bin/sh linked to /bin/bash
+Kernel: Linux 2.6.14-2-amd64-k8
+Locale: LANG=fr_FR@euro, LC_CTYPE=fr_FR@euro (charmap=ISO-8859-15)
+
+Versions of packages libasound2 depends on:
+ii  libc6                         2.3.5-11   GNU C Library: Shared
+libraries an
+
+libasound2 recommends no packages.
+
+-- no debconf information
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
-12-30-05 19:48 sailfrog       Note Added: 0007251                          
-12-30-05 20:01 rlrevell       Note Added: 0007252                          
-12-30-05 20:08 rlrevell       Note Added: 0007254                          
-12-30-05 20:31 sailfrog       Note Added: 0007256                          
-12-30-05 20:34 rlrevell       Note Added: 0007257                          
-12-30-05 20:41 sailfrog       Note Added: 0007258                          
-12-30-05 20:43 rlrevell       Note Added: 0007259                          
-12-31-05 02:32 smithbone      Note Added: 0007319                          
-12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
-               
-12-31-05 03:47 rlrevell       Note Added: 0007331                          
-12-31-05 05:31 smithbone      Note Added: 0007343                          
-12-31-05 05:33 rlrevell       Note Added: 0007344                          
-12-31-05 05:37 rlrevell       Note Added: 0007345                          
-12-31-05 07:10 smithbone      Note Added: 0007347                          
-12-31-05 08:54 afran          Note Added: 0007354                          
-12-31-05 08:55 afran          Issue Monitored: afran                       
-12-31-05 08:56 afran          Note Edited: 0007354                         
-01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
-                  
-01-04-06 09:58 bryanr         Note Added: 0007411                          
-01-04-06 10:04 bryanr         Issue Monitored: bryanr                      
-01-04-06 10:50 bryanr         File Added: alsa-usbaudio-2.6.15-revert-008.patch 
-                  
-01-04-06 11:06 bryanr         Note Added: 0007412                          
+12-18-05 21:07 jdthood        New Issue                                    
+12-18-05 22:30 rlrevell       File Added: ICE1712-dmix.patch                    
+12-18-05 22:31 rlrevell       Note Added: 0007072                          
+01-02-06 23:07 jdthood        Note Added: 0007394                          
+01-04-06 11:16 jdthood        Note Added: 0007413                          
 ======================================================================
 
 
