@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001711]: warning: &#8216;src&#8217; may be used uninitialized in this function
-Date: Wed, 4 Jan 2006 16:56:34 +0100
-Message-ID: <d69b19dc26dacf4d8f47bc471d23faaa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001674]: Audigy 2 ZS after suspend no sound line in
+Date: Wed, 4 Jan 2006 17:01:03 +0100
+Message-ID: <ca47fcc8a4097b0fd8a0c0f40162a986@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 128FE184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:56:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 636D4184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:01:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1711> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1674> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                andreid1303
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1711
-Category:                   0_compilation problem_!!!
+Issue ID:                   1674
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
 Distribution:               
 Kernel Version:             
-Resolution:                 won't fix
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-04-2006 14:18 CET
-Last Modified:              01-04-2006 16:56 CET
+Date Submitted:             12-22-2005 21:41 CET
+Last Modified:              01-04-2006 17:01 CET
 ======================================================================
-Summary:                    warning: &#8216;src&#8217; may be used uninitialized
-in this function
+Summary:                    Audigy 2 ZS after suspend no sound line in
 Description: 
-  CC [M]  /usr/src/modules/alsa-driver/acore/oss/route.o
-In file included from /usr/src/modules/alsa-driver/acore/oss/route.c:2:
-/usr/src/modules/alsa-driver/include/../alsa-kernel/core/oss/route.c: In
-function &#8216;route_to_channel&#8217;:
-/usr/src/modules/alsa-driver/include/../alsa-kernel/core/oss/route.c:208:
-warning: &#8216;src&#8217; may be used uninitialized in this function
+Finally I have got sound working after suspend with alsa 1.0.11rc1
+installed but only line in is silent. PCM and Mic is OK
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 16:56 
+ andreid1303 - 01-04-06 13:39 
 ----------------------------------------------------------------------
-It's a compiler's fault.  The code is correct.
+I have applied the patch. Now all analog inputs are working fine after
+suspend. Thank you very much!
+
+----------------------------------------------------------------------
+ tiwai - 01-04-06 17:01 
+----------------------------------------------------------------------
+I applied the patch (and more fixes) on CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 14:18 jdthood        New Issue                                    
-01-04-06 16:56 tiwai          Status                   assigned => resolved
-01-04-06 16:56 tiwai          Resolution               open => won't fix   
-01-04-06 16:56 tiwai          Note Added: 0007431                          
+12-22-05 21:41 andreid1303    New Issue                                    
+12-23-05 20:07 pzad           Note Added: 0007137                          
+12-27-05 20:47 andreid1303    Note Added: 0007169                          
+12-27-05 20:49 andreid1303    Note Edited: 0007169                         
+12-27-05 21:01 pzad           Note Added: 0007170                          
+12-27-05 21:38 pzad           File Added: pm.patch                         
+12-27-05 21:51 pzad           Note Added: 0007172                          
+01-04-06 13:39 andreid1303    Note Added: 0007417                          
+01-04-06 17:01 tiwai          Status                   new => resolved     
+01-04-06 17:01 tiwai          Resolution               open => fixed       
+01-04-06 17:01 tiwai          Assigned To               => tiwai           
+01-04-06 17:01 tiwai          Note Added: 0007432                          
 ======================================================================
 
 
