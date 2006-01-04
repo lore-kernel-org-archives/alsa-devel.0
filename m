@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001710]: warning: implicit declaration of function &#8216;pm_register&#8217;
-Date: Wed, 4 Jan 2006 14:16:00 +0100
-Message-ID: <0b9d7ff959783ed151a6e4a171e3848a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001711]: warning: &#8216;src&#8217; may be used uninitialized in this function
+Date: Wed, 4 Jan 2006 14:18:52 +0100
+Message-ID: <cd87a902434b20d758646b2ffc9c329a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D3F5146
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 14:16:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E8AC184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 14:18:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1710> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1711> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1710
+Issue ID:                   1711
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
@@ -39,30 +39,24 @@ Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             01-04-2006 14:16 CET
-Last Modified:              01-04-2006 14:16 CET
+Date Submitted:             01-04-2006 14:18 CET
+Last Modified:              01-04-2006 14:18 CET
 ======================================================================
-Summary:                    warning: implicit declaration of function
-&#8216;pm_register&#8217;
+Summary:                    warning: &#8216;src&#8217; may be used uninitialized
+in this function
 Description: 
-  CC [M]  /usr/src/modules/alsa-driver/acore/misc_driver.o
-/usr/src/modules/alsa-driver/acore/misc_driver.c: In function
-&#8216;register_pnp_pm_callback&#8217;:
-/usr/src/modules/alsa-driver/acore/misc_driver.c:687: warning: implicit
-declaration of function &#8216;pm_register&#8217;
-/usr/src/modules/alsa-driver/acore/misc_driver.c:687: warning: assignment
-makes pointer from integer without a cast
-/usr/src/modules/alsa-driver/acore/misc_driver.c: In function
-&#8216;unregister_pnp_pm_callback&#8217;:
-/usr/src/modules/alsa-driver/acore/misc_driver.c:706: warning: implicit
-declaration of function &#8216;pm_unregister&#8217;
-
+  CC [M]  /usr/src/modules/alsa-driver/acore/oss/route.o
+In file included from /usr/src/modules/alsa-driver/acore/oss/route.c:2:
+/usr/src/modules/alsa-driver/include/../alsa-kernel/core/oss/route.c: In
+function &#8216;route_to_channel&#8217;:
+/usr/src/modules/alsa-driver/include/../alsa-kernel/core/oss/route.c:208:
+warning: &#8216;src&#8217; may be used uninitialized in this function
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 14:16 jdthood        New Issue                                    
+01-04-06 14:18 jdthood        New Issue                                    
 ======================================================================
 
 
