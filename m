@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001681]: (MIXER,'Front Playback Volume',0,0,0) appears twice or more
-Date: Wed, 4 Jan 2006 22:03:02 +0100
-Message-ID: <f56113d90f6abba40f7b5e2caf37552e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Wed, 4 Jan 2006 22:08:18 +0100
+Message-ID: <5a1e30eb4911bf0d58e40419b05ebcc8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B0B8128
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 22:03:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76401185
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 22:08:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,148 +24,124 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1681> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                jcdutton
-Assigned To:                
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1681
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             12-26-2005 17:13 CET
-Last Modified:              01-04-2006 22:03 CET
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              01-04-2006 22:08 CET
 ======================================================================
-Summary:                    (MIXER,'Front Playback Volume',0,0,0) appears twice
-or more
+Summary:                    module hangs at seemingly random times
 Description: 
-Reported in "mashaun".
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-0 [Live           ]: EMU10K1 - SB Live [Unknown]
-                     SB Live [Unknown] (rev.10, serial:0x80661102) at
-0xc800, irq 5
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
 
-the emu10k1 gives the following error when one tries to run alsamixer
-ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
-Volume',0,0,0) appears twice or more
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
 
-amixer controls                                       
-numid=43,iface=MIXER,name='Master Playback Switch'
-numid=44,iface=MIXER,name='Master Playback Volume'
-numid=91,iface=MIXER,name='Headphone +3dB Boost'
-numid=89,iface=MIXER,name='Headphone Amp'
-numid=40,iface=MIXER,name='Headphone Center Playback Switch',index=1
-numid=41,iface=MIXER,name='Headphone LFE Playback Switch',index=1
-numid=39,iface=MIXER,name='Headphone Playback Volume',index=1
-numid=35,iface=MIXER,name='Tone Control - Bass'
-numid=37,iface=MIXER,name='Tone Control - Switch'
-numid=36,iface=MIXER,name='Tone Control - Treble'
-numid=76,iface=MIXER,name='3D Control - Switch'
-numid=79,iface=MIXER,name='3D Control Sigmatel - Depth'
-numid=70,iface=MIXER,name='PCM Playback Switch'
-numid=71,iface=MIXER,name='PCM Playback Volume'
-numid=66,iface=MIXER,name='Surround Mix Playback Switch'
-numid=67,iface=MIXER,name='Surround Mix Playback Volume'
-numid=10,iface=MIXER,name='Surround Playback Volume'
-numid=12,iface=MIXER,name='Surround Capture Switch'
-numid=11,iface=MIXER,name='Surround Capture Volume'
-numid=86,iface=MIXER,name='Center/LFE Jack'
-numid=13,iface=MIXER,name='Center Playback Volume'
-numid=14,iface=MIXER,name='LFE Playback Volume'
-numid=7,iface=MIXER,name='Synth Playback Volume'
-numid=9,iface=MIXER,name='Synth Capture Switch'
-numid=8,iface=MIXER,name='Synth Capture Volume'
-numid=3,iface=MIXER,name='Wave Center Playback Volume'
-numid=4,iface=MIXER,name='Wave LFE Playback Volume'
-numid=2,iface=MIXER,name='Wave Surround Playback Volume'
-numid=1,iface=MIXER,name='Wave Playback Volume'
-numid=6,iface=MIXER,name='Wave Capture Switch'
-numid=5,iface=MIXER,name='Wave Capture Volume'
-numid=88,iface=MIXER,name='Line Input Source'
-numid=28,iface=MIXER,name='Line LiveDrive Capture Switch'
-numid=27,iface=MIXER,name='Line LiveDrive Capture Volume'
-numid=26,iface=MIXER,name='Line LiveDrive Playback Volume'
-numid=34,iface=MIXER,name='Line2 LiveDrive Capture Switch',index=1
-numid=33,iface=MIXER,name='Line2 LiveDrive Capture Volume',index=1
-numid=32,iface=MIXER,name='Line2 LiveDrive Playback Volume',index=1
-numid=83,iface=MIXER,name='LineIn Jack'
-numid=62,iface=MIXER,name='Line Playback Switch'
-numid=63,iface=MIXER,name='Line Playback Volume'
-numid=64,iface=MIXER,name='CD Playback Switch'
-numid=65,iface=MIXER,name='CD Playback Volume'
-numid=61,iface=MIXER,name='Mic Boost (+20dB)'
-numid=87,iface=MIXER,name='Mic Input Source'
-numid=78,iface=MIXER,name='Mic Select'
-numid=82,iface=MIXER,name='Mic1 Jack'
-numid=59,iface=MIXER,name='Mic Playback Switch'
-numid=60,iface=MIXER,name='Mic Playback Volume'
-numid=57,iface=MIXER,name='Phone Playback Switch'
-numid=58,iface=MIXER,name='Phone Playback Volume'
-numid=55,iface=MIXER,name='PC Speaker Playback Switch'
-numid=56,iface=MIXER,name='PC Speaker Playback Volume'
-numid=68,iface=MIXER,name='Aux Playback Switch'
-numid=69,iface=MIXER,name='Aux Playback Volume'
-numid=72,iface=MIXER,name='Capture Source'
-numid=73,iface=MIXER,name='Capture Switch'
-numid=74,iface=MIXER,name='Capture Volume'
-numid=31,iface=MIXER,name='IEC958 Coaxial Capture Switch'
-numid=30,iface=MIXER,name='IEC958 Coaxial Capture Volume'
-numid=29,iface=MIXER,name='IEC958 Coaxial Playback Volume'
-numid=25,iface=MIXER,name='IEC958 LiveDrive Capture Switch'
-numid=24,iface=MIXER,name='IEC958 LiveDrive Capture Volume'
-numid=23,iface=MIXER,name='IEC958 LiveDrive Playback Volume'
-numid=38,iface=MIXER,name='IEC958 Optical Raw Playback Switch'
-numid=22,iface=MIXER,name='IEC958 TTL Capture Switch'
-numid=21,iface=MIXER,name='IEC958 TTL Capture Volume'
-numid=20,iface=MIXER,name='IEC958 TTL Playback Volume'
-numid=19,iface=MIXER,name='AC97 Capture Volume'
-numid=18,iface=MIXER,name='AC97 Playback Volume'
-numid=90,iface=MIXER,name='Exchange Center/LFE'
-numid=92,iface=MIXER,name='External Amplifier'
-numid=17,iface=MIXER,name='Front Capture Switch'
-numid=16,iface=MIXER,name='Front Capture Volume'
-numid=84,iface=MIXER,name='Front Jack'
-numid=51,iface=MIXER,name='Front Playback Switch'
-numid=15,iface=MIXER,name='Front Playback Volume'
-numid=52,iface=MIXER,name='Front Playback Volume'
-numid=85,iface=MIXER,name='Rear Jack'
-numid=245,iface=MIXER,name='SB Live Analog/Digital Output Jack'
-numid=80,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
-numid=81,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
-numid=42,iface=PCM,name='Captured FX8010 Outputs',device=2
-numid=241,iface=PCM,name='IEC958 Playback Default',device=2
-numid=242,iface=PCM,name='IEC958 Playback Default',index=1,device=2
-numid=243,iface=PCM,name='IEC958 Playback Default',index=2,device=2
-numid=244,iface=PCM,name='IEC958 Playback Default',index=3,device=2
-numid=237,iface=PCM,name='IEC958 Playback Mask',device=2
-numid=238,iface=PCM,name='IEC958 Playback Mask',index=1,device=2
-numid=239,iface=PCM,name='IEC958 Playback Mask',index=2,device=2
-numid=240,iface=PCM,name='IEC958 Playback Mask',index=3,device=2
 
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- alien999999999 - 01-04-06 22:03 
+ Raymond - 01-03-06 04:04 
 ----------------------------------------------------------------------
-also have this problem:
+"if (vortex_adbdma_bufshift(vortex, i)) ;"
 
-[alien@queen alien-libbt]$ alsamixer -c 1
-ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
-Volume',0,0,0) appears twice or more
+It look like snd_pcm_period_elapsed() was called for those substreams
+which interrupt have not occurred.
 
-alsamixer: function snd_mixer_load failed: Invalid argument
+
+	if (source & IRQ_PCMOUT) {
+		/* ALSA period acknowledge. */
+		spin_lock(&vortex->lock);
+		for (i = 0; i < NR_ADB; i++) {
+			if (vortex->dma_adb[i].fifo_status == FIFO_START) {
+				if (vortex_adbdma_bufshift(vortex, i)) ;
+				spin_unlock(&vortex->lock);
+				snd_pcm_period_elapsed(vortex->dma_adb[i].
+						       substream);
+				spin_lock(&vortex->lock);
+			}
+		}
+#ifndef CHIP_AU8810
+		for (i = 0; i < NR_WT; i++) {
+			if (vortex->dma_wt[i].fifo_status == FIFO_START) {
+				if (vortex_wtdma_bufshift(vortex, i)) ;
+				spin_unlock(&vortex->lock);
+				snd_pcm_period_elapsed(vortex->dma_wt[i].
+						       substream);
+				spin_lock(&vortex->lock);
+			}
+		}
+#endif
+		spin_unlock(&vortex->lock);
+		handled = 1;
+	}
+
+----------------------------------------------------------------------
+ alien999999999 - 01-04-06 22:08 
+----------------------------------------------------------------------
+raymond, when will all these au88x0 changes (also from the mailinglist) be
+put into CVS?
+
+I had to modify the CVS of yesterday quite a bit so i wouldn't have a hung
+au8820 module
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-05 17:13 jcdutton       New Issue                                    
-01-04-06 22:03 alien999999999 Note Added: 0007454                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
 ======================================================================
 
 
