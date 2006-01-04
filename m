@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Wed, 4 Jan 2006 22:08:18 +0100
-Message-ID: <5a1e30eb4911bf0d58e40419b05ebcc8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
+Date: Wed, 4 Jan 2006 22:38:19 +0100
+Message-ID: <6f23b184fc3902070ca18f5f9e0eb5a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76401185
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 22:08:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A939D162
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 22:38:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,124 +24,154 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
 ======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
+Reported By:                moncnam
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
+Issue ID:                   1548
+Category:                   PCI - intel8x0m
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Distribution:               debian sarge 3.1
+Kernel Version:             2.6.13-rc7
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              01-04-2006 22:08 CET
+Date Submitted:             11-12-2005 10:58 CET
+Last Modified:              01-04-2006 22:38 CET
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
+stream" : inopportune small pauses while playing
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
-
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
-
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
+whatever the player i use (alsaplayer, xmms, mplayer) i experience small
+pause while playing (half of a second)
+using mplayer, i can see the following message appearing when the pause
+occur
+<<alsa-play: xrun of at least 0.009 msecs. resetting stream>>
+the playing doesn't stop, it continue well, just a small pause
+i have no other messages in `dmesg` or in syslog
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-03-06 04:04 
+ moncnam - 11-22-05 00:43 
 ----------------------------------------------------------------------
-"if (vortex_adbdma_bufshift(vortex, i)) ;"
+um um, 
+i think i should trick my /etc/asound.conf file and add, for example a
+greater buffer or something, i will read again a little more
+i thanks much for your answers
+in case you are curious, here is my simple conf
+(one week to switch from oss to alsa, but now mix is working - great)
 
-It look like snd_pcm_period_elapsed() was called for those substreams
-which interrupt have not occurred.
-
-
-	if (source & IRQ_PCMOUT) {
-		/* ALSA period acknowledge. */
-		spin_lock(&vortex->lock);
-		for (i = 0; i < NR_ADB; i++) {
-			if (vortex->dma_adb[i].fifo_status == FIFO_START) {
-				if (vortex_adbdma_bufshift(vortex, i)) ;
-				spin_unlock(&vortex->lock);
-				snd_pcm_period_elapsed(vortex->dma_adb[i].
-						       substream);
-				spin_lock(&vortex->lock);
-			}
-		}
-#ifndef CHIP_AU8810
-		for (i = 0; i < NR_WT; i++) {
-			if (vortex->dma_wt[i].fifo_status == FIFO_START) {
-				if (vortex_wtdma_bufshift(vortex, i)) ;
-				spin_unlock(&vortex->lock);
-				snd_pcm_period_elapsed(vortex->dma_wt[i].
-						       substream);
-				spin_lock(&vortex->lock);
-			}
-		}
-#endif
-		spin_unlock(&vortex->lock);
-		handled = 1;
-	}
+###########################################
+ste@station:~$ cat /etc/asound.conf
+pcm.!default { type plug slave.pcm "dmix" }
+pcm.!dmix {
+        type dmix
+        ipc_key 1
+        ipc_key_add_uid true
+        slave {
+                pcm "hw:0,0"
+                period_size     2048
+        }
+        bindings { 0 0 1 1 }
+}
+###########################################
 
 ----------------------------------------------------------------------
- alien999999999 - 01-04-06 22:08 
+ moncnam - 01-04-06 22:38 
 ----------------------------------------------------------------------
-raymond, when will all these au88x0 changes (also from the mailinglist) be
-put into CVS?
+I UNDERSTOOD MY PROBLEM - no pb with alsa
 
-I had to modify the CVS of yesterday quite a bit so i wouldn't have a hung
-au8820 module
+well, 
+i ithink i understand what had happend : 
+no problem with alsa and i will explain 
+- in playing a music throught xmms or noatun, i get no problem (1)
+- in playing a title with the command line "mplayer atitle.mp3", i get
+some error messages as stated above (2)
+the difference should be the priority my process has, in (2), i have a low
+priority level for my process (i run this as a common user)
+
+one thing i could add here (not directly related to the topic, but may be
+usefull in case...)
+i use artsd to forward its sound flow to alsa
+once should configure in kcontrol that the rate is manually set to 48000
+for exemple in order to have a good output (as 48000 is the default for
+alsa) otherwise, the sound do comes out but in a strange way for very bass
+or high frequency
+
+remark : 
+at the adress
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html
+the text doesn't well explain what the "periods" parameter should expect
+as a sample valid value (1024 ? or just 1, 2, 3 ?)
+
+btw, here is my ~.asoundrc file (just in case someone would appreciate
+it), i don't bet it is a model to follow but it works for me (bellow is my
+hardware config) 
+<<
+pcm.!default { type plug slave.pcm "dmix" }
+pcm.!dmix {
+        type dmix
+        ipc_key 1
+        ipc_perm 0660
+        ipc_key_add_uid true
+        slave {
+                pcm "hw:0,0"
+                format  S16_LE
+                rate    48000
+                channels        2
+                period_time 0
+                buffer_size 16384
+                periods 16384
+        }
+        bindings { 0 0 1 1 }
+}
+>>
+note : modifying buff_size and periods to 16384 didn't solved my original
+pb, i am pretty sure i have to type something like "nice --10 mplayer..."
+unfortunatelly, i can't directly do this as a normal user, so i should
+make an suid wrapper or some kind of
+
+i add period_time, buffer_size and periods to support oss throught alsa
+
+it used to work the same with my previous file : 
+<<
+pcm.!default { type plug slave.pcm "dmix" }
+pcm.!dmix {
+        type dmix
+        ipc_key 1
+        ipc_key_add_uid true
+        slave {
+                pcm "hw:0,0"
+                period_time 1024
+                buffer_size 4096
+        }
+        bindings { 0 0 1 1 }
+}
+>>
+
+hardware : 
+dell inspiron 9300
+ram : 1GB
+cpu : 
+model name      : Intel(R) Pentium(R) M processor 1.86GHz
+stepping        : 8
+cpu MHz         : 1862.368
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
+11-12-05 10:58 moncnam        New Issue                                    
+11-12-05 10:58 moncnam        Distribution              => debian sarge 3.1
+11-12-05 10:58 moncnam        Kernel Version            => 2.6.13-rc7      
+11-21-05 23:56 sashak         Note Added: 0006779                          
+11-22-05 00:04 moncnam        Note Added: 0006781                          
+11-22-05 00:31 sashak         Note Added: 0006783                          
+11-22-05 00:31 sashak         Assigned To              sashak =>           
+11-22-05 00:43 moncnam        Note Added: 0006784                          
+01-04-06 22:38 moncnam        Note Added: 0007456                          
 ======================================================================
 
 
