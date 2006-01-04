@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001295]: async capture doesn't seem to work
-Date: Wed, 4 Jan 2006 04:57:39 +0100
-Message-ID: <5a99896257e341d9dfb2238eb513fb57@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Wed, 4 Jan 2006 09:58:50 +0100
+Message-ID: <d2eba6b39dc8f7b3f2470ee98aa4d3c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C4C4175
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 04:57:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 971F0173
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 09:58:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,113 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1295> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                arunarunarun
-Assigned To:                
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1295
-Category:                   1_pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             07-31-2005 22:28 CEST
-Last Modified:              01-04-2006 04:57 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              01-04-2006 09:58 CET
 ======================================================================
-Summary:                    async capture doesn't seem to work
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-I've got a little program up at
-http://nemesis.accosted.net/misc/capture2.cpp that initialises pcm for
-capture, sets up an async callback and then busy-waits. The callback never
-gets called, even though everything else seems to be going fine. Any help
-would be appreciated.
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:48 
+ afran - 12-31-05 08:56 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Just wanted to let you know, I've got the same problem here with my
+Terratec Phase 26 USB (since kernel release 2.6.15-rc1, now running
+2.6.14.4 and ALSA 1.0.10rc1 without problems): Everything loads up fine
+but no sound is played, not even at the card's own headphone connector (so
+it's not a problem with SPDIF).
+
+But there is some other yet similar problem, I've recognized earlier,
+perhaps connected to this one: Sometimes (perhaps once in 2 weeks, happens
+quite randomly) everything would load up fine, but the card would not give
+any sound (as above). When this happens I have to plug the card's USB
+cable and reconnect (just resetting volume level and mute doesn't work,
+I've not been able to check whether reloading the driver as kernel module
+would help).
+
+Unfortunately, I've not been able to reproduce the latter problem as it
+seems to be happening without any clue as to what may have caused it, plus
+it only occurs very seldomly, about every 30th or 40th reboot.
+
+
 
 ----------------------------------------------------------------------
- arunarunarun - 01-04-06 04:57 
+ bryanr - 01-04-06 09:58 
 ----------------------------------------------------------------------
-Thanks for looking at this rlrevell -- no luck yet. Any clues?
+Effects Edirol UA-5 as well. Can be temporarily repaired
+by applying alsa-usbaudio-2.6.15-revert-001.patch to
+kernel.org 2.6.15 (reverts all of alsa-git-2005-11-07-usbaudio.patch
+except for its vmalloc/vfree changes, which are needed in 2.6.15).
+
+I am currently narrowing down which specific chunk(s) within that
+patch are responsible.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-05 22:28 arunarunarun   New Issue                                    
-07-31-05 22:28 arunarunarun   File Added: capture.cpp                      
-09-06-05 09:09 arunarunarun   Issue Monitored: arunarunarun                    
-09-06-05 09:16 arunarunarun   Issue Monitored: jcdutton                    
-09-06-05 09:16 arunarunarun   Note Added: 0006042                          
-12-30-05 23:48 rlrevell       Note Added: 0007298                          
-01-04-06 04:57 arunarunarun   Note Added: 0007410                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
+12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
+12-30-05 20:43 rlrevell       Note Added: 0007259                          
+12-31-05 02:32 smithbone      Note Added: 0007319                          
+12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
+               
+12-31-05 03:47 rlrevell       Note Added: 0007331                          
+12-31-05 05:31 smithbone      Note Added: 0007343                          
+12-31-05 05:33 rlrevell       Note Added: 0007344                          
+12-31-05 05:37 rlrevell       Note Added: 0007345                          
+12-31-05 07:10 smithbone      Note Added: 0007347                          
+12-31-05 08:54 afran          Note Added: 0007354                          
+12-31-05 08:55 afran          Issue Monitored: afran                       
+12-31-05 08:56 afran          Note Edited: 0007354                         
+01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
+                  
+01-04-06 09:58 bryanr         Note Added: 0007411                          
 ======================================================================
 
 
