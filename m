@@ -1,18 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Sound card word clocks.
-Date: Tue, 03 Jan 2006 23:45:35 +0000
-Message-ID: <43BB0C9F.5050002@superbug.demon.co.uk>
+From: Steve deRosier <derosier@pianodisc.com>
+Subject: Re: hw pause in USB
+Date: Tue, 03 Jan 2006 16:19:58 -0800
+Message-ID: <43BB14AE.4030400@pianodisc.com>
+References: <DB99F0250CDF5F438C525F4695C888DC0DA011@exchange01-srv.pianodisc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A207A17A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 00:45:36 +0100 (MET)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-35.mail.demon.net with esmtp (Exim 4.42)
-	id 1EtvjL-000Pwd-Iy
-	for alsa-devel@alsa-project.org; Tue, 03 Jan 2006 23:38:16 +0000
+In-Reply-To: <DB99F0250CDF5F438C525F4695C888DC0DA011@exchange01-srv.pianodisc.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,28 +17,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <ladischc@informatik.uni-halle.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+We've got it licked.  The most recent issue was a thread synchronization issue, where our pcm writing thread was putting data into the pcm AFTER we "paused" it and corrupting both the pcm and our "save" ring buffer.  After inserting a mutex all was well.
 
-I was wondering if it would be useful to let alsa-lib
-1) read sound card word clocks. Do all sound cards have word clock 
-registers? I know all Creative ones do.
+Thanks for your help in figuring out how to implement a software emulated pause.  
 
-2) set timer period interrupts based on the sound card's word clock.
-This could make a call back similar to periods_elapsed(), which happens 
-when a period interrupt happens.
+Now all I need is that time to write that high-level basic sound library. :)
 
-They could possibly be used for a better alsa-lib resampler.
+- Steve
 
-Another possible alternative could be a form of nanosleep() that auto 
-repeats. I.e. the kernel causes a user-land callback every X 
-nanoseconds. Does one exist in the kernel?
-I think a wordclock based callback would probably be more in sync with 
-the sound card than a nanosleep() one.
-
-James
 
 
 -------------------------------------------------------
