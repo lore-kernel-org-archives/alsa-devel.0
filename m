@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001549]: Any chance for SPDIF support soon with the ALC880?
-Date: Wed, 4 Jan 2006 17:31:30 +0100
-Message-ID: <64d5eb76f7012ea223c7aa67f63985e1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
+Date: Wed, 4 Jan 2006 17:33:19 +0100
+Message-ID: <89fe22b802060edea4f85f7ae23c7e7e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09710154
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:31:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B1EC154
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:33:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1549> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
 ======================================================================
-Reported By:                dvlierop
-Assigned To:                perex
+Reported By:                alsarealist
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1549
-Category:                   PCI - hda-intel
+Issue ID:                   1703
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               
+Status:                     new
+Distribution:               self burned
 Kernel Version:             
 ======================================================================
-Date Submitted:             11-12-2005 11:05 CET
-Last Modified:              01-04-2006 17:31 CET
+Date Submitted:             01-03-2006 18:42 CET
+Last Modified:              01-04-2006 17:33 CET
 ======================================================================
-Summary:                    Any chance for SPDIF support soon with the ALC880?
+Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
+not working
 Description: 
-On my Shuttle ST20G5 I don't get any digital output at all so I guess It's
-not supported. Any outlook for SPDIF support? (or is it already included
-and is something wrong with my system?)
+Pass-through with xine is not working.
+PCM Stereo downmix works fine
 
-Specs: Shuttle ST20G5 barebone with Realtek ALC880, AMD Athlon 64 3000+
+
+00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller (rev a2)
+
+gcc (GCC) 4.0.2
+alsa version 1.0.11rc2
+Linux 2.6.15
+
 ======================================================================
 
 ----------------------------------------------------------------------
- dvlierop - 01-02-06 21:53 
+ tiwai - 01-04-06 17:11 
 ----------------------------------------------------------------------
-That file is empty! Is this of any help for you?
-
-[diedenrezi@ShuttleST20G5 ~]$ ls /proc/asound/card0 -l
-total 0
--r--r--r--  1 root root 0 Jan  2 21:52 codec#0
--r--r--r--  1 root root 0 Jan  2 21:52 id
--rw-r--r--  1 root root 0 Jan  2 21:52 oss_mixer
-dr-xr-xr-x  4 root root 0 Jan  2 21:52 pcm0c
-dr-xr-xr-x  3 root root 0 Jan  2 21:52 pcm0p
-dr-xr-xr-x  3 root root 0 Jan  2 21:52 pcm1p
+Please upgrade to 1.0.11rc2.
+If still doesn't work, attach /etc/asoud.state and
+/proc/asound/card0/codec97#0/* files for debugging.  You can test with
+"ac3dec -C somefile.ac3" (to be sure).
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:31 
+ alsarealist - 01-04-06 17:33 
 ----------------------------------------------------------------------
-These proc files are not empty although ls shows so.  Just cat it.
-
-Which option did it work correctly indeed?  Inform it together with the
-output of "lspci -nv".
+This case is against 1.0.11rc2!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-05 11:05 dvlierop       New Issue                                    
-11-14-05 11:07 perex          Note Added: 0006715                          
-11-14-05 11:07 perex          Assigned To              tiwai => perex      
-11-14-05 11:07 perex          Status                   assigned => feedback
-11-18-05 18:32 dvlierop       Note Added: 0006755                          
-01-02-06 20:43 rlrevell       Note Added: 0007388                          
-01-02-06 21:53 dvlierop       Note Added: 0007390                          
-01-04-06 17:31 tiwai          Note Added: 0007442                          
+01-03-06 18:42 alsarealist    New Issue                                    
+01-03-06 18:42 alsarealist    Distribution              => self burned     
+01-03-06 19:05 rlrevell       Note Added: 0007403                          
+01-04-06 01:45 alsarealist    Note Added: 0007409                          
+01-04-06 17:11 tiwai          Note Added: 0007436                          
+01-04-06 17:32 alsarealist    File Added: asound.state                     
+01-04-06 17:33 alsarealist    Note Added: 0007443                          
 ======================================================================
 
 
