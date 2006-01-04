@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001657]: no iec958 controls for hda-intel
-Date: Wed, 4 Jan 2006 16:54:10 +0100
-Message-ID: <3ef3b9a56b825dfcb84b1fb22044ecf4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001710]: warning: implicit declaration of function &#8216;pm_register&#8217;
+Date: Wed, 4 Jan 2006 16:55:37 +0100
+Message-ID: <7f58e54912b8418cab53b15b9600344c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 500C8184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:54:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B5C6184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 16:55:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1657> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1710> 
 ======================================================================
-Reported By:                lilbudda
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1657
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1710
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-17-2005 18:44 CET
-Last Modified:              01-04-2006 16:54 CET
+Date Submitted:             01-04-2006 14:16 CET
+Last Modified:              01-04-2006 16:55 CET
 ======================================================================
-Summary:                    no iec958 controls for hda-intel
+Summary:                    warning: implicit declaration of function
+&#8216;pm_register&#8217;
 Description: 
-When trying to configure sound to pass through the spdif port, alsamixer
-does not show any controls for the iec958.
+  CC [M]  /usr/src/modules/alsa-driver/acore/misc_driver.o
+/usr/src/modules/alsa-driver/acore/misc_driver.c: In function
+&#8216;register_pnp_pm_callback&#8217;:
+/usr/src/modules/alsa-driver/acore/misc_driver.c:687: warning: implicit
+declaration of function &#8216;pm_register&#8217;
+/usr/src/modules/alsa-driver/acore/misc_driver.c:687: warning: assignment
+makes pointer from integer without a cast
+/usr/src/modules/alsa-driver/acore/misc_driver.c: In function
+&#8216;unregister_pnp_pm_callback&#8217;:
+/usr/src/modules/alsa-driver/acore/misc_driver.c:706: warning: implicit
+declaration of function &#8216;pm_unregister&#8217;
 
-Sound plays fine from rear headphone jack.
 ======================================================================
 
 ----------------------------------------------------------------------
- lilbudda - 01-04-06 16:47 
+ tiwai - 01-04-06 16:55 
 ----------------------------------------------------------------------
-I am now able to see the IEC958 control with the latest (Jan 03, 2006) CVS.
-Still working on getting sound but this bug can be closed.
-
-----------------------------------------------------------------------
- tiwai - 01-04-06 16:54 
-----------------------------------------------------------------------
-OK, closing.
+Fixed on CVS.  For enabling PM with ISA PnP, you'll need CONFIG_PM_LEGACY=y
+in kernel config.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-17-05 18:44 lilbudda       New Issue                                    
-12-19-05 08:05 rlrevell       Note Added: 0007091                          
-12-19-05 16:39 lilbudda       Note Added: 0007095                          
-12-19-05 16:50 rlrevell       Note Added: 0007096                          
-12-20-05 06:14 lilbudda       File Added: lspci.txt                        
-12-20-05 06:20 lilbudda       Note Added: 0007102                          
-12-23-05 18:16 lilbudda       Note Added: 0007134                          
-12-23-05 19:35 rlrevell       Note Added: 0007136                          
-12-24-05 00:54 lilbudda       Note Added: 0007138                          
-12-30-05 22:46 lilbudda       Note Edited: 0007138                         
-01-04-06 16:47 lilbudda       Note Added: 0007427                          
-01-04-06 16:54 tiwai          Status                   new => resolved     
-01-04-06 16:54 tiwai          Resolution               open => fixed       
-01-04-06 16:54 tiwai          Assigned To               => tiwai           
-01-04-06 16:54 tiwai          Note Added: 0007429                          
+01-04-06 14:16 jdthood        New Issue                                    
+01-04-06 14:19 jdthood        Additional Information Updated                    
+01-04-06 16:55 tiwai          Status                   assigned => resolved
+01-04-06 16:55 tiwai          Resolution               open => fixed       
+01-04-06 16:55 tiwai          Note Added: 0007430                          
 ======================================================================
 
 
