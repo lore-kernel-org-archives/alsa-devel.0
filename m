@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001426]: only mono sound available on via82xx
-Date: Wed, 4 Jan 2006 17:27:43 +0100
-Message-ID: <ff328c5025ed81ca2a93deaf5c7fce1e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Wed, 4 Jan 2006 17:29:39 +0100
+Message-ID: <fe360867a3c48dd3c54c2ef51e2fe251@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46318154
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:27:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98E3D154
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:29:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1426> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                netset99
+Reported By:                robertw
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1426
-Category:                   PCI - via82xx
+Issue ID:                   1618
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               gentoo
-Kernel Version:             2.6.13
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             09-15-2005 22:12 CEST
-Last Modified:              01-04-2006 17:27 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              01-04-2006 17:29 CET
 ======================================================================
-Summary:                    only mono sound available on via82xx
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-Only get mono sound with alsa. This is shown by the fact that I cannot
-change the master stereo volume e.g. in alsamixer, only mute or unmute
-it.
-
-Tried with kernels 2.6.12, 2.6.13, both compiled into the kernel or as
-modules. Also happens with the drivers from the alsa homepage
-(1.0.10_rc1). Tried live CD's from Gentoo (2.6.12 kernel) and from Knoppix
-(2.6.11). dxs_support 1-5 and ac97_quirk parameters didn't solve the
-problem. Neither did changing volume / muting and unmuting a combination
-of controls in alsamixer.
-
-However: A Ubuntu Live CD (Kernel 2.6.10) gives me normal stereo sound.
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
 
 ----------------------------------------------------------------------
- netset99 - 01-03-06 10:25 
+ robertw - 01-02-06 21:55 
 ----------------------------------------------------------------------
-Just tried with it 2.6.14 gentoo kernel. Still the same thing, it just
-doesn't bother me anymore.
+I tried again today, but still the same: The driver loads, but no sound.
+
+dmesg says:
+
+[4321385.309000] ALSA
+/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3030:
+hda_codec: Unknown model for ALC260
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:27 
+ tiwai - 01-04-06 17:29 
 ----------------------------------------------------------------------
-It's a hardware feature.  The codec chip doesn't have any playback volume
-controls.  The volume can be controlled via "PCM" implemented in software
-(in alsa-lib).
+Specify "model=fujitsu" module option with ALSA 1.0.11rc2 or CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-05 22:12 netset99       New Issue                                    
-09-15-05 22:12 netset99       Distribution              => gentoo          
-09-15-05 22:12 netset99       Kernel Version            => 2.6.13          
-09-15-05 22:47 netset99       Note Added: 0006226                          
-12-30-05 23:16 rlrevell       Note Added: 0007282                          
-01-03-06 10:25 netset99       Note Added: 0007401                          
-01-04-06 17:27 tiwai          Status                   new => resolved     
-01-04-06 17:27 tiwai          Resolution               open => fixed       
-01-04-06 17:27 tiwai          Assigned To               => tiwai           
-01-04-06 17:27 tiwai          Note Added: 0007440                          
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
 ======================================================================
 
 
