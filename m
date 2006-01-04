@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001702]: No sound in front speakers emu10k1
-Date: Wed, 4 Jan 2006 19:01:57 +0100
-Message-ID: <e68938b6c4146d1240a4f4a3ed89c468@bugtrack.alsa-project.org>
+From: Arnaud Patard <apatard@mandriva.com>
+Subject: AD1986a
+Date: Wed, 04 Jan 2006 19:22:21 +0100
+Message-ID: <m34q4jx38i.fsf@anduin.mandrakesoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28BBB175
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 19:01:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,104 +14,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1702> 
-======================================================================
-Reported By:                pupp3tmast3r
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1702
-Category:                   hw specific configuration
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-03-2006 09:41 CET
-Last Modified:              01-04-2006 19:01 CET
-======================================================================
-Summary:                    No sound in front speakers emu10k1
-Description: 
-Card: SBLive! Value [CT4832]
-Chip: Cirrus Logic CS4297A rev 4
 
-When playing in surroud mode with mplayer (-af surround) or audio streams
-of 4 or more channels there is no front audio just rear.
+I have the same problem as
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678
 
-This card does only 4 channels playing since is one of the very first
-models.
+I though that it was only a matter of how the hda verbs were initialised
+so I made a patch allowing to change the channel configuration
+(http://people.mandriva.com/~apatard/ad1986a_2channel_mode_fix.patch).
+Unfortunately, this was not enough. 
 
-The bug appears in versions of mplayer from 1.0pre7try2 to CVS2005-12-15
-======================================================================
+Today, I've added this patch
+http://people.mandriva.com/~apatard/dont_copy_front.patch which is
+working but it's rather something ugly.
 
-----------------------------------------------------------------------
- pupp3tmast3r - 01-04-06 01:21 
-----------------------------------------------------------------------
-Until 10.0.10rc1 it was
+Moreover, I'm only able to test this with two speakers, so I don't know
+if these patches are working with 4 or 6 channels setups.
 
-{
-   interface PCM
-   device 0
-   name "EMU10K1 PCM Send Routing"
-   index { @func private_pcm_subdevice }
-   lock true
-   optional true
-   value [ 6 7 0 0 6 7 0 0 6 7 0 0 ]
-}
 
-Wich is currenlty working (from version 10.0.9), but I have compiled
-driver and libs 1.0.10 from alsa's ftp and I had the same problem, that is
-why I rolled back to kernel version (10.0.10rc1)and libs 10.0.9 from
-alsa's ftp to, Another problem is debian version package
-libasound2_1.0.10-2.deb shiping the file with the new conf "value [ 8 9 0
-0 8 9 0 0 8 9 0 0 ]" so after an update it will stop working again.
+Any hint on how to debug and fix this bug ?
 
-I will check compilling driver 1.0.10 again from alsa's ftp and a
-combination of the libs: from debian package, and compiled from alsa's
-ftp.
-
-I hope the problem is just the value in the conf file and to get it
-working with the ftp driver version and debian's libs
-
-Once I have tested it will let you know the results.
-
-Any way which alsa's version is running the new kernel 2.6.15? this could
-fix the problem.
-
-----------------------------------------------------------------------
- pupp3tmast3r - 01-04-06 19:01 
-----------------------------------------------------------------------
-I have compiled driver version 1.0.10 from ftp
-
-Using debian's alsa libs: libasound2_1.0.10-2 is working perfectly, with
-ftp libs worked to, So the problem seems to have been a version conflict
-beetwen libs 1.0.10 and driver 1.0.10rc1.
-
-Not sure if it is possible since the frontal volume is carried out with a
-new control instead of single PCM control but to have backward
-compatibility in the newest libs with the old drivers.
-
-...Bug Fixed
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-06 09:41 pupp3tmast3r   New Issue                                    
-01-03-06 09:47 pzad           Note Added: 0007400                          
-01-03-06 20:10 pupp3tmast3r   File Added: asound.state                     
-01-03-06 20:13 pupp3tmast3r   Note Added: 0007404                          
-01-03-06 20:39 pzad           Note Added: 0007405                          
-01-03-06 20:59 pzad           Note Added: 0007407                          
-01-04-06 01:21 pupp3tmast3r   Note Added: 0007408                          
-01-04-06 19:01 pupp3tmast3r   Note Added: 0007450                          
-======================================================================
-
+Regards,
+Arnaud
 
 
 
