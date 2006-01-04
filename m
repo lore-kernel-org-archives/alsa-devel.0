@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Wed, 4 Jan 2006 17:29:39 +0100
-Message-ID: <fe360867a3c48dd3c54c2ef51e2fe251@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001549]: Any chance for SPDIF support soon with the ALC880?
+Date: Wed, 4 Jan 2006 17:31:30 +0100
+Message-ID: <64d5eb76f7012ea223c7aa67f63985e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98E3D154
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:29:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09710154
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:31:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1549> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                dvlierop
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
+Issue ID:                   1549
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Status:                     feedback
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              01-04-2006 17:29 CET
+Date Submitted:             11-12-2005 11:05 CET
+Last Modified:              01-04-2006 17:31 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    Any chance for SPDIF support soon with the ALC880?
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+On my Shuttle ST20G5 I don't get any digital output at all so I guess It's
+not supported. Any outlook for SPDIF support? (or is it already included
+and is something wrong with my system?)
+
+Specs: Shuttle ST20G5 barebone with Realtek ALC880, AMD Athlon 64 3000+
 ======================================================================
 
 ----------------------------------------------------------------------
- robertw - 01-02-06 21:55 
+ dvlierop - 01-02-06 21:53 
 ----------------------------------------------------------------------
-I tried again today, but still the same: The driver loads, but no sound.
+That file is empty! Is this of any help for you?
 
-dmesg says:
-
-[4321385.309000] ALSA
-/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3030:
-hda_codec: Unknown model for ALC260
+[diedenrezi@ShuttleST20G5 ~]$ ls /proc/asound/card0 -l
+total 0
+-r--r--r--  1 root root 0 Jan  2 21:52 codec#0
+-r--r--r--  1 root root 0 Jan  2 21:52 id
+-rw-r--r--  1 root root 0 Jan  2 21:52 oss_mixer
+dr-xr-xr-x  4 root root 0 Jan  2 21:52 pcm0c
+dr-xr-xr-x  3 root root 0 Jan  2 21:52 pcm0p
+dr-xr-xr-x  3 root root 0 Jan  2 21:52 pcm1p
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:29 
+ tiwai - 01-04-06 17:31 
 ----------------------------------------------------------------------
-Specify "model=fujitsu" module option with ALSA 1.0.11rc2 or CVS.
+These proc files are not empty although ls shows so.  Just cat it.
+
+Which option did it work correctly indeed?  Inform it together with the
+output of "lspci -nv".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
+11-12-05 11:05 dvlierop       New Issue                                    
+11-14-05 11:07 perex          Note Added: 0006715                          
+11-14-05 11:07 perex          Assigned To              tiwai => perex      
+11-14-05 11:07 perex          Status                   assigned => feedback
+11-18-05 18:32 dvlierop       Note Added: 0006755                          
+01-02-06 20:43 rlrevell       Note Added: 0007388                          
+01-02-06 21:53 dvlierop       Note Added: 0007390                          
+01-04-06 17:31 tiwai          Note Added: 0007442                          
 ======================================================================
 
 
