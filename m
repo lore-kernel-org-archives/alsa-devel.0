@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
-Date: Wed, 4 Jan 2006 17:40:29 +0100
-Message-ID: <0794d46c85e921f3cbe2b078bb07e245@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
+Date: Wed, 4 Jan 2006 17:42:26 +0100
+Message-ID: <edfc0c9b6998ee862214b42d1c049abd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2E07184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:40:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B807184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:42:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,114 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
 ======================================================================
-Reported By:                kees
-Assigned To:                tiwai
+Reported By:                alsarealist
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1678
-Category:                   PCI - hda-intel
+Issue ID:                   1703
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.15-rc6-git4
+Status:                     new
+Distribution:               self burned
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-25-2005 02:29 CET
-Last Modified:              01-04-2006 17:40 CET
+Date Submitted:             01-03-2006 18:42 CET
+Last Modified:              01-04-2006 17:42 CET
 ======================================================================
-Summary:                    nForce (10de:026c) left channel squeals, right
-channel mostly okay
+Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
+not working
 Description: 
-This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
-is this is an "nForce410" board, with "6-channel HD audio".
+Pass-through with xine is not working.
+PCM Stereo downmix works fine
 
-Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
-snd-hda-intel load fine, but during playback, the left channel squeals,
-while the right seems to play things okay.
 
-I'm happy to dig around and try whatever needs trying to get this fixed. 
-Thanks!
+00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller (rev a2)
+
+gcc (GCC) 4.0.2
+alsa version 1.0.11rc2
+Linux 2.6.15
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Dr Hotdog - 12-31-05 17:30 
+ alsarealist - 01-04-06 17:33 
 ----------------------------------------------------------------------
-I can confirm the problems with the ASUS A8N-VM CSM and its AD1986A sound
-chip.  Kernel 2.6.15rc7 with ALSA 1.0.11rc1 hda-intel results in high
-pitched squealing from the front left speaker whenever there is sound
-being played over any channel.  Results of using speaker-test are the same
-as those reported by kees for the ASUS A8N-VM-UAYGZ mobo.
-
-lspci -nvv:
-
-00:10.1 Class 0403: 10de:026c (rev a2)
-        Subsystem: 10de:cb84
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0 (500ns min, 1250ns max)
-        Interrupt: pin B routed to IRQ 233
-        Region 0: Memory at febd8000 (32-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [44] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [6c] HyperTransport: MSI Mapping
-
-head /proc/asound/card0/code#0:
-
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x104381b3
-Revision Id: 0x100400
-
-Unfortunately I am interested in surround sound (this is a motherboard
-designed with HTPC use in mind, stereo only output just doesn't cut it) so
-the patch morgoth666 linked to is an incomplete solution at best.
-
-EDIT:
-
-In addition, sound will stop working entirely and apparently randomly,
-reboot is the only way to restore it.  Nothing in dmesg or
-/var/log/messages when this occurs.  After this happens speaker-test will
-run as normal, without error messages, but no sound is heard.  Possibly
-related to bug #1415, however there is no obvious correlation with volume
-adjustments, volume adjustments can be made without failure of the sound
-system and the sound can fail at other times when no volume adjustments
-are being made.
-
-
+This case is against 1.0.11rc2!
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:40 
+ alsarealist - 01-04-06 17:42 
 ----------------------------------------------------------------------
-Could you try ALSA 1.0.11rc2?
+I added /etc/asound.state and /proc/asound/card0/codec97#0/*
+during playing a 5.1 DVD with xine configured as pass through.
+
+Maybe you wanna see iecset?
+
+idefix:/usr/src # iecset
+Mode: consumer
+Data: non-audio
+Rate: 48000 Hz
+Copyright: permitted
+Emphasis: none
+Category: PCM coder
+Original: original
+Clock: 1000 ppm
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-25-05 02:29 kees           New Issue                                    
-12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
-12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
-12-26-05 11:02 kees           Note Added: 0007149                          
-12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
-12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:50 morgoth666     Note Added: 0007300                          
-12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
-12-31-05 10:16 kees           Note Added: 0007355                          
-12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
-12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
-01-04-06 17:40 tiwai          Note Added: 0007446                          
+01-03-06 18:42 alsarealist    New Issue                                    
+01-03-06 18:42 alsarealist    Distribution              => self burned     
+01-03-06 19:05 rlrevell       Note Added: 0007403                          
+01-04-06 01:45 alsarealist    Note Added: 0007409                          
+01-04-06 17:11 tiwai          Note Added: 0007436                          
+01-04-06 17:32 alsarealist    File Added: asound.state                     
+01-04-06 17:33 alsarealist    Note Added: 0007443                          
+01-04-06 17:38 alsarealist    File Added: proc-asound                      
+01-04-06 17:42 alsarealist    Note Added: 0007447                          
 ======================================================================
 
 
