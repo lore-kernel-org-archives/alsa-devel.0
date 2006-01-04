@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
-Date: Wed, 4 Jan 2006 17:56:07 +0100
-Message-ID: <473613128a4c52f2ddd7bab41dc09ed4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
+Date: Wed, 4 Jan 2006 18:04:20 +0100
+Message-ID: <dd526db1ec5353fbead2b2d4058f05ff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10FA213C
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:56:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4387D140
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 18:04:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
 ======================================================================
-Reported By:                kees
-Assigned To:                tiwai
+Reported By:                kratz00
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1678
-Category:                   PCI - hda-intel
+Issue ID:                   1714
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.15-rc6-git4
+Status:                     new
+Distribution:               LFS
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             12-25-2005 02:29 CET
-Last Modified:              01-04-2006 17:56 CET
+Date Submitted:             01-04-2006 18:04 CET
+Last Modified:              01-04-2006 18:04 CET
 ======================================================================
-Summary:                    nForce (10de:026c) left channel squeals, right
-channel mostly okay
+Summary:                    Intel HDA (AD1986A) no sound
 Description: 
-This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
-is this is an "nForce410" board, with "6-channel HD audio".
+It's a Samsung M50 Notebook.
+I also tried Alsa 1.0.10 but the problem is the same.
+There are no specific module options for the AD1986A chip, right?
 
-Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
-snd-hda-intel load fine, but during playback, the left channel squeals,
-while the right seems to play things okay.
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03)
+        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-I'm happy to dig around and try whatever needs trying to get this fixed. 
-Thanks!
+loaded modules:
+snd_pcm_oss            47136  0 
+snd_mixer_oss          16512  1 snd_pcm_oss
+snd_hda_intel          14224  0 
+snd_hda_codec         122624  1 snd_hda_intel
+snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              19844  1 snd_pcm
+snd                    46144  6
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
+
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-04-06 17:40 
-----------------------------------------------------------------------
-Could you try ALSA 1.0.11rc2?
-
-----------------------------------------------------------------------
- kees - 01-04-06 17:56 
-----------------------------------------------------------------------
-Tried 1.0.11rc2.  No changes in any of the behavior.  However, I did notice
-a behavior I didn't report before that exists in mainline, 1.0.11rc1, and
-1.0.11rc2: after module startup, the left channel of the "front" line is
-muted.  All other settings are okay, though.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-25-05 02:29 kees           New Issue                                    
-12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
-12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
-12-26-05 11:02 kees           Note Added: 0007149                          
-12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
-12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:50 morgoth666     Note Added: 0007300                          
-12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
-12-31-05 10:16 kees           Note Added: 0007355                          
-12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
-12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
-01-04-06 17:40 tiwai          Note Added: 0007446                          
-01-04-06 17:56 kees           Note Added: 0007449                          
+01-04-06 18:04 kratz00        New Issue                                    
+01-04-06 18:04 kratz00        Distribution              => LFS             
+01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
 ======================================================================
 
 
