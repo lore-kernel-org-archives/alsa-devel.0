@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001421]: AC97 device name changed in ac97_codec.c
-Date: Wed, 4 Jan 2006 17:46:35 +0100
-Message-ID: <736f6e9e9b6dc215c8a6d46eac717710@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
+Date: Wed, 4 Jan 2006 17:56:07 +0100
+Message-ID: <473613128a4c52f2ddd7bab41dc09ed4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96942184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:46:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10FA213C
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 17:56:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1421> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
 ======================================================================
-Reported By:                do13
+Reported By:                kees
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1421
-Category:                   1_OTHERS
+Issue ID:                   1678
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.13
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.15-rc6-git4
 ======================================================================
-Date Submitted:             09-14-2005 22:12 CEST
-Last Modified:              01-04-2006 17:46 CET
+Date Submitted:             12-25-2005 02:29 CET
+Last Modified:              01-04-2006 17:56 CET
 ======================================================================
-Summary:                    AC97 device name changed in ac97_codec.c
+Summary:                    nForce (10de:026c) left channel squeals, right
+channel mostly okay
 Description: 
-Bug #0001334 changed the device name on the AC97-bus into card#-# this
-prevents external drivers to access the AC97 codec.
-The basic idea of the AC97-bus was to bind external drivers to an codec to
-use their extended features (touchscreen, AD- converter etc). With this
-naming change we can't bind drivers to the codec, because the device name
-isn't the name of the driver.
+This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
+is this is an "nForce410" board, with "6-channel HD audio".
 
-Andy ideas about this?
+Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
+snd-hda-intel load fine, but during playback, the left channel squeals,
+while the right seems to play things okay.
 
-
+I'm happy to dig around and try whatever needs trying to get this fixed. 
+Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:14 
+ tiwai - 01-04-06 17:40 
 ----------------------------------------------------------------------
-Any news on this?
+Could you try ALSA 1.0.11rc2?
 
 ----------------------------------------------------------------------
- tiwai - 01-04-06 17:46 
+ kees - 01-04-06 17:56 
 ----------------------------------------------------------------------
-It shows now like 0-0:WM9713.
+Tried 1.0.11rc2.  No changes in any of the behavior.  However, I did notice
+a behavior I didn't report before that exists in mainline, 1.0.11rc1, and
+1.0.11rc2: after module startup, the left channel of the "front" line is
+muted.  All other settings are okay, though.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-14-05 22:12 do13           New Issue                                    
-09-14-05 22:12 do13           Kernel Version            => 2.6.13          
-09-15-05 14:18 Clemens LadischNote Added: 0006195                          
-09-15-05 16:07 tiwai          Note Added: 0006212                          
-09-15-05 17:04 liam           Note Added: 0006216                          
-09-15-05 17:12 liam           Note Added: 0006217                          
-12-30-05 23:14 rlrevell       Note Added: 0007280                          
-01-04-06 17:46 tiwai          Status                   new => resolved     
-01-04-06 17:46 tiwai          Resolution               open => fixed       
-01-04-06 17:46 tiwai          Assigned To               => tiwai           
-01-04-06 17:46 tiwai          Note Added: 0007448                          
+12-25-05 02:29 kees           New Issue                                    
+12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
+12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
+12-26-05 11:02 kees           Note Added: 0007149                          
+12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
+12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:50 morgoth666     Note Added: 0007300                          
+12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
+12-31-05 10:16 kees           Note Added: 0007355                          
+12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
+12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
+01-04-06 17:40 tiwai          Note Added: 0007446                          
+01-04-06 17:56 kees           Note Added: 0007449                          
 ======================================================================
 
 
