@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001716]: aoss not working with audacity
-Date: Wed, 4 Jan 2006 23:06:18 +0100
-Message-ID: <c4cb2152d1634ee80bcdec11cc054722@bugtrack.alsa-project.org>
+Date: Wed, 4 Jan 2006 23:06:51 +0100
+Message-ID: <9cdd26d21014b3565c300338a91f7fef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7BB3316A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 23:06:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49D7616A
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 23:06:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -55,11 +55,20 @@ loaded.
 ----------------------------------------------------------------------
 Bug tracker sucks. Where did "steps to reproduce go"? Fix that first.
 
+----------------------------------------------------------------------
+ ajs1984 - 01-04-06 23:06 
+----------------------------------------------------------------------
+[alistair] 22:06 [~/bin/audacity] aoss ./audacity
+Pa_SetLatency: could not SNDCTL_DSP_SETFRAGMENT
+Pa_SetLatency: numBuffers = 2, framesPerBuffer = 512, powerOfTwo = 11
+Pa_SetupDeviceFormat: could not SNDCTL_DSP_SETFMT
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-04-06 23:04 ajs1984        New Issue                                    
 01-04-06 23:06 ajs1984        Note Added: 0007457                          
+01-04-06 23:06 ajs1984        Note Added: 0007458                          
 ======================================================================
 
 
