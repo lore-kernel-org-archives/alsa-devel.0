@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001691]: Fails to build on LInux 2.4
-Date: Wed, 4 Jan 2006 14:43:02 +0100
-Message-ID: <1495dd358880aa606b048339d8782532@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001486]: headphone control disappeared
+Date: Wed, 4 Jan 2006 14:40:17 +0100
+Message-ID: <bd804c4ec138d8b8a00e69827397a72c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C36F2184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 14:43:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29715184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 14:40:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,217 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1691> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                perex
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1691
-Category:                   0_compilation problem_!!!
+Issue ID:                   1486
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             12-28-2005 22:43 CET
-Last Modified:              01-04-2006 14:43 CET
+Date Submitted:             10-20-2005 11:07 CEST
+Last Modified:              01-04-2006 14:40 CET
 ======================================================================
-Summary:                    Fails to build on LInux 2.4
+Summary:                    headphone control disappeared
 Description: 
-make[3]: Leaving directory `/usr/src/modules/alsa-driver/drivers'
-make[3]: Entering directory `/usr/src/modules/alsa-driver/isa'
-rm -f als100.isapnp
-touch als100.isapnp
-rm -f azt2320.isapnp
-touch azt2320.isapnp
-rm -f dt019x.isapnp
-touch dt019x.isapnp
-rm -f opl3sa2.isapnp
-touch opl3sa2.isapnp
-rm -f cmi8330.isapnp
-touch cmi8330.isapnp
-rm -f es18xx.isapnp
-touch es18xx.isapnp
-rm -f sscape.isapnp
-touch sscape.isapnp
-gcc-3.3 -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
--I/usr/src/linux/include -I/usr/src/linux/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/usr/src/linux/include/linux/modversions.h  -DKBUILD_BASENAME=cmi8330   -c
--o cmi8330.o cmi8330.c
-In file included from cmi8330.c:1:
-../alsa-kernel/isa/cmi8330.c: In function `snd_cmi8330_unregister_all':
-../alsa-kernel/isa/cmi8330.c:676: error: `cmi8330_pnpc_driver' undeclared
-(first use in this function)
-../alsa-kernel/isa/cmi8330.c:676: error: (Each undeclared identifier is
-reported only once
-../alsa-kernel/isa/cmi8330.c:676: error: for each function it appears
-in.)
-../alsa-kernel/isa/cmi8330.c: In function `alsa_card_cmi8330_init':
-../alsa-kernel/isa/cmi8330.c:703: error: `cmi8330_pnpc_driver' undeclared
-(first use in this function)
-make[3]: *** [cmi8330.o] Error 1
-make[3]: Leaving directory `/usr/src/modules/alsa-driver/isa'
-make[2]: *** [compile] Error 1
-make[2]: Leaving directory `/usr/src/modules/alsa-driver'
-make[1]: *** [build-stamp] Error 2
-make[1]: Leaving directory `/usr/src/modules/alsa-driver'
-make: *** [kdist_image] Error 2
+The submitter of Ubuntu bug report 18024 reports that the "Headphone"
+control disappeared when he upgraded from linux-image-2.6.10-5-386
+(2.6.10-34.7, from
+hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
 
+$cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
+                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
+irq 7
+
+See
+
+    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+
+for additional info.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-28-05 23:10 
+ apeeters - 11-09-05 13:57 
 ----------------------------------------------------------------------
-The build failed with "--with-isapnp=no".  The build succeeded when I
-changed this to "--with-isapnp=yes".
+Nothing, the same result.
 
 ----------------------------------------------------------------------
- jdthood - 01-04-06 14:43 
+ jdthood - 01-04-06 14:40 
 ----------------------------------------------------------------------
-I just tried to build 1.0.11rc2 against Linux 2.4.27 with
-"--with-isapnp=yes" and the build failed.
-
-make[4]: Entering directory `/usr/src/modules/alsa-driver/acore'
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
--I/usr/src/kernel-source-2.4.27/include
--I/usr/src/kernel-source-2.4.27/include -O2 -mpreferred-stack-boundary=2
--march=i686 -Wdeclaration-after-statement -Wno-pointer-sign -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include -DMODVERSIONS -include
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h  
--DEXPORT_SYMTAB -c hwdep.c
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/kernel.h:15,
-                 from
-/usr/src/kernel-source-2.4.27/include/asm/system.h:5,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/spinlock.h:6,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/module.h:12,
-                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
-                 from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:14: warning: type
-qualifiers ignored on function return type
-/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:30: warning: type
-qualifiers ignored on function return type
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/little_endian.h:11,
-                 from
-/usr/src/kernel-source-2.4.27/include/asm/byteorder.h:65,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/kernel.h:15,
-                 from
-/usr/src/kernel-source-2.4.27/include/asm/system.h:5,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/spinlock.h:6,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/module.h:12,
-                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
-                 from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:160: warning:
-type qualifiers ignored on function return type
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:173: warning:
-type qualifiers ignored on function return type
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:186: warning:
-type qualifiers ignored on function return type
-/usr/src/kernel-source-2.4.27/include/linux/byteorder/swab.h:200: warning:
-type qualifiers ignored on function return type
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/prefetch.h:13,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/list.h:6,
-                 from
-/usr/src/kernel-source-2.4.27/include/linux/module.h:13,
-                 from /usr/src/modules/alsa-driver/include/adriver.h:45,
-                 from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/kernel-source-2.4.27/include/asm/processor.h:75: error: array
-type has incomplete element type
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:160: error: redefinition of
-'PDE'
-/usr/src/kernel-source-2.4.27/include/linux/proc_fs.h:214: error: previous
-definition of 'PDE' was here
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:325:1: warning: "snprintf"
-redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:684:1:
-warning: this is the location of the previous definition
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:330:1: warning: "vsnprintf"
-redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:690:1:
-warning: this is the location of the previous definition
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:342:1: warning: "sscanf"
-redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:686:1:
-warning: this is the location of the previous definition
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:343:1: warning: "vsscanf"
-redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:692:1:
-warning: this is the location of the previous definition
-In file included from
-/usr/src/modules/alsa-driver/include/sound/driver.h:47,
-                 from hwdep.c:22:
-/usr/src/modules/alsa-driver/include/adriver.h:620:1: warning:
-"vmalloc_to_page" redefined
-In file included from
-/usr/src/kernel-source-2.4.27/include/linux/modversions.h:188,
-                 from <command line>:1:
-/usr/src/kernel-source-2.4.27/include/linux/modules/ksyms.ver:70:1:
-warning: this is the location of the previous definition
-make[4]: *** [hwdep.o] Error 1
-make[4]: Leaving directory `/usr/src/modules/alsa-driver/acore'
-make[3]: *** [compile] Error 1
-make[3]: Leaving directory `/usr/src/modules/alsa-driver'
-make[2]: *** [build-stamp] Error 2
-make[2]: Leaving directory `/usr/src/modules/alsa-driver'
-make[1]: *** [kdist_image] Error 2
-make[1]: Leaving directory `/usr/src/modules/alsa-driver'
-Module /usr/src/modules/alsa-driver failed.
+Adriaan Peeters says:
+> I just loaded up to Dapper Flight 2 live cd and this bug still exists.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-05 22:43 jdthood        New Issue                                    
-12-28-05 23:10 jdthood        Note Added: 0007186                          
-01-04-06 14:43 jdthood        Note Added: 0007422                          
+10-20-05 11:07 jdthood        New Issue                                    
+10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
+10-20-05 14:51 tiwai          Note Added: 0006503                          
+11-06-05 16:58 apeeters       Note Added: 0006607                          
+11-06-05 16:58 apeeters       File Added: alsa_headphone                    
+11-08-05 18:34 tiwai          Note Added: 0006633                          
+11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
+
+11-09-05 13:44 apeeters       Note Added: 0006650                          
+11-09-05 13:47 tiwai          Note Added: 0006651                          
+11-09-05 13:57 apeeters       Note Added: 0006652                          
+01-04-06 14:40 jdthood        Note Added: 0007421                          
 ======================================================================
 
 
