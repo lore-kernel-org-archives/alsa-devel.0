@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001716]: aoss not working with audacity
-Date: Wed, 4 Jan 2006 23:04:45 +0100
-Message-ID: <95997e6078e27248ee32efc93436b272@bugtrack.alsa-project.org>
+Date: Wed, 4 Jan 2006 23:06:18 +0100
+Message-ID: <c4cb2152d1634ee80bcdec11cc054722@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0885A16A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 23:04:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7BB3316A
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 23:06:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1716> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-04-2006 23:04 CET
-Last Modified:              01-04-2006 23:04 CET
+Last Modified:              01-04-2006 23:06 CET
 ======================================================================
 Summary:                    aoss not working with audacity
 Description: 
@@ -50,10 +50,16 @@ loaded.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ ajs1984 - 01-04-06 23:06 
+----------------------------------------------------------------------
+Bug tracker sucks. Where did "steps to reproduce go"? Fix that first.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-04-06 23:04 ajs1984        New Issue                                    
+01-04-06 23:06 ajs1984        Note Added: 0007457                          
 ======================================================================
 
 
