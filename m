@@ -1,14 +1,14 @@
-From: Harri =?iso-8859-1?Q?J=E4rvi?= <harri.jarvi@ajatus.org>
-Subject: Re: snd-usb-audio HP-107 midi broke at 2.6.13 or 2.6.14
-Date: Tue, 3 Jan 2006 21:21:32 +0200
-Message-ID: <20060103192132.GA3724@novelli>
-References: <20060101193407.GA18702@novelli> <1136144495.13079.62.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001295]: async capture doesn't seem to work
+Date: Wed, 4 Jan 2006 04:57:39 +0100
+Message-ID: <5a99896257e341d9dfb2238eb513fb57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1136144495.13079.62.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C4C4175
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 04:57:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,44 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Harri =?iso-8859-1?Q?J=E4rvi?= <harri.jarvi@ajatus.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 01, 2006 at 14:41:34 -0500, Lee Revell wrote:
-> Harri J=E4rvi wrote:
-> > usb 2-1: new full speed USB device using ohci_hcd and address 2
-> > snd-usb-audio: probe of 2-1:1.0 failed with error -5
-> > usbcore: registered new driver snd-usb-audio
-> >=20
-> > PS. Please Cc me when replying.
->=20
-> Please use ALSA CVS to do a binary search ("cvs update -D 2005-11-01
-> -A", "cvs update -D 2005-12-01 -A", "cvs update -D 2005-11-15" etc) and
-> isolate the exact change that caused the problem.
 
-I'm sorry, I need a bit advice here. I'm not sure how to do this. Should=20
-I look at alsa-driver or alsa-kernel?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1295> 
+======================================================================
+Reported By:                arunarunarun
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1295
+Category:                   1_pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-31-2005 22:28 CEST
+Last Modified:              01-04-2006 04:57 CET
+======================================================================
+Summary:                    async capture doesn't seem to work
+Description: 
+I've got a little program up at
+http://nemesis.accosted.net/misc/capture2.cpp that initialises pcm for
+capture, sets up an async callback and then busy-waits. The callback never
+gets called, even though everything else seems to be going fine. Any help
+would be appreciated.
+======================================================================
 
-Is there howto for trying different versions of alsa drivers from CVS? I=20
-seem to run into compilation problems and incompatibilities with kernel=20
-versions when trying to get different versions from ALSA CVS.
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 23:48 
+----------------------------------------------------------------------
+Any improvement in later releases?
 
-I tried both alsa-driver and alsa-kernel. With alsa-kernel I could=20
-confirm that snd-usb-audio works for me at -D 2005-10-01, 2005-11-01,=20
-2005-11-15 but I couldn't get it compile at 2005-12-01. Then I started=20
-to look at the alsa-driver but I couldn't get that compile. It=20
-complained about rejected hunks in patches when patching ../alsa-kernel.
+----------------------------------------------------------------------
+ arunarunarun - 01-04-06 04:57 
+----------------------------------------------------------------------
+Thanks for looking at this rlrevell -- no luck yet. Any clues?
 
-Any pointers on how to do this?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-31-05 22:28 arunarunarun   New Issue                                    
+07-31-05 22:28 arunarunarun   File Added: capture.cpp                      
+09-06-05 09:09 arunarunarun   Issue Monitored: arunarunarun                    
+09-06-05 09:16 arunarunarun   Issue Monitored: jcdutton                    
+09-06-05 09:16 arunarunarun   Note Added: 0006042                          
+12-30-05 23:48 rlrevell       Note Added: 0007298                          
+01-04-06 04:57 arunarunarun   Note Added: 0007410                          
+======================================================================
 
-Yours,
-Harri
+
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
-les
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=3D7637&alloc_id=3D16865&op=3Dclick
+http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
