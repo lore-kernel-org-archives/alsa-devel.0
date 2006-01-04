@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001674]: Audigy 2 ZS after suspend no sound line in
-Date: Wed, 4 Jan 2006 13:39:22 +0100
-Message-ID: <14fe1803a671da5836bac63be6b6aa31@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001709]: 5.1 doesn't work
+Date: Wed, 4 Jan 2006 13:50:07 +0100
+Message-ID: <490f9bc83ed06acaad86998d8bbfce97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1919017C
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 13:39:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 326DC184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 13:50:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1674> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1709> 
 ======================================================================
-Reported By:                andreid1303
+Reported By:                piezo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1674
+Issue ID:                   1709
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369
 ======================================================================
-Date Submitted:             12-22-2005 21:41 CET
-Last Modified:              01-04-2006 13:39 CET
+Date Submitted:             01-04-2006 13:50 CET
+Last Modified:              01-04-2006 13:50 CET
 ======================================================================
-Summary:                    Audigy 2 ZS after suspend no sound line in
+Summary:                    5.1 doesn't work
 Description: 
-Finally I have got sound working after suspend with alsa 1.0.11rc1
-installed but only line in is silent. PCM and Mic is OK
+I'm new to linux.  I've been googling for a awnser to this problem for a
+week now.  found a few with the same sort of problems but no awnsers.
+
+I can get sterio sound but not 5.1 surround.  This is very irritating as I
+bought a Audity2 soundcard for the purpose of using it's 5.1 sound
+capability.
+
+initially xine kept telling me that another process was using the PCM
+device.  found how to fix this.  using
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 12-27-05 21:51 
-----------------------------------------------------------------------
-Could you try attached patch (pm.patch) ?
-
-----------------------------------------------------------------------
- andreid1303 - 01-04-06 13:39 
-----------------------------------------------------------------------
-I have applied the patch. Now all analog inputs are working fine after
-suspend. Thank you very much!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-22-05 21:41 andreid1303    New Issue                                    
-12-23-05 20:07 pzad           Note Added: 0007137                          
-12-27-05 20:47 andreid1303    Note Added: 0007169                          
-12-27-05 20:49 andreid1303    Note Edited: 0007169                         
-12-27-05 21:01 pzad           Note Added: 0007170                          
-12-27-05 21:38 pzad           File Added: pm.patch                         
-12-27-05 21:51 pzad           Note Added: 0007172                          
-01-04-06 13:39 andreid1303    Note Added: 0007417                          
+01-04-06 13:50 piezo          New Issue                                    
+01-04-06 13:50 piezo          Distribution              => Fedora Core 4   
+01-04-06 13:50 piezo          Kernel Version            => 2.6.11-1.1369   
 ======================================================================
 
 
