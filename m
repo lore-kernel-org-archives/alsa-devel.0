@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
-Date: Wed, 4 Jan 2006 22:38:19 +0100
-Message-ID: <6f23b184fc3902070ca18f5f9e0eb5a4@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001716]: aoss not working with audacity
+Date: Wed, 4 Jan 2006 23:04:45 +0100
+Message-ID: <95997e6078e27248ee32efc93436b272@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A939D162
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 22:38:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0885A16A
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 23:04:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,156 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1716> 
 ======================================================================
-Reported By:                moncnam
+Reported By:                ajs1984
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1548
-Category:                   PCI - intel8x0m
-Reproducibility:            random
-Severity:                   minor
+Project:                    ALSA - liboss
+Issue ID:                   1716
+Category:                   
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               debian sarge 3.1
-Kernel Version:             2.6.13-rc7
+Status:                     new
 ======================================================================
-Date Submitted:             11-12-2005 10:58 CET
-Last Modified:              01-04-2006 22:38 CET
+Date Submitted:             01-04-2006 23:04 CET
+Last Modified:              01-04-2006 23:04 CET
 ======================================================================
-Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
-stream" : inopportune small pauses while playing
+Summary:                    aoss not working with audacity
 Description: 
-whatever the player i use (alsaplayer, xmms, mplayer) i experience small
-pause while playing (half of a second)
-using mplayer, i can see the following message appearing when the pause
-occur
-<<alsa-play: xrun of at least 0.009 msecs. resetting stream>>
-the playing doesn't stop, it continue well, just a small pause
-i have no other messages in `dmesg` or in syslog
+Following up from a recent LKML thread, I'm going to report a number of
+aoss incompatibilities with softwares on Linux.
+
+First up is audacity, which has no ALSA port. snd-pcm/mixer-oss aren't
+loaded.
+
 ======================================================================
-
-----------------------------------------------------------------------
- moncnam - 11-22-05 00:43 
-----------------------------------------------------------------------
-um um, 
-i think i should trick my /etc/asound.conf file and add, for example a
-greater buffer or something, i will read again a little more
-i thanks much for your answers
-in case you are curious, here is my simple conf
-(one week to switch from oss to alsa, but now mix is working - great)
-
-###########################################
-ste@station:~$ cat /etc/asound.conf
-pcm.!default { type plug slave.pcm "dmix" }
-pcm.!dmix {
-        type dmix
-        ipc_key 1
-        ipc_key_add_uid true
-        slave {
-                pcm "hw:0,0"
-                period_size     2048
-        }
-        bindings { 0 0 1 1 }
-}
-###########################################
-
-----------------------------------------------------------------------
- moncnam - 01-04-06 22:38 
-----------------------------------------------------------------------
-I UNDERSTOOD MY PROBLEM - no pb with alsa
-
-well, 
-i ithink i understand what had happend : 
-no problem with alsa and i will explain 
-- in playing a music throught xmms or noatun, i get no problem (1)
-- in playing a title with the command line "mplayer atitle.mp3", i get
-some error messages as stated above (2)
-the difference should be the priority my process has, in (2), i have a low
-priority level for my process (i run this as a common user)
-
-one thing i could add here (not directly related to the topic, but may be
-usefull in case...)
-i use artsd to forward its sound flow to alsa
-once should configure in kcontrol that the rate is manually set to 48000
-for exemple in order to have a good output (as 48000 is the default for
-alsa) otherwise, the sound do comes out but in a strange way for very bass
-or high frequency
-
-remark : 
-at the adress
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html
-the text doesn't well explain what the "periods" parameter should expect
-as a sample valid value (1024 ? or just 1, 2, 3 ?)
-
-btw, here is my ~.asoundrc file (just in case someone would appreciate
-it), i don't bet it is a model to follow but it works for me (bellow is my
-hardware config) 
-<<
-pcm.!default { type plug slave.pcm "dmix" }
-pcm.!dmix {
-        type dmix
-        ipc_key 1
-        ipc_perm 0660
-        ipc_key_add_uid true
-        slave {
-                pcm "hw:0,0"
-                format  S16_LE
-                rate    48000
-                channels        2
-                period_time 0
-                buffer_size 16384
-                periods 16384
-        }
-        bindings { 0 0 1 1 }
-}
->>
-note : modifying buff_size and periods to 16384 didn't solved my original
-pb, i am pretty sure i have to type something like "nice --10 mplayer..."
-unfortunatelly, i can't directly do this as a normal user, so i should
-make an suid wrapper or some kind of
-
-i add period_time, buffer_size and periods to support oss throught alsa
-
-it used to work the same with my previous file : 
-<<
-pcm.!default { type plug slave.pcm "dmix" }
-pcm.!dmix {
-        type dmix
-        ipc_key 1
-        ipc_key_add_uid true
-        slave {
-                pcm "hw:0,0"
-                period_time 1024
-                buffer_size 4096
-        }
-        bindings { 0 0 1 1 }
-}
->>
-
-hardware : 
-dell inspiron 9300
-ram : 1GB
-cpu : 
-model name      : Intel(R) Pentium(R) M processor 1.86GHz
-stepping        : 8
-cpu MHz         : 1862.368
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-05 10:58 moncnam        New Issue                                    
-11-12-05 10:58 moncnam        Distribution              => debian sarge 3.1
-11-12-05 10:58 moncnam        Kernel Version            => 2.6.13-rc7      
-11-21-05 23:56 sashak         Note Added: 0006779                          
-11-22-05 00:04 moncnam        Note Added: 0006781                          
-11-22-05 00:31 sashak         Note Added: 0006783                          
-11-22-05 00:31 sashak         Assigned To              sashak =>           
-11-22-05 00:43 moncnam        Note Added: 0006784                          
-01-04-06 22:38 moncnam        Note Added: 0007456                          
+01-04-06 23:04 ajs1984        New Issue                                    
 ======================================================================
 
 
