@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001486]: headphone control disappeared
-Date: Wed, 4 Jan 2006 14:40:17 +0100
-Message-ID: <bd804c4ec138d8b8a00e69827397a72c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001253]: My kernel doesn't find my sound cards anymore !!!
+Date: Wed, 4 Jan 2006 15:38:14 +0100
+Message-ID: <00291864bc4bf3570a930512903505e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29715184
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 14:40:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 578F9184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 15:38:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,136 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1253> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                fabien
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1486
-Category:                   PCI - intel8x0
+Issue ID:                   1253
+Category:                   PCI - ens1370
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             10-20-2005 11:07 CEST
-Last Modified:              01-04-2006 14:40 CET
+Date Submitted:             07-12-2005 14:04 CEST
+Last Modified:              01-04-2006 15:38 CET
 ======================================================================
-Summary:                    headphone control disappeared
+Summary:                    My kernel doesn't find my sound cards anymore !!!
 Description: 
-The submitter of Ubuntu bug report 18024 reports that the "Headphone"
-control disappeared when he upgraded from linux-image-2.6.10-5-386
-(2.6.10-34.7, from
-hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
+My kernel stop working with my soundcards !!!
+It use to work in 2.6.8 (not in 2.6.10, 2.6.11 & 2.6.12)
 
-$cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
-irq 7
 
-See
+My sound cards :
+- ENS1370
+- SIS 7012
 
-    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+Motherboard :
+- K7S5A
 
-for additional info.
+Linux Box :
+- Debian on x86 AMD
 ======================================================================
 
 ----------------------------------------------------------------------
- apeeters - 11-09-05 13:57 
+ fabien - 01-03-06 10:11 
 ----------------------------------------------------------------------
-Nothing, the same result.
+Unfortunatly no. I'm in 2.6.14.4 kernel release.
+I will try 2.6.15 this week.
+
+
 
 ----------------------------------------------------------------------
- jdthood - 01-04-06 14:40 
+ fabien - 01-04-06 15:38 
 ----------------------------------------------------------------------
-Adriaan Peeters says:
-> I just loaded up to Dapper Flight 2 live cd and this bug still exists.
+I can't have it work either in 2.6.15
+
+xxx@matou:~$ dmesg | grep -iE "ALSA|sound|ens13|intel8|ac97|si7012|#"
+Linux version 2.6.15 (root@matou) (gcc version 4.0.3 20051201 (prerelease)
+(Debian 4.0.2-5)) #1 PREEMPT Tue Jan 3 20:14:39 CET 2006
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7c [0xf00000]
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7e [0xf00000] 
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x0 [0x800000]
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7c [0xf00000]
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7e [0xf00000] 
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7c [0xf00000]
+ALSA sound/pci/ens1370.c:669: codec read timeout (final) at 0xd414, reg =
+0x7e [0xf00000]
+ALSA sound/pci/ac97/ac97_codec.c:1938: AC'97 0 access is not valid [0x0],
+removing mixer. 
+ENS1371: probe of 0000:00:0b.0 failed with error -5
+intel8x0_measure_ac97_clock: measured 50652 usecs
+intel8x0: clocking to 48000
+ALSA device list:
+  #0: Dummy 1
+  #1: MPU-401 UART at 0x300, irq 10
+  #2: SiS SI7012 with ALC100,100P at 0xdc00, irq 11 
+  #3: Camera at usb-0000:00:02.2-1, full speed
+
+
+xxx@matou:~$ lspci
+0000:00:00.0 Host bridge: Silicon Integrated Systems [SiS] 735 Host (rev
+01)
+0000:00:01.0 PCI bridge: Silicon Integrated Systems [SiS] Virtual
+PCI-to-PCI bridge (AGP) 
+0000:00:02.0 ISA bridge: Silicon Integrated Systems [SiS] SiS85C503/5513
+(LPC Bridge)
+0000:00:02.1 SMBus: Silicon Integrated Systems [SiS] SiS961/2 SMBus
+Controller
+0000:00:02.2 USB Controller: Silicon Integrated Systems [SiS] USB 1.0
+Controller (rev 07)
+0000:00:02.3 USB Controller: Silicon Integrated Systems [SiS] USB 1.0
+Controller (rev 07)
+0000:00:02.5 IDE interface: Silicon Integrated Systems [SiS] 5513 [IDE]
+(rev d0)
+0000:00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
+Sound Controller (rev a0) 
+0000:00:0b.0 Multimedia audio controller: Ensoniq ES1371 [AudioPCI-97]
+(rev 08)
+
+xxx@matou:/proc/asound$ ls -l
+total 4
+lrwxrwxrwx 1 root root 5 2006-01-03 23:58 Camera -> card3
+dr-xr-xr-x 4 root root 0 2006-01-03 23:58 card0 
+dr-xr-xr-x 2 root root 0 2006-01-03 23:58 card1
+dr-xr-xr-x 6 root root 0 2006-01-03 23:58 card2
+dr-xr-xr-x 3 root root 0 2006-01-03 23:58 card3
+-r--r--r-- 1 root root 0 2006-01-03 23:58 cards
+-r--r--r-- 1 root root 0 2006-01-03 23:58 devices 
+lrwxrwxrwx 1 root root 5 2006-01-03 23:58 Dummy -> card0
+-r--r--r-- 1 root root 0 2006-01-03 23:58 hwdep
+dr-xr-xr-x 2 root root 0 2006-01-03 23:58 oss
+-r--r--r-- 1 root root 0 2006-01-03 23:58 pcm
+dr-xr-xr-x 2 root root 0 2006-01-03 23:58 seq 
+lrwxrwxrwx 1 root root 5 2006-01-03 23:58 SI7012 -> card2
+-r--r--r-- 1 root root 0 2006-01-03 23:58 timers
+lrwxrwxrwx 1 root root 5 2006-01-03 23:58 UART -> card1
+-r--r--r-- 1 root root 0 2006-01-03 23:58 version
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-20-05 11:07 jdthood        New Issue                                    
-10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
-10-20-05 14:51 tiwai          Note Added: 0006503                          
-11-06-05 16:58 apeeters       Note Added: 0006607                          
-11-06-05 16:58 apeeters       File Added: alsa_headphone                    
-11-08-05 18:34 tiwai          Note Added: 0006633                          
-11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
-
-11-09-05 13:44 apeeters       Note Added: 0006650                          
-11-09-05 13:47 tiwai          Note Added: 0006651                          
-11-09-05 13:57 apeeters       Note Added: 0006652                          
-01-04-06 14:40 jdthood        Note Added: 0007421                          
+07-12-05 14:04 fabien         New Issue                                    
+07-12-05 14:04 fabien         Distribution              => Debian Sarge    
+07-12-05 14:04 fabien         Kernel Version            => 2.6.12          
+10-24-05 21:20 fabien         Note Added: 0006523                          
+12-31-05 00:11 rlrevell       Note Added: 0007310                          
+01-02-06 12:36 fabien         Note Added: 0007371                          
+01-03-06 10:10 fabien         Note Edited: 0007371                         
+01-03-06 10:11 fabien         Note Edited: 0007371                         
+01-04-06 15:38 fabien         Note Added: 0007423                          
 ======================================================================
 
 
