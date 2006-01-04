@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001274]: alc655: low volume
-Date: Wed, 4 Jan 2006 12:24:49 +0100
-Message-ID: <5360622ad955864135ac691316773b57@bugtrack.alsa-project.org>
+Date: Wed, 4 Jan 2006 12:47:15 +0100
+Message-ID: <0e650f1ceb358009f29c0342b7e1f464@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DE4F17C
-	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 12:24:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7233184
+	for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2006 12:47:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-22-2005 10:46 CEST
-Last Modified:              01-04-2006 12:24 CET
+Last Modified:              01-04-2006 12:47 CET
 ======================================================================
 Summary:                    alc655: low volume
 Description: 
@@ -53,18 +53,7 @@ proprietary features of alc655?
 ======================================================================
 
 ----------------------------------------------------------------------
- vitja - 07-30-05 09:11 
-----------------------------------------------------------------------
-yeah... just before restoring alsa mixer levels I write this values to
-acl655...and it works I don't know why...These values are acl655 registers
-before audio modules is completly loaded..."temporarily solution" because
-it is not right way to make things work...
-
-else one: modem(sb400) doesn't work, module loads ok, slmodem ok...but
-when I run minicom and ttry to call system hangs(
-
-----------------------------------------------------------------------
- UnrealX - 01-04-06 12:24 
+ UnrealX - 01-04-06 12:25 
 ----------------------------------------------------------------------
 Well, it seems this bug is still unfixed.
 I use alsa-driver 1.0.10 and I only get this very silent sound from
@@ -72,7 +61,15 @@ headphone out.
 Temporary solution didn`t help me either, when I pasted it into bash
 script and executed, regs file values became all ffff`s.
 Same soundcard, ATI IXP 400, using arch linux 0.7.1 pre1, all modules
-loaded, alsa is working no-problemo.
+loaded, alsa core is working no-problemo.
+
+
+
+----------------------------------------------------------------------
+ vitja - 01-04-06 12:47 
+----------------------------------------------------------------------
+I can't reproduce this bug with 2.6.14 kernel, alsa version 1.0.10rc1,
+sound works ot of the box.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +80,8 @@ Date Modified  Username       Field                    Change
 07-29-05 18:01 tiwai          Note Added: 0005583                          
 07-30-05 09:11 vitja          Note Added: 0005591                          
 01-04-06 12:24 UnrealX        Note Added: 0007414                          
+01-04-06 12:25 UnrealX        Note Edited: 0007414                         
+01-04-06 12:47 vitja          Note Added: 0007415                          
 ======================================================================
 
 
