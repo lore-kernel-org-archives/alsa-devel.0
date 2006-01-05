@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001681]: (MIXER,'Front Playback Volume',0,0,0) appears twice or more
-Date: Thu, 5 Jan 2006 19:41:07 +0100
-Message-ID: <278a14d73ada5025e1544491ae79330e@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001278]: fails to read volume for software volume control
+Date: Thu, 5 Jan 2006 19:47:19 +0100
+Message-ID: <a99dc519849475422d03c12ebcfbadd6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 395FB18B
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:41:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 08E3618C
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:47:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,156 +24,171 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1681> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1278> 
 ======================================================================
-Reported By:                jcdutton
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1681
-Category:                   PCI - emu10k1
+Project:                    ALSA - liboss
+Issue ID:                   1278
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-26-2005 17:13 CET
-Last Modified:              01-05-2006 19:41 CET
+Date Submitted:             07-23-2005 18:23 CEST
+Last Modified:              01-05-2006 19:47 CET
 ======================================================================
-Summary:                    (MIXER,'Front Playback Volume',0,0,0) appears twice
-or more
+Summary:                    fails to read volume for software volume control
 Description: 
-Reported in "mashaun".
+From: http://bugs.debian.org/319628:
 
-0 [Live           ]: EMU10K1 - SB Live [Unknown]
-                     SB Live [Unknown] (rev.10, serial:0x80661102) at
-0xc800, irq 5
+Package: alsa-oss
+Version: 1.0.8-1
 
-the emu10k1 gives the following error when one tries to run alsamixer
-ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
-Volume',0,0,0) appears twice or more
+Hi,
 
-amixer controls                                       
-numid=43,iface=MIXER,name='Master Playback Switch'
-numid=44,iface=MIXER,name='Master Playback Volume'
-numid=91,iface=MIXER,name='Headphone +3dB Boost'
-numid=89,iface=MIXER,name='Headphone Amp'
-numid=40,iface=MIXER,name='Headphone Center Playback Switch',index=1
-numid=41,iface=MIXER,name='Headphone LFE Playback Switch',index=1
-numid=39,iface=MIXER,name='Headphone Playback Volume',index=1
-numid=35,iface=MIXER,name='Tone Control - Bass'
-numid=37,iface=MIXER,name='Tone Control - Switch'
-numid=36,iface=MIXER,name='Tone Control - Treble'
-numid=76,iface=MIXER,name='3D Control - Switch'
-numid=79,iface=MIXER,name='3D Control Sigmatel - Depth'
-numid=70,iface=MIXER,name='PCM Playback Switch'
-numid=71,iface=MIXER,name='PCM Playback Volume'
-numid=66,iface=MIXER,name='Surround Mix Playback Switch'
-numid=67,iface=MIXER,name='Surround Mix Playback Volume'
-numid=10,iface=MIXER,name='Surround Playback Volume'
-numid=12,iface=MIXER,name='Surround Capture Switch'
-numid=11,iface=MIXER,name='Surround Capture Volume'
-numid=86,iface=MIXER,name='Center/LFE Jack'
-numid=13,iface=MIXER,name='Center Playback Volume'
-numid=14,iface=MIXER,name='LFE Playback Volume'
-numid=7,iface=MIXER,name='Synth Playback Volume'
-numid=9,iface=MIXER,name='Synth Capture Switch'
-numid=8,iface=MIXER,name='Synth Capture Volume'
-numid=3,iface=MIXER,name='Wave Center Playback Volume'
-numid=4,iface=MIXER,name='Wave LFE Playback Volume'
-numid=2,iface=MIXER,name='Wave Surround Playback Volume'
-numid=1,iface=MIXER,name='Wave Playback Volume'
-numid=6,iface=MIXER,name='Wave Capture Switch'
-numid=5,iface=MIXER,name='Wave Capture Volume'
-numid=88,iface=MIXER,name='Line Input Source'
-numid=28,iface=MIXER,name='Line LiveDrive Capture Switch'
-numid=27,iface=MIXER,name='Line LiveDrive Capture Volume'
-numid=26,iface=MIXER,name='Line LiveDrive Playback Volume'
-numid=34,iface=MIXER,name='Line2 LiveDrive Capture Switch',index=1
-numid=33,iface=MIXER,name='Line2 LiveDrive Capture Volume',index=1
-numid=32,iface=MIXER,name='Line2 LiveDrive Playback Volume',index=1
-numid=83,iface=MIXER,name='LineIn Jack'
-numid=62,iface=MIXER,name='Line Playback Switch'
-numid=63,iface=MIXER,name='Line Playback Volume'
-numid=64,iface=MIXER,name='CD Playback Switch'
-numid=65,iface=MIXER,name='CD Playback Volume'
-numid=61,iface=MIXER,name='Mic Boost (+20dB)'
-numid=87,iface=MIXER,name='Mic Input Source'
-numid=78,iface=MIXER,name='Mic Select'
-numid=82,iface=MIXER,name='Mic1 Jack'
-numid=59,iface=MIXER,name='Mic Playback Switch'
-numid=60,iface=MIXER,name='Mic Playback Volume'
-numid=57,iface=MIXER,name='Phone Playback Switch'
-numid=58,iface=MIXER,name='Phone Playback Volume'
-numid=55,iface=MIXER,name='PC Speaker Playback Switch'
-numid=56,iface=MIXER,name='PC Speaker Playback Volume'
-numid=68,iface=MIXER,name='Aux Playback Switch'
-numid=69,iface=MIXER,name='Aux Playback Volume'
-numid=72,iface=MIXER,name='Capture Source'
-numid=73,iface=MIXER,name='Capture Switch'
-numid=74,iface=MIXER,name='Capture Volume'
-numid=31,iface=MIXER,name='IEC958 Coaxial Capture Switch'
-numid=30,iface=MIXER,name='IEC958 Coaxial Capture Volume'
-numid=29,iface=MIXER,name='IEC958 Coaxial Playback Volume'
-numid=25,iface=MIXER,name='IEC958 LiveDrive Capture Switch'
-numid=24,iface=MIXER,name='IEC958 LiveDrive Capture Volume'
-numid=23,iface=MIXER,name='IEC958 LiveDrive Playback Volume'
-numid=38,iface=MIXER,name='IEC958 Optical Raw Playback Switch'
-numid=22,iface=MIXER,name='IEC958 TTL Capture Switch'
-numid=21,iface=MIXER,name='IEC958 TTL Capture Volume'
-numid=20,iface=MIXER,name='IEC958 TTL Playback Volume'
-numid=19,iface=MIXER,name='AC97 Capture Volume'
-numid=18,iface=MIXER,name='AC97 Playback Volume'
-numid=90,iface=MIXER,name='Exchange Center/LFE'
-numid=92,iface=MIXER,name='External Amplifier'
-numid=17,iface=MIXER,name='Front Capture Switch'
-numid=16,iface=MIXER,name='Front Capture Volume'
-numid=84,iface=MIXER,name='Front Jack'
-numid=51,iface=MIXER,name='Front Playback Switch'
-numid=15,iface=MIXER,name='Front Playback Volume'
-numid=52,iface=MIXER,name='Front Playback Volume'
-numid=85,iface=MIXER,name='Rear Jack'
-numid=245,iface=MIXER,name='SB Live Analog/Digital Output Jack'
-numid=80,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
-numid=81,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
-numid=42,iface=PCM,name='Captured FX8010 Outputs',device=2
-numid=241,iface=PCM,name='IEC958 Playback Default',device=2
-numid=242,iface=PCM,name='IEC958 Playback Default',index=1,device=2
-numid=243,iface=PCM,name='IEC958 Playback Default',index=2,device=2
-numid=244,iface=PCM,name='IEC958 Playback Default',index=3,device=2
-numid=237,iface=PCM,name='IEC958 Playback Mask',device=2
-numid=238,iface=PCM,name='IEC958 Playback Mask',index=1,device=2
-numid=239,iface=PCM,name='IEC958 Playback Mask',index=2,device=2
-numid=240,iface=PCM,name='IEC958 Playback Mask',index=3,device=2
+My MacMini's audio chip seems to have no hardware volume control (or it 
+is unsupported in the kernel I use), so I use software volume control, 
+with the attached .asoundrc. (I'm still a newbie about alsa, there may 
+be some mistakes in my .soundrc file.)
+
+While trying to use hotkeys (that only understands oss) with aoss, I 
+discovered that aoss did not allow to read the volume control, while it 
+can write it flawlessly.
+
+After a few tests, I discovered that it was related to the failing 
+snd_mixer_selem_get_playback_switch function call, and I could 
+workaround the issue with the attached trivial quick&dirty patch.
+
+
+Cheers,
+
+Nicolas Boullis
+
+
+-- System Information:
+Debian Release: 3.1
+Architecture: powerpc (ppc)
+Kernel: Linux 2.6.12-irma
+Locale: LANG=C, LC_CTYPE=C (charmap=ANSI_X3.4-1968)
+
+Versions of packages alsa-oss depends on:
+ii  libasound2                  1.0.8-3      ALSA library
+ii  libc6                       2.3.2.ds1-22 GNU C Library: Shared
+libraries an
+
+-- no debconf information
+
+
+
+pcm.!default {
+  type plug
+  slave {
+    pcm {
+      type softvol
+      slave {
+        pcm {
+	  type dmix
+	  ipc_key 7666
+	  slave {
+	    pcm "hw:0,0"
+	    period_time 0
+	    period_size 1024
+	    buffer_size 8192
+	    rate 44100
+	  }
+	}
+      }
+      control {
+        name Master
+        card 0
+      }
+    }
+  }
+}
+
+pcm.dsp0 {
+  type plug
+  slave.pcm "!default"
+}
+
+
+
+
+only in patch2:
+unchanged:
+--- alsa-oss-1.0.8.orig/alsa/mixer.c
++++ alsa-oss-1.0.8/alsa/mixer.c
+@@ -487,9 +487,7 @@
+ 				break;
+ 			}
+ 			err = snd_mixer_selem_get_playback_switch(elem,
+SND_MIXER_SCHN_FRONT_LEFT, &sw);
+-			if (err < 0) 
+-				break;
+-			if (sw) {
++			if ((err < 0) || (sw)) {
+ 				err = snd_mixer_selem_get_playback_volume(elem,
+SND_MIXER_SCHN_FRONT_LEFT, &lvol);
+ 				if (err < 0) 
+ 					break;
+@@ -499,9 +497,7 @@
+ 				rvol = lvol;
+ 			} else {
+ 				err = snd_mixer_selem_get_playback_switch(elem,
+SND_MIXER_SCHN_FRONT_RIGHT, &sw);
+-				if (err < 0) 
+-					break;
+-				if (sw) {
++				if ((err < 0) || (sw)) { 
+ 					err = snd_mixer_selem_get_playback_volume(elem,
+SND_MIXER_SCHN_FRONT_RIGHT, &rvol);
+ 					if (err < 0) 
+ 						break;
+
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-05-06 14:16 
+ nboullis - 01-04-06 23:46 
 ----------------------------------------------------------------------
-You probably have sb live with STAC 9758 ac97 codec. Your solution is right
-solution.
+Hi!
+
+I am the person who originally submitted this report to the Debian Bug
+Tracking System.
+
+I just checked with alsa-lib 1.0.11rc2 and alsa-oss 1.0.10, and can
+confirm that this bug has not been fixed.
+
+Since my initial report and patch, I understood a little more about alsa,
+and produced a new (supposedly better) patch that I just attached.
+
+It would be nice if this could be fixed.
 
 ----------------------------------------------------------------------
- tiwai - 01-05-06 19:41 
+ tiwai - 01-05-06 19:47 
 ----------------------------------------------------------------------
-Fixed on CVS.  Thanks.
+Thanks, the patch looks fine.  I applied it to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-05 17:13 jcdutton       New Issue                                    
-01-04-06 22:03 alien999999999 Note Added: 0007454                          
-01-05-06 10:27 dalth          Note Added: 0007466                          
-01-05-06 14:16 pzad           Note Added: 0007468                          
-01-05-06 19:41 tiwai          Status                   new => resolved     
-01-05-06 19:41 tiwai          Resolution               open => fixed       
-01-05-06 19:41 tiwai          Assigned To               => tiwai           
-01-05-06 19:41 tiwai          Note Added: 0007474                          
+07-23-05 18:23 jdthood        New Issue                                    
+07-29-05 18:02 tiwai          Note Added: 0005584                          
+08-01-05 08:09 jdthood        Note Added: 0005594                          
+12-30-05 23:38 rlrevell       Note Added: 0007295                          
+01-04-06 22:11 nboullis       Issue Monitored: nboullis                    
+01-04-06 23:42 nboullis       File Added: alsa-oss.patch                    
+01-04-06 23:46 nboullis       Note Added: 0007460                          
+01-05-06 19:47 tiwai          Status                   new => resolved     
+01-05-06 19:47 tiwai          Resolution               open => fixed       
+01-05-06 19:47 tiwai          Assigned To               => tiwai           
+01-05-06 19:47 tiwai          Note Added: 0007476                          
 ======================================================================
 
 
