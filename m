@@ -1,16 +1,14 @@
-From: SUJA JAMES <sujamoljames@yahoo.com>
-Subject: ABI and ALSA
-Date: Thu, 5 Jan 2006 05:56:03 -0800 (PST)
-Message-ID: <20060105135603.67310.qmail@web30702.mail.mud.yahoo.com>
-References: <2727a79ff863b637c1d184a50d6d1590@bugtrack.alsa-project.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Thu, 5 Jan 2006 16:12:55 +0100
+Message-ID: <97282743a183a0e2fde5d362e9c00d38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web30702.mail.mud.yahoo.com (web30702.mail.mud.yahoo.com [68.142.200.135])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 24A59189
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 14:56:08 +0100 (MET)
-In-Reply-To: <2727a79ff863b637c1d184a50d6d1590@bugtrack.alsa-project.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC01818B
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 16:12:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,24 +21,112 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
 
-Some where in the net, I found that ALSA and
-Application Binary Interface (ABI) for the ARM
-Architecture has some compatibility issues. Does any
-one have more information on this, like what exactly
-this and how it affects ARM based platforms.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+======================================================================
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1585
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+======================================================================
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              01-05-2006 16:12 CET
+======================================================================
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
+Description: 
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-Thanks,
-Suja.
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
 
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
 
+======================================================================
 
-	=09
-__________________________________________=20
-Yahoo! DSL =96 Something to write home about.=20
-Just $16.99/mo. or less.=20
-dsl.yahoo.com=20
+----------------------------------------------------------------------
+ sailfrog - 01-04-06 16:30 
+----------------------------------------------------------------------
+bryanr,
+ I will try your patch tonight and let you know the result.
+
+thanks,
+
+Jason
+
+----------------------------------------------------------------------
+ sailfrog - 01-05-06 16:12 
+----------------------------------------------------------------------
+bryanr,
+  Applying your patch against 2.6.15-ck1 fixed the problem. I noticed no
+adverse side effects and now sound works :)
+
+thanks to everyone for the help.
+
+Jason
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
+12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
+12-30-05 20:43 rlrevell       Note Added: 0007259                          
+12-31-05 02:32 smithbone      Note Added: 0007319                          
+12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
+               
+12-31-05 03:47 rlrevell       Note Added: 0007331                          
+12-31-05 05:31 smithbone      Note Added: 0007343                          
+12-31-05 05:33 rlrevell       Note Added: 0007344                          
+12-31-05 05:37 rlrevell       Note Added: 0007345                          
+12-31-05 07:10 smithbone      Note Added: 0007347                          
+12-31-05 08:54 afran          Note Added: 0007354                          
+12-31-05 08:55 afran          Issue Monitored: afran                       
+12-31-05 08:56 afran          Note Edited: 0007354                         
+01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
+                  
+01-04-06 09:58 bryanr         Note Added: 0007411                          
+01-04-06 10:04 bryanr         Issue Monitored: bryanr                      
+01-04-06 10:50 bryanr         File Added: alsa-usbaudio-2.6.15-revert-008.patch 
+                  
+01-04-06 11:06 bryanr         Note Added: 0007412                          
+01-04-06 13:15 afran          Note Added: 0007416                          
+01-04-06 16:30 sailfrog       Note Added: 0007424                          
+01-05-06 16:12 sailfrog       Note Added: 0007471                          
+======================================================================
+
 
 
 
