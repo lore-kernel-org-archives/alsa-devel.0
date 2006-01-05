@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Thu, 5 Jan 2006 19:12:16 +0100
-Message-ID: <fb5deb70de52028ee744ba0042dc8846@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001719]: [PATCH] Fix the unability of snd-bt87x to recognize AVerMedia Studio No. 103, 203 (and perhaps others)
+Date: Thu, 5 Jan 2006 19:34:07 +0100
+Message-ID: <93b0dffd456a7d60fd4b1bc06e22a30c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B31318B
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:12:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1741B18B
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:34:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1719> 
 ======================================================================
-Reported By:                dvalin
+Reported By:                drab
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
+Issue ID:                   1719
+Category:                   PCI - bt87x
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              01-05-2006 19:12 CET
+Date Submitted:             01-05-2006 17:53 CET
+Last Modified:              01-05-2006 19:34 CET
 ======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
+Summary:                    [PATCH] Fix the unability of snd-bt87x to recognize
+AVerMedia Studio No. 103, 203 (and perhaps others)
 Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
+The patch siply adds the PCI IDs of AVerMedia Studio No. 103, 203, and
+possibly even other versions with the same PCI IDs to the snd-bt87x driver
+and sets its default sampling rate to 48 kHz.
 
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
+Signed-off-by: Martin Drab <drab@kepler.fjfi.cvut.cz>
+
+diff -Napur linux-2.6.15.orig/sound/pci/bt87x.c
+linux-2.6.15/sound/pci/bt87x.c
+--- linux-2.6.15.orig/sound/pci/bt87x.c 2006-01-05 04:02:52.000000000
++0100
++++ linux-2.6.15/sound/pci/bt87x.c      2006-01-05 04:03:20.000000000
++0100
+@@ -781,6 +781,8 @@ static struct pci_device_id snd_bt87x_id
+        BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_879, 0x0070, 0x13eb, 32000),
+        /* Viewcast Osprey 200 */
+        BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_878, 0x0070, 0xff01, 44100),
++       /* AVerMedia Studio No. 103, 203, ...? */
++       BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_878, 0x1461, 0x0003, 48000),
+        { }
+ };
+ MODULE_DEVICE_TABLE(pci, snd_bt87x_ids);
+
 ======================================================================
 
 ----------------------------------------------------------------------
- dvalin - 12-11-05 22:34 
+ tiwai - 01-05-06 19:34 
 ----------------------------------------------------------------------
-uhm, yes, I was thinking of the patch.
-
-My assumption that it was (somewhat) supported and should be added to the
-soundcard matrix was based on the fact that it works okay when forcing the
-samplerate :o)
-
-----------------------------------------------------------------------
- dvalin - 01-05-06 19:12 
-----------------------------------------------------------------------
-hum, no more on this topic?
-
-I see that the card has been updated to the soundcard matrix, but I
-believe that the module it's listed with is wrong, is it not?
-
-It's a usb card and works fine with the snd-usb-audio driver after
-applying my patch..
+Applied to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-12-01-05 16:58 Clemens LadischNote Added: 0006886                          
-12-01-05 18:15 dvalin         Note Added: 0006887                          
-12-06-05 07:36 dvalin         Note Added: 0006920                          
-12-11-05 19:05 dvalin         Note Added: 0006977                          
-12-11-05 20:20 rlrevell       Note Added: 0006979                          
-12-11-05 22:34 dvalin         Note Added: 0006980                          
-01-05-06 19:12 dvalin         Note Added: 0007472                          
+01-05-06 17:53 drab           New Issue                                    
+01-05-06 19:34 tiwai          Status                   assigned => resolved
+01-05-06 19:34 tiwai          Resolution               open => fixed       
+01-05-06 19:34 tiwai          Note Added: 0007473                          
 ======================================================================
 
 
