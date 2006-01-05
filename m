@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001715]: after driver update message "(MIXER,'Front Playback Volume',0,0,0) appears twice or more" is shown
-Date: Thu, 5 Jan 2006 19:42:35 +0100
-Message-ID: <bc71da67d40293dca59f3a28ee0fd346@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001681]: (MIXER,'Front Playback Volume',0,0,0) appears twice or more
+Date: Thu, 5 Jan 2006 19:41:07 +0100
+Message-ID: <278a14d73ada5025e1544491ae79330e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28818140
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:42:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 395FB18B
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:41:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,156 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1715> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1681> 
 ======================================================================
-Reported By:                dalth
+Reported By:                jcdutton
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1715
+Issue ID:                   1681
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Distribution:               
-Kernel Version:             2.6.15, no 4K-stacks, no regparm, highmem=off
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-04-2006 20:56 CET
-Last Modified:              01-05-2006 19:42 CET
+Date Submitted:             12-26-2005 17:13 CET
+Last Modified:              01-05-2006 19:41 CET
 ======================================================================
-Summary:                    after driver update message "(MIXER,'Front Playback
-Volume',0,0,0) appears twice or more" is shown
+Summary:                    (MIXER,'Front Playback Volume',0,0,0) appears twice
+or more
 Description: 
-After update Linux kernel from 2.6.14 (it has ALSA 1.0.10rc1 included) to
-2.6.15 (it contains ALSA 1.0.10rc3) all alsa utilities exits with the
-following message:
+Reported in "mashaun".
 
-ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
+0 [Live           ]: EMU10K1 - SB Live [Unknown]
+                     SB Live [Unknown] (rev.10, serial:0x80661102) at
+0xc800, irq 5
+
+the emu10k1 gives the following error when one tries to run alsamixer
+ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
 Volume',0,0,0) appears twice or more
 
-In fact, I test it with following combinations:
+amixer controls                                       
+numid=43,iface=MIXER,name='Master Playback Switch'
+numid=44,iface=MIXER,name='Master Playback Volume'
+numid=91,iface=MIXER,name='Headphone +3dB Boost'
+numid=89,iface=MIXER,name='Headphone Amp'
+numid=40,iface=MIXER,name='Headphone Center Playback Switch',index=1
+numid=41,iface=MIXER,name='Headphone LFE Playback Switch',index=1
+numid=39,iface=MIXER,name='Headphone Playback Volume',index=1
+numid=35,iface=MIXER,name='Tone Control - Bass'
+numid=37,iface=MIXER,name='Tone Control - Switch'
+numid=36,iface=MIXER,name='Tone Control - Treble'
+numid=76,iface=MIXER,name='3D Control - Switch'
+numid=79,iface=MIXER,name='3D Control Sigmatel - Depth'
+numid=70,iface=MIXER,name='PCM Playback Switch'
+numid=71,iface=MIXER,name='PCM Playback Volume'
+numid=66,iface=MIXER,name='Surround Mix Playback Switch'
+numid=67,iface=MIXER,name='Surround Mix Playback Volume'
+numid=10,iface=MIXER,name='Surround Playback Volume'
+numid=12,iface=MIXER,name='Surround Capture Switch'
+numid=11,iface=MIXER,name='Surround Capture Volume'
+numid=86,iface=MIXER,name='Center/LFE Jack'
+numid=13,iface=MIXER,name='Center Playback Volume'
+numid=14,iface=MIXER,name='LFE Playback Volume'
+numid=7,iface=MIXER,name='Synth Playback Volume'
+numid=9,iface=MIXER,name='Synth Capture Switch'
+numid=8,iface=MIXER,name='Synth Capture Volume'
+numid=3,iface=MIXER,name='Wave Center Playback Volume'
+numid=4,iface=MIXER,name='Wave LFE Playback Volume'
+numid=2,iface=MIXER,name='Wave Surround Playback Volume'
+numid=1,iface=MIXER,name='Wave Playback Volume'
+numid=6,iface=MIXER,name='Wave Capture Switch'
+numid=5,iface=MIXER,name='Wave Capture Volume'
+numid=88,iface=MIXER,name='Line Input Source'
+numid=28,iface=MIXER,name='Line LiveDrive Capture Switch'
+numid=27,iface=MIXER,name='Line LiveDrive Capture Volume'
+numid=26,iface=MIXER,name='Line LiveDrive Playback Volume'
+numid=34,iface=MIXER,name='Line2 LiveDrive Capture Switch',index=1
+numid=33,iface=MIXER,name='Line2 LiveDrive Capture Volume',index=1
+numid=32,iface=MIXER,name='Line2 LiveDrive Playback Volume',index=1
+numid=83,iface=MIXER,name='LineIn Jack'
+numid=62,iface=MIXER,name='Line Playback Switch'
+numid=63,iface=MIXER,name='Line Playback Volume'
+numid=64,iface=MIXER,name='CD Playback Switch'
+numid=65,iface=MIXER,name='CD Playback Volume'
+numid=61,iface=MIXER,name='Mic Boost (+20dB)'
+numid=87,iface=MIXER,name='Mic Input Source'
+numid=78,iface=MIXER,name='Mic Select'
+numid=82,iface=MIXER,name='Mic1 Jack'
+numid=59,iface=MIXER,name='Mic Playback Switch'
+numid=60,iface=MIXER,name='Mic Playback Volume'
+numid=57,iface=MIXER,name='Phone Playback Switch'
+numid=58,iface=MIXER,name='Phone Playback Volume'
+numid=55,iface=MIXER,name='PC Speaker Playback Switch'
+numid=56,iface=MIXER,name='PC Speaker Playback Volume'
+numid=68,iface=MIXER,name='Aux Playback Switch'
+numid=69,iface=MIXER,name='Aux Playback Volume'
+numid=72,iface=MIXER,name='Capture Source'
+numid=73,iface=MIXER,name='Capture Switch'
+numid=74,iface=MIXER,name='Capture Volume'
+numid=31,iface=MIXER,name='IEC958 Coaxial Capture Switch'
+numid=30,iface=MIXER,name='IEC958 Coaxial Capture Volume'
+numid=29,iface=MIXER,name='IEC958 Coaxial Playback Volume'
+numid=25,iface=MIXER,name='IEC958 LiveDrive Capture Switch'
+numid=24,iface=MIXER,name='IEC958 LiveDrive Capture Volume'
+numid=23,iface=MIXER,name='IEC958 LiveDrive Playback Volume'
+numid=38,iface=MIXER,name='IEC958 Optical Raw Playback Switch'
+numid=22,iface=MIXER,name='IEC958 TTL Capture Switch'
+numid=21,iface=MIXER,name='IEC958 TTL Capture Volume'
+numid=20,iface=MIXER,name='IEC958 TTL Playback Volume'
+numid=19,iface=MIXER,name='AC97 Capture Volume'
+numid=18,iface=MIXER,name='AC97 Playback Volume'
+numid=90,iface=MIXER,name='Exchange Center/LFE'
+numid=92,iface=MIXER,name='External Amplifier'
+numid=17,iface=MIXER,name='Front Capture Switch'
+numid=16,iface=MIXER,name='Front Capture Volume'
+numid=84,iface=MIXER,name='Front Jack'
+numid=51,iface=MIXER,name='Front Playback Switch'
+numid=15,iface=MIXER,name='Front Playback Volume'
+numid=52,iface=MIXER,name='Front Playback Volume'
+numid=85,iface=MIXER,name='Rear Jack'
+numid=245,iface=MIXER,name='SB Live Analog/Digital Output Jack'
+numid=80,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
+numid=81,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
+numid=42,iface=PCM,name='Captured FX8010 Outputs',device=2
+numid=241,iface=PCM,name='IEC958 Playback Default',device=2
+numid=242,iface=PCM,name='IEC958 Playback Default',index=1,device=2
+numid=243,iface=PCM,name='IEC958 Playback Default',index=2,device=2
+numid=244,iface=PCM,name='IEC958 Playback Default',index=3,device=2
+numid=237,iface=PCM,name='IEC958 Playback Mask',device=2
+numid=238,iface=PCM,name='IEC958 Playback Mask',index=1,device=2
+numid=239,iface=PCM,name='IEC958 Playback Mask',index=2,device=2
+numid=240,iface=PCM,name='IEC958 Playback Mask',index=3,device=2
 
-alsa-driver-1.0.10rc1 from 2.6.14 and alsa-lib-1.0.9 works fine
-alsa-driver-1.0.10rc1 from 2.6.14 and alsa-lib-1.0.10 works fine
-
-alsa-driver-1.0.10rc3 from 2.6.14 and alsa-lib-1.0.9 doesn't work
-alsa-driver-1.0.10 (from this site) and alsa-lib-1.0.10 doesn't work
-alsa-driver-1.0.11rc2 and alsa-lib-1.0.10 doesn't work
-
-I tried to create a simple quick-n-dirty workaround in the alsa-lib source
-that passed over this check and allows me to avoid alsa utilities
-termination. So I forced alsamixer, amixer and some other alsa-dependent
-applications like esd or beep-media-player to work properly.
-
-But Line-In is not working (I checked that line-in control was set to 100%
-and it is not in Mute state), so when I use a TV-tuner that connected to
-line-in jack, there are no sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- dalth - 01-05-06 10:33 
+ pzad - 01-05-06 14:16 
 ----------------------------------------------------------------------
-I was stupid.
-
-Problem has been solved - I've described dirty solution in a bug 1681
-notes,
-so now all works fine - except mplayer "tv" mode with v4l2, but it's not
-an
-ALSA problem.
+You probably have sb live with STAC 9758 ac97 codec. Your solution is right
+solution.
 
 ----------------------------------------------------------------------
- tiwai - 01-05-06 19:42 
+ tiwai - 01-05-06 19:41 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Fixed on CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 20:56 dalth          New Issue                                    
-01-04-06 20:56 dalth          Kernel Version            => 2.6.15, no 4K-stacks,
-no regparm, highmem=off
-01-04-06 21:22 dalth          Note Added: 0007452                          
-01-05-06 10:33 dalth          Note Added: 0007467                          
-01-05-06 19:42 tiwai          Status                   new => resolved     
-01-05-06 19:42 tiwai          Resolution               open => fixed       
-01-05-06 19:42 tiwai          Assigned To               => tiwai           
-01-05-06 19:42 tiwai          Note Added: 0007475                          
+12-26-05 17:13 jcdutton       New Issue                                    
+01-04-06 22:03 alien999999999 Note Added: 0007454                          
+01-05-06 10:27 dalth          Note Added: 0007466                          
+01-05-06 14:16 pzad           Note Added: 0007468                          
+01-05-06 19:41 tiwai          Status                   new => resolved     
+01-05-06 19:41 tiwai          Resolution               open => fixed       
+01-05-06 19:41 tiwai          Assigned To               => tiwai           
+01-05-06 19:41 tiwai          Note Added: 0007474                          
 ======================================================================
 
 
