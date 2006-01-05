@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001719]: [PATCH] Fix the unability of snd-bt87x to recognize AVerMedia Studio No. 103, 203 (and perhaps others)
-Date: Thu, 5 Jan 2006 17:53:50 +0100
-Message-ID: <dd0bdc538292cfa1c8e80f00b0806bfc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001720]: Audigy LS only produces noise instead playing music
+Date: Thu, 5 Jan 2006 18:16:01 +0100
+Message-ID: <a404ec8b67d8ff94540f6397d44b5f1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17C44176
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 17:53:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57EDD18B
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 18:16:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,42 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1719> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1720> 
 ======================================================================
-Reported By:                drab
-Assigned To:                Clemens Ladisch
+Reported By:                Nukem36JL
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1719
-Category:                   PCI - bt87x
+Issue ID:                   1720
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               SuSE
+Kernel Version:             2.6.13-15-default
 ======================================================================
-Date Submitted:             01-05-2006 17:53 CET
-Last Modified:              01-05-2006 17:53 CET
+Date Submitted:             01-05-2006 18:16 CET
+Last Modified:              01-05-2006 18:16 CET
 ======================================================================
-Summary:                    [PATCH] Fix the unability of snd-bt87x to recognize
-AVerMedia Studio No. 103, 203 (and perhaps others)
+Summary:                    Audigy LS only produces noise instead playing music
 Description: 
-The patch siply adds the PCI IDs of AVerMedia Studio No. 103, 203, and
-possibly even other versions with the same PCI IDs to the snd-bt87x driver
-and sets its default sampling rate to 48 kHz.
+lspci:
+00:0c.0 Multimedia audio controller: Creative Labs SB Audigy LS
 
-Signed-off-by: Martin Drab <drab@kepler.fjfi.cvut.cz>
+While trying to play a wave- file the card produces noise only. Effect is
+the same for all kind of players including aplay, ogg123 .... The card is
+used together with another card, which works properly.
 
-diff -Napur linux-2.6.15.orig/sound/pci/bt87x.c
-linux-2.6.15/sound/pci/bt87x.c
---- linux-2.6.15.orig/sound/pci/bt87x.c 2006-01-05 04:02:52.000000000
-+0100
-+++ linux-2.6.15/sound/pci/bt87x.c      2006-01-05 04:03:20.000000000
-+0100
-@@ -781,6 +781,8 @@ static struct pci_device_id snd_bt87x_id
-        BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_879, 0x0070, 0x13eb, 32000),
-        /* Viewcast Osprey 200 */
-        BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_878, 0x0070, 0xff01, 44100),
-+       /* AVerMedia Studio No. 103, 203, ...? */
-+       BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_878, 0x1461, 0x0003, 48000),
-        { }
- };
- MODULE_DEVICE_TABLE(pci, snd_bt87x_ids);
-
+Module snd-ca0106 loads without error messages. 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-05-06 17:53 drab           New Issue                                    
+01-05-06 18:16 Nukem36JL      New Issue                                    
+01-05-06 18:16 Nukem36JL      Distribution              => SuSE            
+01-05-06 18:16 Nukem36JL      Kernel Version            => 2.6.13-15-default
 ======================================================================
 
 
