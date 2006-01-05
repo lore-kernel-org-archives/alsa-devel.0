@@ -1,11 +1,14 @@
-From: "James C. Georgas" <jgeorgas@rogers.com>
-Subject: snd_ctl_card_info from index
-Date: Thu, 05 Jan 2006 15:14:29 -0500
-Message-ID: <1136492074.12380.11.camel@Tachyon.home>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001253]: My kernel doesn't find my sound cards anymore !!!
+Date: Thu, 5 Jan 2006 21:18:46 +0100
+Message-ID: <38fe23cf387541f0516a52c84fe0cb73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E4B318D
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 21:18:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,292 +18,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-alsa-lib question:
 
-How do I get the snd_ctl_card_info structure, given the card index? I'm
-trying to write a program that enumerates all my cards and prints the
-hardware information for each one.
-
-Here's my test program as it is now. The commented out describe_card()
-function is the one I would like to call, but I can't, because the
-function snd_ctl_hw_open() is private.
-
-/// My first alsa program.
-/**
- * \date 2005-12-27
- * \author J. C. Georgas
- */
-
-
-// alsa/asoundlib.h needs this to typedef struct timespec to
-snd_htimestamp_t:
-#if !(defined _POSIX_C_SOURCE && _POSIX_C_SOURCE >= 199309L)
-	#define _POSIX_C_SOURCE 199309L
-#endif
-
-#include <stdio.h>
-#include <alsa/asoundlib.h>
-
-static int tabcount = 0;
-void tab();
-
-int describe_card( const int index );
-int describe_controller( const char* name );
-int describe_controller_card( snd_ctl_t* ctl );
-int describe_controller_element( snd_ctl_t* ctl, int index );
-
-int main( int argc, char* argv[] )
-{
-	int err = 0;
-
-	// enumerate all the cards and print their imformation:
-	int card_number = -1;
-	for(;;)
-	{
-		if ( 0 > ( err = snd_card_next( &card_number )))
-		{
-			fprintf( stderr, "snd_card_open: %s\n", snd_strerror( err ));
-			break;
-		}
-
-		if ( -1 == card_number ) break;
-
-		tab(); printf( "Card %d:\n", card_number );
-
-		if ( 0 > ( err = describe_card( card_number )))
-		{
-			fprintf( stderr, "describe_card: %s\n", snd_strerror( err ));
-			continue;
-		}
-	}
-
-	// I want this stuff in the above loop, but I can't extract ID from
-index:
-	tab(); printf( "Controller:\n" );
-
-	if ( 0 > ( err = describe_controller( "default" )))
-	{
-		fprintf( stderr, "describe_controller: %s\n", snd_strerror( err ));
-		goto fail_describe_controller;
-	}
-
-fail_describe_controller:
-
-	return err;
-}
-
-int describe_card( const int index )
-{
-	int err = 0;
-	++tabcount;
-
-	char* name = 0;
-	if ( 0 > ( err = snd_card_get_name( index, &name )))
-	{
-		fprintf( stderr, "snd_card_get_name: %s\n", snd_strerror( err ));
-		goto fail_card_get_name;
-	}
-
-	tab(); printf( "short name = %s\n", name );
-
-	char* longname = 0;
-	if ( 0 > ( err = snd_card_get_longname( index, &longname )))
-	{
-		fprintf( stderr, "snd_card_get_longname: %s\n", snd_strerror( err ));
-		goto fail_card_get_longname;
-	}
-
-	tab(); printf( "long name = %s\n", longname );
-
-	free( longname );
-
-fail_card_get_longname:
-
-	free( name );
-
-fail_card_get_name:
-
-	printf( "\n" );
-	--tabcount;	
-	return err;
-}
-
-// I want to get the snd_ctl_card_info, given the index. This is as
-close as
-// I can get:
-#if 0
-int describe_card( const int index )
-{
-	int err = 0;
-
-	snd_ctl_t* ctl;
-	if ( 0 > ( err = snd_ctl_hw_open( &ctl, NULL, index, 0 )))
-	{
-		fprintf( stderr, "snd_ctl_open: %s\n", snd_strerror( err ));
-		goto fail_ctl_open;
-	}
-
-	if ( 0 > ( err = describe_controller_card( ctl )))
-	{
-		fprintf( stderr, "describe_controller_card: %s\n",
-snd_strerror( err ));
-		goto fail_describe_controller_card;
-	}
-
-	return err;
-}
-#endif
-
-int describe_controller( const char* name )
-{
-	int err = 0;
-	++tabcount;
-
-	snd_ctl_t* ctl;
-	if ( 0 > ( err = snd_ctl_open( &ctl, name, 0 )))
-	{
-		fprintf( stderr, "snd_ctl_open: %s\n", snd_strerror( err ));
-		goto fail_ctl_open;
-	}
-
-	tab(); printf( "Card:\n" );
-
-	if ( 0 > ( err = describe_controller_card( ctl )))
-	{
-		fprintf( stderr, "describe_controller_card: %s\n",
-snd_strerror( err ));
-		goto fail_describe_controller_card;
-	}
-
-	tab(); printf( "Element:\n" );
-
-	if ( 0 > ( err = describe_controller_element( ctl, 1 )))
-	{
-		fprintf( stderr, "describe_controller_element: %s\n",
-snd_strerror( err));
-		goto fail_describe_controller_element;
-	}
-
-fail_describe_controller_element:
-fail_describe_controller_card:
-
-	snd_ctl_close( ctl );
-
-fail_ctl_open:
-
-	--tabcount;
-	return err;
-}
-
-int describe_controller_card( snd_ctl_t* ctl )
-{
-	int err = 0;
-	++tabcount;
-
-	snd_ctl_card_info_t* info;
-	if ( 0 > ( err = snd_ctl_card_info_malloc( &info )))
-	{
-		fprintf( stderr, "snd_ctl_card_info_malloc: %s\n",
-snd_strerror( err ));
-		goto fail_ctl_card_info_malloc;
-	}
-
-	if ( 0 > ( err = snd_ctl_card_info( ctl, info )))
-	{
-		fprintf( stderr, "snd_ctl_card_info: %s\n", snd_strerror( err ));
-		goto fail_ctl_card_info;
-	}
-
-	tab();printf( "index      = %d\n", snd_ctl_card_info_get_card( info ));
-	tab();printf( "ID         = %s\n", snd_ctl_card_info_get_id( info ));
-	tab();printf( "short name = %s\n", snd_ctl_card_info_get_name( info ));
-	tab();printf( "long name  = %s\n",
-snd_ctl_card_info_get_longname( info ));
-	tab();printf( "components = %s\n",
-snd_ctl_card_info_get_components( info ));
-	tab();printf( "mixer name = %s\n",
-snd_ctl_card_info_get_mixername( info));
-	tab();printf( "driver     = %s\n",
-snd_ctl_card_info_get_driver( info ));
-
-fail_ctl_card_info:
-
-	snd_ctl_card_info_free( info );
-
-fail_ctl_card_info_malloc:
-
-	printf( "\n" );
-	--tabcount;
-	return err;
-}
-
-int describe_controller_element( snd_ctl_t* ctl, int index )
-{
-	int err = 0;
-	++tabcount;
-
-	snd_ctl_elem_info_t* info;
-	if ( 0 > ( err = snd_ctl_elem_info_malloc( &info )))
-	{
-		fprintf( stderr, "snd_ctl_elem_info_malloc: %s\n",
-snd_strerror( err ));
-		goto fail_ctl_elem_info_malloc;
-	}
-
-	snd_ctl_elem_info_set_numid( info, index );
-	if ( 0 > ( err = snd_ctl_elem_info( ctl, info )))
-	{
-		fprintf( stderr, "snd_ctl_elem_info: %s\n", snd_strerror( err ));
-		goto fail_ctl_elem_info;
-	}
-
-	tab(); printf( "ID         = %d\n",
-snd_ctl_elem_info_get_numid( info ));
-	tab(); printf( "name       = %s\n",
-snd_ctl_elem_info_get_name( info ));
-
-	int type = snd_ctl_elem_info_get_type( info );
-	char* typename;
-	switch ( type )
-	{
-	case SND_CTL_ELEM_TYPE_NONE: typename = "NONE"; break;
-	case SND_CTL_ELEM_TYPE_BOOLEAN: typename = "BOOLEAN"; break;
-	case SND_CTL_ELEM_TYPE_INTEGER: typename = "INTEGER"; break;
-	case SND_CTL_ELEM_TYPE_ENUMERATED: typename = "ENUMERATED"; break;
-	case SND_CTL_ELEM_TYPE_BYTES: typename = "BYTES"; break;
-	case SND_CTL_ELEM_TYPE_IEC958: typename = "IEC958"; break;
-	case SND_CTL_ELEM_TYPE_INTEGER64: typename = "INTEGER64"; break;
-	}
-	tab(); printf( "type       = %s\n", typename );
-
-	tab(); printf( "values     = %d\n",
-snd_ctl_elem_info_get_count( info ));
-	tab(); printf( "dimensions = %d\n",
-snd_ctl_elem_info_get_dimensions(info));
-
-fail_ctl_elem_info:
-
-	snd_ctl_elem_info_free( info );
-
-fail_ctl_elem_info_malloc:
-
-	printf( "\n" );
-	--tabcount;
-	return err;
-}
-
-void tab()
-{
-	for ( int i = 0; tabcount > i; ++i )
-		printf( "\t" );
-}
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1253> 
+======================================================================
+Reported By:                fabien
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1253
+Category:                   PCI - ens1370
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             07-12-2005 14:04 CEST
+Last Modified:              01-05-2006 21:18 CET
+======================================================================
+Summary:                    My kernel doesn't find my sound cards anymore !!!
+Description: 
+My kernel stop working with my soundcards !!!
+It use to work in 2.6.8 (not in 2.6.10, 2.6.11 & 2.6.12)
 
 
--- 
-James C. Georgas <jgeorgas@rogers.com>
+My sound cards :
+- ENS1370
+- SIS 7012
+
+Motherboard :
+- K7S5A
+
+Linux Box :
+- Debian on x86 AMD
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-04-06 16:41 
+----------------------------------------------------------------------
+Try to build drivers as modules and load _only_ snd-ens1371 module.
+
+----------------------------------------------------------------------
+ fabien - 01-05-06 21:18 
+----------------------------------------------------------------------
+I compile every sound drivers in modules, I remove the dummy and MPU-401
+UART drivers. I disable my SIS 7012 sound card in the bios. I unplugged my
+web cam.
+
+=> It's working with the ENS1371 card !!!
+
+matou:/etc# lsmod
+Module                  Size  Used by
+snd_seq_midi            8608  0
+snd_ens1371            23264  4
+snd_rawmidi            23712  2 snd_seq_midi,snd_ens1371
+snd_ac97_codec         83104  1 snd_ens1371
+snd_ac97_bus            2304  1 snd_ac97_codec
+pcspkr                  2052  0
+
+matou:/etc# cat /proc/asound/cards
+0 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
+                     Ensoniq AudioPCI ENS1371 at 0xdc00, irq 5
+
+But no information in dmesg :
+
+matou:/etc# dmesg | grep -iE "ALSA|sound|#|ens13|ac97|sis"
+Linux version 2.6.15 (root@matou) (gcc version 4.0.3 20051201 (prerelease)
+(Debian 4.0.2-5)) #1 PREEMPT Wed Jan 4 21:03:14 CET 2006
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+ALSA device list:
+  No soundcards found.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-12-05 14:04 fabien         New Issue                                    
+07-12-05 14:04 fabien         Distribution              => Debian Sarge    
+07-12-05 14:04 fabien         Kernel Version            => 2.6.12          
+10-24-05 21:20 fabien         Note Added: 0006523                          
+12-31-05 00:11 rlrevell       Note Added: 0007310                          
+01-02-06 12:36 fabien         Note Added: 0007371                          
+01-03-06 10:10 fabien         Note Edited: 0007371                         
+01-03-06 10:11 fabien         Note Edited: 0007371                         
+01-04-06 15:38 fabien         Note Added: 0007423                          
+01-04-06 16:41 tiwai          Note Added: 0007425                          
+01-05-06 21:18 fabien         Note Added: 0007478                          
+======================================================================
+
 
 
 
