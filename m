@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001278]: fails to read volume for software volume control
-Date: Thu, 5 Jan 2006 19:47:19 +0100
-Message-ID: <a99dc519849475422d03c12ebcfbadd6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
+Date: Thu, 5 Jan 2006 20:00:52 +0100
+Message-ID: <fb533a8caedd30fb3b8063fe97428df2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 08E3618C
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:47:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFCEA170
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 20:00:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,173 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1278> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                alsarealist
+Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1278
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1703
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               self burned
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-23-2005 18:23 CEST
-Last Modified:              01-05-2006 19:47 CET
+Date Submitted:             01-03-2006 18:42 CET
+Last Modified:              01-05-2006 20:00 CET
 ======================================================================
-Summary:                    fails to read volume for software volume control
+Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
+not working
 Description: 
-From: http://bugs.debian.org/319628:
-
-Package: alsa-oss
-Version: 1.0.8-1
-
-Hi,
-
-My MacMini's audio chip seems to have no hardware volume control (or it 
-is unsupported in the kernel I use), so I use software volume control, 
-with the attached .asoundrc. (I'm still a newbie about alsa, there may 
-be some mistakes in my .soundrc file.)
-
-While trying to use hotkeys (that only understands oss) with aoss, I 
-discovered that aoss did not allow to read the volume control, while it 
-can write it flawlessly.
-
-After a few tests, I discovered that it was related to the failing 
-snd_mixer_selem_get_playback_switch function call, and I could 
-workaround the issue with the attached trivial quick&dirty patch.
+Pass-through with xine is not working.
+PCM Stereo downmix works fine
 
 
-Cheers,
+00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller (rev a2)
 
-Nicolas Boullis
-
-
--- System Information:
-Debian Release: 3.1
-Architecture: powerpc (ppc)
-Kernel: Linux 2.6.12-irma
-Locale: LANG=C, LC_CTYPE=C (charmap=ANSI_X3.4-1968)
-
-Versions of packages alsa-oss depends on:
-ii  libasound2                  1.0.8-3      ALSA library
-ii  libc6                       2.3.2.ds1-22 GNU C Library: Shared
-libraries an
-
--- no debconf information
-
-
-
-pcm.!default {
-  type plug
-  slave {
-    pcm {
-      type softvol
-      slave {
-        pcm {
-	  type dmix
-	  ipc_key 7666
-	  slave {
-	    pcm "hw:0,0"
-	    period_time 0
-	    period_size 1024
-	    buffer_size 8192
-	    rate 44100
-	  }
-	}
-      }
-      control {
-        name Master
-        card 0
-      }
-    }
-  }
-}
-
-pcm.dsp0 {
-  type plug
-  slave.pcm "!default"
-}
-
-
-
-
-only in patch2:
-unchanged:
---- alsa-oss-1.0.8.orig/alsa/mixer.c
-+++ alsa-oss-1.0.8/alsa/mixer.c
-@@ -487,9 +487,7 @@
- 				break;
- 			}
- 			err = snd_mixer_selem_get_playback_switch(elem,
-SND_MIXER_SCHN_FRONT_LEFT, &sw);
--			if (err < 0) 
--				break;
--			if (sw) {
-+			if ((err < 0) || (sw)) {
- 				err = snd_mixer_selem_get_playback_volume(elem,
-SND_MIXER_SCHN_FRONT_LEFT, &lvol);
- 				if (err < 0) 
- 					break;
-@@ -499,9 +497,7 @@
- 				rvol = lvol;
- 			} else {
- 				err = snd_mixer_selem_get_playback_switch(elem,
-SND_MIXER_SCHN_FRONT_RIGHT, &sw);
--				if (err < 0) 
--					break;
--				if (sw) {
-+				if ((err < 0) || (sw)) { 
- 					err = snd_mixer_selem_get_playback_volume(elem,
-SND_MIXER_SCHN_FRONT_RIGHT, &rvol);
- 					if (err < 0) 
- 						break;
-
-
+gcc (GCC) 4.0.2
+alsa version 1.0.11rc2
+Linux 2.6.15
 
 ======================================================================
 
 ----------------------------------------------------------------------
- nboullis - 01-04-06 23:46 
+ alsarealist - 01-04-06 23:11 
 ----------------------------------------------------------------------
-Hi!
+/proc/asound/card0/codec97#0/ac97#0-0+regs |grep 0:3a
+0:3a = 2822
 
-I am the person who originally submitted this report to the Debian Bug
-Tracking System.
-
-I just checked with alsa-lib 1.0.11rc2 and alsa-oss 1.0.10, and can
-confirm that this bug has not been fixed.
-
-Since my initial report and patch, I understood a little more about alsa,
-and produced a new (supposedly better) patch that I just attached.
-
-It would be nice if this could be fixed.
+The ALC 850 chip contain in bit 15 register 3ah a validity control flag
+for SPDIF? Should this bit be set when playing DTS or Dolby 5.1 streams?
 
 ----------------------------------------------------------------------
- tiwai - 01-05-06 19:47 
+ tiwai - 01-05-06 20:00 
 ----------------------------------------------------------------------
-Thanks, the patch looks fine.  I applied it to CVS.
+SPSA in 0x2a is set to 0, i.e. assigned to slots 3/4.  This is basically
+changed via "AC97-SPSA" mixer control.  Change it to "3" (the highest)
+manually.
+
+Also, try to output the audio PCM signal over SPDIF with
+   % aplay -Dplug:spdif somefile.wav
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-23-05 18:23 jdthood        New Issue                                    
-07-29-05 18:02 tiwai          Note Added: 0005584                          
-08-01-05 08:09 jdthood        Note Added: 0005594                          
-12-30-05 23:38 rlrevell       Note Added: 0007295                          
-01-04-06 22:11 nboullis       Issue Monitored: nboullis                    
-01-04-06 23:42 nboullis       File Added: alsa-oss.patch                    
-01-04-06 23:46 nboullis       Note Added: 0007460                          
-01-05-06 19:47 tiwai          Status                   new => resolved     
-01-05-06 19:47 tiwai          Resolution               open => fixed       
-01-05-06 19:47 tiwai          Assigned To               => tiwai           
-01-05-06 19:47 tiwai          Note Added: 0007476                          
+01-03-06 18:42 alsarealist    New Issue                                    
+01-03-06 18:42 alsarealist    Distribution              => self burned     
+01-03-06 19:05 rlrevell       Note Added: 0007403                          
+01-04-06 01:45 alsarealist    Note Added: 0007409                          
+01-04-06 17:11 tiwai          Note Added: 0007436                          
+01-04-06 17:32 alsarealist    File Added: asound.state                     
+01-04-06 17:33 alsarealist    Note Added: 0007443                          
+01-04-06 17:38 alsarealist    File Added: proc-asound                      
+01-04-06 17:42 alsarealist    Note Added: 0007447                          
+01-04-06 23:11 alsarealist    Note Added: 0007459                          
+01-05-06 20:00 tiwai          Note Added: 0007477                          
 ======================================================================
 
 
