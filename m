@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Thu, 5 Jan 2006 22:01:55 +0100
-Message-ID: <2bef5dfc8f61957fe023461143fdd2f9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001709]: 5.1 doesn't work
+Date: Thu, 5 Jan 2006 22:02:55 +0100
+Message-ID: <2ac4b1c551e8d45fbe3f7179be07ca96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5798618E
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 22:01:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D7C318E
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 22:02:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1228> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1709> 
 ======================================================================
-Reported By:                hil
+Reported By:                piezo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1228
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1709
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.11-1.1369
 ======================================================================
-Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              01-05-2006 22:01 CET
+Date Submitted:             01-04-2006 13:50 CET
+Last Modified:              01-05-2006 22:02 CET
 ======================================================================
-Summary:                    Skype Does not work with aoss
+Summary:                    5.1 doesn't work
 Description: 
-I downloaded alsa-oss-1.0.9rc2 and install by
-# ./configure --with-aoss=yes && make && make install
-as root. Virtually every program works except skype
-(http://www.skype.com/) version 1.1.0.13_API. I downloaded the Fedora
-version of skype from the skype official website. Skype only uses
-/dev/dsp. I guess skype uses /dev/dsp as microphone input as well. I could
-not hear anything and the microphone did not work as well if I run  skype
-like aoss /usr/bin/skype. If I run skype without aoss, then skype works
-just fine.
-======================================================================
-Relazioni           ID      Riassunto
-----------------------------------------------------------------------
-in relazione con    0001224 artsd-like style
+I'm new to linux.  I've been googling for a awnser to this problem for a
+week now.  found a few with the same sort of problems but no awnsers.
+
+I can get sterio sound but not 5.1 surround.  This is very irritating as I
+bought a Audity2 soundcard for the purpose of using it's 5.1 sound
+capability.
+
+initially xine kept telling me that another process was using the PCM
+device.  found how to fix this.  using
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-05-06 21:42 
+ piezo - 01-05-06 00:23 
 ----------------------------------------------------------------------
-Ah, OK, I see you use 1.0.10.  Try the latest version (CVS or 1.0.11-rc*). 
-Also what are the exact symptoms - does it segfault still?
+"Sound Blaster Audigy 2 value" pci card
+followed the Alsa setup instructions.
+detected correctly (SB0400)
+
+can only seem to use it in sterio or (with fixes) fake 5.1 (which is
+really sterio duplicated).
 
 ----------------------------------------------------------------------
- Hetfield - 01-05-06 22:01 
+ rlrevell - 01-05-06 22:02 
 ----------------------------------------------------------------------
-no, check the bug 1224, i still have the same problems.
-
-seg fault was fixed lots time ago.
-
-the problem is:
-1) setting the suggested values in my .asoundrc skype works with aoss
-(OK!!)
-2) complete dmix system gets faked. i mean..xmms and mplayer (with skype
-closed) can't use sound drivers.
-3) as 2), using skype with aoss is useless, cause other devices can't use
-dsp at the same time.
-
-removing .asoundrc settings fix the 2) but, obviusly keeps 1).
-
-i can do a fast summary:
-
-i hear mp3s/watch dvd. can i hear skype ring in the meanwhile?
-actually not.
-
-ps. card is always ens1370
+2.6.11 is way too old for such a new device.  Try a newer kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-03-05 09:09 hil            New Issue                                    
-08-09-05 15:33 rapand         Note Added: 0005732                          
-08-10-05 00:49 rlrevell       Relationship added       duplicate of 0001224
-08-10-05 00:50 rlrevell       Note Added: 0005740                          
-12-31-05 00:19 rlrevell       Note Added: 0007315                          
-01-02-06 18:54 rlrevell       Relationship deleted     duplicate of 0001224
-01-02-06 18:55 rlrevell       Relationship added       related to 0001224  
-01-02-06 18:56 rlrevell       Note Added: 0007375                          
-01-05-06 21:36 Hetfield       Note Added: 0007479                          
-01-05-06 21:40 rlrevell       Note Added: 0007480                          
-01-05-06 21:42 rlrevell       Note Added: 0007481                          
-01-05-06 22:01 Hetfield       Note Added: 0007482                          
+01-04-06 13:50 piezo          New Issue                                    
+01-04-06 13:50 piezo          Distribution              => Fedora Core 4   
+01-04-06 13:50 piezo          Kernel Version            => 2.6.11-1.1369   
+01-05-06 00:23 piezo          Note Added: 0007461                          
+01-05-06 22:02 rlrevell       Note Added: 0007483                          
 ======================================================================
 
 
