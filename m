@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
-Date: Thu, 5 Jan 2006 20:00:52 +0100
-Message-ID: <fb533a8caedd30fb3b8063fe97428df2@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: OSS emulation improvements.
+Date: Thu, 05 Jan 2006 20:02:49 +0000
+Message-ID: <43BD7B69.7030103@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFCEA170
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 20:00:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +15,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
-======================================================================
-Reported By:                alsarealist
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1703
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               self burned
-Kernel Version:             
-======================================================================
-Date Submitted:             01-03-2006 18:42 CET
-Last Modified:              01-05-2006 20:00 CET
-======================================================================
-Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
-not working
-Description: 
-Pass-through with xine is not working.
-PCM Stereo downmix works fine
+I have be trying to think of ways to improve OSS emulation for ALSA.
+Now, the ideal solution is probably a userland daemon that will create 
+kernel /dev/dspX  nodes.
+Any application opening/ioctl/read/write to /dev/dspX would have all 
+those calls redirected to the userland daemon.
+But I am not exactly sure how to achieve this.
+Lets assume that we are able to get a userland daemon to creative a /dev 
+node. The OSS application opens/ioctl it. This results in function calls 
+to the userland daemon. The OSS application then does a write(). This 
+write will then contain a pointer to the frames the OSS application 
+wishes to write to the sound card. How can the daemon do a memcopy of 
+those frames to it's own address space?
+Next the problem with DMA. the OSS application requests are DMA buffer 
+via the IOCTL. This would result is the buffer actually being in the 
+userland daemon's address space. How could the OSS application get write 
+access to the userland daemon'd address space?
 
+If someone could kindly answer the questions above. I.e. explain how one 
+might do it in Linux. I would be happy to implement the userland daemon 
+and it would just work!
 
-00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller (rev a2)
+I think that if we could achieve this approach, all OSS would then work 
+seamlessly, so please help me.
 
-gcc (GCC) 4.0.2
-alsa version 1.0.11rc2
-Linux 2.6.15
-
-======================================================================
-
-----------------------------------------------------------------------
- alsarealist - 01-04-06 23:11 
-----------------------------------------------------------------------
-/proc/asound/card0/codec97#0/ac97#0-0+regs |grep 0:3a
-0:3a = 2822
-
-The ALC 850 chip contain in bit 15 register 3ah a validity control flag
-for SPDIF? Should this bit be set when playing DTS or Dolby 5.1 streams?
-
-----------------------------------------------------------------------
- tiwai - 01-05-06 20:00 
-----------------------------------------------------------------------
-SPSA in 0x2a is set to 0, i.e. assigned to slots 3/4.  This is basically
-changed via "AC97-SPSA" mixer control.  Change it to "3" (the highest)
-manually.
-
-Also, try to output the audio PCM signal over SPDIF with
-   % aplay -Dplug:spdif somefile.wav
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-06 18:42 alsarealist    New Issue                                    
-01-03-06 18:42 alsarealist    Distribution              => self burned     
-01-03-06 19:05 rlrevell       Note Added: 0007403                          
-01-04-06 01:45 alsarealist    Note Added: 0007409                          
-01-04-06 17:11 tiwai          Note Added: 0007436                          
-01-04-06 17:32 alsarealist    File Added: asound.state                     
-01-04-06 17:33 alsarealist    Note Added: 0007443                          
-01-04-06 17:38 alsarealist    File Added: proc-asound                      
-01-04-06 17:42 alsarealist    Note Added: 0007447                          
-01-04-06 23:11 alsarealist    Note Added: 0007459                          
-01-05-06 20:00 tiwai          Note Added: 0007477                          
-======================================================================
-
+James
 
 
 
