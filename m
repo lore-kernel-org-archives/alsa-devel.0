@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001719]: [PATCH] Fix the unability of snd-bt87x to recognize AVerMedia Studio No. 103, 203 (and perhaps others)
-Date: Thu, 5 Jan 2006 19:34:07 +0100
-Message-ID: <93b0dffd456a7d60fd4b1bc06e22a30c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001715]: after driver update message "(MIXER,'Front Playback Volume',0,0,0) appears twice or more" is shown
+Date: Thu, 5 Jan 2006 19:42:35 +0100
+Message-ID: <bc71da67d40293dca59f3a28ee0fd346@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1741B18B
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:34:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28818140
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 19:42:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1719> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1715> 
 ======================================================================
-Reported By:                drab
-Assigned To:                Clemens Ladisch
+Reported By:                dalth
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1719
-Category:                   PCI - bt87x
+Issue ID:                   1715
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.15, no 4K-stacks, no regparm, highmem=off
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-05-2006 17:53 CET
-Last Modified:              01-05-2006 19:34 CET
+Date Submitted:             01-04-2006 20:56 CET
+Last Modified:              01-05-2006 19:42 CET
 ======================================================================
-Summary:                    [PATCH] Fix the unability of snd-bt87x to recognize
-AVerMedia Studio No. 103, 203 (and perhaps others)
+Summary:                    after driver update message "(MIXER,'Front Playback
+Volume',0,0,0) appears twice or more" is shown
 Description: 
-The patch siply adds the PCI IDs of AVerMedia Studio No. 103, 203, and
-possibly even other versions with the same PCI IDs to the snd-bt87x driver
-and sets its default sampling rate to 48 kHz.
+After update Linux kernel from 2.6.14 (it has ALSA 1.0.10rc1 included) to
+2.6.15 (it contains ALSA 1.0.10rc3) all alsa utilities exits with the
+following message:
 
-Signed-off-by: Martin Drab <drab@kepler.fjfi.cvut.cz>
+ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
+Volume',0,0,0) appears twice or more
 
-diff -Napur linux-2.6.15.orig/sound/pci/bt87x.c
-linux-2.6.15/sound/pci/bt87x.c
---- linux-2.6.15.orig/sound/pci/bt87x.c 2006-01-05 04:02:52.000000000
-+0100
-+++ linux-2.6.15/sound/pci/bt87x.c      2006-01-05 04:03:20.000000000
-+0100
-@@ -781,6 +781,8 @@ static struct pci_device_id snd_bt87x_id
-        BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_879, 0x0070, 0x13eb, 32000),
-        /* Viewcast Osprey 200 */
-        BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_878, 0x0070, 0xff01, 44100),
-+       /* AVerMedia Studio No. 103, 203, ...? */
-+       BT_DEVICE(PCI_DEVICE_ID_BROOKTREE_878, 0x1461, 0x0003, 48000),
-        { }
- };
- MODULE_DEVICE_TABLE(pci, snd_bt87x_ids);
+In fact, I test it with following combinations:
 
+alsa-driver-1.0.10rc1 from 2.6.14 and alsa-lib-1.0.9 works fine
+alsa-driver-1.0.10rc1 from 2.6.14 and alsa-lib-1.0.10 works fine
+
+alsa-driver-1.0.10rc3 from 2.6.14 and alsa-lib-1.0.9 doesn't work
+alsa-driver-1.0.10 (from this site) and alsa-lib-1.0.10 doesn't work
+alsa-driver-1.0.11rc2 and alsa-lib-1.0.10 doesn't work
+
+I tried to create a simple quick-n-dirty workaround in the alsa-lib source
+that passed over this check and allows me to avoid alsa utilities
+termination. So I forced alsamixer, amixer and some other alsa-dependent
+applications like esd or beep-media-player to work properly.
+
+But Line-In is not working (I checked that line-in control was set to 100%
+and it is not in Mute state), so when I use a TV-tuner that connected to
+line-in jack, there are no sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-05-06 19:34 
+ dalth - 01-05-06 10:33 
 ----------------------------------------------------------------------
-Applied to CVS.  Thanks.
+I was stupid.
+
+Problem has been solved - I've described dirty solution in a bug 1681
+notes,
+so now all works fine - except mplayer "tv" mode with v4l2, but it's not
+an
+ALSA problem.
+
+----------------------------------------------------------------------
+ tiwai - 01-05-06 19:42 
+----------------------------------------------------------------------
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-05-06 17:53 drab           New Issue                                    
-01-05-06 19:34 tiwai          Status                   assigned => resolved
-01-05-06 19:34 tiwai          Resolution               open => fixed       
-01-05-06 19:34 tiwai          Note Added: 0007473                          
+01-04-06 20:56 dalth          New Issue                                    
+01-04-06 20:56 dalth          Kernel Version            => 2.6.15, no 4K-stacks,
+no regparm, highmem=off
+01-04-06 21:22 dalth          Note Added: 0007452                          
+01-05-06 10:33 dalth          Note Added: 0007467                          
+01-05-06 19:42 tiwai          Status                   new => resolved     
+01-05-06 19:42 tiwai          Resolution               open => fixed       
+01-05-06 19:42 tiwai          Assigned To               => tiwai           
+01-05-06 19:42 tiwai          Note Added: 0007475                          
 ======================================================================
 
 
