@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Thu, 5 Jan 2006 21:36:07 +0100
-Message-ID: <6f8894295ed874b7d9f22d6388512960@bugtrack.alsa-project.org>
+Date: Thu, 5 Jan 2006 21:40:08 +0100
+Message-ID: <245f1eb500b9ea4064c6e5bb106591f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B78218D
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 21:36:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00281135
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 21:40:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              01-05-2006 21:36 CET
+Last Modified:              01-05-2006 21:40 CET
 ======================================================================
 Summary:                    Skype Does not work with aoss
 Description: 
@@ -52,22 +52,21 @@ not hear anything and the microphone did not work as well if I run  skype
 like aoss /usr/bin/skype. If I run skype without aoss, then skype works
 just fine.
 ======================================================================
-Relazioni           ID      Riassunto
+Relationships       ID      Summary
 ----------------------------------------------------------------------
-in relazione con    0001224 artsd-like style
+related to          0001224 artsd-like style
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-02-06 18:56 
-----------------------------------------------------------------------
-Update: Skype + aoss is still broken with the latest ALSA release.
-
-Has anyone looked at this lately?
 
 ----------------------------------------------------------------------
  Hetfield - 01-05-06 21:36 
 ----------------------------------------------------------------------
 broken in 2.6.15 and alsa-* 1.0.10
+
+----------------------------------------------------------------------
+ rlrevell - 01-05-06 21:40 
+----------------------------------------------------------------------
+We need more information about the exact hardware and ALSA version in use
+because some people are reporting this works perfectly for them.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +80,7 @@ Date Modified  Username       Field                    Change
 01-02-06 18:55 rlrevell       Relationship added       related to 0001224  
 01-02-06 18:56 rlrevell       Note Added: 0007375                          
 01-05-06 21:36 Hetfield       Note Added: 0007479                          
+01-05-06 21:40 rlrevell       Note Added: 0007480                          
 ======================================================================
 
 
