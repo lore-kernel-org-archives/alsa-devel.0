@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Thu, 5 Jan 2006 07:21:48 +0100
-Message-ID: <7c518ef65df5a73efd5d24dde027de92@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
+Date: Thu, 5 Jan 2006 08:28:07 +0100
+Message-ID: <282486cc3de129c33ed18a5f6e5d6de7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91FA5165
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 07:21:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2608613C
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 08:28:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,111 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
 ======================================================================
-Reported By:                alien999999999
+Reported By:                Osiris
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
+Issue ID:                   1025
 Category:                   PCI - au88x0
-Reproducibility:            sometimes
+Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Distribution:               Debian
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              01-05-2006 07:21 CET
+Date Submitted:             03-30-2005 22:50 CEST
+Last Modified:              01-05-2006 08:28 CET
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    kernel panic when trying to load module snd-au8830
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+kernel panic occurs on boot when system tries to load kernel module for
+Aureal Vortex 2. The same thing happens when driver is compiled into
+kernel, not module
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
-
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- alien999999999 - 01-04-06 22:08 
+ ponchick - 12-21-05 04:18 
 ----------------------------------------------------------------------
-raymond, when will all these au88x0 changes (also from the mailinglist) be
-put into CVS?
-
-I had to modify the CVS of yesterday quite a bit so i wouldn't have a hung
-au8820 module
+I try diff11.diff on alsa-driver-1.0.10 with minor changes in it. It works
+for me. I use it for 2 weeks now and it works fine. I use mixer/equalizer
+but don't even touch gameport, mpu and oss emulation. 
+My configuration:
+P4 631 (em64t)
+Aureal Vortex 2
+Gentoo Linux 2005.1 
+Kernel 2.6.14-gentoo-r2 and 2.6.13-gentoo-r5 (vanilla sources + some
+gentoo patches)
+alsa-drivers 1.0.10 (not kernel one!)
 
 ----------------------------------------------------------------------
- Raymond - 01-05-06 07:21 
+ Raymond - 01-05-06 08:28 
 ----------------------------------------------------------------------
-As your problem cannot be reproduced on my au8830.
+Refer to those MMIO trace logs on your web site.
 
-Are you sure this change fix your au8810's hang ?
+Not all MMIO are read/write in 32bits (e.g. hardware mixer input volume
+seem to be read/write in 8-bits instead of 32bits)
 
-    for (i = 0; i < NR_ADB; i++) {
-            if (vortex->dma_adb[i].fifo_status == FIFO_START) {
-                if (vortex_adbdma_bufshift(vortex, i)) {
-                    spin_unlock(&vortex->lock);
-                    snd_pcm_period_elapsed(vortex->dma_adb[i].
-                               substream);
-                    spin_lock(&vortex->lock);
-                }
-            }
-    }
-    
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x773.htm#PCM-INTERFACE-INTERRUPT-HANDLER-BOTH
-
-WT seem to be driven by timer interrupt instead of FIFO interrupt.
+One set of WT frequency register(0x20a) seem to be write in 16-bits and
+0x20a is aligned to word boundary and not double word boudnary.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
+03-30-05 22:50 Osiris         New Issue                                    
+03-30-05 22:50 Osiris         Distribution              => Debian          
+03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
+03-31-05 11:34 mjander        Note Added: 0004278                          
+04-03-05 21:16 Osiris         Note Added: 0004320                          
+04-04-05 10:19 alien999999999 Issue Monitored: alien999999999                   
+
+04-04-05 11:00 alien999999999 File Added: alsa-changes.tar.bz2                  
+ 
+04-04-05 11:00 alien999999999 Note Added: 0004325                          
+08-24-05 11:04 Raymond        Note Added: 0005927                          
+11-25-05 08:22 Raymond        Note Added: 0006848                          
+12-21-05 04:05 ponchick       Issue Monitored: ponchick                    
+12-21-05 04:18 ponchick       Note Added: 0007107                          
+12-21-05 04:19 ponchick       File Added: diff11.diff.bz2                    
+12-22-05 13:01 Raymond        Note Added: 0007123                          
+01-02-06 09:57 Raymond        Note Deleted: 0007123                        
+01-05-06 08:28 Raymond        Note Added: 0007463                          
 ======================================================================
 
 
