@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
-Date: Thu, 5 Jan 2006 14:25:12 +0100
-Message-ID: <9194b6e4990b33e27892cf40d7dc839e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001274]: alc655: low volume
+Date: Thu, 5 Jan 2006 14:46:14 +0100
+Message-ID: <1452b90fde65ba97dc7eee1ac894fd5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91277B6
-	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 14:25:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC249189
+	for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2006 14:46:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1274> 
 ======================================================================
-Reported By:                vedran
-Assigned To:                
+Reported By:                vitja
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1083
-Category:                   PCI - intel8x0
+Issue ID:                   1274
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-ac12
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-29-2005 15:33 CEST
-Last Modified:              01-05-2006 14:25 CET
+Date Submitted:             07-22-2005 10:46 CEST
+Last Modified:              01-05-2006 14:46 CET
 ======================================================================
-Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Summary:                    alc655: low volume
 Description: 
-We're using a motherboard with nVidia nforce2IGP chipset, and the sound
-device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
-is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
-realtek drivers.
-
-On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
-kernel.
-
-I've been able to make a 2 channel  pre-decoded SPDIF output work by using
-the hw:0,2 device. If I use the default device, there is no sound on
-SPDIF, regardless of the SPDIF related controls in mixer. The controls in
-the mixer are:
-
-However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
-alsa-tools CVS, and I get no sound.
-
-I'm attaching the archive with the output of iecset and
-/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
-idle.
-
-Maybe the fact that decoded SPDIF output is not working until I pass it
-through the hw:0,2 has something to do with this, how can I make ac3dec -C
-use hw:0,2?
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001094 nforce4 - optical spdif out not working
+I have ATI IXP400 sound in my notebook. codec is realtek's alc655. The
+problem is I couldn't hear anything from internal speaker. When I plug
+earphones in I hear very-very low music signal, so driver actually works
+but. By the way under xp with realtek's drivers thats all right.. Is there
+a way to see dump of ac97's registers under xp? May be XP driver uses some
+proprietary features of alc655?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 03:23 
+ tiwai - 01-04-06 17:02 
 ----------------------------------------------------------------------
-Is this fixed in later ALSA releases?
+Both of you can compare /etc/asound.state to check the mixer status.  After
+that, compare ac97#0-0+regs proc files.
 
 ----------------------------------------------------------------------
- vedran - 01-05-06 14:25 
+ UnrealX - 01-05-06 14:46 
 ----------------------------------------------------------------------
-seems to be fixed.
+I`ve upgraded to 1.0.11rc2, still no sound.
+I`m attaching my asound.state and ac97#0-0+regs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 15:33 vedran         New Issue                                    
-04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
-     
-04-29-05 15:33 vedran         Distribution              => Debian sid      
-04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
-05-30-05 13:21 vedran         Note Added: 0004809                          
-06-01-05 16:53 tiwai          Note Added: 0004862                          
-06-01-05 16:54 tiwai          Relationship added       has duplicate 0001094
-06-01-05 19:19 eklarson       Issue Monitored: eklarson                    
-06-03-05 00:31 Human          Note Added: 0004880                          
-06-03-05 00:32 Human          Issue Monitored: Human                       
-06-06-05 23:30 Human          Note Added: 0004910                          
-06-08-05 15:01 tiwai          Note Added: 0004928                          
-06-10-05 18:07 Human          Note Added: 0004984                          
-06-19-05 16:07 gilesjuk       Note Added: 0005090                          
-06-21-05 00:50 gilesjuk       Note Added: 0005099                          
-06-21-05 00:57 gilesjuk       Note Edited: 0005099                         
-06-21-05 11:19 tiwai          Note Added: 0005102                          
-06-26-05 13:18 gilesjuk       Note Added: 0005263                          
-06-26-05 13:19 gilesjuk       Note Edited: 0005263                         
-06-27-05 16:56 tiwai          Note Added: 0005280                          
-07-20-05 01:37 gilesjuk       Note Added: 0005531                          
-07-20-05 02:12 gilesjuk       Note Edited: 0005531                         
-12-31-05 03:23 rlrevell       Note Added: 0007325                          
-01-05-06 14:25 vedran         Note Added: 0007469                          
+07-22-05 10:46 vitja          New Issue                                    
+07-22-05 20:32 vitja          File Added: codec                            
+07-24-05 22:19 vitja          Note Added: 0005560                          
+07-29-05 18:01 tiwai          Note Added: 0005583                          
+07-30-05 09:11 vitja          Note Added: 0005591                          
+01-04-06 12:24 UnrealX        Note Added: 0007414                          
+01-04-06 12:25 UnrealX        Note Edited: 0007414                         
+01-04-06 12:47 vitja          Note Added: 0007415                          
+01-04-06 17:02 tiwai          Note Added: 0007433                          
+01-05-06 14:44 UnrealX        Issue Monitored: UnrealX                     
+01-05-06 14:44 UnrealX        Issue End Monitor: UnrealX                    
+01-05-06 14:46 UnrealX        Note Added: 0007470                          
 ======================================================================
 
 
