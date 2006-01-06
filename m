@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
-Date: Fri, 6 Jan 2006 19:22:45 +0100
-Message-ID: <fa2c226830d9ccf6ed26b696642f132e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
+Date: Fri, 6 Jan 2006 19:46:53 +0100
+Message-ID: <e9a15db4d9d7678cb3938c90c366f326@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9537710C
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 19:22:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6886913C
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 19:46:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,112 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
 ======================================================================
-Reported By:                kees
+Reported By:                er-ku
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1678
+Issue ID:                   1517
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.15-rc6-git4
+Kernel Version:             2.6.12-9-686
 ======================================================================
-Date Submitted:             12-25-2005 02:29 CET
-Last Modified:              01-06-2006 19:22 CET
+Date Submitted:             10-31-2005 00:19 CET
+Last Modified:              01-06-2006 19:46 CET
 ======================================================================
-Summary:                    nForce (10de:026c) left channel squeals, right
-channel mostly okay
+Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
 Description: 
-This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
-is this is an "nForce410" board, with "6-channel HD audio".
+This will be very much like other reports around.
 
-Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
-snd-hda-intel load fine, but during playback, the left channel squeals,
-while the right seems to play things okay.
+Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
+Sound modules load silently, no complainments, alsamixer works and
+channels are unmuted, but I get absolutely no sound from speakers of
+headphones.
 
-I'm happy to dig around and try whatever needs trying to get this fixed. 
-Thanks!
+I'm not the only one having this issue
+(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
+managed to google either didn't help me, or was simply unfinished (like
+forum questions that aren't answered).
+
+I tried the stock drivers provided by the Ubuntu kernel, then I tried
+1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
+all cases the result was the same - absolute silence.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- adel - 01-06-06 18:14 
+ rlrevell - 01-06-06 19:39 
 ----------------------------------------------------------------------
-Hi,
+AFAIK all features of the Realtek driver were merged into the ALSA driver
+recently so there should be no difference.
 
-I would like to confirm this bug on my ASUS A7N-VM CSM
-with SoundMax ADI AD1986A 5.1 integrated with the motherboard.
-I'm using Ubuntu Breezu, with kernel 2.6.14 .
-
-The system make a horrible noise (trying to play de gdm "welcome" sound)
-and after the sound driver seems to crash. However there is no messages in
-/var/log/messages or dmesg. But the modules are still loaded :
-
-snd_hda_intel snd_hda_codec snd_pcm_oss snd_mixer_oss, snd_pcm and
-snd_timer
-
-I applied successfully the patch :
-http://www.nabble.com/Intel-HDA-AD1986A-without-surround-t595968.html
-on alsa-driver-1.0.10.
-
-Now the sound seems stable with some litte strange noise (perhaps my
-speakers). 
-
-this is the lspci -nvv :
-0000:00:10.1 0403: 10de:026c (rev a2)
-        Subsystem: 10de:cb84
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0 (500ns min, 1250ns max)
-        Interrupt: pin B routed to IRQ 5
-        Region 0: Memory at febd8000 (32-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [44] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [6c] #08 [a802]
+If Realtek's own driver does not work maybe you can report the problem to
+them.
 
 ----------------------------------------------------------------------
- kees - 01-06-06 19:22 
+ er-ku - 01-06-06 19:46 
 ----------------------------------------------------------------------
-adel:
-
-If what you're hearing sounds like static, I found notes here:
-http://lists.us.dell.com/pipermail/linux-precision/2005-September/000687.html
-
-Adding this to my modules.conf file fixed the problem:
-
-options snd-hda-intel position_fix=1
+strange. One user of a laptop of the same model as mine said he had the
+sound in Linux. I haven't heard anything more detailed from him though....
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-25-05 02:29 kees           New Issue                                    
-12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
-12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
-12-26-05 11:02 kees           Note Added: 0007149                          
-12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
-12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:50 morgoth666     Note Added: 0007300                          
-12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
-12-31-05 10:16 kees           Note Added: 0007355                          
-12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
-12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
-01-04-06 17:40 tiwai          Note Added: 0007446                          
-01-04-06 17:56 kees           Note Added: 0007449                          
-01-06-06 18:14 adel           Note Added: 0007490                          
-01-06-06 19:22 kees           Note Added: 0007494                          
+10-31-05 00:19 er-ku          New Issue                                    
+10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
+10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
+10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
+12-19-05 02:28 rlrevell       Note Added: 0007083                          
+12-24-05 03:28 OnO            Note Added: 0007139                          
+12-24-05 03:32 OnO            Note Added: 0007140                          
+12-26-05 17:06 er-ku          Note Added: 0007160                          
+12-26-05 17:07 er-ku          Note Edited: 0007160                         
+01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
+01-06-06 17:22 morigane       Note Added: 0007489                          
+01-06-06 18:38 er-ku          Note Added: 0007492                          
+01-06-06 19:39 rlrevell       Note Added: 0007495                          
+01-06-06 19:46 er-ku          Note Added: 0007496                          
 ======================================================================
 
 
