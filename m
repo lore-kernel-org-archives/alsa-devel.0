@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001483]: PCM.C errors: Using modem drivers.
-Date: Fri, 6 Jan 2006 16:39:05 +0100
-Message-ID: <018a9ad4b5138bfc67ca9bda024c0d73@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
+Date: Fri, 6 Jan 2006 17:22:58 +0100
+Message-ID: <3c84ecc5b2ca40fd5ab5dd3d26d0c924@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1AFE143
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 16:39:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18450140
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 17:22:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1483> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
 ======================================================================
-Reported By:                GPLed
-Assigned To:                sashak
+Reported By:                er-ku
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1483
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1517
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12-9-686
 ======================================================================
-Date Submitted:             10-18-2005 13:01 CEST
-Last Modified:              01-06-2006 16:39 CET
+Date Submitted:             10-31-2005 00:19 CET
+Last Modified:              01-06-2006 17:22 CET
 ======================================================================
-Summary:                    PCM.C errors: Using modem drivers.
+Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
 Description: 
-snd-intel-8x0m driver. I have successfully loaded the driver and ran
-slmodemd --alsa but it gives me the following output:
+This will be very much like other reports around.
 
-error: mixer setup: attach hw:1 error: No such file or directory
-ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM modem:1
-definition (id: modem, value: cards.pcm.modem)
-error: alsa setup: cannot open playback device 'modem:1': Invalid
-argument
-error: cannot setup device `modem:1'
+Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
+Sound modules load silently, no complainments, alsamixer works and
+channels are unmuted, but I get absolutely no sound from speakers of
+headphones.
 
-Some other people also get the very same problem on FC4. Is there anything
-that can be done? Please help.
+I'm not the only one having this issue
+(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
+managed to google either didn't help me, or was simply unfinished (like
+forum questions that aren't answered).
+
+I tried the stock drivers provided by the Ubuntu kernel, then I tried
+1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
+all cases the result was the same - absolute silence.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 11-22-05 00:26 
+ er-ku - 12-26-05 17:07 
 ----------------------------------------------------------------------
-It is likely not updated configuration on FC4. Which card/driver you are
-using and which version of alsa-lib?
+I forgot to mention one thing that might be important. That's a part of
+"dmidecode" output:
+Handle 0x000D
+        DMI type 10, 6 bytes.
+        On Board Device Information
+                Type: Sound
+                Status: Disabled
+                Description: ADI
+
+Notice: the Status says "Disabled". And the problem is that there are no
+relevant configuration entries in BIOS... However, snd-hda-intel doesn't
+complain about missing devices. 
+
+Could this be the root cause of sound problems?
+
+
 
 ----------------------------------------------------------------------
- sashak - 01-06-06 16:39 
+ morigane - 01-06-06 17:22 
 ----------------------------------------------------------------------
-Reporter, any news with it? Does alsa-lib upgrade help?
+I've exactly the same problem on an Acer Aspire 1641 (laptop) with sound
+card Intel (chipset Realtek ALC260). I'm on a Mandriva 2006. I've made a
+bugtrack to Mandriva, who gave me the latest developer versions kernels
+(2.6.12-15 (containing an hda patch) and 2.6.15), with no result. I've
+tried the Realtek drivers for linux (which had totally damaged the audio
+config and obliged me to reinstall the system), and the alsa drivers
+1.0.10 and 1.0.11rc2. I've still no sound. The dmidecode give me the same
+result : Status Disabled.
+Morigane
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-18-05 13:01 GPLed          New Issue                                    
-11-22-05 00:24 sashak         Status                   new => assigned     
-11-22-05 00:24 sashak         Assigned To               => sashak          
-11-22-05 00:26 sashak         Note Added: 0006782                          
-01-06-06 16:39 sashak         Note Added: 0007487                          
+10-31-05 00:19 er-ku          New Issue                                    
+10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
+10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
+10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
+12-19-05 02:28 rlrevell       Note Added: 0007083                          
+12-24-05 03:28 OnO            Note Added: 0007139                          
+12-24-05 03:32 OnO            Note Added: 0007140                          
+12-26-05 17:06 er-ku          Note Added: 0007160                          
+12-26-05 17:07 er-ku          Note Edited: 0007160                         
+01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
+01-06-06 17:22 morigane       Note Added: 0007489                          
 ======================================================================
 
 
