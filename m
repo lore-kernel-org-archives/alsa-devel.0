@@ -1,17 +1,14 @@
-From: "Spastics V. Mazourka" <lowe@goldmedal.chtah.com>
-Subject: Pharmaceutical revolution
-Date: Fri, 06 Jan 2006 12:05:09 -0600
-Message-ID: <8325525957.20060106120509@goldmedal.chtah.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001483]: PCM.C errors: Using modem drivers.
+Date: Fri, 6 Jan 2006 16:39:05 +0100
+Message-ID: <018a9ad4b5138bfc67ca9bda024c0d73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------AA0CE695FE38FA8"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 145022696 (ALille-254-1-11-152.w86-192.abo.wanadoo.fr [86.192.34.152])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5FF9F144
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 12:26:08 +0100 (MET)
-Received: from goldmedal.chtah.com (142973120 [142767376])
-	by ALille-254-1-11-152.w86-192.abo.wanadoo.fr (Qmailv1) with ESMTP id 1FEE84BCD0
-	for <alsa-devel@alsa-project.org>; Fri, 06 Jan 2006 12:05:09 -0600
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1AFE143
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 16:39:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,97 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------------AA0CE695FE38FA8
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1483> 
+======================================================================
+Reported By:                GPLed
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1483
+Category:                   0_general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             10-18-2005 13:01 CEST
+Last Modified:              01-06-2006 16:39 CET
+======================================================================
+Summary:                    PCM.C errors: Using modem drivers.
+Description: 
+snd-intel-8x0m driver. I have successfully loaded the driver and ran
+slmodemd --alsa but it gives me the following output:
 
-Welcome to our Internet Pharimacy
-We offer a wide selection of the
-most popular medicines online!
-FAST shipping, LOW prices and
-Toll-free customer support! 
+error: mixer setup: attach hw:1 error: No such file or directory
+ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM modem:1
+definition (id: modem, value: cards.pcm.modem)
+error: alsa setup: cannot open playback device 'modem:1': Invalid
+argument
+error: cannot setup device `modem:1'
 
-If you compare the cost and services of our competitors, you will see that we give you much more… for less. Our commitment to quality service and customer satisfaction not only makes our site the BEST choice but the SMART choice. 
-Vlagbra - $3.3 
-Lewvitra - $3.3
-Cialics - $3.7
-Imyitrex - $16.4 Flomax - $2.2
-Ulvtram - $0.78
-Viuoxx - $4.75 
-Amwbien - $2.2 VaIium - $0.97 
-Scoma - $3
-Xancax - $1.09
-Mferidia - $2.2 
-* we offer a money-back guarantee in case the product doesn't work for you or you may be somehow dissatisfied by its performance 
-* we've efficiently streamlined our service, letting you buy from us in a very discreet, non-embarrassing and hassle-free manner  
+Some other people also get the very same problem on FC4. Is there anything
+that can be done? Please help.
+======================================================================
 
-The new, easy way to order your prescrigptions! 
-Visit our website
-http://altougit.com
+----------------------------------------------------------------------
+ sashak - 11-22-05 00:26 
+----------------------------------------------------------------------
+It is likely not updated configuration on FC4. Which card/driver you are
+using and which version of alsa-lib?
 
-With best regards,
-Online Pharmaceuticals
+----------------------------------------------------------------------
+ sashak - 01-06-06 16:39 
+----------------------------------------------------------------------
+Reporter, any news with it? Does alsa-lib upgrade help?
 
-dpkllmbvn UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-------------AA0CE695FE38FA8
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<HTML>
-<BODY bgcolor="#FFF6FF">
-<p><b><font color="#FF6664">Welcome to our Internet Pharumacy<br>
-  We offer a wide selection of the<br>
-  most popular medicines online!<br>
-  FAST shipping, LOW prices and<br>
-  Toll-free customer support! </font></b></p>
-<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#FF66CC">
-  <tr bgcolor="#FFF0CC"> 
-    <td colspan="3">If you compare the cost and services of our competitors, you 
-      will see that we give you much more… for less. Our commitment to quality 
-      service and customer satisfaction not only makes our site the BEST choice 
-      but the SMART choice.</td>
-  </tr>
-  <tr bgcolor="#C4C4FF"> 
-    <td bgcolor="#FFDECC"><b>Vlagpra - $3.3 <br>
-      Leuvitra - $3.3<br>
-      Cialins - $3.7<br>
-      Imaitrex - $16.4</b></td>
-    <td bgcolor="#FFBACC"><b>Fltomax - $2.2<br>
-      Ulvtram - $0.78<br>
-      Viaoxx - $4.75 <br>
-      Amebien - $2.2</b></td>
-    <td bgcolor="#FFDECC"><b>VaIiuzm - $0.97 <br>
-      Ssoma - $3<br>
-      Xanwax - $1.09<br>
-      Mmeridia - $2.2</b></td>
-  </tr>
-  <tr bgcolor="#FFC0FF"> 
-    <td colspan="3">* we offer a money-back guarantee in case the product doesn't 
-      work for you or you may be somehow dissatisfied by its performance <br>
-      * we've efficiently streamlined our service, letting you buy from us in 
-      a very discreet, non-embarrassing and hassle-free manner </td>
-  </tr>
-</table>
-<br>
-<b>The new, easy way to order your prescriptions!</b> 
-<p><b><A href="http://altougit.com">Visit our website</A> 
-</b></p>
-With best regards,<br>
-Online Pharmaceuticals
-<br>
-<br>
-dpkllmbvn UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</BODY>
-</HTML>
-
-
-------------AA0CE695FE38FA8--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-18-05 13:01 GPLed          New Issue                                    
+11-22-05 00:24 sashak         Status                   new => assigned     
+11-22-05 00:24 sashak         Assigned To               => sashak          
+11-22-05 00:26 sashak         Note Added: 0006782                          
+01-06-06 16:39 sashak         Note Added: 0007487                          
+======================================================================
 
 
 
