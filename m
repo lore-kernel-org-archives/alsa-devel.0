@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Fri, 6 Jan 2006 18:38:31 +0100
-Message-ID: <a824ef03aa531e1958f2e08cd841998b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001335]: No sound on first probe
+Date: Fri, 6 Jan 2006 19:10:45 +0100
+Message-ID: <49589fa36b5b80b80e42aca65016a88c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FC94140
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 18:38:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4A9A12C
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 19:10:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1335> 
 ======================================================================
-Reported By:                er-ku
-Assigned To:                tiwai
+Reported By:                cpx
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1517
-Category:                   PCI - hda-intel
+Issue ID:                   1335
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-9-686
+Status:                     new
+Distribution:               Slackware 10.0
+Kernel Version:             2.6.13-rc6
 ======================================================================
-Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              01-06-2006 18:38 CET
+Date Submitted:             08-14-2005 08:31 CEST
+Last Modified:              01-06-2006 19:10 CET
 ======================================================================
-Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
+Summary:                    No sound on first probe
 Description: 
-This will be very much like other reports around.
+The first probe of the snd-via82xx module results in no sound from the
+speakers/headphone jack. Removing the module and reloading it fixes the
+problem. Upon reloading (sometimes when removing) a small bit of feedback
+is audible (i.e. suggesting the hardware's been "initialized").
 
-Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
-Sound modules load silently, no complainments, alsamixer works and
-channels are unmuted, but I get absolutely no sound from speakers of
-headphones.
+The module seems to have to be removed for it to work though... just
+rebooting and having it reload the module that way doesn't work.
 
-I'm not the only one having this issue
-(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
-managed to google either didn't help me, or was simply unfinished (like
-forum questions that aren't answered).
-
-I tried the stock drivers provided by the Ubuntu kernel, then I tried
-1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
-all cases the result was the same - absolute silence.
-
+After performing the above to make it work the system can then be warm
+booted with the sound continuing to work until powering off.
 ======================================================================
 
 ----------------------------------------------------------------------
- morigane - 01-06-06 17:22 
+ cpx - 01-06-06 19:10 
 ----------------------------------------------------------------------
-I've exactly the same problem on an Acer Aspire 1641 (laptop) with sound
-card Intel (chipset Realtek ALC260). I'm on a Mandriva 2006. I've made a
-bugtrack to Mandriva, who gave me the latest developer versions kernels
-(2.6.12-15 (containing an hda patch) and 2.6.15), with no result. I've
-tried the Realtek drivers for linux (which had totally damaged the audio
-config and obliged me to reinstall the system), and the alsa drivers
-1.0.10 and 1.0.11rc2. I've still no sound. The dmidecode give me the same
-result : Status Disabled.
-Morigane
-
-----------------------------------------------------------------------
- er-ku - 01-06-06 18:38 
-----------------------------------------------------------------------
-interestingly though, one user has a dual boot system. For him, sound works
-well in Windows, and doesn't work in Linux, with the same status in
-dmidecode - disabled. Seems like it's not BIOS, but rather the driver that
-has to turn the device on...
+So... this is still happening with the latest kernel, only sometime around
+2.6.14 the rmmod trick stop working. Now I have to boot to winders first
+to get the hardware initialized.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-05 00:19 er-ku          New Issue                                    
-10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
-10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
-10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
-12-19-05 02:28 rlrevell       Note Added: 0007083                          
-12-24-05 03:28 OnO            Note Added: 0007139                          
-12-24-05 03:32 OnO            Note Added: 0007140                          
-12-26-05 17:06 er-ku          Note Added: 0007160                          
-12-26-05 17:07 er-ku          Note Edited: 0007160                         
-01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
-01-06-06 17:22 morigane       Note Added: 0007489                          
-01-06-06 18:38 er-ku          Note Added: 0007492                          
+08-14-05 08:31 cpx            New Issue                                    
+08-14-05 08:31 cpx            Distribution              => Slackware 10.0  
+08-14-05 08:31 cpx            Kernel Version            => 2.6.13-rc6      
+01-06-06 19:10 cpx            Note Added: 0007493                          
 ======================================================================
 
 
