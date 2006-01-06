@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001658]: Capture happens only on one channel
-Date: Sat, 7 Jan 2006 06:24:59 +0100
-Message-ID: <e2ec281e97a9ad4979983772b85c0f6f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
+Date: Fri, 6 Jan 2006 19:22:45 +0100
+Message-ID: <fa2c226830d9ccf6ed26b696642f132e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38626139
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 06:25:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9537710C
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 19:22:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,134 +24,112 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
 ======================================================================
-Reported By:                phil_troin
-Assigned To:                
+Reported By:                kees
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1658
-Category:                   PCI - intel8x0
+Issue ID:                   1678
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r2
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.15-rc6-git4
 ======================================================================
-Date Submitted:             12-18-2005 08:40 CET
-Last Modified:              01-07-2006 06:24 CET
+Date Submitted:             12-25-2005 02:29 CET
+Last Modified:              01-06-2006 19:22 CET
 ======================================================================
-Summary:                    Capture happens only on one channel
+Summary:                    nForce (10de:026c) left channel squeals, right
+channel mostly okay
 Description: 
-When I am playing a CD, if I capture the sound output via the capture
-channel OR the CD channel (amixer output attached), the captured sound is
-only one one channel (the right one) and is very distorted.
-The audio plays normally in stereo on the speakers.
+This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
+is this is an "nForce410" board, with "6-channel HD audio".
+
+Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
+snd-hda-intel load fine, but during playback, the left channel squeals,
+while the right seems to play things okay.
+
+I'm happy to dig around and try whatever needs trying to get this fixed. 
+Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- linuxbear - 12-18-05 12:02 
+ adel - 01-06-06 18:14 
 ----------------------------------------------------------------------
-I have the same issue.  My kernel is 2.6.14 with Con Kolivas ck5 patch. 
-nForce motherboard with intel8x0.... does not work, capture happens on one
-channel... tried every mixer setting.
+Hi,
 
-00:06.0 Multimedia audio controller: nVidia Corporation nForce2 AC97 Audio
-Controler (MCP) (rev a1)
-        Subsystem: Biostar Microtech Int'l Corp: Unknown device 8201
-        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 5
-        I/O ports at d400 [size=256]
-        I/O ports at d800 [size=128]
-        Memory at e0001000 (32-bit, non-prefetchable) [size=4K]
+I would like to confirm this bug on my ASUS A7N-VM CSM
+with SoundMax ADI AD1986A 5.1 integrated with the motherboard.
+I'm using Ubuntu Breezu, with kernel 2.6.14 .
+
+The system make a horrible noise (trying to play de gdm "welcome" sound)
+and after the sound driver seems to crash. However there is no messages in
+/var/log/messages or dmesg. But the modules are still loaded :
+
+snd_hda_intel snd_hda_codec snd_pcm_oss snd_mixer_oss, snd_pcm and
+snd_timer
+
+I applied successfully the patch :
+http://www.nabble.com/Intel-HDA-AD1986A-without-surround-t595968.html
+on alsa-driver-1.0.10.
+
+Now the sound seems stable with some litte strange noise (perhaps my
+speakers). 
+
+this is the lspci -nvv :
+0000:00:10.1 0403: 10de:026c (rev a2)
+        Subsystem: 10de:cb84
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0 (500ns min, 1250ns max)
+        Interrupt: pin B routed to IRQ 5
+        Region 0: Memory at febd8000 (32-bit, non-prefetchable)
+[size=16K]
         Capabilities: [44] Power Management version 2
-
-
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [6c] #08 [a802]
 
 ----------------------------------------------------------------------
- tgutwin - 01-07-06 06:24 
+ kees - 01-06-06 19:22 
 ----------------------------------------------------------------------
-Same issue here, plus a few others on the MythTV user list have the same
-symptoms after kernel and/or ALSA dirver updates.
+adel:
 
-Playback works fine
-Capture only gets one channel (Left).
-I can monitor the 2ch audio fine but when it gets recorded through Myth
-(or LiveTV which is also a capture and record process) it loses its right
-channel of audio with plain old analog 2 channel output.
-NO digital AC3 used here (yet)
+If what you're hearing sounds like static, I found notes here:
+http://lists.us.dell.com/pipermail/linux-precision/2005-September/000687.html
 
-I have gone through the alsa setup with a fine tooth comb. it looks
-correct.
-plus all audio and video apps outside of MythTV play back work correctly.
+Adding this to my modules.conf file fixed the problem:
 
-
-I have tried every mute/capture setting using a couple of different
-mixers.
-The problem persists.
-
-My system is a freshly built system specifically to be a home for
->>  AMD X2
->>  Asus A8N-e with onboard nvidia CK804/intel8x0
->>  Fedora core 4 built for x86_64
->>  with smp kernel 2.6.14-1.1653_FC4
->>  Alsa Version 1.0.10rc3  for kernel 2.6.14-1.1653_FC4smp (SMP)
-    From atrpms
-
-[root@dvr dev]# cd /proc
-[root@dvr proc]# cd asound
-[root@dvr asound]# ls
-card0  cards  CK804  devices  hwdep  modules  oss  pcm  seq  timers 
-version
-[root@dvr asound]# cat version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3.
-Compiled on Dec 14 2005 for kernel 2.6.14-1.1653_FC4smp (SMP).
-[root@dvr asound]# cat cards
-0 [CK804          ]: NFORCE - NVidia CK804
-                     NVidia CK804 with ALC850 at 0xc8103000, irq 50
-
-lsmod | grep snd
-snd_usb_audio          92160  0
-snd_usb_lib            21504  1 snd_usb_audio
-snd_rawmidi            32544  1 snd_usb_lib
-snd_hwdep              14624  1 snd_usb_audio
-snd_intel8x0           39848  1
-snd_ac97_codec        115516  1 snd_intel8x0
-snd_ac97_bus            6784  1 snd_ac97_codec
-snd_seq_dummy           8068  0
-snd_seq_oss            42596  0
-snd_seq_midi_event     12672  1 snd_seq_oss
-snd_seq                67288  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
-snd_seq_device         14224  4
-snd_rawmidi,snd_seq_dummy,snd_seq_oss,snd_seq
-snd_pcm_oss            61984  0
-snd_mixer_oss          22656  2 snd_pcm_oss
-snd_pcm               106888  4
-snd_usb_audio,snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              30344  2 snd_seq,snd_pcm
-snd                    69088  15
-snd_usb_audio,snd_usb_lib,snd_rawmidi,snd_hwdep,snd_intel8x0,snd_ac97_codec,snd_seq_dummy,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              16353  2 snd
-snd_page_alloc         15376  2 snd_intel8x0,snd_pcm
-
-
-There are other users that have reported the same issue.
-
-What other debugging can I do?
-I can send in amixer scontents, but I have enumerated all options.
+options snd-hda-intel position_fix=1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-18-05 08:40 phil_troin     New Issue                                    
-12-18-05 08:40 phil_troin     File Added: amixout                          
-12-18-05 08:40 phil_troin     Distribution              => Gentoo          
-12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
-12-18-05 12:00 linuxbear      Note Added: 0007071                          
-12-18-05 12:02 linuxbear      Note Edited: 0007071                         
-12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
-01-07-06 06:24 tgutwin        Note Added: 0007508                          
+12-25-05 02:29 kees           New Issue                                    
+12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
+12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
+12-26-05 11:02 kees           Note Added: 0007149                          
+12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
+12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:50 morgoth666     Note Added: 0007300                          
+12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
+12-31-05 10:16 kees           Note Added: 0007355                          
+12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
+12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
+01-04-06 17:40 tiwai          Note Added: 0007446                          
+01-04-06 17:56 kees           Note Added: 0007449                          
+01-06-06 18:14 adel           Note Added: 0007490                          
+01-06-06 19:22 kees           Note Added: 0007494                          
 ======================================================================
 
 
