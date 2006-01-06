@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Fri, 6 Jan 2006 17:17:56 +0100
-Message-ID: <3f90f5f7a628fffd78b5e331c54ddcf9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
+Date: Fri, 6 Jan 2006 18:15:39 +0100
+Message-ID: <61dc82690e1814a883319f7d11e484d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B7E5140
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 17:17:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FB9E13C
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 18:15:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,109 +24,139 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
 ======================================================================
-Reported By:                alien999999999
+Reported By:                kernel_bug
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
+Issue ID:                   59
 Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
+Reproducibility:            random
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Status:                     confirmed
+Distribution:               
+Kernel Version:             2.6.2
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              01-06-2006 17:17 CET
+Date Submitted:             02-13-2004 11:40 CET
+Last Modified:              01-06-2006 18:15 CET
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    On au8820 left and right channels are swapped
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
-
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
-
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
+In most cases, left and right channels are swapped. But in approx. 5% cases
+all OK. Looks like the matter is somewhere in byte alignment...
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000949 Randomly, left and right tracks are swaped
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-05-06 07:21 
+ Raymond - 08-27-05 04:43 
 ----------------------------------------------------------------------
-As your problem cannot be reproduced on my au8830.
+0:7c = 574d
+0:7e = 4c00
 
-Are you sure this change fix your au8810's hang ?
+You may need to upgrade to CVS since there is a patch for WM codecs.
 
-    for (i = 0; i < NR_ADB; i++) {
-            if (vortex->dma_adb[i].fifo_status == FIFO_START) {
-                if (vortex_adbdma_bufshift(vortex, i)) {
-                    spin_unlock(&vortex->lock);
-                    snd_pcm_period_elapsed(vortex->dma_adb[i].
-                               substream);
-                    spin_lock(&vortex->lock);
-                }
-            }
-    }
-    
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x773.htm#PCM-INTERFACE-INTERRUPT-HANDLER-BOTH
+This means you cannot just copy pci/ac97/*.*
+1) alsa-driver
+2) alsa-lib
+3) alsa-util
 
-WT seem to be driven by timer interrupt instead of FIFO interrupt.
+02:02.0 Class 0401: 12eb:0001 (rev 02)
+        Subsystem: 12eb:0001
+
+Is your Vortex card OEM ?
+
+http://portal.suse.com/sdb/en/2001/03/chofman_vortex.html
+
+Other user do not have your problem but his au8820 card use STAC9704 and
+your card use WM9701A. 
+
+The other user has WM9701A on his au8810.
+
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+
+
+Do you find "vortex: IRQ fifo error" in system log when you play sound ?
+
+http://lists.nongnu.org/archive/html/openvortex-dev/2005-03/msg00015.html
+
+Using "vortex_adbdma_stopfifo()" instead of "vortex_adbdma_pausefifo()"
+in snd_vortex_pcm_trigger() (ie. in the same way before au88x0 migrated
+from alsa-driver to alsa-kernel) seem to fix the front/rear channels swap
+when playing 4 channels sound on my au8830.
 
 ----------------------------------------------------------------------
- alien999999999 - 01-06-06 17:17 
+ Raymond - 01-06-06 18:15 
 ----------------------------------------------------------------------
-nono, i had to fix other things to get it working, i'll attach patch
+Please try to add the vortex_dump_route routine at the end of following
+routines:-
+1) vortex_connect_default()
+2) snd_vortex_pcm_hw_params()
+3) snd_vortex_pcm_hw_free() 
+
+and post the system log when the channels are swapped/normal.
+
+void vortex_dump_route(vortex_t * vortex)
+{
+     u32 addr,value;
+     u8  src,dest;
+     int i;
+     for (i=0; i<VORTEX_ADB_CHNBASE_COUNT; i++) {
+         addr=VORTEX_ADB_CHNBASE+i*4;
+         value=hwread(vortex->mmio,addr);
+         if ( value != ROUTE_MASK ) {
+  	     src=(value >>ADB_SHIFT)& ADB_MASK;
+	     dest=value & ADB_MASK;
+	     printk(KERN_INFO "%.8x adb_chnbase(%.2x) %.8x src=%.2x
+dest=%.2x\n",
+        		addr,i,value,src,dest);
+         };
+     };
+     for (addr=VORTEX_ADB_RTBASE; addr<VORTEX_ADB_CHNBASE; addr+=4) {
+         value=hwread(vortex->mmio,addr);
+         if ( value != ROUTE_MASK ) {
+  	     src=(value >>ADB_SHIFT)& ADB_MASK;
+	     dest=value & ADB_MASK;
+	     printk(KERN_INFO "%.8x adb_rtbase(%.2x)  %.8x src=%.2x
+dest=%.2x\n",
+        		addr,(addr-VORTEX_ADB_RTBASE)>>2,value,src,dest);
+         };
+     };
+     printk(KERN_INFO "---------------------------------\n");
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
+02-13-04 11:40 kernel_bug     New Issue                                    
+02-21-04 15:40 kernel_bug     Note Added: 0000280                          
+03-02-04 02:56 Tim            Note Added: 0000429                          
+04-09-04 11:54 kernel_bug     Note Added: 0000774                          
+04-09-04 18:35 mjander        Note Added: 0000777                          
+04-17-04 18:59 mjander        Status                   assigned => closed  
+04-17-04 18:59 mjander        Note Added: 0000849                          
+04-26-04 17:04 kernel_bug     Status                   closed => feedback  
+04-26-04 17:04 kernel_bug     Resolution               open => reopened    
+04-26-04 17:04 kernel_bug     Note Added: 0000953                          
+04-26-04 23:27 mjander        Note Added: 0000956                          
+03-10-05 15:31 jdthood        Note Added: 0003866                          
+03-10-05 16:44 mjander        Note Added: 0003867                          
+03-10-05 21:25 kernel_bug     Note Added: 0003873                          
+03-22-05 22:33 jdthood        Relationship added       related to 0000949  
+03-28-05 04:27 jdthood        Note Added: 0004235                          
+03-28-05 04:27 jdthood        Status                   feedback => assigned
+03-28-05 04:29 jdthood        Status                   assigned => confirmed
+08-26-05 14:50 Raymond        Note Added: 0005951                          
+08-26-05 15:12 kernel_bug     Note Added: 0005955                          
+08-26-05 16:07 Raymond        Note Added: 0005956                          
+08-26-05 17:38 kernel_bug     File Added: asound.state                     
+08-26-05 17:41 kernel_bug     Note Added: 0005957                          
+08-27-05 04:43 Raymond        Note Added: 0005959                          
+01-06-06 18:15 Raymond        Note Added: 0007491                          
 ======================================================================
 
 
