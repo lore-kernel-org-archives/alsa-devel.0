@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Fri, 6 Jan 2006 20:04:33 +0100
-Message-ID: <2622c06b17012b58a504b4a0f0aee005@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001274]: alc655: low volume
+Date: Fri, 6 Jan 2006 20:59:53 +0100
+Message-ID: <57fd80edc8fa3434b3fc5a7c6f4e3ece@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3F1313C
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 20:04:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E75BF134
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 20:59:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1274> 
 ======================================================================
-Reported By:                er-ku
+Reported By:                vitja
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1517
-Category:                   PCI - hda-intel
+Issue ID:                   1274
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-9-686
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              01-06-2006 20:04 CET
+Date Submitted:             07-22-2005 10:46 CEST
+Last Modified:              01-06-2006 20:59 CET
 ======================================================================
-Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
+Summary:                    alc655: low volume
 Description: 
-This will be very much like other reports around.
-
-Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
-Sound modules load silently, no complainments, alsamixer works and
-channels are unmuted, but I get absolutely no sound from speakers of
-headphones.
-
-I'm not the only one having this issue
-(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
-managed to google either didn't help me, or was simply unfinished (like
-forum questions that aren't answered).
-
-I tried the stock drivers provided by the Ubuntu kernel, then I tried
-1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
-all cases the result was the same - absolute silence.
-
+I have ATI IXP400 sound in my notebook. codec is realtek's alc655. The
+problem is I couldn't hear anything from internal speaker. When I plug
+earphones in I hear very-very low music signal, so driver actually works
+but. By the way under xp with realtek's drivers thats all right.. Is there
+a way to see dump of ac97's registers under xp? May be XP driver uses some
+proprietary features of alc655?
 ======================================================================
 
 ----------------------------------------------------------------------
- morigane - 01-06-06 19:56 
+ UnrealX - 01-05-06 14:46 
 ----------------------------------------------------------------------
-I've turned on Windows only one time before installing linux on my laptop
-and I had system sound a te boot of the system, so the sound worked under
-windows. I think too that it's a problem of activation of the card by the
-driver. I will write to Realtek to expose them the problem.
+I`ve upgraded to 1.0.11rc2, still no sound.
+I`m attaching my asound.state and ac97#0-0+regs.
 
 ----------------------------------------------------------------------
- eudoxos - 01-06-06 20:04 
+ UnrealX - 01-06-06 20:59 
 ----------------------------------------------------------------------
-Sorry to add more to the scream that it does not work. Same here, Acer
-TravelMate 4061. Under windows fine. Same dmi output. ICH6 chipset, kernel
-2.6.15-notfinal (that is, -10 ubuntu) and packed alsa drivers.
+Umm bump?..
+
+I still can`t get my soundcard to work.
+I have started a thread @ linuxquestions, it includes much more
+information about my system.
+http://www.linuxquestions.org/questions/showthread.php?p=2032972
+
+Maybe anybody could give me a hint what`s wrong?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-05 00:19 er-ku          New Issue                                    
-10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
-10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
-10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
-12-19-05 02:28 rlrevell       Note Added: 0007083                          
-12-24-05 03:28 OnO            Note Added: 0007139                          
-12-24-05 03:32 OnO            Note Added: 0007140                          
-12-26-05 17:06 er-ku          Note Added: 0007160                          
-12-26-05 17:07 er-ku          Note Edited: 0007160                         
-01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
-01-06-06 17:22 morigane       Note Added: 0007489                          
-01-06-06 18:38 er-ku          Note Added: 0007492                          
-01-06-06 19:39 rlrevell       Note Added: 0007495                          
-01-06-06 19:46 er-ku          Note Added: 0007496                          
-01-06-06 19:56 morigane       Note Added: 0007497                          
-01-06-06 20:04 eudoxos        Note Added: 0007498                          
+07-22-05 10:46 vitja          New Issue                                    
+07-22-05 20:32 vitja          File Added: codec                            
+07-24-05 22:19 vitja          Note Added: 0005560                          
+07-29-05 18:01 tiwai          Note Added: 0005583                          
+07-30-05 09:11 vitja          Note Added: 0005591                          
+01-04-06 12:24 UnrealX        Note Added: 0007414                          
+01-04-06 12:25 UnrealX        Note Edited: 0007414                         
+01-04-06 12:47 vitja          Note Added: 0007415                          
+01-04-06 17:02 tiwai          Note Added: 0007433                          
+01-05-06 14:44 UnrealX        Issue Monitored: UnrealX                     
+01-05-06 14:44 UnrealX        Issue End Monitor: UnrealX                    
+01-05-06 14:46 UnrealX        Note Added: 0007470                          
+01-05-06 14:46 UnrealX        File Added: asound.state                     
+01-05-06 14:47 UnrealX        File Added: ac97#0-0+regs                    
+01-06-06 20:59 UnrealX        Note Added: 0007499                          
 ======================================================================
 
 
