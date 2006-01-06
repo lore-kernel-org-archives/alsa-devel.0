@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Fri, 6 Jan 2006 19:56:27 +0100
-Message-ID: <520670e6641866d1fe9766a05ae35bc3@bugtrack.alsa-project.org>
+Date: Fri, 6 Jan 2006 20:04:33 +0100
+Message-ID: <2622c06b17012b58a504b4a0f0aee005@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8F6613C
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 19:56:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3F1313C
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 20:04:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Breezy
 Kernel Version:             2.6.12-9-686
 ======================================================================
 Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              01-06-2006 19:56 CET
+Last Modified:              01-06-2006 20:04 CET
 ======================================================================
 Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
 Description: 
@@ -63,18 +63,19 @@ all cases the result was the same - absolute silence.
 ======================================================================
 
 ----------------------------------------------------------------------
- er-ku - 01-06-06 19:46 
-----------------------------------------------------------------------
-strange. One user of a laptop of the same model as mine said he had the
-sound in Linux. I haven't heard anything more detailed from him though....
-
-----------------------------------------------------------------------
  morigane - 01-06-06 19:56 
 ----------------------------------------------------------------------
 I've turned on Windows only one time before installing linux on my laptop
 and I had system sound a te boot of the system, so the sound worked under
 windows. I think too that it's a problem of activation of the card by the
 driver. I will write to Realtek to expose them the problem.
+
+----------------------------------------------------------------------
+ eudoxos - 01-06-06 20:04 
+----------------------------------------------------------------------
+Sorry to add more to the scream that it does not work. Same here, Acer
+TravelMate 4061. Under windows fine. Same dmi output. ICH6 chipset, kernel
+2.6.15-notfinal (that is, -10 ubuntu) and packed alsa drivers.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +95,7 @@ Date Modified  Username       Field                    Change
 01-06-06 19:39 rlrevell       Note Added: 0007495                          
 01-06-06 19:46 er-ku          Note Added: 0007496                          
 01-06-06 19:56 morigane       Note Added: 0007497                          
+01-06-06 20:04 eudoxos        Note Added: 0007498                          
 ======================================================================
 
 
