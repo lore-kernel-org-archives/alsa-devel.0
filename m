@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001274]: alc655: low volume
-Date: Fri, 6 Jan 2006 20:59:53 +0100
-Message-ID: <57fd80edc8fa3434b3fc5a7c6f4e3ece@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: simple PCM helper function
+Date: Fri, 6 Jan 2006 21:10:26 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0601062102080.10811@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E75BF134
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 20:59:53 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 579B5139
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 21:10:27 +0100 (MET)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 2916099018
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 21:10:27 +0100 (MET)
+Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
+	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 0CC652E03F
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 21:10:27 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +23,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1274> 
-======================================================================
-Reported By:                vitja
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1274
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             07-22-2005 10:46 CEST
-Last Modified:              01-06-2006 20:59 CET
-======================================================================
-Summary:                    alc655: low volume
-Description: 
-I have ATI IXP400 sound in my notebook. codec is realtek's alc655. The
-problem is I couldn't hear anything from internal speaker. When I plug
-earphones in I hear very-very low music signal, so driver actually works
-but. By the way under xp with realtek's drivers thats all right.. Is there
-a way to see dump of ac97's registers under xp? May be XP driver uses some
-proprietary features of alc655?
-======================================================================
+	I added three functions to alsa-lib - PCM API:
 
-----------------------------------------------------------------------
- UnrealX - 01-05-06 14:46 
-----------------------------------------------------------------------
-I`ve upgraded to 1.0.11rc2, still no sound.
-I`m attaching my asound.state and ac97#0-0+regs.
+/*
+ * application helpers - these functions are implemented on top
+ * of the basic API
+ */
 
-----------------------------------------------------------------------
- UnrealX - 01-06-06 20:59 
-----------------------------------------------------------------------
-Umm bump?..
+int snd_pcm_recover(snd_pcm_t *pcm, int err, int silent);
+int snd_pcm_set_params(snd_pcm_t *pcm,
+                       snd_pcm_format_t format,
+                       snd_pcm_access_t access,
+                       unsigned int channels,
+                       unsigned int rate,
+                       int soft_resample,
+                       unsigned int latency);
+int snd_pcm_get_params(snd_pcm_t *pcm,
+                       snd_pcm_uframes_t *buffer_size,
+                       snd_pcm_uframes_t *period_size);
 
-I still can`t get my soundcard to work.
-I have started a thread @ linuxquestions, it includes much more
-information about my system.
-http://www.linuxquestions.org/questions/showthread.php?p=2032972
+	These functions are intended for "lazy" people who are doing just 
+simple command line players or recorders and don't want to bother with
+the ALSA details. The implementation comes from strong attitude against
+alsa-lib on LKML by some people.
+	Please, look to them and tell me, if I missed something useable.
+The really "minimalistic" example using these functions is in 
+alsa-lib/test/pcm_min.c (compile the code typing 'make pcm_min' in the 
+test directory).
 
-Maybe anybody could give me a hint what`s wrong?
+						Jaroslav
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-22-05 10:46 vitja          New Issue                                    
-07-22-05 20:32 vitja          File Added: codec                            
-07-24-05 22:19 vitja          Note Added: 0005560                          
-07-29-05 18:01 tiwai          Note Added: 0005583                          
-07-30-05 09:11 vitja          Note Added: 0005591                          
-01-04-06 12:24 UnrealX        Note Added: 0007414                          
-01-04-06 12:25 UnrealX        Note Edited: 0007414                         
-01-04-06 12:47 vitja          Note Added: 0007415                          
-01-04-06 17:02 tiwai          Note Added: 0007433                          
-01-05-06 14:44 UnrealX        Issue Monitored: UnrealX                     
-01-05-06 14:44 UnrealX        Issue End Monitor: UnrealX                    
-01-05-06 14:46 UnrealX        Note Added: 0007470                          
-01-05-06 14:46 UnrealX        File Added: asound.state                     
-01-05-06 14:47 UnrealX        File Added: ac97#0-0+regs                    
-01-06-06 20:59 UnrealX        Note Added: 0007499                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
