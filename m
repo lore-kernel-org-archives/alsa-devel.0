@@ -1,19 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: simple PCM helper function
-Date: Fri, 6 Jan 2006 21:10:26 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0601062102080.10811@tm8103.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001721]: Alsa 1.0.10 & 1.0.11rc2: STAC_9223 unsupported/errors, only oss-emulation works with 2 channels
+Date: Fri, 6 Jan 2006 15:19:56 +0100
+Message-ID: <e4e80af3ee10fce5aa3c3a89ab743e49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 579B5139
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 21:10:27 +0100 (MET)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 2916099018
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 21:10:27 +0100 (MET)
-Received: from tm8103.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 0CC652E03F
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 21:10:27 +0100 (CET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38AAB13F
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 15:19:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,45 +18,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-	I added three functions to alsa-lib - PCM API:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1721> 
+======================================================================
+Reported By:                oslo
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1721
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.14-gentoo-r5 #18 SMP PREEMPT
+======================================================================
+Date Submitted:             01-06-2006 15:19 CET
+Last Modified:              01-06-2006 15:19 CET
+======================================================================
+Summary:                    Alsa 1.0.10 & 1.0.11rc2: STAC_9223
+unsupported/errors, only oss-emulation works with 2 channels
+Description: 
+As in summary, alsa 1.0.11rc2 works not at all, alsa-kernel 1.0.10 only
+with oss-emulation and 2 channel stereo.
 
-/*
- * application helpers - these functions are implemented on top
- * of the basic API
- */
+My Board is an 
+Intel Desktop Board D945PVS with 7.1 Surround Sound (Sigmatel 9223)with 5
+analog jacks in the back, 2 on the board (Front Panel) and a digital jack
+in the back.
 
-int snd_pcm_recover(snd_pcm_t *pcm, int err, int silent);
-int snd_pcm_set_params(snd_pcm_t *pcm,
-                       snd_pcm_format_t format,
-                       snd_pcm_access_t access,
-                       unsigned int channels,
-                       unsigned int rate,
-                       int soft_resample,
-                       unsigned int latency);
-int snd_pcm_get_params(snd_pcm_t *pcm,
-                       snd_pcm_uframes_t *buffer_size,
-                       snd_pcm_uframes_t *period_size);
+The mixer shows only a "Front" (somtimes a "Headphones" on 1.0.11rc2)
+device.
 
-	These functions are intended for "lazy" people who are doing just 
-simple command line players or recorders and don't want to bother with
-the ALSA details. The implementation comes from strong attitude against
-alsa-lib on LKML by some people.
-	Please, look to them and tell me, if I missed something useable.
-The really "minimalistic" example using these functions is in 
-alsa-lib/test/pcm_min.c (compile the code typing 'make pcm_min' in the 
-test directory).
+When starting "aplay" i get:
+  ALSA lib pcm_direct.c:783:(snd_pcm_direct_initialize_slave)
+snd_pcm_hw_params_any failed
+  ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
+  aplay: main:544: audio open error: Invalid argument
 
-						Jaroslav
+also on every other alsa using software
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+I'v taken a look into the "[cvs/1.0.11rc2] patch_sigmatel.c" and there
+probably should be something like (After Line 277):
+        { .pci_subvendor = PCI_VENDOR_ID_INTEL,
+          .pci_subdevice = 0x0707,
+          .config = STAC_D945GTP5 },    /* Intel D945PVS - 5 Stack */
+
+but for me this changed nothing... 
+
+The output of lspci is appended.
+
+I hope this is enough information, if not tell me what you need.
+
+PS: For me this is a major bug, butunsupported cards are generally
+features?
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-06-06 15:19 oslo           New Issue                                    
+01-06-06 15:19 oslo           File Added: intel_hda_stac9223.txt                
+   
+01-06-06 15:19 oslo           Distribution              => Gentoo Linux    
+01-06-06 15:19 oslo           Kernel Version            => 2.6.14-gentoo-r5 #18
+SMP PREEMPT
+======================================================================
+
+
 
 
 -------------------------------------------------------
