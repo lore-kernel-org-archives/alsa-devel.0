@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Fri, 6 Jan 2006 19:39:44 +0100
-Message-ID: <c08db9d6948782db3d4950bdde577330@bugtrack.alsa-project.org>
+Date: Fri, 6 Jan 2006 19:56:27 +0100
+Message-ID: <520670e6641866d1fe9766a05ae35bc3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9646213C
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 19:39:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8F6613C
+	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 19:56:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Breezy
 Kernel Version:             2.6.12-9-686
 ======================================================================
 Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              01-06-2006 19:39 CET
+Last Modified:              01-06-2006 19:56 CET
 ======================================================================
 Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
 Description: 
@@ -63,21 +63,18 @@ all cases the result was the same - absolute silence.
 ======================================================================
 
 ----------------------------------------------------------------------
- er-ku - 01-06-06 18:38 
+ er-ku - 01-06-06 19:46 
 ----------------------------------------------------------------------
-interestingly though, one user has a dual boot system. For him, sound works
-well in Windows, and doesn't work in Linux, with the same status in
-dmidecode - disabled. Seems like it's not BIOS, but rather the driver that
-has to turn the device on...
+strange. One user of a laptop of the same model as mine said he had the
+sound in Linux. I haven't heard anything more detailed from him though....
 
 ----------------------------------------------------------------------
- rlrevell - 01-06-06 19:39 
+ morigane - 01-06-06 19:56 
 ----------------------------------------------------------------------
-AFAIK all features of the Realtek driver were merged into the ALSA driver
-recently so there should be no difference.
-
-If Realtek's own driver does not work maybe you can report the problem to
-them.
+I've turned on Windows only one time before installing linux on my laptop
+and I had system sound a te boot of the system, so the sound worked under
+windows. I think too that it's a problem of activation of the card by the
+driver. I will write to Realtek to expose them the problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +92,8 @@ Date Modified  Username       Field                    Change
 01-06-06 17:22 morigane       Note Added: 0007489                          
 01-06-06 18:38 er-ku          Note Added: 0007492                          
 01-06-06 19:39 rlrevell       Note Added: 0007495                          
+01-06-06 19:46 er-ku          Note Added: 0007496                          
+01-06-06 19:56 morigane       Note Added: 0007497                          
 ======================================================================
 
 
