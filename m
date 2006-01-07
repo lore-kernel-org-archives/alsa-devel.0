@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
-Date: Sat, 7 Jan 2006 03:58:40 +0100
-Message-ID: <4774e98b15c0f0efb2e81078752c3a35@bugtrack.alsa-project.org>
+Date: Sat, 7 Jan 2006 04:04:46 +0100
+Message-ID: <2a4b350be215896aa6af34ef503e302d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 811AE13A
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 03:58:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16D9D13A
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 04:04:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian sarge 3.1
 Kernel Version:             2.6.13-rc7
 ======================================================================
 Date Submitted:             11-12-2005 10:58 CET
-Last Modified:              01-07-2006 03:58 CET
+Last Modified:              01-07-2006 04:04 CET
 ======================================================================
 Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
 stream" : inopportune small pauses while playing
@@ -53,15 +53,6 @@ occur
 the playing doesn't stop, it continue well, just a small pause
 i have no other messages in `dmesg` or in syslog
 ======================================================================
-
-----------------------------------------------------------------------
- sashak - 01-07-06 02:14 
-----------------------------------------------------------------------
-You may try larger period_size and of course more than just one period to
-prevent underruns (perdiod_size should be <= buffer_size/2 ).
-
-BTW did you try default ALSA config (without .asoundrc)? Default settings
-are reasonable for many cases.
 
 ----------------------------------------------------------------------
  moncnam - 01-07-06 03:58 
@@ -123,6 +114,27 @@ kcontrol)
 thank you, it's enought for tonight, enjoy weekend, bye 
 thanks for support
 
+----------------------------------------------------------------------
+ moncnam - 01-07-06 04:04 
+----------------------------------------------------------------------
+i don't know why but : 
+- wsoundserver does need a period_time (now it is 1024)
+- esd fail launching when period_size = 4096 and buffer_size = 16384 with
+the following message : 
+<<
+ste@station:~/tmp$ esd
+- server format: sample rate = 48000 Hz
+Audio device open for 44.1Khz, stereo, 16bit failed
+Trying 44.1Khz, 8bit stereo.
+Audio device open for 44.1Khz, stereo, 8bit failed
+Trying 48Khz, 16bit stereo.
+Audio device open for 48Khz, stereo,16bit failed
+Trying 22.05Khz, 8bit stereo.
+Audio device open for 22.05Khz, stereo, 8bit failed
+Trying 44.1Khz, 16bit mono.
+>>
+and so one for every possibility
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -137,6 +149,7 @@ Date Modified  Username       Field                    Change
 01-04-06 22:38 moncnam        Note Added: 0007456                          
 01-07-06 02:14 sashak         Note Added: 0007503                          
 01-07-06 03:58 moncnam        Note Added: 0007505                          
+01-07-06 04:04 moncnam        Note Added: 0007506                          
 ======================================================================
 
 
