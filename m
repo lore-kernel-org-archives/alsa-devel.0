@@ -1,17 +1,18 @@
-From: Doctor <kvajk@giosala.com>
-Subject: The Ultimate Online Pharmaceutical
-Date: Sat, 07 Jan 2006 19:12:56 -0500
-Message-ID: <0854498231.20060107191256@giosala.com>
+From: Dave Raggett <dsr@w3.org>
+Subject: Conditionally compiling for 1.0.9 and later ?
+Date: Sat, 7 Jan 2006 11:38:08 +0000 (GMT)
+Message-ID: <Pine.LNX.4.61.0601071129490.14151@holly>
+References: <Pine.LNX.4.61.0601062102080.10811@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----------8D888B6210D2815"
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -1210108456 (81-202-217-123.user.ono.com [81.202.217.123])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4F53613D
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 12:07:37 +0100 (MET)
-Received: from giosala.com (-1209141328 [-1209156248])
-	by 81-202-217-123.user.ono.com (Qmailv1) with ESMTP id C2B4F6A6B5
-	for <alsa-devel@alsa-project.org>; Sat, 07 Jan 2006 19:12:56 -0500
+Received: from homer.w3.org (homer.w3.org [128.30.52.30])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E82E13A
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 12:37:57 +0100 (MET)
+Received: from localhost (homer.w3.org [128.30.52.30])
+	by homer.w3.org (Postfix) with ESMTP id 0A7A34F16C
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 06:37:55 -0500 (EST)
+In-Reply-To: <Pine.LNX.4.61.0601062102080.10811@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,72 +22,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-------------8D888B6210D2815
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+I am looking for advice on the best way to conditionally
+compile application code to use hardware resampling for
+ALSA when this is available. One possible approach is to
+do an #ifdef on SNDRV_PCM_HW_PARAMS_NORESAMPLE as show
+below, but is there a better way?
 
-Vldagra $3.3
-Lelvitra $3.3
-Cipalis $3.7
-Imiitrex $16.4
-Floemax $2.2
-Ulthram $0.78
-Vicoxx $4.75
-Amfbien $2.2
-Valibum $0.97 
-Xahnax $1.09
-Somta $3
-Merbidia $2.2  
+#ifdef SNDRV_PCM_HW_PARAMS_NORESAMPLE
+   /* set hardware resampling */
+   err = snd_pcm_hw_params_set_rate_resample(handle,
+                                params, resample);
+   if (err < 0)
+   {
+     printf("Resampling setup failed for playback: %s\n",
+                                snd_strerror(err));
+     return err;
+   }
+#endif
 
+p.s. I understand that snd_pcm_hw_params_set_rate_resample()
+was first introduced in version 1.0.9 and found that
+SNDRV_PCM_HW_PARAMS_NORESAMPLE first appeared in that version.
+My goal is allow my code to compile with earlier versions of
+ALSA when so needed.
 
-visit our website
-http://hollysmurals.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+Many thanks,
+- -- 
+  Dave Raggett <dsr@w3.org>  W3C lead for multimodal interaction
+  http://www.w3.org/People/Raggett +44 1225 866240 (or 867351)
 
-___
-Best regards,
-Online Pharmaceuticals
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-etuuimfdsgj UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-
-------------8D888B6210D2815
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<b>Vlmagra - $3.3 <br>
-Lewvitra - $3.3<br>
-Cinalis - $3.7<br>
-Imiotrex - $16.4<br>
-Floumax - $2.2<br>
-Ultwram - $0.78<br>
-Vitoxx - $4.75 <br>
-Amzbien - $2.2<br>
-Valijum - $0.97 <br>
-Xadnax - $1.09<br>
-Somoa - $3 <br>
-Meraidia - $2.2</b><br>
-<br>
-  <br>
-  <a href="http://hollysmurals.com/?YLRYEXUF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV"><strong>visit our website</strong></a><br>
-  <br>
-   <br>
-  Best regards,<br>
-  Online Pharmaceuticals 
-<br>
-   <br>
-etuuimfdsgj UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
-</body>
-</html>
-
-------------8D888B6210D2815--
-
-
+iD8DBQFDv6glb3AdEmxAsUsRAgUOAKC2ErZLNeCUw5pvd2XgTatNM5O4+wCg4udi
+tA6hKBXy77dMokISn+tJmrU=
+=ODw7
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
