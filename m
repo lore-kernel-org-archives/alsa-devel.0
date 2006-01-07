@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
-Date: Sat, 7 Jan 2006 21:10:05 +0100
-Message-ID: <ed3ce3746117c6409b64bead118bf11e@bugtrack.alsa-project.org>
+Date: Sat, 7 Jan 2006 21:28:56 +0100
+Message-ID: <14394c699c36fcb0868de024a699702d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A76E116
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 21:10:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D89CF116
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 21:28:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian sarge 3.1
 Kernel Version:             2.6.13-rc7
 ======================================================================
 Date Submitted:             11-12-2005 10:58 CET
-Last Modified:              01-07-2006 21:10 CET
+Last Modified:              01-07-2006 21:28 CET
 ======================================================================
 Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
 stream" : inopportune small pauses while playing
@@ -53,16 +53,6 @@ occur
 the playing doesn't stop, it continue well, just a small pause
 i have no other messages in `dmesg` or in syslog
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-07-06 20:54 
-----------------------------------------------------------------------
-/proc/asound/version only tells you the version of the ALSA kernel drivers.
- You need to make sure your alsa-lib packages are also at least 1.0.9.
-
-What is the output of:
-
-grep -l dmix /usr/share/alsa/cards/*
 
 ----------------------------------------------------------------------
  moncnam - 01-07-06 21:10 
@@ -178,6 +168,12 @@ perhaps
 you can still ask me things if you like
 see you
 
+----------------------------------------------------------------------
+ rlrevell - 01-07-06 21:28 
+----------------------------------------------------------------------
+Yeah I'm afraid you may have to choose between stability and functionality
+here.  Many, many dmix bugs have been fixed since ALSA 1.0.8.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -197,6 +193,7 @@ Date Modified  Username       Field                    Change
 01-07-06 16:57 moncnam        Note Added: 0007516                          
 01-07-06 20:54 rlrevell       Note Added: 0007519                          
 01-07-06 21:10 moncnam        Note Added: 0007521                          
+01-07-06 21:28 rlrevell       Note Added: 0007522                          
 ======================================================================
 
 
