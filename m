@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001697]: Sound does not work
-Date: Sat, 7 Jan 2006 01:26:01 +0100
-Message-ID: <3a56ca4e05d11a02a5d584e27feb51b8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
+Date: Sat, 7 Jan 2006 01:56:01 +0100
+Message-ID: <5a81252539a1ae7b603deaca0b78187e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD3FA128
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 01:26:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D08913A
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 01:56:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1697> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
 ======================================================================
-Reported By:                rkoenig
+Reported By:                guido
 Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1697
+Issue ID:                   1694
 Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               doesn't matter
-Kernel Version:             doesn't matter
+Distribution:               Debian "Sarge" with kernel and alsa from "SID"
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             01-01-2006 10:27 CET
-Last Modified:              01-07-2006 01:26 CET
+Date Submitted:             12-29-2005 22:43 CET
+Last Modified:              01-07-2006 01:56 CET
 ======================================================================
-Summary:                    Sound does not work
+Summary:                    snd-intel8x0m unable to initialize the Modem device
+ICH6
 Description: 
-The SiS 7012 based sound controllers on all the mainboards of Fujitsu
-Siemens Computers refuse to work. 
+Dear Maintainer and Reader,
 
-The reason is that the hardware setup is done in a way so that the codec
-is the tertiary codec. Problem is that during initialisation the
-snd_intel8x0 driver checks the ready bit for the tertiary codec on bit 28
-of the global status register, but on SiS 7012 the codec ready status is
-set in bit 18. But even fixing that in source doesn't help much because
-the driver has to many branches that are depending on the chip type
-(INTEL, SIS, whatever) so that I get a codec ready, but then subsequent
-errors from the codecs.
+I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
+I found a lot of things recommended in different Mailing lists and blogs
+but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
+kernel Version 2.6.14 with source from Debian "SID".
+The current status is that two modules are loaded during boot,
+snd-intel8x0 and snd-intel8x0m. When both modules are loaded
+the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
+works fine.
+If I additionally load module snd-intel8x0m sound does not work anymore
+and error messages in syslog are printed.
+So I think the error messages are a buck in the snd-intel8x0m module.
+There is no /proc/asound/Modem present when I load the snd-intel8x0m
+module.
 
+In the "Additional Information" Section I paste some debugging output.
 
+Regards
+Guido
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 01-07-06 01:26 
+ sashak - 01-07-06 01:56 
 ----------------------------------------------------------------------
-You are about sound (intel8x0) and not modem (intel8x0m) driver? (This
-report was opened for intel8x0m - modem driver).
+I think there is Conexant's AMC (audio/modem codec) - CXT30, Conexant modem
+codecs  are not supported by intel8x0m (due to lack of docs), so this will
+not be helpful anyway.
 
-About the problem itself. Is this general feature(s) of SiS7012 or
-something specific for FS machines (AFAIK SiS7012 data sheet is not
-published)? Which errors do you have after ICH_TCR redefine?
-
-And about driver split I think it is not needed just because different
-ICH_TCR values - this may be solved in current driver. And anyway I don't
-have reference hardware.
+Of course intel8x0m driver loading sould not lead to problems with sound.
+This problem may be investigated. If you are with recent version of
+alsa-driver could you send output of 'dmesg' after snd-intel8x0m loading?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-01-06 10:27 rkoenig        New Issue                                    
-01-01-06 10:27 rkoenig        Distribution              => doesn't matter  
-01-01-06 10:27 rkoenig        Kernel Version            => doesn't matter  
-01-07-06 01:26 sashak         Note Added: 0007500                          
+12-29-05 22:43 guido          New Issue                                    
+12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
+kernel and alsa from "SID"
+12-29-05 22:43 guido          Kernel Version            => 2.6.14          
+01-03-06 20:51 guido          Issue Monitored: guido                       
+01-07-06 01:56 sashak         Note Added: 0007501                          
 ======================================================================
 
 
