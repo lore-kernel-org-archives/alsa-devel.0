@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001722]: aplay deadlocks
-Date: Sat, 7 Jan 2006 09:00:50 +0100
-Message-ID: <df2143cf86ac41a227c61d97d5bb5299@bugtrack.alsa-project.org>
+Date: Sat, 7 Jan 2006 09:01:05 +0100
+Message-ID: <5c820e33657b33a06c6f7fb8b0d39b75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39C0113C
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 09:00:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B275513C
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 09:01:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1722> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-07-2006 03:25 CET
-Last Modified:              01-07-2006 09:00 CET
+Last Modified:              01-07-2006 09:01 CET
 ======================================================================
 Summary:                    aplay deadlocks
 Description: 
@@ -70,6 +72,7 @@ Date Modified  Username       Field                    Change
 01-07-06 03:25 erador         New Issue                                    
 01-07-06 03:26 erador         Issue Monitored: erador                      
 01-07-06 09:00 rlrevell       Note Added: 0007510                          
+01-07-06 09:01 rlrevell       Status                   new => closed       
 ======================================================================
 
 
