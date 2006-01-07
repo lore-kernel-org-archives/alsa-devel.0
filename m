@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Fri, 6 Jan 2006 19:46:53 +0100
-Message-ID: <e9a15db4d9d7678cb3938c90c366f326@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: re: Envy24control -changes on screen
+Date: Sat, 7 Jan 2006 00:51:58 +0000
+Message-ID: <200601070051.12458.gineera@aspect135.co.uk>
+References: <200512162315.43124.gineera@aspect135.co.uk> <s5hoe2smc6h.wl%tiwai@suse.de> <200601061001.38397.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_uCxvDnktDmMTaL9"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6886913C
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 19:46:53 +0100 (MET)
+In-Reply-To: <200601061001.38397.gineera@aspect135.co.uk>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +18,161 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
-======================================================================
-Reported By:                er-ku
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1517
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-9-686
-======================================================================
-Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              01-06-2006 19:46 CET
-======================================================================
-Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
-Description: 
-This will be very much like other reports around.
+--Boundary-00=_uCxvDnktDmMTaL9
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
-Sound modules load silently, no complainments, alsamixer works and
-channels are unmuted, but I get absolutely no sound from speakers of
-headphones.
+On Friday 06 January 2006 10:01, I wrote:
+> On Wednesday 04 January 2006 12:04, you wrote:
+> > > Thanks to you also.
+> > > Will this result in envy24control version number being raised?  It has
+> > > been at 0.5.0 since at least alsa1.0.8?
+> >
+> > That makes sense.
+> >
+> > Could you create a patch together with replacements of
+> > GTK_POLICY_AUTOMATIC?
+> >
+> >
+> > Takashi
+>
+> What should new envy24control version be - '0.5.2' or '0.6.0', or something
+> else?
+> GTK_POLICY_AUTOMATIC part is ready to post.
 
-I'm not the only one having this issue
-(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
-managed to google either didn't help me, or was simply unfinished (like
-forum questions that aren't answered).
+Later I thought I may as well send this patch, as you can change it to 
+whatever version number is prefered -I've done 0.6.0.  The part in configure 
+is presumably not essential since it is re-generated from configure.in?  
 
-I tried the stock drivers provided by the Ubuntu kernel, then I tried
-1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
-all cases the result was the same - absolute silence.
+Really wouldn't it be better to have the version just set in one place?  
+Ideally, I would have thought, at every stable alsa release the minor version 
+number would increase if there have been changes to that program, so a user 
+can tell if he is compiling a different binary?
 
-======================================================================
+Alan
 
-----------------------------------------------------------------------
- rlrevell - 01-06-06 19:39 
-----------------------------------------------------------------------
-AFAIK all features of the Realtek driver were merged into the ALSA driver
-recently so there should be no difference.
+Summary: Change scroll policy in envy24control
 
-If Realtek's own driver does not work maybe you can report the problem to
-them.
+Change gtk scroll policy for the main notebook pages in envy24control from 
+ALWAYS to AUTOMATIC;  also raise envy24control version.
 
-----------------------------------------------------------------------
- er-ku - 01-06-06 19:46 
-----------------------------------------------------------------------
-strange. One user of a laptop of the same model as mine said he had the
-sound in Linux. I haven't heard anything more detailed from him though....
+Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-31-05 00:19 er-ku          New Issue                                    
-10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
-10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
-10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
-12-19-05 02:28 rlrevell       Note Added: 0007083                          
-12-24-05 03:28 OnO            Note Added: 0007139                          
-12-24-05 03:32 OnO            Note Added: 0007140                          
-12-26-05 17:06 er-ku          Note Added: 0007160                          
-12-26-05 17:07 er-ku          Note Edited: 0007160                         
-01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
-01-06-06 17:22 morigane       Note Added: 0007489                          
-01-06-06 18:38 er-ku          Note Added: 0007492                          
-01-06-06 19:39 rlrevell       Note Added: 0007495                          
-01-06-06 19:46 er-ku          Note Added: 0007496                          
-======================================================================
+--Boundary-00=_uCxvDnktDmMTaL9
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="e24c-1.0.10-AHmod3.7d.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="e24c-1.0.10-AHmod3.7d.patch"
 
+diff -ru Denvy24control/configure Aenvy24control/configure
+--- Denvy24control/configure	2005-11-16 17:15:47.000000000 +0000
++++ Aenvy24control/configure	2006-01-06 23:52:22.000000000 +0000
+@@ -1509,7 +1509,7 @@
+ 
+ # Define the identity of the package.
+  PACKAGE=envy24control
+- VERSION=0.5.0
++ VERSION=0.6.0
+ 
+ 
+ cat >>confdefs.h <<_ACEOF
+diff -ru Denvy24control/configure.in Aenvy24control/configure.in
+--- Denvy24control/configure.in	2004-05-16 14:36:30.000000000 +0100
++++ Aenvy24control/configure.in	2006-01-06 23:47:56.000000000 +0000
+@@ -1,5 +1,5 @@
+ AC_INIT(envy24control.c)
+-AM_INIT_AUTOMAKE(envy24control, 0.5.0)
++AM_INIT_AUTOMAKE(envy24control, 0.6.0)
+ AC_PROG_CC
+ AC_PROG_INSTALL
+ AC_HEADER_STDC
+diff -ru Denvy24control/configure.in-gtk2 Aenvy24control/configure.in-gtk2
+--- Denvy24control/configure.in-gtk2	2004-05-16 14:36:30.000000000 +0100
++++ Aenvy24control/configure.in-gtk2	2006-01-06 23:41:49.000000000 +0000
+@@ -1,5 +1,5 @@
+ AC_INIT(envy24control.c)
+-AM_INIT_AUTOMAKE(envy24control, 0.5.0)
++AM_INIT_AUTOMAKE(envy24control, 0.6.0)
+ AC_PROG_CC
+ AC_PROG_INSTALL
+ AC_HEADER_STDC
+diff -ru Denvy24control/envy24control.c Aenvy24control/envy24control.c
+--- Denvy24control/envy24control.c	2006-01-04 17:12:56.000000000 +0000
++++ Aenvy24control/envy24control.c	2006-01-04 22:43:18.000000000 +0000
+@@ -308,7 +303,7 @@
+ 	gtk_widget_show(scrolledwindow);
+ 	gtk_box_pack_start(GTK_BOX(hbox), scrolledwindow, TRUE, TRUE, 0);
+ 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow),
+-					GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
++					GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+ 
+ 	viewport = gtk_viewport_new(NULL, NULL);
+ 	gtk_widget_show(viewport);
+@@ -361,7 +356,7 @@
+ 	gtk_widget_show(scrolledwindow);
+ 	gtk_box_pack_start(GTK_BOX(hbox), scrolledwindow, TRUE, TRUE, 0);
+ 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow), 
+-					GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
++					GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+ 
+ 	viewport = gtk_viewport_new(NULL, NULL);
+ 	gtk_widget_show(viewport);
+@@ -524,7 +519,7 @@
+ 	gtk_widget_show(scrolledwindow);
+ 	gtk_container_add(GTK_CONTAINER(notebook), scrolledwindow);
+ 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow), 
+-				       GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
++				       GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+ 
+         label = gtk_label_new("Patchbay / Router");
+         gtk_widget_show(label);
+@@ -1346,7 +1341,7 @@
+ 	gtk_widget_show(scrolledwindow);
+ 	gtk_box_pack_start(GTK_BOX(hbox), scrolledwindow, TRUE, TRUE, 0);
+ 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow),
+-					GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
++					GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+ 
+ 	viewport = gtk_viewport_new(NULL, NULL);
+ 	gtk_widget_show(viewport);
+@@ -1412,7 +1407,7 @@
+ 	gtk_widget_show(scrolledwindow);
+ 	gtk_box_pack_start(GTK_BOX(hbox), scrolledwindow, TRUE, TRUE, 0);
+ 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow),
+-					GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
++					GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+ 
+ 	viewport = gtk_viewport_new(NULL, NULL);
+ 	gtk_widget_show(viewport);
+@@ -1493,7 +1488,7 @@
+ 				   label);
+ 
+ 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow), 
+-				       GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
++				       GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+ 	viewport = gtk_viewport_new(NULL, NULL);
+ 	gtk_widget_show(viewport);
+ 	gtk_container_add(GTK_CONTAINER(scrolledwindow), viewport);
+@@ -1842,7 +1837,7 @@
+ 	gtk_widget_show(scrolledwindow);
+ 	gtk_box_pack_start(GTK_BOX(hbox), scrolledwindow, TRUE, TRUE, 0);
+ 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow),
+-					GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
++					GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+ 
+ 	viewport = gtk_viewport_new(NULL, NULL);
+ 	gtk_widget_show(viewport);
+
+--Boundary-00=_uCxvDnktDmMTaL9--
 
 
 
