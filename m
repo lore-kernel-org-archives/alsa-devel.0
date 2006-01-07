@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001069]: Scratchy sound through AC3 passthrough with userspace version 1.0.9rc2
-Date: Sat, 7 Jan 2006 19:42:50 +0100
-Message-ID: <39fb9984e910a77bf58992bb88c4e8bc@bugtrack.alsa-project.org>
+From: "Reggie Cortez" <reggie_cortezep@buss.com>
+Subject: Stockmarket Smallcap Profile
+Date: Sat, 07 Jan 2006 19:43:56 +0000
+Message-ID: <PNAFIDBEDLDCCCMNDDLJELHPKIAA.reggie_cortezep@buss.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BD0712A
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 19:42:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +15,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1069> 
-======================================================================
-Reported By:                Creideiki
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1069
-Category:                   0_general
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-21-2005 21:46 CEST
-Last Modified:              01-07-2006 19:42 CET
-======================================================================
-Summary:                    Scratchy sound through AC3 passthrough with
-userspace version 1.0.9rc2
-Description: 
-I have an Audigy 2 ZS sound card connected via S/PDIF to a Logitech Z-680
-decoder/speaker system. After upgrading ALSA userspace (alsa-headers,
-alsa-lib) to 1.0.9rc2, with no configuration changes, all I got when
-trying to play DVD:s using AC3 passthrough was scratchy noises, and the
-external decoder indicated that it did not think it was getting AC3 data.
-Software decoding worked, but not hardware passthrough. Both Xine and
-MPlayer had this problem. I am not running aRts, or any other sound
-server, and have no ~/.asoundrc file.
-
-Downgrading to userspace version 1.0.8 made it work again.
-
-I have no idea how to debug ALSA problems, so please let me know how to
-generate any extra information you might require.
-
-By the way, the "Product Version" field in Mantis doesn't let me select
-any version higher than 1.0.8.
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 04:33 
-----------------------------------------------------------------------
-Any improvement with later releases?
-
-----------------------------------------------------------------------
- Creideiki - 01-07-06 16:03 
-----------------------------------------------------------------------
-ALSA userspace 1.0.10 on drivers from kernel 6.11-gentoo-r6 had the same
-problem. Userspaces 1.0.10 and 1.0.11rc2 on kernel 2.6.14-gentoo-r4 works.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-21-05 21:46 Creideiki      New Issue                                    
-04-22-05 02:06 eradicator     Issue Monitored: eradicator                    
-04-29-05 09:14 mandreiana     Issue Monitored: mandreiana                    
-06-24-05 17:54 Creideiki      File Added: iecset                           
-06-24-05 17:54 Creideiki      File Added: ac97#0-0+regs                    
-06-24-05 17:58 Creideiki      Note Added: 0005244                          
-12-30-05 04:33 rlrevell       Note Added: 0007212                          
-01-07-06 16:03 Creideiki      Note Added: 0007515                          
-01-07-06 19:42 rlrevell       Status                   new => resolved     
-01-07-06 19:42 rlrevell       Resolution               open => fixed       
-01-07-06 19:42 rlrevell       Assigned To               => rlrevell        
-======================================================================
-
+TWFzc2l2ZSBTdG9jayBBbGVydCBGb3IgTW9uZGF5IEphbnVhcnkgOXRoDQpU
+aGUgU29sdmlzIEdyb3VwDQokMTAuNiBNaXx8aTBuIGluIFJldmVudWVzIGlu
+IEZvdXJ0aCBRdWFydGVyIEVuZGVkIFNlcHQuIDMwLCAyMDA1IChTb3VyY2U6
+DQpOZXdzIDEyLzE0LzA1KQ0KDQpPVEM6IFNMVkcNCg0KUHJpY2U6IC4wOA0K
+DQpIdWdlIFBSIENhbXBhaWduIEZvciBNb25kYXkncydzIFRyYWRpbmcgKipT
+TFZHKiogSXMgaXQgR29pbmcgdG8gRXhwbG9kZQ0KSGlnaGVyIEZyb20gSGVy
+ZT8gSWYgWW91IFRoaW5rIFNvLCBDbGltYiBPbiBCb2FyZCEhDQoNCg0KUkVD
+RU5UIE5FV1M6IEdvIFJlYWQgVGhlIEZ1bGwgU3RvcmllcyBSaWdodCBOb3ch
+IQ0KDQoxKVRoZSBTb2x2aXMgR3JvdXAgQW5ub3VuY2VzICQxMC42IE1pfHxp
+MG4gaW4gUmV2ZW51ZXMgaW4gRm91cnRoIFF1YXJ0ZXINCkVuZGVkIFNlcHQu
+IDMwLCAyMDA1DQoNCg0KMilUaGUgU29sdmlzIEdyb3VwIEFubm91bmNlcyBQ
+bGFucyB0byBEaXN0cmlidXRlIEdsb2JhbCBGb29kIFRlY2hub2xvZ2llcw0K
+U3RvY2sgdG8gSXRzIFNoYXJlaG9sZGVycw0KDQoNCjMpVGhlIFNvbHZpcyBH
+cm91cCBTdHJhdGVnaWMgQWxsaWFuY2UgQWdyZWVtZW50IFdpdGggU1NMIEV4
+cGVjdGVkIHRvIFByb3ZpZGUNCiQyNSBNaXx8aTBuIGluIEFkZGl0aW9uYWwg
+UmV2ZW51ZXMgaW4gOTAgRGF5cw0KDQoNCldhdGNoIFRoaXMgT25lIFRyYWRl
+IG9uIE1vbmRheSEgSHVnZSBSZXZlbnVlcyBmb3IgYSBMaXR0bGUgU3RvY2ss
+IFJpZ2h0Pw0KUmFkYXIgaXQgUmlnaHQgTm93Li4uLi4uIEdvIFNMVkcuDQoN
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fDQoNCg0KDQpJbmZvcm1hdGlvbiB3aXRoaW4gdGhpcyBlbWFpfCBj
+b250YWlucyA0cndhcmQgbDAgMGtpbmcgc3RhdGVtZW50cyB3aXRoaW4NCnRo
+ZSBtZWFuaW5nIG9mIFNlY3Rpb24gMjdBIG9mIHRoZSBTZWN1cml0aWVzIEFj
+dCBvZiBuaW5ldGVlbiB0aGlydHkgdGhyZWUgDQphbmRTZWN0aW9uIDIxQiBv
+ZiB0aGUgU2VjdXJpdGllcyBFeGNoYW5nZSBBY3Qgb2YgbmluZXRlZW4gdGhp
+cnR5IGZvdXIuIEFueQ0Kc3RhdGVtZW50cyB0aGF0IGV4cHJlc3Mgb3IgaW52
+b2x2ZSBkaXNjdXNzaW9ucyB3aXRoIHJlc3BlY3QgdG8gcHJlZGljdGlvbnMs
+DQpleHBlY3RhdGlvbnMsIGJlbGllZnMsIHBsYW5zLCBwcm9qZWN0aW9ucywg
+b2JqZWN0aXZlcywgZ29hbHMsIGFzc3VtcHRpb25zIG9yDQpmdXR1cmUgZXZl
+bnRzIG9yIHBlcmZvcm1hbmNlIGFyZSBub3Qgc3RhdGVtZW50cyBvZiBoaXN0
+b3JpY2FsIGZhY3QgYW5kIG1heQ0KYmUgNHJ3YXJkIDFvMGtpbmcgc3RhdGVt
+ZW50cy40cndhcmQgbG8gb2tpbmcgc3RhdGVtZW50cyBhcmUgYmFzZWQgb24N
+CmV4cGVjdGF0aW9ucywgZXN0aW1hdGVzIGFuZCBwcm9qZWN0aW9ucyBhdCB0
+aGUgdGltZSB0aGUgc3RhdGVtZW50cyBhcmUgbWFkZQ0KdGhhdCBpbnZvbHZl
+IGEgbnVtYmVyIG9mIHJpc2tzIGFuZCB1bmNlcnRhaW50aWVzIHdoaWNoIGNv
+dWxkIGNhdXNlIGFjdHVhbA0KcmVzdWx0cyBvciBldmVudHMgdG8gZGlmZmVy
+IG1hdGVyaWFsbHkgZnJvbSB0aG9zZSBwcmVzZW50bHkgYW50aWNpcGF0ZWQu
+IEFzDQp3aXRoIG1hbnkgbWljciBvY2FwIHN0MGMga3MsIHRvZGF5J3MgY28g
+bXBhbnkgaGFzIGRpc2Nsb3NhYmxlIG1hdGVyaWFsIGl0ZW1zDQp5b3UgbmVl
+ZCB0byBjb25zaWRlciBpbiBvcmRlciB0byBtYWtlIGFuIGluZm9ybWVkIGFu
+ZCBpbnRlbGxpZ2VudA0KaW5fdmVzdG1lbnQgZGVjaXNpb24uIFRoZXNlIGl0
+ZW1zIGluY2x1ZGU6IEEgbm9taW5hbCBjYXNoIHBvc2l0aW9uIGFuZCBhDQpn
+b2luZyBjb25jZXJuIG9waW5pb24gZnJvbSBpdHMgYXVkaXRvci4gIEl0IGlz
+IGFuIG9wZXJhdGluZyBDb21wYW55LiBUaGUNCmNvbXBhbnkgaXMgZ29pbmcg
+dG8gbmVlZCBmaW5hbmNpbmcuIElmIHRoYXQgZmluYW5jaW5nIGRvZXMgbm90
+IG9jY3VyLCB0aGUNCmNvbXBhbnkgbWF5IG5vdCBiZSBhYmxlIHRvIGNvbnRp
+bnVlIGFzIGEgZ29pbmcgY29uY2VybiBpbiB3aGljaCBjYXNlIHlvdQ0KY291
+bGQgbG9zZSB5b3VyIGVudGlyZSBpbi12ZXN0bWVudC4gIFRoZSBwdWJsaXNo
+ZXIgb2YgdGhpcyBuZXcgc2xldHRlciBkb2VzDQpub3QgcmVwcmVzZW50IHRo
+YXQgdGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlzICBtZXNzYSBn
+ZSBzdGF0ZXMgYWxsDQptYXRlcmlhbCBmYWN0cyBvciBkb2VzIG5vdCBvbWl0
+IGEgbWF0ZXJpYWwgZmFjdCBuZWNlc3NhcnkgIHRvIG1ha2UgdGhlDQpzdGF0
+ZW1lbnRzIHRoZXJlaW4gbm90IG1pc2xlYWRpbmcuIEFsbCBpbmZvcm1hdGlv
+biBwcm92aWRlZCB3aXRoaW4gdGhpcyBlbWENCmlsIHBlcnRhaW5pbmcgdG8g
+aW4tdmVzdGluZywgc3QwY2tzLCBzZWN1cjF0aWVzIG11c3QgYmUgdW5kZXJz
+dG9vZCBhcw0KaW5mb3JtYXRpb24gcHJvdmlkZWQgYW5kIG5vdCBpbnZlc3Qg
+bWVudCBhZHZpY2UuIFJlbWVtYmVyIGEgdGhvcm91Z2ggZHVlDQpkaWxpZ2Vu
+Y2UgIGVmZm9ydCwgaW5jbHVkaW5nIGEgcmV2aWV3IG9mIGEgY29tcCBhbnkn
+cyBmaWxpbmdzIHdoZW4NCmF2YWlsYWJsZSwgc2hvdWxkIGJlIGNvbXBsZXRl
+ZCAgcHJpb3IgdG8gaW5fdmUgc3RpbmcuIFRoZSBwdWJsaXNoZXIgb2YgdGhp
+cw0KbmV3c2xldHRlciBhZHZpc2VzIGFsbCByZWFkZXJzIGFuZCBzdWJzY3Jp
+YmVycyB0byBzZWVrIGFkdmljZSBmcm9tIGENCnJlZ2lzdGVyZWQgcHJvZmVz
+c2lvbmFsIHNlY3Ugcml0aWVzIHJlcHJlc2VudGF0aXZlIGJlZm9yZSBkZWNp
+ZGluZyB0byB0cmFkZQ0KaW4gcyB0MGNrcyBmZWF0dXJlZCB3aXRoaW4gdGhp
+cyBlX20gYWlsLiBOb25lIG9mIHRoZSBtYXRlcmlhbCB3aXRoaW4gdGhpcw0K
+cmVwb3J0IHNoYWxsIGJlIGNvbnN0cnVlZCBhcyBhbnkga2luZCBvZiBpbl92
+ZXN0bSBlbnQgYWR2aWNlIG9yDQpzb2xpY2l0YXRpb24uIE1hbnkgb2YgdGhl
+c2UgY29tcGFuaWVzIGFyZSBvbiB0aGUgdmVyZ2Ugb2YgYmFua3J1cHRjeS4g
+WW91DQpjYW4gbG9zZSBhbGwgeW91ciBtbyBueSBieSBpbnZlIHN0aW5nIGlu
+IHRoaXMgc3QwIGNrLiBUaGUgcHVibGlzaGVyIG9mIHRoaXMNCm5ld3NsIGV0
+dGVyIGlzIG4wdCBhIHJlZzFzdGVyZWQgaW4tdmVzdCBtZW50IGFkdiBpczBy
+LiBTdWJzY3JpYmVycyBzaG91bGQNCm5vdCB2aWV3IGluZm9ybWF0aW9uIGhl
+cmVpbiBhcyBsZWdhbCwgdGF4LCBhY2NvdW50aW5nIG9yIGludmVzdCBtZW50
+IGFkdmljZS4NCkluIGNvbXBsaWFuY2Ugd2l0aCB0aGUgU2VjdXJpdGllcyBB
+Y3Qgb2YgbmluZXRlZW4gdGhpcnR5IHRocmVlLCBTZWN0aW9uDQoxNyhiKSxU
+aGUgcHVibGlzaGVyIG9mIHRoaXMgbmV3c2wgZXR0ZXIgaXMgY29udHJhY3Rl
+ZCB0byByZWNlaXZlIHR3ZW50eSBmaXZlDQp0aDB1cyBhbmQgZDBsMWFycyBm
+cm9tIGEgdGhpcmQgcGFydHksIG5vdCBhbiBvZmZpY2VyLCBkaXJlY3RvciBv
+ciBhZmZpbGlhdGUNCnNoYXIgZWgwbGRlciBmb3IgdGhlIGNpcmN1bGF0aW9u
+IG9mIHRoaXMgcmVwb3J0LiBCZSBhd2FyZSBvZiBhbiBpbmhlcmVudA0KY29u
+ZmxpY3Qgb2YgaW50ZXJlc3QgcmVzdWx0aW5nIGZyb20gc3VjaCBjb21wZW5z
+YXRpb24gZHVlIHRvIHRoZSBmYWN0IHRoYXQNCnRoaXMgaXMgYSBwYWlkIGFk
+dmVydGlzZW1lbnQgYW5kIGlzIG5vdCB3aXRob3V0IGJpYXMuVGhlIHBhcnR5
+IHRoYXQgcGF5cyB1cw0KaGFzIGEgcG9zaSB0aW9uIGluIHRoZSBzdDBjIGsg
+dGhleSB3aWxsIHNlbGwgYXQgYW55IHRpbWUgd2l0aG91dCBub3RpY2UuDQpU
+aGlzIGNvdWxkIGhhdmUgYSBuZWdhdGl2ZSBpbXBhY3Qgb24gdGhlIHByaWNl
+IG9mIHRoZSBzIHQwY2ssIGNhdXNpbmcgeW91IHRvDQpsb3NlIG0gb255LlRo
+ZWlyIGludGVudGlvbiBpcyB0byBzZWxsIG5vdy4gQWxsIGZhY3R1YWwgaW5m
+b3JtYXRpb24gaW4gdGhpcw0KcmVwb3J0IHdhcyBnYXRoZXJlZCBmcm9tIHB1
+YmxpYyBzb3VyY2VzLCBpbmNsdWRpbmcgYnV0IG5vdCBsaW1pdGVkIHRvDQpD
+b21wYW55IFByZXNzIFJlbGVhc2VzLiBVc2Ugb2YgdGhlIGluZm9ybWF0aW9u
+IGluIHRoaXMgZW1haWwgY29uc3RpdHV0ZXMNCnlvdXIgYWNjZXB0YW5jZSBv
+ZiB0aGVzZSB0ZXJtcy4=
 
 
 
