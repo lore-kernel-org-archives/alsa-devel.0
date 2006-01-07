@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001649]: No surround sound on ICH5 (AC'97 AD1980)
-Date: Sat, 7 Jan 2006 19:26:48 +0100
-Message-ID: <2e5f626fb2de90ef6009b30ea83b69c0@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001069]: Scratchy sound through AC3 passthrough with userspace version 1.0.9rc2
+Date: Sat, 7 Jan 2006 19:42:50 +0100
+Message-ID: <39fb9984e910a77bf58992bb88c4e8bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8183412A
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 19:26:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BD0712A
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 19:42:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1649> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1069> 
 ======================================================================
-Reported By:                znerd
-Assigned To:                
+Reported By:                Creideiki
+Assigned To:                rlrevell
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1649
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1069
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.14
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-14-2005 02:37 CET
-Last Modified:              01-07-2006 19:26 CET
+Date Submitted:             04-21-2005 21:46 CEST
+Last Modified:              01-07-2006 19:42 CET
 ======================================================================
-Summary:                    No surround sound on ICH5 (AC'97 AD1980)
+Summary:                    Scratchy sound through AC3 passthrough with
+userspace version 1.0.9rc2
 Description: 
-I cannot get my AC'97 device (AD1980) to produce any sound other than
-stereo output. I have tried various settings on alsamixer and I used
-various speaker-test forms to validate settings. When I use:
+I have an Audigy 2 ZS sound card connected via S/PDIF to a Logitech Z-680
+decoder/speaker system. After upgrading ALSA userspace (alsa-headers,
+alsa-lib) to 1.0.9rc2, with no configuration changes, all I got when
+trying to play DVD:s using AC3 passthrough was scratchy noises, and the
+external decoder indicated that it did not think it was getting AC3 data.
+Software decoding worked, but not hardware passthrough. Both Xine and
+MPlayer had this problem. I am not running aRts, or any other sound
+server, and have no ~/.asoundrc file.
 
-   speaker-test -Dplug:surround40 -c4
+Downgrading to userspace version 1.0.8 made it work again.
 
-then I hear just Front-Left and Front-Right. There is total silence on the
-rear channels. I plugged the rear speakers plug into the 2nd sound output
-jack.
+I have no idea how to debug ALSA problems, so please let me know how to
+generate any extra information you might require.
 
-Some hints would be appreciated. I have been searching around the internet
-and have found other issues regarding the AD1980, but not this one. I do
-realize it may be my setup that's wrong, but the chance is getting quite
-small by now.
+By the way, the "Product Version" field in Mantis doesn't let me select
+any version higher than 1.0.8.
 ======================================================================
 
 ----------------------------------------------------------------------
- znerd - 01-07-06 14:51 
+ rlrevell - 12-30-05 04:33 
 ----------------------------------------------------------------------
-Anything I can/should do to get further?
+Any improvement with later releases?
 
 ----------------------------------------------------------------------
- rlrevell - 01-07-06 19:26 
+ Creideiki - 01-07-06 16:03 
 ----------------------------------------------------------------------
-Hmm, if you can't get surround sound on Windows, what makes you think it's
-possible with your hardware?
+ALSA userspace 1.0.10 on drivers from kernel 6.11-gentoo-r6 had the same
+problem. Userspaces 1.0.10 and 1.0.11rc2 on kernel 2.6.14-gentoo-r4 works.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-14-05 02:37 znerd          New Issue                                    
-12-14-05 02:37 znerd          Distribution              => Gentoo Linux    
-12-14-05 02:37 znerd          Kernel Version            => 2.6.14          
-12-14-05 02:41 znerd          Note Added: 0007026                          
-12-14-05 07:46 lmike          Note Added: 0007029                          
-12-14-05 08:46 znerd          Note Added: 0007030                          
-12-24-05 16:33 znerd          Note Added: 0007142                          
-01-07-06 14:51 znerd          Note Added: 0007513                          
-01-07-06 19:26 rlrevell       Note Added: 0007518                          
+04-21-05 21:46 Creideiki      New Issue                                    
+04-22-05 02:06 eradicator     Issue Monitored: eradicator                    
+04-29-05 09:14 mandreiana     Issue Monitored: mandreiana                    
+06-24-05 17:54 Creideiki      File Added: iecset                           
+06-24-05 17:54 Creideiki      File Added: ac97#0-0+regs                    
+06-24-05 17:58 Creideiki      Note Added: 0005244                          
+12-30-05 04:33 rlrevell       Note Added: 0007212                          
+01-07-06 16:03 Creideiki      Note Added: 0007515                          
+01-07-06 19:42 rlrevell       Status                   new => resolved     
+01-07-06 19:42 rlrevell       Resolution               open => fixed       
+01-07-06 19:42 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
