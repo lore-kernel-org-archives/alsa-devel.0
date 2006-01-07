@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001722]: aplay deadlocks
-Date: Sat, 7 Jan 2006 03:25:26 +0100
-Message-ID: <f7dc648d899dd10d2932789ef2c311dd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
+Date: Sat, 7 Jan 2006 03:58:40 +0100
+Message-ID: <4774e98b15c0f0efb2e81078752c3a35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84FB413A
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 03:25:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 811AE13A
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 03:58:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,121 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1722> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
 ======================================================================
-Reported By:                erador
+Reported By:                moncnam
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1722
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   block
+Project:                    ALSA - driver
+Issue ID:                   1548
+Category:                   PCI - intel8x0m
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               debian sarge 3.1
+Kernel Version:             2.6.13-rc7
 ======================================================================
-Date Submitted:             01-07-2006 03:25 CET
-Last Modified:              01-07-2006 03:25 CET
+Date Submitted:             11-12-2005 10:58 CET
+Last Modified:              01-07-2006 03:58 CET
 ======================================================================
-Summary:                    aplay deadlocks
+Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
+stream" : inopportune small pauses while playing
 Description: 
-Installing the nVidia display driver worsens this issue. (Not sure why).
-But with that running playing anything in any application in X, causes
-ALSA to freeze, it cannot be unloaded, and processes cannot be killed. It
-produces about 15 aplay instances, all of which are unkillable.
-
-So I went back to the normal nv driver, sound works and things are
-normal.
-
-I was going to test out the surround40 profile, so I thought I'd play
-something via aplay, it was a working mp3, I don't know if that's
-supported or not? Either way it deadlocks alsa and generates lots of
-deadlocked aplay instances.
-
-I'm using the emu10k1 driver, and xorg.
+whatever the player i use (alsaplayer, xmms, mplayer) i experience small
+pause while playing (half of a second)
+using mplayer, i can see the following message appearing when the pause
+occur
+<<alsa-play: xrun of at least 0.009 msecs. resetting stream>>
+the playing doesn't stop, it continue well, just a small pause
+i have no other messages in `dmesg` or in syslog
 ======================================================================
+
+----------------------------------------------------------------------
+ sashak - 01-07-06 02:14 
+----------------------------------------------------------------------
+You may try larger period_size and of course more than just one period to
+prevent underruns (perdiod_size should be <= buffer_size/2 ).
+
+BTW did you try default ALSA config (without .asoundrc)? Default settings
+are reasonable for many cases.
+
+----------------------------------------------------------------------
+ moncnam - 01-07-06 03:58 
+----------------------------------------------------------------------
+you write : (perdiod_size should be <= buffer_size/2 )
+um 
+, i can add that this could be specified in the syntaxe page
+
+to answer : no, i can't use only the default setting because it doesn't
+provide mixing capability (and i want to be able to hear my
+notification/alert while playing)
+
+gosh ! nothing work ok now, esd outputs errors, wsoundserver no sound,
+and... 
+o look, i also have a conf file in /etc
+
+well, i erase it, put back my ~/.asoundrc and, it is better now
+still a problem with esd doing scrappy sound : it doesn't like period_time
+0
+
+btw, what is period_size ? i don"t have this parameter in the syntax
+page...
+
+woaw, alsa is really a pain in the neck <smile>
+
+... okay, i got it works : 
+nothing in /etc
+in my home : 
+pcm.!dmix {
+        type dmix
+        ipc_key 1
+        ipc_key_add_uid true
+        slave {
+                pcm "hw:0,0"
+                # rate 44100
+                rate 48000
+                # period_size 1024
+                period_time 1024
+                buffer_size 4096
+...
+
+in esd.conf : 
+[esd]
+auto_spawn=0
+spawn_options=-terminate -as 5 -d default
+spawn_wait_ms=100
+# default options are used in spawned and non-spawned mode
+default_options= -r 48000
+
+-r 48000 in default_options, not in spawn_option neither in command line
+otherwise doesn't work
+
+and wsoundserver does work
+
+gosh, what about artsd ? 
+no problem , it does work as before (one have to specify 48000 in
+kcontrol)
+
+thank you, it's enought for tonight, enjoy weekend, bye 
+thanks for support
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 03:25 erador         New Issue                                    
+11-12-05 10:58 moncnam        New Issue                                    
+11-12-05 10:58 moncnam        Distribution              => debian sarge 3.1
+11-12-05 10:58 moncnam        Kernel Version            => 2.6.13-rc7      
+11-21-05 23:56 sashak         Note Added: 0006779                          
+11-22-05 00:04 moncnam        Note Added: 0006781                          
+11-22-05 00:31 sashak         Note Added: 0006783                          
+11-22-05 00:31 sashak         Assigned To              sashak =>           
+11-22-05 00:43 moncnam        Note Added: 0006784                          
+01-04-06 22:38 moncnam        Note Added: 0007456                          
+01-07-06 02:14 sashak         Note Added: 0007503                          
+01-07-06 03:58 moncnam        Note Added: 0007505                          
 ======================================================================
 
 
