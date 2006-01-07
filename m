@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
-Date: Fri, 6 Jan 2006 18:15:39 +0100
-Message-ID: <61dc82690e1814a883319f7d11e484d8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001658]: Capture happens only on one channel
+Date: Sat, 7 Jan 2006 06:24:59 +0100
+Message-ID: <e2ec281e97a9ad4979983772b85c0f6f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FB9E13C
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 18:15:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38626139
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 06:25:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,139 +24,134 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
 ======================================================================
-Reported By:                kernel_bug
-Assigned To:                mjander
+Reported By:                phil_troin
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   59
-Category:                   PCI - au88x0
-Reproducibility:            random
-Severity:                   major
+Issue ID:                   1658
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     confirmed
-Distribution:               
-Kernel Version:             2.6.2
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-gentoo-r2
 ======================================================================
-Date Submitted:             02-13-2004 11:40 CET
-Last Modified:              01-06-2006 18:15 CET
+Date Submitted:             12-18-2005 08:40 CET
+Last Modified:              01-07-2006 06:24 CET
 ======================================================================
-Summary:                    On au8820 left and right channels are swapped
+Summary:                    Capture happens only on one channel
 Description: 
-In most cases, left and right channels are swapped. But in approx. 5% cases
-all OK. Looks like the matter is somewhere in byte alignment...
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000949 Randomly, left and right tracks are swaped
+When I am playing a CD, if I capture the sound output via the capture
+channel OR the CD channel (amixer output attached), the captured sound is
+only one one channel (the right one) and is very distorted.
+The audio plays normally in stereo on the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 08-27-05 04:43 
+ linuxbear - 12-18-05 12:02 
 ----------------------------------------------------------------------
-0:7c = 574d
-0:7e = 4c00
+I have the same issue.  My kernel is 2.6.14 with Con Kolivas ck5 patch. 
+nForce motherboard with intel8x0.... does not work, capture happens on one
+channel... tried every mixer setting.
 
-You may need to upgrade to CVS since there is a patch for WM codecs.
-
-This means you cannot just copy pci/ac97/*.*
-1) alsa-driver
-2) alsa-lib
-3) alsa-util
-
-02:02.0 Class 0401: 12eb:0001 (rev 02)
-        Subsystem: 12eb:0001
-
-Is your Vortex card OEM ?
-
-http://portal.suse.com/sdb/en/2001/03/chofman_vortex.html
-
-Other user do not have your problem but his au8820 card use STAC9704 and
-your card use WM9701A. 
-
-The other user has WM9701A on his au8810.
-
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+00:06.0 Multimedia audio controller: nVidia Corporation nForce2 AC97 Audio
+Controler (MCP) (rev a1)
+        Subsystem: Biostar Microtech Int'l Corp: Unknown device 8201
+        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 5
+        I/O ports at d400 [size=256]
+        I/O ports at d800 [size=128]
+        Memory at e0001000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
 
 
-Do you find "vortex: IRQ fifo error" in system log when you play sound ?
-
-http://lists.nongnu.org/archive/html/openvortex-dev/2005-03/msg00015.html
-
-Using "vortex_adbdma_stopfifo()" instead of "vortex_adbdma_pausefifo()"
-in snd_vortex_pcm_trigger() (ie. in the same way before au88x0 migrated
-from alsa-driver to alsa-kernel) seem to fix the front/rear channels swap
-when playing 4 channels sound on my au8830.
 
 ----------------------------------------------------------------------
- Raymond - 01-06-06 18:15 
+ tgutwin - 01-07-06 06:24 
 ----------------------------------------------------------------------
-Please try to add the vortex_dump_route routine at the end of following
-routines:-
-1) vortex_connect_default()
-2) snd_vortex_pcm_hw_params()
-3) snd_vortex_pcm_hw_free() 
+Same issue here, plus a few others on the MythTV user list have the same
+symptoms after kernel and/or ALSA dirver updates.
 
-and post the system log when the channels are swapped/normal.
+Playback works fine
+Capture only gets one channel (Left).
+I can monitor the 2ch audio fine but when it gets recorded through Myth
+(or LiveTV which is also a capture and record process) it loses its right
+channel of audio with plain old analog 2 channel output.
+NO digital AC3 used here (yet)
 
-void vortex_dump_route(vortex_t * vortex)
-{
-     u32 addr,value;
-     u8  src,dest;
-     int i;
-     for (i=0; i<VORTEX_ADB_CHNBASE_COUNT; i++) {
-         addr=VORTEX_ADB_CHNBASE+i*4;
-         value=hwread(vortex->mmio,addr);
-         if ( value != ROUTE_MASK ) {
-  	     src=(value >>ADB_SHIFT)& ADB_MASK;
-	     dest=value & ADB_MASK;
-	     printk(KERN_INFO "%.8x adb_chnbase(%.2x) %.8x src=%.2x
-dest=%.2x\n",
-        		addr,i,value,src,dest);
-         };
-     };
-     for (addr=VORTEX_ADB_RTBASE; addr<VORTEX_ADB_CHNBASE; addr+=4) {
-         value=hwread(vortex->mmio,addr);
-         if ( value != ROUTE_MASK ) {
-  	     src=(value >>ADB_SHIFT)& ADB_MASK;
-	     dest=value & ADB_MASK;
-	     printk(KERN_INFO "%.8x adb_rtbase(%.2x)  %.8x src=%.2x
-dest=%.2x\n",
-        		addr,(addr-VORTEX_ADB_RTBASE)>>2,value,src,dest);
-         };
-     };
-     printk(KERN_INFO "---------------------------------\n");
-}
+I have gone through the alsa setup with a fine tooth comb. it looks
+correct.
+plus all audio and video apps outside of MythTV play back work correctly.
+
+
+I have tried every mute/capture setting using a couple of different
+mixers.
+The problem persists.
+
+My system is a freshly built system specifically to be a home for
+>>  AMD X2
+>>  Asus A8N-e with onboard nvidia CK804/intel8x0
+>>  Fedora core 4 built for x86_64
+>>  with smp kernel 2.6.14-1.1653_FC4
+>>  Alsa Version 1.0.10rc3  for kernel 2.6.14-1.1653_FC4smp (SMP)
+    From atrpms
+
+[root@dvr dev]# cd /proc
+[root@dvr proc]# cd asound
+[root@dvr asound]# ls
+card0  cards  CK804  devices  hwdep  modules  oss  pcm  seq  timers 
+version
+[root@dvr asound]# cat version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3.
+Compiled on Dec 14 2005 for kernel 2.6.14-1.1653_FC4smp (SMP).
+[root@dvr asound]# cat cards
+0 [CK804          ]: NFORCE - NVidia CK804
+                     NVidia CK804 with ALC850 at 0xc8103000, irq 50
+
+lsmod | grep snd
+snd_usb_audio          92160  0
+snd_usb_lib            21504  1 snd_usb_audio
+snd_rawmidi            32544  1 snd_usb_lib
+snd_hwdep              14624  1 snd_usb_audio
+snd_intel8x0           39848  1
+snd_ac97_codec        115516  1 snd_intel8x0
+snd_ac97_bus            6784  1 snd_ac97_codec
+snd_seq_dummy           8068  0
+snd_seq_oss            42596  0
+snd_seq_midi_event     12672  1 snd_seq_oss
+snd_seq                67288  5
+snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
+snd_seq_device         14224  4
+snd_rawmidi,snd_seq_dummy,snd_seq_oss,snd_seq
+snd_pcm_oss            61984  0
+snd_mixer_oss          22656  2 snd_pcm_oss
+snd_pcm               106888  4
+snd_usb_audio,snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer              30344  2 snd_seq,snd_pcm
+snd                    69088  15
+snd_usb_audio,snd_usb_lib,snd_rawmidi,snd_hwdep,snd_intel8x0,snd_ac97_codec,snd_seq_dummy,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore              16353  2 snd
+snd_page_alloc         15376  2 snd_intel8x0,snd_pcm
+
+
+There are other users that have reported the same issue.
+
+What other debugging can I do?
+I can send in amixer scontents, but I have enumerated all options.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-04 11:40 kernel_bug     New Issue                                    
-02-21-04 15:40 kernel_bug     Note Added: 0000280                          
-03-02-04 02:56 Tim            Note Added: 0000429                          
-04-09-04 11:54 kernel_bug     Note Added: 0000774                          
-04-09-04 18:35 mjander        Note Added: 0000777                          
-04-17-04 18:59 mjander        Status                   assigned => closed  
-04-17-04 18:59 mjander        Note Added: 0000849                          
-04-26-04 17:04 kernel_bug     Status                   closed => feedback  
-04-26-04 17:04 kernel_bug     Resolution               open => reopened    
-04-26-04 17:04 kernel_bug     Note Added: 0000953                          
-04-26-04 23:27 mjander        Note Added: 0000956                          
-03-10-05 15:31 jdthood        Note Added: 0003866                          
-03-10-05 16:44 mjander        Note Added: 0003867                          
-03-10-05 21:25 kernel_bug     Note Added: 0003873                          
-03-22-05 22:33 jdthood        Relationship added       related to 0000949  
-03-28-05 04:27 jdthood        Note Added: 0004235                          
-03-28-05 04:27 jdthood        Status                   feedback => assigned
-03-28-05 04:29 jdthood        Status                   assigned => confirmed
-08-26-05 14:50 Raymond        Note Added: 0005951                          
-08-26-05 15:12 kernel_bug     Note Added: 0005955                          
-08-26-05 16:07 Raymond        Note Added: 0005956                          
-08-26-05 17:38 kernel_bug     File Added: asound.state                     
-08-26-05 17:41 kernel_bug     Note Added: 0005957                          
-08-27-05 04:43 Raymond        Note Added: 0005959                          
-01-06-06 18:15 Raymond        Note Added: 0007491                          
+12-18-05 08:40 phil_troin     New Issue                                    
+12-18-05 08:40 phil_troin     File Added: amixout                          
+12-18-05 08:40 phil_troin     Distribution              => Gentoo          
+12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
+12-18-05 12:00 linuxbear      Note Added: 0007071                          
+12-18-05 12:02 linuxbear      Note Edited: 0007071                         
+12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
+01-07-06 06:24 tgutwin        Note Added: 0007508                          
 ======================================================================
 
 
