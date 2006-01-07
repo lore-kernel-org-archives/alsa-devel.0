@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
-Date: Sat, 7 Jan 2006 21:43:51 +0100
-Message-ID: <f130b490129374211c1af0a5b717f6a0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001649]: No surround sound on ICH5 (AC'97 AD1980)
+Date: Sat, 7 Jan 2006 19:26:48 +0100
+Message-ID: <2e5f626fb2de90ef6009b30ea83b69c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 223FE12C
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 21:43:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8183412A
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 19:26:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,79 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1649> 
 ======================================================================
-Reported By:                moncnam
-Assigned To:                rlrevell
+Reported By:                znerd
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1548
-Category:                   PCI - intel8x0m
-Reproducibility:            random
+Issue ID:                   1649
+Category:                   PCI - intel8x0
+Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian sarge 3.1
-Kernel Version:             2.6.13-rc7
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             11-12-2005 10:58 CET
-Last Modified:              01-07-2006 21:43 CET
+Date Submitted:             12-14-2005 02:37 CET
+Last Modified:              01-07-2006 19:26 CET
 ======================================================================
-Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
-stream" : inopportune small pauses while playing
+Summary:                    No surround sound on ICH5 (AC'97 AD1980)
 Description: 
-whatever the player i use (alsaplayer, xmms, mplayer) i experience small
-pause while playing (half of a second)
-using mplayer, i can see the following message appearing when the pause
-occur
-<<alsa-play: xrun of at least 0.009 msecs. resetting stream>>
-the playing doesn't stop, it continue well, just a small pause
-i have no other messages in `dmesg` or in syslog
+I cannot get my AC'97 device (AD1980) to produce any sound other than
+stereo output. I have tried various settings on alsamixer and I used
+various speaker-test forms to validate settings. When I use:
+
+   speaker-test -Dplug:surround40 -c4
+
+then I hear just Front-Left and Front-Right. There is total silence on the
+rear channels. I plugged the rear speakers plug into the 2nd sound output
+jack.
+
+Some hints would be appreciated. I have been searching around the internet
+and have found other issues regarding the AD1980, but not this one. I do
+realize it may be my setup that's wrong, but the chance is getting quite
+small by now.
 ======================================================================
 
 ----------------------------------------------------------------------
- moncnam - 01-07-06 21:38 
+ znerd - 01-07-06 14:51 
 ----------------------------------------------------------------------
-thanx much, i keep in mind alsa 109
-if i had time, i would managed a better work with tightly chosen alsa
-testing debian package
-i love linux, thanx for your help
+Anything I can/should do to get further?
 
 ----------------------------------------------------------------------
- rlrevell - 01-07-06 21:43 
+ rlrevell - 01-07-06 19:26 
 ----------------------------------------------------------------------
-OK I am resolving this bug as I'm fairly certain it's fixed in later
-versions.  Reopen if you upgrade and still have the problem.
+Hmm, if you can't get surround sound on Windows, what makes you think it's
+possible with your hardware?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-05 10:58 moncnam        New Issue                                    
-11-12-05 10:58 moncnam        Distribution              => debian sarge 3.1
-11-12-05 10:58 moncnam        Kernel Version            => 2.6.13-rc7      
-11-21-05 23:56 sashak         Note Added: 0006779                          
-11-22-05 00:04 moncnam        Note Added: 0006781                          
-11-22-05 00:31 sashak         Note Added: 0006783                          
-11-22-05 00:31 sashak         Assigned To              sashak =>           
-11-22-05 00:43 moncnam        Note Added: 0006784                          
-01-04-06 22:38 moncnam        Note Added: 0007456                          
-01-07-06 02:14 sashak         Note Added: 0007503                          
-01-07-06 03:58 moncnam        Note Added: 0007505                          
-01-07-06 04:04 moncnam        Note Added: 0007506                          
-01-07-06 09:00 rlrevell       Note Added: 0007509                          
-01-07-06 16:57 moncnam        Note Added: 0007516                          
-01-07-06 20:54 rlrevell       Note Added: 0007519                          
-01-07-06 21:10 moncnam        Note Added: 0007521                          
-01-07-06 21:28 rlrevell       Note Added: 0007522                          
-01-07-06 21:38 moncnam        Note Added: 0007523                          
-01-07-06 21:43 rlrevell       Status                   assigned => resolved
-01-07-06 21:43 rlrevell       Resolution               open => fixed       
-01-07-06 21:43 rlrevell       Assigned To               => rlrevell        
-01-07-06 21:43 rlrevell       Note Added: 0007524                          
+12-14-05 02:37 znerd          New Issue                                    
+12-14-05 02:37 znerd          Distribution              => Gentoo Linux    
+12-14-05 02:37 znerd          Kernel Version            => 2.6.14          
+12-14-05 02:41 znerd          Note Added: 0007026                          
+12-14-05 07:46 lmike          Note Added: 0007029                          
+12-14-05 08:46 znerd          Note Added: 0007030                          
+12-24-05 16:33 znerd          Note Added: 0007142                          
+01-07-06 14:51 znerd          Note Added: 0007513                          
+01-07-06 19:26 rlrevell       Note Added: 0007518                          
 ======================================================================
 
 
