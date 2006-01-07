@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
-Date: Sat, 7 Jan 2006 21:38:23 +0100
-Message-ID: <84b35b896f78340ba7c227de483ab648@bugtrack.alsa-project.org>
+Date: Sat, 7 Jan 2006 21:43:51 +0100
+Message-ID: <f130b490129374211c1af0a5b717f6a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8C4D116
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 21:38:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 223FE12C
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 21:43:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1548> 
 ======================================================================
 Reported By:                moncnam
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1548
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0m
 Reproducibility:            random
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               debian sarge 3.1
 Kernel Version:             2.6.13-rc7
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-12-2005 10:58 CET
-Last Modified:              01-07-2006 21:38 CET
+Last Modified:              01-07-2006 21:43 CET
 ======================================================================
 Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
 stream" : inopportune small pauses while playing
@@ -55,18 +57,18 @@ i have no other messages in `dmesg` or in syslog
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-07-06 21:28 
-----------------------------------------------------------------------
-Yeah I'm afraid you may have to choose between stability and functionality
-here.  Many, many dmix bugs have been fixed since ALSA 1.0.8.
-
-----------------------------------------------------------------------
  moncnam - 01-07-06 21:38 
 ----------------------------------------------------------------------
 thanx much, i keep in mind alsa 109
 if i had time, i would managed a better work with tightly chosen alsa
 testing debian package
 i love linux, thanx for your help
+
+----------------------------------------------------------------------
+ rlrevell - 01-07-06 21:43 
+----------------------------------------------------------------------
+OK I am resolving this bug as I'm fairly certain it's fixed in later
+versions.  Reopen if you upgrade and still have the problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -89,6 +91,10 @@ Date Modified  Username       Field                    Change
 01-07-06 21:10 moncnam        Note Added: 0007521                          
 01-07-06 21:28 rlrevell       Note Added: 0007522                          
 01-07-06 21:38 moncnam        Note Added: 0007523                          
+01-07-06 21:43 rlrevell       Status                   assigned => resolved
+01-07-06 21:43 rlrevell       Resolution               open => fixed       
+01-07-06 21:43 rlrevell       Assigned To               => rlrevell        
+01-07-06 21:43 rlrevell       Note Added: 0007524                          
 ======================================================================
 
 
