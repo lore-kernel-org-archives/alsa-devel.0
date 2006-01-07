@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001721]: Alsa 1.0.10 & 1.0.11rc2: STAC_9223 unsupported/errors, only oss-emulation works with 2 channels
-Date: Fri, 6 Jan 2006 15:19:56 +0100
-Message-ID: <e4e80af3ee10fce5aa3c3a89ab743e49@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001697]: Sound does not work
+Date: Sat, 7 Jan 2006 01:26:01 +0100
+Message-ID: <3a56ca4e05d11a02a5d584e27feb51b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38AAB13F
-	for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2006 15:19:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD3FA128
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 01:26:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,73 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1721> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1697> 
 ======================================================================
-Reported By:                oslo
-Assigned To:                tiwai
+Reported By:                rkoenig
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1721
-Category:                   PCI - hda-intel
+Issue ID:                   1697
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.14-gentoo-r5 #18 SMP PREEMPT
+Distribution:               doesn't matter
+Kernel Version:             doesn't matter
 ======================================================================
-Date Submitted:             01-06-2006 15:19 CET
-Last Modified:              01-06-2006 15:19 CET
+Date Submitted:             01-01-2006 10:27 CET
+Last Modified:              01-07-2006 01:26 CET
 ======================================================================
-Summary:                    Alsa 1.0.10 & 1.0.11rc2: STAC_9223
-unsupported/errors, only oss-emulation works with 2 channels
+Summary:                    Sound does not work
 Description: 
-As in summary, alsa 1.0.11rc2 works not at all, alsa-kernel 1.0.10 only
-with oss-emulation and 2 channel stereo.
+The SiS 7012 based sound controllers on all the mainboards of Fujitsu
+Siemens Computers refuse to work. 
 
-My Board is an 
-Intel Desktop Board D945PVS with 7.1 Surround Sound (Sigmatel 9223)with 5
-analog jacks in the back, 2 on the board (Front Panel) and a digital jack
-in the back.
+The reason is that the hardware setup is done in a way so that the codec
+is the tertiary codec. Problem is that during initialisation the
+snd_intel8x0 driver checks the ready bit for the tertiary codec on bit 28
+of the global status register, but on SiS 7012 the codec ready status is
+set in bit 18. But even fixing that in source doesn't help much because
+the driver has to many branches that are depending on the chip type
+(INTEL, SIS, whatever) so that I get a codec ready, but then subsequent
+errors from the codecs.
 
-The mixer shows only a "Front" (somtimes a "Headphones" on 1.0.11rc2)
-device.
 
-When starting "aplay" i get:
-  ALSA lib pcm_direct.c:783:(snd_pcm_direct_initialize_slave)
-snd_pcm_hw_params_any failed
-  ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
-  aplay: main:544: audio open error: Invalid argument
-
-also on every other alsa using software
-
-I'v taken a look into the "[cvs/1.0.11rc2] patch_sigmatel.c" and there
-probably should be something like (After Line 277):
-        { .pci_subvendor = PCI_VENDOR_ID_INTEL,
-          .pci_subdevice = 0x0707,
-          .config = STAC_D945GTP5 },    /* Intel D945PVS - 5 Stack */
-
-but for me this changed nothing... 
-
-The output of lspci is appended.
-
-I hope this is enough information, if not tell me what you need.
-
-PS: For me this is a major bug, butunsupported cards are generally
-features?
 ======================================================================
+
+----------------------------------------------------------------------
+ sashak - 01-07-06 01:26 
+----------------------------------------------------------------------
+You are about sound (intel8x0) and not modem (intel8x0m) driver? (This
+report was opened for intel8x0m - modem driver).
+
+About the problem itself. Is this general feature(s) of SiS7012 or
+something specific for FS machines (AFAIK SiS7012 data sheet is not
+published)? Which errors do you have after ICH_TCR redefine?
+
+And about driver split I think it is not needed just because different
+ICH_TCR values - this may be solved in current driver. And anyway I don't
+have reference hardware.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-06-06 15:19 oslo           New Issue                                    
-01-06-06 15:19 oslo           File Added: intel_hda_stac9223.txt                
-   
-01-06-06 15:19 oslo           Distribution              => Gentoo Linux    
-01-06-06 15:19 oslo           Kernel Version            => 2.6.14-gentoo-r5 #18
-SMP PREEMPT
+01-01-06 10:27 rkoenig        New Issue                                    
+01-01-06 10:27 rkoenig        Distribution              => doesn't matter  
+01-01-06 10:27 rkoenig        Kernel Version            => doesn't matter  
+01-07-06 01:26 sashak         Note Added: 0007500                          
 ======================================================================
 
 
