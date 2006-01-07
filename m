@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
-Date: Sat, 7 Jan 2006 21:28:56 +0100
-Message-ID: <14394c699c36fcb0868de024a699702d@bugtrack.alsa-project.org>
+Date: Sat, 7 Jan 2006 21:38:23 +0100
+Message-ID: <84b35b896f78340ba7c227de483ab648@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D89CF116
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 21:28:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8C4D116
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 21:38:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian sarge 3.1
 Kernel Version:             2.6.13-rc7
 ======================================================================
 Date Submitted:             11-12-2005 10:58 CET
-Last Modified:              01-07-2006 21:28 CET
+Last Modified:              01-07-2006 21:38 CET
 ======================================================================
 Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
 stream" : inopportune small pauses while playing
@@ -55,124 +55,18 @@ i have no other messages in `dmesg` or in syslog
 ======================================================================
 
 ----------------------------------------------------------------------
- moncnam - 01-07-06 21:10 
-----------------------------------------------------------------------
-okay, thanx for the trick
-
-here is the output you ask for : 
-<<
-$ grep -l dmix /usr/share/alsa/cards/*
-/usr/share/alsa/cards/Azalia.conf
-/usr/share/alsa/cards/ICH4.conf
-/usr/share/alsa/cards/ICH.conf
-/usr/share/alsa/cards/NFORCE.conf
->>
-, plus one extra output, under debian, tells what alsa package is install
-in which version : 
-<<
-<code>
-$ dlocate -l alsa | grep ii
-ii  alsa-base           1.0.8-7             ALSA driver configuration
-files
-ii  alsa-oss            1.0.8-1             ALSA wrapper for OSS
-applications
-ii  alsa-utils          1.0.8-4             ALSA utilities
-ii  alsamixergui        0.9.0rc2-1-7        graphical soundcard mixer for
-ALSA soundcard driver
-ii  alsaplayer          0.99.76-0.3         PCM player designed for ALSA
-ii  alsaplayer-alsa     0.99.76-0.3         PCM player designed for ALSA
-(ALSA output module)
-ii  alsaplayer-common   0.99.76-0.3         PCM player designed for ALSA
-(common files)
-ii  alsaplayer-esd      0.99.76-0.3         PCM player designed for ALSA
-(ESD output module)
-ii  alsaplayer-gtk      0.99.76-0.3         PCM player designed for ALSA
-(GTK version)
-ii  alsaplayer-oss      0.99.76-0.3         PCM player designed for ALSA
-(OSS output module)
-ii  alsaplayer-text     0.99.76-0.3         PCM player designed for ALSA
-(text version)
-ii  alsaplayer-xosd     0.99.76-0.3         PCM player designed for ALSA
-(osd version)
-ii  gnome-alsamixer     0.9.6-1             ALSA sound mixer for GNOME
-ii  gstreamer0.8-alsa   0.8.8-2             ALSA plugin for GStreamer
-ii  libesd-alsa0        0.2.35-2            Enlightened Sound Daemon
-(ALSA) - Shared libraries
-</code>
->>
-
-with this output, i can guess i am using alsa 1.0.8 (-7 is only a debian
-revision add)
-
-when i check my card : 
-<<
-$ cat /proc/asound/cards
-0 [ICH6           ]: ICH4 - Intel ICH6
-                     Intel ICH6 with STAC9750,51 at 0xdffffe00, irq 169
-1 [Modem          ]: ICH-MODEM - Intel ICH Modem
-                     Intel ICH Modem at 0xee00, irq 201
->>
-i guess my card ICH6 should be managed by /usr/share/alsa/cards/ICH4.conf
-file
-
-i like debian because it aim to be stable, 
-i won't install alsa-lib 109 now - i don't have time meanwhile i would
-love to play with all that stuff
-
-if you mind :)
-
-my last ~/.asoundrc file
-<<
-ste@station:~$ cat /home/ste/.asoundrc
-pcm.!default { type plug slave.pcm "dmix" }
-pcm.!dmix {
-        type dmix
-        ipc_key 1
-#       ipc_perm 0660
-        ipc_key_add_uid true
-        slave {
-                pcm "hw:0,0"
-                format  S16_LE
-#                rate    48000
-                rate    44100
-                channels        2
-                period_time 0
-                period_time 1024
-#                buffer_size 4096
-                # buffer_size 1024
-                # periods 1024
-#               periods 4096
-                # periods 2048
-#               buffer_size 4096
-buffer_size 2048
-                # buffer_size 8192
-                # buffer_size 16384
-                # periods 16384
-        #       period_size     2048
-        period_size     1024
-        }
-        bindings { 0 0 1 1 }
-}
-
-# ctl.mixer0 { type hw card 0 }
-
->>
-this is the only way i can make works : xmms, wmsoundserver, esd, artsd,
-thunderbird notification sound
-
-the last step i would love to would be to output a copy of my sound to a
-special device in order to being able to record it without recording my
-system sounds, but i would need to become an alsahacker, - around july
-perhaps 
-
-you can still ask me things if you like
-see you
-
-----------------------------------------------------------------------
  rlrevell - 01-07-06 21:28 
 ----------------------------------------------------------------------
 Yeah I'm afraid you may have to choose between stability and functionality
 here.  Many, many dmix bugs have been fixed since ALSA 1.0.8.
+
+----------------------------------------------------------------------
+ moncnam - 01-07-06 21:38 
+----------------------------------------------------------------------
+thanx much, i keep in mind alsa 109
+if i had time, i would managed a better work with tightly chosen alsa
+testing debian package
+i love linux, thanx for your help
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -194,6 +88,7 @@ Date Modified  Username       Field                    Change
 01-07-06 20:54 rlrevell       Note Added: 0007519                          
 01-07-06 21:10 moncnam        Note Added: 0007521                          
 01-07-06 21:28 rlrevell       Note Added: 0007522                          
+01-07-06 21:38 moncnam        Note Added: 0007523                          
 ======================================================================
 
 
