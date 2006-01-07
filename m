@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Sat, 7 Jan 2006 17:19:45 +0100
-Message-ID: <b4c02006d1992956f3578dbee0cd7e49@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: spam
+Date: Sat, 7 Jan 2006 20:56:26 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0601072054540.9397@tm8103.perex-int.cz>
+References: <1136662863.22630.15.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35B46135
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 17:19:45 +0100 (MET)
+In-Reply-To: <1136662863.22630.15.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,144 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 7 Jan 2006, Lee Revell wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
-======================================================================
-Reported By:                er-ku
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1517
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-9-686
-======================================================================
-Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              01-07-2006 17:19 CET
-======================================================================
-Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
-Description: 
-This will be very much like other reports around.
+> It seems that the most blindingly obvious spam is making it to
+> alsa-devel.
+> 
+> Can't Sourceforge just trash anything with "Pharmacy" or
+> "Pharmaceutical" in the subject?  I mean, they don't even bother to mess
+> up the spelling, this should be like fish in a barrel.
 
-Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
-Sound modules load silently, no complainments, alsamixer works and
-channels are unmuted, but I get absolutely no sound from speakers of
-headphones.
+I've added 'subject: .*pharmac.*' hold post rule for the alsa-devel 
+mailing list, so mailman does this job for us.
 
-I'm not the only one having this issue
-(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
-managed to google either didn't help me, or was simply unfinished (like
-forum questions that aren't answered).
+						Jaroslav
 
-I tried the stock drivers provided by the Ubuntu kernel, then I tried
-1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
-all cases the result was the same - absolute silence.
-
-======================================================================
-
-----------------------------------------------------------------------
- eudoxos - 01-06-06 20:04 
-----------------------------------------------------------------------
-Sorry to add more to the scream that it does not work. Same here, Acer
-TravelMate 4061. Under windows fine. Same dmi output. ICH6 chipset, kernel
-2.6.15-notfinal (that is, -10 ubuntu) and packed alsa drivers.
-
-----------------------------------------------------------------------
- OnO - 01-07-06 17:19 
-----------------------------------------------------------------------
-What are You think about?
-device 10ec:0260 is listed by DXDiag but not by lspci ?
-device 8086:2668 is listed by both.
-
-[DXDiag]
--------------
-Sound Devices
--------------
-            Description: Realtek HD Audio output
-            Hardware ID:
-HDAUDIO\FUNC_01&VEN_10EC&DEV_0260&SUBSYS_1025160D&REV_1004
-        Manufacturer ID: 1
-             Product ID: 100
-                   Type: WDM
-            Driver Name: RtkHDAud.sys
-         Driver Version: 5.10.0000.5148 (English)
-      Driver Attributes: Final Retail
-...
-        Driver Provider: Realtek Semiconductor Corp.
-         HW Accel Level: Full
-              Cap Flags: 0xF5F
-    Min/Max Sample Rate: 100, 192000
-Static/Strm HW Mix Bufs: 33, 32
- Static/Strm HW 3D Bufs: 33, 32
-              HW Memory: 0
-       Voice Management: No
- EAX(tm) 2.0 Listen/Src: Yes, Yes
-   I3DL2(tm) Listen/Src: Yes, Yes
-Sensaura(tm) ZoomFX(tm): No
-               Registry: OK
--------------
-     Name: Microsoft UAA Bus Driver for High Definition Audio
-Device ID: PCI\VEN_8086&DEV_2668&SUBSYS_008F1025&REV_04\3&B1BFB68&0&D8
-   Driver: F:\WINDOWS\system32\DRIVERS\hdaudbus.sys, 5.10.0001.5013
-(English), 1/7/2005 17:07:18, 138752 bytes
--------------
-
-
-[lspci]
--------------
-0000:00:00.0 0600: 8086:2590 (rev 03)
-0000:00:02.0 0300: 8086:2592 (rev 03)
-0000:00:02.1 0380: 8086:2792 (rev 03)
-0000:00:1b.0 0403: 8086:2668 (rev 04)
-0000:00:1c.0 0604: 8086:2660 (rev 04)
-0000:00:1c.1 0604: 8086:2662 (rev 04)
-0000:00:1c.2 0604: 8086:2664 (rev 04)
-0000:00:1d.0 0c03: 8086:2658 (rev 04)
-0000:00:1d.1 0c03: 8086:2659 (rev 04)
-0000:00:1d.2 0c03: 8086:265a (rev 04)
-0000:00:1d.3 0c03: 8086:265b (rev 04)
-0000:00:1d.7 0c03: 8086:265c (rev 04)
-0000:00:1e.0 0604: 8086:2448 (rev d4)
-0000:00:1f.0 0601: 8086:2641 (rev 04)
-0000:00:1f.1 0101: 8086:266f (rev 04)
-0000:00:1f.3 0c05: 8086:266a (rev 04)
-0000:06:01.0 0607: 104c:ac56
-0000:06:04.0 0280: 8086:4220 (rev 05)
-0000:06:08.0 0200: 10ec:8139 (rev 10)
--------------
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-31-05 00:19 er-ku          New Issue                                    
-10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
-10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
-10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
-12-19-05 02:28 rlrevell       Note Added: 0007083                          
-12-24-05 03:28 OnO            Note Added: 0007139                          
-12-24-05 03:32 OnO            Note Added: 0007140                          
-12-26-05 17:06 er-ku          Note Added: 0007160                          
-12-26-05 17:07 er-ku          Note Edited: 0007160                         
-01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
-01-06-06 17:22 morigane       Note Added: 0007489                          
-01-06-06 18:38 er-ku          Note Added: 0007492                          
-01-06-06 19:39 rlrevell       Note Added: 0007495                          
-01-06-06 19:46 er-ku          Note Added: 0007496                          
-01-06-06 19:56 morigane       Note Added: 0007497                          
-01-06-06 20:04 eudoxos        Note Added: 0007498                          
-01-07-06 17:19 OnO            Note Added: 0007517                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
