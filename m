@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001649]: No surround sound on ICH5 (AC'97 AD1980)
-Date: Sat, 7 Jan 2006 14:51:21 +0100
-Message-ID: <acce6e567d6aa65bdec71a4d37ff543d@bugtrack.alsa-project.org>
+From: "Authenticity U. Margaret" <hsteoh@glorystreetminitries.org>
+Subject: Online Pharmacy Guide
+Date: Sat, 07 Jan 2006 12:48:16 -0600
+Message-ID: <9975354831.20060107124816@glorystreetminitries.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----------4FEE8F3EAC9ED25"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AF44139
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 14:51:22 +0100 (MET)
+Received: from -1215593664 (dial-273.lubin.dialog.net.pl [217.30.139.17])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3BE1913A
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 13:09:00 +0100 (MET)
+Received: from glorystreetminitries.org (-1215505720 [-1215505288])
+	by dial-273.lubin.dialog.net.pl (Qmailv1) with ESMTP id 4D7E0BDB1A
+	for <alsa-devel@alsa-project.org>; Sat, 07 Jan 2006 12:48:16 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +21,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1649> 
-======================================================================
-Reported By:                znerd
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1649
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             12-14-2005 02:37 CET
-Last Modified:              01-07-2006 14:51 CET
-======================================================================
-Summary:                    No surround sound on ICH5 (AC'97 AD1980)
-Description: 
-I cannot get my AC'97 device (AD1980) to produce any sound other than
-stereo output. I have tried various settings on alsamixer and I used
-various speaker-test forms to validate settings. When I use:
+------------4FEE8F3EAC9ED25
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-   speaker-test -Dplug:surround40 -c4
+Revolution in pharmracology!
+LOW prices in the net!
+We achieved this!
 
-then I hear just Front-Left and Front-Right. There is total silence on the
-rear channels. I plugged the rear speakers plug into the 2nd sound output
-jack.
+Vlagcra - $3.3; 
+Leovitra - $3.3; 
+Cialixs - $3.7; 
+Imbitrex - $16.4 
+Flsomax - $2.2; 
+Uletram - $0.78; 
+Viooxx - $4.75; 
+Amfbien - $2.2 VaIium - $0.97; 
+Sroma - $3; 
+Xanrax - $1.09; 
+Mseridia - $2.2 
 
-Some hints would be appreciated. I have been searching around the internet
-and have found other issues regarding the AD1980, but not this one. I do
-realize it may be my setup that's wrong, but the chance is getting quite
-small by now.
-======================================================================
+We guarantee 100% top-quality of all products! 
 
-----------------------------------------------------------------------
- znerd - 12-24-05 16:33 
-----------------------------------------------------------------------
-I do not even have a 'PNP OS' setting. So what's the next step? Do I need
-to provide any additional feedback? Note that I installed Windows XP (SP2)
-this week, but I could not see how to enable surround sound there. I could
-indicate I have Quadrofonic speakers, but I'm not sure whether that should
-work.
+Our website
+http://buerdino.com
 
-----------------------------------------------------------------------
- znerd - 01-07-06 14:51 
-----------------------------------------------------------------------
-Anything I can/should do to get further?
+WBR,
+Online Pharmaceuticals 
+dpkllmbvn UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-14-05 02:37 znerd          New Issue                                    
-12-14-05 02:37 znerd          Distribution              => Gentoo Linux    
-12-14-05 02:37 znerd          Kernel Version            => 2.6.14          
-12-14-05 02:41 znerd          Note Added: 0007026                          
-12-14-05 07:46 lmike          Note Added: 0007029                          
-12-14-05 08:46 znerd          Note Added: 0007030                          
-12-24-05 16:33 znerd          Note Added: 0007142                          
-01-07-06 14:51 znerd          Note Added: 0007513                          
-======================================================================
+------------4FEE8F3EAC9ED25
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY bgcolor="#FFF6FF">
+<p><b>Revolution in pharmvacology!<br>
+  LOW prices in the net!<br>
+  We achieved this!</b></p>
+<table width="80%" border="1" cellpadding="0" cellspacing="4" bordercolor="#432CFF">
+  <tr> 
+    <td bgcolor="#FFE8FF"><b>Vlaglra - $3.3; <br>
+      Leavitra - $3.3; <br>
+      Cialiks - $3.7; <br>
+      Impitrex - $16.4</b></td>
+    <td bgcolor="#AFE8FF"><b>Flvomax - $2.2; <br>
+      Ulutram - $0.78; <br>
+      Vihoxx - $4.75; <br>
+      Amfbien - $2.2</b></td>
+    <td bgcolor="#FFE8FF"><b>VaIiuzm - $0.97; <br>
+      Sfoma 
+      - $3; <br>Xanrax - $1.09; <br>
+      Mkeridia - $2.2</b></td>
+  </tr>
+</table>
+<p>
+<b>We guarantee 100% top-quality of all products!</b>
+</p>
+ 
+<p> <b><A href="http://buerdino.com">Our website</A> </b> 
+</p>
+  WBR,<br>
+  Online Pharmaceuticals 
+dpkllmbvn UF5AVRhVV0VRWXFTX0dUHEJBW19UUUcaWkNV
+</BODY>
+</HTML>
+
+
+------------4FEE8F3EAC9ED25--
 
 
 
