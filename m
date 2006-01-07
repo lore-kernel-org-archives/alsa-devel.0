@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
-Date: Sat, 7 Jan 2006 01:57:27 +0100
-Message-ID: <d885ce4c4d23e65b7d8c9bd321c4bf75@bugtrack.alsa-project.org>
+From: Olivier Galibert <galibert@pobox.com>
+Subject: Re: [2.6 patch] schedule obsolete OSS drivers for removal
+Date: Sat, 7 Jan 2006 01:56:45 +0100
+Message-ID: <20060107005645.GA67447__4609.4209341847$1136615167$gmane$org@dspnet.fr.eu.org>
+References: <s5hpsn8md1j.wl%tiwai@suse.de> <Pine.LNX.4.61.0601041545580.5750@yvahk01.tjqt.qr> <F082489C-B664-472C-8215-BE05875EAF7D@dalecki.de> <Pine.LNX.4.61.0601051154500.21555@yvahk01.tjqt.qr> <0D76E9E1-7FB0-41FD-8FAC-E4B3C6E9C902@dalecki.de> <1136486021.31583.26.camel@mindpipe> <E09E5A76-7743-4E0E-9DF6-6FB4045AA3CF@dalecki.de> <20060106034026.c37c1ed9.diegocg@gmail.com> <20060106145723.GA73361@dspnet.fr.eu.org> <Pine.LNX.4.61.0601061938390.10811@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6C8313A
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 01:57:27 +0100 (MET)
+Received: from dspnet.fr.eu.org (dspnet.fr.eu.org [213.186.44.138])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC41D13A
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 01:56:45 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0601061938390.10811@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +20,125 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jan 06, 2006 at 09:26:42PM +0100, Jaroslav Kysela wrote:
+> You're proposing to add more content switches versus current ALSA 
+> implementation:
+> 
+> user space <-> kernel
+> 
+> While your daemon requires:
+> 
+> user space <-> kernel <-> user space (daemon)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
-======================================================================
-Reported By:                guido
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1694
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian "Sarge" with kernel and alsa from "SID"
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             12-29-2005 22:43 CET
-Last Modified:              01-07-2006 01:57 CET
-======================================================================
-Summary:                    snd-intel8x0m unable to initialize the Modem device
-ICH6
-Description: 
-Dear Maintainer and Reader,
-
-I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
-I found a lot of things recommended in different Mailing lists and blogs
-but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
-kernel Version 2.6.14 with source from Debian "SID".
-The current status is that two modules are loaded during boot,
-snd-intel8x0 and snd-intel8x0m. When both modules are loaded
-the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
-works fine.
-If I additionally load module snd-intel8x0m sound does not work anymore
-and error messages in syslog are printed.
-So I think the error messages are a buck in the snd-intel8x0m module.
-There is no /proc/asound/Modem present when I load the snd-intel8x0m
-module.
-
-In the "Additional Information" Section I paste some debugging output.
-
-Regards
-Guido
-======================================================================
-
-----------------------------------------------------------------------
- sashak - 01-07-06 01:56 
-----------------------------------------------------------------------
-I think there is Conexant's AMC (audio/modem codec) - CXT30, Conexant modem
-codecs  are not supported by intel8x0m (due to lack of docs), so this will
-not be helpful anyway.
-
-Of course intel8x0m driver loading sould not lead to problems with sound.
-This problem may be investigated. If you are with recent version of
-alsa-driver could you send output of 'dmesg' after snd-intel8x0m loading?
-
-----------------------------------------------------------------------
- sashak - 01-07-06 01:57 
-----------------------------------------------------------------------
-And could you try attached patch?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-29-05 22:43 guido          New Issue                                    
-12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
-kernel and alsa from "SID"
-12-29-05 22:43 guido          Kernel Version            => 2.6.14          
-01-03-06 20:51 guido          Issue Monitored: guido                       
-01-07-06 01:56 sashak         Note Added: 0007501                          
-01-07-06 01:57 sashak         File Added: ich-cxt30amc-test.patch               
-    
-01-07-06 01:57 sashak         Note Added: 0007502                          
-======================================================================
+Dmix _is_ a context switch, you know?
 
 
+> So your solution is even more realtime and proper scheduling dependant.
+> Unfortunately, Linux kernels still do not have perfect realtime behaviour 
+> (mostly due to broken drivers etc.).
+
+You only get context switches if you go through plugins, which is
+pretty much the same way alsa currently is, isn't it?
+
+
+> Also, the API is completely irrelevant from this scheme. If daemon does 
+> everything, the ALSA kernel API can go public and documented (altough I 
+> still does not agree with it - see bellow).
+
+The ALSA kernel API better go documented soon or I'll have to document
+it myself.  Security and openness-wise, it is just not acceptable to
+have a user-accessive kernel API kept under wraps.
+
+
+> > ALSA does not have a documented kernel interface nor an optional
+> > library but a mandatory library.  A highly complex, ipc-using library
+> 
+> It's also not very true. You can create your own ALSA library,
+
+After reverse-engineering your kernel interface.  How convenient.
+
+
+> but this library will not be supported with our team.
+
+Of course.  You won't have to though, since you claim the API is
+upwards compatible.
+
+
+> The ALSA from 1.0 version is 
+> binary compatible (even 0.9.0rc4+ linked applications should work) and old 
+> ioctls are emulated.
+
+Good.
+
+
+> I'd like to point that this code runs with standard user priviledges. I 
+> think that the security things are and should be in a different place (in 
+> the kernel). If IPC is broken, other applications (not only using sound) 
+> might be broken.
+
+Every application that does inter-process communication has potential
+protocol-level security issues.  Current ALSA creates two shared
+memory zones and one semaphore with group write permissions.  In a
+setup where a number of people are in the same group (student group
+for instance), are you 100% positive that another user cannot take
+control of the running application by writing the right values at the
+right time in these zones?  Shared memory is the most dangerous
+communication vector there is when the other application is
+untrustable.
+
+
+> > At least OSS, with all its flaws, is a documented kernel interface.
+> > You can static link a oss-using program, whether it uses it directly
+> > or through interfaces like sdl-audio, and it will just work.
+> 
+> Please, see your words. You're simply anarchistic. You replaced 
+> flexibility of dynamic library with a possibility to have static binary.
+
+I am indeed not really interested in reproducing the dll hell of
+windows in linux.  I want simple but really efficient interfaces to
+kernel services which then give the possibility to build special needs
+libraries over it[1].  At that point you're designing an API for a
+specific class of professional audio users and essentially telling all
+the other users to bugger off.  Bad karma.
+
+
+> ALSA library can be also compiled as static library, so it's not a 
+> problem. The ALSA kernel API is stable.
+
+Yeah, that's the second time you're saying that.  I'm sure Dave Jones
+will be really happy to know that his impressions were mistaken and
+his bugzilla was just having hallucinations:
+  http://marc.theaimsgroup.com/?l=linux-kernel&m=113589615627420&w=2
+  http://marc.theaimsgroup.com/?l=linux-kernel&m=113225994603627&w=2
+
+
+> Also, we use symbol versions for 
+> all exported functions, so all old binaries linked with the dynamic alsa 
+> library will work.
+
+Like all the programs I had which segfaulted after the alsa upgrade
+that changed set_rate_near.  Beautiful versioning there guys.
+
+
+> Of course, the drivers might change some universal 
+> control names,
+
+Yeah, also known as "the stick which broke jwz's back".
+
+
+> Also note, that if OSS had the API in userspace from the first days,
+> the emulation or redirection of this API to another API or user space 
+> drivers wouldn't be so much complicated nowadays. Bummer.
+
+It would be exactly as complicated because of the static link issue.
+
+  OG.
+
+[1] SDL, jack and slmodem are I think good examples
 
 
 -------------------------------------------------------
