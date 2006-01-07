@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001548]: "alsa-play: xrun of at least 0.009 msecs. resetting stream" : inopportune small pauses while playing
-Date: Sat, 7 Jan 2006 16:57:20 +0100
-Message-ID: <14afbd34938b8a28e4db601e38c7c0fa@bugtrack.alsa-project.org>
+Date: Sat, 7 Jan 2006 20:54:49 +0100
+Message-ID: <aaa0c020cebdddbc08ca6dee59e9d4fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3543116
-	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 16:57:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2631D110
+	for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2006 20:54:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian sarge 3.1
 Kernel Version:             2.6.13-rc7
 ======================================================================
 Date Submitted:             11-12-2005 10:58 CET
-Last Modified:              01-07-2006 16:57 CET
+Last Modified:              01-07-2006 20:54 CET
 ======================================================================
 Summary:                    "alsa-play: xrun of at least 0.009 msecs. resetting
 stream" : inopportune small pauses while playing
@@ -53,13 +53,6 @@ occur
 the playing doesn't stop, it continue well, just a small pause
 i have no other messages in `dmesg` or in syslog
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-07-06 09:00 
-----------------------------------------------------------------------
-ALSA does provide mixing by default since version 1.0.9.
-
-Try deleting the .asoundrc and it should work.
 
 ----------------------------------------------------------------------
  moncnam - 01-07-06 16:57 
@@ -80,6 +73,16 @@ i will wait a little before switching to 109 with a new kernel
 now, everything is working except thunderbird which outputs in 441000
 (scrippy sound with 48000 filter) : i will try to revert all to 441000
 
+----------------------------------------------------------------------
+ rlrevell - 01-07-06 20:54 
+----------------------------------------------------------------------
+/proc/asound/version only tells you the version of the ALSA kernel drivers.
+ You need to make sure your alsa-lib packages are also at least 1.0.9.
+
+What is the output of:
+
+grep -l dmix /usr/share/alsa/cards/*
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -97,6 +100,7 @@ Date Modified  Username       Field                    Change
 01-07-06 04:04 moncnam        Note Added: 0007506                          
 01-07-06 09:00 rlrevell       Note Added: 0007509                          
 01-07-06 16:57 moncnam        Note Added: 0007516                          
+01-07-06 20:54 rlrevell       Note Added: 0007519                          
 ======================================================================
 
 
