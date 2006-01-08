@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001725]: SB Audigy SE Not Working with Quake 4, Doom 3
-Date: Sun, 8 Jan 2006 21:49:37 +0100
-Message-ID: <a1589d02b4caf3aa2a9a8640412467f5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001662]: No audio output in a laptop with hda-intel....
+Date: Sun, 8 Jan 2006 13:54:13 +0100
+Message-ID: <ffcb0fb874c61c88668fce88091334fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57B20130
-	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 21:49:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B181135
+	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 13:54:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1725> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1662> 
 ======================================================================
-Reported By:                malk271
-Assigned To:                jcdutton
+Reported By:                shl
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1725
-Category:                   PCI - ca0106
+Issue ID:                   1662
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.12-1.1381_FC3
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.13.4
 ======================================================================
-Date Submitted:             01-08-2006 17:35 CET
-Last Modified:              01-08-2006 21:49 CET
+Date Submitted:             12-20-2005 11:18 CET
+Last Modified:              01-08-2006 13:54 CET
 ======================================================================
-Summary:                    SB Audigy SE Not Working with Quake 4, Doom 3
+Summary:                    No audio output in a laptop with hda-intel....
 Description: 
-On FC3, I have compiled and installed alsa-driver-1.0.11rc2 and
-alsa-lib-1.0.11rc2 in order to be able to use a recently purchased Audigy
-SE.
+Hy, I managed to install the hda-intel on my laptop but my big problem is
+:
+The speakers inside the laptop work correctly but everytime I try to plug
+a headset or some external speaker in the output used normally for it, I'd
+the same result : no sound in the laptop'speakers AND no sound at all in
+the external speakers. So after looking a long long time about that
+problem, I didn't find anything. So maybe the function is not yet
+implemented ? If it's the case, is it possible to do it because it'll be
+very usefull for a lot of people ! Thanks for advance and don't hesitate
+to send me a mail if I missed something ...
 
-Regular playback is working (speaker-test and aplay both work, as does
-Amarok with Alsa selected for playback). Skype playback does work, but is
-horribly choppy (unusable really), unlike my other card, an old SB Live!
-1024 player.
-
-However, the Audigy SE does not work with Quake 4 and Doom 3. There is
-some output, but it is just a collection of random sounds. I have tried
-both stereo and 5.1 configurations. Also, output must be sent through the
-plug plugin or the games complain about a sampling mismatch (48KHz found
-but 44.1KHz required).
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-08-06 21:48 
+ shl - 12-23-05 02:04 
 ----------------------------------------------------------------------
-Can you reproduce the problem with an app we have the source code to?
+In fact after looking a too much long time, I finally found the solution
+...
+But I'd some luck cause in not some very documented in the alsa.org'help
+about hda-intel ; it's around the options hda-intel model=z71v needed in
+the /etc/modules.d/alsa file to detect correctly the type of card... After
+that, a update-module is recommended... So I'll put this point in the
+official doc, I think it could be usefull for a lot and it can too avoid
+some other people from wasting time ! Thanks however for the great work of
+Alsa team developper and finally sorry for the disturbment. A happy user
+:)
 
 ----------------------------------------------------------------------
- rlrevell - 01-08-06 21:49 
+ JeanJean - 01-08-06 13:54 
 ----------------------------------------------------------------------
-"Also, output must be sent through the plug plugin or the games complain
-about a sampling mismatch (48KHz found but 44.1KHz required)."
+Sorry i dont understand solution, what did you have done ?
+I have Asus A6Vc with  Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller As sound card and have the same
+problem
 
-This is not a bug - the card can only do 48KHz in hardware.  Apps should
-use the "default" device, not "hw:x,x".
+JeanJean
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-06 17:35 malk271        New Issue                                    
-01-08-06 17:35 malk271        Distribution              => Fedora Core 3   
-01-08-06 17:35 malk271        Kernel Version            => 2.6.12-1.1381_FC3
-01-08-06 21:48 rlrevell       Note Added: 0007527                          
-01-08-06 21:49 rlrevell       Note Added: 0007528                          
+12-20-05 11:18 shl            New Issue                                    
+12-20-05 11:18 shl            Distribution              => Gentoo Linux    
+12-20-05 11:18 shl            Kernel Version            => 2.6.13.4        
+12-20-05 11:19 shl            Issue Monitored: shl                         
+12-20-05 11:19 shl            Issue End Monitor: shl                       
+12-23-05 01:59 shl            Issue Monitored: shl                         
+12-23-05 02:04 shl            Note Added: 0007130                          
+01-08-06 13:54 JeanJean       Note Added: 0007525                          
 ======================================================================
 
 
