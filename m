@@ -1,11 +1,22 @@
-From: "Reggie Cortez" <reggie_cortezep@buss.com>
-Subject: Stockmarket Smallcap Profile
-Date: Sat, 07 Jan 2006 19:43:56 +0000
-Message-ID: <PNAFIDBEDLDCCCMNDDLJELHPKIAA.reggie_cortezep@buss.com>
+From: Hannu Savolainen <hannu@opensound.com>
+Subject: Re: [OT] ALSA userspace API complexity
+Date: Sun, 8 Jan 2006 03:30:14 +0200 (EET)
+Message-ID: <Pine.LNX.4.61.0601080225500.17252__42833.0500064932$1136684040$gmane$org@zeus.compusonic.fi>
+References: <20050726150837.GT3160@stusta.de> <20060103193736.GG3831@stusta.de>
+ <Pine.BSO.4.63.0601032210380.29027@rudy.mif.pg.gda.pl>
+ <mailman.1136368805.14661.linux-kernel2news@redhat.com>
+ <20060104030034.6b780485.zaitcev@redhat.com> <Pine.LNX.4.61.0601041220450.9321@tm8103.perex-int.cz>
+ <Pine.BSO.4.63.0601051253550.17086@rudy.mif.pg.gda.pl>
+ <Pine.LNX.4.61.0601051305240.10350@tm8103.perex-int.cz>
+ <Pine.BSO.4.63.0601051345100.17086@rudy.mif.pg.gda.pl> <s5hmziaird8.wl%tiwai@suse.de>
+ <Pine.LNX.4.61.0601060028310.27932@zeus.compusonic.fi> <s5h7j9chzat.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: base64
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from minor.compusonic.fi (host1.compusonic.fi [195.238.198.242])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0BF710F
+	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 02:32:53 +0100 (MET)
+In-Reply-To: <s5h7j9chzat.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,102 +26,120 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TWFzc2l2ZSBTdG9jayBBbGVydCBGb3IgTW9uZGF5IEphbnVhcnkgOXRoDQpU
-aGUgU29sdmlzIEdyb3VwDQokMTAuNiBNaXx8aTBuIGluIFJldmVudWVzIGlu
-IEZvdXJ0aCBRdWFydGVyIEVuZGVkIFNlcHQuIDMwLCAyMDA1IChTb3VyY2U6
-DQpOZXdzIDEyLzE0LzA1KQ0KDQpPVEM6IFNMVkcNCg0KUHJpY2U6IC4wOA0K
-DQpIdWdlIFBSIENhbXBhaWduIEZvciBNb25kYXkncydzIFRyYWRpbmcgKipT
-TFZHKiogSXMgaXQgR29pbmcgdG8gRXhwbG9kZQ0KSGlnaGVyIEZyb20gSGVy
-ZT8gSWYgWW91IFRoaW5rIFNvLCBDbGltYiBPbiBCb2FyZCEhDQoNCg0KUkVD
-RU5UIE5FV1M6IEdvIFJlYWQgVGhlIEZ1bGwgU3RvcmllcyBSaWdodCBOb3ch
-IQ0KDQoxKVRoZSBTb2x2aXMgR3JvdXAgQW5ub3VuY2VzICQxMC42IE1pfHxp
-MG4gaW4gUmV2ZW51ZXMgaW4gRm91cnRoIFF1YXJ0ZXINCkVuZGVkIFNlcHQu
-IDMwLCAyMDA1DQoNCg0KMilUaGUgU29sdmlzIEdyb3VwIEFubm91bmNlcyBQ
-bGFucyB0byBEaXN0cmlidXRlIEdsb2JhbCBGb29kIFRlY2hub2xvZ2llcw0K
-U3RvY2sgdG8gSXRzIFNoYXJlaG9sZGVycw0KDQoNCjMpVGhlIFNvbHZpcyBH
-cm91cCBTdHJhdGVnaWMgQWxsaWFuY2UgQWdyZWVtZW50IFdpdGggU1NMIEV4
-cGVjdGVkIHRvIFByb3ZpZGUNCiQyNSBNaXx8aTBuIGluIEFkZGl0aW9uYWwg
-UmV2ZW51ZXMgaW4gOTAgRGF5cw0KDQoNCldhdGNoIFRoaXMgT25lIFRyYWRl
-IG9uIE1vbmRheSEgSHVnZSBSZXZlbnVlcyBmb3IgYSBMaXR0bGUgU3RvY2ss
-IFJpZ2h0Pw0KUmFkYXIgaXQgUmlnaHQgTm93Li4uLi4uIEdvIFNMVkcuDQoN
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fDQoNCg0KDQpJbmZvcm1hdGlvbiB3aXRoaW4gdGhpcyBlbWFpfCBj
-b250YWlucyA0cndhcmQgbDAgMGtpbmcgc3RhdGVtZW50cyB3aXRoaW4NCnRo
-ZSBtZWFuaW5nIG9mIFNlY3Rpb24gMjdBIG9mIHRoZSBTZWN1cml0aWVzIEFj
-dCBvZiBuaW5ldGVlbiB0aGlydHkgdGhyZWUgDQphbmRTZWN0aW9uIDIxQiBv
-ZiB0aGUgU2VjdXJpdGllcyBFeGNoYW5nZSBBY3Qgb2YgbmluZXRlZW4gdGhp
-cnR5IGZvdXIuIEFueQ0Kc3RhdGVtZW50cyB0aGF0IGV4cHJlc3Mgb3IgaW52
-b2x2ZSBkaXNjdXNzaW9ucyB3aXRoIHJlc3BlY3QgdG8gcHJlZGljdGlvbnMs
-DQpleHBlY3RhdGlvbnMsIGJlbGllZnMsIHBsYW5zLCBwcm9qZWN0aW9ucywg
-b2JqZWN0aXZlcywgZ29hbHMsIGFzc3VtcHRpb25zIG9yDQpmdXR1cmUgZXZl
-bnRzIG9yIHBlcmZvcm1hbmNlIGFyZSBub3Qgc3RhdGVtZW50cyBvZiBoaXN0
-b3JpY2FsIGZhY3QgYW5kIG1heQ0KYmUgNHJ3YXJkIDFvMGtpbmcgc3RhdGVt
-ZW50cy40cndhcmQgbG8gb2tpbmcgc3RhdGVtZW50cyBhcmUgYmFzZWQgb24N
-CmV4cGVjdGF0aW9ucywgZXN0aW1hdGVzIGFuZCBwcm9qZWN0aW9ucyBhdCB0
-aGUgdGltZSB0aGUgc3RhdGVtZW50cyBhcmUgbWFkZQ0KdGhhdCBpbnZvbHZl
-IGEgbnVtYmVyIG9mIHJpc2tzIGFuZCB1bmNlcnRhaW50aWVzIHdoaWNoIGNv
-dWxkIGNhdXNlIGFjdHVhbA0KcmVzdWx0cyBvciBldmVudHMgdG8gZGlmZmVy
-IG1hdGVyaWFsbHkgZnJvbSB0aG9zZSBwcmVzZW50bHkgYW50aWNpcGF0ZWQu
-IEFzDQp3aXRoIG1hbnkgbWljciBvY2FwIHN0MGMga3MsIHRvZGF5J3MgY28g
-bXBhbnkgaGFzIGRpc2Nsb3NhYmxlIG1hdGVyaWFsIGl0ZW1zDQp5b3UgbmVl
-ZCB0byBjb25zaWRlciBpbiBvcmRlciB0byBtYWtlIGFuIGluZm9ybWVkIGFu
-ZCBpbnRlbGxpZ2VudA0KaW5fdmVzdG1lbnQgZGVjaXNpb24uIFRoZXNlIGl0
-ZW1zIGluY2x1ZGU6IEEgbm9taW5hbCBjYXNoIHBvc2l0aW9uIGFuZCBhDQpn
-b2luZyBjb25jZXJuIG9waW5pb24gZnJvbSBpdHMgYXVkaXRvci4gIEl0IGlz
-IGFuIG9wZXJhdGluZyBDb21wYW55LiBUaGUNCmNvbXBhbnkgaXMgZ29pbmcg
-dG8gbmVlZCBmaW5hbmNpbmcuIElmIHRoYXQgZmluYW5jaW5nIGRvZXMgbm90
-IG9jY3VyLCB0aGUNCmNvbXBhbnkgbWF5IG5vdCBiZSBhYmxlIHRvIGNvbnRp
-bnVlIGFzIGEgZ29pbmcgY29uY2VybiBpbiB3aGljaCBjYXNlIHlvdQ0KY291
-bGQgbG9zZSB5b3VyIGVudGlyZSBpbi12ZXN0bWVudC4gIFRoZSBwdWJsaXNo
-ZXIgb2YgdGhpcyBuZXcgc2xldHRlciBkb2VzDQpub3QgcmVwcmVzZW50IHRo
-YXQgdGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlzICBtZXNzYSBn
-ZSBzdGF0ZXMgYWxsDQptYXRlcmlhbCBmYWN0cyBvciBkb2VzIG5vdCBvbWl0
-IGEgbWF0ZXJpYWwgZmFjdCBuZWNlc3NhcnkgIHRvIG1ha2UgdGhlDQpzdGF0
-ZW1lbnRzIHRoZXJlaW4gbm90IG1pc2xlYWRpbmcuIEFsbCBpbmZvcm1hdGlv
-biBwcm92aWRlZCB3aXRoaW4gdGhpcyBlbWENCmlsIHBlcnRhaW5pbmcgdG8g
-aW4tdmVzdGluZywgc3QwY2tzLCBzZWN1cjF0aWVzIG11c3QgYmUgdW5kZXJz
-dG9vZCBhcw0KaW5mb3JtYXRpb24gcHJvdmlkZWQgYW5kIG5vdCBpbnZlc3Qg
-bWVudCBhZHZpY2UuIFJlbWVtYmVyIGEgdGhvcm91Z2ggZHVlDQpkaWxpZ2Vu
-Y2UgIGVmZm9ydCwgaW5jbHVkaW5nIGEgcmV2aWV3IG9mIGEgY29tcCBhbnkn
-cyBmaWxpbmdzIHdoZW4NCmF2YWlsYWJsZSwgc2hvdWxkIGJlIGNvbXBsZXRl
-ZCAgcHJpb3IgdG8gaW5fdmUgc3RpbmcuIFRoZSBwdWJsaXNoZXIgb2YgdGhp
-cw0KbmV3c2xldHRlciBhZHZpc2VzIGFsbCByZWFkZXJzIGFuZCBzdWJzY3Jp
-YmVycyB0byBzZWVrIGFkdmljZSBmcm9tIGENCnJlZ2lzdGVyZWQgcHJvZmVz
-c2lvbmFsIHNlY3Ugcml0aWVzIHJlcHJlc2VudGF0aXZlIGJlZm9yZSBkZWNp
-ZGluZyB0byB0cmFkZQ0KaW4gcyB0MGNrcyBmZWF0dXJlZCB3aXRoaW4gdGhp
-cyBlX20gYWlsLiBOb25lIG9mIHRoZSBtYXRlcmlhbCB3aXRoaW4gdGhpcw0K
-cmVwb3J0IHNoYWxsIGJlIGNvbnN0cnVlZCBhcyBhbnkga2luZCBvZiBpbl92
-ZXN0bSBlbnQgYWR2aWNlIG9yDQpzb2xpY2l0YXRpb24uIE1hbnkgb2YgdGhl
-c2UgY29tcGFuaWVzIGFyZSBvbiB0aGUgdmVyZ2Ugb2YgYmFua3J1cHRjeS4g
-WW91DQpjYW4gbG9zZSBhbGwgeW91ciBtbyBueSBieSBpbnZlIHN0aW5nIGlu
-IHRoaXMgc3QwIGNrLiBUaGUgcHVibGlzaGVyIG9mIHRoaXMNCm5ld3NsIGV0
-dGVyIGlzIG4wdCBhIHJlZzFzdGVyZWQgaW4tdmVzdCBtZW50IGFkdiBpczBy
-LiBTdWJzY3JpYmVycyBzaG91bGQNCm5vdCB2aWV3IGluZm9ybWF0aW9uIGhl
-cmVpbiBhcyBsZWdhbCwgdGF4LCBhY2NvdW50aW5nIG9yIGludmVzdCBtZW50
-IGFkdmljZS4NCkluIGNvbXBsaWFuY2Ugd2l0aCB0aGUgU2VjdXJpdGllcyBB
-Y3Qgb2YgbmluZXRlZW4gdGhpcnR5IHRocmVlLCBTZWN0aW9uDQoxNyhiKSxU
-aGUgcHVibGlzaGVyIG9mIHRoaXMgbmV3c2wgZXR0ZXIgaXMgY29udHJhY3Rl
-ZCB0byByZWNlaXZlIHR3ZW50eSBmaXZlDQp0aDB1cyBhbmQgZDBsMWFycyBm
-cm9tIGEgdGhpcmQgcGFydHksIG5vdCBhbiBvZmZpY2VyLCBkaXJlY3RvciBv
-ciBhZmZpbGlhdGUNCnNoYXIgZWgwbGRlciBmb3IgdGhlIGNpcmN1bGF0aW9u
-IG9mIHRoaXMgcmVwb3J0LiBCZSBhd2FyZSBvZiBhbiBpbmhlcmVudA0KY29u
-ZmxpY3Qgb2YgaW50ZXJlc3QgcmVzdWx0aW5nIGZyb20gc3VjaCBjb21wZW5z
-YXRpb24gZHVlIHRvIHRoZSBmYWN0IHRoYXQNCnRoaXMgaXMgYSBwYWlkIGFk
-dmVydGlzZW1lbnQgYW5kIGlzIG5vdCB3aXRob3V0IGJpYXMuVGhlIHBhcnR5
-IHRoYXQgcGF5cyB1cw0KaGFzIGEgcG9zaSB0aW9uIGluIHRoZSBzdDBjIGsg
-dGhleSB3aWxsIHNlbGwgYXQgYW55IHRpbWUgd2l0aG91dCBub3RpY2UuDQpU
-aGlzIGNvdWxkIGhhdmUgYSBuZWdhdGl2ZSBpbXBhY3Qgb24gdGhlIHByaWNl
-IG9mIHRoZSBzIHQwY2ssIGNhdXNpbmcgeW91IHRvDQpsb3NlIG0gb255LlRo
-ZWlyIGludGVudGlvbiBpcyB0byBzZWxsIG5vdy4gQWxsIGZhY3R1YWwgaW5m
-b3JtYXRpb24gaW4gdGhpcw0KcmVwb3J0IHdhcyBnYXRoZXJlZCBmcm9tIHB1
-YmxpYyBzb3VyY2VzLCBpbmNsdWRpbmcgYnV0IG5vdCBsaW1pdGVkIHRvDQpD
-b21wYW55IFByZXNzIFJlbGVhc2VzLiBVc2Ugb2YgdGhlIGluZm9ybWF0aW9u
-IGluIHRoaXMgZW1haWwgY29uc3RpdHV0ZXMNCnlvdXIgYWNjZXB0YW5jZSBv
-ZiB0aGVzZSB0ZXJtcy4=
+On Sat, 7 Jan 2006, Takashi Iwai wrote:
 
+> > > Because OSS API doesn't cover many things.  For example, 
+> > > 
+> > > - PCM with non-interleaved formats
+> > There is no need to handle non-interleaved data in kernel level drivers 
+> > because all the devices use interleaved formats.
+> 
+> Many RME boards support only non-intereleave data.
+In such cases it's better to do interleavin/deinterleaving in the kernel 
+rather than forcing the apps to check which method they should use.
+
+Using non-interleaved instead of interleaved as the format was an 
+alternative that I considered very early. Non-interleaved is easier to 
+understand for the programmers. However all devices (with exceptions 
+you mentioned) use interleaved and in the early days (386/486) 
+re-interleaving appeared to be too time consuming.
+
+> > > - PCM with 3-bytes-packed 24bit formats
+> > Applications have no reasons to use for this kind of stupid format so OSS 
+> > translates it to the usual 32 bit format on fly. In fact OSS API does 
+> > have support for this format.
+> 
+> Well, this is stupid but very popular nowadays, unforunately :)
+In user land? (I see you are just joking). I know USB devices use this 
+inpractical format due to USB bus bandwidth limitations. However I'm 100% 
+sure no programmer feels happy with it.
+ 
+> > > - Combination of multiple devices
+> > > - Split of channels to concurrent accesses
+> > Could you be more specific with the above isues?
+> 
+> I meant to split channels of a single device to different processes
+> (e.g. front/rear/clfe for each).  (I know it's doable but the question
+> is how to implement it.)
+By having a device file for each channel (or stereo pair) with their 
+private kernel buffers. The output interrupt handler then picks the 
+samples from each buffer and interleaves them to the output. Right, this 
+can be done in user land too but is it really easier in that way?
+ 
+> > > Forcing OSS API means to force to process the all things above in
+> > > the kernel.  I guess many people would disagree with it.
+> > Wrong. This is not an API issue at all. It's an implementation one. 
+> 
+> Indeed.  But you know that almost all "OSS" applications access
+> directly the device files.  There is no room to put a library to solve
+> these things in user-space.
+Why should there be any need to put library code between the kernel API 
+and an application that is perfectly happy with it? It is only necessary 
+if somebody wants to emulate the OSS kernel API in library level.
+
+A wrapper library with routines like oss_open, oss_write, etc was once 
+considered. However we didn't find any good reason to do that (in 
+particular because that conflicted with routine names already used 
+internally in some important OSS applications).
+ 
+
+> 
+> > An alternative for doing some operations in the kernel is looping the 
+> > audio data through an user land daemon. The application itself is still 
+> > using the usual OSS API without knowing anything about any daemons. We 
+> > have tested this approach and it works. There just has not been any good 
+> > reason to use this approach instead of using kernel space approach. 
+> > Passing data through multiple applications makes the latency issues to 
+> > accumulate. If you do the processing in the kernel you will hit by the 
+> > task scheduling latencies at most once.
+> 
+> Yes, I thought of the similar thing...  But, is it really a preferred
+> approach?
+We found out that doing the things we wanted to do was actually much 
+easier in kernel space. 
+
+The perfect solution requires possibility to run privileged semi-userland 
+tasks between the kernel and the device switch table. If such task can 
+access limited set of kernel services (sleep/wake, mutexes, timers and few 
+others) while still being able to do FP and access normal user land 
+services then...
+However I think this is just a day dream because more or less major 
+changes would be required to the kernel. In addition using just two 
+protection rings is one of the key foundations of the Linux kernel.
+
+> 
+> > The OSS approach is not to make everything in the kernel. Things that can 
+> > be done easier in the applications (or in libraries) have been left 
+> > out from the API.
+> 
+> Basically, it's not 100% fault of OSS, IMO.  But, looking at the
+> reality, apps do access directly to the kernel.  It's worse in the
+> case of binary-only apps like flash or skype.  To support these
+> things, the only "realistic" (OSS-ish) solution so far is to implement
+> the conversion routines in the kernel level.
+What if there is some better way to handle OSS-ALSA interaction than 
+library level hooks/emulation. In the short term this may be difficult 
+because OSS is binary only and outside the kernel. But in long run OSS can 
+hopefully be open sourced which could make it possible to use solutions 
+like merging the kernel space drivers together.
+
+Actually I have forgotten what was the reason why you wanted to get the 
+OSS API emulated in userland rather than using the previous snd-oss 
+module (which worked well other than the API version you emulated was too 
+old)?
+
+Best regards,
+
+Hannu
+-----
+Hannu Savolainen (hannu@opensound.com)
+http://www.opensound.com (Open Sound System (OSS))
+http://www.compusonic.fi (Finnish OSS pages)
+OH2GLH QTH: Karkkila, Finland LOC: KP20CM
 
 
 -------------------------------------------------------
