@@ -1,24 +1,14 @@
-From: Hannu Savolainen <hannu@opensound.com>
-Subject: Re: Re: [OT] ALSA userspace API complexity
-Date: Mon, 9 Jan 2006 00:47:22 +0200 (EET)
-Message-ID: <Pine.LNX.4.61.0601090010090.31763__32547.6568578326$1136760638$gmane$org@zeus.compusonic.fi>
-References: <20050726150837.GT3160@stusta.de> <20060103193736.GG3831@stusta.de>
- <Pine.BSO.4.63.0601032210380.29027@rudy.mif.pg.gda.pl>
- <mailman.1136368805.14661.linux-kernel2news@redhat.com>
- <20060104030034.6b780485.zaitcev@redhat.com> <Pine.LNX.4.61.0601041220450.9321@tm8103.perex-int.cz>
- <Pine.BSO.4.63.0601051253550.17086@rudy.mif.pg.gda.pl>
- <Pine.LNX.4.61.0601051305240.10350@tm8103.perex-int.cz>
- <Pine.BSO.4.63.0601051345100.17086@rudy.mif.pg.gda.pl> <s5hmziaird8.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0601060028310.27932@zeus.compusonic.fi> <s5h7j9chzat.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0601080225500.17252@zeus.compusonic.fi>
- <Pine.LNX.4.61.0601081007550.9470@tm8103.perex-int.cz>
+From: Mark Salazar <msalazar@justmyself.net>
+Subject: Re: [es18xx.c PATCH] #1/4 for Zoom Video - resolve common
+ vs chipset specific mixer controls
+Date: Sun, 08 Jan 2006 18:01:21 -0500
+Message-ID: <43C199C1.1050301@justmyself.net>
+References: <43B00FF2.6030007@justmyself.net>	<1135613234.8293.38.camel@mindpipe>	<43B02A0E.20401@justmyself.net> <s5h8xtyr9oh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed;
+ boundary="------------040809010105040901080408"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from minor.compusonic.fi (host1.compusonic.fi [195.238.198.242])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C755DD4
-	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 23:49:59 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.61.0601081007550.9470@tm8103.perex-int.cz>
+In-Reply-To: <s5h8xtyr9oh.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,81 +18,173 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 8 Jan 2006, Jaroslav Kysela wrote:
+This is a multi-part message in MIME format.
+--------------040809010105040901080408
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> I don't think so. The library can do such conversions (and alsa-lib does) 
-> quite easy. If we have a possibility to remove the code from the kernel 
-> space without any drawbacks, then it should be removed. I don't see any 
-> advantage to have such conversions in the kernel.
-The advantage is that you don't need any libraries. 
+Takashi Iwai wrote:
+
+>This doesn't work for the multiple cards because you overwrite the
+>static array.  
+>
+Yup. Good catch. Chalk up another one for peer review.
+
+>Better to create once kcontrol instaces via
+>snd_ctl_new1(), then copy the name on each instance according to the
+>model.
+>  
+>
+Hmmm .. what if I just reset it to UNSET in the loop where it's used (as 
+this patch does)?
+
+New patch attached . Tested same as original version.
+
+
+--------------040809010105040901080408
+Content-Type: text/plain;
+ name="es18xx.CVSmod1V2.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="es18xx.CVSmod1V2.diff"
+
+diff -Nur ../alsa-driver/alsa-kernel/isa/es18xx.c ./alsa-kernel/isa/es18xx.c
+--- ../alsa-driver/alsa-kernel/isa/es18xx.c	2004-12-15 10:26:10.000000000 -0500
++++ ./alsa-kernel/isa/es18xx.c	2006-01-03 21:50:26.000000000 -0500
+@@ -1181,19 +1181,22 @@
+ 	return change;
+ }
  
-> Bad decision. Again, I feel you're hidding the flexibility against
-> your feeling that the kernel API is the best enough for applications.
-> Imagine that the API redirection is or can be also flexible for your 
-> future development.
-Past 13 years have proven that kernel only API has been very successfull.
-There are 1000's of applications supporting it and being a kernel 
-only API has not caused any problems. If something cannot be implemented 
-in kernel (like effect plugins) then a library can be implemented on top 
-of the OSS kernel API which has already been done by other developers.
++/* Mixer controls
++ * These arrays contain setup data for mixer controls.
++ * 
++ * The controls that are universal to all chipsets are fully initialized
++ * here.
++ */
+ static struct snd_kcontrol_new snd_es18xx_base_controls[] = {
+ ES18XX_DOUBLE("Master Playback Volume", 0, 0x60, 0x62, 0, 0, 63, 0),
+ ES18XX_DOUBLE("Master Playback Switch", 0, 0x60, 0x62, 6, 6, 1, 1),
+ ES18XX_DOUBLE("Line Playback Volume", 0, 0x3e, 0x3e, 4, 0, 15, 0),
+ ES18XX_DOUBLE("CD Playback Volume", 0, 0x38, 0x38, 4, 0, 15, 0),
+ ES18XX_DOUBLE("FM Playback Volume", 0, 0x36, 0x36, 4, 0, 15, 0),
+-ES18XX_DOUBLE("Mono Playback Volume", 0, 0x6d, 0x6d, 4, 0, 15, 0),
+ ES18XX_DOUBLE("Mic Playback Volume", 0, 0x1a, 0x1a, 4, 0, 15, 0),
+ ES18XX_DOUBLE("Aux Playback Volume", 0, 0x3a, 0x3a, 4, 0, 15, 0),
+-ES18XX_SINGLE("PC Speaker Playback Volume", 0, 0x3c, 0, 7, 0),
+ ES18XX_SINGLE("Record Monitor", 0, 0xa8, 3, 1, 0),
+ ES18XX_DOUBLE("Capture Volume", 0, 0xb4, 0xb4, 4, 0, 15, 0),
+-ES18XX_SINGLE("Capture Switch", 0, 0x1c, 4, 1, 1),
+ {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "Capture Source",
+@@ -1203,19 +1206,34 @@
+ }
+ };
  
-Right. Emulating OSS API in userland is difficult in this way. I just 
-couldn't imagine that somebody wants to do that. It can be considered as 
-my fault.
+-static struct snd_kcontrol_new snd_es18xx_mono_in_control = 
+-ES18XX_DOUBLE("Mono Input Playback Volume", 0, 0x6d, 0x6d, 4, 0, 15, 0);
+-
+ static struct snd_kcontrol_new snd_es18xx_recmix_controls[] = {
+ ES18XX_DOUBLE("PCM Capture Volume", 0, 0x69, 0x69, 4, 0, 15, 0),
+ ES18XX_DOUBLE("Mic Capture Volume", 0, 0x68, 0x68, 4, 0, 15, 0),
+ ES18XX_DOUBLE("Line Capture Volume", 0, 0x6e, 0x6e, 4, 0, 15, 0),
+ ES18XX_DOUBLE("FM Capture Volume", 0, 0x6b, 0x6b, 4, 0, 15, 0),
+-ES18XX_DOUBLE("Mono Capture Volume", 0, 0x6f, 0x6f, 4, 0, 15, 0),
+ ES18XX_DOUBLE("CD Capture Volume", 0, 0x6a, 0x6a, 4, 0, 15, 0),
+ ES18XX_DOUBLE("Aux Capture Volume", 0, 0x6c, 0x6c, 4, 0, 15, 0)
+ };
+ 
++/*
++ * These chipset specific mixer controls are initialized in
++ * snd_es18xx_mixer. Those controls which are not UNSET are then
++ * instantiated.
++ */
++static char UNSETbuf = '\0';
++#define UNSET ((char *)&UNSETbuf)
++static enum optionalControlsIndex {reg1cBit4, reg3cMono, reg6d, reg6f};
++static struct snd_kcontrol_new snd_es18xx_optional_controls[] = {
++ES18XX_SINGLE(UNSET, 0, 0x1c, 4, 1, 1),
++ES18XX_SINGLE(UNSET, 0, 0x3c, 0, 7, 0),
++ES18XX_DOUBLE(UNSET, 0, 0x6d, 0x6d, 4, 0, 15, 0),
++ES18XX_DOUBLE(UNSET, 0, 0x6f, 0x6f, 4, 0, 15, 0)
++};
++static char* captureSwitchName = "Capture Switch";
++static char* speakerPlayName = "PC Speaker Playback Volume";
++static char* monoPlayName = "Mono Playback Volume";
++static char* monoRecName = "Mono Capture Volume";
++
+ static struct snd_kcontrol_new snd_es18xx_pcm1_controls[] = {
+ ES18XX_DOUBLE("PCM Playback Volume", 0, 0x14, 0x14, 4, 0, 15, 0),
+ };
+@@ -1466,11 +1484,14 @@
+ 	}
+ 			
+         outb(0x40, chip->port + 0x04);
++	udelay(10);
+ 	hi = inb(chip->port + 0x05);
++	udelay(10);
+ 	lo = inb(chip->port + 0x05);
+ 	if (hi != lo) {
+ 		chip->version = hi << 8 | lo;
+ 		chip->ctrl_port = inb(chip->port + 0x05) << 8;
++		udelay(10);
+ 		chip->ctrl_port += inb(chip->port + 0x05);
+ 
+ 		if ((chip->res_ctrl_port = request_region(chip->ctrl_port, 8, "ES18xx - CTRL")) == NULL) {
+@@ -1744,7 +1765,7 @@
+ static int __devinit snd_es18xx_mixer(struct snd_es18xx *chip)
+ {
+ 	struct snd_card *card;
+-	int err;
++	int err, retVal;
+ 	unsigned int idx;
+ 
+ 	card = chip->card;
+@@ -1781,10 +1802,6 @@
+ 		}
+ 	}
+ 
+-	if (chip->caps & ES18XX_MONO) {
+-		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_mono_in_control, chip))) < 0)
+-			return err;
+-	}
+ 	if (chip->caps & ES18XX_RECMIX) {
+ 		for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_recmix_controls); idx++) {
+ 			if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_recmix_controls[idx], chip))) < 0)
+@@ -1822,7 +1839,27 @@
+ 			
+ 		}
+ 	}
+-	return 0;
++/* finish initializing other chipset specific controls
++ */
++	if (chip->version != 0x1868) {
++		snd_es18xx_optional_controls[reg3cMono].name = speakerPlayName;
++	}
++	switch (chip->version) {
++	case 0x1869:
++		snd_es18xx_optional_controls[reg1cBit4].name = captureSwitchName;
++		snd_es18xx_optional_controls[reg6d].name = monoPlayName;
++		snd_es18xx_optional_controls[reg6f].name = monoRecName;
++		break;
++	}
++	retVal = 0;
++	for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_optional_controls); idx++) {
++		if (snd_es18xx_optional_controls[idx].name == UNSET)
++			continue;
++		if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_optional_controls[idx], chip))) < 0)
++			retVal = err;
++		snd_es18xx_optional_controls[idx].name = UNSET;
++	}
++	return retVal;
+ }
+        
 
-> > Actually I have forgotten what was the reason why you wanted to get the 
-> > OSS API emulated in userland rather than using the previous snd-oss 
-> > module (which worked well other than the API version you emulated was too 
-> > old)?
-> 
-> Stream mixing. We have user space solution while you insist to put this 
-> code to kernel. Simply, we need to go through our library.
-I wonder if foing mixing (summing) of streams in kernel really causes more 
-problems than emulating a kernel API in user space.
-
-> >From the end user perspective, don't you think that having an opportunity 
-> to change the API entry point from one to multiple (user space library - 
-> preferred, direct kernel space - last resort) is more flexible for 
-> developers and users? Please, consider this question without any flames 
-> line which API is better and what's better for audio subsystem architects 
-> and what's better for your commercial work.
-It's too late to discuss about this. This decision could have been made in 
-1992-1993 before large number of applications were already written. 
-Unfortunately the whole issue was raised just recently.
-
-There has been definitions for routines like osslib_open(), etc in 
-soundcard.h for years. Also the libOSSlib.so library contains such 
-routines. If an OSS application is compiled without -DOSSLIB then they are 
-defined as open, etc. Unfortunately this version of soundcard.h was not 
-accepted by the kernel OSS maintainers so the stock Linux version doesn't 
-have these definitions.
-
-If you like to get OSS apps to go through this library API you can do the 
-following:
-
-- Get the latest soundcard.h from our OSS package to be included in the 
-stock kernel.
-- Do the same for libOSSlib (sources shipped with OSS).
-- Tell all OSS developers to change all OSS system calls to use their 
-osslib_ counterparts. And to recompile against the latest soundcard.h
-with -DOSSLIB. Make sure all distributions have done the changes before 
-that.
-
-Then you can include a libOSSlib.o library in ALSA with all the OSS 
-emulation stuf inside.
-
-Best regards,
-
-Hannu
------
-Hannu Savolainen (hannu@opensound.com)
-http://www.opensound.com (Open Sound System (OSS))
-http://www.compusonic.fi (Finnish OSS pages)
-OH2GLH QTH: Karkkila, Finland LOC: KP20CM
+--------------040809010105040901080408--
 
 
 -------------------------------------------------------
