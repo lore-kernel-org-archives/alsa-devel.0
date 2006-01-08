@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001662]: No audio output in a laptop with hda-intel....
-Date: Sun, 8 Jan 2006 13:54:13 +0100
-Message-ID: <ffcb0fb874c61c88668fce88091334fe@bugtrack.alsa-project.org>
+From: Olivier Galibert <galibert@pobox.com>
+Subject: Re: [OT] ALSA userspace API complexity
+Date: Sun, 8 Jan 2006 14:04:47 +0100
+Message-ID: <20060108130447.GA96834__17589.199022814$1136755069$gmane$org@dspnet.fr.eu.org>
+References: <20060104030034.6b780485.zaitcev@redhat.com> <Pine.LNX.4.61.0601041220450.9321@tm8103.perex-int.cz> <Pine.BSO.4.63.0601051253550.17086@rudy.mif.pg.gda.pl> <Pine.LNX.4.61.0601051305240.10350@tm8103.perex-int.cz> <Pine.BSO.4.63.0601051345100.17086@rudy.mif.pg.gda.pl> <s5hmziaird8.wl%tiwai@suse.de> <Pine.BSO.4.63.0601052022560.15077@rudy.mif.pg.gda.pl> <s5h8xtshzwk.wl%tiwai@suse.de> <20060108020335.GA26114@dspnet.fr.eu.org> <Pine.LNX.4.61.0601081039520.9470@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B181135
-	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 13:54:14 +0100 (MET)
+Received: from dspnet.fr.eu.org (dspnet.fr.eu.org [213.186.44.138])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B963A135
+	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 14:04:48 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0601081039520.9470@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +20,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jan 08, 2006 at 10:42:02AM +0100, Jaroslav Kysela wrote:
+> On Sun, 8 Jan 2006, Olivier Galibert wrote:
+> 
+> > On Sat, Jan 07, 2006 at 03:32:27PM +0100, Takashi Iwai wrote:
+> > > Yes, it's a known problem to be fixed.  But, it's no excuse to do
+> > > _everything_ in the kernel (which OSS requires).
+> > 
+> > OSS does not require to do anything in the kernel except an entry
+> > point.
+> > 
+> > 
+> > > And if the application doesn't support, who and where converts it?
+> > > With OSS API, it's a job of the kernel.
+> > 
+> > Once again no.  Nothing prevents the kernel to forward the data to
+> > userland daemons depending on a userspace-uploaded configuration.
+> 
+> But it's quite ineffecient. The kernel must switch tasks at least twice
+> or more. It's the major problem with the current OSS API.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1662> 
-======================================================================
-Reported By:                shl
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1662
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.13.4
-======================================================================
-Date Submitted:             12-20-2005 11:18 CET
-Last Modified:              01-08-2006 13:54 CET
-======================================================================
-Summary:                    No audio output in a laptop with hda-intel....
-Description: 
-Hy, I managed to install the hda-intel on my laptop but my big problem is
-:
-The speakers inside the laptop work correctly but everytime I try to plug
-a headset or some external speaker in the output used normally for it, I'd
-the same result : no sound in the laptop'speakers AND no sound at all in
-the external speakers. So after looking a long long time about that
-problem, I didn't find anything. So maybe the function is not yet
-implemented ? If it's the case, is it possible to do it because it'll be
-very usefull for a lot of people ! Thanks for advance and don't hesitate
-to send me a mail if I missed something ...
+Once.  U->K or K->U is not task switching and accordingly has a very
+low cost.  It's changing of userspace task that is costly.  And dmix
+_is_ a task switch, there is no performance difference between talking
+with it through shared memory and semaphores and who knows what else
+and talking with it through a kernel interface.
 
+You should count how many U-U switches and U-K syscalls communicating
+with dmix represents.  Hard to do for a simple user, since the
+protocol is not documented.
 
-======================================================================
-
-----------------------------------------------------------------------
- shl - 12-23-05 02:04 
-----------------------------------------------------------------------
-In fact after looking a too much long time, I finally found the solution
-...
-But I'd some luck cause in not some very documented in the alsa.org'help
-about hda-intel ; it's around the options hda-intel model=z71v needed in
-the /etc/modules.d/alsa file to detect correctly the type of card... After
-that, a update-module is recommended... So I'll put this point in the
-official doc, I think it could be usefull for a lot and it can too avoid
-some other people from wasting time ! Thanks however for the great work of
-Alsa team developper and finally sorry for the disturbment. A happy user
-:)
-
-----------------------------------------------------------------------
- JeanJean - 01-08-06 13:54 
-----------------------------------------------------------------------
-Sorry i dont understand solution, what did you have done ?
-I have Asus A6Vc with  Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller As sound card and have the same
-problem
-
-JeanJean
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-20-05 11:18 shl            New Issue                                    
-12-20-05 11:18 shl            Distribution              => Gentoo Linux    
-12-20-05 11:18 shl            Kernel Version            => 2.6.13.4        
-12-20-05 11:19 shl            Issue Monitored: shl                         
-12-20-05 11:19 shl            Issue End Monitor: shl                       
-12-23-05 01:59 shl            Issue Monitored: shl                         
-12-23-05 02:04 shl            Note Added: 0007130                          
-01-08-06 13:54 JeanJean       Note Added: 0007525                          
-======================================================================
-
+  OG.
 
 
 
