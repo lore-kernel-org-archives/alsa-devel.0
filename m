@@ -1,11 +1,14 @@
-From: =?ISO-8859-2?Q?Pawe=B3_Goleniowski?= <pawelg@dabrowa.pl>
-Subject: ALSA driver - snd-bt87x and Flyvideo`98
-Date: Sun, 08 Jan 2006 12:23:35 +0100
-Message-ID: <43C0F637.1020100@dabrowa.pl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001725]: SB Audigy SE Not Working with Quake 4, Doom 3
+Date: Sun, 8 Jan 2006 17:35:43 +0100
+Message-ID: <8c86579013a2b1a753ff888bf0647c82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB58B129
+	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 17:35:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,40 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Hi,
-My TV card used to work as additional sound device with snd-bt87x. But
-not any more.
-Under 2.6.12 it still works - dmesg shows info that card is
-unrecognized and gives this address to send informations:
-Card: Flyvideo 98 (probably) LR50
-ID: 0x1851:0x1850 (but scanpci shows that BT audio device is 0x109e
-0x0878)
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1725> 
+======================================================================
+Reported By:                malk271
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1725
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.12-1.1381_FC3
+======================================================================
+Date Submitted:             01-08-2006 17:35 CET
+Last Modified:              01-08-2006 17:35 CET
+======================================================================
+Summary:                    SB Audigy SE Not Working with Quake 4, Doom 3
+Description: 
+On FC3, I have compiled and installed alsa-driver-1.0.11rc2 and
+alsa-lib-1.0.11rc2 in order to be able to use a recently purchased Audigy
+SE.
 
-Under 2.6.15 or ALSA 1.0.11rc2 the BT audio device doesn't work any
-more nor even gives any information in dmesg.
+Regular playback is working (speaker-test and aplay both work, as does
+Amarok with Alsa selected for playback). Skype playback does work, but is
+horribly choppy (unusable really), unlike my other card, an old SB Live!
+1024 player.
 
-Please help and thanks in advance.
+However, the Audigy SE does not work with Quake 4 and Doom 3. There is
+some output, but it is just a collection of random sounds. I have tried
+both stereo and 5.1 configurations. Also, output must be sent through the
+plug plugin or the games complain about a sampling mismatch (48KHz found
+but 44.1KHz required).
 
-goldi
+======================================================================
 
-- --
-Ksi=EAga Bokonona, rozdzia=B3 14. Jak=B1 nadziej=EA mo=BFe =BFywi=E6 my=B6=
-l=B1cy
-cz=B3owiek co do przysz=B3o=B6ci ludzko=B6ci, je=B6li we=BCmie pod uwag=EA
-do=B6wiadczenia ostatniego miliona lat?: "=AFadnej."
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.7 (GNU/Linux)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-08-06 17:35 malk271        New Issue                                    
+01-08-06 17:35 malk271        Distribution              => Fedora Core 3   
+01-08-06 17:35 malk271        Kernel Version            => 2.6.12-1.1381_FC3
+======================================================================
 
-iD8DBQFDwPY2H8wn/AU/k3MRAjyyAJ9mqczW2H2SjOa0i1uSye/5Aff7nACfXdld
-T6uFceRLdQNWbt0wDTiirsc=3D
-=3De5Sr
------END PGP SIGNATURE-----
 
 
 
