@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Sun, 8 Jan 2006 17:41:10 +0100
-Message-ID: <5787072d674c9c6500d20e8242fff3ba@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001725]: SB Audigy SE Not Working with Quake 4, Doom 3
+Date: Sun, 8 Jan 2006 21:48:04 +0100
+Message-ID: <9d0b8afd8cb7bfd42039f03ba4a42722@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4399129
-	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 17:41:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B950D130
+	for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2006 21:48:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1725> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                malk271
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
+Issue ID:                   1725
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.12-1.1381_FC3
 ======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              01-08-2006 17:41 CET
+Date Submitted:             01-08-2006 17:35 CET
+Last Modified:              01-08-2006 21:48 CET
 ======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
+Summary:                    SB Audigy SE Not Working with Quake 4, Doom 3
 Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
+On FC3, I have compiled and installed alsa-driver-1.0.11rc2 and
+alsa-lib-1.0.11rc2 in order to be able to use a recently purchased Audigy
+SE.
 
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
+Regular playback is working (speaker-test and aplay both work, as does
+Amarok with Alsa selected for playback). Skype playback does work, but is
+horribly choppy (unusable really), unlike my other card, an old SB Live!
+1024 player.
 
-Playing stereo sound is OK.
-
-
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
+However, the Audigy SE does not work with Quake 4 and Doom 3. There is
+some output, but it is just a collection of random sounds. I have tried
+both stereo and 5.1 configurations. Also, output must be sent through the
+plug plugin or the games complain about a sampling mismatch (48KHz found
+but 44.1KHz required).
 
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 01-08-06 21:48 
+----------------------------------------------------------------------
+Can you reproduce the problem with an app we have the source code to?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-08-06 17:35 malk271        New Issue                                    
+01-08-06 17:35 malk271        Distribution              => Fedora Core 3   
+01-08-06 17:35 malk271        Kernel Version            => 2.6.12-1.1381_FC3
+01-08-06 21:48 rlrevell       Note Added: 0007527                          
 ======================================================================
 
 
