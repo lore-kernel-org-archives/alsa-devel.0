@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001725]: SB Audigy SE Not Working with Quake 4, Doom 3
-Date: Mon, 9 Jan 2006 09:48:50 +0100
-Message-ID: <8c0bd83b8357507503808da4ed8c59af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001727]: After un-muting the soundcard and detecting the ca0106 module it is unable to produce any sound.
+Date: Mon, 9 Jan 2006 10:56:33 +0100
+Message-ID: <c81da1ed48a012f513027f1f06ccb317@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E531F8
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 09:48:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21511143
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 10:56:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1725> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1727> 
 ======================================================================
-Reported By:                malk271
+Reported By:                domsmith
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1725
+Issue ID:                   1727
 Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.12-1.1381_FC3
+Distribution:               Slackware 10.1, 10.2, ubuntu 5.10 kubuntu unstable
+(dapper)
+Kernel Version:             2.6.12 ,  2.6.14
 ======================================================================
-Date Submitted:             01-08-2006 17:35 CET
-Last Modified:              01-09-2006 09:48 CET
+Date Submitted:             01-09-2006 10:56 CET
+Last Modified:              01-09-2006 10:56 CET
 ======================================================================
-Summary:                    SB Audigy SE Not Working with Quake 4, Doom 3
+Summary:                    After un-muting the soundcard and detecting the
+ca0106 module it is unable to produce any sound.
 Description: 
-On FC3, I have compiled and installed alsa-driver-1.0.11rc2 and
-alsa-lib-1.0.11rc2 in order to be able to use a recently purchased Audigy
-SE.
+Tested under Slackware 10.1, 10.2, ubuntu 5.10 kubuntu unstable (dapper)
 
-Regular playback is working (speaker-test and aplay both work, as does
-Amarok with Alsa selected for playback). Skype playback does work, but is
-horribly choppy (unusable really), unlike my other card, an old SB Live!
-1024 player.
-
-However, the Audigy SE does not work with Quake 4 and Doom 3. There is
-some output, but it is just a collection of random sounds. I have tried
-both stereo and 5.1 configurations. Also, output must be sent through the
-plug plugin or the games complain about a sampling mismatch (48KHz found
-but 44.1KHz required).
-
+The ca0106 module gets detected under all these versions but it is unable
+to produce any sound. The Soundcard is a on-board soundblaster live built
+into a shuttle SD11G5. Under ubuntu i rebuilt the kernel and alsa drivers
+but still couldn't get any sound what so ever.
 ======================================================================
-
-----------------------------------------------------------------------
- malk271 - 01-09-06 09:47 
-----------------------------------------------------------------------
-> This is not a bug - the card can only do 48KHz in hardware. Apps
-> should use the "default" device, not "hw:x,x".
-
-There are two cards in my computer. Using the "default" device selects
-card 0, not card 1 (the card I am trying to use). Also, the Q4 / Doom 3
-FAQ indicate that this  should not happen any more -- I realise that this
-is not necessarily an Alsa issue.
-
-----------------------------------------------------------------------
- malk271 - 01-09-06 09:48 
-----------------------------------------------------------------------
-> Can you reproduce the problem with an app we have the source code to?
-
-I don't know. I guess my point is that the card is not working with the
-apps I am using.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-06 17:35 malk271        New Issue                                    
-01-08-06 17:35 malk271        Distribution              => Fedora Core 3   
-01-08-06 17:35 malk271        Kernel Version            => 2.6.12-1.1381_FC3
-01-08-06 21:48 rlrevell       Note Added: 0007527                          
-01-08-06 21:49 rlrevell       Note Added: 0007528                          
-01-09-06 09:47 malk271        Note Added: 0007532                          
-01-09-06 09:48 malk271        Note Added: 0007533                          
+01-09-06 10:56 domsmith       New Issue                                    
+01-09-06 10:56 domsmith       Distribution              => Slackware 10.1, 10.2,
+ubuntu 5.10 kubuntu unstable (dapper)
+01-09-06 10:56 domsmith       Kernel Version            => 2.6.12 ,  2.6.14
 ======================================================================
 
 
