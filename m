@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001700]: CMI 9880 not detected and not implemented yet
-Date: Mon, 9 Jan 2006 22:25:53 +0100
-Message-ID: <8bc8f6adbb6347bf4e10ce81e0a75b6e@bugtrack.alsa-project.org>
+Date: Mon, 9 Jan 2006 22:25:10 +0100
+Message-ID: <97f672b93ceb97cbd132706b78896235@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84038144
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:25:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 60BEE144
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:25:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UNset as DUPLICATE OF issue 0001600.
+The following issue has been set as DUPLICATE OF issue 0001600.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1700> 
 ======================================================================
@@ -57,7 +57,7 @@ but it does not give a complete performance.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
+duplicate of        0001600 On a Shuttle SD11G5 the audio card is r...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -73,8 +73,6 @@ Date Modified  Username       Field                    Change
 01-02-06 17:40 mitcoes        Kernel Version            => all             
 01-04-06 17:33 tiwai          Note Added: 0007444                          
 01-09-06 22:25 jcdutton       Relationship added       duplicate of 0001600
-01-09-06 22:25 jcdutton       Relationship added       related to 0001675  
-01-09-06 22:25 jcdutton       Relationship deleted     duplicate of 0001600
 ======================================================================
 
 
