@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001679]: Audigy 4 SE (SB_0570, ca0106) does not work correctly.
-Date: Mon, 9 Jan 2006 21:51:03 +0100
-Message-ID: <784c18ae64723383e9e19ab8154ebde7@bugtrack.alsa-project.org>
+From: =?iso-8859-1?q?Ren=E9_Rebe?= <rene@exactcode.de>
+Subject: Re: Re: [OT] ALSA userspace API complexity
+Date: Mon, 9 Jan 2006 18:12:55 +0100
+Message-ID: <200601091812.55943.rene__27820.0768902481$1138785885$gmane$org@exactcode.de>
+References: <20050726150837.GT3160@stusta.de> <200601091405.23939.rene@exactcode.de> <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE180141
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:51:03 +0100 (MET)
+Received: from mx01.qsc.de (mx01.qsc.de [213.148.129.14])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7BDE9140
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 18:16:24 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +22,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Hannu Savolainen <hannu@opensound.com>
+Cc: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1679> 
-======================================================================
-Reported By:                moriak
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1679
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Distribution:               standard
-Kernel Version:             2.6.9
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-25-2005 17:05 CET
-Last Modified:              01-09-2006 21:51 CET
-======================================================================
-Summary:                    Audigy 4 SE (SB_0570, ca0106) does not work
-correctly.
-Description: 
-There is no sound, only noise (when sound must play), and somewhy it
-detects as SB Audigy LS.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001701 Audigy LS (or SE) doen't work probably
-related to          0001720 Audigy LS only produces noise instead p...
-======================================================================
+On Monday 09 January 2006 16:10, Hannu Savolainen wrote:
 
-----------------------------------------------------------------------
- moriak - 12-27-05 10:11 
-----------------------------------------------------------------------
-Thanks. So, when alsa-driver 1.0.11rc2 is planned to be released?
+> > > I don't think so. The library can do such conversions (and alsa-lib does) 
+> > > quite easy. If we have a possibility to remove the code from the kernel 
+> > > space without any drawbacks, then it should be removed. I don't see any 
+> > > advantage to have such conversions in the kernel.
+> > 
+> > Also, when the data is already available as single streams in a user-space
+> > multi track application, why should it be forced interleaved, when the hardware
+> > could handle the format just fine?
+> Because the conversion doesn't cost anything. Trying to avoid it by 
+> making the API more complicated (I would even say confusing) is extreme 
+> overkill. 
 
-[sorry if my english is bad, I am russian =)]
+Since when doesn't cost convesion anything? I'm able to count a lot of wasted
+CPU cycles in there ...
 
-----------------------------------------------------------------------
- jcdutton - 01-09-06 21:51 
-----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.11rc2
+> Even worse this kind of features weaken the device abstraction provided by 
+> the API. The applications will have to check for this and 
+> that and provide support for 100s of special cases that may be required by 
+> certain devices. 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-25-05 17:05 moriak         New Issue                                    
-12-25-05 17:05 moriak         Distribution              => standard        
-12-25-05 17:05 moriak         Kernel Version            => 2.6.9           
-12-25-05 21:54 jcdutton       Note Added: 0007145                          
-12-25-05 21:54 jcdutton       Status                   assigned => feedback
-12-27-05 10:11 moriak         Note Added: 0007167                          
-01-02-06 19:29 rlrevell       Relationship added       has duplicate 0001701
-01-09-06 21:48 jcdutton       Relationship added       related to 0001720  
-01-09-06 21:51 jcdutton       Status                   feedback => closed  
-01-09-06 21:51 jcdutton       Note Added: 0007540                          
-======================================================================
+An lame write() only player can still open the default device and get the auto-convert
+chain it deserves ...
 
+Yours,
+  Rene Rebe
 
+-- 
+ExactCODE Berlin
 
 
 -------------------------------------------------------
