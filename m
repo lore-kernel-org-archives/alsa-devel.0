@@ -1,13 +1,14 @@
-From: zhuangyao <secularbird.eagle@gmail.com>
-Subject: Re: Alsa-devel -- confirmation of subscription -- request 214791
-Date: Mon, 09 Jan 2006 14:39:32 +0800
-Message-ID: <1136788772.12943.4.camel@localhost.localdomain>
-References: <20060109061141.1245C1270A@sc8-sf-spam2.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001725]: SB Audigy SE Not Working with Quake 4, Doom 3
+Date: Mon, 9 Jan 2006 09:47:25 +0100
+Message-ID: <2e9e5bd29fa1738353a81a6de260de7e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060109061141.1245C1270A@sc8-sf-spam2.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86C93143
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 09:47:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,10 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- confirm 214791
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1725> 
+======================================================================
+Reported By:                malk271
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1725
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.12-1.1381_FC3
+======================================================================
+Date Submitted:             01-08-2006 17:35 CET
+Last Modified:              01-09-2006 09:47 CET
+======================================================================
+Summary:                    SB Audigy SE Not Working with Quake 4, Doom 3
+Description: 
+On FC3, I have compiled and installed alsa-driver-1.0.11rc2 and
+alsa-lib-1.0.11rc2 in order to be able to use a recently purchased Audigy
+SE.
+
+Regular playback is working (speaker-test and aplay both work, as does
+Amarok with Alsa selected for playback). Skype playback does work, but is
+horribly choppy (unusable really), unlike my other card, an old SB Live!
+1024 player.
+
+However, the Audigy SE does not work with Quake 4 and Doom 3. There is
+some output, but it is just a collection of random sounds. I have tried
+both stereo and 5.1 configurations. Also, output must be sent through the
+plug plugin or the games complain about a sampling mismatch (48KHz found
+but 44.1KHz required).
+
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 01-08-06 21:49 
+----------------------------------------------------------------------
+"Also, output must be sent through the plug plugin or the games complain
+about a sampling mismatch (48KHz found but 44.1KHz required)."
+
+This is not a bug - the card can only do 48KHz in hardware.  Apps should
+use the "default" device, not "hw:x,x".
+
+----------------------------------------------------------------------
+ malk271 - 01-09-06 09:47 
+----------------------------------------------------------------------
+> This is not a bug - the card can only do 48KHz in hardware. Apps
+> should use the "default" device, not "hw:x,x".
+
+There are two cards in my computer. Using the "default" device selects
+card 0, not card 1 (the card I am trying to use). Also, the Q4 / Doom 3
+FAQ indicate that this  should not happen any more -- I realise that this
+is not necessarily an Alsa issue.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-08-06 17:35 malk271        New Issue                                    
+01-08-06 17:35 malk271        Distribution              => Fedora Core 3   
+01-08-06 17:35 malk271        Kernel Version            => 2.6.12-1.1381_FC3
+01-08-06 21:48 rlrevell       Note Added: 0007527                          
+01-08-06 21:49 rlrevell       Note Added: 0007528                          
+01-09-06 09:47 malk271        Note Added: 0007532                          
+======================================================================
 
 
 
