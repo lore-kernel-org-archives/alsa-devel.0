@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001720]: Audigy LS only produces noise instead playing music
-Date: Mon, 9 Jan 2006 21:51:46 +0100
-Message-ID: <d1329ea41652f64ec735ee083f4f47b6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001675]: Shuttle SD11G5 (pentium M) CA0106 sound card
+Date: Mon, 9 Jan 2006 22:26:45 +0100
+Message-ID: <2d3bf2520a917fe7e80a60deee2847a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77CA7141
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:51:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32D9B14F
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:26:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,73 +22,125 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The issue 0001727 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1720> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1675> 
 ======================================================================
-Reported By:                Nukem36JL
+Reported By:                vava
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1720
+Issue ID:                   1675
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               SuSE
-Kernel Version:             2.6.13-15-default
+Distribution:               Debian
+Kernel Version:             kernel 2.6.14.4
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-05-2006 18:16 CET
-Last Modified:              01-09-2006 21:51 CET
+Date Submitted:             12-23-2005 09:45 CET
+Last Modified:              01-09-2006 22:23 CET
 ======================================================================
-Summary:                    Audigy LS only produces noise instead playing music
+Summary:                    Shuttle SD11G5 (pentium M) CA0106 sound card
 Description: 
-lspci:
-00:0c.0 Multimedia audio controller: Creative Labs SB Audigy LS
+ Recently buy a Shuttle SD11G5 (pentium M)
 
-While trying to play a wave- file the card produces noise only. Effect is
-the same for all kind of players including aplay, ogg123 .... The card is
-used together with another card, which works properly.
+Sound card reports as :
+0000:02:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
 
-Module snd-ca0106 loads without error messages. 
+0000:02:09.0 0401: 1102:0007
+        Subsystem: 1297:3041
+        Flags: bus master, medium devsel, latency 32, IRQ 19
+        I/O ports at c000 [size=32]
+        Capabilities: [dc] Power Management version 2
+
+0 [CA0106 ]: CA0106 - CA0106
+                     AudigyLS [Unknown] at 0xc000 irq 19
+
+recompiling my kernel Linux 2.6.14.4
+
+and I got the same behaviour discribe in this bug report.
+sound card seem to works fine, xmms and others players looks like
+playing sound.
+
+but after moving every switch on alsamixer, still no sound.
+
+
+************
+Trying to find out a solution with Bug 1636
+After checking out cvs tree and installing latest version
+still no sound
+
+
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001701 Audigy LS (or SE) doen't work probably
-related to          0001679 Audigy 4 SE (SB_0570, ca0106) does not ...
+duplicate of        0001600 On a Shuttle SD11G5 the audio card is r...
+has duplicate       0001727 After un-muting the soundcard and detec...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-09-06 18:02 
+ vava - 12-27-05 10:49 
 ----------------------------------------------------------------------
-Looks like Audigy SE, SB0570.
+0000:02:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+        Subsystem: Holco Enterprise Co, Ltd/Shuttle Computer: Unknown
+device 3041
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (500ns min, 5000ns max)
+        Interrupt: pin A routed to IRQ 19
+        Region 0: I/O ports at c000 [size=32]
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Can you try a newer ALSA, 1.0.9b does not support your card very well.
+----------------------------------------------------------------------
+ vava - 01-04-06 21:27 
+----------------------------------------------------------------------
+Problem connected to :
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1600
+
+***************
+And actually solved my problem.
+
+It's sad that this tiny patch is still not included in the mainstream
+version.
+
+Hope it will come very soon.
+
+
 
 ----------------------------------------------------------------------
- jcdutton - 01-09-06 21:51 
+ jcdutton - 01-09-06 22:23 
 ----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.11rc2 or above.
+Thanks for the hint.
+Fixed in alsa-driver 1.0.11rc3 or above.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-05-06 18:16 Nukem36JL      New Issue                                    
-01-05-06 18:16 Nukem36JL      Distribution              => SuSE            
-01-05-06 18:16 Nukem36JL      Kernel Version            => 2.6.13-15-default
-01-05-06 18:19 Nukem36JL      Issue Monitored: Nukem36JL                    
-01-07-06 10:29 Nukem36JL      Note Added: 0007511                          
-01-07-06 14:19 jcdutton       Note Added: 0007512                          
-01-09-06 17:48 Nukem36JL      Note Added: 0007538                          
-01-09-06 18:02 rlrevell       Note Added: 0007539                          
-01-09-06 21:48 jcdutton       Relationship added       related to 0001679  
-01-09-06 21:48 jcdutton       Relationship added       related to 0001701  
-01-09-06 21:49 jcdutton       Relationship replaced    duplicate of 0001701
-01-09-06 21:51 jcdutton       Status                   assigned => closed  
-01-09-06 21:51 jcdutton       Note Added: 0007541                          
+12-23-05 09:45 vava           New Issue                                    
+12-23-05 09:45 vava           Distribution              => Debian          
+12-23-05 09:45 vava           Kernel Version            => kernel 2.6.14.4 
+12-27-05 10:49 vava           Note Added: 0007168                          
+12-28-05 22:23 sjenkins       Issue Monitored: sjenkins                    
+01-04-06 14:37 vava           Note Added: 0007419                          
+01-04-06 21:27 vava           Note Edited: 0007419                         
+01-09-06 22:13 jcdutton       Relationship added       duplicate of 0001600
+01-09-06 22:23 jcdutton       Status                   assigned => closed  
+01-09-06 22:23 jcdutton       Note Added: 0007544                          
+01-09-06 22:25 jcdutton       Relationship added       related to 0001700  
+01-09-06 22:26 jcdutton       Relationship deleted     related to 0001700  
+01-09-06 22:26 jcdutton       Relationship added       has duplicate 0001727
 ======================================================================
 
 
