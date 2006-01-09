@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001679]: Audigy 4 SE (SB_0570, ca0106) does not work correctly.
-Date: Mon, 9 Jan 2006 21:48:21 +0100
-Message-ID: <9c72f15504e3108a2e6b021833d8eda7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001720]: Audigy LS only produces noise instead playing music
+Date: Mon, 9 Jan 2006 21:48:52 +0100
+Message-ID: <3d54ce507e64387b63ec1cd99b641527@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AD6E141
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:48:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE7C8141
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:48:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,105 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001720.
+The following issue has been set as RELATED TO issue 0001701.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1679> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1720> 
 ======================================================================
-Reported By:                moriak
+Reported By:                Nukem36JL
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1679
+Issue ID:                   1720
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               standard
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               SuSE
+Kernel Version:             2.6.13-15-default
 ======================================================================
-Date Submitted:             12-25-2005 17:05 CET
-Last Modified:              12-27-2005 10:11 CET
+Date Submitted:             01-05-2006 18:16 CET
+Last Modified:              01-09-2006 21:48 CET
 ======================================================================
-Summary:                    Audigy 4 SE (SB_0570, ca0106) does not work
-correctly.
+Summary:                    Audigy LS only produces noise instead playing music
 Description: 
-There is no sound, only noise (when sound must play), and somewhy it
-detects as SB Audigy LS.
+lspci:
+00:0c.0 Multimedia audio controller: Creative Labs SB Audigy LS
+
+While trying to play a wave- file the card produces noise only. Effect is
+the same for all kind of players including aplay, ogg123 .... The card is
+used together with another card, which works properly.
+
+Module snd-ca0106 loads without error messages. 
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001701 Audigy LS (or SE) doen't work probably
-related to          0001720 Audigy LS only produces noise instead p...
+related to          0001679 Audigy 4 SE (SB_0570, ca0106) does not ...
+related to          0001701 Audigy LS (or SE) doen't work probably
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 12-25-05 21:54 
+ Nukem36JL - 01-07-06 10:29 
 ----------------------------------------------------------------------
-You are correct. You sound card is not recognised, which is probably why it
-does not work. We already have a fix for this problem, and in will be
-fixed in alsa-driver 1.0.11rc2 or above, or in the current alsa-driver
-CVS.
-
+In alsamixer card is displayed as "CA0106" Chip is empty. Maybe this causes
+the Problem.
 
 ----------------------------------------------------------------------
- moriak - 12-27-05 10:11 
+ jcdutton - 01-07-06 14:19 
 ----------------------------------------------------------------------
-Thanks. So, when alsa-driver 1.0.11rc2 is planned to be released?
+Please post the output of:
+cat /proc/asound/version
+cat /proc/asound/cards
+lspci -vn | grep -1 0401
 
-[sorry if my english is bad, I am russian =)]
+----------------------------------------------------------------------
+ Nukem36JL - 01-09-06 17:48 
+----------------------------------------------------------------------
+High!
+
+here the desired data:
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9b (Thu Jul 28
+12:20:13 2005 UTC)
+
+cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     AudigyLS [Unknown] at 0xb800 irq 11
+1 [CMI8738MC6     ]: CMI8738-MC6 - C-Media PCI CMI8738-MC6
+                     C-Media PCI CMI8738-MC6 (model 55) at 0xd800, irq 10
+
+lspci -vn | grep -1 0401
+
+00:05.0 Class 0401: 13f6:0111 (rev 10)
+        Subsystem: 1043:80e2
+--
+
+00:0c.0 Class 0401: 1102:0007
+        Subsystem: 1102:100a
+
+Thanks
+Joerg
+
+----------------------------------------------------------------------
+ rlrevell - 01-09-06 18:02 
+----------------------------------------------------------------------
+Looks like Audigy SE, SB0570.
+
+Can you try a newer ALSA, 1.0.9b does not support your card very well.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-25-05 17:05 moriak         New Issue                                    
-12-25-05 17:05 moriak         Distribution              => standard        
-12-25-05 17:05 moriak         Kernel Version            => 2.6.9           
-12-25-05 21:54 jcdutton       Note Added: 0007145                          
-12-25-05 21:54 jcdutton       Status                   assigned => feedback
-12-27-05 10:11 moriak         Note Added: 0007167                          
-01-02-06 19:29 rlrevell       Relationship added       has duplicate 0001701
-01-09-06 21:48 jcdutton       Relationship added       related to 0001720  
+01-05-06 18:16 Nukem36JL      New Issue                                    
+01-05-06 18:16 Nukem36JL      Distribution              => SuSE            
+01-05-06 18:16 Nukem36JL      Kernel Version            => 2.6.13-15-default
+01-05-06 18:19 Nukem36JL      Issue Monitored: Nukem36JL                    
+01-07-06 10:29 Nukem36JL      Note Added: 0007511                          
+01-07-06 14:19 jcdutton       Note Added: 0007512                          
+01-09-06 17:48 Nukem36JL      Note Added: 0007538                          
+01-09-06 18:02 rlrevell       Note Added: 0007539                          
+01-09-06 21:48 jcdutton       Relationship added       related to 0001679  
+01-09-06 21:48 jcdutton       Relationship added       related to 0001701  
 ======================================================================
 
 
