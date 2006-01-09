@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001701]: Audigy LS (or SE) doen't work probably
-Date: Mon, 9 Jan 2006 21:48:54 +0100
-Message-ID: <5cf46c22300b2f3bef4236e7e2253780@bugtrack.alsa-project.org>
+Date: Mon, 9 Jan 2006 21:49:38 +0100
+Message-ID: <dcacb7d452135572404b0d52fa1c3967@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41241141
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:48:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9B98148
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:49:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001720.
+The issue 0001720 has been set as DUPLICATE OF the following issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1701> 
 ======================================================================
@@ -58,7 +58,7 @@ Can anyone help me? PLEASE!!!
 Relationships       ID      Summary
 ----------------------------------------------------------------------
 duplicate of        0001679 Audigy 4 SE (SB_0570, ca0106) does not ...
-related to          0001720 Audigy LS only produces noise instead p...
+has duplicate       0001720 Audigy LS only produces noise instead p...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -79,6 +79,7 @@ Date Modified  Username       Field                    Change
 01-02-06 19:30 rlrevell       Status                   assigned => closed  
 01-02-06 19:30 rlrevell       Note Added: 0007376                          
 01-09-06 21:48 jcdutton       Relationship added       related to 0001720  
+01-09-06 21:49 jcdutton       Relationship replaced    has duplicate 0001720
 ======================================================================
 
 
