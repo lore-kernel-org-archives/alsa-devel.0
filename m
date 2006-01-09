@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001600]: On a Shuttle SD11G5 the audio card is recognized but does not work.
-Date: Mon, 9 Jan 2006 22:25:54 +0100
-Message-ID: <23b2b4bcab5ec89c6da59fbd62469b51@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001675]: Shuttle SD11G5 (pentium M) CA0106 sound card
+Date: Mon, 9 Jan 2006 22:23:02 +0100
+Message-ID: <010617d875b454f473c7af76eaa2d015@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B72E314F
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:25:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5149F144
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:23:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,103 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001700 has been removed as a DUPLICATE OF the following issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1600> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1675> 
 ======================================================================
-Reported By:                bolmsted
+Reported By:                vava
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1600
+Issue ID:                   1675
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             kernel 2.6.14.4
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-26-2005 02:59 CET
-Last Modified:              01-09-2006 22:21 CET
+Date Submitted:             12-23-2005 09:45 CET
+Last Modified:              01-09-2006 22:23 CET
 ======================================================================
-Summary:                    On a Shuttle SD11G5 the audio card is recognized but
-does not work.
+Summary:                    Shuttle SD11G5 (pentium M) CA0106 sound card
 Description: 
+ Recently buy a Shuttle SD11G5 (pentium M)
 
-I have a Shuttle SD11G5 with a builtin Creative Labs Sound Blaster Live!
-24-bit EAX 7.1.
+Sound card reports as :
+0000:02:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
 
-The alsa driver does not recognize the serial number and defaults to
-Unknown. The unknown state fails to play any audio.
+0000:02:09.0 0401: 1102:0007
+        Subsystem: 1297:3041
+        Flags: bus master, medium devsel, latency 32, IRQ 19
+        I/O ports at c000 [size=32]
+        Capabilities: [dc] Power Management version 2
 
-I added the following to fix the problem:
+0 [CA0106 ]: CA0106 - CA0106
+                     AudigyLS [Unknown] at 0xc000 irq 19
 
-         /* Shuttle XPC SD11G5 which has an onboard Creative Labs Sound
-Blaster Live! 24-bit EAX
-          * high-definition 7.1 audio processor".
-          */
-         { .serial = 0x30411297,
-           .name   = "Shuttle XPC SD11G5 [SD11G5]",
-           .gpio_type = 1,
-           .i2c_adc = 1 } ,
+recompiling my kernel Linux 2.6.14.4
+
+and I got the same behaviour discribe in this bug report.
+sound card seem to works fine, xmms and others players looks like
+playing sound.
+
+but after moving every switch on alsamixer, still no sound.
 
 
-This was added to "ca0106_chip_details" structure in ca0106_main.c.
+************
+Trying to find out a solution with Bug 1636
+After checking out cvs tree and installing latest version
+still no sound
 
-It fixed the problem and the sound works great.
+
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
+duplicate of        0001600 On a Shuttle SD11G5 the audio card is r...
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 01-09-06 22:21 
+ vava - 01-04-06 21:27 
 ----------------------------------------------------------------------
+Problem connected to :
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1600
+
+***************
+And actually solved my problem.
+
+It's sad that this tiny patch is still not included in the mainstream
+version.
+
+Hope it will come very soon.
+
+
+
+----------------------------------------------------------------------
+ jcdutton - 01-09-06 22:23 
+----------------------------------------------------------------------
+Thanks for the hint.
 Fixed in alsa-driver 1.0.11rc3 or above.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-26-05 02:59 bolmsted       New Issue                                    
-12-28-05 22:24 sjenkins       Issue Monitored: sjenkins                    
-01-09-06 22:13 jcdutton       Relationship added       has duplicate 0001675
-01-09-06 22:21 jcdutton       Status                   assigned => closed  
-01-09-06 22:21 jcdutton       Note Added: 0007543                          
-01-09-06 22:25 jcdutton       Relationship added       has duplicate 0001700
-01-09-06 22:25 jcdutton       Relationship deleted     has duplicate 0001700
+12-23-05 09:45 vava           New Issue                                    
+12-23-05 09:45 vava           Distribution              => Debian          
+12-23-05 09:45 vava           Kernel Version            => kernel 2.6.14.4 
+12-27-05 10:49 vava           Note Added: 0007168                          
+12-28-05 22:23 sjenkins       Issue Monitored: sjenkins                    
+01-04-06 14:37 vava           Note Added: 0007419                          
+01-04-06 21:27 vava           Note Edited: 0007419                         
+01-09-06 22:13 jcdutton       Relationship added       duplicate of 0001600
+01-09-06 22:23 jcdutton       Status                   assigned => closed  
+01-09-06 22:23 jcdutton       Note Added: 0007544                          
 ======================================================================
 
 
