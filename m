@@ -1,13 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Urgent question
-Date: Mon, 09 Jan 2006 14:54:11 +0000
-Message-ID: <43C27913.8040903@superbug.co.uk>
-References: <0AEFDFCCEC85B24E8051B23293C2CB640F2506@MMMSTCAE1.muac.corp.eurocontrol.int>
+From: Hannu Savolainen <hannu@opensound.com>
+Subject: Re: Re: [OT] ALSA userspace API complexity
+Date: Mon, 9 Jan 2006 17:10:58 +0200 (EET)
+Message-ID: <Pine.LNX.4.61.0601091637570.21552__8065.34050866521$1136819704$gmane$org@zeus.compusonic.fi>
+References: <20050726150837.GT3160@stusta.de> <Pine.LNX.4.61.0601080225500.17252@zeus.compusonic.fi>
+ <Pine.LNX.4.61.0601081007550.9470@tm8103.perex-int.cz> <200601091405.23939.rene@exactcode.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463749119-582612059-1136819458=:21552"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <0AEFDFCCEC85B24E8051B23293C2CB640F2506@MMMSTCAE1.muac.corp.eurocontrol.int>
+Received: from minor.compusonic.fi (host1.compusonic.fi [195.238.198.242])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55ABF148
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 16:13:39 +0100 (MET)
+In-Reply-To: <200601091405.23939.rene@exactcode.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,69 +20,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: PIVATY Bertrand <bertrand.pivaty@eurocontrol.int>
-Cc: Martin Habets <errandir_news@mph.eclipse.co.uk>, alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?Ren=E9_Rebe?= <rene@exactcode.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-PIVATY Bertrand wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
->Hello all,
->
->Thanks for your quick reaction.
->
->aplay and speaker produce the same good quality on both onboard and PCI
->sound cards.
->
->It is indeed for us obvious that the problem is coming from the audio
->software.
->
->But when checking the source code, I didn't see anything special, I mean
->they mainly use the ALSA api, and it is basically looks like the
->different ALSA tutorials that I've found.
->
->This is a software from one of our provider, and I know that the code
->was ported from SUN microsystem to Linux to meet our requirements, there
->are some statements with "ioctl" calls, do you think that this could be
->an issue, as it bypass the ALSA api?
->
->I know it seems vague, but I can try to send some part of the code with
->ALSA (I think this is not a big issue, the only thing is I don't know
->witch part could be interesting to send).
->  
->
-Output from this would help me.
-cat /proc/asound/cards
+---1463749119-582612059-1136819458=:21552
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-As speaker-test worked fine, the problem will be due to one of 2 things.
-1) Buffer and Period size setting.
-It would be very useful to see how your app decides on buffer and period 
-sizes. ALSA is somewhat different from other sound APIs, in that it does 
-not hide the hardware buffer size from the user. I.e. You can only set 
-buffer and period sizes that the sound card can actually support in 
-hardware. Some extra care is therefore needed when deciding on buffer 
-size. If I could see your source code with regard to buffer and period 
-sizes, I could tell if this was the problem.
+On Mon, 9 Jan 2006, Ren=E9 Rebe wrote:
 
-2) Sample rate.
-If the sound card hardware can only do 48000Hz, and your sound 
-application works at 44100Hz, there are certain circumstances where 
-sound quality will suffer.
-Here, if I knew which sound cards you were using, and the sample rate 
-your application was using, I could help here.
+> > I don't think so. The library can do such conversions (and alsa-lib doe=
+s)=20
+> > quite easy. If we have a possibility to remove the code from the kernel=
+=20
+> > space without any drawbacks, then it should be removed. I don't see any=
+=20
+> > advantage to have such conversions in the kernel.
+>=20
+> Also, when the data is already available as single streams in a user-spac=
+e
+> multi track application, why should it be forced interleaved, when the ha=
+rdware
+> could handle the format just fine?
+Because the conversion doesn't cost anything. Trying to avoid it by=20
+making the API more complicated (I would even say confusing) is extreme=20
+overkill.=20
 
-Note:
-I general fix to both the above problems would be to use a hardware 
-mixing sound card.
-e.g. SB Audigy  (Not LS or SE)  or a SB Live (not 24bit version)
+Each feature of this kind requires two additional API=20
+calls (one for checking in which way the hardware works and another to=20
+set the device to use the feature). It's also possible to implement the=20
+feature in a way that requires more new calls. By adding support for=20
+dozens of features like this it's easy to create an API that has 1500+=20
+calls.
 
-Would it be acceptable to specifiy the sound card to use? I doubt that 
-Air traffic control simulators have a very wide audience.
+Even worse this kind of features weaken the device abstraction provided by=
+=20
+the API. The applications will have to check for this and=20
+that and provide support for 100s of special cases that may be required by=
+=20
+certain devices.=20
 
-If you are not able to specify the sound card, there are software ways 
-out of all the problems described above.
+IMHO this has already happened with ALSA. Normal=20
+programmers (other than few of the world class gurus) have no way to=20
+understand the API. I would consider myself at least moderately=20
+experienced sound programmer (25+ years of programming experience and more=
+=20
+than half of it on sound). However even after two years of more or less=20
+intense learning I don't know what is the preferred way to use ALSA. I=20
+think this is a general problem because practically all ALSA applications u=
+se=20
+different ALSA API calls.
 
-James
+Best regards,
 
+Hannu
+-----
+Hannu Savolainen (hannu@opensound.com)
+http://www.opensound.com (Open Sound System (OSS))
+http://www.compusonic.fi (Finnish OSS pages)
+OH2GLH QTH: Karkkila, Finland LOC: KP20CM
+---1463749119-582612059-1136819458=:21552--
 
 
 -------------------------------------------------------
