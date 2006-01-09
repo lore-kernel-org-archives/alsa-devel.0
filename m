@@ -1,15 +1,14 @@
-From: "Sunder Mercuri" <mercure@atcoftexas.org>
-Subject: Cool Pha ramajcy
-Date: Tue, 17 Jan 2006 14:47:08 -0500
-Message-ID: <000001c61b9e$cd275ed0$e519a8c0@disgustful>
-Reply-To: "Sunder Mercuri" <mercure@atcoftexas.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001600]: On a Shuttle SD11G5 the audio card is recognized but does not work.
+Date: Mon, 9 Jan 2006 22:21:57 +0100
+Message-ID: <a8fb67cde48ecf2e2aeb5b86729893de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C61B74.E45156D0"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from atcoftexas.org (host-85-30-188-222.sydskane.nu [85.30.188.222])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 18DF7165
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 20:47:13 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49F25144
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:21:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,103 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alta Levinson <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C61B74.E45156D0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1600> 
+======================================================================
+Reported By:                bolmsted
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1600
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
+======================================================================
+Date Submitted:             11-26-2005 02:59 CET
+Last Modified:              01-09-2006 22:21 CET
+======================================================================
+Summary:                    On a Shuttle SD11G5 the audio card is recognized but
+does not work.
+Description: 
+
+I have a Shuttle SD11G5 with a builtin Creative Labs Sound Blaster Live!
+24-bit EAX 7.1.
+
+The alsa driver does not recognize the serial number and defaults to
+Unknown. The unknown state fails to play any audio.
+
+I added the following to fix the problem:
+
+         /* Shuttle XPC SD11G5 which has an onboard Creative Labs Sound
+Blaster Live! 24-bit EAX
+          * high-definition 7.1 audio processor".
+          */
+         { .serial = 0x30411297,
+           .name   = "Shuttle XPC SD11G5 [SD11G5]",
+           .gpio_type = 1,
+           .i2c_adc = 1 } ,
 
 
-Via
-Val
-Cia
+This was added to "ca0106_chip_details" structure in ca0106_main.c.
 
+It fixed the problem and the sound works great.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
+======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 01-09-06 22:21 
+----------------------------------------------------------------------
+Fixed in alsa-driver 1.0.11rc3 or above.
 
-gra
-ium=20
-lis
-
-
-
-only
-only
-only=20
-
-
-
-$3
-$1
-$3
-
-
-
-,3
-,2
-,7
-
-
-
-3
-1
-5
-
-
-And many other http://www.saperecso.com <http://www.saperecso.com>=20
-
-------=_NextPart_000_0001_01C61B74.E45156D0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV style=20
-=3D=20
-"  FLOAT=20
-: left ; "><H2>Via<BR>
-Val<BR>Cia<BR></H2></DIV>
-<DIV style =3D=20
-"  FLOAT=20
-: left
- ; "><H2>gra<BR>ium&nbsp;<BR>lis<BR>
-</H2></DIV>
-<DIV style=20
-=3D "=20
- FLOAT=20
-: left ; "><H2>only<BR>only<BR>
-only&nbsp;<BR>
-</H2></DIV>
-<DIV
- style =3D "  FLOAT=20
-:=20
-left ; "><H2>$3<BR>$1<BR>$3<BR></H2></DIV>
-<DIV style =3D "  FLOAT=20
-
-: left ;
- "><H2>,3<BR>
-,2<BR>,7<BR></H2></DIV>
-<DIV style =3D "  FLOAT=20
-
-: left
- ; "><H2>3<BR>
-1<BR>5<BR></H2></DIV><DIV style
-=3D" CLEAR : both
- ;"><FONT face=3DArial size=3D2>And many other <A =
-href=3D"http://www.saperecso.com"><FONT face=3DArial =
-size=3D2>http://www.saperecso.com</FONT></A></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C61B74.E45156D0--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-26-05 02:59 bolmsted       New Issue                                    
+12-28-05 22:24 sjenkins       Issue Monitored: sjenkins                    
+01-09-06 22:13 jcdutton       Relationship added       has duplicate 0001675
+01-09-06 22:21 jcdutton       Status                   assigned => closed  
+01-09-06 22:21 jcdutton       Note Added: 0007543                          
+======================================================================
 
 
 
@@ -124,4 +97,4 @@ size=3D2>http://www.saperecso.com</FONT></A></FONT></DIV></BODY></HTML>
 This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
