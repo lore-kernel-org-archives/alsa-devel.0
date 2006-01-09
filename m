@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001700]: CMI 9880 not detected and not implemented yet
-Date: Mon, 9 Jan 2006 22:25:22 +0100
-Message-ID: <339cbe47a5796a95e9aa45215932058e@bugtrack.alsa-project.org>
+Date: Mon, 9 Jan 2006 22:26:05 +0100
+Message-ID: <997cce6c968c115a24cc342eac8938a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4AF3144
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:25:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 466F0144
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:26:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001675.
+The following issue has been marked as UNRELATED TO issue 0001675.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1700> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Breezy Ubuntu
 Kernel Version:             all
 ======================================================================
 Date Submitted:             01-02-2006 17:40 CET
-Last Modified:              01-09-2006 22:25 CET
+Last Modified:              01-09-2006 22:26 CET
 ======================================================================
 Summary:                    CMI 9880 not detected and not implemented yet
 Description: 
@@ -54,11 +54,6 @@ but it does not give a complete performance.
 
 
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001600 On a Shuttle SD11G5 the audio card is r...
-related to          0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -75,6 +70,8 @@ Date Modified  Username       Field                    Change
 01-04-06 17:33 tiwai          Note Added: 0007444                          
 01-09-06 22:25 jcdutton       Relationship added       duplicate of 0001600
 01-09-06 22:25 jcdutton       Relationship added       related to 0001675  
+01-09-06 22:25 jcdutton       Relationship deleted     duplicate of 0001600
+01-09-06 22:26 jcdutton       Relationship deleted     related to 0001675  
 ======================================================================
 
 
