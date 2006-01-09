@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001658]: Capture happens only on one channel
-Date: Mon, 9 Jan 2006 01:43:19 +0100
-Message-ID: <1b98becd5fdb85db9771caf5c14d547c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Mon, 9 Jan 2006 06:32:10 +0100
+Message-ID: <4dc49b4f988bea65bb30e421917b2420@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0AE6613C
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 01:43:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B6E2135
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 06:32:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,91 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                phil_troin
-Assigned To:                
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1658
-Category:                   PCI - intel8x0
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r2
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
 ======================================================================
-Date Submitted:             12-18-2005 08:40 CET
-Last Modified:              01-09-2006 01:43 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              01-09-2006 06:32 CET
 ======================================================================
-Summary:                    Capture happens only on one channel
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-When I am playing a CD, if I capture the sound output via the capture
-channel OR the CD channel (amixer output attached), the captured sound is
-only one one channel (the right one) and is very distorted.
-The audio plays normally in stereo on the speakers.
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- legluondunet - 01-09-06 01:34 
+ sailfrog - 01-05-06 16:12 
 ----------------------------------------------------------------------
-Hello,
+bryanr,
+  Applying your patch against 2.6.15-ck1 fixed the problem. I noticed no
+adverse side effects and now sound works :)
 
-I had the same problem: suddenly and with no reason, my system record
-sound with only one channel :-(.
-After severals hours of searches on internet and in the deeper place of my
-system, I found a solution.
+thanks to everyone for the help.
 
-I have a Ubuntu live disc. I boot on it and test the record: 2 channels
-were record (ok).
-So I begin to replace the alsa config of my system with the Ubuntu one's.
-After several tests, I found that when I change my
-/usr/share/alsa/alsa.conf with the ubuntu nes, I could again record with 2
-channels :-).
-I don't know the differences between this 2 files so I join them.
-
-I hope this help :-)
+Jason
 
 ----------------------------------------------------------------------
- legluondunet - 01-09-06 01:43 
+ smithbone - 01-09-06 06:32 
 ----------------------------------------------------------------------
-I join the two files:
-alsa.conf.record1channel
-and
-alsa.conf.ubuntu --> the file I copy from a ubuntu distrib, I could record
-normaly with it.
-
-My config:
-
-Debian testing/unstable
-P4 3ghz
-soundcard:
- 0 [ICH5           ]: ICH4 - Intel ICH5
-                      Intel ICH5 with ALC650F at 0xee101000, irq 20
-kernel 2.6.14
-
-nota: before finding this solution I did this:
-test several other kernels, test several recording applications, test
-others alsa modules...lost my hair...
+applying revert 008 makes my usb Audiophile work as well.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-18-05 08:40 phil_troin     New Issue                                    
-12-18-05 08:40 phil_troin     File Added: amixout                          
-12-18-05 08:40 phil_troin     Distribution              => Gentoo          
-12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
-12-18-05 12:00 linuxbear      Note Added: 0007071                          
-12-18-05 12:02 linuxbear      Note Edited: 0007071                         
-12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
-01-07-06 06:24 tgutwin        Note Added: 0007508                          
-01-07-06 06:25 tgutwin        Issue Monitored: tgutwin                     
-01-09-06 01:34 legluondunet   Note Added: 0007529                          
-01-09-06 01:35 legluondunet   File Added: alsa.conf.record1channel              
-     
-01-09-06 01:37 legluondunet   File Added: alsa.conf.ubuntu                    
-01-09-06 01:43 legluondunet   Note Added: 0007530                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
+12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
+12-30-05 20:43 rlrevell       Note Added: 0007259                          
+12-31-05 02:32 smithbone      Note Added: 0007319                          
+12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
+               
+12-31-05 03:47 rlrevell       Note Added: 0007331                          
+12-31-05 05:31 smithbone      Note Added: 0007343                          
+12-31-05 05:33 rlrevell       Note Added: 0007344                          
+12-31-05 05:37 rlrevell       Note Added: 0007345                          
+12-31-05 07:10 smithbone      Note Added: 0007347                          
+12-31-05 08:54 afran          Note Added: 0007354                          
+12-31-05 08:55 afran          Issue Monitored: afran                       
+12-31-05 08:56 afran          Note Edited: 0007354                         
+01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
+                  
+01-04-06 09:58 bryanr         Note Added: 0007411                          
+01-04-06 10:04 bryanr         Issue Monitored: bryanr                      
+01-04-06 10:50 bryanr         File Added: alsa-usbaudio-2.6.15-revert-008.patch 
+                  
+01-04-06 11:06 bryanr         Note Added: 0007412                          
+01-04-06 13:15 afran          Note Added: 0007416                          
+01-04-06 16:30 sailfrog       Note Added: 0007424                          
+01-05-06 16:12 sailfrog       Note Added: 0007471                          
+01-09-06 06:32 smithbone      Note Added: 0007531                          
 ======================================================================
 
 
