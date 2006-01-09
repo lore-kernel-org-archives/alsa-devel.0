@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001600]: On a Shuttle SD11G5 the audio card is recognized but does not work.
-Date: Mon, 9 Jan 2006 22:25:12 +0100
-Message-ID: <f18df07cdb359cd8846279d97429294c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001720]: Audigy LS only produces noise instead playing music
+Date: Mon, 9 Jan 2006 17:48:07 +0100
+Message-ID: <e87df14a3a67b5b0f9e04b9bc78992ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D5E2144
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:25:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05960148
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 17:48:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001700 has been set as DUPLICATE OF the following issue.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1600> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1720> 
 ======================================================================
-Reported By:                bolmsted
+Reported By:                Nukem36JL
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1600
+Issue ID:                   1720
 Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               SuSE
+Kernel Version:             2.6.13-15-default
 ======================================================================
-Date Submitted:             11-26-2005 02:59 CET
-Last Modified:              01-09-2006 22:21 CET
+Date Submitted:             01-05-2006 18:16 CET
+Last Modified:              01-09-2006 17:48 CET
 ======================================================================
-Summary:                    On a Shuttle SD11G5 the audio card is recognized but
-does not work.
+Summary:                    Audigy LS only produces noise instead playing music
 Description: 
+lspci:
+00:0c.0 Multimedia audio controller: Creative Labs SB Audigy LS
 
-I have a Shuttle SD11G5 with a builtin Creative Labs Sound Blaster Live!
-24-bit EAX 7.1.
+While trying to play a wave- file the card produces noise only. Effect is
+the same for all kind of players including aplay, ogg123 .... The card is
+used together with another card, which works properly.
 
-The alsa driver does not recognize the serial number and defaults to
-Unknown. The unknown state fails to play any audio.
-
-I added the following to fix the problem:
-
-         /* Shuttle XPC SD11G5 which has an onboard Creative Labs Sound
-Blaster Live! 24-bit EAX
-          * high-definition 7.1 audio processor".
-          */
-         { .serial = 0x30411297,
-           .name   = "Shuttle XPC SD11G5 [SD11G5]",
-           .gpio_type = 1,
-           .i2c_adc = 1 } ,
-
-
-This was added to "ca0106_chip_details" structure in ca0106_main.c.
-
-It fixed the problem and the sound works great.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
-has duplicate       0001700 CMI 9880 not detected and not implement...
+Module snd-ca0106 loads without error messages. 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 01-09-06 22:21 
+ jcdutton - 01-07-06 14:19 
 ----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.11rc3 or above.
+Please post the output of:
+cat /proc/asound/version
+cat /proc/asound/cards
+lspci -vn | grep -1 0401
+
+----------------------------------------------------------------------
+ Nukem36JL - 01-09-06 17:48 
+----------------------------------------------------------------------
+High!
+
+here the desired data:
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9b (Thu Jul 28
+12:20:13 2005 UTC)
+
+cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     AudigyLS [Unknown] at 0xb800 irq 11
+1 [CMI8738MC6     ]: CMI8738-MC6 - C-Media PCI CMI8738-MC6
+                     C-Media PCI CMI8738-MC6 (model 55) at 0xd800, irq 10
+
+lspci -vn | grep -1 0401
+
+00:05.0 Class 0401: 13f6:0111 (rev 10)
+        Subsystem: 1043:80e2
+--
+
+00:0c.0 Class 0401: 1102:0007
+        Subsystem: 1102:100a
+
+Thanks
+Joerg
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-26-05 02:59 bolmsted       New Issue                                    
-12-28-05 22:24 sjenkins       Issue Monitored: sjenkins                    
-01-09-06 22:13 jcdutton       Relationship added       has duplicate 0001675
-01-09-06 22:21 jcdutton       Status                   assigned => closed  
-01-09-06 22:21 jcdutton       Note Added: 0007543                          
-01-09-06 22:25 jcdutton       Relationship added       has duplicate 0001700
+01-05-06 18:16 Nukem36JL      New Issue                                    
+01-05-06 18:16 Nukem36JL      Distribution              => SuSE            
+01-05-06 18:16 Nukem36JL      Kernel Version            => 2.6.13-15-default
+01-05-06 18:19 Nukem36JL      Issue Monitored: Nukem36JL                    
+01-07-06 10:29 Nukem36JL      Note Added: 0007511                          
+01-07-06 14:19 jcdutton       Note Added: 0007512                          
+01-09-06 17:48 Nukem36JL      Note Added: 0007538                          
 ======================================================================
 
 
