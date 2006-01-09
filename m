@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001600]: On a Shuttle SD11G5 the audio card is recognized but does not work.
-Date: Mon, 9 Jan 2006 22:26:29 +0100
-Message-ID: <6cecd46fd041a6e93ae827b27a51490b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001679]: Audigy 4 SE (SB_0570, ca0106) does not work correctly.
+Date: Mon, 9 Jan 2006 21:51:03 +0100
+Message-ID: <784c18ae64723383e9e19ab8154ebde7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFAE614F
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:26:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE180141
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:51:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001727 has been set as DUPLICATE OF the following issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1600> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1679> 
 ======================================================================
-Reported By:                bolmsted
+Reported By:                moriak
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1600
+Issue ID:                   1679
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               standard
+Kernel Version:             2.6.9
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-26-2005 02:59 CET
-Last Modified:              01-09-2006 22:21 CET
+Date Submitted:             12-25-2005 17:05 CET
+Last Modified:              01-09-2006 21:51 CET
 ======================================================================
-Summary:                    On a Shuttle SD11G5 the audio card is recognized but
-does not work.
+Summary:                    Audigy 4 SE (SB_0570, ca0106) does not work
+correctly.
 Description: 
-
-I have a Shuttle SD11G5 with a builtin Creative Labs Sound Blaster Live!
-24-bit EAX 7.1.
-
-The alsa driver does not recognize the serial number and defaults to
-Unknown. The unknown state fails to play any audio.
-
-I added the following to fix the problem:
-
-         /* Shuttle XPC SD11G5 which has an onboard Creative Labs Sound
-Blaster Live! 24-bit EAX
-          * high-definition 7.1 audio processor".
-          */
-         { .serial = 0x30411297,
-           .name   = "Shuttle XPC SD11G5 [SD11G5]",
-           .gpio_type = 1,
-           .i2c_adc = 1 } ,
-
-
-This was added to "ca0106_chip_details" structure in ca0106_main.c.
-
-It fixed the problem and the sound works great.
+There is no sound, only noise (when sound must play), and somewhy it
+detects as SB Audigy LS.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
-has duplicate       0001727 After un-muting the soundcard and detec...
+has duplicate       0001701 Audigy LS (or SE) doen't work probably
+related to          0001720 Audigy LS only produces noise instead p...
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 01-09-06 22:21 
+ moriak - 12-27-05 10:11 
 ----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.11rc3 or above.
+Thanks. So, when alsa-driver 1.0.11rc2 is planned to be released?
+
+[sorry if my english is bad, I am russian =)]
+
+----------------------------------------------------------------------
+ jcdutton - 01-09-06 21:51 
+----------------------------------------------------------------------
+Fixed in alsa-driver 1.0.11rc2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-26-05 02:59 bolmsted       New Issue                                    
-12-28-05 22:24 sjenkins       Issue Monitored: sjenkins                    
-01-09-06 22:13 jcdutton       Relationship added       has duplicate 0001675
-01-09-06 22:21 jcdutton       Status                   assigned => closed  
-01-09-06 22:21 jcdutton       Note Added: 0007543                          
-01-09-06 22:25 jcdutton       Relationship added       has duplicate 0001700
-01-09-06 22:25 jcdutton       Relationship deleted     has duplicate 0001700
-01-09-06 22:26 jcdutton       Relationship added       has duplicate 0001727
+12-25-05 17:05 moriak         New Issue                                    
+12-25-05 17:05 moriak         Distribution              => standard        
+12-25-05 17:05 moriak         Kernel Version            => 2.6.9           
+12-25-05 21:54 jcdutton       Note Added: 0007145                          
+12-25-05 21:54 jcdutton       Status                   assigned => feedback
+12-27-05 10:11 moriak         Note Added: 0007167                          
+01-02-06 19:29 rlrevell       Relationship added       has duplicate 0001701
+01-09-06 21:48 jcdutton       Relationship added       related to 0001720  
+01-09-06 21:51 jcdutton       Status                   feedback => closed  
+01-09-06 21:51 jcdutton       Note Added: 0007540                          
 ======================================================================
 
 
