@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001600]: On a Shuttle SD11G5 the audio card is recognized but does not work.
-Date: Mon, 9 Jan 2006 22:13:37 +0100
-Message-ID: <ad1a49a1dfd78686ccd41175e4d933b4@bugtrack.alsa-project.org>
+Date: Mon, 9 Jan 2006 22:26:29 +0100
+Message-ID: <6cecd46fd041a6e93ae827b27a51490b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A902C14F
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:13:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFAE614F
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:26:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001675 has been set as DUPLICATE OF the following issue.
+The issue 0001727 has been set as DUPLICATE OF the following issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1600> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-26-2005 02:59 CET
-Last Modified:              11-26-2005 02:59 CET
+Last Modified:              01-09-2006 22:21 CET
 ======================================================================
 Summary:                    On a Shuttle SD11G5 the audio card is recognized but
 does not work.
@@ -71,7 +73,13 @@ It fixed the problem and the sound works great.
 Relationships       ID      Summary
 ----------------------------------------------------------------------
 has duplicate       0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
+has duplicate       0001727 After un-muting the soundcard and detec...
 ======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 01-09-06 22:21 
+----------------------------------------------------------------------
+Fixed in alsa-driver 1.0.11rc3 or above.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,6 +87,11 @@ Date Modified  Username       Field                    Change
 11-26-05 02:59 bolmsted       New Issue                                    
 12-28-05 22:24 sjenkins       Issue Monitored: sjenkins                    
 01-09-06 22:13 jcdutton       Relationship added       has duplicate 0001675
+01-09-06 22:21 jcdutton       Status                   assigned => closed  
+01-09-06 22:21 jcdutton       Note Added: 0007543                          
+01-09-06 22:25 jcdutton       Relationship added       has duplicate 0001700
+01-09-06 22:25 jcdutton       Relationship deleted     has duplicate 0001700
+01-09-06 22:26 jcdutton       Relationship added       has duplicate 0001727
 ======================================================================
 
 
