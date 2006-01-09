@@ -1,17 +1,14 @@
-From: David Lang <dlang@digitalinsight.com>
-Subject: Re: Re: [OT] ALSA userspace API complexity
-Date: Mon, 9 Jan 2006 13:58:00 -0800 (PST)
-Message-ID: <Pine.LNX.4.62.0601091355541.4005@qynat.qvtvafvgr.pbz>
-References: <20050726150837.GT3160@stusta.de> <200601091405.23939.rene@exactcode.de>
- <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi> <200601091812.55943.rene@exactcode.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001700]: CMI 9880 not detected and not implemented yet
+Date: Mon, 9 Jan 2006 22:25:22 +0100
+Message-ID: <339cbe47a5796a95e9aa45215932058e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from warden.diginsite.com (warden-p.diginsite.com [208.29.163.248])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A881212B
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 23:02:32 +0100 (MET)
-In-Reply-To: <200601091812.55943.rene@exactcode.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4AF3144
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:25:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,53 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Ren=E9_Rebe?= <rene@exactcode.de>
-Cc: Hannu Savolainen <hannu@opensound.com>, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 9 Jan 2006, Ren=E9 Rebe wrote:
 
-> On Monday 09 January 2006 16:10, Hannu Savolainen wrote:
->
->>>> I don't think so. The library can do such conversions (and alsa-lib =
-does)
->>>> quite easy. If we have a possibility to remove the code from the ker=
-nel
->>>> space without any drawbacks, then it should be removed. I don't see =
-any
->>>> advantage to have such conversions in the kernel.
->>>
->>> Also, when the data is already available as single streams in a user-=
-space
->>> multi track application, why should it be forced interleaved, when th=
-e hardware
->>> could handle the format just fine?
->> Because the conversion doesn't cost anything. Trying to avoid it by
->> making the API more complicated (I would even say confusing) is extrem=
-e
->> overkill.
->
-> Since when doesn't cost convesion anything? I'm able to count a lot of =
-wasted
-> CPU cycles in there ...
+The following issue has been set as RELATED TO issue 0001675.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1700> 
+======================================================================
+Reported By:                mitcoes
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1700
+Category:                   1_OTHERS
+Reproducibility:            unable to duplicate
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Breezy Ubuntu
+Kernel Version:             all
+======================================================================
+Date Submitted:             01-02-2006 17:40 CET
+Last Modified:              01-09-2006 22:25 CET
+======================================================================
+Summary:                    CMI 9880 not detected and not implemented yet
+Description: 
+CMI 9880 that comes integrated with ASUS P5AD2 Premium and others doesn't
+work.
 
-if the data needed to be accessed by the CPU anyway it's free becouse=20
-otherwise the CPU would stall waiting for the next chunk of memory. you=20
-can do quite a bit of work on data in cache while you are waiting for the=
-=20
-next cache line to load.
+I have read 
+>> know mine is running under an "i810_audio" module. << at
+http://hardware.mcse.ms/archive13-2005-1-137173.html
+but it does not give a complete performance.
 
-in this same way, checksumming a network packet is free if the CPU needs=20
-to copy the data anway, it only costs something if the data could bypass=20
-the CPU.
 
-David Lang
 
---=20
-There are two ways of constructing a software design. One way is to make =
-it so simple that there are obviously no deficiencies. And the other way =
-is to make it so complicated that there are no obvious deficiencies.
-  -- C.A.R. Hoare
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001600 On a Shuttle SD11G5 the audio card is r...
+related to          0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-04-06 17:33 
+----------------------------------------------------------------------
+CMI9880 is for HD-audio.  Use snd-hda-intel driver.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-02-06 17:40 mitcoes        New Issue                                    
+01-02-06 17:40 mitcoes        Distribution              => Breezy Ubuntu   
+01-02-06 17:40 mitcoes        Kernel Version            => all             
+01-04-06 17:33 tiwai          Note Added: 0007444                          
+01-09-06 22:25 jcdutton       Relationship added       duplicate of 0001600
+01-09-06 22:25 jcdutton       Relationship added       related to 0001675  
+======================================================================
+
 
 
 
