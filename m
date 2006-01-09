@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001675]: Shuttle SD11G5 (pentium M) CA0106 sound card
-Date: Mon, 9 Jan 2006 22:13:35 +0100
-Message-ID: <8c63137aa85439a52744c3f60b2901e6@bugtrack.alsa-project.org>
+Date: Mon, 9 Jan 2006 22:26:06 +0100
+Message-ID: <09287b1d02e0d9e202565d4cc5de43de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66A8D141
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:13:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B8BC14F
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:26:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001600.
+The following issue has been marked as UNRELATED TO issue 0001700.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1675> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               Debian
 Kernel Version:             kernel 2.6.14.4
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-23-2005 09:45 CET
-Last Modified:              01-09-2006 22:13 CET
+Last Modified:              01-09-2006 22:23 CET
 ======================================================================
 Summary:                    Shuttle SD11G5 (pentium M) CA0106 sound card
 Description: 
@@ -116,6 +118,12 @@ Hope it will come very soon.
 
 
 
+----------------------------------------------------------------------
+ jcdutton - 01-09-06 22:23 
+----------------------------------------------------------------------
+Thanks for the hint.
+Fixed in alsa-driver 1.0.11rc3 or above.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -127,6 +135,10 @@ Date Modified  Username       Field                    Change
 01-04-06 14:37 vava           Note Added: 0007419                          
 01-04-06 21:27 vava           Note Edited: 0007419                         
 01-09-06 22:13 jcdutton       Relationship added       duplicate of 0001600
+01-09-06 22:23 jcdutton       Status                   assigned => closed  
+01-09-06 22:23 jcdutton       Note Added: 0007544                          
+01-09-06 22:25 jcdutton       Relationship added       related to 0001700  
+01-09-06 22:26 jcdutton       Relationship deleted     related to 0001700  
 ======================================================================
 
 
