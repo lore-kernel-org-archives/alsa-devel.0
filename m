@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001727]: After un-muting the soundcard and detecting the ca0106 module it is unable to produce any sound.
-Date: Mon, 9 Jan 2006 10:56:33 +0100
-Message-ID: <c81da1ed48a012f513027f1f06ccb317@bugtrack.alsa-project.org>
+From: Alan Jenkins <aj504@student.cs.york.ac.uk>
+Subject: Re: Undelivered Mail Returned to Sender
+Date: Mon, 09 Jan 2006 10:03:52 +0000
+Message-ID: <1136801032.7790.0.camel@singularity.site>
+References: <20060107100533.CED1E21456@linux.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21511143
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 10:56:34 +0100 (MET)
+In-Reply-To: <20060107100533.CED1E21456@linux.site>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I have something to apologise to some of  your list members for.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1727> 
-======================================================================
-Reported By:                domsmith
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1727
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.1, 10.2, ubuntu 5.10 kubuntu unstable
-(dapper)
-Kernel Version:             2.6.12 ,  2.6.14
-======================================================================
-Date Submitted:             01-09-2006 10:56 CET
-Last Modified:              01-09-2006 10:56 CET
-======================================================================
-Summary:                    After un-muting the soundcard and detecting the
-ca0106 module it is unable to produce any sound.
-Description: 
-Tested under Slackware 10.1, 10.2, ubuntu 5.10 kubuntu unstable (dapper)
+I had a subscription to alsa-devel once, and somehow these old
+messages in my inbox have made a bid for freedom.  I've spammed
+something like 20 people on the list with bounces.  I've stopped my
+mail server from sending anything out now, although I think the
+problem is over.  I'll make sure I test it thoroughly before setting
+it up again.
 
-The ca0106 module gets detected under all these versions but it is unable
-to produce any sound. The Soundcard is a on-board soundblaster live built
-into a shuttle SD11G5. Under ubuntu i rebuilt the kernel and alsa drivers
-but still couldn't get any sound what so ever.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-09-06 10:56 domsmith       New Issue                                    
-01-09-06 10:56 domsmith       Distribution              => Slackware 10.1, 10.2,
-ubuntu 5.10 kubuntu unstable (dapper)
-01-09-06 10:56 domsmith       Kernel Version            => 2.6.12 ,  2.6.14
-======================================================================
-
+On 1/7/06, Mail Delivery System <aj504@cs.york.ac.uk> wrote:
+> This is the Postfix program at host linux.site.
+>
+> I'm sorry to have to inform you that your message could not
+> be delivered to one or more recipients. It's attached below.
+>
+> For further assistance, please send mail to <postmaster>
+>
+> If you do so, please include this problem report. You can
+> delete your own text from the attached returned message.
+>
+> 			The Postfix program
+>
+> <alan@localhost.linux.site> (expanded from <alan@localhost>): mail
+> forwarding
+>     loop for alan@localhost.linux.site
+>
+>
 
 
 
