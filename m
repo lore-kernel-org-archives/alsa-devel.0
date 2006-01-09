@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Wed, 1 Feb 2006 07:35:49 +0100
-Message-ID: <959383c1c592a1a03a231202a5a74266@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001700]: CMI 9880 not detected and not implemented yet
+Date: Mon, 9 Jan 2006 22:25:53 +0100
+Message-ID: <8bc8f6adbb6347bf4e10ce81e0a75b6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9284D1A8
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2006 07:35:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84038144
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:25:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UNset as DUPLICATE OF issue 0001600.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1700> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                mitcoes
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   block
+Issue ID:                   1700
+Category:                   1_OTHERS
+Reproducibility:            unable to duplicate
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Breezy Ubuntu
+Kernel Version:             all
 ======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              02-01-2006 07:35 CET
+Date Submitted:             01-02-2006 17:40 CET
+Last Modified:              01-09-2006 22:25 CET
 ======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
+Summary:                    CMI 9880 not detected and not implemented yet
 Description: 
-/cvs/alsa-lib/test/pcm_min
+CMI 9880 that comes integrated with ASUS P5AD2 Premium and others doesn't
+work.
 
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
+I have read 
+>> know mine is running under an "i810_audio" module. << at
+http://hardware.mcse.ms/archive13-2005-1-137173.html
+but it does not give a complete performance.
 
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001766 jackd : ALSA: cannot set period size to...
+related to          0001675 Shuttle SD11G5 (pentium M) CA0106 sound...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-31-06 15:59 
+ tiwai - 01-04-06 17:33 
 ----------------------------------------------------------------------
-Your workaround to snd_pcm_set_params() in CVS do not work.
-
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/pcm/pcm.c?r1=1.319&r2=1.320
-
-alsa/cvs/alsa-lib/test/pcm_min
-ALSA lib pcm.c:7148:(snd_pcm_set_params) Segmentation fault
-
-----------------------------------------------------------------------
- perex - 02-01-06 07:35 
-----------------------------------------------------------------------
-The error message should be fixed now. Could you enable RULES_DEBUG to see
-what's going wrong?
+CMI9880 is for HD-audio.  Use snd-hda-intel driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
-01-31-06 13:48 perex          Status                   new => assigned     
-01-31-06 13:48 perex          Assigned To               => mjander         
-01-31-06 13:49 perex          Relationship added       related to 0001766  
-01-31-06 15:59 Raymond        Note Added: 0007852                          
-02-01-06 07:35 perex          Note Added: 0007857                          
+01-02-06 17:40 mitcoes        New Issue                                    
+01-02-06 17:40 mitcoes        Distribution              => Breezy Ubuntu   
+01-02-06 17:40 mitcoes        Kernel Version            => all             
+01-04-06 17:33 tiwai          Note Added: 0007444                          
+01-09-06 22:25 jcdutton       Relationship added       duplicate of 0001600
+01-09-06 22:25 jcdutton       Relationship added       related to 0001675  
+01-09-06 22:25 jcdutton       Relationship deleted     duplicate of 0001600
 ======================================================================
 
 
@@ -115,4 +84,4 @@ function => au88x0 PCM configuration problem - buffer_size constraint
 This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
