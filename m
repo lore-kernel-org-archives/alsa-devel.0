@@ -1,22 +1,14 @@
-From: Hannu Savolainen <hannu@opensound.com>
-Subject: Re: Re: [OT] ALSA userspace API complexity
-Date: Mon, 9 Jan 2006 02:33:43 +0200 (EET)
-Message-ID: <Pine.LNX.4.61.0601090231260.32511@zeus.compusonic.fi>
-References: <20060104030034.6b780485.zaitcev@redhat.com>
- <Pine.LNX.4.61.0601041220450.9321@tm8103.perex-int.cz>
- <Pine.BSO.4.63.0601051253550.17086@rudy.mif.pg.gda.pl>
- <Pine.LNX.4.61.0601051305240.10350@tm8103.perex-int.cz>
- <Pine.BSO.4.63.0601051345100.17086@rudy.mif.pg.gda.pl> <s5hmziaird8.wl%tiwai@suse.de>
- <Pine.BSO.4.63.0601052022560.15077@rudy.mif.pg.gda.pl> <s5h8xtshzwk.wl%tiwai@suse.de>
- <20060108020335.GA26114@dspnet.fr.eu.org> <Pine.LNX.4.60.0601080317040.22583@kepler.fjfi.cvut.cz>
- <20060108132122.GB96834@dspnet.fr.eu.org> <Pine.LNX.4.61.0601081424560.10981@tm8103.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001658]: Capture happens only on one channel
+Date: Mon, 9 Jan 2006 01:43:19 +0100
+Message-ID: <1b98becd5fdb85db9771caf5c14d547c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from minor.compusonic.fi (host1.compusonic.fi [195.238.198.242])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 667A113C
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 01:36:20 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.61.0601081424560.10981@tm8103.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0AE6613C
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 01:43:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,30 +18,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Olivier Galibert <galibert@pobox.com>, Martin Drab <drab@kepler.fjfi.cvut.cz>, Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 8 Jan 2006, Jaroslav Kysela wrote:
 
-> > - having a real kernel api for which you can make different libraries
-> >   depending on the need of the users
-> > 
-> > - stop making a fundamentally unsecure shared library mandatory
-> 
-> ALSA kernel API is real and binary compatible. 
-Less than an year ago you (or was it Takashi) told that the kernel API 
-cannot be used or documented because it may be changed any time without 
-notice.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
+======================================================================
+Reported By:                phil_troin
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1658
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-gentoo-r2
+======================================================================
+Date Submitted:             12-18-2005 08:40 CET
+Last Modified:              01-09-2006 01:43 CET
+======================================================================
+Summary:                    Capture happens only on one channel
+Description: 
+When I am playing a CD, if I capture the sound output via the capture
+channel OR the CD channel (amixer output attached), the captured sound is
+only one one channel (the right one) and is very distorted.
+The audio plays normally in stereo on the speakers.
+======================================================================
 
-Best regards,
+----------------------------------------------------------------------
+ legluondunet - 01-09-06 01:34 
+----------------------------------------------------------------------
+Hello,
 
-Hannu
------
-Hannu Savolainen (hannu@opensound.com)
-http://www.opensound.com (Open Sound System (OSS))
-http://www.compusonic.fi (Finnish OSS pages)
-OH2GLH QTH: Karkkila, Finland LOC: KP20CM
+I had the same problem: suddenly and with no reason, my system record
+sound with only one channel :-(.
+After severals hours of searches on internet and in the deeper place of my
+system, I found a solution.
+
+I have a Ubuntu live disc. I boot on it and test the record: 2 channels
+were record (ok).
+So I begin to replace the alsa config of my system with the Ubuntu one's.
+After several tests, I found that when I change my
+/usr/share/alsa/alsa.conf with the ubuntu nes, I could again record with 2
+channels :-).
+I don't know the differences between this 2 files so I join them.
+
+I hope this help :-)
+
+----------------------------------------------------------------------
+ legluondunet - 01-09-06 01:43 
+----------------------------------------------------------------------
+I join the two files:
+alsa.conf.record1channel
+and
+alsa.conf.ubuntu --> the file I copy from a ubuntu distrib, I could record
+normaly with it.
+
+My config:
+
+Debian testing/unstable
+P4 3ghz
+soundcard:
+ 0 [ICH5           ]: ICH4 - Intel ICH5
+                      Intel ICH5 with ALC650F at 0xee101000, irq 20
+kernel 2.6.14
+
+nota: before finding this solution I did this:
+test several other kernels, test several recording applications, test
+others alsa modules...lost my hair...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-18-05 08:40 phil_troin     New Issue                                    
+12-18-05 08:40 phil_troin     File Added: amixout                          
+12-18-05 08:40 phil_troin     Distribution              => Gentoo          
+12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
+12-18-05 12:00 linuxbear      Note Added: 0007071                          
+12-18-05 12:02 linuxbear      Note Edited: 0007071                         
+12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
+01-07-06 06:24 tgutwin        Note Added: 0007508                          
+01-07-06 06:25 tgutwin        Issue Monitored: tgutwin                     
+01-09-06 01:34 legluondunet   Note Added: 0007529                          
+01-09-06 01:35 legluondunet   File Added: alsa.conf.record1channel              
+     
+01-09-06 01:37 legluondunet   File Added: alsa.conf.ubuntu                    
+01-09-06 01:43 legluondunet   Note Added: 0007530                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
