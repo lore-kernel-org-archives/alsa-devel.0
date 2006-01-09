@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001725]: SB Audigy SE Not Working with Quake 4, Doom 3
-Date: Mon, 9 Jan 2006 11:05:02 +0100
-Message-ID: <1ab3f04a43de35ca4e962c1e6731c92a@bugtrack.alsa-project.org>
+From: "PIVATY Bertrand" <bertrand.pivaty@eurocontrol.int>
+Subject: Urgent question
+Date: Mon, 9 Jan 2006 11:07:36 +0100
+Message-ID: <0AEFDFCCEC85B24E8051B23293C2CB640F2503@MMMSTCAE1.muac.corp.eurocontrol.int>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C61504.83C8C904"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 943CC144
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 11:05:02 +0100 (MET)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,114 +16,352 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been ACKNOWLEDGED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1725> 
-======================================================================
-Reported By:                malk271
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1725
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     acknowledged
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.12-1.1381_FC3
-======================================================================
-Date Submitted:             01-08-2006 17:35 CET
-Last Modified:              01-09-2006 11:05 CET
-======================================================================
-Summary:                    SB Audigy SE Not Working with Quake 4, Doom 3
-Description: 
-On FC3, I have compiled and installed alsa-driver-1.0.11rc2 and
-alsa-lib-1.0.11rc2 in order to be able to use a recently purchased Audigy
-SE.
+------_=_NextPart_001_01C61504.83C8C904
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Regular playback is working (speaker-test and aplay both work, as does
-Amarok with Alsa selected for playback). Skype playback does work, but is
-horribly choppy (unusable really), unlike my other card, an old SB Live!
-1024 player.
+Dear all,
 
-However, the Audigy SE does not work with Quake 4 and Doom 3. There is
-some output, but it is just a collection of random sounds. I have tried
-both stereo and 5.1 configurations. Also, output must be sent through the
-plug plugin or the games complain about a sampling mismatch (48KHz found
-but 44.1KHz required).
+=20
 
-======================================================================
+(Happy New Year)
 
-----------------------------------------------------------------------
- rlrevell - 01-08-06 21:48 
-----------------------------------------------------------------------
-Can you reproduce the problem with an app we have the source code to?
+=20
 
-----------------------------------------------------------------------
- rlrevell - 01-08-06 21:49 
-----------------------------------------------------------------------
-"Also, output must be sent through the plug plugin or the games complain
-about a sampling mismatch (48KHz found but 44.1KHz required)."
+My name is Bertrand Pivaty and I'm a software engineer.
 
-This is not a bug - the card can only do 48KHz in hardware.  Apps should
-use the "default" device, not "hw:x,x".
+=20
 
-----------------------------------------------------------------------
- malk271 - 01-09-06 09:47 
-----------------------------------------------------------------------
-> This is not a bug - the card can only do 48KHz in hardware. Apps
-> should use the "default" device, not "hw:x,x".
+We use an audio software to simulate sound communication on our Air
+Traffic Control simulator.
 
-There are two cards in my computer. Using the "default" device selects
-card 0, not card 1 (the card I am trying to use). Also, the Q4 / Doom 3
-FAQ indicate that this  should not happen any more -- I realise that this
-is not necessarily an Alsa issue.
+The sound quality looks good when using the onboard sound card provided,
+but when using any PCI sound card the sound quality is really poor.
 
-----------------------------------------------------------------------
- malk271 - 01-09-06 09:48 
-----------------------------------------------------------------------
-> Can you reproduce the problem with an app we have the source code to?
+Do you have any idea of what could be the reason, or any track where we
+should investigate.
 
-I don't know. I guess my point is that the card is not working with the
-apps I am using.
+=20
 
-----------------------------------------------------------------------
- jcdutton - 01-09-06 11:04 
-----------------------------------------------------------------------
-This is a known problem. Any snd-ca0106 based sound card will not work with
-Doom3 or Quake 4.
-Support for this requires a sound card buffer abstraction layer to be
-added to alsa-lib. I.e. hardware buffer size different from application
-buffer size.
+The software is running on Suse 9.0 with the last Alsa version.
 
-This feature in alsa-lib is unlikely to be implemented any time soon.
+=20
 
-----------------------------------------------------------------------
- jcdutton - 01-09-06 11:05 
-----------------------------------------------------------------------
-Acknowledged, but unlikely to be fixed any time soon.
+Do not hesitate if any question. I will not be allowed to send any part
+of the software, but I will do my best to answer.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-08-06 17:35 malk271        New Issue                                    
-01-08-06 17:35 malk271        Distribution              => Fedora Core 3   
-01-08-06 17:35 malk271        Kernel Version            => 2.6.12-1.1381_FC3
-01-08-06 21:48 rlrevell       Note Added: 0007527                          
-01-08-06 21:49 rlrevell       Note Added: 0007528                          
-01-09-06 09:47 malk271        Note Added: 0007532                          
-01-09-06 09:48 malk271        Note Added: 0007533                          
-01-09-06 11:04 jcdutton       Note Added: 0007534                          
-01-09-06 11:05 jcdutton       Note Added: 0007535                          
-01-09-06 11:05 jcdutton       Status                   assigned => acknowledged
-======================================================================
+=20
+
+Any comment would be really appreciated.
+
+=20
+
+Many thanks in advance.
+
+=20
+
+Bertrand
+
+=20
+
+ ''''''''''''''''''''''''''''''''''''''''''''
+
+Bertrand Pivaty
+
+Engineering Division - OPE/SRS Team
+
+EUROCONTROL Maastricht UAC
+
+Horsterweg 11
+
+NL-6199 AC Maastricht-Airport=20
+
+* bertrand.pivaty@eurocontrol.int
+
+* +31 (0)43 366 1362
+
+''''''''''''''''''''''''''''''''''''''''''''
+
+=20
 
 
+____
+
+This message and any files transmitted with it are legally privileged and=
+ intended for the sole use of the individual(s) or entity to whom they ar=
+e addressed. If you are not the intended recipient, please notify the sen=
+der by reply and delete the message and any attachments from your system.=
+ Any unauthorised use or disclosure of the content of this message is str=
+ictly prohibited and may be unlawful.
+
+Nothing in this e-mail message amounts to a contractual or legal commitme=
+nt on the part of EUROCONTROL unless it is confirmed by appropriately sig=
+ned hard copy.
+
+Any views expressed in this message are those of the sender.
+=0D
+------_=_NextPart_001_01C61504.83C8C904
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:"Trebuchet MS";
+	panose-1:2 11 6 3 2 2 2 2 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+p
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+span.EmailStyle17
+	{font-family:Verdana;
+	color:windowtext;
+	font-weight:normal;
+	font-style:normal;
+	text-decoration:none none;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>Dear all,</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>(Happy New Year)</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>My name is Bertrand Pivaty and I&#8217;m a software
+engineer.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>We use an audio software to simulate sound =
+communication on
+our Air Traffic Control simulator.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>The sound quality looks good when using the onboard =
+sound
+card provided, but when using any PCI sound card the sound quality is =
+really
+poor.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>Do you have any idea of what could be the reason, =
+or any
+track where we should investigate.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>The software is running on Suse 9.0 with the last =
+Alsa version.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>Do not hesitate if any question. I will not be =
+allowed to
+send any part of the software, but I will do my best to =
+answer.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>Any comment would be really =
+appreciated.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>Many thanks in advance.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>Bertrand</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DVerdana><span =
+style=3D'font-size:11.0pt;
+font-family:Verdana'>&nbsp;</span></font></p>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3D"Trebuchet MS"><span =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>&nbsp;&#8216;&#8217;&#8217;&#8217;&#8217;&#=
+8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#821=
+7;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&=
+#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#82=
+17;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;</span></font></i></p=
+>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3D"Trebuchet MS"><span =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>Bertrand Pivaty</span></font></i></p>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3D"Trebuchet MS"><span =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>Engineering Division - OPE/SRS =
+Team</span></font></i></p>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3D"Trebuchet MS"><span lang=3DNL =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>EUROCONTROL Maastricht =
+UAC</span></font></i></p>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3D"Trebuchet MS"><span lang=3DNL =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>Horsterweg 11</span></font></i></p>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3D"Trebuchet MS"><span lang=3DNL =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>NL-6199 AC Maastricht-Airport =
+</span></font></i></p>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3DWingdings><span =
+style=3D'font-size:8.0pt;font-family:Wingdings;color:blue;
+font-style:italic'>*</span></font></i><i><font size=3D1 color=3Dblue
+face=3D"Trebuchet MS"><span =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>&nbsp;<a
+href=3D"mailto:bertrand.pivaty@eurocontrol.int">bertrand.pivaty@eurocontr=
+ol.int</a></span></font></i></p>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3DWingdings><span =
+style=3D'font-size:8.0pt;font-family:Wingdings;color:blue;
+font-style:italic'>(</span></font></i><i><font size=3D1 color=3Dblue
+face=3D"Trebuchet MS"><span =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>&nbsp;+31 (0)43 366 =
+1362</span></font></i></p>
+
+<p style=3D'margin:0cm;margin-bottom:.0001pt'><i><font size=3D1 =
+color=3Dblue
+face=3D"Trebuchet MS"><span =
+style=3D'font-size:8.0pt;font-family:"Trebuchet MS";
+color:blue;font-style:italic'>&#8216;&#8217;&#8217;&#8217;&#8217;&#8217;&=
+#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#82=
+17;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;=
+&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8=
+217;&#8217;&#8217;&#8217;&#8217;&#8217;&#8217;</span></font></i></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+=00
+<pre>____
+
+This message and any files transmitted with it are legally privileged and=
+ intended for the sole use of the individual(s) or entity to whom they ar=
+e addressed. If you are not the intended recipient, please notify the sen=
+der by reply and delete the message and any attachments from your system.=
+ Any unauthorised use or disclosure of the content of this message is str=
+ictly prohibited and may be unlawful.
+
+Nothing in this e-mail message amounts to a contractual or legal commitme=
+nt on the part of EUROCONTROL unless it is confirmed by appropriately sig=
+ned hard copy.
+
+Any views expressed in this message are those of the sender.
+=0D
+------_=_NextPart_001_01C61504.83C8C904--
 
 
 -------------------------------------------------------
