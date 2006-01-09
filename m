@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001725]: SB Audigy SE Not Working with Quake 4, Doom 3
-Date: Mon, 9 Jan 2006 09:47:25 +0100
-Message-ID: <2e9e5bd29fa1738353a81a6de260de7e@bugtrack.alsa-project.org>
+Date: Mon, 9 Jan 2006 09:48:50 +0100
+Message-ID: <8c0bd83b8357507503808da4ed8c59af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86C93143
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 09:47:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E531F8
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 09:48:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.12-1.1381_FC3
 ======================================================================
 Date Submitted:             01-08-2006 17:35 CET
-Last Modified:              01-09-2006 09:47 CET
+Last Modified:              01-09-2006 09:48 CET
 ======================================================================
 Summary:                    SB Audigy SE Not Working with Quake 4, Doom 3
 Description: 
@@ -62,15 +62,6 @@ but 44.1KHz required).
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-08-06 21:49 
-----------------------------------------------------------------------
-"Also, output must be sent through the plug plugin or the games complain
-about a sampling mismatch (48KHz found but 44.1KHz required)."
-
-This is not a bug - the card can only do 48KHz in hardware.  Apps should
-use the "default" device, not "hw:x,x".
-
-----------------------------------------------------------------------
  malk271 - 01-09-06 09:47 
 ----------------------------------------------------------------------
 > This is not a bug - the card can only do 48KHz in hardware. Apps
@@ -81,6 +72,14 @@ card 0, not card 1 (the card I am trying to use). Also, the Q4 / Doom 3
 FAQ indicate that this  should not happen any more -- I realise that this
 is not necessarily an Alsa issue.
 
+----------------------------------------------------------------------
+ malk271 - 01-09-06 09:48 
+----------------------------------------------------------------------
+> Can you reproduce the problem with an app we have the source code to?
+
+I don't know. I guess my point is that the card is not working with the
+apps I am using.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -90,6 +89,7 @@ Date Modified  Username       Field                    Change
 01-08-06 21:48 rlrevell       Note Added: 0007527                          
 01-08-06 21:49 rlrevell       Note Added: 0007528                          
 01-09-06 09:47 malk271        Note Added: 0007532                          
+01-09-06 09:48 malk271        Note Added: 0007533                          
 ======================================================================
 
 
