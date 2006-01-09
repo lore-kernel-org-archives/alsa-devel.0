@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001720]: Audigy LS only produces noise instead playing music
-Date: Mon, 9 Jan 2006 21:48:52 +0100
-Message-ID: <3d54ce507e64387b63ec1cd99b641527@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001701]: Audigy LS (or SE) doen't work probably
+Date: Mon, 9 Jan 2006 21:48:54 +0100
+Message-ID: <5cf46c22300b2f3bef4236e7e2253780@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE7C8141
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:48:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41241141
+	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 21:48:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,105 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001701.
+The following issue has been set as RELATED TO issue 0001720.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1720> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1701> 
 ======================================================================
-Reported By:                Nukem36JL
+Reported By:                gambacherkalbenstein
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1720
-Category:                   PCI - ca0106
+Issue ID:                   1701
+Category:                   PCI - audigyls
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE
-Kernel Version:             2.6.13-15-default
+Status:                     closed
+Distribution:               SuSE 9.3 PRO
+Kernel Version:             2.6.X
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-05-2006 18:16 CET
-Last Modified:              01-09-2006 21:48 CET
+Date Submitted:             01-02-2006 19:19 CET
+Last Modified:              01-02-2006 19:30 CET
 ======================================================================
-Summary:                    Audigy LS only produces noise instead playing music
+Summary:                    Audigy LS (or SE) doen't work probably
 Description: 
-lspci:
-00:0c.0 Multimedia audio controller: Creative Labs SB Audigy LS
+I installed all drivers as described on the page, but YAST dont't thinks
+about useing this card. There's always an error while autoinstalling
+Audigy. 
+And of course I don't know how to solve this problem... :-(
+Useing OSS - shipped with SuSE, not downloaded! - there's a strange noise
+- as reported by others - you can identify as the sound you are playing.
 
-While trying to play a wave- file the card produces noise only. Effect is
-the same for all kind of players including aplay, ogg123 .... The card is
-used together with another card, which works properly.
-
-Module snd-ca0106 loads without error messages. 
+Can anyone help me? PLEASE!!!
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001679 Audigy 4 SE (SB_0570, ca0106) does not ...
-related to          0001701 Audigy LS (or SE) doen't work probably
+duplicate of        0001679 Audigy 4 SE (SB_0570, ca0106) does not ...
+related to          0001720 Audigy LS only produces noise instead p...
 ======================================================================
 
 ----------------------------------------------------------------------
- Nukem36JL - 01-07-06 10:29 
+ rlrevell - 01-02-06 19:30 
 ----------------------------------------------------------------------
-In alsamixer card is displayed as "CA0106" Chip is empty. Maybe this causes
-the Problem.
-
-----------------------------------------------------------------------
- jcdutton - 01-07-06 14:19 
-----------------------------------------------------------------------
-Please post the output of:
-cat /proc/asound/version
-cat /proc/asound/cards
-lspci -vn | grep -1 0401
-
-----------------------------------------------------------------------
- Nukem36JL - 01-09-06 17:48 
-----------------------------------------------------------------------
-High!
-
-here the desired data:
-cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b (Thu Jul 28
-12:20:13 2005 UTC)
-
-cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     AudigyLS [Unknown] at 0xb800 irq 11
-1 [CMI8738MC6     ]: CMI8738-MC6 - C-Media PCI CMI8738-MC6
-                     C-Media PCI CMI8738-MC6 (model 55) at 0xd800, irq 10
-
-lspci -vn | grep -1 0401
-
-00:05.0 Class 0401: 13f6:0111 (rev 10)
-        Subsystem: 1043:80e2
---
-
-00:0c.0 Class 0401: 1102:0007
-        Subsystem: 1102:100a
-
-Thanks
-Joerg
-
-----------------------------------------------------------------------
- rlrevell - 01-09-06 18:02 
-----------------------------------------------------------------------
-Looks like Audigy SE, SB0570.
-
-Can you try a newer ALSA, 1.0.9b does not support your card very well.
+Closed -> dupe of 1679.  Please search the bug trackers for existing bugs
+before submitting a new one.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-05-06 18:16 Nukem36JL      New Issue                                    
-01-05-06 18:16 Nukem36JL      Distribution              => SuSE            
-01-05-06 18:16 Nukem36JL      Kernel Version            => 2.6.13-15-default
-01-05-06 18:19 Nukem36JL      Issue Monitored: Nukem36JL                    
-01-07-06 10:29 Nukem36JL      Note Added: 0007511                          
-01-07-06 14:19 jcdutton       Note Added: 0007512                          
-01-09-06 17:48 Nukem36JL      Note Added: 0007538                          
-01-09-06 18:02 rlrevell       Note Added: 0007539                          
-01-09-06 21:48 jcdutton       Relationship added       related to 0001679  
-01-09-06 21:48 jcdutton       Relationship added       related to 0001701  
+01-02-06 19:19 gambacherkalbensteinNew Issue                                    
+01-02-06 19:19 gambacherkalbensteinDistribution              => SuSE 9.3 PRO    
+01-02-06 19:19 gambacherkalbensteinKernel Version            => 2.6.X           
+01-02-06 19:28 rlrevell       Relationship added       duplicate of 0001579
+01-02-06 19:28 rlrevell       Relationship deleted     duplicate of 0001579
+01-02-06 19:29 rlrevell       Relationship added       duplicate of 0001679
+01-02-06 19:30 rlrevell       Status                   assigned => closed  
+01-02-06 19:30 rlrevell       Note Added: 0007376                          
+01-09-06 21:48 jcdutton       Relationship added       related to 0001720  
 ======================================================================
 
 
