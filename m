@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Tue, 10 Jan 2006 03:39:50 +0100
-Message-ID: <7b07146c27b906540daa8df501ba001c@bugtrack.alsa-project.org>
+From: <aruna.jambunathan@wipro.com>
+Subject: gain/attenuation settings for sound cards
+Date: Tue, 10 Jan 2006 11:26:21 +0530
+Message-ID: <7BCD17BB75C4464D866EB5A20D5E889EE25320@HYD-MKD-MBX01.wipro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C615AA.9507E532"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5350713D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 03:39:50 +0100 (MET)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,108 +16,132 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
-======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
-======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              01-10-2006 03:39 CET
-======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
-Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+------_=_NextPart_001_01C615AA.9507E532
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+Hi,
 
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
+   I am working on an application that involves ICE1712 PCI soundcards.
 
-======================================================================
+   I want to know if there is an alsa api to control the
+gain/attenuation settings for individuals channels?
 
-----------------------------------------------------------------------
- smithbone - 01-09-06 06:32 
-----------------------------------------------------------------------
-applying revert 008 makes my usb Audiophile work as well.
+   Thanks in advance,
 
-----------------------------------------------------------------------
- rlrevell - 01-10-06 03:39 
-----------------------------------------------------------------------
-Clemens, have you looked at this lately?  It seems to have been narrowed
-down to a specific change, the addition of prepare_startup_playback_urb().
+=20
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
-12-30-05 19:48 sailfrog       Note Added: 0007251                          
-12-30-05 20:01 rlrevell       Note Added: 0007252                          
-12-30-05 20:08 rlrevell       Note Added: 0007254                          
-12-30-05 20:31 sailfrog       Note Added: 0007256                          
-12-30-05 20:34 rlrevell       Note Added: 0007257                          
-12-30-05 20:41 sailfrog       Note Added: 0007258                          
-12-30-05 20:43 rlrevell       Note Added: 0007259                          
-12-31-05 02:32 smithbone      Note Added: 0007319                          
-12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
-               
-12-31-05 03:47 rlrevell       Note Added: 0007331                          
-12-31-05 05:31 smithbone      Note Added: 0007343                          
-12-31-05 05:33 rlrevell       Note Added: 0007344                          
-12-31-05 05:37 rlrevell       Note Added: 0007345                          
-12-31-05 07:10 smithbone      Note Added: 0007347                          
-12-31-05 08:54 afran          Note Added: 0007354                          
-12-31-05 08:55 afran          Issue Monitored: afran                       
-12-31-05 08:56 afran          Note Edited: 0007354                         
-01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
-                  
-01-04-06 09:58 bryanr         Note Added: 0007411                          
-01-04-06 10:04 bryanr         Issue Monitored: bryanr                      
-01-04-06 10:50 bryanr         File Added: alsa-usbaudio-2.6.15-revert-008.patch 
-                  
-01-04-06 11:06 bryanr         Note Added: 0007412                          
-01-04-06 13:15 afran          Note Added: 0007416                          
-01-04-06 16:30 sailfrog       Note Added: 0007424                          
-01-05-06 16:12 sailfrog       Note Added: 0007471                          
-01-09-06 06:32 smithbone      Note Added: 0007531                          
-01-10-06 03:39 rlrevell       Note Added: 0007547                          
-======================================================================
+Aruna
+
+=20
+
+=20
 
 
+------_=_NextPart_001_01C615AA.9507E532
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Times New Roman";
+	color:windowtext;
+	font-weight:normal;
+	font-style:normal;
+	text-decoration:none none;}
+p.section1, li.section1, div.section1
+	{mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
+style=3D'font-size:
+11.0pt'>Hi,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
+style=3D'font-size:
+11.0pt'>&nbsp;&nbsp; I am working on an application that involves =
+ICE1712 PCI soundcards.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
+style=3D'font-size:
+11.0pt'>&nbsp;&nbsp; I want to know if there is an alsa api to control =
+the gain/attenuation
+settings for individuals channels?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
+style=3D'font-size:
+11.0pt'>&nbsp;&nbsp; Thanks in advance,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
+style=3D'font-size:
+11.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
+style=3D'font-size:
+11.0pt'>Aruna<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
+style=3D'font-size:
+11.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3Dsection1><font size=3D3 color=3Dnavy face=3D"Times New =
+Roman"><span
+style=3D'font-size:12.0pt;color:navy'><o:p>&nbsp;</o:p></span></font></p>=
+
+
+</div>
+
+</body>
+
+</html>
+
+------_=_NextPart_001_01C615AA.9507E532--
 
 
 -------------------------------------------------------
