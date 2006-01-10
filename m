@@ -1,27 +1,16 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+From: John Rigg <ad@sound-man.co.uk>
 Subject: Re: Re: [OT] ALSA userspace API complexity
-Date: Tue, 10 Jan 2006 00:44:58 +0000
-Message-ID: <1136853898.12802.21.camel@localhost.localdomain>
-References: <20050726150837.GT3160@stusta.de>
-	 <200601091405.23939.rene@exactcode.de>
-	 <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi>
-	 <200601091812.55943.rene@exactcode.de>
-	 <Pine.LNX.4.62.0601091355541.4005@qynat.qvtvafvgr.pbz>
-	 <20060109232043.GA5013@localhost.localdomain>
-	 <Pine.LNX.4.62.0601091515570.4005@qynat.qvtvafvgr.pbz>
-	 <20060110001617.GA5154@localhost.localdomain>
-	 <Pine.LNX.4.62.0601091628340.4005@qynat.qvtvafvgr.pbz>
+Date: Tue, 10 Jan 2006 02:00:17 +0000
+Message-ID: <20060110020017.GB5375__18390.4423065998$1136857877$gmane$org@localhost.localdomain>
+References: <20050726150837.GT3160@stusta.de> <200601091405.23939.rene@exactcode.de> <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi> <200601091812.55943.rene@exactcode.de> <Pine.LNX.4.62.0601091355541.4005@qynat.qvtvafvgr.pbz> <20060109232043.GA5013@localhost.localdomain> <Pine.LNX.4.61.0601100212290.26233@zeus.compusonic.fi>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0DD3913D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 02:38:16 +0100 (MET)
-Received: from lxorguk.ukuu.org.uk (unknown [81.2.110.250])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 621EF98A1F
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 02:38:14 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.62.0601091628340.4005@qynat.qvtvafvgr.pbz>
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9871113D
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 02:50:00 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0601100212290.26233@zeus.compusonic.fi>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -31,25 +20,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Lang <dlang@digitalinsight.com>
-Cc: John Rigg <ad@sound-man.co.uk>, =?ISO-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>, Hannu Savolainen <hannu@opensound.com>, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: Hannu Savolainen <hannu@opensound.com>
+Cc: John Rigg <ad@sound-man.co.uk>, David Lang <dlang@digitalinsight.com>, =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Llu, 2006-01-09 at 16:29 -0800, David Lang wrote:
-> I was under the (apparently mistaken) impression that you couldn't DMA 
-> from userspace (something to do with the possibility that the userspace 
-> memory pages could be swapped out in the middle of the DMA)
+On Tue, Jan 10, 2006 at 02:48:35AM +0200, Hannu Savolainen wrote:
+> On Mon, 9 Jan 2006, John Rigg wrote:
+> 
+> > Yes, but the CPU has plenty of other work to do. The sound cards that
+> > would be worst affected by this are the big RME cards (non-interleaved) and
+> > multiple ice1712 cards (non-interleaved blocks of interleaved data),
+> ice1712 uses normal interleaving. There are no "non-interleaved blocks".
 
-Drivers can choose to support this two different ways. One is to have a
-buffer of kernel memory mapped into user space and shared with the
-hardware (this is how OSS did it), the other is to use the 2.6
-get_user_pages API to get the physical address of a set of pages and
-lock them down so they don't wander off during DMA.
+With two ice1712 cards I had to patch jackd for MMAP_COMPLEX
+support to make them work together. My understanding was that the
+individual cards use interleaved data, but when several are combined
+the resulting blocks of data are not interleaved together. I realise the
+usual way of dealing with this is to use the alsa route plugin with
+ttable to interleave them, but I couldn't get it to work with these
+cards.
 
-Both have advantages for different uses.
-
-Alan
-
+John
 
 
 -------------------------------------------------------
