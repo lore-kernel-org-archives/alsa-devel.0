@@ -1,14 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: alsa pcm jack plugin
-Date: Tue, 10 Jan 2006 20:29:37 +0100
-Message-ID: <20060110202937.6dcbf223@mango.fruits.de>
-References: <20060108204454.511ad978@mango.fruits.de>
-	<s5hirssf148.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001599]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't handle master volume, uses headphone channel instead
+Date: Tue, 10 Jan 2006 21:44:10 +0100
+Message-ID: <a91a4c45fbfb8e61e3f2eff6f3ca45c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hirssf148.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 805A513D
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 21:44:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,335 +18,211 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Jan 2006 18:23:35 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
 
-Hi Takashi,
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1599> 
+======================================================================
+Reported By:                wiktorw
+Assigned To:                rlrevell
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1599
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               Gentoo 2005.1
+Kernel Version:             2.6.14-r2 (2.6.14.3)
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             11-25-2005 17:40 CET
+Last Modified:              01-10-2006 21:44 CET
+======================================================================
+Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't handle
+master volume, uses headphone channel instead
+Description: 
+In the Issue #1510 tiwai wrote:
 
-sorry for the late reply. I didn't see this mail turn up on the LAD ML,
-so i figured it got lost completely.
+> Closing this bug since the original reporter found a solution.
 
-> > xmms simlpy doesn't start playback when using the jackplug device (well,
-> > it seems it wants to, but its clock simply stays at 00:00). Jack seems
-> > to stay functional though.
+Sorry but the mentioned solution to the problem is not optimal.
+In fact, this would only hide the original problem.
 
-xmms seems to be in some sort of loop, which looks a bit like this
-(repeating over and over):
 
-gettimeofday({1136920429, 546991}, NULL) = 0
-gettimeofday({1136920429, 547282}, NULL) = 0
-gettimeofday({1136920429, 547424}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0P\1\0\0L\0\20\0\30"..., 88) = 88
-read(3, 0xbfc5cc70, 32)                 = -1 EAGAIN (Resource temporarily unavai
-lable)
-select(4, [3], NULL, NULL, NULL)        = 1 (in [3])
-read(3, "\1\1j$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0\20\"\22\21\310\316"..., 32) = 32
-gettimeofday({1136920429, 548535}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 8
-) = 0
-gettimeofday({1136920429, 557975}, NULL) = 0
-gettimeofday({1136920429, 558473}, NULL) = 0
-gettimeofday({1136920429, 558937}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 7
-) = 0
-gettimeofday({1136920429, 567853}, NULL) = 0
-gettimeofday({1136920429, 568483}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 0
-) = 0
-gettimeofday({1136920429, 569815}, NULL) = 0
-gettimeofday({1136920429, 570183}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0\240\1\0\0L\0\20\0"..., 88) = 88
-read(3, "\1\1n$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0$\"\22\21\310\316"..., 32) = 32
-gettimeofday({1136920429, 571764}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 6
-) = 0
-gettimeofday({1136920429, 579972}, NULL) = 0
-gettimeofday({1136920429, 580464}, NULL) = 0
-read(13, 0xbfc5cbd0, 72)                = -1 EAGAIN (Resource temporarily unavai
-lable)
-gettimeofday({1136920429, 581452}, NULL) = 0
-gettimeofday({1136920429, 581885}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 8
-) = 0
-gettimeofday({1136920429, 591941}, NULL) = 0
-gettimeofday({1136920429, 592410}, NULL) = 0
-gettimeofday({1136920429, 592778}, NULL) = 0
-gettimeofday({1136920429, 593334}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0\0\1\20\0L\0\20\0"..., 40) = 40
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 4
-) = 0
-gettimeofday({1136920429, 599691}, NULL) = 0
-gettimeofday({1136920429, 600068}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 1
-) = 0
-gettimeofday({1136920429, 602685}, NULL) = 0
-gettimeofday({1136920429, 603117}, NULL) = 0
-write(3, ">\3\7\0\223\0\340\2\35\0\340\2>\0\340\2\6\0\0\0p\0\33\0"..., 48) = 48
-read(3, "\1\1r$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0L\"\22\21\310\316"..., 32) = 32
-gettimeofday({1136920429, 604513}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 8
-) = 0
-gettimeofday({1136920429, 614844}, NULL) = 0
-gettimeofday({1136920429, 615309}, NULL) = 0
-gettimeofday({1136920429, 615681}, NULL) = 0
-gettimeofday({1136920429, 616221}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0P\1\20\0L\0\20\0\30"..., 40) = 40
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 8
-) = 0
-gettimeofday({1136920429, 626719}, NULL) = 0
-gettimeofday({1136920429, 627157}, NULL) = 0
-gettimeofday({1136920429, 627621}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 2
-) = 0
-gettimeofday({1136920429, 631692}, NULL) = 0
-gettimeofday({1136920429, 631889}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 4
-) = 0
-gettimeofday({1136920429, 636651}, NULL) = 0
-gettimeofday({1136920429, 637022}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 0
-) = 0
-gettimeofday({1136920429, 638675}, NULL) = 0
-gettimeofday({1136920429, 639043}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0\240\1\20\0L\0\20"..., 88) = 88
-read(3, "\1\1w$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0`\"\22\21\310\316"..., 32) = 32
-gettimeofday({1136920429, 640595}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 6
-) = 0
-gettimeofday({1136920429, 648696}, NULL) = 0
-gettimeofday({1136920429, 649209}, NULL) = 0
-gettimeofday({1136920429, 649680}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 9
-) = 0
-gettimeofday({1136920429, 660689}, NULL) = 0
-gettimeofday({1136920429, 661201}, NULL) = 0
-gettimeofday({1136920429, 661591}, NULL) = 0
-gettimeofday({1136920429, 662125}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0\0\1 \0L\0\20\0\30"..., 40) = 40
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 0
-) = 0
-gettimeofday({1136920429, 663890}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 6
-) = 0
-gettimeofday({1136920429, 671725}, NULL) = 0
-gettimeofday({1136920429, 672160}, NULL) = 0
-write(3, ">\3\7\0\223\0\340\2\35\0\340\2>\0\340\2\10\0\0\0p\0\33"..., 48) = 48
-read(3, "\1\1{$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0\210\"\22\21\310\316"..., 32) = 32
-gettimeofday({1136920429, 673671}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 8
-) = 0
-gettimeofday({1136920429, 683819}, NULL) = 0
-gettimeofday({1136920429, 684354}, NULL) = 0
-gettimeofday({1136920429, 685130}, NULL) = 0
-gettimeofday({1136920429, 685735}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0P\1 \0L\0\20\0\30"..., 40) = 40
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 6
-) = 0
-gettimeofday({1136920429, 693693}, NULL) = 0
-gettimeofday({1136920429, 694071}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 0
-) = 0
-gettimeofday({1136920429, 695391}, NULL) = 0
-write(3, ">\3\7\0\223\0\340\2\35\0\340\2>\0\340\2\t\0\0\0p\0\33\0"..., 48) = 48
-read(3, "\1\1\177$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0\234\"\22\21\310"..., 32) = 32
-gettimeofday({1136920429, 696885}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 7
-) = 0
-gettimeofday({1136920429, 704646}, NULL) = 0
-gettimeofday({1136920429, 705077}, NULL) = 0
-gettimeofday({1136920429, 705467}, NULL) = 0
-read(13, 0xbfc5cbd0, 72)                = -1 EAGAIN (Resource temporarily unavai
-lable)
-gettimeofday({1136920429, 706463}, NULL) = 0
-gettimeofday({1136920429, 706870}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0\240\1 \0L\0\20\0"..., 40) = 40
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 7
-) = 0
-gettimeofday({1136920429, 716654}, NULL) = 0
-gettimeofday({1136920429, 717084}, NULL) = 0
-gettimeofday({1136920429, 717749}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 5
-) = 0
-gettimeofday({1136920429, 724813}, NULL) = 0
-gettimeofday({1136920429, 725203}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 1
-) = 0
-gettimeofday({1136920429, 727677}, NULL) = 0
-gettimeofday({1136920429, 728107}, NULL) = 0
-gettimeofday({1136920429, 728503}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0\0\0010\0L\0\20\0"..., 88) = 88
-read(3, "\1\1\204$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0\260\"\22\21\310"..., 32) = 32
-gettimeofday({1136920429, 730106}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 7
-) = 0
-gettimeofday({1136920429, 738727}, NULL) = 0
-gettimeofday({1136920429, 739371}, NULL) = 0
-gettimeofday({1136920429, 739818}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 8
-) = 0
-gettimeofday({1136920429, 749631}, NULL) = 0
-gettimeofday({1136920429, 750051}, NULL) = 0
-gettimeofday({1136920429, 750438}, NULL) = 0
-gettimeofday({1136920429, 750971}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0P\0010\0L\0\20\0\30"..., 40) = 40
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 3
-) = 0
-gettimeofday({1136920429, 756655}, NULL) = 0
-gettimeofday({1136920429, 757034}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 2
-) = 0
-gettimeofday({1136920429, 760727}, NULL) = 0
-gettimeofday({1136920429, 761164}, NULL) = 0
-write(3, ">\3\7\0\223\0\340\2\35\0\340\2>\0\340\2\v\0\0\0p\0\33\0"..., 48) = 48
-read(3, 0xbfc5cc70, 32)                 = -1 EAGAIN (Resource temporarily unavai
-lable)
-select(4, [3], NULL, NULL, NULL)        = 1 (in [3])
-read(3, "\1\1\210$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0\330\"\22\21\310"..., 32) = 32
-gettimeofday({1136920429, 762656}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 8
-) = 0
-gettimeofday({1136920429, 771656}, NULL) = 0
-gettimeofday({1136920429, 772090}, NULL) = 0
-gettimeofday({1136920429, 772475}, NULL) = 0
-gettimeofday({1136920429, 773007}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0\240\0010\0L\0\20"..., 40) = 40
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 8
-) = 0
-gettimeofday({1136920429, 783937}, NULL) = 0
-gettimeofday({1136920429, 784611}, NULL) = 0
-gettimeofday({1136920429, 785288}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 1
-) = 0
-gettimeofday({1136920429, 787604}, NULL) = 0
-gettimeofday({1136920429, 787976}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 5
-) = 0
-gettimeofday({1136920429, 794639}, NULL) = 0
-gettimeofday({1136920429, 795069}, NULL) = 0
-gettimeofday({1136920429, 795455}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0\0\2\0\0L\0\20\0\30"..., 88) = 88
-read(3, "\1\1\215$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0\354\"\22\21\310"..., 32) = 32
-gettimeofday({1136920429, 796980}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 7
-) = 0
-gettimeofday({1136920429, 805779}, NULL) = 0
-gettimeofday({1136920429, 806231}, NULL) = 0
-gettimeofday({1136920429, 806679}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}, {fd=7, events=POLLIN}], 3, 9
-) = 0
-gettimeofday({1136920429, 817654}, NULL) = 0
-gettimeofday({1136920429, 818088}, NULL) = 0
-gettimeofday({1136920429, 818473}, NULL) = 0
-write(3, "\224\3\n\0\37\0\340\2>\0\340\2\0\6@\0P\2\0\0L\0\20\0\30"..., 88) = 88
-read(3, "\1\1\221$\0\0\0\0\"\0`\1\4\0\0\0\0\0\0\0\0#\22\21\310\316"..., 32) = 32
-gettimeofday({1136920429, 819992}, NULL) = 0
-ioctl(3, FIONREAD, [0])                 = 0
-poll( <unfinished ...>
+There is some quirk in the handling of SiS SI7012 by ALSA drivers and/or
+ALSA libs. The master channel never changes the volume level. But somehow
+the "Headphone" channel does similar work.
 
-Here i killed it..
+I know that there were some serious changes and tweaks wrt headphones
+handling on this chipset. They are described in the following issues:
 
-~$ 
-GLib-WARNING **: g_main_iterate(): main loop already active in another thread
-
-GLib-WARNING **: g_main_iterate(): main loop already active in another thread
-XS[src/xmms-sid.c:xs_close:235]: xs_close(): shutting down...
-XS[src/xmms-sid.c:xs_stop:584]: STOP_REQ
-XS[src/xmms-sid.c:xs_close:248]: shutdown finished.
-
-GLib-WARNING **: g_main_iterate(): main loop already active in another thread
-
-GLib-WARNING **: g_main_iterate(): main loop already active in another thread
-
-GLib-WARNING **: g_main_iterate(): main loop already active in another thread
-
-GLib-WARNING **: g_main_iterate(): main loop already active in another thread
-
-GLib-WARNING **: g_main_iterate(): main loop already active in another thread
-
-GLib-WARNING **: g_main_iterate(): main loop already active in another thread
+* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664
+* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486
+* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
+* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162
 
 
 
-> > 
-> > With ninjam, it is possible to actually get some audio from it (for
-> > about 10 seconds), then it goes silent/frozen and jack's watchdog kicks
-> > it out after the timeout time has expired. And jackd is taken down with
-> > it, too :(
-> 
-> Any chance to get strace at the stalling position?
+I managed to run Windows XP on this machine in order to test if the
+problem
+manifests itself there. In short: no. I took some screenshots to document
+what I've done. You can find them here:
 
-I put the complete log file to 
+http://ics.p.lodz.pl/~wiktorw/alsa-problem/
 
-http://affenbande.org/~tapas/ninjam_strace
+Comments to the pictures:
 
-ca. 2.9M
+1) I turned on all possible playback volume controls
+2) That's how the full volume panel looks like
 
-I hope it helps any at all.. I ran ninjam like this:
+   NOTE: there is no headphone volume control
 
-strace -o log  cursesclient/cninjam  test.ninjam.com:2049 -audiostr "in jackplug out jackplug"
+3a) If I slide the master volume control, the volume in the internal
+speakers
+    changes, the same is with the wave volume control.
 
-use username "anonymous" to log in. It seems to block on rt_sigaction
-for a bit and then continues. Then blocks again, continues and after a
-while it dies and takes jackd with it.
+   NOTE: if I plug the headphones, the volume also changes
+   NOTE: looks like the internat speakers and headphones might be
+         connected / linked by the manufacturer, inside the machine
 
-> > I wonder whether cleanly designed this thing would need to have to use
-> > an alsa lib calls in the process callback at all. And most of all the
-> > write() should be avoided, too. Shouldn't all communication with the
-> > pcm_jack's process callback be done via lockless ringbufffers/condition
-> > variables?
-> 
-> Maybe.  The write() there is used just for a poll notification and
-> wake-up of the caller of poll.  So, basically we don't need even a
-> buffer, but a single condition variable and a simple sleep/wake-up
-> mechanism for multi threads.
 
-I see. Please excuse my implying of this thing not being cleanly
-designed. I didn't understand the code at all really :)
+I tested my volume problem under Ubuntu 5.04 and Knoppix 4.02.
+Can't tell the driver/kernel versions (haven't written them down),
+but from simple tests (including "alsamixer") the problem is the same.
+At least it's consistent :-/
+
+
+I also upgraded the kernel in my Gentoo installation to the 2.6.14-r2
+(the official 2.6.14.3) version, and also upgraded the following
+packages:
+
+media-sound/alsa-headers-1.0.10_rc3
+media-libs/alsa-lib-1.0.10_rc3
+media-sound/alsa-utils-1.0.10_rc3
+
+IIRC, this kernel contains alsa-drivers-1.0.10_rc3 so everything should
+be
+in sync. However, the problem remains.
+
+The following screenshots demonstrates my Linux settings:
+
+4) I turned on all possible volume tracks
+5) That's how the full volume control applet looks like
+6a) If I slide the Headphone or PCM track, volume changes.
+    Master track does nothing.
+
+7) I have to set the PCM as a default track for the volume applet, in
+order
+   to get any volume change using the speaker applet in the system tray. 
+
+8) Changing the volume using the speaker slider (in the lower right
+corner)
+9a) One can see that PCM and a speaker slider are the same.
+    If I select the Master track for the applet, the volume doesn't
+change.
+
+A) The same issue hits the console alsamixer.
+B) If I change the Headphone or PCM track, volume changes.
+   Master track still does nothing.
+
+======================================================================
+
+----------------------------------------------------------------------
+ wiktorw - 12-05-05 17:46 
+----------------------------------------------------------------------
+Today I've upgraded my kernel to the 2.6.14-r3 and as I promised,
+I did a check if the in-kernel driver works correctly w.r.t.
+the "Headphone" track.
+
+Exactly as I suspected the problem showed up again.
+You can see the offending screenshot here:
+http://ics.p.lodz.pl/~wiktorw/alsa-problem/C_After_upgrade_2.6.14-gentoo-r4_Volume_Control.png
+
+Interesting version details of kernel & alsa-driver follows:
+
+# uname -a
+Linux widmo 2.6.14-gentoo-r4 #2 PREEMPT Mon Dec 5 15:56:44 CET 2005
+i686 AMD Turion(tm) 64 Mobile Technology ML-30 AuthenticAMD GNU/Linux
+
+# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1
+(Mon Sep 12 08:13:09 2005 UTC).
+
+I guess that if the in-kernel alsa-driver was 1.0.10 [final],
+I wouldn't have this issue anymore.
+
+OTOH the standalone alsa-driver version I have is:
+
+# emerge -pv alsa-driver
+
+These are the packages that I would merge, in order:
+
+Calculating dependencies ...done!
+[ebuild   R   ] media-sound/alsa-driver-1.0.10_rc3  -doc +oss 0 kB
+
+And I have the ability to use the "testing" version:
+alsa-driver-1.0.10 as well. But probably I'll wait
+for the official "stable" release in my distribution.
+
+I'll let you know what is the status of this issue
+for in- and out-of-kernel alsa-driver, when I do the
+upgrade to the 2.6.15 kernel.
 
 Regards,
-Flo
+Wiktor Wandachowicz
+
+----------------------------------------------------------------------
+ wiktorw - 01-10-06 13:02 
+----------------------------------------------------------------------
+Recently I've upgraded my kernel to the 2.6.15 and as I promised,
+I checked if the in-kernel driver works correctly. I am pleased
+to report that the problem is no longer there.
+
+Interesting version details of kernel & alsa-driver follows:
+
+# uname -a
+Linux widmo 2.6.15-gentoo #1 PREEMPT Sat Jan 7 12:45:06 CET 2006
+i686 AMD Turion(tm) 64 Mobile Technology ML-30 AuthenticAMD GNU/Linux
+
+# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3
+(Mon Nov 07 13:30:21 2005 UTC).
 
 
--- 
-Palimm Palimm!
-http://tapas.affenbande.org
+Somehow the problem has been resolved between 2.6.14 kernel
+(alsa-driver 1.0.10rc1) and 2.6.15 kernel (alsa-driver 1.0.10rc3).
+So, IMHO, it was worth reporting here :-)
+
+As I've already mentioned, the standalone driver (1.0.10 "final")
+also works correctly. I assume, though I haven't tested that
+yet, that the 1.0.11rc* versions are okay too.
+
+
+I'd recommend to close this bug, resolution RESOLVED FIXED / WORKSFORME.
+
+Thanks for your time!
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-25-05 17:40 wiktorw        New Issue                                    
+11-25-05 17:40 wiktorw        Distribution              => Gentoo 2005.1   
+11-25-05 17:40 wiktorw        Kernel Version            => 2.6.14-r2 (2.6.14.3)
+11-27-05 18:47 wiktorw        Note Added: 0006852                          
+12-05-05 17:46 wiktorw        Note Added: 0006913                          
+01-10-06 13:02 wiktorw        Note Added: 0007549                          
+01-10-06 21:44 rlrevell       Status                   new => resolved     
+01-10-06 21:44 rlrevell       Resolution               open => fixed       
+01-10-06 21:44 rlrevell       Assigned To               => rlrevell        
+======================================================================
+
+
 
 
 -------------------------------------------------------
