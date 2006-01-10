@@ -1,19 +1,14 @@
-From: Hannu Savolainen <hannu@opensound.com>
-Subject: Re: Re: [OT] ALSA userspace API complexity
-Date: Tue, 10 Jan 2006 04:17:03 +0200 (EET)
-Message-ID: <Pine.LNX.4.61.0601100408480.18971__42646.9223261394$1136859670$gmane$org@zeus.compusonic.fi>
-References: <20050726150837.GT3160@stusta.de> <200601091405.23939.rene@exactcode.de>
- <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi> <200601091812.55943.rene@exactcode.de>
- <Pine.LNX.4.62.0601091355541.4005@qynat.qvtvafvgr.pbz>
- <20060109232043.GA5013@localhost.localdomain> <Pine.LNX.4.61.0601100212290.26233@zeus.compusonic.fi>
- <20060110020017.GB5375@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Tue, 10 Jan 2006 03:39:50 +0100
+Message-ID: <7b07146c27b906540daa8df501ba001c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from minor.compusonic.fi (host1.compusonic.fi [195.238.198.242])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1716613D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 03:19:40 +0100 (MET)
-In-Reply-To: <20060110020017.GB5375@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5350713D
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 03:39:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,40 +18,108 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: John Rigg <ad@sound-man.co.uk>
-Cc: David Lang <dlang@digitalinsight.com>, =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Jan 2006, John Rigg wrote:
 
-> On Tue, Jan 10, 2006 at 02:48:35AM +0200, Hannu Savolainen wrote:
-> > On Mon, 9 Jan 2006, John Rigg wrote:
-> > 
-> > > Yes, but the CPU has plenty of other work to do. The sound cards that
-> > > would be worst affected by this are the big RME cards (non-interleaved) and
-> > > multiple ice1712 cards (non-interleaved blocks of interleaved data),
-> > ice1712 uses normal interleaving. There are no "non-interleaved blocks".
-> 
-> With two ice1712 cards I had to patch jackd for MMAP_COMPLEX
-> support to make them work together. My understanding was that the
-> individual cards use interleaved data, but when several are combined
-> the resulting blocks of data are not interleaved together. I realise the
-> usual way of dealing with this is to use the alsa route plugin with
-> ttable to interleave them, but I couldn't get it to work with these
-> cards.
-Right. If you use two cards then both of them have independently 
-interleaved blocks. However if this kind of mapping belongs to the lowest 
-level audio API or not is yet another API feature to argue about.  Higher 
-level libraries like Jack could do this themselves.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
+======================================================================
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1585
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+======================================================================
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              01-10-2006 03:39 CET
+======================================================================
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
+Description: 
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-Best regards,
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
 
-Hannu
------
-Hannu Savolainen (hannu@opensound.com)
-http://www.opensound.com (Open Sound System (OSS))
-http://www.compusonic.fi (Finnish OSS pages)
-OH2GLH QTH: Karkkila, Finland LOC: KP20CM
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
+
+======================================================================
+
+----------------------------------------------------------------------
+ smithbone - 01-09-06 06:32 
+----------------------------------------------------------------------
+applying revert 008 makes my usb Audiophile work as well.
+
+----------------------------------------------------------------------
+ rlrevell - 01-10-06 03:39 
+----------------------------------------------------------------------
+Clemens, have you looked at this lately?  It seems to have been narrowed
+down to a specific change, the addition of prepare_startup_playback_urb().
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
+12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
+12-30-05 20:43 rlrevell       Note Added: 0007259                          
+12-31-05 02:32 smithbone      Note Added: 0007319                          
+12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
+               
+12-31-05 03:47 rlrevell       Note Added: 0007331                          
+12-31-05 05:31 smithbone      Note Added: 0007343                          
+12-31-05 05:33 rlrevell       Note Added: 0007344                          
+12-31-05 05:37 rlrevell       Note Added: 0007345                          
+12-31-05 07:10 smithbone      Note Added: 0007347                          
+12-31-05 08:54 afran          Note Added: 0007354                          
+12-31-05 08:55 afran          Issue Monitored: afran                       
+12-31-05 08:56 afran          Note Edited: 0007354                         
+01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
+                  
+01-04-06 09:58 bryanr         Note Added: 0007411                          
+01-04-06 10:04 bryanr         Issue Monitored: bryanr                      
+01-04-06 10:50 bryanr         File Added: alsa-usbaudio-2.6.15-revert-008.patch 
+                  
+01-04-06 11:06 bryanr         Note Added: 0007412                          
+01-04-06 13:15 afran          Note Added: 0007416                          
+01-04-06 16:30 sailfrog       Note Added: 0007424                          
+01-05-06 16:12 sailfrog       Note Added: 0007471                          
+01-09-06 06:32 smithbone      Note Added: 0007531                          
+01-10-06 03:39 rlrevell       Note Added: 0007547                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
