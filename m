@@ -1,27 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: [OT] ALSA userspace API complexity
-Date: Tue, 10 Jan 2006 15:17:21 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0601101508560.10330__21250.9666839198$1136902704$gmane$org@tm8103.perex-int.cz>
-References: <20050726150837.GT3160@stusta.de> <20060103193736.GG3831@stusta.de>
- <Pine.BSO.4.63.0601032210380.29027@rudy.mif.pg.gda.pl>
- <mailman.1136368805.14661.linux-kernel2news@redhat.com>
- <20060104030034.6b780485.zaitcev@redhat.com> <Pine.LNX.4.61.0601041220450.9321@tm8103.perex-int.cz>
- <Pine.BSO.4.63.0601051253550.17086@rudy.mif.pg.gda.pl>
- <Pine.LNX.4.61.0601051305240.10350@tm8103.perex-int.cz>
- <Pine.BSO.4.63.0601051345100.17086@rudy.mif.pg.gda.pl> <s5hmziaird8.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0601060028310.27932@zeus.compusonic.fi> <s5h7j9chzat.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0601080225500.17252@zeus.compusonic.fi>
- <Pine.LNX.4.61.0601081007550.9470@tm8103.perex-int.cz>
- <Pine.LNX.4.61.0601090010090.31763@zeus.compusonic.fi>
- <Pine.LNX.4.61.0601101144130.10330@tm8103.perex-int.cz>
- <Pine.LNX.4.61.0601101550390.24146@zeus.compusonic.fi>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Support for EDIROL UM-3ex
+Date: Tue, 10 Jan 2006 15:29:14 +0100
+Message-ID: <1136903354.43c3c4ba5738a@webmail.uni-halle.de>
+References: <200512312154.35173.busterbcook@yahoo.com>
+ <s5hmzi5h2s4.wl%tiwai@suse.de> <200601100734.33174.busterbcook@yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="Boundary_(ID_zyH2UfoJf7RdBbPSdCPYGQ)"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0AFE5141
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 15:17:22 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.61.0601101550390.24146@zeus.compusonic.fi>
+In-reply-to: <200601100734.33174.busterbcook@yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -31,49 +17,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hannu Savolainen <hannu@opensound.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: Brent Cook <busterbcook@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Jan 2006, Hannu Savolainen wrote:
+This message is in MIME format.
 
-> On Tue, 10 Jan 2006, Jaroslav Kysela wrote:
-> 
-> > > 
-> > > Then you can include a libOSSlib.o library in ALSA with all the OSS 
-> > > emulation stuf inside.
-> > 
-> > You should do the clear statement that the direct using of syscalls is not 
-> > recommented for application developers. Unfortunately at this time, I 
-> > admit, it would be very difficult to change the existing applications.
+--Boundary_(ID_zyH2UfoJf7RdBbPSdCPYGQ)
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
 
-> Sorry. That breaks backward compatibility with systems that don't have 
-> libOSSlib (all current and past Linux distros, all BSD variants, 
-> everything but systems with our official OSS package installed). Such 
-> statement can be added in 2010 but provided that all Linux distros and 
-> other environments having OSS compatible implementations add the osslib_* 
-> routines within this year.
+Brent Cook wrote:
+> On Monday 09 January 2006 08:52, Takashi Iwai wrote:
+> > Could you regenerate a patch for Linus' latest git tree (also together
+> > with Signed-off-by line) ?
+>
+> Here you go.
 
-I meant that you can originate to move the OSS entry point to somewhere 
-else (library) and try to persuade developers to use library than direct 
-calls.
+I usually try to keep the product IDs sorted, and a composite quirk isn't
+needed for devices with only one interface.  And I added your Signed-off-by
+line.  Would the patch below be OK?
 
-Of course, we cannot change current applications, but we can start the 
-movement now. I just ask you to do it now. Nothing else. It will be a slow 
-process but it should be started now.
 
-Also, I don't think that it will break something. The application 
-developers can use your code in their applications directly when the 
-distribution does not have the OSS access library package.
+Clemens
 
-Note that your words clearly states your attitude to change something.
+==========
 
-						Jaroslav
+Subject: Support for EDIROL UM-3EX
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+This is my naive attempt at adding ALSA device support. The attached
+patch provides support for the EDIROL UM-3ex. This is a 3-port USB midi
+interface with a built-in USB hub and the ability to chain 2 other
+UM-3x's in a master-slave configuration. I only have one, so I do not
+know how this works in practice.
+
+Signed-off-by: Brent Cook <busterbcook@yahoo.com>
+
+--Boundary_(ID_zyH2UfoJf7RdBbPSdCPYGQ)
+Content-type: application/octet-stream; name=um3ex.patch
+Content-transfer-encoding: BASE64
+Content-disposition: attachment; filename=um3ex.patch
+
+SW5kZXg6IGFsc2Eta2VybmVsL3VzYi91c2JtaWRpLmMKPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PQpSQ1MgZmlsZTogL2N2c3Jvb3QvYWxzYS9hbHNhLWtlcm5lbC91c2IvdXNi
+bWlkaS5jLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjYxCmRpZmYgLXUgLXIxLjYx
+IHVzYm1pZGkuYwotLS0gYWxzYS1rZXJuZWwvdXNiL3VzYm1pZGkuYwkxNyBOb3Yg
+MjAwNSAxNTowODowMiAtMDAwMAkxLjYxCisrKyBhbHNhLWtlcm5lbC91c2IvdXNi
+bWlkaS5jCTEwIEphbiAyMDA2IDE0OjE1OjM1IC0wMDAwCkBAIC0xMDgyLDYgKzEw
+ODIsOCBAQAogCXsgVVNCX0lEKDB4MDU4MiwgMHgwMDRkKSwgMCwgIiVzIE1JREki
+IH0sCiAJeyBVU0JfSUQoMHgwNTgyLCAweDAwNGQpLCAxLCAiJXMgMSIgfSwKIAl7
+IFVTQl9JRCgweDA1ODIsIDB4MDA0ZCksIDIsICIlcyAyIiB9LAorCS8qIEVkaXJv
+bCBVTS0zRVggKi8KKwl7IFVTQl9JRCgweDA1ODIsIDB4MDA5YSksIDMsICIlcyBD
+b250cm9sIiB9LAogCS8qIE0tQXVkaW8gTWlkaVNwb3J0IDh4OCAqLwogCXsgVVNC
+X0lEKDB4MDc2MywgMHgxMDMxKSwgOCwgIiVzIENvbnRyb2wiIH0sCiAJeyBVU0Jf
+SUQoMHgwNzYzLCAweDEwMzMpLCA4LCAiJXMgQ29udHJvbCIgfSwKSW5kZXg6IGFs
+c2Eta2VybmVsL3VzYi91c2JxdWlya3MuaAo9PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJD
+UyBmaWxlOiAvY3Zzcm9vdC9hbHNhL2Fsc2Eta2VybmVsL3VzYi91c2JxdWlya3Mu
+aCx2CnJldHJpZXZpbmcgcmV2aXNpb24gMS41OApkaWZmIC11IC1yMS41OCB1c2Jx
+dWlya3MuaAotLS0gYWxzYS1rZXJuZWwvdXNiL3VzYnF1aXJrcy5oCTIxIE5vdiAy
+MDA1IDE2OjQwOjAwIC0wMDAwCTEuNTgKKysrIGFsc2Eta2VybmVsL3VzYi91c2Jx
+dWlya3MuaAkxMCBKYW4gMjAwNiAxNDoxNTozNSAtMDAwMApAQCAtMTA5MCw2ICsx
+MDkwLDE5IEBACiAJCX0KIAl9CiB9LAoreworCVVTQl9ERVZJQ0UoMHgwNTgyLCAw
+eDAwOWEpLAorCS5kcml2ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25z
+dCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlyaykgeworCQkudmVuZG9yX25hbWUg
+PSAiRURJUk9MIiwKKwkJLnByb2R1Y3RfbmFtZSA9ICJVTS0zRVgiLAorCQkuaWZu
+dW0gPSAwLAorCQkudHlwZSA9IFFVSVJLX01JRElfRklYRURfRU5EUE9JTlQsCisJ
+CS5kYXRhID0gJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfbWlkaV9lbmRwb2ludF9p
+bmZvKSB7CisJCQkub3V0X2NhYmxlcyA9IDB4MDAwZiwKKwkJCS5pbl9jYWJsZXMg
+ID0gMHgwMDBmCisJCX0KKwl9Cit9LAogCiAvKiBHdWlsbGVtb3QgZGV2aWNlcyAq
+LwogewpAQCAtMTExOCw3ICsxMTMxLDYgQEAKIAkvKiBUT0RPOiBhZGQgRWRpcm9s
+IFBDLTUwIHN1cHBvcnQgKi8KIAkvKiBUT0RPOiBhZGQgRWRpcm9sIFBDLTgwIHN1
+cHBvcnQgKi8KIAkvKiBUT0RPOiBhZGQgRWRpcm9sIFVBLTFFWCBzdXBwb3J0ICov
+Ci0JLyogVE9ETzogYWRkIEVkaXJvbCBVTS0zIHN1cHBvcnQgKi8KIAkvKiBUT0RP
+OiBhZGQgRWRpcm9sIE1ELVAxIHN1cHBvcnQgKi8KIAogLyogTWlkaW1hbi9NLUF1
+ZGlvIGRldmljZXMgKi8K
+
+--Boundary_(ID_zyH2UfoJf7RdBbPSdCPYGQ)--
 
 
 -------------------------------------------------------
