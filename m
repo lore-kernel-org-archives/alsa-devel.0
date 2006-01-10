@@ -1,12 +1,14 @@
-From: <aruna.jambunathan@wipro.com>
-Subject: gain/attenuation settings for sound cards
-Date: Tue, 10 Jan 2006 11:26:21 +0530
-Message-ID: <7BCD17BB75C4464D866EB5A20D5E889EE25320@HYD-MKD-MBX01.wipro.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001729]: Only output through headphone jack
+Date: Tue, 10 Jan 2006 09:16:44 +0100
+Message-ID: <2984790593fc52df44e255ff81c1a14c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C615AA.9507E532"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DAAAA13D
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 09:16:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,132 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C615AA.9507E532
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1729> 
+======================================================================
+Reported By:                Jeff250
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1729
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Breezy 5.10
+Kernel Version:             2.6.12-10-686
+======================================================================
+Date Submitted:             01-10-2006 09:16 CET
+Last Modified:              01-10-2006 09:16 CET
+======================================================================
+Summary:                    Only output through headphone jack
+Description: 
+I have an HDA Intel card with a Sigmatel STAC9200 chip on a Dell XPS m140
+laptop.
+In Alsa 1.0.10, sound was outputted to both the speakers and headphones. 
+I tried updating to a newer version of ALSA to see if there was any way to
+disable speaker output when my headphones are plugged in.
 
-Hi,
+However, in Alsa 1.0.11rc2 and latest CVS, sound is only outputted through
+the headphone jack and never through the speakers, regardless of any
+alsamixer tinkering.  (I suppose that's irony).  Reverting back to 1.0.10
+solves the speaker output problem.
 
-   I am working on an application that involves ICE1712 PCI soundcards.
+Thank you for your time.
+======================================================================
 
-   I want to know if there is an alsa api to control the
-gain/attenuation settings for individuals channels?
-
-   Thanks in advance,
-
-=20
-
-Aruna
-
-=20
-
-=20
-
-
-------_=_NextPart_001_01C615AA.9507E532
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:"Times New Roman";
-	color:windowtext;
-	font-weight:normal;
-	font-style:normal;
-	text-decoration:none none;}
-p.section1, li.section1, div.section1
-	{mso-margin-top-alt:auto;
-	margin-right:0in;
-	mso-margin-bottom-alt:auto;
-	margin-left:0in;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
-style=3D'font-size:
-11.0pt'>Hi,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
-style=3D'font-size:
-11.0pt'>&nbsp;&nbsp; I am working on an application that involves =
-ICE1712 PCI soundcards.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
-style=3D'font-size:
-11.0pt'>&nbsp;&nbsp; I want to know if there is an alsa api to control =
-the gain/attenuation
-settings for individuals channels?<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
-style=3D'font-size:
-11.0pt'>&nbsp;&nbsp; Thanks in advance,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
-style=3D'font-size:
-11.0pt'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
-style=3D'font-size:
-11.0pt'>Aruna<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Times New Roman"><span =
-style=3D'font-size:
-11.0pt'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3Dsection1><font size=3D3 color=3Dnavy face=3D"Times New =
-Roman"><span
-style=3D'font-size:12.0pt;color:navy'><o:p>&nbsp;</o:p></span></font></p>=
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-10-06 09:16 Jeff250        New Issue                                    
+01-10-06 09:16 Jeff250        Distribution              => Ubuntu Breezy 5.10
+01-10-06 09:16 Jeff250        Kernel Version            => 2.6.12-10-686   
+======================================================================
 
 
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C615AA.9507E532--
 
 
 -------------------------------------------------------
