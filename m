@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001730]: Unplug/replug of USB audio device causes snd_usb_audio and/or snd_pcm usage count to stick at 1 => no sound
-Date: Tue, 10 Jan 2006 09:25:05 +0100
-Message-ID: <8a61218f40b404bc29719e0bf02aeda2@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA - pnp OS bios option
+Date: Tue, 10 Jan 2006 10:01:33 +0100
+Message-ID: <1136883693.43c377ed83361@www.domainfactory-webmail.de>
+References: <200601092022.56244.nick@linicks.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A272C13D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 09:25:05 +0100 (MET)
+In-Reply-To: <200601092022.56244.nick@linicks.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Nick Warne <nick@linicks.net>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Nick Warne wrote:
+> 00:0f.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+>
+> If I turn OFF PNP OS, when I boot, 'alsactl restore' (run from
+> rc.local) squinnies:
+>
+> Set_Control:894 Name mismatch ... Control #47
+> 896: Index mismatch (0/0) for Control #47
+> 1008: Bad control.47.value
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1730> 
-======================================================================
-Reported By:                stuge
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1730
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-10-2006 09:25 CET
-Last Modified:              01-10-2006 09:25 CET
-======================================================================
-Summary:                    Unplug/replug of USB audio device causes
-snd_usb_audio and/or snd_pcm usage count to stick at 1 => no sound
-Description: 
-Actually I'm using 1.0.11rc2 drivers, utils, libs and headers.
-Filed under CORE/pcm as per crimsun's suggestion in #alsa.
+This usually happens when you use a different driver version that has
+different mixer controls so that the saved state in /etc/asound.state
+doesn't match.
 
-I had this issue also with Gentoo 1.0.10-r1 but then I got an oops and a
-double exception that looked pretty nasty. After updating to 1.0.11rc2 I
-don't get the oops but still get the bug.
+I don't know why the "PNP OS" setting should affect which mixer
+controls are available.  What are the differences in /etc/asound.state
+after "alsactl store" in both cases?
 
-The USB device is a self-made TI PCM2902 reference design.
 
-Sometimes I have to unplug/replug the device twice to tickle the bug,
-sometimes just once is enough.
-
-Kernel error message:
-ALSA
-/var/tmp/portage/alsa-driver-1.0.11_rc2/work/alsa-driver-1.0.11rc2/acore/timer.c:876:
-timer 0xf7fa4200 is busy?
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-10-06 09:25 stuge          New Issue                                    
-01-10-06 09:25 stuge          Distribution              => Gentoo Linux    
-01-10-06 09:25 stuge          Kernel Version            => 2.6.15          
-======================================================================
-
+Clemens
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
+les
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+http://ads.osdn.com/?ad_id=3D7637&alloc_id=3D16865&op=3Dclick
