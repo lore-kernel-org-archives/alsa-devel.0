@@ -1,25 +1,19 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Hannu Savolainen <hannu@opensound.com>
 Subject: Re: Re: [OT] ALSA userspace API complexity
-Date: Mon, 09 Jan 2006 20:56:21 -0500
-Message-ID: <1136858181.2007.26.camel__15198.7382014797$1136858234$gmane$org@mindpipe>
-References: <20050726150837.GT3160@stusta.de>
-	 <200601091405.23939.rene@exactcode.de>
-	 <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi>
-	 <200601091812.55943.rene@exactcode.de>
-	 <Pine.LNX.4.62.0601091355541.4005@qynat.qvtvafvgr.pbz>
-	 <20060109232043.GA5013@localhost.localdomain>
-	 <Pine.LNX.4.62.0601091515570.4005@qynat.qvtvafvgr.pbz>
-	 <20060110001617.GA5154@localhost.localdomain>
-	 <Pine.LNX.4.62.0601091628340.4005@qynat.qvtvafvgr.pbz>
-	 <1136853898.12802.21.camel@localhost.localdomain>
+Date: Tue, 10 Jan 2006 04:17:03 +0200 (EET)
+Message-ID: <Pine.LNX.4.61.0601100408480.18971__42646.9223261394$1136859670$gmane$org@zeus.compusonic.fi>
+References: <20050726150837.GT3160@stusta.de> <200601091405.23939.rene@exactcode.de>
+ <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi> <200601091812.55943.rene@exactcode.de>
+ <Pine.LNX.4.62.0601091355541.4005@qynat.qvtvafvgr.pbz>
+ <20060109232043.GA5013@localhost.localdomain> <Pine.LNX.4.61.0601100212290.26233@zeus.compusonic.fi>
+ <20060110020017.GB5375@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 74D5513D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 02:56:24 +0100 (MET)
-In-Reply-To: <1136853898.12802.21.camel@localhost.localdomain>
+Received: from minor.compusonic.fi (host1.compusonic.fi [195.238.198.242])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1716613D
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 03:19:40 +0100 (MET)
+In-Reply-To: <20060110020017.GB5375@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,30 +23,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: David Lang <dlang@digitalinsight.com>, John Rigg <ad@sound-man.co.uk>, =?ISO-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>, Hannu Savolainen <hannu@opensound.com>, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: John Rigg <ad@sound-man.co.uk>
+Cc: David Lang <dlang@digitalinsight.com>, =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-01-10 at 00:44 +0000, Alan Cox wrote:
-> On Llu, 2006-01-09 at 16:29 -0800, David Lang wrote:
-> > I was under the (apparently mistaken) impression that you couldn't DMA 
-> > from userspace (something to do with the possibility that the userspace 
-> > memory pages could be swapped out in the middle of the DMA)
+On Tue, 10 Jan 2006, John Rigg wrote:
+
+> On Tue, Jan 10, 2006 at 02:48:35AM +0200, Hannu Savolainen wrote:
+> > On Mon, 9 Jan 2006, John Rigg wrote:
+> > 
+> > > Yes, but the CPU has plenty of other work to do. The sound cards that
+> > > would be worst affected by this are the big RME cards (non-interleaved) and
+> > > multiple ice1712 cards (non-interleaved blocks of interleaved data),
+> > ice1712 uses normal interleaving. There are no "non-interleaved blocks".
 > 
-> Drivers can choose to support this two different ways. One is to have a
-> buffer of kernel memory mapped into user space and shared with the
-> hardware (this is how OSS did it), the other is to use the 2.6
-> get_user_pages API to get the physical address of a set of pages and
-> lock them down so they don't wander off during DMA.
-> 
-> Both have advantages for different uses.
+> With two ice1712 cards I had to patch jackd for MMAP_COMPLEX
+> support to make them work together. My understanding was that the
+> individual cards use interleaved data, but when several are combined
+> the resulting blocks of data are not interleaved together. I realise the
+> usual way of dealing with this is to use the alsa route plugin with
+> ttable to interleave them, but I couldn't get it to work with these
+> cards.
+Right. If you use two cards then both of them have independently 
+interleaved blocks. However if this kind of mapping belongs to the lowest 
+level audio API or not is yet another API feature to argue about.  Higher 
+level libraries like Jack could do this themselves.
 
-ALSA would appear to use the first method (get_user_pages does not
-appear in the source), presumably because new ALSA versions still
-support 2.4 (and 2.2, maybe even 2.0).
+Best regards,
 
-Lee
-
+Hannu
+-----
+Hannu Savolainen (hannu@opensound.com)
+http://www.opensound.com (Open Sound System (OSS))
+http://www.compusonic.fi (Finnish OSS pages)
+OH2GLH QTH: Karkkila, Finland LOC: KP20CM
 
 
 -------------------------------------------------------
