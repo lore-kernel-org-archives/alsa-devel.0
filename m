@@ -1,18 +1,14 @@
-From: Hannu Savolainen <hannu@opensound.com>
-Subject: Re: Re: [OT] ALSA userspace API complexity
-Date: Tue, 10 Jan 2006 02:48:35 +0200 (EET)
-Message-ID: <Pine.LNX.4.61.0601100212290.26233__44050.1508339823$1136854401$gmane$org@zeus.compusonic.fi>
-References: <20050726150837.GT3160@stusta.de> <200601091405.23939.rene@exactcode.de>
- <Pine.LNX.4.61.0601091637570.21552@zeus.compusonic.fi> <200601091812.55943.rene@exactcode.de>
- <Pine.LNX.4.62.0601091355541.4005@qynat.qvtvafvgr.pbz>
- <20060109232043.GA5013@localhost.localdomain>
+From: Mark Salazar <markTheCoder@justmyself.net>
+Subject: Re: [es18xx.c PATCH] #1/4 for Zoom Video - resolve common
+ vs chipset specific mixer controls
+Date: Mon, 09 Jan 2006 19:58:18 -0500
+Message-ID: <43C306AA.4030900@justmyself.net>
+References: <43B00FF2.6030007@justmyself.net>	<1135613234.8293.38.camel@mindpipe>	<43B02A0E.20401@justmyself.net>	<s5h8xtyr9oh.wl%tiwai@suse.de>	<43C199C1.1050301@justmyself.net> <s5hwth9ha4b.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from minor.compusonic.fi (host1.compusonic.fi [195.238.198.242])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C340E135
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 01:51:11 +0100 (MET)
-In-Reply-To: <20060109232043.GA5013@localhost.localdomain>
+In-Reply-To: <s5hwth9ha4b.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,34 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: John Rigg <ad@sound-man.co.uk>
-Cc: David Lang <dlang@digitalinsight.com>, =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 9 Jan 2006, John Rigg wrote:
+Takashi Iwai wrote:
 
-> Yes, but the CPU has plenty of other work to do. The sound cards that
-> would be worst affected by this are the big RME cards (non-interleaved) and
-> multiple ice1712 cards (non-interleaved blocks of interleaved data),
-ice1712 uses normal interleaving. There are no "non-interleaved blocks".
+>
+>Well, I think the below is more straightforward.
+>Please let me know if it works, then I'll merge your patches to CVS.
+>  
+>
+Haven't tried yet, but it looks like it should work. If we go this way 
+it'll break my 4th patch though where I add the controls for Zoom Video 
+so I'll have to rework that as well. I expect the modified version would 
+look something like:
+- adding a "Video Playback Switch" switch control to snd_es18xx_opt_1869;
+- adding a "snd_es18xx_opt_1878" to hold a single volume control "Video 
+Playback Volume";
+- adding a "snd_es18xx_opt_1879" to hold stereo volume "Video Playback 
+Volume",  "Video Playback Volume", and the "Video Playback Switch" controls.
+along with the necessary instantiation logic in snd_es18xx_mixer. The 
+reason I used one array to hold all the chipset specific control 
+information was because I saw the same registers used for different 
+controls in different chipsets and I was trying to keep things simple 
+and readable (and obvious swtich and single instantiation loop) in 
+snd_es18xx_mixer. However this is my first time working ALSA code, and I 
+will defer to your opinion.
+Which way do you want to go?
 
-> which AFAIK are the only cards capable of handling serious professional audio.
-> This could represent 48 or more channels of 96kHz audio, which
-> doesn't leave a lot of spare CPU capacity for running X, for example.
-
-This is true only if you run the system at full 100% load before the 
-conversions. But in real life you cannot do this anyway. You have to use 
-a CPU that has lot of spare power. Otherwise anything unpredictable will 
-make things to fail.
-
-Best regards,
-
-Hannu
------
-Hannu Savolainen (hannu@opensound.com)
-http://www.opensound.com (Open Sound System (OSS))
-http://www.compusonic.fi (Finnish OSS pages)
-OH2GLH QTH: Karkkila, Finland LOC: KP20CM
 
 
 -------------------------------------------------------
