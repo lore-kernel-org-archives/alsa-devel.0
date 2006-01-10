@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001556]: Fortissimo 4: No Volume Control
-Date: Tue, 10 Jan 2006 19:58:17 +0100
-Message-ID: <7acdfccdd0e7df0b8a337105f0b1c393@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: (no subject)
+Date: Tue, 10 Jan 2006 20:12:01 +0100
+Message-ID: <1136920321.43c4070136910@webmail.uni-halle.de>
+References: <5C7B81E1-2824-427D-A874-A2504CE695EA@caiaq.de>
+ <s5hk6d8f1uv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 971AA13D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 19:58:17 +0100 (MET)
+In-reply-to: <s5hk6d8f1uv.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,94 +18,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Mack <daniel@caiaq.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> Daniel Mack wrote:
+> > I'm about to write an ALSA driver for a sound hardware we developed
+> > and I'm wondering about how to tackle it. It's a USB2.0 hardware
+> > which has sound input and output but also some controller elements
+> > and MIDI jacks. I'd like to make the controllers accessible by linux'
+> > input device interface.
+> >
+> > The audio part is - for good reasons - not USB class compliant,
+> > and assuming that the usb folder in the driver tree only addresses
+> > such devices, I pretty much guess this is not the point to start,
+> > right?
+>
+> If it's not USB class compliant, you'll likely need to write a driver
+> from scratch.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556> 
-======================================================================
-Reported By:                bladus
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1556
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo Linux 2005.1
-Kernel Version:             2.6.14-ck1
-======================================================================
-Date Submitted:             11-13-2005 22:06 CET
-Last Modified:              01-10-2006 19:58 CET
-======================================================================
-Summary:                    Fortissimo 4: No Volume Control
-Description: 
-With the Hercules Fortissimo 4 (Envy24HT) there's no posibillity to control
-the volume.
-It's always at max.
+All PCM devices have to use isochronous transfers, so it might work if you
+just hard code the sample format, like, e.g., for the UA-1000.
 
-Under Windows the card uses the reference drivers from VIA, so maybe you
-can fix that issue.
-I would be very happy if you could send me a response to this issue within
-a week, since when it's not possible i can return the card to the
-merchant.
+The synchronization of the PCM output sample rate might be a problem -- if the
+device doesn't use a standard USB synchronization mechanism (synchronous/
+asynchronous/adaptive), the driver would have to be hacked some more.
+(Playback on the UA-1000 doesn't work because the driver doesn't (yet) support
+synchronizing the output PCM stream to the input PCM stream.)
 
-Thank you.
-
-======================================================================
-
-----------------------------------------------------------------------
- bladus - 11-19-05 10:27 
-----------------------------------------------------------------------
-Okay i tried it and both options don't work.
-with the sn25p option the volume in alsamixer is 100%, but if i change it
-the soundcard doesn't react.
-
-----------------------------------------------------------------------
- liiwi - 01-10-06 19:58 
-----------------------------------------------------------------------
-Hrm, with the same card I cannot even get a bleep out. Trying to use spdif,
-don't have at the moment anything to connect to analog out. Kernel is
-2.6.15.
-
-Same "No matching model" error as above, and envy24control does not
-start:
-
-$ envy24control 
-No ICE1712 cards found
-
-Trying different model numbers with module options does not change
-anything.
-
-Hrm, seems that I have slightly different problem, as "Simple mixer
-control 'Multi Track Peak'" has all volumes at 0%, and I cannot change
-them.
-
-Anything I can do?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-13-05 22:06 bladus         New Issue                                    
-11-13-05 22:06 bladus         Distribution              => Gentoo Linux 2005.1
-11-13-05 22:06 bladus         Kernel Version            => 2.6.14-ck1      
-11-14-05 11:02 perex          Note Added: 0006713                          
-11-14-05 11:02 perex          Assigned To               => perex           
-11-14-05 11:02 perex          Status                   new => feedback     
-11-14-05 13:39 bladus         Note Added: 0006722                          
-11-14-05 13:55 bladus         Note Added: 0006723                          
-11-14-05 14:01 perex          Note Added: 0006724                          
-11-15-05 16:37 bladus         Note Added: 0006731                          
-11-19-05 10:27 bladus         Note Added: 0006761                          
-01-10-06 19:37 liiwi          Issue Monitored: liiwi                       
-01-10-06 19:58 liiwi          Note Added: 0007552                          
-======================================================================
+The driver currently assumes that each (output/input) PCM endpoint has its
+own interface (where it can select alternate settings independently).
+Is this the case?
 
 
+Regards,
+Clemens
 
 
 -------------------------------------------------------
