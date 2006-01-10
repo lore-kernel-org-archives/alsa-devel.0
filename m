@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001599]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't handle master volume, uses headphone channel instead
-Date: Tue, 10 Jan 2006 13:02:44 +0100
-Message-ID: <658cf270cf35aae3ce3e23a2a822def8@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: simple PCM helper function
+Date: Tue, 10 Jan 2006 13:26:58 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0601101254540.10330@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0601062102080.10811@tm8103.perex-int.cz>
+ <43C28D90.10103@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D33C13C
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 13:02:45 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A28813C
+	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 13:26:59 +0100 (MET)
+In-Reply-To: <43C28D90.10103@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,206 +20,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 9 Jan 2006, James Courtier-Dutton wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1599> 
-======================================================================
-Reported By:                wiktorw
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1599
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo 2005.1
-Kernel Version:             2.6.14-r2 (2.6.14.3)
-======================================================================
-Date Submitted:             11-25-2005 17:40 CET
-Last Modified:              01-10-2006 13:02 CET
-======================================================================
-Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't handle
-master volume, uses headphone channel instead
-Description: 
-In the Issue #1510 tiwai wrote:
+> Jaroslav Kysela wrote:
+> 
+> > Hi all,
+> > 
+> > I added three functions to alsa-lib - PCM API:
+> > 
+> > /*
+> > * application helpers - these functions are implemented on top
+> > * of the basic API
+> > */
+> > 
+> > int snd_pcm_recover(snd_pcm_t *pcm, int err, int silent);
+> > int snd_pcm_set_params(snd_pcm_t *pcm,
+> > snd_pcm_format_t format,
+> > snd_pcm_access_t access,
+> > unsigned int channels,
+> > unsigned int rate,
+> > int soft_resample,
+> > unsigned int latency);
+> > int snd_pcm_get_params(snd_pcm_t *pcm,
+> > snd_pcm_uframes_t *buffer_size,
+> > snd_pcm_uframes_t *period_size);
+> > 
+> > 	These functions are intended for "lazy" people who are doing just
+> > simple command line players or recorders and don't want to bother with
+> > the ALSA details. The implementation comes from strong attitude against
+> > alsa-lib on LKML by some people.
+> > 	Please, look to them and tell me, if I missed something useable.
+> > The really "minimalistic" example using these functions is in
+> > alsa-lib/test/pcm_min.c (compile the code typing 'make pcm_min' in the
+> > test directory).
+> > 
+> > Jaroslav
+> > 
+> > 
+> Would it not have been better to provide a similar few function calls, 
+> but use a method similar to MaxOSX. I.e. callback based. I.e. Set 
+> parameters, and one of the parameters is the callback function of the 
+> user's program. The application would then not care how big the sound 
+> hardware buffer size was.
 
-> Closing this bug since the original reporter found a solution.
+Yes, the callback method might be an alternative, but the standard way is 
+simply write samples to device, so we shouldn't remove it.
 
-Sorry but the mentioned solution to the problem is not optimal.
-In fact, this would only hide the original problem.
+ The callback would just be: 
 
+> snd_pcm_callback(void *private, /* Private information provided by the 
+> user application at set_params call */ void *buffer, /* Frame buffer */ 
+> snd_pcm_uframes_t number_of_samples_please, /* number of samples for 
+> frame buffer */
+>            snd_pcm_format_t format, /* Might not be needed, but the same
+> format. */
+>            snd_pcm_uframe_t delay, /* Estimate of delay between the current
+> time, and the time when the same will reach the DAC */
+> int status);  /* RUNNING, XRUN etc. */
+> 
+> Where "number_of_samples_please" is likely to be the period size.
+> One could therefore drop the
 
-There is some quirk in the handling of SiS SI7012 by ALSA drivers and/or
-ALSA libs. The master channel never changes the volume level. But somehow
-the "Headphone" channel does similar work.
+You must also add a new function "snd_pcm_check_for_space()" or something 
+like this. The app callback will be called from this function. Also, the 
+app callback function should probably take same parameters as 
+snd_pcm_mmap_begin() handles (areas, offset), because we support more
+ring buffer organization schemes.
 
-I know that there were some serious changes and tweaks wrt headphones
-handling on this chipset. They are described in the following issues:
+So, to all others, is this mechanism worth to implement?
 
-* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664
-* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486
-* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
-* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162
+audio_callback(areas, offset, samples, status) {
+	if (status)
+		status = snd_pcm_recover();
+	if (status) {
+		/* handle error here */
+		return;
+	}
+	... process new samples here, i/o from areas at specified offset ...
+}
 
+main() {
+	snd_pcm_open()
+	snd_pcm_set_params()
+	snd_pcm_set_callback(audio_callback);
+	while (1) {
+		poll();
+		if (poll_set_audio_fd)
+			if (snd_pcm_check_for_space() < 0)
+				/* handle error here */
+	}
+}
+						Jaroslav
 
-
-I managed to run Windows XP on this machine in order to test if the
-problem
-manifests itself there. In short: no. I took some screenshots to document
-what I've done. You can find them here:
-
-http://ics.p.lodz.pl/~wiktorw/alsa-problem/
-
-Comments to the pictures:
-
-1) I turned on all possible playback volume controls
-2) That's how the full volume panel looks like
-
-   NOTE: there is no headphone volume control
-
-3a) If I slide the master volume control, the volume in the internal
-speakers
-    changes, the same is with the wave volume control.
-
-   NOTE: if I plug the headphones, the volume also changes
-   NOTE: looks like the internat speakers and headphones might be
-         connected / linked by the manufacturer, inside the machine
-
-
-I tested my volume problem under Ubuntu 5.04 and Knoppix 4.02.
-Can't tell the driver/kernel versions (haven't written them down),
-but from simple tests (including "alsamixer") the problem is the same.
-At least it's consistent :-/
-
-
-I also upgraded the kernel in my Gentoo installation to the 2.6.14-r2
-(the official 2.6.14.3) version, and also upgraded the following
-packages:
-
-media-sound/alsa-headers-1.0.10_rc3
-media-libs/alsa-lib-1.0.10_rc3
-media-sound/alsa-utils-1.0.10_rc3
-
-IIRC, this kernel contains alsa-drivers-1.0.10_rc3 so everything should
-be
-in sync. However, the problem remains.
-
-The following screenshots demonstrates my Linux settings:
-
-4) I turned on all possible volume tracks
-5) That's how the full volume control applet looks like
-6a) If I slide the Headphone or PCM track, volume changes.
-    Master track does nothing.
-
-7) I have to set the PCM as a default track for the volume applet, in
-order
-   to get any volume change using the speaker applet in the system tray. 
-
-8) Changing the volume using the speaker slider (in the lower right
-corner)
-9a) One can see that PCM and a speaker slider are the same.
-    If I select the Master track for the applet, the volume doesn't
-change.
-
-A) The same issue hits the console alsamixer.
-B) If I change the Headphone or PCM track, volume changes.
-   Master track still does nothing.
-
-======================================================================
-
-----------------------------------------------------------------------
- wiktorw - 12-05-05 17:46 
-----------------------------------------------------------------------
-Today I've upgraded my kernel to the 2.6.14-r3 and as I promised,
-I did a check if the in-kernel driver works correctly w.r.t.
-the "Headphone" track.
-
-Exactly as I suspected the problem showed up again.
-You can see the offending screenshot here:
-http://ics.p.lodz.pl/~wiktorw/alsa-problem/C_After_upgrade_2.6.14-gentoo-r4_Volume_Control.png
-
-Interesting version details of kernel & alsa-driver follows:
-
-# uname -a
-Linux widmo 2.6.14-gentoo-r4 #2 PREEMPT Mon Dec 5 15:56:44 CET 2005
-i686 AMD Turion(tm) 64 Mobile Technology ML-30 AuthenticAMD GNU/Linux
-
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1
-(Mon Sep 12 08:13:09 2005 UTC).
-
-I guess that if the in-kernel alsa-driver was 1.0.10 [final],
-I wouldn't have this issue anymore.
-
-OTOH the standalone alsa-driver version I have is:
-
-# emerge -pv alsa-driver
-
-These are the packages that I would merge, in order:
-
-Calculating dependencies ...done!
-[ebuild   R   ] media-sound/alsa-driver-1.0.10_rc3  -doc +oss 0 kB
-
-And I have the ability to use the "testing" version:
-alsa-driver-1.0.10 as well. But probably I'll wait
-for the official "stable" release in my distribution.
-
-I'll let you know what is the status of this issue
-for in- and out-of-kernel alsa-driver, when I do the
-upgrade to the 2.6.15 kernel.
-
-Regards,
-Wiktor Wandachowicz
-
-----------------------------------------------------------------------
- wiktorw - 01-10-06 13:02 
-----------------------------------------------------------------------
-Recently I've upgraded my kernel to the 2.6.15 and as I promised,
-I checked if the in-kernel driver works correctly. I am pleased
-to report that the problem is no longer there.
-
-Interesting version details of kernel & alsa-driver follows:
-
-# uname -a
-Linux widmo 2.6.15-gentoo #1 PREEMPT Sat Jan 7 12:45:06 CET 2006
-i686 AMD Turion(tm) 64 Mobile Technology ML-30 AuthenticAMD GNU/Linux
-
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3
-(Mon Nov 07 13:30:21 2005 UTC).
-
-
-Somehow the problem has been resolved between 2.6.14 kernel
-(alsa-driver 1.0.10rc1) and 2.6.15 kernel (alsa-driver 1.0.10rc3).
-So, IMHO, it was worth reporting here :-)
-
-As I've already mentioned, the standalone driver (1.0.10 "final")
-also works correctly. I assume, though I haven't tested that
-yet, that the 1.0.11rc* versions are okay too.
-
-
-I'd recommend to close this bug, resolution RESOLVED FIXED / WORKSFORME.
-
-Thanks for your time!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-25-05 17:40 wiktorw        New Issue                                    
-11-25-05 17:40 wiktorw        Distribution              => Gentoo 2005.1   
-11-25-05 17:40 wiktorw        Kernel Version            => 2.6.14-r2 (2.6.14.3)
-11-27-05 18:47 wiktorw        Note Added: 0006852                          
-12-05-05 17:46 wiktorw        Note Added: 0006913                          
-01-10-06 13:02 wiktorw        Note Added: 0007549                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
