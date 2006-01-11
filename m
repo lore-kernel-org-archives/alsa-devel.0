@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
-Date: Wed, 11 Jan 2006 01:37:57 +0100
-Message-ID: <ff9e6443c5aa94976c7227d115a1a795@bugtrack.alsa-project.org>
+Date: Wed, 11 Jan 2006 01:40:36 +0100
+Message-ID: <f2d421b10610964adfabc41484249ee5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5918156
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 01:37:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA3DF156
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 01:40:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-11-2006 01:17 CET
-Last Modified:              01-11-2006 01:37 CET
+Last Modified:              01-11-2006 01:40 CET
 ======================================================================
 Summary:                    Fixed chip configuration for 5.1 in ALC850 code
 Description: 
@@ -55,14 +55,6 @@ bits 6:4)
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-11-06 01:33 
-----------------------------------------------------------------------
-I guess you verified that the patch does not break anything, by testing all
-combinations of the "default", "front", "rear", "centerLFE", "surround51"
-etc PCMs and surround-related mixer settings, with regular stereo and mono
-.wav files?
-
-----------------------------------------------------------------------
  C-MoH - 01-11-06 01:37 
 ----------------------------------------------------------------------
 Hmmm.. where did the "steps to reproduce" section dissapear?
@@ -73,6 +65,14 @@ sound and rear speakers were weirdly mangled with the center speaker.
 Different channel routes in asoundrc made the sound come from center and
 lfe but made rear speakers mute etc.
 
+----------------------------------------------------------------------
+ rlrevell - 01-11-06 01:40 
+----------------------------------------------------------------------
+Unfortunately it only appears in the advanced view, I don't like this
+either.
+
+So you are saying you regression tested your patch fully?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -82,6 +82,7 @@ Date Modified  Username       Field                    Change
 01-11-06 01:22 C-MoH          Note Added: 0007553                          
 01-11-06 01:33 rlrevell       Note Added: 0007554                          
 01-11-06 01:37 C-MoH          Note Added: 0007555                          
+01-11-06 01:40 rlrevell       Note Added: 0007556                          
 ======================================================================
 
 
