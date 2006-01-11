@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
-Date: Wed, 11 Jan 2006 01:33:27 +0100
-Message-ID: <5ae1a730506deec69d48506f7c8b4482@bugtrack.alsa-project.org>
+Date: Wed, 11 Jan 2006 01:37:57 +0100
+Message-ID: <ff9e6443c5aa94976c7227d115a1a795@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3911F156
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 01:33:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5918156
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 01:37:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-11-2006 01:17 CET
-Last Modified:              01-11-2006 01:33 CET
+Last Modified:              01-11-2006 01:37 CET
 ======================================================================
 Summary:                    Fixed chip configuration for 5.1 in ALC850 code
 Description: 
@@ -55,18 +55,23 @@ bits 6:4)
 ======================================================================
 
 ----------------------------------------------------------------------
- C-MoH - 01-11-06 01:22 
-----------------------------------------------------------------------
-Forgot to add... the patch was applied on the alsa-driver-1.0.11-rc2 from
-Gentoo's portage tree. (i.e. the distro is Gentoo)
-
-----------------------------------------------------------------------
  rlrevell - 01-11-06 01:33 
 ----------------------------------------------------------------------
 I guess you verified that the patch does not break anything, by testing all
 combinations of the "default", "front", "rear", "centerLFE", "surround51"
 etc PCMs and surround-related mixer settings, with regular stereo and mono
 .wav files?
+
+----------------------------------------------------------------------
+ C-MoH - 01-11-06 01:37 
+----------------------------------------------------------------------
+Hmmm.. where did the "steps to reproduce" section dissapear?
+
+In short, the mixer for center and lfe were completely useless.
+speaker-test -Dsurround51 -c6 proved that center and lfe were not making
+sound and rear speakers were weirdly mangled with the center speaker.
+Different channel routes in asoundrc made the sound come from center and
+lfe but made rear speakers mute etc.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -76,6 +81,7 @@ Date Modified  Username       Field                    Change
 01-11-06 01:21 C-MoH          Issue Monitored: C-MoH                       
 01-11-06 01:22 C-MoH          Note Added: 0007553                          
 01-11-06 01:33 rlrevell       Note Added: 0007554                          
+01-11-06 01:37 C-MoH          Note Added: 0007555                          
 ======================================================================
 
 
