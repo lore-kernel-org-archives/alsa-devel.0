@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Wed, 11 Jan 2006 23:48:53 +0100
-Message-ID: <4c17d1dc806072f97545098ee1172e41@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Thu, 12 Jan 2006 00:00:11 +0100
+Message-ID: <86e00030658a2d8894c68a4916534ec4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CD8C160
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 23:48:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19D4F162
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 00:00:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                robertw
+Reported By:                chrmue
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
+Issue ID:                   1733
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              01-11-2006 23:48 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              01-12-2006 00:00 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    Intel HDA Modem ?
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
+
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
+
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
 ======================================================================
 
 ----------------------------------------------------------------------
- lobstaj - 01-11-06 23:38 
+ sashak - 01-11-06 23:35 
 ----------------------------------------------------------------------
-I have an Acer Extensa (probably 6702WLMi) with an Realtek ALC260 and I
-have the same problem. But with robertw's above change, I also got sound
-from the line-out jack, not from headphone out nor from the internal
-speakers. I didn't test the mic in though. At least there is some sound
-now... :-)
+According to ID it is Agere's (and not Conexant) modem. Hopefully it is
+based on known si3054/5 chip, then it will work. Please try attached patch
+(it is against CVS version of ALSA).
 
 ----------------------------------------------------------------------
- rlrevell - 01-11-06 23:48 
+ sashak - 01-12-06 00:00 
 ----------------------------------------------------------------------
-Did you try 'modprobe snd-hda-intel model=fujitsu' like tiwai suggested? 
-It looks like you did not (all the patch does is set this).
+> You could try the Linuxant soft modem but it's not free...
+
+And it does not support HDA btw.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
-01-04-06 22:00 robertw        Note Added: 0007453                          
-01-04-06 22:16 robertw        Note Edited: 0007453                         
-01-11-06 23:38 lobstaj        Note Added: 0007572                          
-01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
 ======================================================================
 
 
