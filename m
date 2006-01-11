@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
-Date: Wed, 11 Jan 2006 11:54:07 +0100
-Message-ID: <c4f9685403f0af2d18def4e0718f273a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001737]: The field ipc_gid must be a valid group (create group audio)
+Date: Wed, 11 Jan 2006 12:12:12 +0100
+Message-ID: <91d93ee52c08af534ce85f9b9741e00d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C0E912C
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 11:54:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD70712C
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 12:12:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1731> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1737> 
 ======================================================================
-Reported By:                C-MoH
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1731
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1737
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             01-11-2006 01:17 CET
-Last Modified:              01-11-2006 11:54 CET
+Date Submitted:             01-11-2006 12:12 CET
+Last Modified:              01-11-2006 12:12 CET
 ======================================================================
-Summary:                    Fixed chip configuration for 5.1 in ALC850 code
+Summary:                    The field ipc_gid must be a valid group (create
+group audio)
 Description: 
-Frustrated by the fact that the 5.1 DVD I just bought had no voices (since
-they were on the center channel) I started to dig into it. The details are
-in the "steps to reproduce".
+/etc/group is not exist in Fedora Core 1
 
-Attached is a (very) small patch that fixed it completely on my system
-(both the mixer and the channel mix-up). My guess is that the chip was
-misconfigured by lack of a bit in the MX76 register. (2 instead of 5 for
-bits 6:4)
+if alsa developer recommend application to use "default", the "default"
+device should work in all platform including Fedore Core 1.
+
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1617
+
+intel8x0 as card 0
+
+
+speaker-test -c 2
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is default
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+ALSA lib pcm_dmix.c:1135:(_snd_pcm_dmix_open) The field ipc_gid must be a
+valid group (create group audio)
+Playback open error: -22,Invalid argument
+ALSA lib pcm_dmix.c:1135:(_snd_pcm_dmix_open) The field ipc_gid must be a
+valid group (create group audio)
+Playback open error: -22,Invalid argument
+
+ 
+speaker-test -c 2 -D plughw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is plughw:0,0
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 8 to 16384
+Period size range from 8 to 16384
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 16384
+To choose period_size = 4096
+was set period_size = 4096
+was set buffer_size = 16384
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 5.633373
+ 0 - Front Left
+
+ aplay test.wav
+ALSA lib pcm_dmix.c:1135:(_snd_pcm_dmix_open) The field ipc_gid must be a
+valid group (create group audio)
+aplay: main:547: audio open error: Invalid argument
+
+ aplay -D plughw:0,0 test.wav
+Playing WAVE 'outls.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+
+
+
+
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-11-06 01:40 
-----------------------------------------------------------------------
-Unfortunately it only appears in the advanced view, I don't like this
-either.
-
-So you are saying you regression tested your patch fully?
-
-----------------------------------------------------------------------
- C-MoH - 01-11-06 11:54 
-----------------------------------------------------------------------
-I only tested the patch superficially with speaker-test and the DVD which
-brought me to this.
-
-What I did and worked fine:
-speaker-test -Dsurround51 -c6
-speaker-test -Dsurround40 -c4
-speaker-test -c2
-
-For the 5.1 DVD everything was now fine (mixer, sound quality, voice
-etc.):
-mplayer -ao alsa -channels 6 dvd://
-
-Also with alsamixer the mixer channels (center and lfe) now do have effect
-over the volume/muting of sound. The behavior of switches is no longer
-erratical (i.e. the IEC958/Mix/Mono Mix/Video/DuplicateFront had a weird
-interaction, which now seemed to have a more normal aspect - in fact I
-never thought much of it, but I remarked it now).
-
-All this made me think it's all right. If you take the time to look at the
-patch and at the ALC850 specs from Realtek you'll see that... well,
-there's not much to verify it's correctness.
-
-If there's more to do I'll do it and post it here. However I thought that
-such a big project has its own testing procedures - remember I'm not a dev
-here.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 01:17 C-MoH          New Issue                                    
-01-11-06 01:17 C-MoH          File Added: cipi.patch                       
-01-11-06 01:21 C-MoH          Issue Monitored: C-MoH                       
-01-11-06 01:22 C-MoH          Note Added: 0007553                          
-01-11-06 01:33 rlrevell       Note Added: 0007554                          
-01-11-06 01:37 C-MoH          Note Added: 0007555                          
-01-11-06 01:40 rlrevell       Note Added: 0007556                          
-01-11-06 11:54 C-MoH          Note Added: 0007562                          
+01-11-06 12:12 Raymond        New Issue                                    
 ======================================================================
 
 
