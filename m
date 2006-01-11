@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001735]: OSS emulation 4-channel mode rear channels not working
-Date: Wed, 11 Jan 2006 10:51:07 +0100
-Message-ID: <884c004e1f284689a7ca9f084e8dc6d0@bugtrack.alsa-project.org>
+Date: Wed, 11 Jan 2006 11:08:46 +0100
+Message-ID: <47300ff42e3b0f2df899415c5742799c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A7D412E
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 10:51:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 758F1158
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 11:08:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1735> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian sarge 3.1
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             01-11-2006 10:51 CET
-Last Modified:              01-11-2006 10:51 CET
+Last Modified:              01-11-2006 11:08 CET
 ======================================================================
 Summary:                    OSS emulation 4-channel mode rear channels not
 working
@@ -55,12 +55,22 @@ Tested with Linux kernels 2.6.12/2.6.15.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ giorby - 01-11-06 11:08 
+----------------------------------------------------------------------
+Sorry, I forgot to identify my soundcard... 
+/proc/asound/devices lists:
+0 [Live           ]: EMU10K1 - SBLive! Value [CT4832]
+                     SBLive! Value [CT4832] (rev.6, serial:0x80271102) at
+0xd400, irq 5
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-11-06 10:51 giorby         New Issue                                    
 01-11-06 10:51 giorby         Distribution              => Debian sarge 3.1
 01-11-06 10:51 giorby         Kernel Version            => 2.6.15          
+01-11-06 11:08 giorby         Note Added: 0007561                          
 ======================================================================
 
 
