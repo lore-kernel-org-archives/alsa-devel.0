@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001732]: Support for Intel D945Pvs Board
-Date: Wed, 11 Jan 2006 04:53:21 +0100
-Message-ID: <7543d35155a6c6d5a0c806c07a230cdd@bugtrack.alsa-project.org>
+Date: Wed, 11 Jan 2006 05:04:34 +0100
+Message-ID: <d2e3ef25a908c5cea94032795d4c684a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 713A712C
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 04:53:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA5E4135
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 05:04:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1732> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               FC4
 Kernel Version:             2.6.14-1656
 ======================================================================
 Date Submitted:             01-11-2006 04:53 CET
-Last Modified:              01-11-2006 04:53 CET
+Last Modified:              01-11-2006 05:04 CET
 ======================================================================
 Summary:                    Support for Intel D945Pvs Board
 Description: 
@@ -49,12 +49,19 @@ at the back of this motherboard. This motherboard has an SPDIF connection
 available that is currently not supported, but should be.
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 01-11-06 05:04 
+----------------------------------------------------------------------
+Did you try the various "model" options for hda-intel which are documented
+in ALSA-Configuration.txt?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-11-06 04:53 timtt          New Issue                                    
 01-11-06 04:53 timtt          Distribution              => FC4             
 01-11-06 04:53 timtt          Kernel Version            => 2.6.14-1656     
+01-11-06 05:04 rlrevell       Note Added: 0007558                          
 ======================================================================
 
 
