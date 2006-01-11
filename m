@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001739]: Hardware mixing with OSS and SiS SI7012 with ALC203 not working
-Date: Wed, 11 Jan 2006 19:54:48 +0100
-Message-ID: <db273d6cadbf810c766f0cd201c32743@bugtrack.alsa-project.org>
+Date: Wed, 11 Jan 2006 20:04:18 +0100
+Message-ID: <d687e07d765f6032e69cbc1ede683ce2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50A10160
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 19:54:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19064160
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 20:04:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware Linux ("current" branch)
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             01-11-2006 19:43 CET
-Last Modified:              01-11-2006 19:54 CET
+Last Modified:              01-11-2006 20:04 CET
 ======================================================================
 Summary:                    Hardware mixing with OSS and SiS SI7012 with ALC203
 not working
@@ -93,6 +93,18 @@ mixing. You are user of dmix. OSS emulation doesn't use dmix. You have to
 use alsa applications only or you can try to use aoss program with oss
 apps.
 
+----------------------------------------------------------------------
+ rg3 - 01-11-06 20:04 
+----------------------------------------------------------------------
+Thanks a lot for the quick and informative response. I didn't know that.
+I'll try to use aoss whenever possible. I suppose it's not going to be a
+problem because I only use this computer to listen to music and play
+movies, in the sound department.
+
+Thanks again and greetings,
+
+-Ricardo García
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -102,6 +114,7 @@ Date Modified  Username       Field                    Change
 01-11-06 19:43 rg3            Kernel Version            => 2.6.15          
 01-11-06 19:45 rg3            Issue Monitored: rg3                         
 01-11-06 19:54 pzad           Note Added: 0007566                          
+01-11-06 20:04 rg3            Note Added: 0007567                          
 ======================================================================
 
 
