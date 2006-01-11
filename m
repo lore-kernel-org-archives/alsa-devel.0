@@ -1,20 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Hercules PC DJ Console (Windows Edition)
-	information
-Date: Wed, 11 Jan 2006 02:34:21 -0500
-Message-ID: <1136964861.27255.17.camel@mindpipe>
-References: <2c746f620510180211hf803801mdda93f93aeae84c2@mail.gmail.com>
-	 <Pine.HPX.4.33n.0510181124030.2094-100000@studcom.urz.uni-halle.de>
-	 <2c746f620510182301j3419d000o857c2c72ef29880a@mail.gmail.com>
-	 <2c746f620510182303k782e04f2xa18b60cea49030a@mail.gmail.com>
-	 <1129746748.5203.1.camel@mindpipe>
-	 <2c746f620510191410v5032b3ebp673545e5958192ac@mail.gmail.com>
-	 <2c746f620601102330s337d7744r7b98dad75dbbf374@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001734]: Multiple cards not working with jack
+Date: Wed, 11 Jan 2006 10:33:22 +0100
+Message-ID: <cbda843df5907782c995f8505b88b657@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2c746f620601102330s337d7744r7b98dad75dbbf374@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0A0E15A
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 10:33:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +18,124 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eric Shattow <lucent@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-01-11 at 01:30 -0600, Eric Shattow wrote:
-> On 10/19/05, Eric Shattow <lucent@gmail.com> wrote:
-> > On 10/19/05, Lee Revell <rlrevell@joe-job.com> wrote:
-> > >
-> > > They make a DIFFERENT DEVICE with a DIFFERENT CHIPSET for Mac and
-> > > Windows?!?  WTF?
-> > >
-> > > Lee
-> > >
-> >
-> > Alexander Schussler owns both the Windows and Mac editions of the DJ
-> > Console hardware. According to his correspondence with
-> > Hercules/Guillemot representatives, the hardware is identical except
-> > for improved audio function on the Mac edition. My guess is that the
-> > Windows edition is first revision, and Mac edition is second revision.
-> > The firmware is of course completely different between the two
-> > editions.
-> >
-> 
-> Anyways, update for everyone.  The ALSA 1.0.10 release doesn't appear
-> to work with Hercules PC DJ Console (Windows Edition) device. I have
-> not been able to make it output or record sound.
-> 
-> jnc@baker:~$ arecord -D hw:3 -f S16_LE -c 2 -r 48000 /tmp/test.wav
-> Recording WAVE '/tmp/test.wav' : Signed 16 bit Little Endian, Rate
-> 48000 Hz, Stereo
-> arecord: xrun:1077: read/write error, state = PREPARED
-> 
-> Something like that.  Suggestions, anyone?
 
-Assuming this worked with previous versions, the problem may be that USB
-audio has been broken since kernel 2.6.14 (ALSA 1.0.10rcsomething).
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1734> 
+======================================================================
+Reported By:                danhien_cz
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1734
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               GENTOO
+Kernel Version:             2.6.12-r9
+======================================================================
+Date Submitted:             01-11-2006 10:33 CET
+Last Modified:              01-11-2006 10:33 CET
+======================================================================
+Summary:                    Multiple cards not working with jack
+Description: 
+I've got two sound cards in my system and I'm using both of them.
+After upgrading alsa-driver 1.0.8 up to 1.0.10 and upgrading
+jack-audion-connection-kit from 0.99.0 to version 0.100.7 my multiple card
+configuration stop working.
+When I try start jack on surround51 this error message appears:
+--------------------------------------------------------------
+ALSA: poll time out, polled for 31973583 usecs
+DRIVER NT: could not run driver cycle
+--------------------------------------------------------------
+When I try start jack on my multiple devices, jack crashes with
+segmentation fault. Everything was working with the older versions.
+This is my asound.conf file:
+--------------------------------------------------------------
+pcm.jack_playback {
+        type multi
+        slaves.a.pcm "surround51"
+        slaves.a.channels 6
+        slaves.b.pcm "hw:1,0"
+        slaves.b.channels 2
+        bindings.0.slave a
+        bindings.0.channel 0
+        bindings.1.slave a
+        bindings.1.channel 1
+        bindings.2.slave a
+        bindings.2.channel 2
+        bindings.3.slave a
+        bindings.3.channel 3
+        bindings.4.slave a
+        bindings.4.channel 4
+        bindings.5.slave a
+        bindings.5.channel 5
+        bindings.6.slave b
+        bindings.6.channel 0
+        bindings.7.slave b
+        bindings.7.channel 1
+}
 
-Try the patch attached to this bug report.
+pcm.jack_capture {
+        type multi
+        slaves.a.pcm "hw:0,0"
+        slaves.a.channels 2
+        slaves.b.pcm "hw:1,0"
+        slaves.b.channels 2
+        bindings.0.slave a
+        bindings.0.channel 0
+        bindings.1.slave a
+        bindings.1.channel 1
+        bindings.2.slave b
+        bindings.2.channel 0
+        bindings.3.slave b
+        bindings.3.channel 1
+}
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585
+pcm.jack12 {
+        type asym
+        playback.pcm {
+                type route
+                slave.pcm "surround51"
+                ttable.0.0 1
+                ttable.1.1 1
+                ttable.2.2 1
+                ttable.3.3 1
+                ttable.4.4 1
+                ttable.5.5 1
+                ttable.6.6 1
+                ttable.7.7 1
+        }
+        capture.pcm {
+                type route
+                slave.pcm "jack_capture"
+                ttable.0.0 1
+                ttable.1.1 1
+                ttable.2.2 1
+                ttable.3.3 1
+        }
+}
 
-Lee
+ctl.jack12 {
+        type hw
+        card 0
+}
+--------------------------------------------------------------
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-11-06 10:33 danhien_cz     New Issue                                    
+01-11-06 10:33 danhien_cz     Distribution              => GENTOO          
+01-11-06 10:33 danhien_cz     Kernel Version            => 2.6.12-r9       
+======================================================================
+
 
 
 
