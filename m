@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
-Date: Wed, 11 Jan 2006 18:38:33 +0100
-Message-ID: <97dae165dec1d6429db58c6471159806@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001739]: Hardware mixing with OSS and SiS SI7012 with ALC203 not working
+Date: Wed, 11 Jan 2006 19:43:45 +0100
+Message-ID: <0a0c6b6eb0ca24da8e3e93387ba0006f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9DEB15A
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 18:38:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D480160
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 19:43:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1731> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1739> 
 ======================================================================
-Reported By:                C-MoH
+Reported By:                rg3
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1731
-Category:                   PCI - intel8x0
+Issue ID:                   1739
+Category:                   CORE OSS - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Slackware Linux ("current" branch)
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-11-2006 01:17 CET
-Last Modified:              01-11-2006 18:38 CET
+Date Submitted:             01-11-2006 19:43 CET
+Last Modified:              01-11-2006 19:43 CET
 ======================================================================
-Summary:                    Fixed chip configuration for 5.1 in ALC850 code
+Summary:                    Hardware mixing with OSS and SiS SI7012 with ALC203
+not working
 Description: 
-Frustrated by the fact that the 5.1 DVD I just bought had no voices (since
-they were on the center channel) I started to dig into it. The details are
-in the "steps to reproduce".
+Hello,
 
-Attached is a (very) small patch that fixed it completely on my system
-(both the mixer and the channel mix-up). My guess is that the chip was
-misconfigured by lack of a bit in the MX76 register. (2 instead of 5 for
-bits 6:4)
+First off, sorry if this is too vague and not attached to the right
+component. It's my first bug report.
+
+I have an Acer Aspire 3003WLMi laptop with a SiS SI7012 sound card
+according to /proc/asound/oss/sndstat. This is the corresponding entry to
+the device in lspci:
+
+00:02.7 Class 0401: 1039:7012 (rev a0)
+        Subsystem: 1025:0083
+        Flags: bus master, medium devsel, latency 173, IRQ 18
+        I/O ports at 1400 [size=256]
+        I/O ports at 1c80 [size=128]
+        Capabilities: [48] Power Management version 2
+
+This card uses the snd_intel8x0 ALSA driver and works pretty well,
+allowing hardware mixing AFAIK. Running two instances of aplay at the same
+time works and plays the two sounds simultaneously. However, hardware
+mixing doesn't seem to work with OSS emulation. With the snd_pcm_oss
+module loaded, running two instances of the "play" program doesn't work.
+The second one fails with the error:
+
+sox: Can't open output file '/dev/dsp': Device or resource busy
+
+I don't know if this is supposed to happen, is a bug or is my fault. If I
+use the "aoss" command to launch the "play" command, it works, like aplay.
+I recall having a card that allowed hardware mixing under ALSA, and being
+able to play several sounds at the same time under OSS too. That's why I
+find this strange. 
+
+I don't have an ~/.asoundrc file. Thanks for your time and don't hesitate
+to ask for any missing piece of information relevant to the report, as I'm
+not sure what is exactly needed.
+
+Best regards and thanks again,
+
+-Ricardo García
 ======================================================================
-
-----------------------------------------------------------------------
- C-MoH - 01-11-06 11:58 
-----------------------------------------------------------------------
-I only tested the patch superficially with speaker-test and the DVD which
-brought me to this.
-
-What I did and worked fine:
-speaker-test -Dsurround51 -c6
-speaker-test -Dsurround40 -c4
-speaker-test -c2
-
-For the 5.1 DVD everything was now fine (mixer, sound quality, voice
-etc.):
-mplayer -ao alsa -channels 6 dvd://
-
-Also with alsamixer the mixer channels (center and lfe) now do have effect
-over the volume/muting of sound. The behavior of switches is no longer
-erratical (i.e. the IEC958/Mix/Mono Mix/Video/DuplicateFront had a weird
-interaction, which now seemed to have a more normal aspect - in fact I
-never thought much of it, but I remarked it now).
-
-All this made me think it's all right. If you take the time to look at the
-patch and at the ALC850 specs from Realtek you'll see that... well,
-there's not much to verify it's correctness.
-
-If there's more to do I'll do it and post it here. Remember I'm not a dev
-here, thus not accustomed to your procedures (I did assume big projects
-like this do have regression tests). If you want me to do more tests etc.
-send me the instructions.
-
-
-
-----------------------------------------------------------------------
- rlrevell - 01-11-06 18:38 
-----------------------------------------------------------------------
-Ah, OK, I missed the part where you said the patch was based on the ALC850
-datasheet.
-
-Maintainers, this patch should be applied for the 1.0.11 release.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 01:17 C-MoH          New Issue                                    
-01-11-06 01:17 C-MoH          File Added: cipi.patch                       
-01-11-06 01:21 C-MoH          Issue Monitored: C-MoH                       
-01-11-06 01:22 C-MoH          Note Added: 0007553                          
-01-11-06 01:33 rlrevell       Note Added: 0007554                          
-01-11-06 01:37 C-MoH          Note Added: 0007555                          
-01-11-06 01:40 rlrevell       Note Added: 0007556                          
-01-11-06 11:54 C-MoH          Note Added: 0007562                          
-01-11-06 11:58 C-MoH          Note Edited: 0007562                         
-01-11-06 18:38 rlrevell       Note Added: 0007565                          
+01-11-06 19:43 rg3            New Issue                                    
+01-11-06 19:43 rg3            Distribution              => Slackware Linux
+("current" branch)
+01-11-06 19:43 rg3            Kernel Version            => 2.6.15          
 ======================================================================
 
 
