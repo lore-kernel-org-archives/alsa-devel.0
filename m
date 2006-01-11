@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001599]: ac97 with SiS SI7012 [ALC203 rev 0] doesn't handle master volume, uses headphone channel instead
-Date: Tue, 10 Jan 2006 21:44:10 +0100
-Message-ID: <a91a4c45fbfb8e61e3f2eff6f3ca45c3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
+Date: Wed, 11 Jan 2006 01:17:48 +0100
+Message-ID: <3aa78e8488418f50ba2bee549b009a7b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 805A513D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2006 21:44:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D699F156
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 01:17:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,204 +22,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1599> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1731> 
 ======================================================================
-Reported By:                wiktorw
-Assigned To:                rlrevell
+Reported By:                C-MoH
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1599
+Issue ID:                   1731
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo 2005.1
-Kernel Version:             2.6.14-r2 (2.6.14.3)
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-25-2005 17:40 CET
-Last Modified:              01-10-2006 21:44 CET
+Date Submitted:             01-11-2006 01:17 CET
+Last Modified:              01-11-2006 01:17 CET
 ======================================================================
-Summary:                    ac97 with SiS SI7012 [ALC203 rev 0] doesn't handle
-master volume, uses headphone channel instead
+Summary:                    Fixed chip configuration for 5.1 in ALC850 code
 Description: 
-In the Issue #1510 tiwai wrote:
+Frustrated by the fact that the 5.1 DVD I just bought had no voices (since
+they were on the center channel) I started to dig into it. The details are
+in the "steps to reproduce".
 
-> Closing this bug since the original reporter found a solution.
-
-Sorry but the mentioned solution to the problem is not optimal.
-In fact, this would only hide the original problem.
-
-
-There is some quirk in the handling of SiS SI7012 by ALSA drivers and/or
-ALSA libs. The master channel never changes the volume level. But somehow
-the "Headphone" channel does similar work.
-
-I know that there were some serious changes and tweaks wrt headphones
-handling on this chipset. They are described in the following issues:
-
-* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664
-* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486
-* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
-* https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1162
-
-
-
-I managed to run Windows XP on this machine in order to test if the
-problem
-manifests itself there. In short: no. I took some screenshots to document
-what I've done. You can find them here:
-
-http://ics.p.lodz.pl/~wiktorw/alsa-problem/
-
-Comments to the pictures:
-
-1) I turned on all possible playback volume controls
-2) That's how the full volume panel looks like
-
-   NOTE: there is no headphone volume control
-
-3a) If I slide the master volume control, the volume in the internal
-speakers
-    changes, the same is with the wave volume control.
-
-   NOTE: if I plug the headphones, the volume also changes
-   NOTE: looks like the internat speakers and headphones might be
-         connected / linked by the manufacturer, inside the machine
-
-
-I tested my volume problem under Ubuntu 5.04 and Knoppix 4.02.
-Can't tell the driver/kernel versions (haven't written them down),
-but from simple tests (including "alsamixer") the problem is the same.
-At least it's consistent :-/
-
-
-I also upgraded the kernel in my Gentoo installation to the 2.6.14-r2
-(the official 2.6.14.3) version, and also upgraded the following
-packages:
-
-media-sound/alsa-headers-1.0.10_rc3
-media-libs/alsa-lib-1.0.10_rc3
-media-sound/alsa-utils-1.0.10_rc3
-
-IIRC, this kernel contains alsa-drivers-1.0.10_rc3 so everything should
-be
-in sync. However, the problem remains.
-
-The following screenshots demonstrates my Linux settings:
-
-4) I turned on all possible volume tracks
-5) That's how the full volume control applet looks like
-6a) If I slide the Headphone or PCM track, volume changes.
-    Master track does nothing.
-
-7) I have to set the PCM as a default track for the volume applet, in
-order
-   to get any volume change using the speaker applet in the system tray. 
-
-8) Changing the volume using the speaker slider (in the lower right
-corner)
-9a) One can see that PCM and a speaker slider are the same.
-    If I select the Master track for the applet, the volume doesn't
-change.
-
-A) The same issue hits the console alsamixer.
-B) If I change the Headphone or PCM track, volume changes.
-   Master track still does nothing.
-
+Attached is a (very) small patch that fixed it completely on my system
+(both the mixer and the channel mix-up). My guess is that the chip was
+misconfigured by lack of a bit in the MX76 register. (2 instead of 5 for
+bits 6:4)
 ======================================================================
-
-----------------------------------------------------------------------
- wiktorw - 12-05-05 17:46 
-----------------------------------------------------------------------
-Today I've upgraded my kernel to the 2.6.14-r3 and as I promised,
-I did a check if the in-kernel driver works correctly w.r.t.
-the "Headphone" track.
-
-Exactly as I suspected the problem showed up again.
-You can see the offending screenshot here:
-http://ics.p.lodz.pl/~wiktorw/alsa-problem/C_After_upgrade_2.6.14-gentoo-r4_Volume_Control.png
-
-Interesting version details of kernel & alsa-driver follows:
-
-# uname -a
-Linux widmo 2.6.14-gentoo-r4 #2 PREEMPT Mon Dec 5 15:56:44 CET 2005
-i686 AMD Turion(tm) 64 Mobile Technology ML-30 AuthenticAMD GNU/Linux
-
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1
-(Mon Sep 12 08:13:09 2005 UTC).
-
-I guess that if the in-kernel alsa-driver was 1.0.10 [final],
-I wouldn't have this issue anymore.
-
-OTOH the standalone alsa-driver version I have is:
-
-# emerge -pv alsa-driver
-
-These are the packages that I would merge, in order:
-
-Calculating dependencies ...done!
-[ebuild   R   ] media-sound/alsa-driver-1.0.10_rc3  -doc +oss 0 kB
-
-And I have the ability to use the "testing" version:
-alsa-driver-1.0.10 as well. But probably I'll wait
-for the official "stable" release in my distribution.
-
-I'll let you know what is the status of this issue
-for in- and out-of-kernel alsa-driver, when I do the
-upgrade to the 2.6.15 kernel.
-
-Regards,
-Wiktor Wandachowicz
-
-----------------------------------------------------------------------
- wiktorw - 01-10-06 13:02 
-----------------------------------------------------------------------
-Recently I've upgraded my kernel to the 2.6.15 and as I promised,
-I checked if the in-kernel driver works correctly. I am pleased
-to report that the problem is no longer there.
-
-Interesting version details of kernel & alsa-driver follows:
-
-# uname -a
-Linux widmo 2.6.15-gentoo #1 PREEMPT Sat Jan 7 12:45:06 CET 2006
-i686 AMD Turion(tm) 64 Mobile Technology ML-30 AuthenticAMD GNU/Linux
-
-# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3
-(Mon Nov 07 13:30:21 2005 UTC).
-
-
-Somehow the problem has been resolved between 2.6.14 kernel
-(alsa-driver 1.0.10rc1) and 2.6.15 kernel (alsa-driver 1.0.10rc3).
-So, IMHO, it was worth reporting here :-)
-
-As I've already mentioned, the standalone driver (1.0.10 "final")
-also works correctly. I assume, though I haven't tested that
-yet, that the 1.0.11rc* versions are okay too.
-
-
-I'd recommend to close this bug, resolution RESOLVED FIXED / WORKSFORME.
-
-Thanks for your time!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-25-05 17:40 wiktorw        New Issue                                    
-11-25-05 17:40 wiktorw        Distribution              => Gentoo 2005.1   
-11-25-05 17:40 wiktorw        Kernel Version            => 2.6.14-r2 (2.6.14.3)
-11-27-05 18:47 wiktorw        Note Added: 0006852                          
-12-05-05 17:46 wiktorw        Note Added: 0006913                          
-01-10-06 13:02 wiktorw        Note Added: 0007549                          
-01-10-06 21:44 rlrevell       Status                   new => resolved     
-01-10-06 21:44 rlrevell       Resolution               open => fixed       
-01-10-06 21:44 rlrevell       Assigned To               => rlrevell        
+01-11-06 01:17 C-MoH          New Issue                                    
+01-11-06 01:17 C-MoH          File Added: cipi.patch                       
 ======================================================================
 
 
