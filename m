@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Wed, 11 Jan 2006 23:35:33 +0100
-Message-ID: <f86018e729fe85965778758ae2e96320@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Wed, 11 Jan 2006 23:38:37 +0100
+Message-ID: <0a504f713b32554e64888f903b726ff5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BA0D160
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 23:35:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE3B4160
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 23:38:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,118 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                chrmue
+Reported By:                robertw
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1733
+Issue ID:                   1618
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              01-11-2006 23:35 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              01-11-2006 23:38 CET
 ======================================================================
-Summary:                    Intel HDA Modem ?
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
-
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
-
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
-
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-11-06 07:42 
+ robertw - 01-04-06 22:16 
 ----------------------------------------------------------------------
-You could try the Linuxant soft modem but it's not free...
+I tried CVS and the 1.0.11rc2-version. Nothing new here:
+
+[4300394.183000] ALSA
+/home/robert/Desktop/alsa-driver-1.0.11rc2/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3030:
+hda_codec: Unknown model for ALC260
+
+So I edited a bit in alsa-kernel/pci/hda/patch_realtek.c:
+
+------------
+        /*if (board_config < 0 || board_config >= ALC260_MODEL_LAST) {
+                snd_printd(KERN_INFO "hda_codec: Unknown model for
+ALC260\n");
+                board_config = ALC260_AUTO;
+        }
+
+        if (board_config == ALC260_AUTO) {
+                * automatic parse from the BIOS config *
+                err = alc260_parse_auto_config(codec);
+                if (err < 0) {
+                        alc_free(codec);
+                        return err;
+                } else if (! err) {
+                        printk(KERN_INFO "hda_codec: Cannot set up
+configuration from BIOS.  Using base mode...\n");
+                        board_config = ALC260_BASIC;
+                }
+        }*/
+        board_config = ALC260_FUJITSU_S702X;
+----------
+This are lines 3029 until 3045
+
+With this litte changes, I have sound output on the line-out-jack
+(controlled in alsamixer with 'headphones') and of course no warning in
+dmesg. But I still have no sound through the internal speakers or the
+headphones-jack.
+
+EDIT: The mic-jack does also work
+
+
 
 ----------------------------------------------------------------------
- sashak - 01-11-06 23:35 
+ lobstaj - 01-11-06 23:38 
 ----------------------------------------------------------------------
-According to ID it is Agere's (and not Conexant) modem. Hopefully it is
-based on known si3054/5 chip, then it will work. Please try attached patch
-(it is against CVS version of ALSA).
+I have an Acer Extensa (probably 6702WLMi) with an Realtek ALC260 and I
+have the same problem. But with robertw's above change, I also got sound
+from the line-out jack, not from headphone out nor from the internal
+speakers. I didn't test the mic in though. At least there is some sound
+now... :-)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
 ======================================================================
 
 
