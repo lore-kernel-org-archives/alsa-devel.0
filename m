@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001736]: No sound on my acertravelmate 4062nwlmi
-Date: Wed, 11 Jan 2006 11:24:07 +0100
-Message-ID: <2bad18c67bb4dd148b775dcf569241be@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
+Date: Wed, 11 Jan 2006 11:54:07 +0100
+Message-ID: <c4f9685403f0af2d18def4e0718f273a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9117117
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 11:24:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C0E912C
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 11:54:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1736> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1731> 
 ======================================================================
-Reported By:                clamath
-Assigned To:                tiwai
+Reported By:                C-MoH
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1736
-Category:                   PCI - hda-intel
+Issue ID:                   1731
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               No sound on acer Travelmate 4062wnlmi
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-11-2006 11:24 CET
-Last Modified:              01-11-2006 11:24 CET
+Date Submitted:             01-11-2006 01:17 CET
+Last Modified:              01-11-2006 11:54 CET
 ======================================================================
-Summary:                    No sound on my acertravelmate 4062nwlmi
+Summary:                    Fixed chip configuration for 5.1 in ALC850 code
 Description: 
-alsa counf found drivers; modprobe snd-hda-intel succes; chanels NOT muted
-; but still no sound any ideas????also a tried drvers 1.0.11rc2 but still
-no sound
+Frustrated by the fact that the 5.1 DVD I just bought had no voices (since
+they were on the center channel) I started to dig into it. The details are
+in the "steps to reproduce".
 
-lspci
-00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML Express
-Proce
-ssor to DRAM Controller (rev 03)
-00:02.0 VGA compatible controller: Intel Corporation Mobile
-915GM/GMS/910GML Ex
-press Graphics Controller (rev 03)
-00:02.1 Display controller: Intel Corporation Mobile 915GM/GMS/910GML
-Express G
-raphics Controller (rev 03)
-00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High
-Definition Audio Controller (rev 04)
-00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E
-xpress Port 1 (rev 04)
-00:1c.1 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E
-xpress Port 2 (rev 04)
-00:1c.2 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E                               xpress Port 3 (rev 04)
-00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #1 (rev 04)
-00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #2 (rev 04)
-00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #3 (rev 04)
-00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #4 (rev 04)
-00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB2 EHCI Controller (rev 04)
-00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev d4)
-00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
-Bridge (re                               v 04)
-
+Attached is a (very) small patch that fixed it completely on my system
+(both the mixer and the channel mix-up). My guess is that the chip was
+misconfigured by lack of a bit in the MX76 register. (2 instead of 5 for
+bits 6:4)
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 01-11-06 01:40 
+----------------------------------------------------------------------
+Unfortunately it only appears in the advanced view, I don't like this
+either.
+
+So you are saying you regression tested your patch fully?
+
+----------------------------------------------------------------------
+ C-MoH - 01-11-06 11:54 
+----------------------------------------------------------------------
+I only tested the patch superficially with speaker-test and the DVD which
+brought me to this.
+
+What I did and worked fine:
+speaker-test -Dsurround51 -c6
+speaker-test -Dsurround40 -c4
+speaker-test -c2
+
+For the 5.1 DVD everything was now fine (mixer, sound quality, voice
+etc.):
+mplayer -ao alsa -channels 6 dvd://
+
+Also with alsamixer the mixer channels (center and lfe) now do have effect
+over the volume/muting of sound. The behavior of switches is no longer
+erratical (i.e. the IEC958/Mix/Mono Mix/Video/DuplicateFront had a weird
+interaction, which now seemed to have a more normal aspect - in fact I
+never thought much of it, but I remarked it now).
+
+All this made me think it's all right. If you take the time to look at the
+patch and at the ALC850 specs from Realtek you'll see that... well,
+there's not much to verify it's correctness.
+
+If there's more to do I'll do it and post it here. However I thought that
+such a big project has its own testing procedures - remember I'm not a dev
+here.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 11:24 clamath        New Issue                                    
-01-11-06 11:24 clamath        Distribution              => No sound on acer
-Travelmate 4062wnlmi
-01-11-06 11:24 clamath        Kernel Version            => 2.6.15          
+01-11-06 01:17 C-MoH          New Issue                                    
+01-11-06 01:17 C-MoH          File Added: cipi.patch                       
+01-11-06 01:21 C-MoH          Issue Monitored: C-MoH                       
+01-11-06 01:22 C-MoH          Note Added: 0007553                          
+01-11-06 01:33 rlrevell       Note Added: 0007554                          
+01-11-06 01:37 C-MoH          Note Added: 0007555                          
+01-11-06 01:40 rlrevell       Note Added: 0007556                          
+01-11-06 11:54 C-MoH          Note Added: 0007562                          
 ======================================================================
 
 
