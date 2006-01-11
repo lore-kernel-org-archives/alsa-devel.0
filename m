@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
-Date: Wed, 11 Jan 2006 01:17:48 +0100
-Message-ID: <3aa78e8488418f50ba2bee549b009a7b@bugtrack.alsa-project.org>
+Date: Wed, 11 Jan 2006 01:22:55 +0100
+Message-ID: <0d48d7aa8238fdb8101fe8d4260ec591@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D699F156
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 01:17:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5175156
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 01:22:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1731> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-11-2006 01:17 CET
-Last Modified:              01-11-2006 01:17 CET
+Last Modified:              01-11-2006 01:22 CET
 ======================================================================
 Summary:                    Fixed chip configuration for 5.1 in ALC850 code
 Description: 
@@ -54,11 +54,19 @@ misconfigured by lack of a bit in the MX76 register. (2 instead of 5 for
 bits 6:4)
 ======================================================================
 
+----------------------------------------------------------------------
+ C-MoH - 01-11-06 01:22 
+----------------------------------------------------------------------
+Forgot to add... the patch was applied on the alsa-driver-1.0.11-rc2 from
+Gentoo's portage tree. (i.e. the distro is Gentoo)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-11-06 01:17 C-MoH          New Issue                                    
 01-11-06 01:17 C-MoH          File Added: cipi.patch                       
+01-11-06 01:21 C-MoH          Issue Monitored: C-MoH                       
+01-11-06 01:22 C-MoH          Note Added: 0007553                          
 ======================================================================
 
 
