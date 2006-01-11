@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001735]: OSS emulation 4-channel mode rear channels not working
-Date: Wed, 11 Jan 2006 11:08:46 +0100
-Message-ID: <47300ff42e3b0f2df899415c5742799c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001736]: No sound on my acertravelmate 4062nwlmi
+Date: Wed, 11 Jan 2006 11:24:07 +0100
+Message-ID: <2bad18c67bb4dd148b775dcf569241be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 758F1158
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 11:08:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9117117
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 11:24:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1735> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1736> 
 ======================================================================
-Reported By:                giorby
-Assigned To:                
+Reported By:                clamath
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1735
-Category:                   PCI - emu10k1
+Issue ID:                   1736
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian sarge 3.1
+Status:                     assigned
+Distribution:               No sound on acer Travelmate 4062wnlmi
 Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-11-2006 10:51 CET
-Last Modified:              01-11-2006 11:08 CET
+Date Submitted:             01-11-2006 11:24 CET
+Last Modified:              01-11-2006 11:24 CET
 ======================================================================
-Summary:                    OSS emulation 4-channel mode rear channels not
-working
+Summary:                    No sound on my acertravelmate 4062nwlmi
 Description: 
-If I use the OSS emulation and try to play some 4-channel material, with
-say mplayer or bplay, the rear channels are just a copy of the front
-channels, whereas the same configuration and software worked perfectly
-well with the native OSS driver. As the native OSS drivers are faded out
-in favour of ALSA, I assumed that the emulation layer should be a sort of
-drop-in replacement. Am I wrong?
-Tested with Linux kernels 2.6.12/2.6.15.
+alsa counf found drivers; modprobe snd-hda-intel succes; chanels NOT muted
+; but still no sound any ideas????also a tried drvers 1.0.11rc2 but still
+no sound
+
+lspci
+00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML Express
+Proce
+ssor to DRAM Controller (rev 03)
+00:02.0 VGA compatible controller: Intel Corporation Mobile
+915GM/GMS/910GML Ex
+press Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation Mobile 915GM/GMS/910GML
+Express G
+raphics Controller (rev 03)
+00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High
+Definition Audio Controller (rev 04)
+00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E
+xpress Port 1 (rev 04)
+00:1c.1 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E
+xpress Port 2 (rev 04)
+00:1c.2 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E                               xpress Port 3 (rev 04)
+00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #1 (rev 04)
+00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #2 (rev 04)
+00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #3 (rev 04)
+00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #4 (rev 04)
+00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB2 EHCI Controller (rev 04)
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev d4)
+00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
+Bridge (re                               v 04)
 
 ======================================================================
-
-----------------------------------------------------------------------
- giorby - 01-11-06 11:08 
-----------------------------------------------------------------------
-Sorry, I forgot to identify my soundcard... 
-/proc/asound/devices lists:
-0 [Live           ]: EMU10K1 - SBLive! Value [CT4832]
-                     SBLive! Value [CT4832] (rev.6, serial:0x80271102) at
-0xd400, irq 5
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 10:51 giorby         New Issue                                    
-01-11-06 10:51 giorby         Distribution              => Debian sarge 3.1
-01-11-06 10:51 giorby         Kernel Version            => 2.6.15          
-01-11-06 11:08 giorby         Note Added: 0007561                          
+01-11-06 11:24 clamath        New Issue                                    
+01-11-06 11:24 clamath        Distribution              => No sound on acer
+Travelmate 4062wnlmi
+01-11-06 11:24 clamath        Kernel Version            => 2.6.15          
 ======================================================================
 
 
