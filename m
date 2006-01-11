@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001740]: No sound on ACER laptop with ALC260
-Date: Wed, 11 Jan 2006 22:40:20 +0100
-Message-ID: <358e0c09e9bec48e1bded9538ebfaae3@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH] echoaudio, C++ comments fix
+Date: Wed, 11 Jan 2006 22:21:29 +0000
+Message-ID: <20060111222129.589e31a7.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A99AD160
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 22:40:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1740> 
-======================================================================
-Reported By:                Nicolas_Raoul
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1740
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora, Ubuntu, SUSE
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-11-2006 22:40 CET
-Last Modified:              01-11-2006 22:40 CET
-======================================================================
-Summary:                    No sound on ACER laptop with ALC260
-Description: 
-Hello all,
-
-I have no sound on my ACER Aspire 1640 laptop, Intel HDA, ALC260, all
-unmuted, latest everything, tried on:
-- SUSE
-- Kubuntu
-- Ubuntu 2005.10
-- Ubuntu 2006.04-flight1
-- Fedora
-So far, I have never seen any unsilent ALC260 on ACER (please confirm or
-infirm). This has lead me to suspect there may be a problem within ALSA.
-
-Yesterday I started modifying the ALSA source code to try and fix it.
-Especially, I edited patch_realtek.c. One hour ago, I finally managed to
-get some sound out of the headphones :-)
-
-If you have some informations or questions, my contact ids are on
-http://nrw.free.fr . Documentation from ACER would be particulary
-helpful.
-
-Have a good day,
-Nicolas Raoul.
-
-PS: This issue looks somehow similar to those ones:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001517
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001618
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001736.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-11-06 22:40 Nicolas_Raoul  New Issue                                    
-01-11-06 22:40 Nicolas_Raoul  Distribution              => Fedora, Ubuntu, SUSE
-01-11-06 22:40 Nicolas_Raoul  Kernel Version            => 2.6.15          
-======================================================================
+This patch removes a lot of trivial and useless comments and fixes the
+style of the rest. No real code lines are changed.
 
 
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+
+http://www.webalice.it/g_pochini/echo_comments.patch	[68KiB]
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
