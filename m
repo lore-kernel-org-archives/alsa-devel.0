@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001732]: Support for Intel D945Pvs Board
-Date: Wed, 11 Jan 2006 05:04:34 +0100
-Message-ID: <d2e3ef25a908c5cea94032795d4c684a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Wed, 11 Jan 2006 07:23:37 +0100
+Message-ID: <aead6eeca3aaa39390dd21be3526356d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA5E4135
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 05:04:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 856D3E8
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 07:23:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1732> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                timtt
+Reported By:                chrmue
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1732
+Issue ID:                   1733
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               FC4
-Kernel Version:             2.6.14-1656
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             01-11-2006 04:53 CET
-Last Modified:              01-11-2006 05:04 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              01-11-2006 07:23 CET
 ======================================================================
-Summary:                    Support for Intel D945Pvs Board
+Summary:                    Intel HDA Modem ?
 Description: 
-Alsa is only able to output regular 2-channel audio via the headphone jack
-at the back of this motherboard. This motherboard has an SPDIF connection
-available that is currently not supported, but should be.
-======================================================================
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-----------------------------------------------------------------------
- rlrevell - 01-11-06 05:04 
-----------------------------------------------------------------------
-Did you try the various "model" options for hda-intel which are documented
-in ALSA-Configuration.txt?
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
+
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 04:53 timtt          New Issue                                    
-01-11-06 04:53 timtt          Distribution              => FC4             
-01-11-06 04:53 timtt          Kernel Version            => 2.6.14-1656     
-01-11-06 05:04 rlrevell       Note Added: 0007558                          
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
 ======================================================================
 
 
