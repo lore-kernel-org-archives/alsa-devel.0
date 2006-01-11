@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Wed, 11 Jan 2006 23:38:37 +0100
-Message-ID: <0a504f713b32554e64888f903b726ff5@bugtrack.alsa-project.org>
+Date: Wed, 11 Jan 2006 23:48:53 +0100
+Message-ID: <4c17d1dc806072f97545098ee1172e41@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE3B4160
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 23:38:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CD8C160
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 23:48:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              01-11-2006 23:38 CET
+Last Modified:              01-11-2006 23:48 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -52,49 +52,6 @@ and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
 
 ----------------------------------------------------------------------
- robertw - 01-04-06 22:16 
-----------------------------------------------------------------------
-I tried CVS and the 1.0.11rc2-version. Nothing new here:
-
-[4300394.183000] ALSA
-/home/robert/Desktop/alsa-driver-1.0.11rc2/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3030:
-hda_codec: Unknown model for ALC260
-
-So I edited a bit in alsa-kernel/pci/hda/patch_realtek.c:
-
-------------
-        /*if (board_config < 0 || board_config >= ALC260_MODEL_LAST) {
-                snd_printd(KERN_INFO "hda_codec: Unknown model for
-ALC260\n");
-                board_config = ALC260_AUTO;
-        }
-
-        if (board_config == ALC260_AUTO) {
-                * automatic parse from the BIOS config *
-                err = alc260_parse_auto_config(codec);
-                if (err < 0) {
-                        alc_free(codec);
-                        return err;
-                } else if (! err) {
-                        printk(KERN_INFO "hda_codec: Cannot set up
-configuration from BIOS.  Using base mode...\n");
-                        board_config = ALC260_BASIC;
-                }
-        }*/
-        board_config = ALC260_FUJITSU_S702X;
-----------
-This are lines 3029 until 3045
-
-With this litte changes, I have sound output on the line-out-jack
-(controlled in alsamixer with 'headphones') and of course no warning in
-dmesg. But I still have no sound through the internal speakers or the
-headphones-jack.
-
-EDIT: The mic-jack does also work
-
-
-
-----------------------------------------------------------------------
  lobstaj - 01-11-06 23:38 
 ----------------------------------------------------------------------
 I have an Acer Extensa (probably 6702WLMi) with an Realtek ALC260 and I
@@ -102,6 +59,12 @@ have the same problem. But with robertw's above change, I also got sound
 from the line-out jack, not from headphone out nor from the internal
 speakers. I didn't test the mic in though. At least there is some sound
 now... :-)
+
+----------------------------------------------------------------------
+ rlrevell - 01-11-06 23:48 
+----------------------------------------------------------------------
+Did you try 'modprobe snd-hda-intel model=fujitsu' like tiwai suggested? 
+It looks like you did not (all the patch does is set this).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -136,6 +99,7 @@ Date Modified  Username       Field                    Change
 01-04-06 22:00 robertw        Note Added: 0007453                          
 01-04-06 22:16 robertw        Note Edited: 0007453                         
 01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
 ======================================================================
 
 
