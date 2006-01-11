@@ -1,14 +1,14 @@
-From: "Callias Lin" <callin@indosat.com>
-Subject: Re: ye offcast
-Date: Wed, 11 Jan 2006 18:01:22 -0500
-Message-ID: <000001c61702$f0a90520$b188a8c0@economist>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Thu, 12 Jan 2006 00:20:35 +0100
+Message-ID: <af2c13f07eba7c728d5b2337f8c990c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C616D9.07D2FD20"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from indosat.com (vel78-1-82-234-16-212.fbx.proxad.net [82.234.16.212])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6E67A162
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 00:01:41 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D566C162
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 00:20:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,160 +18,88 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Justina Armstrong <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C616D9.07D2FD20
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+======================================================================
+Reported By:                robertw
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1618
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
+======================================================================
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              01-12-2006 00:20 CET
+======================================================================
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
+Description: 
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
+======================================================================
 
-=20
-http://www.erisheel.com
-=20
-A
-V
-X
-V
-C
-S
-m
-I
-a
-A
-I
-o
-b
-A
-n
-L
-A
-m
-i
-G
-a
-I
-L
-a
-e
-R
-x
-U
-I
-=20
-n
-A
-=20
-M
-S
-=20
-$
-$
-$
-=20
-$
-$
-2
-3
-1
-$
-3
-1
-,
-,
-,
-1
-,
-,
-8
-7
-4
-,
-7
-1
-9
-5
-2
-2
-5
-2
+----------------------------------------------------------------------
+ rlrevell - 01-11-06 23:48 
+----------------------------------------------------------------------
+Did you try 'modprobe snd-hda-intel model=fujitsu' like tiwai suggested? 
+It looks like you did not (all the patch does is set this).
 
-------=_NextPart_000_0001_01C616D9.07D2FD20
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ lobstaj - 01-12-06 00:20 
+----------------------------------------------------------------------
+Yes, I have tried. If model=fujitsu is supposed to do the same, then it
+just doesn't work. I get different mixer controls and sound with one, but
+not the other.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.erisheel.com">http://www.erisheel.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>A</DIV><DIV>V</DIV><DIV>X</DIV><DIV>V</DIV><DIV>C</DIV><DIV>S<=
-/DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>m</DIV><DIV>I</DIV><DIV>a</DIV><DIV>A</DIV><DIV>I</DIV><DIV>o<=
-/DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>b</DIV><DIV>A</DIV><DIV>n</DIV><DIV>L</DIV><DIV>A</DIV><DIV>m<=
-/DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>i</DIV><DIV>G</DIV><DIV>a</DIV><DIV>I</DIV><DIV>L</DIV><DIV>a<=
-/DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>e</DIV><DIV>R</DIV><DIV>x</DIV><DIV>U</DIV><DIV>I</DIV><DIV>&n=
-bsp;</DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>n</DIV><DIV>A</DIV><DIV>&nbsp;</DIV><DIV>M</DIV><DIV>S</DIV><D=
-IV>&nbsp;</DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>$</DIV><DIV>$</DIV><DIV>$</DIV><DIV>&nbsp;</DIV><DIV>$</DIV><D=
-IV>$</DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>2</DIV><DIV>3</DIV><DIV>1</DIV><DIV>$</DIV><DIV>3</DIV><DIV>1<=
-/DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>,</DIV><DIV>,</DIV><DIV>,</DIV><DIV>1</DIV><DIV>,</DIV><DIV>,<=
-/DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>8</DIV><DIV>7</DIV><DIV>4</DIV><DIV>,</DIV><DIV>7</DIV><DIV>1<=
-/DIV></DIV>
-<DIV style
-=3D
-"FLOAT :=20
-left"><DIV>9</DIV><DIV>5</DIV><DIV>2</DIV><DIV>2</DIV><DIV>5</DIV><DIV>2<=
-/DIV></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C616D9.07D2FD20--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+======================================================================
 
 
 
