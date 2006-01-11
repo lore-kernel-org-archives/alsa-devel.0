@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001734]: Multiple cards not working with jack
-Date: Wed, 11 Jan 2006 10:35:04 +0100
-Message-ID: <c1e0875736317decec38e3a93ac74e03@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001735]: OSS emulation 4-channel mode rear channels not working
+Date: Wed, 11 Jan 2006 10:51:07 +0100
+Message-ID: <884c004e1f284689a7ca9f084e8dc6d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9998D15A
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 10:35:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A7D412E
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 10:51:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,126 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1734> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1735> 
 ======================================================================
-Reported By:                danhien_cz
+Reported By:                giorby
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1734
-Category:                   1_OTHERS
+Issue ID:                   1735
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               GENTOO
-Kernel Version:             2.6.12-r9
+Distribution:               Debian sarge 3.1
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-11-2006 10:33 CET
-Last Modified:              01-11-2006 10:35 CET
+Date Submitted:             01-11-2006 10:51 CET
+Last Modified:              01-11-2006 10:51 CET
 ======================================================================
-Summary:                    Multiple cards not working with jack
+Summary:                    OSS emulation 4-channel mode rear channels not
+working
 Description: 
-I've got two sound cards in my system and I'm using both of them.
-After upgrading alsa-driver 1.0.8 up to 1.0.10 and upgrading
-jack-audion-connection-kit from 0.99.0 to version 0.100.7 my multiple card
-configuration stop working.
-When I try start jack on surround51 this error message appears:
---------------------------------------------------------------
-ALSA: poll time out, polled for 31973583 usecs
-DRIVER NT: could not run driver cycle
---------------------------------------------------------------
-When I try start jack on my multiple devices, jack crashes with
-segmentation fault. Everything was working with the older versions.
-This is my asound.conf file:
---------------------------------------------------------------
-pcm.jack_playback {
-        type multi
-        slaves.a.pcm "surround51"
-        slaves.a.channels 6
-        slaves.b.pcm "hw:1,0"
-        slaves.b.channels 2
-        bindings.0.slave a
-        bindings.0.channel 0
-        bindings.1.slave a
-        bindings.1.channel 1
-        bindings.2.slave a
-        bindings.2.channel 2
-        bindings.3.slave a
-        bindings.3.channel 3
-        bindings.4.slave a
-        bindings.4.channel 4
-        bindings.5.slave a
-        bindings.5.channel 5
-        bindings.6.slave b
-        bindings.6.channel 0
-        bindings.7.slave b
-        bindings.7.channel 1
-}
+If I use the OSS emulation and try to play some 4-channel material, with
+say mplayer or bplay, the rear channels are just a copy of the front
+channels, whereas the same configuration and software worked perfectly
+well with the native OSS driver. As the native OSS drivers are faded out
+in favour of ALSA, I assumed that the emulation layer should be a sort of
+drop-in replacement. Am I wrong?
+Tested with Linux kernels 2.6.12/2.6.15.
 
-pcm.jack_capture {
-        type multi
-        slaves.a.pcm "hw:0,0"
-        slaves.a.channels 2
-        slaves.b.pcm "hw:1,0"
-        slaves.b.channels 2
-        bindings.0.slave a
-        bindings.0.channel 0
-        bindings.1.slave a
-        bindings.1.channel 1
-        bindings.2.slave b
-        bindings.2.channel 0
-        bindings.3.slave b
-        bindings.3.channel 1
-}
-
-pcm.jack12 {
-        type asym
-        playback.pcm {
-                type route
-                slave.pcm "surround51"
-                ttable.0.0 1
-                ttable.1.1 1
-                ttable.2.2 1
-                ttable.3.3 1
-                ttable.4.4 1
-                ttable.5.5 1
-                ttable.6.6 1
-                ttable.7.7 1
-        }
-        capture.pcm {
-                type route
-                slave.pcm "jack_capture"
-                ttable.0.0 1
-                ttable.1.1 1
-                ttable.2.2 1
-                ttable.3.3 1
-        }
-}
-
-ctl.jack12 {
-        type hw
-        card 0
-}
---------------------------------------------------------------
 ======================================================================
-
-----------------------------------------------------------------------
- danhien_cz - 01-11-06 10:35 
-----------------------------------------------------------------------
-sound cards are:
-hw0 pci soundblaster audigi 2
-hw1 on board via chipset
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 10:33 danhien_cz     New Issue                                    
-01-11-06 10:33 danhien_cz     Distribution              => GENTOO          
-01-11-06 10:33 danhien_cz     Kernel Version            => 2.6.12-r9       
-01-11-06 10:35 danhien_cz     Note Added: 0007560                          
+01-11-06 10:51 giorby         New Issue                                    
+01-11-06 10:51 giorby         Distribution              => Debian sarge 3.1
+01-11-06 10:51 giorby         Kernel Version            => 2.6.15          
 ======================================================================
 
 
