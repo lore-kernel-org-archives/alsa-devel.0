@@ -1,18 +1,14 @@
-From: Darren Whitley <unluted@gimel.com>
-Subject: Amazing, Peggy
-Date: Wed, 11 Jan 2006 15:03:32 -0500
-Message-ID: <0989-135112-3369.phagocyte-debase-suite@gimel.com>
-Reply-To: Nathan Garza <gaophilipc@ejiajia.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Thu, 12 Jan 2006 00:26:36 +0100
+Message-ID: <eb360711a0fd08f5d050b74d35f9c6ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------=8516205250712"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F339C167
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 00:25:45 +0100 (MET)
-Received: from user-10cm6nb.cable.mindspring.com (user-10cm6nb.cable.mindspring.com [64.203.26.235])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 6C74398969
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 00:25:41 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4946166
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 00:26:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,104 +21,86 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---------=8516205250712
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Dus-ascii">
-</head>
-<body>
-<div style=3D"margin: 10px 20px 10px 20px; background-color: #ffe; border=
-: 3px solid #F28B0C; padding: 0 10px 0 10px;">
-<p style=3D"font-size: 13pt;">Even if you have no erection problems Ciali=
-s would help you to make <b>better sex more often</b> and to bring unimag=
-inable plesure to her. Just disolve half a pill under your tongue and get=
- ready for action in 15 minutes. The tests showed that the majority of me=
-n after taking this medication were able to have <b>perfect erection</b> =
-during 36 hours!</p>
-<center><table style=3D"border-collapse: collapse; background-color: #ffd=
-; width: 90%; font-size: 10pt; font-family: sans-serif; text-align: cente=
-r;">
-<tr>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">Package</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">Quantity</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">Price in your loca=
-l drugstore*</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><b>Our price</b></=
-td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px; background-color: #=
-ffa;" rowspan=3D"6" align=3D"center" valign=3D"middle"><p style=3D"font-s=
-ize: 14pt; text-align: center; text-decoration: none;"><b><a href=3D"http=
-://qnoikq.sleftwing.info/?sqrnasxwpqqyailliozpopovbwj" style=3D"text-deco=
-ration: none;">Learn<br>More<br>Now</a></b></p></td>
-</tr>
-<tr>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">10 softtabs</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">20 doses</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><strike style=3D"c=
-olor: #777;">$149.95</strike></td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><span style=3D"col=
-or: #900;"><b>$119.95</b></span></td>
-</tr>
-<tr>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">20 softtabs</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">40 doses</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><strike style=3D"c=
-olor: #777;">$299.95</strike></td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><span style=3D"col=
-or: #900;"><b>$159.95</b></span></td>
-</tr>
-<tr>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">30 softtabs</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">60 doses</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><strike style=3D"c=
-olor: #777;">$849.95</strike></td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><span style=3D"col=
-or: #900;"><b>$169.95</b></span></td>
-</tr>
-<tr>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">60 softtabs</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">120 doses</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><strike style=3D"c=
-olor: #777;">$1&nbsp;999.95</strike></td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><span style=3D"col=
-or: #900;"><b>$259.95</b></span></td>
-</tr>
-<tr>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">90 softtabs</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;">180 doses</td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><strike style=3D"c=
-olor: #777;">$3&nbsp;099.95</strike></td>
-<td style=3D"border: 1px solid #F28B0C; padding: 2px;"><span style=3D"col=
-or: #900;"><b>$299.95</b></span></td>
-</tr>
-</table></center>
-<p style=3D"font-size: 13pt;">When you are young and stressed up&hellip;<=
-br>
-When you are aged and never give up&hellip;<br>
-Cialis gives you confidence in any chance, every time.</p>
-</div>
-<br>
-Whenever you are confronted with an opponent. Conquer him with love.Ignor=
-ance of the law excuses no man from practicing it.<br>
-People do no change with the times, they change the times.It is the natur=
-e of thought to find its way into action.Whoever is detected in a shamefu=
-l fraud is ever after not believed even if they speak the truth.
-</body>
-</html>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+======================================================================
+Reported By:                robertw
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1618
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
+======================================================================
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              01-12-2006 00:26 CET
+======================================================================
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
+Description: 
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
+======================================================================
 
+----------------------------------------------------------------------
+ lobstaj - 01-12-06 00:20 
+----------------------------------------------------------------------
+Yes, I have tried. If model=fujitsu is supposed to do the same, then it
+just doesn't work. I get different mixer controls and sound with one, but
+not the other.
 
---------=8516205250712
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+----------------------------------------------------------------------
+ rlrevell - 01-12-06 00:26 
+----------------------------------------------------------------------
+Can you cat /sys/module/snd_hda_intel/parameters/model to make sure it is
+seeing the "fujitsu" option?
 
-Good morning sir,
-
-Amazing, Marilyn-> http://qnoikq.sleftwing.info/?sqrnasxwpqqyailliozpopovbwj
-
---------=8516205250712--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+01-12-06 00:26 rlrevell       Note Added: 0007576                          
+======================================================================
 
 
 
