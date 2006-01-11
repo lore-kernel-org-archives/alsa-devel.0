@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001732]: Support for Intel D945Pvs Board
-Date: Wed, 11 Jan 2006 18:36:32 +0100
-Message-ID: <fb2780f29210f404ff976779e44c1dea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
+Date: Wed, 11 Jan 2006 18:38:33 +0100
+Message-ID: <97dae165dec1d6429db58c6471159806@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6002F15A
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 18:36:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9DEB15A
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 18:38:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1732> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1731> 
 ======================================================================
-Reported By:                timtt
-Assigned To:                tiwai
+Reported By:                C-MoH
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1732
-Category:                   PCI - hda-intel
+Issue ID:                   1731
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               FC4
-Kernel Version:             2.6.14-1656
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-11-2006 04:53 CET
-Last Modified:              01-11-2006 18:36 CET
+Date Submitted:             01-11-2006 01:17 CET
+Last Modified:              01-11-2006 18:38 CET
 ======================================================================
-Summary:                    Support for Intel D945Pvs Board
+Summary:                    Fixed chip configuration for 5.1 in ALC850 code
 Description: 
-Alsa is only able to output regular 2-channel audio via the headphone jack
-at the back of this motherboard. This motherboard has an SPDIF connection
-available that is currently not supported, but should be.
+Frustrated by the fact that the 5.1 DVD I just bought had no voices (since
+they were on the center channel) I started to dig into it. The details are
+in the "steps to reproduce".
+
+Attached is a (very) small patch that fixed it completely on my system
+(both the mixer and the channel mix-up). My guess is that the chip was
+misconfigured by lack of a bit in the MX76 register. (2 instead of 5 for
+bits 6:4)
 ======================================================================
 
 ----------------------------------------------------------------------
- timtt - 01-11-06 18:30 
+ C-MoH - 01-11-06 11:58 
 ----------------------------------------------------------------------
-I have not. I just looked at it though and am unsure on how to do so. Could
-you give me the correct syntax to enable the "5stack-digout" directive for
-either /etc/modprobe.conf or for doing it on the shell loading and
-unloading modules?
+I only tested the patch superficially with speaker-test and the DVD which
+brought me to this.
 
-I'm sorry that I'm not so familiar with how modules work in the Linux
-kernel. Thanks.
+What I did and worked fine:
+speaker-test -Dsurround51 -c6
+speaker-test -Dsurround40 -c4
+speaker-test -c2
+
+For the 5.1 DVD everything was now fine (mixer, sound quality, voice
+etc.):
+mplayer -ao alsa -channels 6 dvd://
+
+Also with alsamixer the mixer channels (center and lfe) now do have effect
+over the volume/muting of sound. The behavior of switches is no longer
+erratical (i.e. the IEC958/Mix/Mono Mix/Video/DuplicateFront had a weird
+interaction, which now seemed to have a more normal aspect - in fact I
+never thought much of it, but I remarked it now).
+
+All this made me think it's all right. If you take the time to look at the
+patch and at the ALC850 specs from Realtek you'll see that... well,
+there's not much to verify it's correctness.
+
+If there's more to do I'll do it and post it here. Remember I'm not a dev
+here, thus not accustomed to your procedures (I did assume big projects
+like this do have regression tests). If you want me to do more tests etc.
+send me the instructions.
+
+
 
 ----------------------------------------------------------------------
- rlrevell - 01-11-06 18:36 
+ rlrevell - 01-11-06 18:38 
 ----------------------------------------------------------------------
-Just unload the module:
+Ah, OK, I missed the part where you said the patch was based on the ALC850
+datasheet.
 
-  rmmod snd-hda-intel
-
-and reload it like:
-
-  modprobe snd-hda-intel model="5stack-digout"
-
-Repeat as necessary.  If you find one that seems to work, let us know. 
-Also include the contents of /proc/asound/cards.
+Maintainers, this patch should be applied for the 1.0.11 release.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 04:53 timtt          New Issue                                    
-01-11-06 04:53 timtt          Distribution              => FC4             
-01-11-06 04:53 timtt          Kernel Version            => 2.6.14-1656     
-01-11-06 05:04 rlrevell       Note Added: 0007558                          
-01-11-06 18:30 timtt          Note Added: 0007563                          
-01-11-06 18:36 rlrevell       Note Added: 0007564                          
+01-11-06 01:17 C-MoH          New Issue                                    
+01-11-06 01:17 C-MoH          File Added: cipi.patch                       
+01-11-06 01:21 C-MoH          Issue Monitored: C-MoH                       
+01-11-06 01:22 C-MoH          Note Added: 0007553                          
+01-11-06 01:33 rlrevell       Note Added: 0007554                          
+01-11-06 01:37 C-MoH          Note Added: 0007555                          
+01-11-06 01:40 rlrevell       Note Added: 0007556                          
+01-11-06 11:54 C-MoH          Note Added: 0007562                          
+01-11-06 11:58 C-MoH          Note Edited: 0007562                         
+01-11-06 18:38 rlrevell       Note Added: 0007565                          
 ======================================================================
 
 
