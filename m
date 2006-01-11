@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001734]: Multiple cards not working with jack
-Date: Wed, 11 Jan 2006 21:52:42 +0100
-Message-ID: <9a9398ced425ca6e61ffefd80ce31858@bugtrack.alsa-project.org>
+Date: Wed, 11 Jan 2006 22:02:00 +0100
+Message-ID: <8d67bf24b4e49581019bfea01d1c057c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DBD4160
-	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 21:52:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35435160
+	for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2006 22:02:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               GENTOO
 Kernel Version:             2.6.12-r9
 ======================================================================
 Date Submitted:             01-11-2006 10:33 CET
-Last Modified:              01-11-2006 21:52 CET
+Last Modified:              01-11-2006 22:02 CET
 ======================================================================
 Summary:                    Multiple cards not working with jack
 Description: 
@@ -129,13 +129,6 @@ ctl.jack12 {
 ======================================================================
 
 ----------------------------------------------------------------------
- danhien_cz - 01-11-06 10:35 
-----------------------------------------------------------------------
-sound cards are:
-hw0 pci soundblaster audigi 2
-hw1 on board via chipset
-
-----------------------------------------------------------------------
  johnrigg - 01-11-06 21:52 
 ----------------------------------------------------------------------
 See bug ID 0001575.
@@ -147,6 +140,13 @@ for alsa-lib-1.0.10 here:
 
 http://www.sound-man.co.uk/linuxaudio/pcm_multi-patch
 
+----------------------------------------------------------------------
+ rlrevell - 01-11-06 22:02 
+----------------------------------------------------------------------
+This will never work, your sound cards are not synced and will run at
+different speeds.  Bug ID 0001575 refers to professional soundcards that
+are synced with a word clock cable.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -155,6 +155,7 @@ Date Modified  Username       Field                    Change
 01-11-06 10:33 danhien_cz     Kernel Version            => 2.6.12-r9       
 01-11-06 10:35 danhien_cz     Note Added: 0007560                          
 01-11-06 21:52 johnrigg       Note Added: 0007569                          
+01-11-06 22:02 rlrevell       Note Added: 0007570                          
 ======================================================================
 
 
