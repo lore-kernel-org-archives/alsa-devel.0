@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Fri, 13 Jan 2006 00:17:17 +0100
-Message-ID: <5418e7d7740c6821bfeeb8e245ac5357@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001101]: [VIA 8237 with ALC850] gstreamer alsasink with default device does not work but with "device=hw:0" it does
+Date: Fri, 13 Jan 2006 00:18:16 +0100
+Message-ID: <cf7b165dcef262bc60c26d4eee4378a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7161D144
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:17:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0C2A144
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:18:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,111 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1101> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   818
-Category:                   PCI - RME HDSP
+Project:                    ALSA - lib
+Issue ID:                   1101
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC2
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Status:                     new
 ======================================================================
-Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              01-13-2006 00:17 CET
+Date Submitted:             05-11-2005 22:15 CEST
+Last Modified:              01-13-2006 00:18 CET
 ======================================================================
-Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
-9652 to be invalid
+Summary:                    [VIA 8237 with ALC850] gstreamer alsasink with
+default device does not work but with "device=hw:0" it does
 Description: 
-In my setup I's using 3 computers:
+The submitter of #305189 and an interlocutor have discovered that
+gstreaming to "alsasink" does not work but the same to "alsasink
+device=hw:0" does work.
 
-1) PanetCCRMA with HDSP 9652 as the center of an audio hub
-
-2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
-HDSP 9652 (ADAT input for clock)
-
-3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC #2
-
-So the signal flow looks like:
-
-XP         Linux           XP
-GSt ====> HDSP 9652 ====> Pro Tools
-   <=== (ADAT Clock)
-
-The HDSP 9652 is the master clock for the network. Both XP machine sync to
-the HDSP 9652.
-
-When no specific audio apps are running on the Linux box then this
-configuration will work for hours if not days with no problems. All audio
-data from GSt flows through the HDSP 9652's hardware and the hardware
-mixer sends it on to the Pro Tools box. It works perfectly.
-
-When Mozilla is started and I switch from page to page, after a few
-minutes I will receive a message on the Pro Tools box that the clock
-supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-either XP box and I do not corrupt the clocks.
+Please see http://bugs.debian.org/305189 for the discussion which includes
+lots more detail.
 ======================================================================
 
 ----------------------------------------------------------------------
- Mark Knecht - 10-16-05 22:25 
+ GhePeU - 06-09-05 14:10 
 ----------------------------------------------------------------------
-OK, moderately good news. Turning on Clock Locking in alsamixer does seem
-to lock the clock down much better, but not perfectly. With the feature
-turned off I get the horrible noises that I've suffered with for 2-3
-years. With the feature turned on I now get just a couple of little sound
-blips. This is definately usable in a static sense, but it wouldn't be
-good enough to use in a recording session.
+I'm experiencing the same problem with gstreamer, alsa-driver 1.0.9,
+alsa-lib 1.0.9 and Sound Blaster Live! 5.1 (emu10k1). With alsa-lib 1.0.9
+rc3 everything works flawlessy, and I can confirm that specifying
+device=hw:0 fixes this on 1.0.9.
 
-Note: I also found today that startine Wine, even when Wine is using the
-built-in sound device, not the HDSP 9652, causes the HDSP 9652's clock to
-change frequency and cause the loud noises. With this feature enabled it
-now just causes the few sound blips.
+bug in gstremer bugzilla:
+http://bugzilla.gnome.org/show_bug.cgi?id=306934
 
-Much, much better than before.
+output:
+ghepeu@KazeNoTani ~ $ LC_ALL="C" gst-launch-0.8 filesrc
+location="lugradio-s2e12-280305.ogg" ! spider ! alsasink
+RUNNING pipeline ...
+ERROR: from element /pipeline0/alsasink0: Could not get/set settings
+from/on resource.
+ERROR: from element /pipeline0/spider0/vorbisdec0: Internal GStreamer
+error: pad problem.  File a bug.
+Additional debug info:
+gstpad.c(2562): gst_pad_set_explicit_caps: /pipeline0/spider0/vorbisdec0:
+failed to negotiate (try_set_caps with "audio/x-raw-float,
+rate=(int)22000, channels=(int)1, endianness=(int)1234, width=(int)32,
+buffer-frames=(int)0" returned REFUSED)
+Execution ended after 15 iterations (sum 272120000 ns, average 18141333
+ns, min 33000 ns, max 137303000 ns).
 
-QUESTION: How do I turn this on from the command line? I need some command
-that I can execute at boot time to ensure it's always set correctly?
+ghepeu@KazeNoTani ~ $ LC_ALL="C" gst-launch-0.8 filesrc
+location="lugradio-s2e12-280305.ogg" ! spider ! alsasink device=hw:0
+RUNNING pipeline ...
+Execution ended after 126 iterations (sum 1858311000 ns, average 14748500
+ns, min 27000 ns, max 372437000 ns).
+
+
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 00:17 
+ rlrevell - 01-13-06 00:18 
 ----------------------------------------------------------------------
-Do you consider this bug resolved?
+Is this fixed in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-05 18:35 Mark Knecht    New Issue                                    
-01-14-05 18:35 Mark Knecht    Distribution              => FC2             
-01-14-05 18:35 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-02-01-05 21:35 charbonnel     Note Added: 0003466                          
-02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
-02-01-05 22:03 rlrevell       Note Added: 0003471                          
-02-01-05 22:07 charbonnel     Status                   assigned => resolved
-02-01-05 22:07 charbonnel     Resolution               open => not an issue
-02-01-05 22:07 charbonnel     Note Added: 0003472                          
-02-01-05 22:12 Mark Knecht    Status                   resolved => feedback
-02-01-05 22:12 Mark Knecht    Resolution               not an issue => reopened
-02-01-05 22:12 Mark Knecht    Note Added: 0003474                          
-02-02-05 10:20 tiwai          Note Added: 0003477                          
-09-19-05 09:58 jdthood        Note Added: 0006277                          
-09-29-05 00:30 Mark Knecht    Note Added: 0006411                          
-10-05-05 18:50 tiwai          Note Added: 0006436                          
-10-12-05 14:17 tiwai          Note Added: 0006466                          
-10-12-05 18:17 Mark Knecht    Note Added: 0006468                          
-10-12-05 18:20 tiwai          Note Added: 0006469                          
-10-12-05 18:50 Mark Knecht    Note Added: 0006470                          
-10-12-05 18:55 tiwai          Note Added: 0006471                          
-10-12-05 19:03 Mark Knecht    Note Added: 0006472                          
-10-12-05 19:08 tiwai          Note Added: 0006473                          
-10-16-05 16:24 Mark Knecht    Note Added: 0006482                          
-10-16-05 22:25 Mark Knecht    Note Added: 0006484                          
-01-13-06 00:17 rlrevell       Note Added: 0007599                          
+05-11-05 22:15 jdthood        New Issue                                    
+05-13-05 14:17 tiwai          Note Added: 0004645                          
+05-13-05 15:38 jdthood        Note Added: 0004650                          
+05-15-05 22:58 lool           Issue Monitored: lool                        
+05-15-05 22:59 lool           Note Added: 0004674                          
+06-09-05 14:04 GhePeU         Note Added: 0004980                          
+06-09-05 14:04 GhePeU         Issue Monitored: GhePeU                      
+06-09-05 14:10 GhePeU         Note Edited: 0004980                         
+01-13-06 00:18 rlrevell       Note Added: 0007600                          
 ======================================================================
 
 
