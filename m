@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Thu, 12 Jan 2006 05:35:08 +0100
-Message-ID: <5dd4e4475679b6eb05dbef5c7a2a3446@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
+Date: Thu, 12 Jan 2006 09:27:33 +0100
+Message-ID: <9dbe656226f2ab94fefcab2d34293300@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B78015A
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 05:35:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69D61160
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 09:27:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,112 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
 ======================================================================
-Reported By:                chrmue
-Assigned To:                tiwai
+Reported By:                sailfrog
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1733
-Category:                   PCI - hda-intel
+Issue ID:                   1585
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              01-12-2006 05:35 CET
+Date Submitted:             11-21-2005 17:45 CET
+Last Modified:              01-12-2006 09:27 CET
 ======================================================================
-Summary:                    Intel HDA Modem ?
+Summary:                    No sound from Soundblaster Live USB since updating
+kernel drivers to 1.0.10.rc3
 Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
+Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
+my external USB sound card broken. It appears to be something in the
+alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
 
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
+subject:         [ALSA UPDATE] 1.0.10rc3
+message-id:        
+<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
 
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+Applying this alsa update to 2.6.14 also renders the card silent. The
+card
+is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
+volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
+debug and verbose printk but I was unable to find any additional messages
+from dmesg or in any log files. The card is a Creative Labs SoundBlaster
+Live 24-bit external. I'm using the SPDIF output to run sound through a
+home theater system. I'm running debian unstable on a Toshiba laptop. 
 
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 01-12-06 00:00 
+ rlrevell - 01-10-06 03:39 
 ----------------------------------------------------------------------
-> You could try the Linuxant soft modem but it's not free...
+Clemens, have you looked at this lately?  It seems to have been narrowed
+down to a specific change, the addition of prepare_startup_playback_urb().
 
-And it does not support HDA btw.
-
 ----------------------------------------------------------------------
- chrmue - 01-12-06 05:35 
+ Clemens Ladisch - 01-12-06 09:27 
 ----------------------------------------------------------------------
-I could not download the file via
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1000&type=bug
-(???)
-Can you send it to christoph@naturetronic.net ? thanks!
+Fixed in CVS.
+I've uploaded two patches against the latest ALSA and the latest kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
-01-12-06 00:00 sashak         Note Added: 0007574                          
-01-12-06 00:02 sashak         Issue Monitored: sashak                      
-01-12-06 05:35 chrmue         Note Added: 0007581                          
+11-21-05 17:45 sailfrog       New Issue                                    
+11-21-05 17:45 sailfrog       Distribution              => Debian          
+11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
+mm2, rc2)
+11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
+11-22-05 07:54 Clemens LadischNote Added: 0006785                          
+12-09-05 00:51 sailfrog       Note Added: 0006965                          
+12-09-05 16:46 smithbone      Note Added: 0006968                          
+12-22-05 02:25 sailfrog       Note Added: 0007117                          
+12-30-05 19:48 sailfrog       Note Added: 0007251                          
+12-30-05 20:01 rlrevell       Note Added: 0007252                          
+12-30-05 20:08 rlrevell       Note Added: 0007254                          
+12-30-05 20:31 sailfrog       Note Added: 0007256                          
+12-30-05 20:34 rlrevell       Note Added: 0007257                          
+12-30-05 20:41 sailfrog       Note Added: 0007258                          
+12-30-05 20:43 rlrevell       Note Added: 0007259                          
+12-31-05 02:32 smithbone      Note Added: 0007319                          
+12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
+               
+12-31-05 03:47 rlrevell       Note Added: 0007331                          
+12-31-05 05:31 smithbone      Note Added: 0007343                          
+12-31-05 05:33 rlrevell       Note Added: 0007344                          
+12-31-05 05:37 rlrevell       Note Added: 0007345                          
+12-31-05 07:10 smithbone      Note Added: 0007347                          
+12-31-05 08:54 afran          Note Added: 0007354                          
+12-31-05 08:55 afran          Issue Monitored: afran                       
+12-31-05 08:56 afran          Note Edited: 0007354                         
+01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
+                  
+01-04-06 09:58 bryanr         Note Added: 0007411                          
+01-04-06 10:04 bryanr         Issue Monitored: bryanr                      
+01-04-06 10:50 bryanr         File Added: alsa-usbaudio-2.6.15-revert-008.patch 
+                  
+01-04-06 11:06 bryanr         Note Added: 0007412                          
+01-04-06 13:15 afran          Note Added: 0007416                          
+01-04-06 16:30 sailfrog       Note Added: 0007424                          
+01-05-06 16:12 sailfrog       Note Added: 0007471                          
+01-09-06 06:32 smithbone      Note Added: 0007531                          
+01-10-06 03:39 rlrevell       Note Added: 0007547                          
+01-10-06 13:56 vsu            Issue Monitored: vsu                         
+01-12-06 09:26 Clemens LadischFile Added:
+usb-playback-silence-fix-alsa-1.0.11rc2.patch                    
+01-12-06 09:26 Clemens LadischFile Added:
+usb-playback-silence-fix-kernel-2.6.15.patch                    
+01-12-06 09:27 Clemens LadischStatus                   assigned => resolved
+01-12-06 09:27 Clemens LadischResolution               open => fixed       
+01-12-06 09:27 Clemens LadischNote Added: 0007582                          
 ======================================================================
 
 
