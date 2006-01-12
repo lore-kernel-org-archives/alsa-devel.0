@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 00:38:35 +0100
-Message-ID: <319f474a43efe0938983ab5f639ec0c9@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 00:40:18 +0100
+Message-ID: <37c96f0f4e5dc276d4157a1a0de2ea73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 104C7117
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:38:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D0E1117
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:40:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 00:38 CET
+Last Modified:              01-13-2006 00:40 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,27 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 01-13-06 00:34 
-----------------------------------------------------------------------
-The card will not be able to do hardware mixing since the hardware does not
-support it.
-
-I have been able to get sound to work well with things like mplayer by
-using either dmix or esd.
-
-It would be great if better support could be included in ALSA since it is
-annoying compiling new kernel modules all the time and the patches here
-don't quite produce the sound we know the card is capable of.
-
-However the patches here have provided adequate support for which I am
-very grateful, certainly good enough to keep me going all this time. 
-Perhaps as a consequence I have not pursued this card as fully as I might
-have and am not aware of the state of the card as far as Audiotrak is
-concerned.
-
-I eagerly await any progress, it has been a while since we have had any.
-
-----------------------------------------------------------------------
  rlrevell - 01-13-06 00:38 
 ----------------------------------------------------------------------
 If you want the highest level of support, Audiotrak will have to release
@@ -98,6 +77,11 @@ this, but you have to ask nicely, the more requests they get, the better.
 
 Tell them they can post their offer of a hardware sample to alsa-devel at
 lists.sourceforge.net and someone will contact them privately.
+
+----------------------------------------------------------------------
+ rlrevell - 01-13-06 00:40 
+----------------------------------------------------------------------
+Exactly which of the patches attached to this bug report are needed?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -236,6 +220,7 @@ Hedgehog)
 01-13-06 00:09 rlrevell       Assigned To               => tiwai           
 01-13-06 00:34 Demosthenes    Note Added: 0007602                          
 01-13-06 00:38 rlrevell       Note Added: 0007603                          
+01-13-06 00:40 rlrevell       Note Added: 0007604                          
 ======================================================================
 
 
