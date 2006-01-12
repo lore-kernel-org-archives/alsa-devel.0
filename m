@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001741]: just one mixer element
-Date: Thu, 12 Jan 2006 11:56:38 +0100
-Message-ID: <986ee349fd6f34f2fa4259ea52e30e33@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001731]: Fixed chip configuration for 5.1 in ALC850 code
+Date: Thu, 12 Jan 2006 12:46:01 +0100
+Message-ID: <8611740e2b88200fb2b1b2bfd8223a60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0451E13C
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 11:56:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD0E412E
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 12:46:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1741> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1731> 
 ======================================================================
-Reported By:                julien_brule
+Reported By:                C-MoH
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1741
-Category:                   PCI - hda-intel
+Issue ID:                   1731
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-12-2006 11:56 CET
-Last Modified:              01-12-2006 11:56 CET
+Date Submitted:             01-11-2006 01:17 CET
+Last Modified:              01-12-2006 12:46 CET
 ======================================================================
-Summary:                    just one mixer element
+Summary:                    Fixed chip configuration for 5.1 in ALC850 code
 Description: 
-hello,
+Frustrated by the fact that the 5.1 DVD I just bought had no voices (since
+they were on the center channel) I started to dig into it. The details are
+in the "steps to reproduce".
 
-everything is installed, alsamixer show just the pcm slider which one is
-unmuted and at 74 but still sound with xmms  alsa output.
-
-lspci -vn:
-
-0000:00:1b.0 0403: 8086:27d8 (rev 01)
-        Subsystem: 1028:01a8
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] #10 [0091]
-
-
-lspci -v :
-
-0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
-Audio Controller (rev 01)
-        Subsystem: Dell: Unknown device 01a8
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] #10 [0091]
-
-
-uname -ar:
-Linux pcspajb 2.6.12-1-em64t-p4 #1 Wed Sep 28 03:24:19 CEST 2005 x86_64
-GNU/Linux
-
-distrib : Debian/etch
-
-
-aplay some.mp3:
-ALSA lib timer_hw.c:269:(snd_timer_hw_open) extended read is not supported
-(SNDRV_TIMER_IOCTL_TREAD)
-Playing raw data 'mp3/steve_coleman/world
-expansion/perpetuate_the_funk.mp3' : Unsigned 8 bit, Rate 8000 Hz, Mono
-Aborted by signal Interruption...
-
-dpkg-query -l alsa:
-alsa-base        1.0.10-3
-
+Attached is a (very) small patch that fixed it completely on my system
+(both the mixer and the channel mix-up). My guess is that the chip was
+misconfigured by lack of a bit in the MX76 register. (2 instead of 5 for
+bits 6:4)
 ======================================================================
+
+----------------------------------------------------------------------
+ C-MoH - 01-12-06 01:22 
+----------------------------------------------------------------------
+Nice! Do mention my name/nick somewhere inthere :) I'll monitor this
+bugtracker issue for a while.
+
+----------------------------------------------------------------------
+ tiwai - 01-12-06 12:46 
+----------------------------------------------------------------------
+Thanks, applied to ALSA CVS tree now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-06 11:56 julien_brule   New Issue                                    
+01-11-06 01:17 C-MoH          New Issue                                    
+01-11-06 01:17 C-MoH          File Added: cipi.patch                       
+01-11-06 01:21 C-MoH          Issue Monitored: C-MoH                       
+01-11-06 01:22 C-MoH          Note Added: 0007553                          
+01-11-06 01:33 rlrevell       Note Added: 0007554                          
+01-11-06 01:37 C-MoH          Note Added: 0007555                          
+01-11-06 01:40 rlrevell       Note Added: 0007556                          
+01-11-06 11:54 C-MoH          Note Added: 0007562                          
+01-11-06 11:58 C-MoH          Note Edited: 0007562                         
+01-11-06 18:38 rlrevell       Note Added: 0007565                          
+01-12-06 01:22 C-MoH          Note Added: 0007578                          
+01-12-06 12:46 tiwai          Status                   new => resolved     
+01-12-06 12:46 tiwai          Resolution               open => fixed       
+01-12-06 12:46 tiwai          Assigned To               => tiwai           
+01-12-06 12:46 tiwai          Note Added: 0007584                          
 ======================================================================
 
 
