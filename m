@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001742]: attachment download not possible
-Date: Thu, 12 Jan 2006 18:04:38 +0100
-Message-ID: <03eae6bec793226665c5096f7f3024bf@bugtrack.alsa-project.org>
+From: Greg KH <greg@kroah.com>
+Subject: Re: [stable] [PATCH] usb-audio: don't use empty packets at start of playback
+Date: Thu, 12 Jan 2006 09:48:54 -0800
+Message-ID: <20060112174854.GA10856@kroah.com>
+References: <20060112084429.GA18332@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5804113F
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 18:04:38 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20060112084429.GA18332@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: stable@kernel.org, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jan 12, 2006 at 09:44:29AM +0100, Clemens Ladisch wrote:
+> Some widespread USB interface chips with adaptive iso endpoints hang
+> after receiving a series of empty packets when they expect data.  This
+> completely disables audio playback on those devices.  To avoid this, we
+> have to send packets containing silence (zero samples) instead.
+> 
+> ALSA bug: http://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585
+> 
+> Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1742> 
-======================================================================
-Reported By:                chrmue
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1742
-Category:                   bad link
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-12-2006 18:04 CET
-Last Modified:              01-12-2006 18:04 CET
-======================================================================
-Summary:                    attachment download not possible
-Description: 
-I tried to download
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1000&type=bug
-(issue 1733), but it doesn't work.
-I found out that
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=999&type=bug
-(issue 1731) doesn't work too. Older attachments are working.
-======================================================================
+Is this upstream in Linus's tree yet?  The Alsa cvs tree yet?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-12-06 18:04 chrmue         New Issue                                    
-======================================================================
+thanks,
 
-
+greg k-h
 
 
 -------------------------------------------------------
