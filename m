@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001293]: trident: device supported by OSS but not by ALSA
-Date: Thu, 12 Jan 2006 23:38:05 +0100
-Message-ID: <3d019a9a7e97df3ef8452e7dea8df6e7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
+Date: Thu, 12 Jan 2006 23:40:09 +0100
+Message-ID: <6cdee61ba8611c790d062abb9b7d37da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C192C161
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 23:38:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 894AA167
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 23:40:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,101 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1293> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
 ======================================================================
-Reported By:                Adrian Bunk
-Assigned To:                rlrevell
+Reported By:                guido
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1293
-Category:                   PCI - trident
+Issue ID:                   1694
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             2.6.13-rc4-mm1
+Status:                     assigned
+Distribution:               Debian "Sarge" with kernel and alsa from "SID"
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             07-31-2005 21:13 CEST
-Last Modified:              01-12-2006 23:38 CET
+Date Submitted:             12-29-2005 22:43 CET
+Last Modified:              01-12-2006 23:40 CET
 ======================================================================
-Summary:                    trident: device supported by OSS but not by ALSA
+Summary:                    snd-intel8x0m unable to initialize the Modem device
+ICH6
 Description: 
-I'm currently creating a list of OSS drivers where all the hardware
-supported by them is also supported by ALSA. The goal is to schedule
-them for removal (except someone tells that for one or more of them ALSA
-support is inferior). I do not have this hardware, but this is currently
-the reason why the old OSS driver can't be removed from the kernel.
+Dear Maintainer and Reader,
 
+I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
+I found a lot of things recommended in different Mailing lists and blogs
+but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
+kernel Version 2.6.14 with source from Debian "SID".
+The current status is that two modules are loaded during boot,
+snd-intel8x0 and snd-intel8x0m. When both modules are loaded
+the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
+works fine.
+If I additionally load module snd-intel8x0m sound does not work anymore
+and error messages in syslog are printed.
+So I think the error messages are a buck in the snd-intel8x0m module.
+There is no /proc/asound/Modem present when I load the snd-intel8x0m
+module.
 
-The OSS trident driver has 5 different pci_device_id entries.
+In the "Additional Information" Section I paste some debugging output.
 
-For 4 of them there seems to be similar ALSA support, but I can't find
-any ALSA equivalent for the following entry:
-        {PCI_VENDOR_ID_INTERG, PCI_DEVICE_ID_INTERG_5050,
-         PCI_ANY_ID, PCI_ANY_ID, 0, 0, CYBER5050},
-
-
-
-Alan Cox said about this:
-
-The OSS driver supports the CyberPro T-squared core integrated into the
-cyberpro chipset while the ALSA driver only supports the others. Should
-be easy for someone to resolve. I don't have any 5000 hardware to test
-it however.
-
+Regards
+Guido
 ======================================================================
 
 ----------------------------------------------------------------------
- pwaechtler - 08-22-05 10:05 
+ sashak - 01-07-06 01:57 
 ----------------------------------------------------------------------
-The cyberpro 5050 is an old combined video+audio controller - and is/was
-used in some settop boxes (German Siemens Activity and also Loewe).
-
-There will be no "desktop users" around.
-And because I don't work for Loewe anymore: I don't have access to
-hardware.
-
-If you ask me: leave it out!
+And could you try attached patch?
 
 ----------------------------------------------------------------------
- rlrevell - 01-12-06 23:38 
+ guido - 01-12-06 23:40 
 ----------------------------------------------------------------------
-Still no testers.  If we don't find one via LKML we can probably close
-this.
+here is what I did:
+
+- Downloaded the alsa-driver-1.0.11rc2 source package
+- Unpacked it
+- made ./configure from within the alsa source directory
+- executed "make" and "make install"
+  so the newly created modules have been installed into my kernel
+  modules package.
+- rebooted
+- looked at /var/log/syslog and found the following alsa message:
+  ALSA
+/home/guido/software/alsa/alsa-driver-1.0.11rc2/pci/ac97/ac97_codec.c:2002:
+MC'97 0 converters and GPIO not ready (0x1)
+- Improvements to Version 1.0.10:
+  Sound works now from boot with snd-intel8x0 and snd-intel8x0m module
+loaded
+  at the same time.
+  A valid modem device "/dev/ttySL0 -> /dev/pts/0" is now created.
+  (before I used alsa driver Version 1.0.10)
+
+- Now I did the same things with the patch provided from you for
+intel8x0m.c
+  but the /var/log/syslog output was the same.
+
+- See attached syslog File The output looks everytime the same with
+patched
+  Version or original 1.0.11rc2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-05 21:13 Adrian Bunk    New Issue                                    
-07-31-05 21:13 Adrian Bunk    Kernel Version            => 2.6.13-rc4-mm1  
-08-03-05 12:01 perex          Note Added: 0005616                          
-08-22-05 10:05 pwaechtler     Note Added: 0005890                          
-01-12-06 23:38 rlrevell       Note Added: 0007592                          
-01-12-06 23:38 rlrevell       Assigned To               => rlrevell        
-01-12-06 23:38 rlrevell       Status                   new => feedback     
+12-29-05 22:43 guido          New Issue                                    
+12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
+kernel and alsa from "SID"
+12-29-05 22:43 guido          Kernel Version            => 2.6.14          
+01-03-06 20:51 guido          Issue Monitored: guido                       
+01-07-06 01:56 sashak         Note Added: 0007501                          
+01-07-06 01:57 sashak         File Added: ich-cxt30amc-test.patch               
+    
+01-07-06 01:57 sashak         Note Added: 0007502                          
+01-12-06 23:39 guido          File Added: syslog                           
+01-12-06 23:40 guido          Note Added: 0007593                          
 ======================================================================
 
 
