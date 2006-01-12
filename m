@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001585]: No sound from Soundblaster Live USB since updating kernel drivers to 1.0.10.rc3
-Date: Thu, 12 Jan 2006 09:27:33 +0100
-Message-ID: <9dbe656226f2ab94fefcab2d34293300@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] usb-audio: don't use empty packets at start of playback
+Date: Thu, 12 Jan 2006 09:44:29 +0100
+Message-ID: <20060112084429.GA18332@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69D61160
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 09:27:33 +0100 (MET)
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,119 +16,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: stable@kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Some widespread USB interface chips with adaptive iso endpoints hang
+after receiving a series of empty packets when they expect data.  This
+completely disables audio playback on those devices.  To avoid this, we
+have to send packets containing silence (zero samples) instead.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585> 
-======================================================================
-Reported By:                sailfrog
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1585
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             > 2.6.14 (rc1, mm1, mm2, rc2)
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             11-21-2005 17:45 CET
-Last Modified:              01-12-2006 09:27 CET
-======================================================================
-Summary:                    No sound from Soundblaster Live USB since updating
-kernel drivers to 1.0.10.rc3
-Description: 
-Every kernel since 2.6.14 (I have tried rc1, mm1, mm2, and rc2) has left
-my external USB sound card broken. It appears to be something in the
-alsa-git-2005-11-07.patch that was posted to LKML on 11/07/05:
+ALSA bug: http://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585
 
-subject:         [ALSA UPDATE] 1.0.10rc3
-message-id:        
-<Pine.LNX.4.61.0511071457480.8818@tm8103.perex-int.cz>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
 
-Applying this alsa update to 2.6.14 also renders the card silent. The
-card
-is visible in /proc/asound/cards, alsamixer sees it and I can adjust the
-volume, but I get no sound from xmms, mplayer, etc. I tried enabling alsa
-debug and verbose printk but I was unable to find any additional messages
-from dmesg or in any log files. The card is a Creative Labs SoundBlaster
-Live 24-bit external. I'm using the SPDIF output to run sound through a
-home theater system. I'm running debian unstable on a Toshiba laptop. 
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-10-06 03:39 
-----------------------------------------------------------------------
-Clemens, have you looked at this lately?  It seems to have been narrowed
-down to a specific change, the addition of prepare_startup_playback_urb().
-
-----------------------------------------------------------------------
- Clemens Ladisch - 01-12-06 09:27 
-----------------------------------------------------------------------
-Fixed in CVS.
-I've uploaded two patches against the latest ALSA and the latest kernel.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-21-05 17:45 sailfrog       New Issue                                    
-11-21-05 17:45 sailfrog       Distribution              => Debian          
-11-21-05 17:45 sailfrog       Kernel Version            => > 2.6.14 (rc1, mm1,
-mm2, rc2)
-11-21-05 18:45 sailfrog       Issue Monitored: sailfrog                    
-11-22-05 07:54 Clemens LadischNote Added: 0006785                          
-12-09-05 00:51 sailfrog       Note Added: 0006965                          
-12-09-05 16:46 smithbone      Note Added: 0006968                          
-12-22-05 02:25 sailfrog       Note Added: 0007117                          
-12-30-05 19:48 sailfrog       Note Added: 0007251                          
-12-30-05 20:01 rlrevell       Note Added: 0007252                          
-12-30-05 20:08 rlrevell       Note Added: 0007254                          
-12-30-05 20:31 sailfrog       Note Added: 0007256                          
-12-30-05 20:34 rlrevell       Note Added: 0007257                          
-12-30-05 20:41 sailfrog       Note Added: 0007258                          
-12-30-05 20:43 rlrevell       Note Added: 0007259                          
-12-31-05 02:32 smithbone      Note Added: 0007319                          
-12-31-05 03:45 rlrevell       File Added: alsa-git-2005-11-07-usbaudio.patch    
-               
-12-31-05 03:47 rlrevell       Note Added: 0007331                          
-12-31-05 05:31 smithbone      Note Added: 0007343                          
-12-31-05 05:33 rlrevell       Note Added: 0007344                          
-12-31-05 05:37 rlrevell       Note Added: 0007345                          
-12-31-05 07:10 smithbone      Note Added: 0007347                          
-12-31-05 08:54 afran          Note Added: 0007354                          
-12-31-05 08:55 afran          Issue Monitored: afran                       
-12-31-05 08:56 afran          Note Edited: 0007354                         
-01-04-06 09:52 bryanr         File Added: alsa-usbaudio-2.6.15-revert-001.patch 
-                  
-01-04-06 09:58 bryanr         Note Added: 0007411                          
-01-04-06 10:04 bryanr         Issue Monitored: bryanr                      
-01-04-06 10:50 bryanr         File Added: alsa-usbaudio-2.6.15-revert-008.patch 
-                  
-01-04-06 11:06 bryanr         Note Added: 0007412                          
-01-04-06 13:15 afran          Note Added: 0007416                          
-01-04-06 16:30 sailfrog       Note Added: 0007424                          
-01-05-06 16:12 sailfrog       Note Added: 0007471                          
-01-09-06 06:32 smithbone      Note Added: 0007531                          
-01-10-06 03:39 rlrevell       Note Added: 0007547                          
-01-10-06 13:56 vsu            Issue Monitored: vsu                         
-01-12-06 09:26 Clemens LadischFile Added:
-usb-playback-silence-fix-alsa-1.0.11rc2.patch                    
-01-12-06 09:26 Clemens LadischFile Added:
-usb-playback-silence-fix-kernel-2.6.15.patch                    
-01-12-06 09:27 Clemens LadischStatus                   assigned => resolved
-01-12-06 09:27 Clemens LadischResolution               open => fixed       
-01-12-06 09:27 Clemens LadischNote Added: 0007582                          
-======================================================================
-
-
+Index: linux-2.6.15/sound/usb/usbaudio.c
+===================================================================
+--- linux-2.6.15.orig/sound/usb/usbaudio.c	2006-01-06 16:11:26.000000000 +0100
++++ linux-2.6.15/sound/usb/usbaudio.c	2006-01-11 19:29:18.000000000 +0100
+@@ -480,22 +480,38 @@ static int retire_playback_sync_urb_hs(s
+ /*
+  * Prepare urb for streaming before playback starts.
+  *
+- * We don't care about (or have) any data, so we just send a transfer delimiter.
++ * We don't yet have data, so we send a frame of silence.
+  */
+ static int prepare_startup_playback_urb(snd_usb_substream_t *subs,
+ 					snd_pcm_runtime_t *runtime,
+ 					struct urb *urb)
+ {
+-	unsigned int i;
++	unsigned int i, offs, counts;
+ 	snd_urb_ctx_t *ctx = urb->context;
++	int stride = runtime->frame_bits >> 3;
+ 
++	offs = 0;
+ 	urb->dev = ctx->subs->dev;
+ 	urb->number_of_packets = subs->packs_per_ms;
+ 	for (i = 0; i < subs->packs_per_ms; ++i) {
+-		urb->iso_frame_desc[i].offset = 0;
+-		urb->iso_frame_desc[i].length = 0;
++		/* calculate the size of a packet */
++		if (subs->fill_max)
++			counts = subs->maxframesize; /* fixed */
++		else {
++			subs->phase = (subs->phase & 0xffff)
++				+ (subs->freqm << subs->datainterval);
++			counts = subs->phase >> 16;
++			if (counts > subs->maxframesize)
++				counts = subs->maxframesize;
++		}
++		urb->iso_frame_desc[i].offset = offs * stride;
++		urb->iso_frame_desc[i].length = counts * stride;
++		offs += counts;
+ 	}
+-	urb->transfer_buffer_length = 0;
++	urb->transfer_buffer_length = offs * stride;
++	memset(urb->transfer_buffer,
++	       subs->cur_audiofmt->format == SNDRV_PCM_FORMAT_U8 ? 0x80 : 0,
++	       offs * stride);
+ 	return 0;
+ }
+ 
 
 
 -------------------------------------------------------
