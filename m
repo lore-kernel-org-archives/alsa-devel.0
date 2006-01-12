@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Fri, 13 Jan 2006 00:16:54 +0100
-Message-ID: <99d118df0009332baadcb6da64441d66@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001075]: IEC958 Capture Switch cannot be set with alsamixer
+Date: Fri, 13 Jan 2006 00:16:12 +0100
+Message-ID: <a6415573f2c47be4192a188536a12ae0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BE86144
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:16:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECE9D144
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:16:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1075> 
 ======================================================================
-Reported By:                chrmue
-Assigned To:                tiwai
+Reported By:                vsu
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1733
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   1075
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
+Status:                     new
 ======================================================================
-Date Submitted:             01-11-2006 07:23 CET
+Date Submitted:             04-24-2005 16:44 CEST
 Last Modified:              01-13-2006 00:16 CET
 ======================================================================
-Summary:                    Intel HDA Modem ?
+Summary:                    IEC958 Capture Switch cannot be set with alsamixer
 Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
+alsamixer (both 1.0.8 and CVS snapshot from 2005-04-23) is not able to
+control IEC958 Capture Switch of the ALC850 codec:
 
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
+- When alsamixer is started, IEC958 Capture Switch is always displayed as
+turned on, regardless of the actual state.
 
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+- When pressing Space, the switch seems to be toggled on screen, however,
+the actual mixer state does not change.
 
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
+The switch can be controlled with amixer:
+
+$ amixer cset numid=40,iface=MIXER,name='IEC958 Capture Switch' on
+numid=40,iface=MIXER,name='IEC958 Capture Switch'
+  ; type=BOOLEAN,access=rw---,values=1
+  : values=on
+$ amixer cset numid=40,iface=MIXER,name='IEC958 Capture Switch' off
+numid=40,iface=MIXER,name='IEC958 Capture Switch'
+  ; type=BOOLEAN,access=rw---,values=1
+  : values=off
+
+When the switch state is changed this way while alsamixer is running, the
+alsamixer screen is updated, and the switch is drawn as if turned on.
 ======================================================================
 
 ----------------------------------------------------------------------
- chrmue - 01-12-06 05:35 
+ vsu - 08-20-05 19:06 
 ----------------------------------------------------------------------
-I could not download the file via
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1000&type=bug
-(???)
-Can you send it to christoph@naturetronic.net ? thanks!
+Even more - I have found that I also cannot control IEC958 Playback Switch
+through alsamixer.  This control does not even appear on the screen - the
+"IEC958" element is shown as an enum control (with values "PCM", "Analog
+In", "IEC958 In"), and there is no mute box below it.
+
+Also, when I switch to the view with all controls (with F5), I don't see
+the capture switch for IEC958 too - only the enum control is displayed.
+
+I have attached my asound.state file and the output of "amixer contents"
+and "amixer scontents".
 
 ----------------------------------------------------------------------
- sashak - 01-13-06 00:16 
+ rlrevell - 01-13-06 00:16 
 ----------------------------------------------------------------------
-> Can you send it
-
-Sent.
+Any improvement in 1.0.11-rc* or ALSA CVS?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
-01-12-06 00:00 sashak         Note Added: 0007574                          
-01-12-06 00:02 sashak         Issue Monitored: sashak                      
-01-12-06 05:35 chrmue         Note Added: 0007581                          
-01-13-06 00:16 sashak         Note Added: 0007598                          
+04-24-05 16:44 vsu            New Issue                                    
+08-20-05 16:02 jdthood        Note Added: 0005877                          
+08-20-05 18:16 vsu            Note Added: 0005881                          
+08-20-05 18:59 vsu            File Added: asound.state                     
+08-20-05 19:00 vsu            File Added: amixer_contents                    
+08-20-05 19:00 vsu            File Added: amixer_scontents                    
+08-20-05 19:06 vsu            Note Added: 0005882                          
+01-13-06 00:16 rlrevell       Note Added: 0007597                          
 ======================================================================
 
 
