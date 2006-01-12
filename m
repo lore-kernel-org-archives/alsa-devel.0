@@ -1,13 +1,10 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: snd-hda-intel on fj amilo m3438g
-Date: Thu, 12 Jan 2006 15:12:55 -0500
-Message-ID: <1137096776.2370.44.camel@mindpipe>
-References: <200601121900.51968.inyourface@gmx.de>
+From: Chris Ball <cjb@mrao.cam.ac.uk>
+Subject: [PATCH] intel8x0: Add quirk for Optiplex GX270.
+Date: Thu, 12 Jan 2006 22:23:56 +0000
+Message-ID: <yd3hd89qe4j.fsf@islay.ra.phy.cam.ac.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200601121900.51968.inyourface@gmx.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,28 +14,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mase <inyourface@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-01-12 at 19:00 +0100, mase wrote:
-> hi!
-> can you please help me?
-> i have a fujitsu siemens amilo m3438g notebook with a
-> realtek alc880 (windows says so) soundchip.
-> the sound output works fine, but none of the inputs,
-> neither built-in mic, nor external mic.
-> the notebook has 2 jacks:
-> 1 for mic and 1 for headphones shared with spdif.
-> i have tested different models: auto, w810 F1734,uniwill, asus,
-> z71v, 3stack
+Hi,
 
-The obvious first one to try would have been "fujitsu".
+This patch adds a quirk entry for the Dell Optiplex GX270, on which
+the volume is set by the headphone control, not the master control.
 
-Also make sure to check /sys/module/snd_hda_intel/parameters/model to
-make sure it is seeing the module options.
+Signed-off-by: Chris Ball <cjb@mrao.cam.ac.uk>
 
-Lee
+Index: pci/intel8x0.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/intel8x0.c,v
+retrieving revision 1.233
+diff -u -r1.233 intel8x0.c
+--- pci/intel8x0.c      4 Jan 2006 12:21:11 -0000       1.233
++++ pci/intel8x0.c      11 Jan 2006 22:51:13 -0000
+@@ -1787,6 +1787,12 @@
+        },
+        {
+                .subvendor = 0x1028,
++               .subdevice = 0x0151,
++               .name = "Dell Optiplex GX270",  /* AD1981B */
++               .type = AC97_TUNE_HP_ONLY
++       },
++       {
++               .subvendor = 0x1028,
+                .subdevice = 0x012c,
+                .name = "Dell Precision 650",   /* AD1981A */
+                .type = AC97_TUNE_HP_ONLY
+
+
+
+-- 
+Chris Ball   <cjb@mrao.cam.ac.uk>   <http://www.mrao.cam.ac.uk/~cjb/>
 
 
 
