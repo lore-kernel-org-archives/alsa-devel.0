@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Thu, 12 Jan 2006 14:13:24 +0100
-Message-ID: <eefdcd0f911b6a3065ae850f3c21e934@bugtrack.alsa-project.org>
+Date: Thu, 12 Jan 2006 14:43:44 +0100
+Message-ID: <ded48f4d0fdf4dff5e27b06c908c198f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABA86161
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 14:13:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B439613C
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 14:43:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              01-12-2006 14:13 CET
+Last Modified:              01-12-2006 14:43 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -50,19 +50,6 @@ play a cd without any error, but I cannot hear anything neither via the
 build-in speakers nor via headphones. All volume controllers are at 70%
 and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
-
-----------------------------------------------------------------------
- mytux - 01-12-06 01:20 
-----------------------------------------------------------------------
-I have an Acer 1643WLMi, with a Realtek ALC260.
-Exactly the same here : with CVS of 2006-01-12 i also got sound from the
-line-out jack, not from headphone out nor from the internal speakers.
-
-I tried with modprobe snd-hda-intel model=fujitsu and it's the same.
-
-cat /sys/module/snd_hda_intel/parameters/model gives me "fujitsu"
-
-
 
 ----------------------------------------------------------------------
  robertw - 01-12-06 14:13 
@@ -76,6 +63,13 @@ hda_codec: Unknown model for ALC260"
 
 Is there somewhere such a model-description, which does what jwoithe at
 the very beginning suggested?
+
+----------------------------------------------------------------------
+ lobstaj - 01-12-06 14:43 
+----------------------------------------------------------------------
+Now I've also tried to cat /sys/module/snd_hda_intel/parameters/model and
+it says "<NULL>", no matter whether I pass the option or not (tried with
+the modification and without).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -116,6 +110,7 @@ Date Modified  Username       Field                    Change
 01-12-06 01:16 mytux          Note Added: 0007577                          
 01-12-06 01:20 mytux          Note Edited: 0007577                         
 01-12-06 14:13 robertw        Note Added: 0007586                          
+01-12-06 14:43 lobstaj        Note Added: 0007587                          
 ======================================================================
 
 
