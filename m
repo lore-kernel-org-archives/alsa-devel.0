@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001191]: Center channel and 32-bit emulation broken when upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
-Date: Thu, 12 Jan 2006 04:12:35 +0100
-Message-ID: <75bc68d2f26fc2c0e8c9a7e28ef942db@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001011]: ALSA doesnt sense connected headphones
+Date: Thu, 12 Jan 2006 04:21:52 +0100
+Message-ID: <5435a55fd39fdac36a92ea0773efac9f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED4C5120
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 04:12:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59953156
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 04:21:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1191> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1011> 
 ======================================================================
-Reported By:                robert
+Reported By:                rmrfchik
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1191
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Issue ID:                   1011
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     closed
+Distribution:               Debian
+Kernel Version:             2.6.10-1
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-14-2005 11:45 CEST
-Last Modified:              01-12-2006 04:12 CET
+Date Submitted:             03-24-2005 17:13 CET
+Last Modified:              01-12-2006 04:21 CET
 ======================================================================
-Summary:                    Center channel and 32-bit emulation broken when
-upgrading alsa-lib from 1.0.8 to 1.0.9 on nForce 4 system
+Summary:                    ALSA doesnt sense connected headphones
 Description: 
-I'm running AMD64 gentoo on an nforce4 system, audio is nVidia CK804 with
-ALC850. I can emerge the newest alsa-driver package (1.0.9b), but when I
-upgrade alsa-lib to 1.0.9, three things happen.  First, my 32 bit sound
-applications, like mplayer32, don't work with alsa anymore.  Second, the
-center channel on all 5.1 sound goes out.  Third, the a/v synchonization
-on mplayer gets hosed using alsa (oss emulation still ok.)
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001501 intel8x0 surround channels missing and ...
-has duplicate       0001206 No center channel; rear left and right ...
+I have: Intel Corp. 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+with Realek ALC850 chipset (motherboard gigabyte 8ig1000G Pro).
+When connecting headphones to line out (or other any output), I hear line
+output (not apmlified).
+I think, output to headphone must be amplified.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-19-05 03:10 
+ tiwai - 03-24-05 19:43 
 ----------------------------------------------------------------------
-The change was made to fix some other bug.
+Attach the content of /proc/asound/card0/codec97#0/* files.
 
- Details here:
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/conf/cards/NFORCE.conf?rev=1.9&view=log
+Check the register 0x7a in /proc/asound/card0/codec97#0/ac97#0-0+regs.
+How are the bits 6 and 7?  According to the datasheet, bit 7 corresponds
+to the Front-out amplifier control.
 
-What you are asking is that each change be fully regression tested with
-every single piece of hardware on the market.  We are not Microsoft, we
-don't have those kinds of resources.
+When the driver is compiled with CONFIG_SND_DEBUG=y, you can edit the
+register value via this proc file, like
 
-Try reverting the last three changes one at a time and see which causes
-the problem.  Or try the patch I posted to #1206.
+    # echo 7a 2092 > /proc/asound/card0/codec97#0/ac97#0-0+regs
 
 ----------------------------------------------------------------------
- rlrevell - 01-12-06 04:12 
+ rlrevell - 01-12-06 04:21 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-14-05 11:45 robert         New Issue                                    
-06-15-05 14:01 jdthood        Note Added: 0005023                          
-06-15-05 22:00 robert         Note Added: 0005045                          
-06-15-05 23:42 jdthood        Note Added: 0005048                          
-08-18-05 21:12 robert         Note Added: 0005853                          
-08-18-05 21:31 rlrevell       Note Added: 0005855                          
-08-18-05 21:32 rlrevell       Relationship added       has duplicate 0001206
-08-19-05 02:45 robert         Note Added: 0005863                          
-08-19-05 03:10 rlrevell       Note Added: 0005865                          
-11-01-05 15:45 jdthood        Relationship added       related to 0001501  
-11-06-05 10:12 densg          Issue Monitored: densg                       
-01-12-06 04:12 rlrevell       Status                   new => closed       
-01-12-06 04:12 rlrevell       Note Added: 0007579                          
+03-24-05 17:13 rmrfchik       New Issue                                    
+03-24-05 17:13 rmrfchik       Distribution              => Debian          
+03-24-05 17:13 rmrfchik       Kernel Version            => 2.6.10-1        
+03-24-05 19:43 tiwai          Note Added: 0004195                          
+01-12-06 04:21 rlrevell       Status                   new => closed       
+01-12-06 04:21 rlrevell       Note Added: 0007580                          
 ======================================================================
 
 
