@@ -1,12 +1,20 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] usb-audio: don't use empty packets at start of playback
-Date: Thu, 12 Jan 2006 09:44:29 +0100
-Message-ID: <20060112084429.GA18332@turing.informatik.uni-halle.de>
+Subject: Re: Hercules PC DJ Console (Windows Edition) information
+Date: Thu, 12 Jan 2006 09:47:52 +0100
+Message-ID: <1137055672.43c617b8297f6@webmail.uni-halle.de>
+References: <2c746f620510180211hf803801mdda93f93aeae84c2@mail.gmail.com>
+ <Pine.HPX.4.33n.0510181124030.2094-100000@studcom.urz.uni-halle.de>
+ <2c746f620510182301j3419d000o857c2c72ef29880a@mail.gmail.com>
+ <2c746f620510182303k782e04f2xa18b60cea49030a@mail.gmail.com>
+ <1129746748.5203.1.camel@mindpipe>
+ <2c746f620510191410v5032b3ebp673545e5958192ac@mail.gmail.com>
+ <2c746f620601102330s337d7744r7b98dad75dbbf374@mail.gmail.com>
+ <1136964861.27255.17.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-disposition: inline
+In-reply-to: <1136964861.27255.17.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,67 +24,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: stable@kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Eric Shattow <lucent@gmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Some widespread USB interface chips with adaptive iso endpoints hang
-after receiving a series of empty packets when they expect data.  This
-completely disables audio playback on those devices.  To avoid this, we
-have to send packets containing silence (zero samples) instead.
+Lee Revell wrote:
+> On Wed, 2006-01-11 at 01:30 -0600, Eric Shattow wrote:
+> > arecord: xrun:1077: read/write error, state = PREPARED
 
-ALSA bug: http://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585
+There may be a message in the system log.
 
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+> Assuming this worked with previous versions, the problem may be that USB
+> audio has been broken since kernel 2.6.14 (ALSA 1.0.10rcsomething).
+>
+> Try the patch attached to this bug report.
+>
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585
 
-Index: linux-2.6.15/sound/usb/usbaudio.c
-===================================================================
---- linux-2.6.15.orig/sound/usb/usbaudio.c	2006-01-06 16:11:26.000000000 +0100
-+++ linux-2.6.15/sound/usb/usbaudio.c	2006-01-11 19:29:18.000000000 +0100
-@@ -480,22 +480,38 @@ static int retire_playback_sync_urb_hs(s
- /*
-  * Prepare urb for streaming before playback starts.
-  *
-- * We don't care about (or have) any data, so we just send a transfer delimiter.
-+ * We don't yet have data, so we send a frame of silence.
-  */
- static int prepare_startup_playback_urb(snd_usb_substream_t *subs,
- 					snd_pcm_runtime_t *runtime,
- 					struct urb *urb)
- {
--	unsigned int i;
-+	unsigned int i, offs, counts;
- 	snd_urb_ctx_t *ctx = urb->context;
-+	int stride = runtime->frame_bits >> 3;
- 
-+	offs = 0;
- 	urb->dev = ctx->subs->dev;
- 	urb->number_of_packets = subs->packs_per_ms;
- 	for (i = 0; i < subs->packs_per_ms; ++i) {
--		urb->iso_frame_desc[i].offset = 0;
--		urb->iso_frame_desc[i].length = 0;
-+		/* calculate the size of a packet */
-+		if (subs->fill_max)
-+			counts = subs->maxframesize; /* fixed */
-+		else {
-+			subs->phase = (subs->phase & 0xffff)
-+				+ (subs->freqm << subs->datainterval);
-+			counts = subs->phase >> 16;
-+			if (counts > subs->maxframesize)
-+				counts = subs->maxframesize;
-+		}
-+		urb->iso_frame_desc[i].offset = offs * stride;
-+		urb->iso_frame_desc[i].length = counts * stride;
-+		offs += counts;
- 	}
--	urb->transfer_buffer_length = 0;
-+	urb->transfer_buffer_length = offs * stride;
-+	memset(urb->transfer_buffer,
-+	       subs->cur_audiofmt->format == SNDRV_PCM_FORMAT_U8 ? 0x80 : 0,
-+	       offs * stride);
- 	return 0;
- }
- 
+Now fixed in CVS.
+
+I've added another patch to the above bug report, or wait for the next ALSA
+release.
+
+
+HTH
+Clemens
 
 
 -------------------------------------------------------
