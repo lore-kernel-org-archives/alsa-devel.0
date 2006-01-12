@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 00:41:10 +0100
-Message-ID: <dbd95d116d670eaa740d9f11498f63d4@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 00:44:40 +0100
+Message-ID: <2df1c1c13b5d5ec7485786082781ea2d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E00B117
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:41:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA5ED117
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:44:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 00:41 CET
+Last Modified:              01-13-2006 00:44 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,11 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 00:40 
-----------------------------------------------------------------------
-Exactly which of the patches attached to this bug report are needed?
-
-----------------------------------------------------------------------
  drfindley - 01-13-06 00:41 
 ----------------------------------------------------------------------
 Demosthenes:
@@ -82,6 +77,12 @@ work.  I'm surprised the card doesn't support hardware mixing, seeing how
 quality wise it's better than the audigy.
 
 Thanks for gettign this rolling rlrevell.
+
+----------------------------------------------------------------------
+ drfindley - 01-13-06 00:44 
+----------------------------------------------------------------------
+rlrevell: aureon-prodigy71lt-fix3.diff is required.  All the rest of the
+files were for bug testing.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -222,6 +223,7 @@ Hedgehog)
 01-13-06 00:38 rlrevell       Note Added: 0007603                          
 01-13-06 00:40 rlrevell       Note Added: 0007604                          
 01-13-06 00:41 drfindley      Note Added: 0007605                          
+01-13-06 00:44 drfindley      Note Added: 0007606                          
 ======================================================================
 
 
