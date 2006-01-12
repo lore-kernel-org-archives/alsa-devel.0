@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 00:34:13 +0100
-Message-ID: <ffd4307f7cbf7c586d33f42651e1394c@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 00:38:35 +0100
+Message-ID: <319f474a43efe0938983ab5f639ec0c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B621117
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:34:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 104C7117
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:38:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 00:34 CET
+Last Modified:              01-13-2006 00:38 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,13 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 00:08 
-----------------------------------------------------------------------
-OK, tiwai can you look at this before the 1.0.11 release?
-
-This bug tracker really needs a PATCH state...
-
-----------------------------------------------------------------------
  Demosthenes - 01-13-06 00:34 
 ----------------------------------------------------------------------
 The card will not be able to do hardware mixing since the hardware does not
@@ -92,6 +85,19 @@ have and am not aware of the state of the card as far as Audiotrak is
 concerned.
 
 I eagerly await any progress, it has been a while since we have had any.
+
+----------------------------------------------------------------------
+ rlrevell - 01-13-06 00:38 
+----------------------------------------------------------------------
+If you want the highest level of support, Audiotrak will have to release
+the hardware specs.  Most vendors won't do this, but it helps to ask.
+
+The next best thing is if you can convince them to donate a card to the
+ALSA project so we can develop a driver empirically.  Most vendors will do
+this, but you have to ask nicely, the more requests they get, the better.
+
+Tell them they can post their offer of a hardware sample to alsa-devel at
+lists.sourceforge.net and someone will contact them privately.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -229,6 +235,7 @@ Hedgehog)
 01-13-06 00:09 rlrevell       Status                   new => assigned     
 01-13-06 00:09 rlrevell       Assigned To               => tiwai           
 01-13-06 00:34 Demosthenes    Note Added: 0007602                          
+01-13-06 00:38 rlrevell       Note Added: 0007603                          
 ======================================================================
 
 
