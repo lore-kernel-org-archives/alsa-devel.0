@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Thu, 12 Jan 2006 13:45:30 +0100
-Message-ID: <d8c94ec20c304231d6eeac48ec20a8c1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Thu, 12 Jan 2006 14:13:24 +0100
+Message-ID: <eefdcd0f911b6a3065ae850f3c21e934@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64B2A159
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 13:45:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABA86161
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 14:13:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,134 +24,98 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                er-ku
+Reported By:                robertw
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1517
+Issue ID:                   1618
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-9-686
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              01-12-2006 13:45 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              01-12-2006 14:13 CET
 ======================================================================
-Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-This will be very much like other reports around.
-
-Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
-Sound modules load silently, no complainments, alsamixer works and
-channels are unmuted, but I get absolutely no sound from speakers of
-headphones.
-
-I'm not the only one having this issue
-(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
-managed to google either didn't help me, or was simply unfinished (like
-forum questions that aren't answered).
-
-I tried the stock drivers provided by the Ubuntu kernel, then I tried
-1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
-all cases the result was the same - absolute silence.
-
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
 
 ----------------------------------------------------------------------
- OnO - 01-07-06 17:19 
+ mytux - 01-12-06 01:20 
 ----------------------------------------------------------------------
-What are You think about?
-device 10ec:0260 is listed by DXDiag but not by lspci ?
-device 8086:2668 is listed by both.
+I have an Acer 1643WLMi, with a Realtek ALC260.
+Exactly the same here : with CVS of 2006-01-12 i also got sound from the
+line-out jack, not from headphone out nor from the internal speakers.
 
-[DXDiag]
--------------
-Sound Devices
--------------
-            Description: Realtek HD Audio output
-            Hardware ID:
-HDAUDIO\FUNC_01&VEN_10EC&DEV_0260&SUBSYS_1025160D&REV_1004
-        Manufacturer ID: 1
-             Product ID: 100
-                   Type: WDM
-            Driver Name: RtkHDAud.sys
-         Driver Version: 5.10.0000.5148 (English)
-      Driver Attributes: Final Retail
-...
-        Driver Provider: Realtek Semiconductor Corp.
-         HW Accel Level: Full
-              Cap Flags: 0xF5F
-    Min/Max Sample Rate: 100, 192000
-Static/Strm HW Mix Bufs: 33, 32
- Static/Strm HW 3D Bufs: 33, 32
-              HW Memory: 0
-       Voice Management: No
- EAX(tm) 2.0 Listen/Src: Yes, Yes
-   I3DL2(tm) Listen/Src: Yes, Yes
-Sensaura(tm) ZoomFX(tm): No
-               Registry: OK
--------------
-     Name: Microsoft UAA Bus Driver for High Definition Audio
-Device ID: PCI\VEN_8086&DEV_2668&SUBSYS_008F1025&REV_04\3&B1BFB68&0&D8
-   Driver: F:\WINDOWS\system32\DRIVERS\hdaudbus.sys, 5.10.0001.5013
-(English), 1/7/2005 17:07:18, 138752 bytes
--------------
+I tried with modprobe snd-hda-intel model=fujitsu and it's the same.
+
+cat /sys/module/snd_hda_intel/parameters/model gives me "fujitsu"
 
 
-[lspci]
--------------
-0000:00:00.0 0600: 8086:2590 (rev 03)
-0000:00:02.0 0300: 8086:2592 (rev 03)
-0000:00:02.1 0380: 8086:2792 (rev 03)
-0000:00:1b.0 0403: 8086:2668 (rev 04)
-0000:00:1c.0 0604: 8086:2660 (rev 04)
-0000:00:1c.1 0604: 8086:2662 (rev 04)
-0000:00:1c.2 0604: 8086:2664 (rev 04)
-0000:00:1d.0 0c03: 8086:2658 (rev 04)
-0000:00:1d.1 0c03: 8086:2659 (rev 04)
-0000:00:1d.2 0c03: 8086:265a (rev 04)
-0000:00:1d.3 0c03: 8086:265b (rev 04)
-0000:00:1d.7 0c03: 8086:265c (rev 04)
-0000:00:1e.0 0604: 8086:2448 (rev d4)
-0000:00:1f.0 0601: 8086:2641 (rev 04)
-0000:00:1f.1 0101: 8086:266f (rev 04)
-0000:00:1f.3 0c05: 8086:266a (rev 04)
-0000:06:01.0 0607: 104c:ac56
-0000:06:04.0 0280: 8086:4220 (rev 05)
-0000:06:08.0 0200: 10ec:8139 (rev 10)
--------------
 
 ----------------------------------------------------------------------
- er-ku - 01-12-06 13:45 
+ robertw - 01-12-06 14:13 
 ----------------------------------------------------------------------
-Is issue 1618 a dupe of this?
+I tried again with the current CVS (12.01.2005 14:00 MEZ).
+
+When I do "modprobe snd-hda-intel model=fujitsu" I get the usual "3032:
+hda_codec: Unknown model for ALC260"
+
+"cat /sys/module/snd_hda_intel/parameters/model" says "<NULL>"
+
+Is there somewhere such a model-description, which does what jwoithe at
+the very beginning suggested?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-05 00:19 er-ku          New Issue                                    
-10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
-10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
-10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
-12-19-05 02:28 rlrevell       Note Added: 0007083                          
-12-24-05 03:28 OnO            Note Added: 0007139                          
-12-24-05 03:32 OnO            Note Added: 0007140                          
-12-26-05 17:06 er-ku          Note Added: 0007160                          
-12-26-05 17:07 er-ku          Note Edited: 0007160                         
-01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
-01-06-06 17:22 morigane       Note Added: 0007489                          
-01-06-06 18:38 er-ku          Note Added: 0007492                          
-01-06-06 19:39 rlrevell       Note Added: 0007495                          
-01-06-06 19:46 er-ku          Note Added: 0007496                          
-01-06-06 19:56 morigane       Note Added: 0007497                          
-01-06-06 20:04 eudoxos        Note Added: 0007498                          
-01-07-06 17:19 OnO            Note Added: 0007517                          
-01-12-06 13:45 er-ku          Note Added: 0007585                          
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+01-12-06 00:26 rlrevell       Note Added: 0007576                          
+01-12-06 01:16 mytux          Note Added: 0007577                          
+01-12-06 01:20 mytux          Note Edited: 0007577                         
+01-12-06 14:13 robertw        Note Added: 0007586                          
 ======================================================================
 
 
