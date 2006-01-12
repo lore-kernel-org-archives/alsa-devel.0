@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Thu, 12 Jan 2006 00:26:36 +0100
-Message-ID: <eb360711a0fd08f5d050b74d35f9c6ed@bugtrack.alsa-project.org>
+From: "Marja Kerbs" <kerbsmar@cict.jcyl.es>
+Subject: Re: wrinkly pianoforte
+Date: Wed, 11 Jan 2006 19:15:55 -0500
+Message-ID: <000001c6170d$5afafe10$212ea8c0@porringer>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C616E3.7224F610"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4946166
-	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 00:26:36 +0100 (MET)
+Received: from cict.jcyl.es (IP1A0195.myg.mesh.ad.jp [211.13.54.195])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C5A4015D
+	for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2006 01:16:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +18,160 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Haydee Yeldell <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
-======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
-======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              01-12-2006 00:26 CET
-======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
-Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
-======================================================================
+------=_NextPart_000_0001_01C616E3.7224F610
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- lobstaj - 01-12-06 00:20 
-----------------------------------------------------------------------
-Yes, I have tried. If model=fujitsu is supposed to do the same, then it
-just doesn't work. I get different mixer controls and sound with one, but
-not the other.
+=20
+http://www.rideonte.com
+=20
+S
+V
+C
+X
+A
+V
+o
+I
+I
+a
+m
+A
+m
+A
+A
+n
+b
+L
+a
+G
+L
+a
+i
+I
+=20
+R
+I
+x
+e
+U
+=20
+A
+S
+=20
+n
+M
+$
+$
+$
+$
+$
+=20
+1
+3
+3
+1
+2
+$
+,
+,
+,
+,
+,
+1
+1
+7
+7
+4
+8
+,
+2
+5
+5
+2
+9
+2
 
-----------------------------------------------------------------------
- rlrevell - 01-12-06 00:26 
-----------------------------------------------------------------------
-Can you cat /sys/module/snd_hda_intel/parameters/model to make sure it is
-seeing the "fujitsu" option?
+------=_NextPart_000_0001_01C616E3.7224F610
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
-01-04-06 22:00 robertw        Note Added: 0007453                          
-01-04-06 22:16 robertw        Note Edited: 0007453                         
-01-11-06 23:38 lobstaj        Note Added: 0007572                          
-01-11-06 23:48 rlrevell       Note Added: 0007573                          
-01-12-06 00:20 lobstaj        Note Added: 0007575                          
-01-12-06 00:26 rlrevell       Note Added: 0007576                          
-======================================================================
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV><A =
+href=3D"http://www.rideonte.com">http://www.rideonte.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>S</DIV><DIV>V</DIV><DIV>C</DIV><DIV>X</DIV><DIV>A</DIV><DIV>V<=
+/DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>o</DIV><DIV>I</DIV><DIV>I</DIV><DIV>a</DIV><DIV>m</DIV><DIV>A<=
+/DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>m</DIV><DIV>A</DIV><DIV>A</DIV><DIV>n</DIV><DIV>b</DIV><DIV>L<=
+/DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>a</DIV><DIV>G</DIV><DIV>L</DIV><DIV>a</DIV><DIV>i</DIV><DIV>I<=
+/DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>&nbsp;</DIV><DIV>R</DIV><DIV>I</DIV><DIV>x</DIV><DIV>e</DIV><D=
+IV>U</DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>&nbsp;</DIV><DIV>A</DIV><DIV>S</DIV><DIV>&nbsp;</DIV><DIV>n</D=
+IV><DIV>M</DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>$</DIV><DIV>$</DIV><DIV>$</DIV><DIV>$</DIV><DIV>$</DIV><DIV>&n=
+bsp;</DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>1</DIV><DIV>3</DIV><DIV>3</DIV><DIV>1</DIV><DIV>2</DIV><DIV>$<=
+/DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>,</DIV><DIV>,</DIV><DIV>,</DIV><DIV>,</DIV><DIV>,</DIV><DIV>1<=
+/DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>1</DIV><DIV>7</DIV><DIV>7</DIV><DIV>4</DIV><DIV>8</DIV><DIV>,<=
+/DIV></DIV>
+<DIV style
+=3D
+"FLOAT :=20
+left"><DIV>2</DIV><DIV>5</DIV><DIV>5</DIV><DIV>2</DIV><DIV>9</DIV><DIV>2<=
+/DIV></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C616E3.7224F610--
+
 
 
 
