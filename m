@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 00:40:18 +0100
-Message-ID: <37c96f0f4e5dc276d4157a1a0de2ea73@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 00:41:10 +0100
+Message-ID: <dbd95d116d670eaa740d9f11498f63d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D0E1117
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:40:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E00B117
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 00:41:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 00:40 CET
+Last Modified:              01-13-2006 00:41 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,22 +66,22 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 00:38 
-----------------------------------------------------------------------
-If you want the highest level of support, Audiotrak will have to release
-the hardware specs.  Most vendors won't do this, but it helps to ask.
-
-The next best thing is if you can convince them to donate a card to the
-ALSA project so we can develop a driver empirically.  Most vendors will do
-this, but you have to ask nicely, the more requests they get, the better.
-
-Tell them they can post their offer of a hardware sample to alsa-devel at
-lists.sourceforge.net and someone will contact them privately.
-
-----------------------------------------------------------------------
  rlrevell - 01-13-06 00:40 
 ----------------------------------------------------------------------
 Exactly which of the patches attached to this bug report are needed?
+
+----------------------------------------------------------------------
+ drfindley - 01-13-06 00:41 
+----------------------------------------------------------------------
+Demosthenes:
+I have been able to get sound to work well with things like mplayer by
+using either dmix or esd.
+
+Do you have a copy of your .asoundrc ? I haven't been able to get dmix to
+work.  I'm surprised the card doesn't support hardware mixing, seeing how
+quality wise it's better than the audigy.
+
+Thanks for gettign this rolling rlrevell.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -221,6 +221,7 @@ Hedgehog)
 01-13-06 00:34 Demosthenes    Note Added: 0007602                          
 01-13-06 00:38 rlrevell       Note Added: 0007603                          
 01-13-06 00:40 rlrevell       Note Added: 0007604                          
+01-13-06 00:41 drfindley      Note Added: 0007605                          
 ======================================================================
 
 
