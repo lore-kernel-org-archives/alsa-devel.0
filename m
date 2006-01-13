@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
-Date: Fri, 13 Jan 2006 10:15:47 +0100
-Message-ID: <d8d6a9a7a4a6339bae6b72dd3475a3ce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
+Date: Fri, 13 Jan 2006 11:37:33 +0100
+Message-ID: <8f74ca706758483200fe6ea4cdad4182@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF85D128
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 10:15:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09736121
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 11:37:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,96 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
 ======================================================================
-Reported By:                guido
-Assigned To:                sashak
+Reported By:                er-ku
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1694
-Category:                   PCI - intel8x0m
+Issue ID:                   1517
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian "Sarge" with kernel and alsa from "SID"
-Kernel Version:             2.6.14
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12-9-686
 ======================================================================
-Date Submitted:             12-29-2005 22:43 CET
-Last Modified:              01-13-2006 10:15 CET
+Date Submitted:             10-31-2005 00:19 CET
+Last Modified:              01-13-2006 11:37 CET
 ======================================================================
-Summary:                    snd-intel8x0m unable to initialize the Modem device
-ICH6
+Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
 Description: 
-Dear Maintainer and Reader,
+This will be very much like other reports around.
 
-I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
-I found a lot of things recommended in different Mailing lists and blogs
-but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
-kernel Version 2.6.14 with source from Debian "SID".
-The current status is that two modules are loaded during boot,
-snd-intel8x0 and snd-intel8x0m. When both modules are loaded
-the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
-works fine.
-If I additionally load module snd-intel8x0m sound does not work anymore
-and error messages in syslog are printed.
-So I think the error messages are a buck in the snd-intel8x0m module.
-There is no /proc/asound/Modem present when I load the snd-intel8x0m
-module.
+Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
+Sound modules load silently, no complainments, alsamixer works and
+channels are unmuted, but I get absolutely no sound from speakers of
+headphones.
 
-In the "Additional Information" Section I paste some debugging output.
+I'm not the only one having this issue
+(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
+managed to google either didn't help me, or was simply unfinished (like
+forum questions that aren't answered).
 
-Regards
-Guido
+I tried the stock drivers provided by the Ubuntu kernel, then I tried
+1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
+all cases the result was the same - absolute silence.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001618 No Sound on Acer with Intel ICH6 HDA an...
 ======================================================================
 
 ----------------------------------------------------------------------
- guido - 01-13-06 10:06 
+ OnO - 01-13-06 01:07 
 ----------------------------------------------------------------------
-What gives you the Information that this is a CXT30 Modem?
-Or is ICH6 Modem controller and CXT30 the same?
-
-My lspci says that is a ICH6 Modem:
-
-lspci output:
-...
-0000:00:1e.2 Multimedia audio controller: Intel Corp.
-82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 04)
-0000:00:1e.3 Modem: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97
-Modem Controller (rev 04)
-...
+yes, it is.
 
 ----------------------------------------------------------------------
- pzad - 01-13-06 10:15 
+ er-ku - 01-13-06 11:37 
 ----------------------------------------------------------------------
-This:
-
-Mixers: 0: Conexant id 30
-This is Conexant AMC97 codec responsible for Analog audio and analog modem
-part.
-
-Your modem consists from two parts ICH6 (digital part - controler) and
-MC97(in this case AMC97) codec (analog part). ICH6 modem is supported, but
-Conexant codec modem part not.
+OnO: I think, 10ec:0260 isn't listed because it's not a PCI device, but a
+codec. I think, It's intended. :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-05 22:43 guido          New Issue                                    
-12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
-kernel and alsa from "SID"
-12-29-05 22:43 guido          Kernel Version            => 2.6.14          
-01-03-06 20:51 guido          Issue Monitored: guido                       
-01-07-06 01:56 sashak         Note Added: 0007501                          
-01-07-06 01:57 sashak         File Added: ich-cxt30amc-test.patch               
-    
-01-07-06 01:57 sashak         Note Added: 0007502                          
-01-12-06 23:39 guido          File Added: syslog                           
-01-12-06 23:40 guido          Note Added: 0007593                          
-01-12-06 23:43 guido          Note Edited: 0007593                         
-01-13-06 00:21 sashak         Note Added: 0007601                          
-01-13-06 10:06 guido          Note Added: 0007636                          
-01-13-06 10:15 pzad           Note Added: 0007637                          
+10-31-05 00:19 er-ku          New Issue                                    
+10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
+10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
+10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
+12-19-05 02:28 rlrevell       Note Added: 0007083                          
+12-24-05 03:28 OnO            Note Added: 0007139                          
+12-24-05 03:32 OnO            Note Added: 0007140                          
+12-26-05 17:06 er-ku          Note Added: 0007160                          
+12-26-05 17:07 er-ku          Note Edited: 0007160                         
+01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
+01-06-06 17:22 morigane       Note Added: 0007489                          
+01-06-06 18:38 er-ku          Note Added: 0007492                          
+01-06-06 19:39 rlrevell       Note Added: 0007495                          
+01-06-06 19:46 er-ku          Note Added: 0007496                          
+01-06-06 19:56 morigane       Note Added: 0007497                          
+01-06-06 20:04 eudoxos        Note Added: 0007498                          
+01-07-06 17:19 OnO            Note Added: 0007517                          
+01-12-06 13:45 er-ku          Note Added: 0007585                          
+01-13-06 01:07 OnO            Note Added: 0007610                          
+01-13-06 01:11 rlrevell       Relationship added       has duplicate 0001618
+01-13-06 11:37 er-ku          Note Added: 0007638                          
 ======================================================================
 
 
