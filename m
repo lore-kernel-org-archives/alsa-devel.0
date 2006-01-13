@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Fri, 13 Jan 2006 09:12:13 +0100
-Message-ID: <61db2fec50d18e8cada2f1ff04f4fb59@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001101]: [VIA 8237 with ALC850] gstreamer alsasink with default device does not work but with "device=hw:0" it does
+Date: Fri, 13 Jan 2006 09:53:38 +0100
+Message-ID: <bf1a2b6868c489ed634377be691f59ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 727AD13E
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 09:12:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC83310C
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 09:53:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1101> 
 ======================================================================
-Reported By:                dvalin
-Assigned To:                Clemens Ladisch
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
+Project:                    ALSA - lib
+Issue ID:                   1101
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
+Status:                     new
 ======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              01-13-2006 09:12 CET
+Date Submitted:             05-11-2005 22:15 CEST
+Last Modified:              01-13-2006 09:53 CET
 ======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
+Summary:                    [VIA 8237 with ALC850] gstreamer alsasink with
+default device does not work but with "device=hw:0" it does
 Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
+The submitter of #305189 and an interlocutor have discovered that
+gstreaming to "alsasink" does not work but the same to "alsasink
+device=hw:0" does work.
 
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
+Please see http://bugs.debian.org/305189 for the discussion which includes
+lots more detail.
 ======================================================================
 
 ----------------------------------------------------------------------
- dvalin - 01-05-06 19:12 
+ rlrevell - 01-13-06 00:18 
 ----------------------------------------------------------------------
-hum, no more on this topic?
-
-I see that the card has been updated to the soundcard matrix, but I
-believe that the module it's listed with is wrong, is it not?
-
-It's a usb card and works fine with the snd-usb-audio driver after
-applying my patch..
+Is this fixed in later ALSA releases?
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 01-13-06 09:12 
+ lool - 01-13-06 09:53 
 ----------------------------------------------------------------------
-Applied to CVS, thanks.
+Now it's hard to tell for gstreamer users, as upstream now queries the
+underlying hardware device via snd_pcm_info_get_subdevice() /
+snd_pcm_info_get_subdevice_name() and tries both the logical and the
+hardware device.
 
-Please show the output of "lsusb -v" (the "-b" was a typo, sorry).
+Would be nice to have a C test case.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-12-01-05 16:58 Clemens LadischNote Added: 0006886                          
-12-01-05 18:15 dvalin         Note Added: 0006887                          
-12-06-05 07:36 dvalin         Note Added: 0006920                          
-12-11-05 19:05 dvalin         Note Added: 0006977                          
-12-11-05 20:20 rlrevell       Note Added: 0006979                          
-12-11-05 22:34 dvalin         Note Added: 0006980                          
-01-05-06 19:12 dvalin         Note Added: 0007472                          
-01-13-06 09:12 Clemens LadischNote Added: 0007633                          
+05-11-05 22:15 jdthood        New Issue                                    
+05-13-05 14:17 tiwai          Note Added: 0004645                          
+05-13-05 15:38 jdthood        Note Added: 0004650                          
+05-15-05 22:58 lool           Issue Monitored: lool                        
+05-15-05 22:59 lool           Note Added: 0004674                          
+06-09-05 14:04 GhePeU         Note Added: 0004980                          
+06-09-05 14:04 GhePeU         Issue Monitored: GhePeU                      
+06-09-05 14:10 GhePeU         Note Edited: 0004980                         
+01-13-06 00:18 rlrevell       Note Added: 0007600                          
+01-13-06 09:53 lool           Note Added: 0007634                          
 ======================================================================
 
 
