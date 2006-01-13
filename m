@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 14:33:30 +0100
-Message-ID: <67f205bf64021c2504849daa01da893c@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 14:53:19 +0100
+Message-ID: <a4d4672510c04608ccb4561b8b06b5aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D5D1121
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 14:33:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74F38128
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 14:53:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 14:33 CET
+Last Modified:              01-13-2006 14:53 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,20 +68,19 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- drfindley - 01-13-06 08:04 
-----------------------------------------------------------------------
-I also found this, I don't know if this helps.  It appears that there is
-some information on the Juli@ card that may be related.  Does anyone know
-the status of it?
-
-http://esiforum.com/show.asp?db=at&t=at1&mode=3&msg=967
-
-----------------------------------------------------------------------
  tiwai - 01-13-06 14:33 
 ----------------------------------------------------------------------
 The reason is that the patch defines a new driver name "Prodigy71LT". 
 Since its configuration Prodigy71LT.conf doesn't exist, it defaults to
 plughw.  Just add an alias in alias.conf should work.
+
+----------------------------------------------------------------------
+ tiwai - 01-13-06 14:53 
+----------------------------------------------------------------------
+The patch is merged to ALSA CVS now.  The configuration in alsa-lib is
+updated, too.
+
+Thanks for contribution!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -251,6 +252,9 @@ Hedgehog)
 01-13-06 07:58 drfindley      Note Added: 0007630                          
 01-13-06 08:04 drfindley      Note Added: 0007632                          
 01-13-06 14:33 tiwai          Note Added: 0007641                          
+01-13-06 14:53 tiwai          Status                   assigned => resolved
+01-13-06 14:53 tiwai          Resolution               open => fixed       
+01-13-06 14:53 tiwai          Note Added: 0007642                          
 ======================================================================
 
 
