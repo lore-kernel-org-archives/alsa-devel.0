@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 02:19:55 +0100
-Message-ID: <e85f00691a2ea01c92d702a60d4e5d1a@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 03:28:40 +0100
+Message-ID: <90e41daaafb2f9419b46cb8f73a25d8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6DA1117
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 02:19:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D94D9159
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 03:28:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 02:19 CET
+Last Modified:              01-13-2006 03:28 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,17 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- drfindley - 01-13-06 02:14 
-----------------------------------------------------------------------
-grep dmix /usr/share/alsa/cards/ICE1724.conf:
-# default with dmix & dsnoop
-                        strings [ "dmix:" $CARD ",FORMAT=S32_LE" ]
-
-
-I can't get any apps to work unless I set them to the default PCM.  Why
-does the hw:x, etc not work?
-
-----------------------------------------------------------------------
  rlrevell - 01-13-06 02:19 
 ----------------------------------------------------------------------
 Because the card only support S32_LE samples which no application uses, so
@@ -84,6 +73,12 @@ to play normal stuff it has to go through the plug layer.  Using "hw:x"
 bypasses that.
 
 It's a bug for applications to use hw:x directly.
+
+----------------------------------------------------------------------
+ drfindley - 01-13-06 03:28 
+----------------------------------------------------------------------
+I thought it was Dmix that allowed me to play multiple things through the
+sound card? if not, what can I do to resolve this issue?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -231,6 +226,7 @@ Hedgehog)
 01-13-06 02:03 rlrevell       Note Added: 0007613                          
 01-13-06 02:14 drfindley      Note Added: 0007614                          
 01-13-06 02:19 rlrevell       Note Added: 0007616                          
+01-13-06 03:28 drfindley      Note Added: 0007617                          
 ======================================================================
 
 
