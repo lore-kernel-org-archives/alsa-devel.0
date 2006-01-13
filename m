@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001658]: Capture happens only on one channel
-Date: Fri, 13 Jan 2006 17:46:37 +0100
-Message-ID: <a7c171bb82e4d2eaf32f18c5759e5b5e@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 17:51:07 +0100
+Message-ID: <b09f4ef75198ea998c320ada02349ff9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C88C11D
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 17:46:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76FAD11D
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 17:51:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-gentoo-r2
 ======================================================================
 Date Submitted:             12-18-2005 08:40 CET
-Last Modified:              01-13-2006 17:46 CET
+Last Modified:              01-13-2006 17:51 CET
 ======================================================================
 Summary:                    Capture happens only on one channel
 Description: 
@@ -49,13 +49,6 @@ channel OR the CD channel (amixer output attached), the captured sound is
 only one one channel (the right one) and is very distorted.
 The audio plays normally in stereo on the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- legluondunet - 01-13-06 17:12 
-----------------------------------------------------------------------
-Alsa.conf is part of the libasound/alsalib librairie. Did you tried to
-install another version of this librairie? I think the problem come from
-this librairie.
 
 ----------------------------------------------------------------------
  vsu - 01-13-06 17:46 
@@ -150,6 +143,11 @@ $ cat /proc/asound/card0/codec97#0/ac97#0-0+regs | grep 0:1a
 So it looks like the kernel driver and low-level mixer access in alsa-lib
 works correctly, but the simple mixer layer in alsa-lib is broken.
 
+----------------------------------------------------------------------
+ tiwai - 01-13-06 17:51 
+----------------------------------------------------------------------
+This should have been already fixed in the latest version.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -171,6 +169,8 @@ Date Modified  Username       Field                    Change
 01-13-06 14:29 Matthias KoenigNote Added: 0007640                          
 01-13-06 17:12 legluondunet   Note Added: 0007644                          
 01-13-06 17:46 vsu            Note Added: 0007645                          
+01-13-06 17:49 vsu            Issue Monitored: vsu                         
+01-13-06 17:51 tiwai          Note Added: 0007646                          
 ======================================================================
 
 
