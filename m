@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001658]: Capture happens only on one channel
-Date: Fri, 13 Jan 2006 18:17:57 +0100
-Message-ID: <fef8509a228b863b096209e919103249@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Fri, 13 Jan 2006 18:18:11 +0100
+Message-ID: <9a34e282af862519cab511d2fdc6eb57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AF25127
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 18:17:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24EB6127
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 18:18:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,112 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                phil_troin
-Assigned To:                
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1658
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r2
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             12-18-2005 08:40 CET
-Last Modified:              01-13-2006 18:17 CET
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              01-13-2006 18:18 CET
 ======================================================================
-Summary:                    Capture happens only on one channel
+Summary:                    module hangs at seemingly random times
 Description: 
-When I am playing a CD, if I capture the sound output via the capture
-channel OR the CD channel (amixer output attached), the captured sound is
-only one one channel (the right one) and is very distorted.
-The audio plays normally in stereo on the speakers.
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
+
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
+
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
+
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-13-06 17:51 
+ Raymond - 01-13-06 13:51 
 ----------------------------------------------------------------------
-This should have been already fixed in the latest version.
+Refer to au88x0_eqdata.c , there are 10 values for LeftGains and RightGains
+in auxxEqCoeffSet_t 
+
+diff -u -r1.1 au88x0_eq.h
+--- alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h	9 Mar 2004 11:52:13
+-0000	1.1
++++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h	13 Jan 2006 12:37:26
+-0000
+@@ -13,18 +13,18 @@
+ typedef struct {
+ 	u16 LeftCoefs[50];	//0x4
+ 	u16 RightCoefs[50];	// 0x68
+-	u16 LeftGains[20];	//0xd0
+-	u16 RightGains[20];	//0xe4
++	u16 LeftGains[10];	//0xd0
++	u16 RightGains[10];	//0xe4
+ } auxxEqCoeffSet_t;
 
 ----------------------------------------------------------------------
- vsu - 01-13-06 18:17 
+ tiwai - 01-13-06 18:18 
 ----------------------------------------------------------------------
-Yes, upgrading only alsa-lib to 1.0.11rc2 seems to fix this problem for me.
+FYI, I merged the patch above to ALSA CVS tree now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-18-05 08:40 phil_troin     New Issue                                    
-12-18-05 08:40 phil_troin     File Added: amixout                          
-12-18-05 08:40 phil_troin     Distribution              => Gentoo          
-12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
-12-18-05 12:00 linuxbear      Note Added: 0007071                          
-12-18-05 12:02 linuxbear      Note Edited: 0007071                         
-12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
-01-07-06 06:24 tgutwin        Note Added: 0007508                          
-01-07-06 06:25 tgutwin        Issue Monitored: tgutwin                     
-01-09-06 01:34 legluondunet   Note Added: 0007529                          
-01-09-06 01:35 legluondunet   File Added: alsa.conf.record1channel              
-     
-01-09-06 01:37 legluondunet   File Added: alsa.conf.ubuntu                    
-01-09-06 01:43 legluondunet   Note Added: 0007530                          
-01-13-06 02:17 rlrevell       Note Added: 0007615                          
-01-13-06 14:29 Matthias KoenigNote Added: 0007640                          
-01-13-06 17:12 legluondunet   Note Added: 0007644                          
-01-13-06 17:46 vsu            Note Added: 0007645                          
-01-13-06 17:49 vsu            Issue Monitored: vsu                         
-01-13-06 17:51 tiwai          Note Added: 0007646                          
-01-13-06 18:17 vsu            Note Added: 0007647                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
+01-13-06 18:18 tiwai          Note Added: 0007648                          
 ======================================================================
 
 
