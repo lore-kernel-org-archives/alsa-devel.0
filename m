@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001517]: No sound on hda-intel on Acer TravelMate 4061NLMi
-Date: Fri, 13 Jan 2006 11:37:33 +0100
-Message-ID: <8f74ca706758483200fe6ea4cdad4182@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Fri, 13 Jan 2006 13:51:16 +0100
+Message-ID: <c9d5cccb47fbdd60d76caae8e34c3bd7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09736121
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 11:37:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 448CD116
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 13:51:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1517> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                er-ku
-Assigned To:                tiwai
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1517
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12-9-686
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             10-31-2005 00:19 CET
-Last Modified:              01-13-2006 11:37 CET
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              01-13-2006 13:51 CET
 ======================================================================
-Summary:                    No sound on hda-intel on Acer TravelMate 4061NLMi
+Summary:                    module hangs at seemingly random times
 Description: 
-This will be very much like other reports around.
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-Just bought a new laptop and installed Ubuntu Linux on it, and updated it.
-Sound modules load silently, no complainments, alsamixer works and
-channels are unmuted, but I get absolutely no sound from speakers of
-headphones.
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
 
-I'm not the only one having this issue
-(http://ubuntuforums.org/showthread.php?p=450628), however, all the info I
-managed to google either didn't help me, or was simply unfinished (like
-forum questions that aren't answered).
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
 
-I tried the stock drivers provided by the Ubuntu kernel, then I tried
-1.0.10rc2, and cvs builds i made myself (created them as .debs though). In
-all cases the result was the same - absolute silence.
 
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001618 No Sound on Acer with Intel ICH6 HDA an...
-======================================================================
 
 ----------------------------------------------------------------------
- OnO - 01-13-06 01:07 
+ alien999999999 - 01-06-06 17:17 
 ----------------------------------------------------------------------
-yes, it is.
+nono, i had to fix other things to get it working, i'll attach patch
 
 ----------------------------------------------------------------------
- er-ku - 01-13-06 11:37 
+ Raymond - 01-13-06 13:51 
 ----------------------------------------------------------------------
-OnO: I think, 10ec:0260 isn't listed because it's not a PCI device, but a
-codec. I think, It's intended. :)
+Refer to au88x0_eqdata.c , there are 10 values for LeftGains and RightGains
+in auxxEqCoeffSet_t 
+
+diff -u -r1.1 au88x0_eq.h
+--- alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h	9 Mar 2004 11:52:13
+-0000	1.1
++++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h	13 Jan 2006 12:37:26
+-0000
+@@ -13,18 +13,18 @@
+ typedef struct {
+ 	u16 LeftCoefs[50];	//0x4
+ 	u16 RightCoefs[50];	// 0x68
+-	u16 LeftGains[20];	//0xd0
+-	u16 RightGains[20];	//0xe4
++	u16 LeftGains[10];	//0xd0
++	u16 RightGains[10];	//0xe4
+ } auxxEqCoeffSet_t;
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-05 00:19 er-ku          New Issue                                    
-10-31-05 00:19 er-ku          Distribution              => Ubuntu Breezy   
-10-31-05 00:19 er-ku          Kernel Version            => 2.6.12-9-686    
-10-31-05 00:21 er-ku          Issue Monitored: er-ku                       
-12-19-05 02:28 rlrevell       Note Added: 0007083                          
-12-24-05 03:28 OnO            Note Added: 0007139                          
-12-24-05 03:32 OnO            Note Added: 0007140                          
-12-26-05 17:06 er-ku          Note Added: 0007160                          
-12-26-05 17:07 er-ku          Note Edited: 0007160                         
-01-04-06 14:59 eudoxos        Issue Monitored: eudoxos                     
-01-06-06 17:22 morigane       Note Added: 0007489                          
-01-06-06 18:38 er-ku          Note Added: 0007492                          
-01-06-06 19:39 rlrevell       Note Added: 0007495                          
-01-06-06 19:46 er-ku          Note Added: 0007496                          
-01-06-06 19:56 morigane       Note Added: 0007497                          
-01-06-06 20:04 eudoxos        Note Added: 0007498                          
-01-07-06 17:19 OnO            Note Added: 0007517                          
-01-12-06 13:45 er-ku          Note Added: 0007585                          
-01-13-06 01:07 OnO            Note Added: 0007610                          
-01-13-06 01:11 rlrevell       Relationship added       has duplicate 0001618
-01-13-06 11:37 er-ku          Note Added: 0007638                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
 ======================================================================
 
 
