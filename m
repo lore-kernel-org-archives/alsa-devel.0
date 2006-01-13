@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 04:50:31 +0100
-Message-ID: <3fc3866594d96ac17cf5529cf547d94e@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 05:02:36 +0100
+Message-ID: <1387a8f7703976e2bc98bd037d5eadd4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCA36159
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 04:50:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E632C159
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 05:02:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 04:50 CET
+Last Modified:              01-13-2006 05:02 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,15 +66,19 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 04:47 
-----------------------------------------------------------------------
-And you *definitely* got rid of your .asoundrc?
-
-----------------------------------------------------------------------
  rlrevell - 01-13-06 04:50 
 ----------------------------------------------------------------------
 OK I see that you are using "-D dmix" which means you must still have the
 .asoundrc.  Get rid of it, and just use "aplay file.wav".
+
+----------------------------------------------------------------------
+ drfindley - 01-13-06 05:02 
+----------------------------------------------------------------------
+I'm sorry, the first part I tried w/o (just straight aplay, or aplay -D
+default) and I got only one media stream through.
+
+The second part (dmix) I thought dmix was a device I could choose, but I
+guess not.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -229,6 +233,7 @@ Hedgehog)
 01-13-06 04:32 drfindley      Note Added: 0007621                          
 01-13-06 04:47 rlrevell       Note Added: 0007622                          
 01-13-06 04:50 rlrevell       Note Added: 0007623                          
+01-13-06 05:02 drfindley      Note Added: 0007624                          
 ======================================================================
 
 
