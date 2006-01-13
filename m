@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 06:21:17 +0100
-Message-ID: <ef062c30da3cb2b31b6e293588ed7fbd@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 07:58:56 +0100
+Message-ID: <adfb1786a47b9948ca8f9b9e49c76ae7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42A5513A
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 06:21:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 797D2C7
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 07:58:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 06:21 CET
+Last Modified:              01-13-2006 07:58 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,20 +66,23 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 05:41 
-----------------------------------------------------------------------
-Ah I see the problem, it's using Aureon71.conf rather than ICE1724.conf.
-
-Try the uploaded patch.
-
-----------------------------------------------------------------------
  drfindley - 01-13-06 06:21 
 ----------------------------------------------------------------------
-I had actually mv'd the Aureon71.conf, and linked ICE to Aureon71.conf.
+I had actually mv'd the Aureon71.conf, and linked ICE1724.conf to
+Aureon71.conf.
 
 I just applyed the diff patch and rebooted, and still nothing.  Do I have
 to recompile the CVS for it to be applied? or can I just place it in the
 /usr/share/alsa/cards/ directory?
+
+
+
+----------------------------------------------------------------------
+ drfindley - 01-13-06 07:58 
+----------------------------------------------------------------------
+I've recompiled alsa after patching Aureon71.conf (just to check for
+multiple reasons), and nothing has changed.  Thanks for your help
+rlrevell.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -247,6 +250,8 @@ Hedgehog)
 01-13-06 05:46 rlrevell       File Deleted: aureon.diff                    
 01-13-06 05:46 rlrevell       File Added: aureon.diff                      
 01-13-06 06:21 drfindley      Note Added: 0007629                          
+01-13-06 06:21 drfindley      Note Edited: 0007629                         
+01-13-06 07:58 drfindley      Note Added: 0007630                          
 ======================================================================
 
 
