@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 05:04:53 +0100
-Message-ID: <e95bc250245c05c6fa2ff99a631b0028@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 05:11:31 +0100
+Message-ID: <cb97827045cec1f2aee7c262c5cd484d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8BE9159
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 05:04:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11137159
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 05:11:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 05:04 CET
+Last Modified:              01-13-2006 05:11 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,25 +66,19 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- drfindley - 01-13-06 05:04 
-----------------------------------------------------------------------
-I'm sorry, the first part I tried w/o (just straight aplay, or aplay -D
-default) and I got only one media stream through.
-
-all .asoundrc's are (and were) gone, as well as any asound stuff in my
-etc.
-
-The second part (dmix) I thought dmix was a device I could choose, but I
-guess not.
-
-
-
-----------------------------------------------------------------------
  rlrevell - 01-13-06 05:04 
 ----------------------------------------------------------------------
 Sorry, I have absolutely no idea why this is not working.  If the Prodigy
 7.1 is an ICE1724 device and /usr/share/alsa/cards/ICE1724.conf specifies
 dmix as the default device then it should just work.
+
+----------------------------------------------------------------------
+ rlrevell - 01-13-06 05:11 
+----------------------------------------------------------------------
+Make sure you are not running any sound servers like artsd or esd.
+
+Try this:  run "strace aplay -v file.wav" and "strace aplay -v file.wav"
+in two separate terminals and post the output.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -243,6 +237,7 @@ Hedgehog)
 01-13-06 05:03 drfindley      Note Edited: 0007624                         
 01-13-06 05:04 drfindley      Note Edited: 0007624                         
 01-13-06 05:04 rlrevell       Note Added: 0007625                          
+01-13-06 05:11 rlrevell       Note Added: 0007626                          
 ======================================================================
 
 
