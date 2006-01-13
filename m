@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001101]: [VIA 8237 with ALC850] gstreamer alsasink with default device does not work but with "device=hw:0" it does
-Date: Fri, 13 Jan 2006 09:54:04 +0100
-Message-ID: <5290c1f3b66ff99f6f5d988948df83ee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
+Date: Fri, 13 Jan 2006 10:06:36 +0100
+Message-ID: <7ac692b8d909ec505288e6115654b14f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9607710C
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 09:54:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E23413A
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 10:06:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1101> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                guido
+Assigned To:                sashak
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1101
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Issue ID:                   1694
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian "Sarge" with kernel and alsa from "SID"
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             05-11-2005 22:15 CEST
-Last Modified:              01-13-2006 09:54 CET
+Date Submitted:             12-29-2005 22:43 CET
+Last Modified:              01-13-2006 10:06 CET
 ======================================================================
-Summary:                    [VIA 8237 with ALC850] gstreamer alsasink with
-default device does not work but with "device=hw:0" it does
+Summary:                    snd-intel8x0m unable to initialize the Modem device
+ICH6
 Description: 
-The submitter of #305189 and an interlocutor have discovered that
-gstreaming to "alsasink" does not work but the same to "alsasink
-device=hw:0" does work.
+Dear Maintainer and Reader,
 
-Please see http://bugs.debian.org/305189 for the discussion which includes
-lots more detail.
+I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
+I found a lot of things recommended in different Mailing lists and blogs
+but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
+kernel Version 2.6.14 with source from Debian "SID".
+The current status is that two modules are loaded during boot,
+snd-intel8x0 and snd-intel8x0m. When both modules are loaded
+the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
+works fine.
+If I additionally load module snd-intel8x0m sound does not work anymore
+and error messages in syslog are printed.
+So I think the error messages are a buck in the snd-intel8x0m module.
+There is no /proc/asound/Modem present when I load the snd-intel8x0m
+module.
+
+In the "Additional Information" Section I paste some debugging output.
+
+Regards
+Guido
 ======================================================================
 
 ----------------------------------------------------------------------
- lool - 01-13-06 09:53 
+ sashak - 01-13-06 00:21 
 ----------------------------------------------------------------------
-Now it's hard to tell for gstreamer users, as upstream now queries the
-underlying hardware device via snd_pcm_info_get_subdevice() /
-snd_pcm_info_get_subdevice_name() and tries both the logical and the
-hardware device.
+This modem (CXT30) is unsupported and will not work.
 
-Would be nice to have a C test case.
+The only good result is that sound is ok.
 
 ----------------------------------------------------------------------
- lool - 01-13-06 09:54 
+ guido - 01-13-06 10:06 
 ----------------------------------------------------------------------
-(The GStreamer patch is
-http://svn.debian.org/wsvn/pkg-gstreamer/unstable/gst-plugins0.8/debian/patches/31_alsa-advanced-probing.patch?op=file&rev=0&sc=0
-)
+What gives you the Information that this is a CXT30 Modem?
+Or is ICH6 Modem controller and CXT30 the same?
+
+My lspci says that is a ICH6 Modem:
+
+lspci output:
+...
+0000:00:1e.2 Multimedia audio controller: Intel Corp.
+82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 04)
+0000:00:1e.3 Modem: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97
+Modem Controller (rev 04)
+...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-11-05 22:15 jdthood        New Issue                                    
-05-13-05 14:17 tiwai          Note Added: 0004645                          
-05-13-05 15:38 jdthood        Note Added: 0004650                          
-05-15-05 22:58 lool           Issue Monitored: lool                        
-05-15-05 22:59 lool           Note Added: 0004674                          
-06-09-05 14:04 GhePeU         Note Added: 0004980                          
-06-09-05 14:04 GhePeU         Issue Monitored: GhePeU                      
-06-09-05 14:10 GhePeU         Note Edited: 0004980                         
-01-13-06 00:18 rlrevell       Note Added: 0007600                          
-01-13-06 09:53 lool           Note Added: 0007634                          
-01-13-06 09:54 lool           Note Added: 0007635                          
+12-29-05 22:43 guido          New Issue                                    
+12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
+kernel and alsa from "SID"
+12-29-05 22:43 guido          Kernel Version            => 2.6.14          
+01-03-06 20:51 guido          Issue Monitored: guido                       
+01-07-06 01:56 sashak         Note Added: 0007501                          
+01-07-06 01:57 sashak         File Added: ich-cxt30amc-test.patch               
+    
+01-07-06 01:57 sashak         Note Added: 0007502                          
+01-12-06 23:39 guido          File Added: syslog                           
+01-12-06 23:40 guido          Note Added: 0007593                          
+01-12-06 23:43 guido          Note Edited: 0007593                         
+01-13-06 00:21 sashak         Note Added: 0007601                          
+01-13-06 10:06 guido          Note Added: 0007636                          
 ======================================================================
 
 
