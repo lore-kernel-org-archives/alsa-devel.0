@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
-Date: Fri, 13 Jan 2006 17:08:11 +0100
-Message-ID: <89e6f5a5da3bb6525beca854b4b36602@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001658]: Capture happens only on one channel
+Date: Fri, 13 Jan 2006 17:12:55 +0100
+Message-ID: <6f36e8725485bc5e00614bd75fe148b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 08E7F128
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 17:08:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0EC99117
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 17:12:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,97 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
 ======================================================================
-Reported By:                dvalin
-Assigned To:                Clemens Ladisch
+Reported By:                phil_troin
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1607
-Category:                   USB - usb-audio
+Issue ID:                   1658
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux (cooker)
-Kernel Version:             2.6.14.3 (vanilla)
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-gentoo-r2
 ======================================================================
-Date Submitted:             11-30-2005 16:44 CET
-Last Modified:              01-13-2006 17:08 CET
+Date Submitted:             12-18-2005 08:40 CET
+Last Modified:              01-13-2006 17:12 CET
 ======================================================================
-Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
-sample rates than 48000 and 96000
+Summary:                    Capture happens only on one channel
 Description: 
-This seems to be same bug as 1050 which seems to be resolved for Audigy 2
-NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
-Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
-the SB Audigy2 ZS pcmcia card).
-
-Also when changing sample rate to 48000 or 96000 the sound chops every now
-and then.
+When I am playing a CD, if I capture the sound output via the capture
+channel OR the CD channel (amixer output attached), the captured sound is
+only one one channel (the right one) and is very distorted.
+The audio plays normally in stereo on the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 01-13-06 09:12 
+ Matthias Koenig - 01-13-06 14:29 
 ----------------------------------------------------------------------
-Applied to CVS, thanks.
+I have the same symptoms on my system:
+Capturing Line, works only on channel 1, channel 2 is silent,
+although with some noise. 
+I figured out that switching the Mic Boost on changes (boosts) 
+the noisefloor of the silent channel 2.
+Some tests with a Microphone confirmed that channel 2 records always
+the Mic input, independently of any capture source settings in mixer.
+Switching Capture off in mixer does work (silence on both channels
+without noise). However, switching capture source is only effective 
+on channel 1. Channel 2 keeps listening to Mic input.
 
-Please show the output of "lsusb -v" (the "-b" was a typo, sorry).
+ALSA Versions tried:
+1.0.10rc3
+1.0.11rc2
+
+Kernel: Vanilla 2.6.15 on Debian/testing
+
+card 0: nForce2 [NVidia nForce2], device 0: Intel ICH [NVidia nForce2]
+
+0000:00:05.0 Multimedia audio controller: nVidia Corporation nForce Audio
+Processing Unit (rev a2)
+        Subsystem: EPoX Computer Co., Ltd.: Unknown device 1000
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        Memory at ef000000 (32-bit, non-prefetchable) [size=512K]
+        Capabilities: [44] Power Management version 2
+
+0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce2 AC97
+Audio Controler (MCP) (rev a1)
+        Subsystem: EPoX Computer Co., Ltd.: Unknown device 1000
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 193
+        I/O ports at d400 [size=256]
+        I/O ports at d800 [size=128]
+        Memory at ef081000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
 
 ----------------------------------------------------------------------
- dvalin - 01-13-06 17:08 
+ legluondunet - 01-13-06 17:12 
 ----------------------------------------------------------------------
-here ya go :)
+Alsa.conf is part of the libasound/alsalib librairie. Did you tried to
+install another version of this librairie? I think the problem come from
+this librairie.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-30-05 16:44 dvalin         New Issue                                    
-11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
-(cooker)
-11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
-11-30-05 17:07 dvalin         Note Added: 0006877                          
-11-30-05 17:07 dvalin         Note Deleted: 0006877                        
-11-30-05 17:07 dvalin         File Added:
-alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
-11-30-05 17:08 dvalin         Note Added: 0006878                          
-11-30-05 17:09 dvalin         Note Edited: 0006878                         
-11-30-05 17:22 dvalin         Note Edited: 0006878                         
-12-01-05 03:13 dvalin         Note Added: 0006882                          
-12-01-05 16:58 Clemens LadischNote Added: 0006886                          
-12-01-05 18:15 dvalin         Note Added: 0006887                          
-12-06-05 07:36 dvalin         Note Added: 0006920                          
-12-11-05 19:05 dvalin         Note Added: 0006977                          
-12-11-05 20:20 rlrevell       Note Added: 0006979                          
-12-11-05 22:34 dvalin         Note Added: 0006980                          
-01-05-06 19:12 dvalin         Note Added: 0007472                          
-01-13-06 09:12 Clemens LadischNote Added: 0007633                          
-01-13-06 17:07 dvalin         File Added: lsusb-audigy.txt                    
-01-13-06 17:08 dvalin         Note Added: 0007643                          
+12-18-05 08:40 phil_troin     New Issue                                    
+12-18-05 08:40 phil_troin     File Added: amixout                          
+12-18-05 08:40 phil_troin     Distribution              => Gentoo          
+12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
+12-18-05 12:00 linuxbear      Note Added: 0007071                          
+12-18-05 12:02 linuxbear      Note Edited: 0007071                         
+12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
+01-07-06 06:24 tgutwin        Note Added: 0007508                          
+01-07-06 06:25 tgutwin        Issue Monitored: tgutwin                     
+01-09-06 01:34 legluondunet   Note Added: 0007529                          
+01-09-06 01:35 legluondunet   File Added: alsa.conf.record1channel              
+     
+01-09-06 01:37 legluondunet   File Added: alsa.conf.ubuntu                    
+01-09-06 01:43 legluondunet   Note Added: 0007530                          
+01-13-06 02:17 rlrevell       Note Added: 0007615                          
+01-13-06 14:29 Matthias KoenigNote Added: 0007640                          
+01-13-06 17:12 legluondunet   Note Added: 0007644                          
 ======================================================================
 
 
