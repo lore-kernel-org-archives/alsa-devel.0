@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
-Date: Sat, 14 Jan 2006 00:15:38 +0100
-Message-ID: <7f2ccb31251dffe6f4dc91c65734a118@bugtrack.alsa-project.org>
+Date: Sat, 14 Jan 2006 00:28:42 +0100
+Message-ID: <378773d59279f5c2810991e2b91d9968@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75A4712A
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 00:15:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A18B12A
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 00:28:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo linux
 Kernel Version:             2.6.14-archck-r7
 ======================================================================
 Date Submitted:             01-13-2006 22:16 CET
-Last Modified:              01-14-2006 00:15 CET
+Last Modified:              01-14-2006 00:28 CET
 ======================================================================
 Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
 chanel work and sound is quick...
@@ -71,6 +71,26 @@ restart snd-pcm-oss.
 
 This issue might come up again, but I'm not rebooting till I find out.
 
+----------------------------------------------------------------------
+ robertdavid - 01-14-06 00:28 
+----------------------------------------------------------------------
+I have also make a progress,,
+in alsa mizer set up 'Multi Track Rate Locking' false 
+than set up 41000 sample rate and it becames paly nearly normal,
+I could say NEARLY becasuse I check the timings of music and find out that
+one minute of song last 1:05 min. but it is better than one minute in
+30-40sec...
+
+Next I made the front channel play, but very silent, I have to turn my AMP
+up very much to produce normal sound...
+
+Didnt get to play more than 2 channels of 5.1 chanel wideo, H.P. line is
+downmixed so If i use head phones or plug front speakers to H.P. line it
+is OK (you should hear the woices etc.)
+chanel 1,2 play but only true, silent stereo (in movie play only 2
+chanels, so no voices etc.)
+I still never heard any sound of 3-6 channel (rear,SW,C)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +99,8 @@ Date Modified  Username       Field                    Change
 01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
 01-14-06 00:13 drfindley      File Added: asound.state                     
 01-14-06 00:15 drfindley      Note Added: 0007650                          
+01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
+01-14-06 00:28 robertdavid    Note Added: 0007651                          
 ======================================================================
 
 
