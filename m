@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001611]: PCM to spdif blocked(any AC95), mic to spdif (in ALC650/655/850)
-Date: Fri, 13 Jan 2006 01:09:51 +0100
-Message-ID: <d60e0d453e1269971166a3b0b4d4c8db@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Fri, 13 Jan 2006 01:11:08 +0100
+Message-ID: <8603c80c62f798288b8de2df773dfd10@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 482B713A
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 01:09:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD3E4159
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 01:11:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,308 +22,880 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as DUPLICATE OF issue 0001517.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1611> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                psa
-Assigned To:                
+Reported By:                robertw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1611
-Category:                   PCI - via82xx
+Issue ID:                   1618
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             12-02-2005 16:49 CET
-Last Modified:              01-13-2006 01:09 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              01-12-2006 21:04 CET
 ======================================================================
-Summary:                    PCM to spdif blocked(any AC95), mic to spdif (in
-ALC650/655/850)
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-After transition 1.0.9b -> 1.0.10 PCM output (or 'Analig In', if ADC ->
-spdif supported) can't be directed to spdif output. Caused by a feature
-bug in via82xx-driver. Driver now enables spdif out only if IEC958
-Playback AC97-SPSA dxs3 (slot 10/11 reserved for non PCM like ac3) is
-selected. This is obviously done with the assumtion that if user program
-wants to send something to spdif it uses dxs3 and/or with the assumption
-that only non PCM strams can be directed to spdif port. However both of
-these assumtions are too restrictive. Even further these assumprions
-ignore the fact that several ac97 chips (like ALC650) can direct ADC
-output (originaly intended for capture) to spdif output; and some chips
-(e.g. ALC655/850) can direct spdif input directly to spdif output.
-
-However many ordinary sound programs (like internet radio) have no control
-on which dxs they direct their output. They put PCM (stereo or prologic)
-to standard stereo output which is dxs0 (slot 3/4). In the other end of
-the spdif cable there can be all kind of hardware, including amplifiers
-that can take several formats including standard PCM. In makes perfect
-sense to direct dxs0 to such spdif devices. Also since, although slots
-have certain standard usages, user software is free to use them as they
-wish, there is no reason to restrict the slot selection.
-
-In addition dxs selection is of no relevance when spdif out signal is
-taken from ADC or spdif input. Yet it should be possible to enable spdif
-output.
-
-The first restriction is implemented in the code in pci/via82xx.c in
-snd_via8233_playback_prepare():
-
-        if (chip->spdif_on && viadev->reg_offset == 0x30)
-                snd_ac97_set_rate(chip->ac97, AC97_SPDIF, runtime->rate);
-
-where reg_offset 0x30 is the offset of DXS3. snd_ac97_set_rate() again is
-the place (only place as far as I can see) spdif output is enabled. The
-second restriction is implemeted by the fact that 'IEC958 Output'-swicth
-does not enable spdif output. It only  sets '->spdif_on'. This all means
-that spdif output is anabled only if user software is started with
-spdif_on set (by 'IEC958 Output'-swicth). E.g can't do the following: Set
-'Capture Source' select to Mic, redirect ADC (Analog In) to spdif output,
-set 'IEC958 Output'-swicth (, select DXS0). Now you should here microphone
-trouhg you external amplifier connected by spdif even if no software is
-running. No can do.
-
-Suggested fix:
-
-The first restriction is simply removed by removin the second condition in
-the if-statement:
-
-        if (chip->spdif_on)
-                snd_ac97_set_rate(chip->ac97, AC97_SPDIF, runtime->rate);
-
-The second restriction is removed by adding to
-snd_via8233_dxs3_spdif_put() enbaling/disabling spdif output.
-
-In addition it suggested that in case ac97 chip supports directing ADC to
-spdif output (like ALC650/655/850), in pci/ac97/ac97_patch.c in
-appropriate *_patch a ADC source select is added on the playback side
-(kind of duplicating 'Capture Source') since this select is used also to
-select spdif output in case ADC is directed to spdif output, and is thus a
-'playback'-mixer-control.
-
-Diffs are included. Note that snd_via8233_dxs3_spdif_*:s have been changed
-to snd_via8233_spdif_*:s since they are no more specific to dxs3. There is
-also a diff for adding the mixer control descriped above for ALC850 as an
-exsample.
-
-In setting available for me everything seems to work fine above
-restrictions removed.
-
-via82xx diff enclosed.
-
-ac97_patch diff:
------------------------------------------------------------------------------
-
-*** pci/ac97/ac97_patch.c.myorg Thu Nov 24 19:22:05 2005
---- pci/ac97/ac97_patch.c       Sun Nov 27 23:22:48 2005
-***************
-*** 2106,2111 ****
---- 2106,2115 ----
-                                     0);
-  }
-
-+ static const char *alc655_rec_sel[] = { "Mic", "CD", "Mute", "Aux",
-"Line", "Mix", "Mono Mix", "Phone"};
-+
-+ static const struct ac97_enum alc655_enum =
-AC97_ENUM_DOUBLE(AC97_REC_SEL, 8,
-0, 8, alc655_rec_sel);
-+
-  static const snd_kcontrol_new_t snd_ac97_spdif_controls_alc655[] = {
-          AC97_PAGE_SINGLE(SNDRV_CTL_NAME_IEC958("",CAPTURE,SWITCH),
-AC97_ALC650_MULTICH, 11, 1, 0, 0),
-        /* disable this controls since it doesn't work as expected */
-***************
-*** 2117,2122 ****
---- 2121,2127 ----
-                .get    = alc655_iec958_route_get,
-                .put    = alc655_iec958_route_put,
-        },
-+       AC97_ENUM(SNDRV_CTL_NAME_IEC958("Analog ",PLAYBACK,NONE),
-alc655_enum),
-  };
-
-  static int patch_alc655_specific(ac97_t * ac97)
----------------------------------------------------------------------------
-
-
-
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- psa - 12-09-05 00:15 
+ jwoithe - 12-05-05 07:12 
 ----------------------------------------------------------------------
-> Please read my comment carefully before emotional reaction.
+This sounds exactly like what I saw with a Fujitsu S7020 laptop earlier
+this year.  The ALC260 sound chip has about a dozen identical audio I/O
+pins which are somewhat arbitarily labeled as "CD" and "Line" (etc) by the
+manufacturer.  While some system integrators go along with these labels,
+others do not.  To fix the problem one must deduce which chip pins are
+physically connected to the various I/O plugs on the laptop and then
+define a mapping for that laptop in patch_realtek.c.  Once this is done
+alsa mixer application (alsamixer for example) will do the right thing.
 
-Sorry if seemd emotional or personal!
+I went through this process by trial and error for the S7020 earlier this
+year.  Essentially I defined a large number of mixer controls and hooked
+one to each of the output widgets on the ALC260 (having the ALC260
+datasheet is very helpful here).  When the resulting driver was loaded I
+then used alsamixer to work out what each control/widget did (if
+anything).  Finally I used the resultant information to define mixer
+layout and initialisation details for the S7020.
+  
+There may be a better (streamlined) way of doing this but the above was
+quick and worked for me.  Takashi may well have an easier way. :)
 
-> "spdif" PCM implies the I/O from/to SPDIF _and_ the formats accepted by
-> _hardware_. In your case, it's S16_LE 2channels. It's quite hardware
-specific, 
-> not per SPDIF definition. Ditto for "surround51". It routes to analog
-5.1
-> outputs _and_ restricts the hardware configuration that the hardware
-accepts.
-> OK? (Also, I didn't mention about slots anywhere.)
-
-> It's fine to allow the SPDIF-output with the "default" PCM output. But,
-it's
-> not mandatory. Instead, "spdif" PCM assures to output to SPDIF even
-with
-> non-audio data. For the "default" PCM, usually the concurrent access/mix
-is
-> allowed, so it's not suitable for non-audio data.
-
-Hm! So only situation for a software to use "spdif" would be when it's not
-stuff suitable for a DAC. Is that correct? If so that's exactly what my
-complaint was about: "spdif" is wrong name for this, because it does not
-imply non-audio (I assume you mean non audio PCM), "nonaudio" would be
-much better. Is "spdif" used with ac3? The point is that hardware might
-have many other ways to deal with non-audio-PCM than spdif output (e.g
-build in decoder).
-
-> About the mixer: You think obviously that the sound system consists of
-only a
-> kernel driver. No, we have a user-space layer to mangle many things. The
-mixer 
-> is indeed a part of alsa-lib stuff.
-
-No! It would be nice though to have fully fledged software mixer that
-would normally reside between any sound producing software and kernel.
-However it should be optional systems setting. But as far I know that is
-not currently part of ALSA architechture. Or is there such software? I
-guess it would have two parts, controls inside the alsa-library that would
-notify mixer (like alsamixer) the same way as driver, and the driver.
-Still it would be silly not to use to the full the cababilities offered by
-the hardware (through the driver) even in such a setting.
-
-> About the SPDIF output sample rate: It's PRSR bits of register 3A.
-You'll find 
-> that only limited sample rates are available for SPIDF out with AC97
-codecs.
-
-I assume you mean SPSR. That is the rate(s) accepted by spdif transmitter.
-This is totally besides the poin I was making! I was suggesting using MX2A
-VCFG, SPCV and MX3A 15:0.
-
-> Anyway, the further argument is pretty useless. Let's stop it. If you
-want to > continue, please post it to alsa-devel ML instead of the bug
-report.
-
-How do I do that? Can you answer by e-mail?
-Point has not been to argue, but understand what you mean. Hopefully you
-have tryed to understand what I mean.
-
-> Now, let's revise the possible improvements.
-> For the SPDIF output on VIA823x, we have the following capabilities:
-
-> - DXS3 dedicated for SPDIF
-
->  The merit is that you can play still 3 DXS analog streams
-independently
-> without signal mix. That is, you can avoid dmix and still use SPDIF
-safely
-> even with non-audio data. The demerit is that DXS output is fixed to
-48kHz
-> (it does SRC by itself). (So, basically, it's a bug to call
-> snd_ac97_set_rate(AC97_SPDIF) in snd_via8233_playback_rate. It has to
-be
-> fixed...)
-
-This is true up to 6 channel PCM, but not in 8 channel (supported by
-ALC850).
-
->  We can set SPDIF slots 3&4 as default for the concurrent output, and
-disable > DXS3 unless the "spdif" PCM is opened. The slot assigment can be
-then changed > automatically to 10&11 when "spdif" PCM is opened (via
-VIA8233.conf).
-
-Again must somehow accord 8 channel output where 10&11 is used for back
-surround.
-
-> - Multi-channel stream for both analog and SPDIF with slot 3&4
->
->  The merit is that it allows you non-48k (32k and 44.1k), too. However,
-> multi-channel stream is exclusive. That is, no DXS is possible. In
-addition,
-> we'll need a mechanism to shut up the analog output automatically in the
-case
-> of non-audio data by checking the SPDIF status bits.
-
-Here I might be ignorant, but doesn't multi-channel mean using more than
-one slot pair for more than two channels? And what I have understood of
-the AC97 specs, rate can be set separately for each slot pair (provided
-codec chip supports it). Why wouldn't it be possible to have let's say 6
-channel audio through slots 3&4, 7&8, 6&9 with 44.1 to DACs, while putting
-10&11 to spdif with 48. And as far as I understand you can put only one
-slot pair to spdif transmitter. Though I have used for testing a setting
-where in 6 channel mode surround channels were direceted to spdif (and
-it's not totally unthinkable that in 4 channel mode analog output is used
-for front speakers and spdif output for surround speakers ;-)
-
-I guess here we hit the rate mess inherent in the AC97 specs. In that I
-see two possible strategies:
-
-1. when initializing the hardware, all the possible compinations mapped
-somehow. This map is then used to limit what user can do whit
-first-come-firs-seved pronciple.
-
-2. Every time there is an attemted to change a rate or routing, it is
-tested whether the resulting configutation is allowed. If not change is
-denied.
-
-Also I think the the ioctl should fail. Now it seems, if some change is
-not allowed, it is just silently ignored.
-
-This migh require quite total overhaul of the driver (at leat the AC97
-part).
-I migh be willing to look at it, and make some suggestions, if you so
-want.
-However if your first responce is going to be that what I'm suggesting is
-all wrong (instead trying to find out what I mean in case it's unclear) I
-won't bother.
-
-> To my eyes, the first one looks simplier.
-
-If choice must be made, I agree. Really what ever makes the two spdif
-switches "Playback" and "Output" to merge in to one, and allow ordinary
-PCM to be routed to spdif (with some rate control), is OK as far as I'm
-concerned. That's what it has been all about from my point of view.
-Basically: good defaults but maximal (sensible) freedom to human user.
-
-It would be greatly appriciated if would answer my sincere questions (in
-this and previous notes). They are there because I don't know the answers
-(not to argue). I would help me to be more usefull.
-
-This will be my last unsolicited note on this ID.
+If you want more details contact me via the ALSA mailing list.
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 01:09 
+ timmy - 12-05-05 19:35 
 ----------------------------------------------------------------------
-What's the status of this, in 20 words or less?  Is it a bug, or multiple
-bugs, or what?
+I have exactly the same problem, with an Acer Travelmate 4064WLMi,
+unfortunately. I even tried with the driver Realtek have, with no luck.
+
+----------------------------------------------------------------------
+ tiwai - 12-06-05 15:52 
+----------------------------------------------------------------------
+Could you try the latest ALSA CVS version?
+
+----------------------------------------------------------------------
+ robertw - 12-06-05 18:10 
+----------------------------------------------------------------------
+I tried the cvs version right after your notice, but I ran into
+kernel-error
+
+Dec  6 16:38:40 localhost kernel: [4294943.513000] ACPI: PCI Interrupt
+0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 16
+Dec  6 16:38:40 localhost kernel: [4294943.633000] e03de3e7
+Dec  6 16:38:40 localhost kernel: [4294943.633000] Modules linked in:
+snd_hda_intel snd_hda_codec snd_pcm_oss snd_mixer_oss snd_pcm snd_timer
+snd soundcore snd_page_alloc rfcomm l2cap bluetooth speedstep_centrino
+cpufreq_userspace cpufreq_stats freq_table cpufreq_powersave
+cpufreq_ondemand cpufreq_conservative pcmcia yenta_socket rsrc_nonstatic
+pcmcia_core video tc1100_wmi sony_acpi pcc_acpi hotkey dev_acpi
+i2c_acpi_ec button battery container ac ipv6 af_packet dm_mod joydev tsdev
+evdev eeprom i2c_sensor i2c_i801 i2c_core psmouse mousedev parport_pc lp
+parport md ext3 jbd mbcache thermal processor fan 8139too 8139cp mii
+ehci_hcd uhci_hcd usbcore ide_cd cdrom ide_disk ide_generic piix ide_core
+unix vesafb capability commoncap vga16fb vgastate softcursor cfbimgblt
+cfbfillrect
+cfbcopyarea fbcon tileblit font bitblit
+Dec  6 16:38:40 localhost kernel: [4294943.633000] CPU:    0
+Dec  6 16:38:40 localhost kernel: [4294943.633000] EIP:   
+0060:[pg0+537064423/1069872128]    Not tainted VLI
+Dec  6 16:38:40 localhost kernel: [4294943.633000] EFLAGS: 00010206  
+(2.6.12-10-686)
+Dec  6 16:38:40 localhost kernel: [4294943.633000] EIP is at
+alc_build_pcms+0xb7/0xf0 [snd_hda_codec]
+Dec  6 16:38:40 localhost kernel: [4294943.633000] eax: 00000000   ebx:
+d1e97400   ecx: 0000000c   edx: 00000000
+Dec  6 16:38:40 localhost kernel: [4294943.633000] esi: 00000000   edi:
+d1e974ec   ebp: d1e974e8   esp: ce07fe68
+Dec  6 16:38:40 localhost kernel: [4294943.633000] ds: 007b   es: 007b  
+ss: 0068
+Dec  6 16:38:40 localhost kernel: [4294943.633000] Process modprobe (pid:
+6738, threadinfo=ce07e000 task=dc91aa20)
+Dec  6 16:38:40 localhost kernel: [4294943.633000] Stack: 00000000
+00000000 dc8a14c0 df5f1800 dc8a14c8 e03db86e dc8a14c0 00000001
+Dec  6 16:38:40 localhost kernel: [4294943.633000]        00000000
+df4f179c df4f1780 00000000 cfa07400 df5f1800 00000000 e0375046
+Dec  6 16:38:40 localhost kernel: [4294943.633000]        df4f1780
+e0374140 e0374270 00000000 00000001 00000000 cfa07400 df5f1800
+Dec  6 16:38:40 localhost kernel: [4294943.633000] Call Trace:
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pg0+537053294/1069872128] snd_hda_build_pcms+0x3e/0xc0 [snd_hda_codec]
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pg0+536633414/1069872128] azx_pcm_create+0x16/0x1b0 [snd_hda_intel]
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pg0+536629568/1069872128] azx_send_cmd+0x0/0x80 [snd_hda_intel]
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pg0+536629872/1069872128] azx_get_response+0x0/0x90 [snd_hda_intel]
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pg0+536635871/1069872128] azx_probe+0x8f/0x100 [snd_hda_intel]
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pci_device_probe_static+82/111] pci_device_probe_static+0x52/0x6f
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[__pci_device_probe+59/78] __pci_device_probe+0x3b/0x4e
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pci_device_probe+44/86] pci_device_probe+0x2c/0x56
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[driver_probe_device+47/122] driver_probe_device+0x2f/0x7a
+Dec  6 16:38:40 localhost kernel: [4294943.633000]  [driver_attach+77/140]
+driver_attach+0x4d/0x8c
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[bus_add_driver+152/217] bus_add_driver+0x98/0xd9
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pci_register_driver+101/131] pci_register_driver+0x65/0x83
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[pg0+535519247/1069872128] alsa_card_azx_init+0xf/0x11 [snd_hda_intel]
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[sys_init_module+286/412] sys_init_module+0x11e/0x19c
+Dec  6 16:38:40 localhost kernel: [4294943.633000] 
+[sysenter_past_esp+84/117] sysenter_past_esp+0x54/0x75
+Dec  6 16:38:40 localhost kernel: [4294943.633000] Code: 07 66 83 7b 64 00
+74 4a 8b 44 24 18 83 c5 68 ff 40 44 8b 43 3c 89 45 00 66 83 7b 52 00 74 16
+fc 8b 73 40 b9 0c 00 00 00 8d 7d 04 <f3> a5 0f b7 43 52 66 89 45 10 66 83
+7b 64 00 74 16 fc 8b 73 44
+
+----------------------------------------------------------------------
+ tiwai - 12-06-05 20:07 
+----------------------------------------------------------------------
+Try the attached patch (right now committed to CVS).
+
+----------------------------------------------------------------------
+ tiwai - 12-06-05 20:09 
+----------------------------------------------------------------------
+Also, if the Oops is gone, please upload the contents of
+/proc/asound/card0/codec#* files, together with /etc/asound.state after
+running "alsactl store".
+
+----------------------------------------------------------------------
+ robertw - 12-06-05 22:51 
+----------------------------------------------------------------------
+I got the oops again ..
+
+Here the data from the 1.0.10-release
+
+/proc/asound/card0/codec#0:
+
+Codec: Realtek ALC260
+Address: 0
+Vendor Id: 0x10ec0260
+Subsystem Id: 0x1025160d
+Revision Id: 0x100400
+Default PCM: rates 0x560, bits 0x0e, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x02 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x03 [Audio Output] wcaps 0x211: Stereo Digital
+  PCM: rates 0x560, bits 0x1e, types 0x1
+Node 0x04 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
+  Amp-In vals:  [0x23 0x23] [0x23 0x23] [0x23 0x23] [0x23 0x23] [0x23
+0x23] [0x23 0x23] [0x23 0x23]
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 7
+     0x12 0x13 0x14* 0x15 0x16 0x0f 0x10
+Node 0x05 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x23, stepsize=0x03, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 8
+     0x12 0x13 0x14* 0x15 0x16 0x07 0x0f 0x10
+Node 0x06 [Audio Input] wcaps 0x100391: Stereo Digital
+  PCM: rates 0x160, bits 0x1e, types 0x1
+  Connection: 1
+     0x19
+Node 0x07 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x23, nsteps=0x41, stepsize=0x03, mute=1
+  Amp-In vals:  [0x18 0x18] [0x41 0x41] [0x41 0x41] [0xa3 0xa3] [0x41
+0x41] [0x41 0x41] [0xa3 0xa3] [0xa3 0xa3]
+  Connection: 8
+     0x12 0x13 0x14 0x15 0x16 0x17 0x0f 0x10
+Node 0x08 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x40 0x40]
+  Connection: 2
+     0x02 0x07
+Node 0x09 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x40 0x40]
+  Connection: 2
+     0x02 0x07
+Node 0x0a [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80] [0x80]
+  Amp-Out caps: ofs=0x23, nsteps=0x41, stepsize=0x03, mute=0
+  Amp-Out vals:  [0x3c]
+  Connection: 2
+     0x02 0x07
+Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x08* 0x09
+Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x08* 0x09
+Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x08* 0x09
+Node 0x0e [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x08* 0x09
+Node 0x0f [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x081003f: IN OUT HP
+  Pin Default 0x0121111f: [Jack] HP Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x08
+Node 0x10 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x081003f: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x09
+Node 0x11 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00]
+  Pincap 0x0810: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0a
+Node 0x12 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08133f: IN OUT HP
+  Pin Default 0x01a19932: [Jack] Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x0b
+Node 0x13 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08133f: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x0c
+Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08133f: IN OUT HP
+  Pin Default 0x01813130: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x0d
+Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x08133f: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0e
+Node 0x16 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+Node 0x17 [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0xb7830131: [Fixed] Line In at Oth Mobile-In
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x18 [Pin Complex] wcaps 0x400380: Mono Digital
+  Pincap 0x0814: OUT
+  Pin Default 0xb7430120: [Fixed] SPDIF Out at Oth Mobile-In
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x03
+Node 0x19 [Pin Complex] wcaps 0x400280: Mono Digital
+  Pincap 0x0824: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+Node 0x1a [Vendor Defined Widget] wcaps 0xf00040: Mono
+Node 0x1b [Volume Knob Widget] wcaps 0x600080: Mono
+
+/proc/asound/card0/codec#1
+
+Codec: Generic 14f1 ID 2bfa
+Address: 1
+Vendor Id: 0x14f12bfa
+Subsystem Id: 0x1025008f
+Revision Id: 0x90000
+
+/etc/asound.state
+
+state.Intel {
+        control.1 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 64'
+                iface MIXER
+                name 'Front Playback Volume'
+                value.0 64
+                value.1 64
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Front Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 65'
+                iface MIXER
+                name 'CD Playback Volume'
+                value.0 65
+                value.1 65
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'CD Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 65'
+                iface MIXER
+                name 'Line Playback Volume'
+                value.0 65
+                value.1 65
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Line Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.7 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 65'
+                iface MIXER
+                name 'Mic Playback Volume'
+                value.0 24
+                value.1 24
+        }
+        control.8 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Mic Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.9 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 65'
+                iface MIXER
+                name 'Front Mic Playback Volume'
+                value.0 65
+                value.1 65
+        }
+        control.10 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Front Mic Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.11 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 65'
+                iface MIXER
+                name 'PC Speaker Playback Volume'
+                value.0 65
+                value.1 65
+        }
+        control.12 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'PC Speaker Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.13 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 64'
+                iface MIXER
+                name 'Headphone Playback Volume'
+                value.0 64
+                value.1 64
+        }
+        control.14 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Headphone Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.15 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 65'
+                iface MIXER
+                name 'Mono Playback Volume'
+                value 60
+        }
+        control.16 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mono Playback Switch'
+                value true
+        }
+        control.17 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 35'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 35
+                value.1 35
+        }
+        control.18 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 true
+                value.1 true
+        }
+        control.19 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 Mic
+                comment.item.1 'Front Mic'
+                comment.item.2 Line
+                comment.item.3 CD
+                iface MIXER
+                name 'Capture Source'
+                value Mic
+        }
+        control.20 {
+                comment.access 'read write user'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 255'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 255
+                value.1 255
+        }
+}
+
+----------------------------------------------------------------------
+ tiwai - 12-07-05 14:59 
+----------------------------------------------------------------------
+How about the attached additional patch?  Please build with
+--with-debug=full configure option for debugging.
+
+----------------------------------------------------------------------
+ robertw - 12-07-05 23:10 
+----------------------------------------------------------------------
+I tried again the cvs-version of ~ 20:00 CET. This time the module behaves
+fine. This time two cards showed up, one analog and one digital. Alsamixer
+changed a bit:
+
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 64
+  Front Left: Playback 64 [100%] [on]
+  Front Right: Playback 64 [100%] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Front Left: Playback 255 [100%]
+  Front Right: Playback 255 [100%]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 65
+  Front Left: Playback 65 [100%] [on]
+  Front Right: Playback 65 [100%] [on]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 65
+  Front Left: Playback 24 [37%] [on]
+  Front Right: Playback 24 [37%] [on]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 35
+  Front Left: Capture 35 [100%] [on]
+  Front Right: Capture 35 [100%] [on]
+Simple mixer control 'Capture',1
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 35
+  Front Left: Capture 0 [0%] [on]
+  Front Right: Capture 0 [0%] [on]
+Simple mixer control 'Input Source',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Input Source',1
+  Capabilities:
+  Mono:
+
+aplay can play a file, but no output. With your second patch applied
+against this cvs-version, everything is the same, but aplay couldn't play
+anything:
+
+$ aplay test.wav
+ALSA lib pcm_dmix.c:802:(snd_pcm_dmix_open) unable to open slave
+aplay: main:533: audio open error: Invalid argument
+
+dmesg says:
+
+Dec  7 23:04:23 localhost kernel: [4334412.498000] ALSA
+/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3024:
+hda_codec: Unknown model for ALC260
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536786703/1069872128] snd_pcm_hw_constraints_complete+0x2af/0x3a0
+[snd_pcm]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536787479/1069872128] snd_pcm_open_file+0xd7/0x190 [snd_pcm]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536788024/1069872128] snd_pcm_open+0xe8/0x160 [snd_pcm]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[default_wake_function+0/18] default_wake_function+0x0/0x12
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [cdev_get+43/92]
+cdev_get+0x2b/0x5c
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536787718/1069872128] snd_pcm_playback_open+0x36/0x40 [snd_pcm]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536564094/1069872128] snd_open+0x7e/0x1a0 [snd]
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[pg0+536563968/1069872128] snd_open+0x0/0x1a0 [snd]
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [chrdev_open+141/326]
+chrdev_open+0x8d/0x146
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [dentry_open+411/511]
+dentry_open+0x19b/0x1ff
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [filp_open+92/97]
+filp_open+0x5c/0x61
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [get_unused_fd+35/176]
+get_unused_fd+0x23/0xb0
+Dec  7 23:04:27 localhost kernel: [4334416.735000]  [sys_open+91/255]
+sys_open+0x5b/0xff
+Dec  7 23:04:27 localhost kernel: [4334416.735000] 
+[sysenter_past_esp+84/117] sysenter_past_esp+0x54/0x75
+
+The first line is also present with the plain cvs-version
+
+You could also contact me more directly: robert@xenim.de (mail & jabber)
+
+----------------------------------------------------------------------
+ tiwai - 12-08-05 17:19 
+----------------------------------------------------------------------
+The line number in dmesg doesn't match with my code, so your code is likely
+still older than mine.  Could you update the CVS tree?
+
+Also, please upload the codec and asound.state files instead of pasting
+them.
+
+----------------------------------------------------------------------
+ robertw - 12-08-05 22:05 
+----------------------------------------------------------------------
+the Files uploaded now are from the current cvs-build.
+
+dmesg still says:
+[4300337.794000] ALSA
+/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3029:
+hda_codec: Unknown model for ALC260
+
+----------------------------------------------------------------------
+ tiwai - 12-09-05 15:09 
+----------------------------------------------------------------------
+OK, then you still have no sound, right?  What outputs do your device have?
+ Did you get the same kernel error messages?
+
+The internal speaker and headphone jack?
+
+----------------------------------------------------------------------
+ robertw - 12-09-05 16:35 
+----------------------------------------------------------------------
+I have two build-in speakers (for stereo), headphone, microphone, and a
+line-in jack. All these jacks are at the front.
+
+This is exactly the notebook I have:
+http://www.mediaonline.de/shop/product_5000_5000_-3_141114
+
+The kernel does only say the one line about "unknown model".
+
+And yes, I can still hear nothing.
+
+----------------------------------------------------------------------
+ tiwai - 12-09-05 17:03 
+----------------------------------------------------------------------
+Which output did you check?  From the codec dump, the only available output
+is only the headphone.
+For testing, run "aplay -vv foo.wav" and see whether VU meter works.
+
+----------------------------------------------------------------------
+ robertw - 12-09-05 17:17 
+----------------------------------------------------------------------
+I always tested the buildin speaker and the headphones jack.
+
+aplay shows a vu meter
+
+[...]
+Max peak (1880 samples): 07917 (0x1eed) #####                24%
+Max peak (1880 samples): 08754 (0x2232) ######               26%
+[...]
+
+----------------------------------------------------------------------
+ rlrevell - 12-19-05 02:11 
+----------------------------------------------------------------------
+Please try the latest CVS again, many hda-intel bugs are likely to be
+fixed.
+
+----------------------------------------------------------------------
+ robertw - 01-02-06 21:55 
+----------------------------------------------------------------------
+I tried again today, but still the same: The driver loads, but no sound.
+
+dmesg says:
+
+[4321385.309000] ALSA
+/home/robert/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3030:
+hda_codec: Unknown model for ALC260
+
+----------------------------------------------------------------------
+ tiwai - 01-04-06 17:29 
+----------------------------------------------------------------------
+Specify "model=fujitsu" module option with ALSA 1.0.11rc2 or CVS.
+
+----------------------------------------------------------------------
+ robertw - 01-04-06 22:16 
+----------------------------------------------------------------------
+I tried CVS and the 1.0.11rc2-version. Nothing new here:
+
+[4300394.183000] ALSA
+/home/robert/Desktop/alsa-driver-1.0.11rc2/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:3030:
+hda_codec: Unknown model for ALC260
+
+So I edited a bit in alsa-kernel/pci/hda/patch_realtek.c:
+
+------------
+        /*if (board_config < 0 || board_config >= ALC260_MODEL_LAST) {
+                snd_printd(KERN_INFO "hda_codec: Unknown model for
+ALC260\n");
+                board_config = ALC260_AUTO;
+        }
+
+        if (board_config == ALC260_AUTO) {
+                * automatic parse from the BIOS config *
+                err = alc260_parse_auto_config(codec);
+                if (err < 0) {
+                        alc_free(codec);
+                        return err;
+                } else if (! err) {
+                        printk(KERN_INFO "hda_codec: Cannot set up
+configuration from BIOS.  Using base mode...\n");
+                        board_config = ALC260_BASIC;
+                }
+        }*/
+        board_config = ALC260_FUJITSU_S702X;
+----------
+This are lines 3029 until 3045
+
+With this litte changes, I have sound output on the line-out-jack
+(controlled in alsamixer with 'headphones') and of course no warning in
+dmesg. But I still have no sound through the internal speakers or the
+headphones-jack.
+
+EDIT: The mic-jack does also work
+
+
+
+----------------------------------------------------------------------
+ lobstaj - 01-11-06 23:38 
+----------------------------------------------------------------------
+I have an Acer Extensa (probably 6702WLMi) with an Realtek ALC260 and I
+have the same problem. But with robertw's above change, I also got sound
+from the line-out jack, not from headphone out nor from the internal
+speakers. I didn't test the mic in though. At least there is some sound
+now... :-)
+
+----------------------------------------------------------------------
+ rlrevell - 01-11-06 23:48 
+----------------------------------------------------------------------
+Did you try 'modprobe snd-hda-intel model=fujitsu' like tiwai suggested? 
+It looks like you did not (all the patch does is set this).
+
+----------------------------------------------------------------------
+ lobstaj - 01-12-06 00:20 
+----------------------------------------------------------------------
+Yes, I have tried. If model=fujitsu is supposed to do the same, then it
+just doesn't work. I get different mixer controls and sound with one, but
+not the other.
+
+----------------------------------------------------------------------
+ rlrevell - 01-12-06 00:26 
+----------------------------------------------------------------------
+Can you cat /sys/module/snd_hda_intel/parameters/model to make sure it is
+seeing the "fujitsu" option?
+
+----------------------------------------------------------------------
+ mytux - 01-12-06 01:20 
+----------------------------------------------------------------------
+I have an Acer 1643WLMi, with a Realtek ALC260.
+Exactly the same here : with CVS of 2006-01-12 i also got sound from the
+line-out jack, not from headphone out nor from the internal speakers.
+
+I tried with modprobe snd-hda-intel model=fujitsu and it's the same.
+
+cat /sys/module/snd_hda_intel/parameters/model gives me "fujitsu"
+
+
+
+----------------------------------------------------------------------
+ robertw - 01-12-06 14:13 
+----------------------------------------------------------------------
+I tried again with the current CVS (12.01.2005 14:00 MEZ).
+
+When I do "modprobe snd-hda-intel model=fujitsu" I get the usual "3032:
+hda_codec: Unknown model for ALC260"
+
+"cat /sys/module/snd_hda_intel/parameters/model" says "<NULL>"
+
+Is there somewhere such a model-description, which does what jwoithe at
+the very beginning suggested?
+
+----------------------------------------------------------------------
+ lobstaj - 01-12-06 14:43 
+----------------------------------------------------------------------
+Now I've also tried to cat /sys/module/snd_hda_intel/parameters/model and
+it says "<NULL>", no matter whether I pass the option or not (tried with
+the modification and without).
+
+----------------------------------------------------------------------
+ rlrevell - 01-12-06 21:04 
+----------------------------------------------------------------------
+If /sys/module/snd_hda_intel/parameters/model says "NULL" you are not doing
+it right.  Make sure to unload ALL snd-* modules before modprobing the new
+ones.  Make sure you modprobe from the command line to eliminate the
+possibility of modutils bugs.  Make sure you don't already have ALSA
+drivers built into the kernel.  Etc.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-05 16:49 psa            New Issue                                    
-12-02-05 16:49 psa            File Added: via82xx.c.diff                    
-12-02-05 16:51 psa            File Added: ac97_patch.c.diff                    
-12-02-05 17:39 tiwai          Note Added: 0006897                          
-12-03-05 19:07 psa            File Added: via82xx.c.udiff                    
-12-03-05 19:08 psa            File Added: ac97_patch.c.udiff                    
-12-03-05 21:18 psa            Note Added: 0006903                          
-12-05-05 12:02 tiwai          Note Added: 0006910                          
-12-05-05 21:15 psa            Note Added: 0006916                          
-12-05-05 21:45 tiwai          Note Added: 0006917                          
-12-06-05 03:28 psa            Note Added: 0006919                          
-12-07-05 15:56 tiwai          Note Added: 0006943                          
-12-09-05 00:15 psa            Note Added: 0006964                          
-01-13-06 01:09 rlrevell       Note Added: 0007611                          
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+01-12-06 00:26 rlrevell       Note Added: 0007576                          
+01-12-06 01:16 mytux          Note Added: 0007577                          
+01-12-06 01:20 mytux          Note Edited: 0007577                         
+01-12-06 14:13 robertw        Note Added: 0007586                          
+01-12-06 14:43 lobstaj        Note Added: 0007587                          
+01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
+01-12-06 21:04 rlrevell       Note Added: 0007591                          
+01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
 ======================================================================
 
 
