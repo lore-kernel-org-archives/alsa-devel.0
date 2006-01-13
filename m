@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
-Date: Fri, 13 Jan 2006 10:06:36 +0100
-Message-ID: <7ac692b8d909ec505288e6115654b14f@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 10:15:47 +0100
+Message-ID: <d8d6a9a7a4a6339bae6b72dd3475a3ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E23413A
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 10:06:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF85D128
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 10:15:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian "Sarge" with kernel and alsa from "SID"
 Kernel Version:             2.6.14
 ======================================================================
 Date Submitted:             12-29-2005 22:43 CET
-Last Modified:              01-13-2006 10:06 CET
+Last Modified:              01-13-2006 10:15 CET
 ======================================================================
 Summary:                    snd-intel8x0m unable to initialize the Modem device
 ICH6
@@ -68,13 +68,6 @@ Guido
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 01-13-06 00:21 
-----------------------------------------------------------------------
-This modem (CXT30) is unsupported and will not work.
-
-The only good result is that sound is ok.
-
-----------------------------------------------------------------------
  guido - 01-13-06 10:06 
 ----------------------------------------------------------------------
 What gives you the Information that this is a CXT30 Modem?
@@ -89,6 +82,19 @@ lspci output:
 0000:00:1e.3 Modem: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97
 Modem Controller (rev 04)
 ...
+
+----------------------------------------------------------------------
+ pzad - 01-13-06 10:15 
+----------------------------------------------------------------------
+This:
+
+Mixers: 0: Conexant id 30
+This is Conexant AMC97 codec responsible for Analog audio and analog modem
+part.
+
+Your modem consists from two parts ICH6 (digital part - controler) and
+MC97(in this case AMC97) codec (analog part). ICH6 modem is supported, but
+Conexant codec modem part not.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +113,7 @@ kernel and alsa from "SID"
 01-12-06 23:43 guido          Note Edited: 0007593                         
 01-13-06 00:21 sashak         Note Added: 0007601                          
 01-13-06 10:06 guido          Note Added: 0007636                          
+01-13-06 10:15 pzad           Note Added: 0007637                          
 ======================================================================
 
 
