@@ -1,12 +1,14 @@
-From: =?windows-1251?B?wOvl6vHg7eTw?= <admissible@eon.dk>
-Subject: =?windows-1251?B?yO3y5fDl8e3l6fjo6SD04Ozo6/zt++kg7+7k4PDu6g==?=
-Date: Thu, 12 Jan 2006 07:09:40 +0000
-Message-ID: <ad0a01c61747$e6312282$374e707e@eon.dk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
+Date: Fri, 13 Jan 2006 09:12:13 +0100
+Message-ID: <61db2fec50d18e8cada2f1ff04f4fb59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_C18DCDA0.BD5380F2"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 727AD13E
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 09:12:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,65 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_C18DCDA0.BD5380F2
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_11D69410.99BE81C9"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
+======================================================================
+Reported By:                dvalin
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1607
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandriva Linux (cooker)
+Kernel Version:             2.6.14.3 (vanilla)
+======================================================================
+Date Submitted:             11-30-2005 16:44 CET
+Last Modified:              01-13-2006 09:12 CET
+======================================================================
+Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
+sample rates than 48000 and 96000
+Description: 
+This seems to be same bug as 1050 which seems to be resolved for Audigy 2
+NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
+Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
+the SB Audigy2 ZS pcmcia card).
+
+Also when changing sample rate to 48000 or 96000 the sound chops every now
+and then.
+======================================================================
+
+----------------------------------------------------------------------
+ dvalin - 01-05-06 19:12 
+----------------------------------------------------------------------
+hum, no more on this topic?
+
+I see that the card has been updated to the soundcard matrix, but I
+believe that the module it's listed with is wrong, is it not?
+
+It's a usb card and works fine with the snd-usb-audio driver after
+applying my patch..
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 01-13-06 09:12 
+----------------------------------------------------------------------
+Applied to CVS, thanks.
+
+Please show the output of "lsusb -v" (the "-b" was a typo, sorry).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-30-05 16:44 dvalin         New Issue                                    
+11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
+(cooker)
+11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
+11-30-05 17:07 dvalin         Note Added: 0006877                          
+11-30-05 17:07 dvalin         Note Deleted: 0006877                        
+11-30-05 17:07 dvalin         File Added:
+alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
+11-30-05 17:08 dvalin         Note Added: 0006878                          
+11-30-05 17:09 dvalin         Note Edited: 0006878                         
+11-30-05 17:22 dvalin         Note Edited: 0006878                         
+12-01-05 03:13 dvalin         Note Added: 0006882                          
+12-01-05 16:58 Clemens LadischNote Added: 0006886                          
+12-01-05 18:15 dvalin         Note Added: 0006887                          
+12-06-05 07:36 dvalin         Note Added: 0006920                          
+12-11-05 19:05 dvalin         Note Added: 0006977                          
+12-11-05 20:20 rlrevell       Note Added: 0006979                          
+12-11-05 22:34 dvalin         Note Added: 0006980                          
+01-05-06 19:12 dvalin         Note Added: 0007472                          
+01-13-06 09:12 Clemens LadischNote Added: 0007633                          
+======================================================================
 
 
-------=_NextPart_001_0001_11D69410.99BE81C9
-Content-Type: text/plain;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
- =C5=F1=EB=E8 =E2=FB =F3=F1=F2=E0=EB=E8 =EB=EE=EC=E0=F2=FC =E3=EE=EB=EE=E2=
-=F3 =ED=E0=E4 =EF=EE=E8=F1=EA=EE=EC =EE=F0=E8=E3=E8=ED=E0=EB=FC=ED=EE=E3=EE=
- =ED=E5=E7=E0=E1=FB=E2=E0=E5=EC=EE=E3=EE
-=EF=EE=E4=E0=F0=EA=E0, =EA=EE=F2=EE=F0=FB=EC =EC=EE=E6=ED=EE =F1=F0=E0=E7=
-=E8=F2=FC =FE=E1=E8=EB=FF=F0=E0, =F2=EE =E7=E0=E3=EB=FF=ED=E8=F2=E5 =F1=FE=
-=E4=E0
- http://www.terra.es/personal8/wwwbbb/podarok/
-
-=CF=E0=EC=FF=F2=ED=FB=E9 =F4=E0=EC=E8=EB=FC=ED=FB=E9 =EF=F0=E5=E7=E5=ED=F2=
-, =EF=F0=EE=EB=E8=E2=E0=FE=F9=E8=E9 =F1=E2=E5=F2 =ED=E0 =F2=E0=E9=ED=FB =E2=
-=EE=E7=ED=E8=EA=ED=EE=E2=E5=ED=E8=FF =E8
-=E7=ED=E0=F7=E5=ED=E8=FF =E2=E0=F8=E5=E9 =F4=E0=EC=E8=EB=E8=E8.
-
- =20
-------=_NextPart_001_0001_11D69410.99BE81C9
-Content-Type: text/html;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
-<HTML>
-<BODY text=3D#000000 bgColor=3D#ffffff>
-
-<p align=3D"left"><b><font face=3D"Arial" size=3D"4"><font color=3D"#0080=
-00">=C5=F1=EB=E8 =E2=FB=20
-=F3=F1=F2=E0=EB=E8 =EB=EE=EC=E0=F2=FC =E3=EE=EB=EE=E2=F3 =ED=E0=E4 =EF=EE=
-=E8=F1=EA=EE=EC =EE=F0=E8=E3=E8=ED=E0=EB=FC=ED=EE=E3=EE =ED=E5=E7=E0=E1=FB=
-=E2=E0=E5=EC=EE=E3=EE<br>
-=EF=EE=E4=E0=F0=EA=E0, =EA=EE=F2=EE=F0=FB=EC =EC=EE=E6=ED=EE &quot;=F1=F0=
-=E0=E7=E8=F2=FC&quot; =FE=E1=E8=EB=FF=F0=E0, =F2=EE =E7=E0=E3=EB=FF=ED=E8=
-=F2=E5 =F1=FE=E4=E0</font><br>
-<a href=3D"http://www.terra.es/personal8/wwwbbb/podarok/">
-http://www.terra.es/personal8/wwwbbb/podarok/</a><br>
-<br>
-<font color=3D"#800000">=CF=E0=EC=FF=F2=ED=FB=E9 =F4=E0=EC=E8=EB=FC=ED=FB=
-=E9 =EF=F0=E5=E7=E5=ED=F2, =EF=F0=EE=EB=E8=E2=E0=FE=F9=E8=E9 =F1=E2=E5=F2=
- =ED=E0 =F2=E0=E9=ED=FB=20
-=E2=EE=E7=ED=E8=EA=ED=EE=E2=E5=ED=E8=FF =E8<br>
-=E7=ED=E0=F7=E5=ED=E8=FF =E2=E0=F8=E5=E9 =F4=E0=EC=E8=EB=E8=E8.</font></f=
-ont></b></p>
-</BODY>
-</HTML>
-
-------=_NextPart_001_0001_11D69410.99BE81C9--
 
 
-
-------=_NextPart_000_0000_C18DCDA0.BD5380F2--
+-------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+for problems?  Stop!  Download the new AJAX search engine that makes
+searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
