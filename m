@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 01:36:42 +0100
-Message-ID: <adea047cbba4d96214215f040dbb2fb0@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 02:03:39 +0100
+Message-ID: <3ae157125c935c26608ad8d6f03dca9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D5AE10D
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 01:36:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88074159
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 02:03:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 01:36 CET
+Last Modified:              01-13-2006 02:03 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,20 +66,17 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 01:05 
-----------------------------------------------------------------------
-In the latest ALSA CVS dmix is enabled for this card by default, so no
-.asoundrc should be used.
-
-If you don't want to fully upgrade you can just get ICE1724.conf from ALSA
-CVS and replace your copy with it.
-
-----------------------------------------------------------------------
  drfindley - 01-13-06 01:36 
 ----------------------------------------------------------------------
 I have the latest ICE1724.conf, and yet I still can't get this thing to
 play multiple devices, or things with 48000hz playback through mplayer or
 mpeg stuff like (mythtv).  Is there some page I can go for help?
+
+----------------------------------------------------------------------
+ rlrevell - 01-13-06 02:03 
+----------------------------------------------------------------------
+What does "grep dmix /usr/share/alsa/cards/ICE1724.conf" say?  Have you
+verified all those apps are using the "default" PCM and not hw:x?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -224,6 +221,7 @@ Hedgehog)
 01-13-06 00:54 moffa          Note Added: 0007607                          
 01-13-06 01:05 rlrevell       Note Added: 0007609                          
 01-13-06 01:36 drfindley      Note Added: 0007612                          
+01-13-06 02:03 rlrevell       Note Added: 0007613                          
 ======================================================================
 
 
