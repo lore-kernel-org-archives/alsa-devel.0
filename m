@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Fri, 13 Jan 2006 01:03:08 +0100
-Message-ID: <ec85d006b12db7fb0dbd3185ea1e5c23@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Fri, 13 Jan 2006 01:05:38 +0100
+Message-ID: <11b400c3c17c3a673799c1fafdca11e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D60F135
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 01:03:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63DE613A
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 01:05:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,110 +22,218 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
+Reported By:                Demosthenes
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   818
-Category:                   PCI - RME HDSP
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               FC2
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              01-13-2006 01:03 CET
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              01-13-2006 01:05 CET
 ======================================================================
-Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
-9652 to be invalid
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-In my setup I's using 3 computers:
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-1) PanetCCRMA with HDSP 9652 as the center of an audio hub
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
 
-2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
-HDSP 9652 (ADAT input for clock)
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
 
-3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC #2
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
 
-So the signal flow looks like:
-
-XP         Linux           XP
-GSt ====> HDSP 9652 ====> Pro Tools
-   <=== (ADAT Clock)
-
-The HDSP 9652 is the master clock for the network. Both XP machine sync to
-the HDSP 9652.
-
-When no specific audio apps are running on the Linux box then this
-configuration will work for hours if not days with no problems. All audio
-data from GSt flows through the HDSP 9652's hardware and the hardware
-mixer sends it on to the Pro Tools box. It works perfectly.
-
-When Mozilla is started and I switch from page to page, after a few
-minutes I will receive a message on the Pro Tools box that the clock
-supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-either XP box and I do not corrupt the clocks.
+I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 00:17 
+ moffa - 01-13-06 00:54 
 ----------------------------------------------------------------------
-Do you consider this bug resolved?
+Sorry for the late reply. I've been on the road for a couple of months, and
+haven't really been able to working on this. 
+
+I don't have my patch here, but can post it this weekend (probably Sat.)
+
+However, to get all the analog and digital outs to behave as they should
+it is probably enough to set the eeprom init data to the same as the
+ordinary prodigy.  
+
+The headphone AMP is controlled by GPIO 5, so it is not too hard to get
+working either. 
+
+The input is a little more tricky since there is no AC97 codec, and that
+seems to be how it was controlled with the prodigy.
 
 ----------------------------------------------------------------------
- Mark Knecht - 01-13-06 00:54 
+ rlrevell - 01-13-06 01:05 
 ----------------------------------------------------------------------
-The way I actually solved it was to run Jack all the time on the HDSP so
-that no one can change sounds, and then use the internal sound chip for
-system sounds so that I don't have to deal with this. I don't use the
-feature as described in this bug report, although I *think* it does work.
+In the latest ALSA CVS dmix is enabled for this card by default, so no
+.asoundrc should be used.
 
-I think it's safe to close as it doesn't seem to bother anyone else.
-
-Thanks.
+If you don't want to fully upgrade you can just get ICE1724.conf from ALSA
+CVS and replace your copy with it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-05 18:35 Mark Knecht    New Issue                                    
-01-14-05 18:35 Mark Knecht    Distribution              => FC2             
-01-14-05 18:35 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-02-01-05 21:35 charbonnel     Note Added: 0003466                          
-02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
-02-01-05 22:03 rlrevell       Note Added: 0003471                          
-02-01-05 22:07 charbonnel     Status                   assigned => resolved
-02-01-05 22:07 charbonnel     Resolution               open => not an issue
-02-01-05 22:07 charbonnel     Note Added: 0003472                          
-02-01-05 22:12 Mark Knecht    Status                   resolved => feedback
-02-01-05 22:12 Mark Knecht    Resolution               not an issue => reopened
-02-01-05 22:12 Mark Knecht    Note Added: 0003474                          
-02-02-05 10:20 tiwai          Note Added: 0003477                          
-09-19-05 09:58 jdthood        Note Added: 0006277                          
-09-29-05 00:30 Mark Knecht    Note Added: 0006411                          
-10-05-05 18:50 tiwai          Note Added: 0006436                          
-10-12-05 14:17 tiwai          Note Added: 0006466                          
-10-12-05 18:17 Mark Knecht    Note Added: 0006468                          
-10-12-05 18:20 tiwai          Note Added: 0006469                          
-10-12-05 18:50 Mark Knecht    Note Added: 0006470                          
-10-12-05 18:55 tiwai          Note Added: 0006471                          
-10-12-05 19:03 Mark Knecht    Note Added: 0006472                          
-10-12-05 19:08 tiwai          Note Added: 0006473                          
-10-16-05 16:24 Mark Knecht    Note Added: 0006482                          
-10-16-05 22:25 Mark Knecht    Note Added: 0006484                          
-01-13-06 00:17 rlrevell       Note Added: 0007599                          
-01-13-06 00:54 Mark Knecht    Note Added: 0007608                          
-01-13-06 01:03 rlrevell       Status                   feedback => resolved
-01-13-06 01:03 rlrevell       Resolution               reopened => fixed   
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
+05-07-05 01:38 Demosthenes    Note Added: 0004600                          
+05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
+05-08-05 00:45 ungod          Note Added: 0004608                          
+05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
+05-08-05 19:09 Demosthenes    Note Added: 0004612                          
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
+05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
+05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
+05-08-05 20:37 Demosthenes    Note Added: 0004618                          
+05-09-05 01:01 ungod          Note Added: 0004620                          
+05-09-05 13:15 Demosthenes    Note Added: 0004624                          
+05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
+05-10-05 09:36 ungod          Note Added: 0004632                          
+05-10-05 15:50 Demosthenes    Note Added: 0004633                          
+05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+05-14-05 20:24 Demosthenes    Note Edited: 0004658                         
+06-14-05 16:02 baesyspem      Note Added: 0005018                          
+06-14-05 16:03 baesyspem      Issue Monitored: baesyspem                    
+06-14-05 16:03 baesyspem      Issue End Monitor: baesyspem                    
+06-14-05 18:30 Demosthenes    Note Added: 0005019                          
+06-14-05 18:50 Demosthenes    Note Edited: 0005019                         
+06-14-05 21:26 ungod          Note Added: 0005020                          
+06-14-05 21:27 ungod          Note Edited: 0005020                         
+06-29-05 18:30 Demosthenes    Note Added: 0005307                          
+06-30-05 01:03 ungod          Note Added: 0005321                          
+06-30-05 01:08 ungod          Issue Monitored: ungod                       
+06-30-05 01:46 baesyspem      Note Added: 0005322                          
+06-30-05 02:27 Demosthenes    Note Added: 0005323                          
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:29 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:36 Demosthenes    Note Edited: 0005323                         
+06-30-05 02:38 Demosthenes    Note Edited: 0005323                         
+06-30-05 21:21 ungod          Note Added: 0005328                          
+07-01-05 14:25 baesyspem      Note Added: 0005333                          
+07-01-05 16:09 baesyspem      Note Added: 0005335                          
+07-01-05 20:41 ungod          File Added: aureon-prodigy71lt-fix2.diff          
+         
+07-01-05 20:43 ungod          Note Added: 0005339                          
+07-01-05 22:08 Demosthenes    Note Added: 0005341                          
+07-01-05 22:46 ungod          Note Added: 0005342                          
+07-01-05 23:09 Demosthenes    Note Added: 0005344                          
+07-01-05 23:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 00:31 Demosthenes    Note Edited: 0005344                         
+07-02-05 03:29 ungod          Note Added: 0005350                          
+07-02-05 03:30 ungod          File Added: prodigytest.tar.gz                    
+07-02-05 03:37 ungod          Note Edited: 0005350                         
+07-02-05 16:50 Demosthenes    Note Added: 0005353                          
+07-02-05 18:10 Demosthenes    Note Edited: 0005344                         
+07-02-05 18:27 ungod          Note Added: 0005354                          
+07-02-05 18:36 Demosthenes    Note Added: 0005355                          
+07-02-05 20:20 ungod          Note Added: 0005358                          
+07-02-05 20:59 Demosthenes    Note Added: 0005359                          
+07-02-05 21:43 ungod          File Added: peak.tar.gz                      
+07-02-05 21:44 ungod          Note Added: 0005360                          
+07-02-05 22:30 Demosthenes    Note Added: 0005362                          
+07-03-05 00:21 ungod          Note Added: 0005363                          
+07-03-05 01:49 Demosthenes    Note Added: 0005364                          
+07-03-05 01:55 ungod          Note Added: 0005365                          
+07-03-05 02:46 Demosthenes    Note Added: 0005366                          
+07-03-05 02:47 Demosthenes    Note Edited: 0005366                         
+07-03-05 03:18 Demosthenes    Note Added: 0005367                          
+07-03-05 03:21 Demosthenes    Note Edited: 0005367                         
+07-03-05 11:35 ungod          File Added: aureon-prodigy71lt-fix3.diff          
+         
+07-03-05 11:47 ungod          Note Added: 0005373                          
+07-03-05 15:29 Demosthenes    Note Added: 0005377                          
+07-03-05 17:06 ungod          Note Added: 0005379                          
+07-04-05 14:34 miljan         Issue Monitored: miljan                      
+07-04-05 14:35 miljan         Issue End Monitor: miljan                    
+07-04-05 14:35 miljan         Issue Monitored: miljan                      
+07-06-05 19:19 Demosthenes    Note Added: 0005392                          
+07-08-05 22:52 ungod          Note Added: 0005437                          
+07-13-05 03:57 ungod          Note Added: 0005457                          
+07-13-05 03:58 ungod          File Added: gpio.tar.gz                      
+07-13-05 04:12 Demosthenes    Note Added: 0005458                          
+07-13-05 04:24 ungod          Note Added: 0005459                          
+07-13-05 04:28 Demosthenes    Note Added: 0005460                          
+07-13-05 04:46 ungod          Note Added: 0005461                          
+07-13-05 04:57 Demosthenes    Note Added: 0005462                          
+07-13-05 04:59 Demosthenes    Note Added: 0005463                          
+07-13-05 05:00 Demosthenes    Note Edited: 0005463                         
+07-13-05 19:39 Demosthenes    Note Added: 0005466                          
+07-14-05 13:19 ungod          Note Added: 0005472                          
+07-14-05 13:31 Demosthenes    Note Added: 0005473                          
+07-14-05 13:54 Demosthenes    Note Added: 0005474                          
+07-15-05 15:08 ungod          Note Added: 0005481                          
+07-15-05 15:17 Demosthenes    Note Added: 0005482                          
+07-15-05 15:23 Demosthenes    Note Edited: 0005474                         
+07-20-05 18:01 darins         Issue Monitored: darins                      
+07-20-05 19:07 darins         Note Added: 0005534                          
+07-20-05 20:56 Demosthenes    Note Added: 0005535                          
+07-20-05 21:04 Demosthenes    Note Edited: 0005535                         
+07-21-05 01:25 darins         Note Added: 0005537                          
+07-21-05 02:01 Demosthenes    Note Added: 0005538                          
+07-21-05 02:16 Demosthenes    Note Edited: 0004618                         
+07-21-05 02:17 Demosthenes    Note Edited: 0004618                         
+07-21-05 21:06 baesyspem      Note Added: 0005542                          
+07-22-05 02:28 ungod          Note Added: 0005543                          
+07-22-05 10:41 BDE            Issue Monitored: BDE                         
+07-22-05 10:53 BDE            Note Added: 0005546                          
+09-09-05 17:13 baesyspem      Note Added: 0006101                          
+09-15-05 23:32 Demosthenes    Note Added: 0006227                          
+09-19-05 17:48 darins         Note Added: 0006295                          
+10-24-05 21:57 tinez          Issue Monitored: tinez                       
+10-24-05 22:38 tinez          Note Added: 0006524                          
+11-17-05 18:32 baesyspem      Issue Monitored: baesyspem                    
+11-25-05 20:34 moffa          Issue Monitored: moffa                       
+11-27-05 17:27 drfindley      Issue Monitored: drfindley                    
+11-27-05 17:31 drfindley      Note Added: 0006851                          
+12-07-05 23:35 moffa          Note Added: 0006953                          
+12-08-05 02:22 Demosthenes    Note Added: 0006954                          
+01-12-06 16:17 robertdavid    Note Added: 0007588                          
+01-12-06 21:00 rlrevell       Note Added: 0007590                          
+01-12-06 23:55 drfindley      Note Added: 0007594                          
+01-12-06 23:58 drfindley      Note Edited: 0007594                         
+01-13-06 00:01 drfindley      Note Edited: 0007594                         
+01-13-06 00:08 rlrevell       Note Added: 0007596                          
+01-13-06 00:09 rlrevell       Status                   new => assigned     
+01-13-06 00:09 rlrevell       Assigned To               => tiwai           
+01-13-06 00:34 Demosthenes    Note Added: 0007602                          
+01-13-06 00:38 rlrevell       Note Added: 0007603                          
+01-13-06 00:40 rlrevell       Note Added: 0007604                          
+01-13-06 00:41 drfindley      Note Added: 0007605                          
+01-13-06 00:44 drfindley      Note Added: 0007606                          
+01-13-06 00:54 moffa          Note Added: 0007607                          
+01-13-06 01:05 rlrevell       Note Added: 0007609                          
 ======================================================================
 
 
