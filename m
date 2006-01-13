@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
-Date: Fri, 13 Jan 2006 22:16:42 +0100
-Message-ID: <df9480b5662c547d67e3023b2f2d1725@bugtrack.alsa-project.org>
+Date: Sat, 14 Jan 2006 00:15:38 +0100
+Message-ID: <7f2ccb31251dffe6f4dc91c65734a118@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9238E12A
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 22:16:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75A4712A
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 00:15:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo linux
 Kernel Version:             2.6.14-archck-r7
 ======================================================================
 Date Submitted:             01-13-2006 22:16 CET
-Last Modified:              01-13-2006 22:16 CET
+Last Modified:              01-14-2006 00:15 CET
 ======================================================================
 Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
 chanel work and sound is quick...
@@ -55,12 +55,30 @@ I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
 Prodigy 7.1LT) 
 ======================================================================
 
+----------------------------------------------------------------------
+ drfindley - 01-14-06 00:15 
+----------------------------------------------------------------------
+I just barely go this card working. I don't know why the sound stop
+locking, but perhaps someone here can enlighten us.
+
+Here's what I did, but it makes no sense:
+1. Run amixer set 'Multi Track Rate Locking' false
+2. Ran gnome Volume Control and unchecked the Multi Trak Rate Locking
+3. Ran amixer.
+
+OSS still seems to run things wrong, but imagine that'll be fixed when I
+restart snd-pcm-oss.
+
+This issue might come up again, but I'm not rebooting till I find out.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-13-06 22:16 robertdavid    New Issue                                    
 01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
 01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
+01-14-06 00:13 drfindley      File Added: asound.state                     
+01-14-06 00:15 drfindley      Note Added: 0007650                          
 ======================================================================
 
 
