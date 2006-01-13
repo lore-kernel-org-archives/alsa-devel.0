@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 05:39:28 +0100
-Message-ID: <3eae46aedbd3d6f81821469e7b2cc35f@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 05:41:44 +0100
+Message-ID: <4fecb647bde7379ff2db95c80ddcffc7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC5AD141
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 05:39:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48825141
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 05:41:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 05:39 CET
+Last Modified:              01-13-2006 05:41 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,19 +66,18 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 05:11 
-----------------------------------------------------------------------
-Make sure you are not running any sound servers like artsd or esd.
-
-Try this:  run "strace aplay -v file.wav" and "strace aplay -v file.wav"
-in two separate terminals and post the output.
-
-----------------------------------------------------------------------
  drfindley - 01-13-06 05:39 
 ----------------------------------------------------------------------
 I've posted the two straces, the first.txt being played first, and
 second.txt being played next.  The first plays, and then the second waits
 for the sound to stop, and then plays.
+
+----------------------------------------------------------------------
+ rlrevell - 01-13-06 05:41 
+----------------------------------------------------------------------
+Ah I see the problem, it's using Aureon71.conf rather than ICE1724.conf.
+
+Try the uploaded patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -241,6 +240,7 @@ Hedgehog)
 01-13-06 05:37 drfindley      File Added: first.txt                        
 01-13-06 05:38 drfindley      File Added: second.txt                       
 01-13-06 05:39 drfindley      Note Added: 0007627                          
+01-13-06 05:41 rlrevell       Note Added: 0007628                          
 ======================================================================
 
 
