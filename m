@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001101]: [VIA 8237 with ALC850] gstreamer alsasink with default device does not work but with "device=hw:0" it does
-Date: Fri, 13 Jan 2006 09:53:38 +0100
-Message-ID: <bf1a2b6868c489ed634377be691f59ef@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 09:54:04 +0100
+Message-ID: <5290c1f3b66ff99f6f5d988948df83ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC83310C
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 09:53:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9607710C
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 09:54:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             05-11-2005 22:15 CEST
-Last Modified:              01-13-2006 09:53 CET
+Last Modified:              01-13-2006 09:54 CET
 ======================================================================
 Summary:                    [VIA 8237 with ALC850] gstreamer alsasink with
 default device does not work but with "device=hw:0" it does
@@ -52,11 +52,6 @@ lots more detail.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-13-06 00:18 
-----------------------------------------------------------------------
-Is this fixed in later ALSA releases?
-
-----------------------------------------------------------------------
  lool - 01-13-06 09:53 
 ----------------------------------------------------------------------
 Now it's hard to tell for gstreamer users, as upstream now queries the
@@ -65,6 +60,13 @@ snd_pcm_info_get_subdevice_name() and tries both the logical and the
 hardware device.
 
 Would be nice to have a C test case.
+
+----------------------------------------------------------------------
+ lool - 01-13-06 09:54 
+----------------------------------------------------------------------
+(The GStreamer patch is
+http://svn.debian.org/wsvn/pkg-gstreamer/unstable/gst-plugins0.8/debian/patches/31_alsa-advanced-probing.patch?op=file&rev=0&sc=0
+)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,6 +81,7 @@ Date Modified  Username       Field                    Change
 06-09-05 14:10 GhePeU         Note Edited: 0004980                         
 01-13-06 00:18 rlrevell       Note Added: 0007600                          
 01-13-06 09:53 lool           Note Added: 0007634                          
+01-13-06 09:54 lool           Note Added: 0007635                          
 ======================================================================
 
 
