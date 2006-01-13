@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 04:47:56 +0100
-Message-ID: <d5d1656b7b9e7a2560b0fd82efa336f8@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 04:50:31 +0100
+Message-ID: <3fc3866594d96ac17cf5529cf547d94e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5326B159
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 04:47:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCA36159
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 04:50:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 04:47 CET
+Last Modified:              01-13-2006 04:50 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,23 +66,15 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- drfindley - 01-13-06 04:32 
-----------------------------------------------------------------------
-it only allows one at a time.  aplay will queue them up, not play them at
-the same time.
-
-aplay -D dmix monotest.wav returns this error:
-ALSA lib pcm_direct.c:813:(snd_pcm_direct_initialize_slave) requested or
-auto-format is not available
-ALSA lib pcm_dmix.c:864:(snd_pcm_dmix_open) unable to initialize slave
-aplay: main:547: audio open error: Invalid argument
-
-Thanks for all your help.
-
-----------------------------------------------------------------------
  rlrevell - 01-13-06 04:47 
 ----------------------------------------------------------------------
 And you *definitely* got rid of your .asoundrc?
+
+----------------------------------------------------------------------
+ rlrevell - 01-13-06 04:50 
+----------------------------------------------------------------------
+OK I see that you are using "-D dmix" which means you must still have the
+.asoundrc.  Get rid of it, and just use "aplay file.wav".
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -236,6 +228,7 @@ Hedgehog)
 01-13-06 03:44 rlrevell       Note Added: 0007620                          
 01-13-06 04:32 drfindley      Note Added: 0007621                          
 01-13-06 04:47 rlrevell       Note Added: 0007622                          
+01-13-06 04:50 rlrevell       Note Added: 0007623                          
 ======================================================================
 
 
