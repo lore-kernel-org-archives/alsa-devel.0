@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Fri, 13 Jan 2006 03:44:35 +0100
-Message-ID: <5c1c9d60317e9c1f77a5532b15c8e124@bugtrack.alsa-project.org>
+Date: Fri, 13 Jan 2006 04:32:41 +0100
+Message-ID: <528fe8a9ac86b996fa0228e67c90a842@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8792159
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 03:44:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4183159
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 04:32:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              01-13-2006 03:44 CET
+Last Modified:              01-13-2006 04:32 CET
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,24 +66,26 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- drfindley - 01-13-06 03:38 
-----------------------------------------------------------------------
-my sound card isn't letting me, despite using default.  I opened up two
-instances of xmms so I could be sure that I had my alsa driver set to
-default, and this is the message I get back:
-
-** WARNING **: alsa_setup(): Failed to open pcm device (default): Device
-or resource busy
-
-It's been rather elusive.
-
-----------------------------------------------------------------------
  rlrevell - 01-13-06 03:44 
 ----------------------------------------------------------------------
 Sorry I have no idea, it should just work.  Can you run two "aplay"
 processes at the same time?  Did you make sure that some process does not
 have /dev/dsp open (this will block the soundcard regardless of whether
 dmix is used)?
+
+----------------------------------------------------------------------
+ drfindley - 01-13-06 04:32 
+----------------------------------------------------------------------
+it only allows one at a time.  aplay will queue them up, not play them at
+the same time.
+
+aplay -D dmix monotest.wav returns this error:
+ALSA lib pcm_direct.c:813:(snd_pcm_direct_initialize_slave) requested or
+auto-format is not available
+ALSA lib pcm_dmix.c:864:(snd_pcm_dmix_open) unable to initialize slave
+aplay: main:547: audio open error: Invalid argument
+
+Thanks for all your help.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -235,6 +237,7 @@ Hedgehog)
 01-13-06 03:30 rlrevell       Note Added: 0007618                          
 01-13-06 03:38 drfindley      Note Added: 0007619                          
 01-13-06 03:44 rlrevell       Note Added: 0007620                          
+01-13-06 04:32 drfindley      Note Added: 0007621                          
 ======================================================================
 
 
