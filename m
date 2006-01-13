@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Fri, 13 Jan 2006 18:18:11 +0100
-Message-ID: <9a34e282af862519cab511d2fdc6eb57@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001607]: SB Audigy 2 ZS Video Editor doesn't work with other sample rates than 48000 and 96000
+Date: Fri, 13 Jan 2006 19:04:45 +0100
+Message-ID: <186409f019bf6ebde9902dadbbf382bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24EB6127
-	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 18:18:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFE7012B
+	for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2006 19:04:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,114 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1607> 
 ======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
+Reported By:                dvalin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
+Issue ID:                   1607
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Status:                     resolved
+Distribution:               Mandriva Linux (cooker)
+Kernel Version:             2.6.14.3 (vanilla)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              01-13-2006 18:18 CET
+Date Submitted:             11-30-2005 16:44 CET
+Last Modified:              01-13-2006 19:04 CET
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    SB Audigy 2 ZS Video Editor doesn't work with other
+sample rates than 48000 and 96000
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+This seems to be same bug as 1050 which seems to be resolved for Audigy 2
+NX, unfortunately this bug seems to still exist for the SB Audigy 2 ZS
+Video Editor (note: SB Audigy2 ZS Video Editor is a usb2 card, it's NOT
+the SB Audigy2 ZS pcmcia card).
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
-
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
+Also when changing sample rate to 48000 or 96000 the sound chops every now
+and then.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-13-06 13:51 
+ dvalin - 01-13-06 17:08 
 ----------------------------------------------------------------------
-Refer to au88x0_eqdata.c , there are 10 values for LeftGains and RightGains
-in auxxEqCoeffSet_t 
-
-diff -u -r1.1 au88x0_eq.h
---- alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h	9 Mar 2004 11:52:13
--0000	1.1
-+++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h	13 Jan 2006 12:37:26
--0000
-@@ -13,18 +13,18 @@
- typedef struct {
- 	u16 LeftCoefs[50];	//0x4
- 	u16 RightCoefs[50];	// 0x68
--	u16 LeftGains[20];	//0xd0
--	u16 RightGains[20];	//0xe4
-+	u16 LeftGains[10];	//0xd0
-+	u16 RightGains[10];	//0xe4
- } auxxEqCoeffSet_t;
+here ya go :)
 
 ----------------------------------------------------------------------
- tiwai - 01-13-06 18:18 
+ Clemens Ladisch - 01-13-06 19:04 
 ----------------------------------------------------------------------
-FYI, I merged the patch above to ALSA CVS tree now.
+Thank you.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
-01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
-      
-01-13-06 13:51 Raymond        Note Added: 0007639                          
-01-13-06 18:18 tiwai          Note Added: 0007648                          
+11-30-05 16:44 dvalin         New Issue                                    
+11-30-05 16:44 dvalin         Distribution              => Mandriva Linux
+(cooker)
+11-30-05 16:44 dvalin         Kernel Version            => 2.6.14.3 (vanilla)
+11-30-05 17:07 dvalin         Note Added: 0006877                          
+11-30-05 17:07 dvalin         Note Deleted: 0006877                        
+11-30-05 17:07 dvalin         File Added:
+alsa-driver-1.0.10-audigy2-nz-force-samplerate.patch                    
+11-30-05 17:08 dvalin         Note Added: 0006878                          
+11-30-05 17:09 dvalin         Note Edited: 0006878                         
+11-30-05 17:22 dvalin         Note Edited: 0006878                         
+12-01-05 03:13 dvalin         Note Added: 0006882                          
+12-01-05 16:58 Clemens LadischNote Added: 0006886                          
+12-01-05 18:15 dvalin         Note Added: 0006887                          
+12-06-05 07:36 dvalin         Note Added: 0006920                          
+12-11-05 19:05 dvalin         Note Added: 0006977                          
+12-11-05 20:20 rlrevell       Note Added: 0006979                          
+12-11-05 22:34 dvalin         Note Added: 0006980                          
+01-05-06 19:12 dvalin         Note Added: 0007472                          
+01-13-06 09:12 Clemens LadischNote Added: 0007633                          
+01-13-06 17:07 dvalin         File Added: lsusb-audigy.txt                    
+01-13-06 17:08 dvalin         Note Added: 0007643                          
+01-13-06 19:04 Clemens LadischStatus                   assigned => resolved
+01-13-06 19:04 Clemens LadischResolution               open => fixed       
+01-13-06 19:04 Clemens LadischNote Added: 0007649                          
 ======================================================================
 
 
