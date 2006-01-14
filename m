@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001728]: Modification of volume control for M-Audio Revolution 5.1
-Date: Sat, 14 Jan 2006 22:31:53 +0100
-Message-ID: <4ad92ce87f202415eb6189de73f8c412@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: simple PCM helper function
+Date: Sat, 14 Jan 2006 21:48:17 +0000
+Message-ID: <20060114214817.1de4b094.pochini@shiny.it>
+References: <Pine.LNX.4.61.0601062102080.10811@tm8103.perex-int.cz>
+	<43C28D90.10103@superbug.co.uk>
+	<Pine.LNX.4.61.0601101254540.10330@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9AA4132
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 22:31:53 +0100 (MET)
+Received: from vsmtp3alice.tin.it (vsmtp3alice.tin.it [212.216.176.143])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 590CA132
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 22:48:26 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.61.0601101254540.10330@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +22,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: James@superbug.co.uk, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 10 Jan 2006 13:26:58 +0100 (CET)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1728> 
-======================================================================
-Reported By:                cyan
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1728
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo testing
-Kernel Version:             2.6.14-gentoo-r5
-======================================================================
-Date Submitted:             01-09-2006 23:35 CET
-Last Modified:              01-14-2006 22:31 CET
-======================================================================
-Summary:                    Modification of volume control for M-Audio
-Revolution 5.1
-Description: 
-In Alsamixer (and KMix) is not possible to change volume of both chanels at
-once. Slides with names "DAC" and "DAC1" corresponds to left and right
-chanel. 
-I would like to make a suggestion to merge them together.
-======================================================================
+> You must also add a new function "snd_pcm_check_for_space()" or something
+> like this. The app callback will be called from this function. Also, the
+> app callback function should probably take same parameters as
+> snd_pcm_mmap_begin() handles (areas, offset), because we support more
+> ring buffer organization schemes.
+>
+> So, to all others, is this mechanism worth to implement?
 
-----------------------------------------------------------------------
- wollschaf - 01-14-06 22:31 
-----------------------------------------------------------------------
-This would be a great step for usability.
-
-I dug around in the source code and - surprise, surprise - understood not
-a thing going on.
-
-The other 4 DACs should be merged, too.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-09-06 23:35 cyan           New Issue                                    
-01-09-06 23:35 cyan           Distribution              => gentoo testing  
-01-09-06 23:35 cyan           Kernel Version            => 2.6.14-gentoo-r5
-01-14-06 22:31 wollschaf      Note Added: 0007656                          
-======================================================================
+IMHO they should be as simple as possible. I thing the first proposal is
+more obvious and straightforward. That callback mechanism just moves the
+complexity somewhere else.
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
