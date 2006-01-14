@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
-Date: Sat, 14 Jan 2006 00:28:42 +0100
-Message-ID: <378773d59279f5c2810991e2b91d9968@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001745]: too few arguments to function `snd_info_entry_ioctl_old' when compile in Kernel 2.4
+Date: Sat, 14 Jan 2006 03:19:38 +0100
+Message-ID: <477ae055ead5c1c6b7197e96807e227d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A18B12A
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 00:28:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA94210E
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 03:19:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,85 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1745> 
 ======================================================================
-Reported By:                robertdavid
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1744
-Category:                   PCI - ice1724
-Reproducibility:            sometimes
-Severity:                   tweak
+Issue ID:                   1745
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo linux
-Kernel Version:             2.6.14-archck-r7
+Status:                     assigned
+Distribution:               Fedora Core 1 (i386)
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             01-13-2006 22:16 CET
-Last Modified:              01-14-2006 00:28 CET
+Date Submitted:             01-14-2006 03:19 CET
+Last Modified:              01-14-2006 03:19 CET
 ======================================================================
-Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
-chanel work and sound is quick...
+Summary:                    too few arguments to function
+`snd_info_entry_ioctl_old' when compile in Kernel 2.4
 Description: 
-Im very glad that was added support for Prodigy, but there is still only
-two channel working (7,8), the others are silent (tryed all volume
-settings).
-The sound from 7,8 chanel is good in case of quality, but is faster than
-it should be (turn off Multi Track Rate Locking didnt do anything).
-I've tryed mpalyer and XMMS, both the same.
-I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
-Prodigy 7.1LT) 
+gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa/cvs/alsa-driver/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=info   -c -o info.o info.c
+info.c: In function `snd_info_entry_ioctl_old':
+info.c:483: warning: passing arg 1 of `snd_info_entry_ioctl_old' from
+incompatible pointer type
+info.c:483: warning: passing arg 2 of `snd_info_entry_ioctl_old' makes
+pointer from integer without a cast
+info.c:483: too few arguments to function `snd_info_entry_ioctl_old'
+info.c: At top level:
+info.c:457: warning: `snd_info_entry_ioctl' defined but not used
+make[1]: *** [info.o] Error 1
+make[1]: Leaving directory `/alsa/cvs/alsa-driver/acore'
+make: *** [compile] Error 1
+
 ======================================================================
-
-----------------------------------------------------------------------
- drfindley - 01-14-06 00:15 
-----------------------------------------------------------------------
-I just barely go this card working. I don't know why the sound stop
-locking, but perhaps someone here can enlighten us.
-
-Here's what I did, but it makes no sense:
-1. Run amixer set 'Multi Track Rate Locking' false
-2. Ran gnome Volume Control and unchecked the Multi Trak Rate Locking
-3. Ran amixer.
-
-OSS still seems to run things wrong, but imagine that'll be fixed when I
-restart snd-pcm-oss.
-
-This issue might come up again, but I'm not rebooting till I find out.
-
-----------------------------------------------------------------------
- robertdavid - 01-14-06 00:28 
-----------------------------------------------------------------------
-I have also make a progress,,
-in alsa mizer set up 'Multi Track Rate Locking' false 
-than set up 41000 sample rate and it becames paly nearly normal,
-I could say NEARLY becasuse I check the timings of music and find out that
-one minute of song last 1:05 min. but it is better than one minute in
-30-40sec...
-
-Next I made the front channel play, but very silent, I have to turn my AMP
-up very much to produce normal sound...
-
-Didnt get to play more than 2 channels of 5.1 chanel wideo, H.P. line is
-downmixed so If i use head phones or plug front speakers to H.P. line it
-is OK (you should hear the woices etc.)
-chanel 1,2 play but only true, silent stereo (in movie play only 2
-chanels, so no voices etc.)
-I still never heard any sound of 3-6 channel (rear,SW,C)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-06 22:16 robertdavid    New Issue                                    
-01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
-01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
-01-14-06 00:13 drfindley      File Added: asound.state                     
-01-14-06 00:15 drfindley      Note Added: 0007650                          
-01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
-01-14-06 00:28 robertdavid    Note Added: 0007651                          
+01-14-06 03:19 Raymond        New Issue                                    
+01-14-06 03:19 Raymond        Distribution              => Fedora Core 1 (i386)
+01-14-06 03:19 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
 ======================================================================
 
 
