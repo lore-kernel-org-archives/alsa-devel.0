@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
-Date: Sat, 14 Jan 2006 23:48:06 +0100
-Message-ID: <f81f4aa04ad51a70bf84383dfdc0d21c@bugtrack.alsa-project.org>
+From: James Vaughn <jiv3@cornell.edu>
+Subject: Echo Indigo IO returns error -2 during probe
+Date: Sat, 14 Jan 2006 14:45:12 -0500
+Message-ID: <43C954C8.405@cornell.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23D6C137
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 23:48:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,107 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+While attempting to setup an Echo Indigo IO, something complains and
+returns an error "-2".  Unfortunately, I was unable to find any
+information about what this error codes means and, as such, am unable to
+provide any assistance or information beyond the usual.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
-======================================================================
-Reported By:                guido
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1694
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian "Sarge" with kernel and alsa from "SID"
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             12-29-2005 22:43 CET
-Last Modified:              01-14-2006 23:48 CET
-======================================================================
-Summary:                    snd-intel8x0m unable to initialize the Modem device
-ICH6
-Description: 
-Dear Maintainer and Reader,
+Current kernel is 2.6.11.11, ALSA version is 1.0.10 through gentoo
+(whatever the current stable package in portage is).
 
-I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
-I found a lot of things recommended in different Mailing lists and blogs
-but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
-kernel Version 2.6.14 with source from Debian "SID".
-The current status is that two modules are loaded during boot,
-snd-intel8x0 and snd-intel8x0m. When both modules are loaded
-the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
-works fine.
-If I additionally load module snd-intel8x0m sound does not work anymore
-and error messages in syslog are printed.
-So I think the error messages are a buck in the snd-intel8x0m module.
-There is no /proc/asound/Modem present when I load the snd-intel8x0m
-module.
+specific error is:
 
-In the "Additional Information" Section I paste some debugging output.
+Jan 14 14:29:13 Myrddin kernel: PCI: Enabling device 0000:03:00.0 (0000
+-> 0002)
+Jan 14 14:29:13 Myrddin kernel: ACPI: PCI interrupt 0000:03:00.0[A] ->
+GSI 11 (level, low) -> IRQ 11
+Jan 14 14:29:13 Myrddin kernel: Echoaudio Indigo IO: probe of
+0000:03:00.0 failed with error -2
+Jan 14 14:29:14 Myrddin kernel: input: PC Speaker
 
-Regards
-Guido
-======================================================================
+The Indigo is not listed in /proc/asound/cards (although a built-in
+intel AC97 card is and works fine).
 
-----------------------------------------------------------------------
- pzad - 01-13-06 10:15 
-----------------------------------------------------------------------
-This:
+Thank you all for you insights.
 
-Mixers: 0: Conexant id 30
-This is Conexant AMC97 codec responsible for Analog audio and analog modem
-part.
-
-Your modem consists from two parts ICH6 (digital part - controler) and
-MC97(in this case AMC97) codec (analog part). ICH6 modem is supported, but
-Conexant codec modem part not.
-
-----------------------------------------------------------------------
- guido - 01-14-06 23:48 
-----------------------------------------------------------------------
-So let's resume:
-
-I can now load snd-intel8x0 and snd-intel8x0m at the same time and the
-sound
-output still is working.
-I have a conexant modem chip and a intel ICH6 modem controller.
-For the conexant modem chip I will need the hsf codecs from linuxant.
-So is the snd-intel8x0m module for any use for my type of hardware
-combination?
-What can I do with this module?
-
-Regards
-Guido
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-29-05 22:43 guido          New Issue                                    
-12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
-kernel and alsa from "SID"
-12-29-05 22:43 guido          Kernel Version            => 2.6.14          
-01-03-06 20:51 guido          Issue Monitored: guido                       
-01-07-06 01:56 sashak         Note Added: 0007501                          
-01-07-06 01:57 sashak         File Added: ich-cxt30amc-test.patch               
-    
-01-07-06 01:57 sashak         Note Added: 0007502                          
-01-12-06 23:39 guido          File Added: syslog                           
-01-12-06 23:40 guido          Note Added: 0007593                          
-01-12-06 23:43 guido          Note Edited: 0007593                         
-01-13-06 00:21 sashak         Note Added: 0007601                          
-01-13-06 10:06 guido          Note Added: 0007636                          
-01-13-06 10:15 pzad           Note Added: 0007637                          
-01-14-06 23:48 guido          Note Added: 0007657                          
-======================================================================
-
-
+James Vaughn
 
 
 -------------------------------------------------------
