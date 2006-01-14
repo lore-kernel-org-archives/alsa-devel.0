@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Sat, 14 Jan 2006 23:47:55 +0100
-Message-ID: <7f8a85f8e1d77222a5fe70603d317d3d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
+Date: Sat, 14 Jan 2006 23:48:06 +0100
+Message-ID: <f81f4aa04ad51a70bf84383dfdc0d21c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD1FD137
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 23:47:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23D6C137
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 23:48:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,125 +22,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1748> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
 ======================================================================
-Reported By:                briand
-Assigned To:                
+Reported By:                guido
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1748
-Category:                   ISA - cs4236
+Issue ID:                   1694
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9-1.667
+Status:                     assigned
+Distribution:               Debian "Sarge" with kernel and alsa from "SID"
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-14-2006 23:47 CET
+Date Submitted:             12-29-2005 22:43 CET
+Last Modified:              01-14-2006 23:48 CET
 ======================================================================
-Summary:                    sound driver will not load (CS4237B chip)
+Summary:                    snd-intel8x0m unable to initialize the Modem device
+ICH6
 Description: 
-with BIOS set to "PnPOS" for sound chip:
-  `/sbin/modprobe snd-cs4236` produces the following on stdout:
-  "FATAL: Error inserting snd_cs4236 \
-   (/lib/modules/2.6.9-1.667/kernel/sound/isa/cs423x/snd-cs4236.ko): \
-   No such device"
+Dear Maintainer and Reader,
 
-   -- occurs with 1.0.10, 1.0.11rc1, and (currently) 1.0.11rc2
-   alsaconf reports I have no sound card.
-   cat /proc/asound/cards reports I have no sound card.
+I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
+I found a lot of things recommended in different Mailing lists and blogs
+but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
+kernel Version 2.6.14 with source from Debian "SID".
+The current status is that two modules are loaded during boot,
+snd-intel8x0 and snd-intel8x0m. When both modules are loaded
+the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
+works fine.
+If I additionally load module snd-intel8x0m sound does not work anymore
+and error messages in syslog are printed.
+So I think the error messages are a buck in the snd-intel8x0m module.
+There is no /proc/asound/Modem present when I load the snd-intel8x0m
+module.
 
+In the "Additional Information" Section I paste some debugging output.
 
-with BIOS set to "Enable" for sound chip:
-
- `/sbin/modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
-irq=5`
-
-  ..produces nothing on stdout/stderr, but the laptop speakers click once,
-and dmesg shows:
-
- "ALSA /path/to/alsa/source/isa/cs423x/cs4236_lib.c:305: CS4236+ chip
-detected, but control port 0x538 is not valid"
-
-  - that message shows up in dmesg regardless of what i specify for
-'cport=' parameter (with, of course, the corresponding port value in the
-error message).
-
-  alsaconf seems to find the card, test the card, and reports all is fine;
-offers to modify /etc/modprobe.conf (with parameters shown above), and
-congratulates me.
-  cat /proc/asound/cards reports I have no sound card.
-
-
-In looking at cs4236_lib.c, lines 301-307:
-
-        ver1 = snd_cs4236_ctrl_in(chip, 1);
-        ver2 = snd_cs4236_ext_in(chip, CS4236_VERSION);
-        snd_printdd("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n",
-cport, ver1, ver2);
-        if (ver1 != ver2) {
-                snd_printk("CS4236+ chip detected, but control port 0x%lx
-is not valid\n", cport);
-                snd_device_free(card, chip);
-                return -ENODEV;
-        }
-
-  ...it looks like ver1 and ver2 aren't agreeing.  ;)   Okay, so I
-experimented a bit.  I commented out (#if 0 ... #endif) the if (ver1 !=
-ver2) {...} block, and added:
-
-   snd_printk("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n", cport,
-ver1, ver2);
-
- ...recompiled, reinstalled... and then:
-
-  `modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
-irq=5`
-
-  results in:
-
-   /dev/dsp, /dev/audio, /dev/snd/* all appear, laptop speakers click once
-(as before), followed quickly by a <blart>, and we're on our way...
-almost.
-
-  my shorthand dmesg (printk) shows me that the driver was unloading
-because 0xFF did not equal 0xE8. (I'm going from memory here.  I'm
-positive that the value of "ver1" was 0xFF -- not quite sure about "ver2",
-but it's close.  ..it definitely wasn't 0xFF (obviously!) which is why the
-driver load aborted).
-
-  cat /proc/asound/cards reports card 0 is a CS4237B at IRQ 5, DMA 1,0
-
-  in KDE, kmix loads and allows me to play with buttons/sliders - I can
-get CD audio to play out the laptop speakers, but other audio does not
-work.  xmms will load an mp3 file, but when I click the play button, the
-display shows 0:00, and nothing plays.  No sound, and the "progress bar"
-and "time remaining" stay at 0.
-
-  in terminal, `alsamixer` results in a segmentation fault.
-
-  ..incidentally, in this "hacked" module, it doesn't really matter what
-(reasonable) value I specify for cport= in /etc/modprobe.conf (0x538,
-0x120, 0x110 ...).  The result is the same.  kmix allows some adjustment,
-cd audio plays, no other sound, and alsamixer seg faults.  No doubt, if I
-were to work at it, I could generate a kernel panic with the right
-value... ;)
-
-
-
-
+Regards
+Guido
 ======================================================================
+
+----------------------------------------------------------------------
+ pzad - 01-13-06 10:15 
+----------------------------------------------------------------------
+This:
+
+Mixers: 0: Conexant id 30
+This is Conexant AMC97 codec responsible for Analog audio and analog modem
+part.
+
+Your modem consists from two parts ICH6 (digital part - controler) and
+MC97(in this case AMC97) codec (analog part). ICH6 modem is supported, but
+Conexant codec modem part not.
+
+----------------------------------------------------------------------
+ guido - 01-14-06 23:48 
+----------------------------------------------------------------------
+So let's resume:
+
+I can now load snd-intel8x0 and snd-intel8x0m at the same time and the
+sound
+output still is working.
+I have a conexant modem chip and a intel ICH6 modem controller.
+For the conexant modem chip I will need the hsf codecs from linuxant.
+So is the snd-intel8x0m module for any use for my type of hardware
+combination?
+What can I do with this module?
+
+Regards
+Guido
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-06 23:47 briand         New Issue                                    
-01-14-06 23:47 briand         Distribution              => Fedora Core 3   
-01-14-06 23:47 briand         Kernel Version            => 2.6.9-1.667     
+12-29-05 22:43 guido          New Issue                                    
+12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
+kernel and alsa from "SID"
+12-29-05 22:43 guido          Kernel Version            => 2.6.14          
+01-03-06 20:51 guido          Issue Monitored: guido                       
+01-07-06 01:56 sashak         Note Added: 0007501                          
+01-07-06 01:57 sashak         File Added: ich-cxt30amc-test.patch               
+    
+01-07-06 01:57 sashak         Note Added: 0007502                          
+01-12-06 23:39 guido          File Added: syslog                           
+01-12-06 23:40 guido          Note Added: 0007593                          
+01-12-06 23:43 guido          Note Edited: 0007593                         
+01-13-06 00:21 sashak         Note Added: 0007601                          
+01-13-06 10:06 guido          Note Added: 0007636                          
+01-13-06 10:15 pzad           Note Added: 0007637                          
+01-14-06 23:48 guido          Note Added: 0007657                          
 ======================================================================
 
 
