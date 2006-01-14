@@ -1,18 +1,14 @@
-From: =?iso-2022-jp?B?GyRCS1w+chsoQg==?= <sweet_garden_2005@yahoo.co.jp>
-Subject: =?iso-2022-jp?B?GyRCOkc4ZSROJWEhPCVrJEskNyReJDkhIztkJE5CTiRHJDkhIxsoQg==?=
-Date: Sat, 14 Jan 2006 21:44:37 +0100 (MET)
-Message-ID: <20060114204437.24AEC91F07@mail.perex.cz>
-Reply-To: <sweet_garden_2005@yahoo.co.jp>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001747]: Error messages while loading
+Date: Sat, 14 Jan 2006 21:59:35 +0100
+Message-ID: <8a9b9eca93cb6dd22f4e872f3ba0ce67@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 873BC138
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 21:44:38 +0100 (MET)
-Received: from alsa-project.org (pl211.nas921.o-tokyo.nttpc.ne.jp [219.102.16.211])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 24AEC91F07
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 21:44:37 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40591138
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 21:59:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,15 +21,50 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-私の携帯に連絡してくれませんか？私は電話でもメールでもどっちでも大丈夫ですから。今は主人がないので連絡してくれませんか？
 
-私が誘っている所は怪しいところとかじゃないですからね。前から言ってるけどどうしても心配だったらyahooとかMSNとかのフリーアドレスでやって下さい。それでも簡単に中に入れますから。アドレスなんて何でもいいんです。
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1747> 
+======================================================================
+Reported By:                Henne
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1747
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-14-2006 21:59 CET
+Last Modified:              01-14-2006 21:59 CET
+======================================================================
+Summary:                    Error messages while loading
+Description: 
+Hi,
 
-http://hanabira.org/c/ix09a/ここなら私は携帯でいつでも連絡が取れますから。出来れば直ぐに私の携帯に連絡して欲しいです。ココなら貴方に迷惑を掛けずに連絡が取れるから。
+I get these messages while booting:
 
-私の写真とかも沢山載せたのに…貴方の為に撮った写真…沢山載せたのに…お願いです。一度連絡して下さい。お願いです。
+ALSA sound/pci/ac97/ac97_codec.c:1898: AC'97 1 does not respond - RESET
+ALSA sound/pci/ac97/ac97_codec.c:1907: AC'97 1 access is not valid
+[0xffffffff],
+ removing mixer.
+ALSA sound/pci/intel8x0.c:2128: Unable to initialize codec #1
+intel8x0_measure_ac97_clock: measured 50165 usecs
+intel8x0: clocking to 48000
 
-http://hanabira.org/c/ix09a/ここから連絡して下さい。私絶対に損はさせませんから…何でもします。何でも言う事聞きます。だから…一度でいいから私の携帯に連絡して下さい。
+How can I help? What can I try?
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-14-06 21:59 Henne          New Issue                                    
+======================================================================
 
 
 
