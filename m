@@ -1,7 +1,7 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 3/3] echoaudio - minor changes
-Date: Sat, 14 Jan 2006 18:03:50 +0000
-Message-ID: <20060114180350.49ed5bde.pochini@shiny.it>
+Subject: [PATCH 4/4] echoaudio - minor changes
+Date: Sat, 14 Jan 2006 18:04:17 +0000
+Message-ID: <20060114180417.46de3397.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -19,53 +19,111 @@ To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-
-The latest firmware for the Gina3G hasn't input nominal level controls
-anymore. This patch removes them.
+Check for more error conditions during hw init, expecially
+when debugging is enabled.
 
 
 Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
-diff -dup alsa-driver__indi1/pci/echoaudio/echo3g_dsp.c alsa-driver/pci/echoaudio/echo3g_dsp.c
---- alsa-driver__indi1/pci/echoaudio/echo3g_dsp.c	2006-01-11 20:56:39.000000000 +0000
-+++ alsa-driver/pci/echoaudio/echo3g_dsp.c	2006-01-12 21:40:10.000000000 +0000
+diff -dup alsa-driver__indi2/pci/echoaudio/echo3g_dsp.c alsa-driver/pci/echoaudio/echo3g_dsp.c
+--- alsa-driver__indi2/pci/echoaudio/echo3g_dsp.c	2006-01-12 21:40:10.000000000 +0000
++++ alsa-driver/pci/echoaudio/echo3g_dsp.c	2006-01-14 16:27:21.000000000 +0000
+@@ -98,10 +98,13 @@ static int init_hw(struct echoaudio *chi
+ 	chip->non_audio_spdif = FALSE;
+ 	chip->bad_board = FALSE;
+ 
+-	err = init_line_levels(chip);
+-	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
+-	set_phantom_power(chip, 0);
+-	set_professional_spdif(chip, TRUE);
++	if ((err = init_line_levels(chip)) < 0)
++		return err;
++	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
++	snd_assert(err >= 0, return err);
++	err = set_phantom_power(chip, 0);
++	snd_assert(err >= 0, return err);
++	err = set_professional_spdif(chip, TRUE);
+ 
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
+diff -dup alsa-driver__indi2/pci/echoaudio/gina24_dsp.c alsa-driver/pci/echoaudio/gina24_dsp.c
+--- alsa-driver__indi2/pci/echoaudio/gina24_dsp.c	2006-01-11 21:32:51.000000000 +0000
++++ alsa-driver/pci/echoaudio/gina24_dsp.c	2006-01-14 16:27:21.000000000 +0000
+@@ -76,8 +76,10 @@ static int init_hw(struct echoaudio *chi
+ 		return err;
+ 	chip->bad_board = FALSE;
+ 
+-	err = init_line_levels(chip);
+-	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
++	if ((err = init_line_levels(chip)) < 0)
++		return err;
++	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
++	snd_assert(err >= 0, return err);
+ 	err = set_professional_spdif(chip, TRUE);
+ 
+ 	DE_INIT(("init_hw done\n"));
+diff -dup alsa-driver__indi2/pci/echoaudio/indigo_dsp.c alsa-driver/pci/echoaudio/indigo_dsp.c
+--- alsa-driver__indi2/pci/echoaudio/indigo_dsp.c	2006-01-12 21:35:13.000000000 +0000
++++ alsa-driver/pci/echoaudio/indigo_dsp.c	2006-01-14 16:16:03.000000000 +0000
+@@ -69,7 +69,7 @@ static int init_hw(struct echoaudio *chi
+ 	set_vmixer_gain(chip, 1, 5, 0);
+ 	set_vmixer_gain(chip, 0, 6, 0);
+ 	set_vmixer_gain(chip, 1, 7, 0);
+-	update_vmixer_level(chip);
++	err = update_vmixer_level(chip);
+ 
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
+diff -dup alsa-driver__indi2/pci/echoaudio/indigodj_dsp.c alsa-driver/pci/echoaudio/indigodj_dsp.c
+--- alsa-driver__indi2/pci/echoaudio/indigodj_dsp.c	2006-01-12 21:35:13.000000000 +0000
++++ alsa-driver/pci/echoaudio/indigodj_dsp.c	2006-01-14 16:16:03.000000000 +0000
+@@ -69,7 +69,7 @@ static int init_hw(struct echoaudio *chi
+ 	set_vmixer_gain(chip, 1, 5, 0);
+ 	set_vmixer_gain(chip, 2, 6, 0);
+ 	set_vmixer_gain(chip, 3, 7, 0);
+-	update_vmixer_level(chip);
++	err = update_vmixer_level(chip);
+ 
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
+diff -dup alsa-driver__indi2/pci/echoaudio/indigoio_dsp.c alsa-driver/pci/echoaudio/indigoio_dsp.c
+--- alsa-driver__indi2/pci/echoaudio/indigoio_dsp.c	2006-01-12 21:35:13.000000000 +0000
++++ alsa-driver/pci/echoaudio/indigoio_dsp.c	2006-01-14 16:16:03.000000000 +0000
+@@ -69,7 +69,7 @@ static int init_hw(struct echoaudio *chi
+ 	set_vmixer_gain(chip, 1, 5, 0);
+ 	set_vmixer_gain(chip, 0, 6, 0);
+ 	set_vmixer_gain(chip, 1, 7, 0);
+-	update_vmixer_level(chip);
++	err = update_vmixer_level(chip);
+ 
+ 	DE_INIT(("init_hw done\n"));
+ 	return err;
+diff -dup alsa-driver__indi2/pci/echoaudio/layla24_dsp.c alsa-driver/pci/echoaudio/layla24_dsp.c
+--- alsa-driver__indi2/pci/echoaudio/layla24_dsp.c	2006-01-11 21:32:51.000000000 +0000
++++ alsa-driver/pci/echoaudio/layla24_dsp.c	2006-01-14 16:27:21.000000000 +0000
+@@ -69,7 +69,8 @@ static int init_hw(struct echoaudio *chi
+ 	if ((err = init_line_levels(chip)) < 0)
+ 		return err;
+ 
+-	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
++	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
++	snd_assert(err >= 0, return err);
+ 	err = set_professional_spdif(chip, TRUE);
+ 
+ 	DE_INIT(("init_hw done\n"));
+diff -dup alsa-driver__indi2/pci/echoaudio/mona_dsp.c alsa-driver/pci/echoaudio/mona_dsp.c
+--- alsa-driver__indi2/pci/echoaudio/mona_dsp.c	2006-01-11 21:32:51.000000000 +0000
++++ alsa-driver/pci/echoaudio/mona_dsp.c	2006-01-14 16:27:21.000000000 +0000
 @@ -74,7 +74,8 @@ static int init_hw(struct echoaudio *chi
- 		chip->px_analog_in = chip->bx_analog_in = 14;
- 		chip->px_digital_in = chip->bx_digital_in = 16;
- 		chip->px_num = chip->bx_num = 24;
--		chip->has_phantom_power = 1;
-+		chip->has_phantom_power = TRUE;
-+		chip->hasnt_input_nominal_level = TRUE;
- 	} else if (err == E3G_LAYLA3G_BOX_TYPE) {
- 		chip->input_clock_types =	ECHO_CLOCK_BIT_INTERNAL |
- 						ECHO_CLOCK_BIT_SPDIF |
-diff -dup alsa-driver__indi1/pci/echoaudio/echoaudio.c alsa-driver/pci/echoaudio/echoaudio.c
---- alsa-driver__indi1/pci/echoaudio/echoaudio.c	2006-01-11 21:13:33.000000000 +0000
-+++ alsa-driver/pci/echoaudio/echoaudio.c	2006-01-12 21:40:10.000000000 +0000
-@@ -1939,8 +1939,9 @@ static int __devinit snd_echo_probe(stru
- #endif
+ 	if ((err = init_line_levels(chip)) < 0)
+ 		return err;
  
- #ifdef ECHOCARD_HAS_INPUT_NOMINAL_LEVEL
--	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_intput_nominal_level, chip))) < 0)
--		goto ctl_error;
-+	if (!chip->hasnt_input_nominal_level)
-+		if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_intput_nominal_level, chip))) < 0)
-+			goto ctl_error;
- #endif
+-	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
++	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
++	snd_assert(err >= 0, return err);
+ 	err = set_professional_spdif(chip, TRUE);
  
- #ifdef ECHOCARD_HAS_OUTPUT_NOMINAL_LEVEL
-diff -dup alsa-driver__indi1/pci/echoaudio/echoaudio.h alsa-driver/pci/echoaudio/echoaudio.h
---- alsa-driver__indi1/pci/echoaudio/echoaudio.h	2006-01-09 22:14:51.000000000 +0000
-+++ alsa-driver/pci/echoaudio/echoaudio.h	2006-01-12 21:40:10.000000000 +0000
-@@ -387,6 +387,7 @@ struct echoaudio {
- 	char non_audio_spdif;			/* 3G - only */
- 	char digital_in_automute;		/* Gina24, Layla24, Mona - only */
- 	char has_phantom_power;
-+	char hasnt_input_nominal_level;		/* Gina3G */
- 	char phantom_power;			/* Gina3G - only */
- 	char has_midi;
- 	char midi_input_enabled;
-
+ 	DE_INIT(("init_hw done\n"));
 
 
 --
