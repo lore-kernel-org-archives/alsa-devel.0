@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001747]: Error messages while loading
-Date: Sat, 14 Jan 2006 21:59:35 +0100
-Message-ID: <8a9b9eca93cb6dd22f4e872f3ba0ce67@bugtrack.alsa-project.org>
+Date: Sat, 14 Jan 2006 22:03:27 +0100
+Message-ID: <4e434f51fe948bfb35aa070df3d88d39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40591138
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 21:59:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1CEF127
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 22:03:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1747> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-14-2006 21:59 CET
-Last Modified:              01-14-2006 21:59 CET
+Last Modified:              01-14-2006 22:03 CET
 ======================================================================
 Summary:                    Error messages while loading
 Description: 
@@ -60,10 +60,16 @@ How can I help? What can I try?
 
 ======================================================================
 
+----------------------------------------------------------------------
+ Henne - 01-14-06 22:03 
+----------------------------------------------------------------------
+Sorry, my alsa-driver version is 1.0.11rc2.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-14-06 21:59 Henne          New Issue                                    
+01-14-06 22:03 Henne          Note Added: 0007655                          
 ======================================================================
 
 
