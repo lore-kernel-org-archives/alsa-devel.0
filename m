@@ -1,11 +1,18 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 4/4] echoaudio - minor changes
-Date: Sat, 14 Jan 2006 18:04:17 +0000
-Message-ID: <20060114180417.46de3397.pochini@shiny.it>
+From: =?iso-2022-jp?B?GyRCS1w+chsoQg==?= <sweet_garden_2005@yahoo.co.jp>
+Subject: =?iso-2022-jp?B?GyRCOkc4ZSROJWEhPCVrJEskNyReJDkhIztkJE5CTiRHJDkhIxsoQg==?=
+Date: Sat, 14 Jan 2006 21:44:37 +0100 (MET)
+Message-ID: <20060114204437.24AEC91F07@mail.perex.cz>
+Reply-To: <sweet_garden_2005@yahoo.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 873BC138
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 21:44:38 +0100 (MET)
+Received: from alsa-project.org (pl211.nas921.o-tokyo.nttpc.ne.jp [219.102.16.211])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 24AEC91F07
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 21:44:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,119 +22,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+私の携帯に連絡してくれませんか？私は電話でもメールでもどっちでも大丈夫ですから。今は主人がないので連絡してくれませんか？
 
-Check for more error conditions during hw init, expecially
-when debugging is enabled.
+私が誘っている所は怪しいところとかじゃないですからね。前から言ってるけどどうしても心配だったらyahooとかMSNとかのフリーアドレスでやって下さい。それでも簡単に中に入れますから。アドレスなんて何でもいいんです。
 
+http://hanabira.org/c/ix09a/ここなら私は携帯でいつでも連絡が取れますから。出来れば直ぐに私の携帯に連絡して欲しいです。ココなら貴方に迷惑を掛けずに連絡が取れるから。
 
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+私の写真とかも沢山載せたのに…貴方の為に撮った写真…沢山載せたのに…お願いです。一度連絡して下さい。お願いです。
 
-diff -dup alsa-driver__indi2/pci/echoaudio/echo3g_dsp.c alsa-driver/pci/echoaudio/echo3g_dsp.c
---- alsa-driver__indi2/pci/echoaudio/echo3g_dsp.c	2006-01-12 21:40:10.000000000 +0000
-+++ alsa-driver/pci/echoaudio/echo3g_dsp.c	2006-01-14 16:27:21.000000000 +0000
-@@ -98,10 +98,13 @@ static int init_hw(struct echoaudio *chi
- 	chip->non_audio_spdif = FALSE;
- 	chip->bad_board = FALSE;
- 
--	err = init_line_levels(chip);
--	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
--	set_phantom_power(chip, 0);
--	set_professional_spdif(chip, TRUE);
-+	if ((err = init_line_levels(chip)) < 0)
-+		return err;
-+	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
-+	snd_assert(err >= 0, return err);
-+	err = set_phantom_power(chip, 0);
-+	snd_assert(err >= 0, return err);
-+	err = set_professional_spdif(chip, TRUE);
- 
- 	DE_INIT(("init_hw done\n"));
- 	return err;
-diff -dup alsa-driver__indi2/pci/echoaudio/gina24_dsp.c alsa-driver/pci/echoaudio/gina24_dsp.c
---- alsa-driver__indi2/pci/echoaudio/gina24_dsp.c	2006-01-11 21:32:51.000000000 +0000
-+++ alsa-driver/pci/echoaudio/gina24_dsp.c	2006-01-14 16:27:21.000000000 +0000
-@@ -76,8 +76,10 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	err = init_line_levels(chip);
--	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
-+	if ((err = init_line_levels(chip)) < 0)
-+		return err;
-+	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
-+	snd_assert(err >= 0, return err);
- 	err = set_professional_spdif(chip, TRUE);
- 
- 	DE_INIT(("init_hw done\n"));
-diff -dup alsa-driver__indi2/pci/echoaudio/indigo_dsp.c alsa-driver/pci/echoaudio/indigo_dsp.c
---- alsa-driver__indi2/pci/echoaudio/indigo_dsp.c	2006-01-12 21:35:13.000000000 +0000
-+++ alsa-driver/pci/echoaudio/indigo_dsp.c	2006-01-14 16:16:03.000000000 +0000
-@@ -69,7 +69,7 @@ static int init_hw(struct echoaudio *chi
- 	set_vmixer_gain(chip, 1, 5, 0);
- 	set_vmixer_gain(chip, 0, 6, 0);
- 	set_vmixer_gain(chip, 1, 7, 0);
--	update_vmixer_level(chip);
-+	err = update_vmixer_level(chip);
- 
- 	DE_INIT(("init_hw done\n"));
- 	return err;
-diff -dup alsa-driver__indi2/pci/echoaudio/indigodj_dsp.c alsa-driver/pci/echoaudio/indigodj_dsp.c
---- alsa-driver__indi2/pci/echoaudio/indigodj_dsp.c	2006-01-12 21:35:13.000000000 +0000
-+++ alsa-driver/pci/echoaudio/indigodj_dsp.c	2006-01-14 16:16:03.000000000 +0000
-@@ -69,7 +69,7 @@ static int init_hw(struct echoaudio *chi
- 	set_vmixer_gain(chip, 1, 5, 0);
- 	set_vmixer_gain(chip, 2, 6, 0);
- 	set_vmixer_gain(chip, 3, 7, 0);
--	update_vmixer_level(chip);
-+	err = update_vmixer_level(chip);
- 
- 	DE_INIT(("init_hw done\n"));
- 	return err;
-diff -dup alsa-driver__indi2/pci/echoaudio/indigoio_dsp.c alsa-driver/pci/echoaudio/indigoio_dsp.c
---- alsa-driver__indi2/pci/echoaudio/indigoio_dsp.c	2006-01-12 21:35:13.000000000 +0000
-+++ alsa-driver/pci/echoaudio/indigoio_dsp.c	2006-01-14 16:16:03.000000000 +0000
-@@ -69,7 +69,7 @@ static int init_hw(struct echoaudio *chi
- 	set_vmixer_gain(chip, 1, 5, 0);
- 	set_vmixer_gain(chip, 0, 6, 0);
- 	set_vmixer_gain(chip, 1, 7, 0);
--	update_vmixer_level(chip);
-+	err = update_vmixer_level(chip);
- 
- 	DE_INIT(("init_hw done\n"));
- 	return err;
-diff -dup alsa-driver__indi2/pci/echoaudio/layla24_dsp.c alsa-driver/pci/echoaudio/layla24_dsp.c
---- alsa-driver__indi2/pci/echoaudio/layla24_dsp.c	2006-01-11 21:32:51.000000000 +0000
-+++ alsa-driver/pci/echoaudio/layla24_dsp.c	2006-01-14 16:27:21.000000000 +0000
-@@ -69,7 +69,8 @@ static int init_hw(struct echoaudio *chi
- 	if ((err = init_line_levels(chip)) < 0)
- 		return err;
- 
--	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
-+	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
-+	snd_assert(err >= 0, return err);
- 	err = set_professional_spdif(chip, TRUE);
- 
- 	DE_INIT(("init_hw done\n"));
-diff -dup alsa-driver__indi2/pci/echoaudio/mona_dsp.c alsa-driver/pci/echoaudio/mona_dsp.c
---- alsa-driver__indi2/pci/echoaudio/mona_dsp.c	2006-01-11 21:32:51.000000000 +0000
-+++ alsa-driver/pci/echoaudio/mona_dsp.c	2006-01-14 16:27:21.000000000 +0000
-@@ -74,7 +74,8 @@ static int init_hw(struct echoaudio *chi
- 	if ((err = init_line_levels(chip)) < 0)
- 		return err;
- 
--	set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
-+	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
-+	snd_assert(err >= 0, return err);
- 	err = set_professional_spdif(chip, TRUE);
- 
- 	DE_INIT(("init_hw done\n"));
+http://hanabira.org/c/ix09a/ここから連絡して下さい。私絶対に損はさせませんから…何でもします。何でも言う事聞きます。だから…一度でいいから私の携帯に連絡して下さい。
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
