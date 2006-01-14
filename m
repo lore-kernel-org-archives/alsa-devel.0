@@ -1,18 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: simple PCM helper function
-Date: Sat, 14 Jan 2006 21:48:17 +0000
-Message-ID: <20060114214817.1de4b094.pochini@shiny.it>
-References: <Pine.LNX.4.61.0601062102080.10811@tm8103.perex-int.cz>
-	<43C28D90.10103@superbug.co.uk>
-	<Pine.LNX.4.61.0601101254540.10330@tm8103.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
+Date: Sat, 14 Jan 2006 23:47:55 +0100
+Message-ID: <7f8a85f8e1d77222a5fe70603d317d3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vsmtp3alice.tin.it (vsmtp3alice.tin.it [212.216.176.143])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 590CA132
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 22:48:26 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.61.0601101254540.10330@tm8103.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD1FD137
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 23:47:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,28 +18,132 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: James@superbug.co.uk, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Jan 2006 13:26:58 +0100 (CET)
-Jaroslav Kysela <perex@suse.cz> wrote:
 
-> You must also add a new function "snd_pcm_check_for_space()" or something
-> like this. The app callback will be called from this function. Also, the
-> app callback function should probably take same parameters as
-> snd_pcm_mmap_begin() handles (areas, offset), because we support more
-> ring buffer organization schemes.
->
-> So, to all others, is this mechanism worth to implement?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1748> 
+======================================================================
+Reported By:                briand
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1748
+Category:                   ISA - cs4236
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9-1.667
+======================================================================
+Date Submitted:             01-14-2006 23:47 CET
+Last Modified:              01-14-2006 23:47 CET
+======================================================================
+Summary:                    sound driver will not load (CS4237B chip)
+Description: 
+with BIOS set to "PnPOS" for sound chip:
+  `/sbin/modprobe snd-cs4236` produces the following on stdout:
+  "FATAL: Error inserting snd_cs4236 \
+   (/lib/modules/2.6.9-1.667/kernel/sound/isa/cs423x/snd-cs4236.ko): \
+   No such device"
 
-IMHO they should be as simple as possible. I thing the first proposal is
-more obvious and straightforward. That callback mechanism just moves the
-complexity somewhere else.
+   -- occurs with 1.0.10, 1.0.11rc1, and (currently) 1.0.11rc2
+   alsaconf reports I have no sound card.
+   cat /proc/asound/cards reports I have no sound card.
 
 
---
-Giuliano.
+with BIOS set to "Enable" for sound chip:
+
+ `/sbin/modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
+irq=5`
+
+  ..produces nothing on stdout/stderr, but the laptop speakers click once,
+and dmesg shows:
+
+ "ALSA /path/to/alsa/source/isa/cs423x/cs4236_lib.c:305: CS4236+ chip
+detected, but control port 0x538 is not valid"
+
+  - that message shows up in dmesg regardless of what i specify for
+'cport=' parameter (with, of course, the corresponding port value in the
+error message).
+
+  alsaconf seems to find the card, test the card, and reports all is fine;
+offers to modify /etc/modprobe.conf (with parameters shown above), and
+congratulates me.
+  cat /proc/asound/cards reports I have no sound card.
+
+
+In looking at cs4236_lib.c, lines 301-307:
+
+        ver1 = snd_cs4236_ctrl_in(chip, 1);
+        ver2 = snd_cs4236_ext_in(chip, CS4236_VERSION);
+        snd_printdd("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n",
+cport, ver1, ver2);
+        if (ver1 != ver2) {
+                snd_printk("CS4236+ chip detected, but control port 0x%lx
+is not valid\n", cport);
+                snd_device_free(card, chip);
+                return -ENODEV;
+        }
+
+  ...it looks like ver1 and ver2 aren't agreeing.  ;)   Okay, so I
+experimented a bit.  I commented out (#if 0 ... #endif) the if (ver1 !=
+ver2) {...} block, and added:
+
+   snd_printk("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n", cport,
+ver1, ver2);
+
+ ...recompiled, reinstalled... and then:
+
+  `modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
+irq=5`
+
+  results in:
+
+   /dev/dsp, /dev/audio, /dev/snd/* all appear, laptop speakers click once
+(as before), followed quickly by a <blart>, and we're on our way...
+almost.
+
+  my shorthand dmesg (printk) shows me that the driver was unloading
+because 0xFF did not equal 0xE8. (I'm going from memory here.  I'm
+positive that the value of "ver1" was 0xFF -- not quite sure about "ver2",
+but it's close.  ..it definitely wasn't 0xFF (obviously!) which is why the
+driver load aborted).
+
+  cat /proc/asound/cards reports card 0 is a CS4237B at IRQ 5, DMA 1,0
+
+  in KDE, kmix loads and allows me to play with buttons/sliders - I can
+get CD audio to play out the laptop speakers, but other audio does not
+work.  xmms will load an mp3 file, but when I click the play button, the
+display shows 0:00, and nothing plays.  No sound, and the "progress bar"
+and "time remaining" stay at 0.
+
+  in terminal, `alsamixer` results in a segmentation fault.
+
+  ..incidentally, in this "hacked" module, it doesn't really matter what
+(reasonable) value I specify for cport= in /etc/modprobe.conf (0x538,
+0x120, 0x110 ...).  The result is the same.  kmix allows some adjustment,
+cd audio plays, no other sound, and alsamixer seg faults.  No doubt, if I
+were to work at it, I could generate a kernel panic with the right
+value... ;)
+
+
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-14-06 23:47 briand         New Issue                                    
+01-14-06 23:47 briand         Distribution              => Fedora Core 3   
+01-14-06 23:47 briand         Kernel Version            => 2.6.9-1.667     
+======================================================================
+
+
 
 
 -------------------------------------------------------
