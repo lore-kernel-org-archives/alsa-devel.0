@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001747]: Error messages while loading
-Date: Sat, 14 Jan 2006 22:03:27 +0100
-Message-ID: <4e434f51fe948bfb35aa070df3d88d39@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001728]: Modification of volume control for M-Audio Revolution 5.1
+Date: Sat, 14 Jan 2006 22:31:53 +0100
+Message-ID: <4ad92ce87f202415eb6189de73f8c412@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1CEF127
-	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 22:03:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9AA4132
+	for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2006 22:31:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1747> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1728> 
 ======================================================================
-Reported By:                Henne
+Reported By:                cyan
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1747
-Category:                   PCI - intel8x0
+Issue ID:                   1728
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               gentoo testing
+Kernel Version:             2.6.14-gentoo-r5
 ======================================================================
-Date Submitted:             01-14-2006 21:59 CET
-Last Modified:              01-14-2006 22:03 CET
+Date Submitted:             01-09-2006 23:35 CET
+Last Modified:              01-14-2006 22:31 CET
 ======================================================================
-Summary:                    Error messages while loading
+Summary:                    Modification of volume control for M-Audio
+Revolution 5.1
 Description: 
-Hi,
-
-I get these messages while booting:
-
-ALSA sound/pci/ac97/ac97_codec.c:1898: AC'97 1 does not respond - RESET
-ALSA sound/pci/ac97/ac97_codec.c:1907: AC'97 1 access is not valid
-[0xffffffff],
- removing mixer.
-ALSA sound/pci/intel8x0.c:2128: Unable to initialize codec #1
-intel8x0_measure_ac97_clock: measured 50165 usecs
-intel8x0: clocking to 48000
-
-How can I help? What can I try?
-
+In Alsamixer (and KMix) is not possible to change volume of both chanels at
+once. Slides with names "DAC" and "DAC1" corresponds to left and right
+chanel. 
+I would like to make a suggestion to merge them together.
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 01-14-06 22:03 
+ wollschaf - 01-14-06 22:31 
 ----------------------------------------------------------------------
-Sorry, my alsa-driver version is 1.0.11rc2.
+This would be a great step for usability.
+
+I dug around in the source code and - surprise, surprise - understood not
+a thing going on.
+
+The other 4 DACs should be merged, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-06 21:59 Henne          New Issue                                    
-01-14-06 22:03 Henne          Note Added: 0007655                          
+01-09-06 23:35 cyan           New Issue                                    
+01-09-06 23:35 cyan           Distribution              => gentoo testing  
+01-09-06 23:35 cyan           Kernel Version            => 2.6.14-gentoo-r5
+01-14-06 22:31 wollschaf      Note Added: 0007656                          
 ======================================================================
 
 
