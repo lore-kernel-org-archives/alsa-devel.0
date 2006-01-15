@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
-Date: Sun, 15 Jan 2006 21:48:22 +0100
-Message-ID: <2289e65aedcaab99c549893769be383f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable model
+Date: Sun, 15 Jan 2006 21:55:15 +0100
+Message-ID: <cd755758b3d9ca019b1946a55bbd77d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B01F13E
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 21:48:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFD07C9
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 21:55:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,181 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1627> 
 ======================================================================
-Reported By:                khampf
-Assigned To:                jcdutton
+Reported By:                Elfe
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1595
-Category:                   PCI - emu10k1
+Issue ID:                   1627
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian 3 testing/unstable hybrid
-Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-24-2005 03:35 CET
-Last Modified:              01-15-2006 21:48 CET
+Date Submitted:             12-07-2005 21:00 CET
+Last Modified:              01-15-2006 21:55 CET
 ======================================================================
-Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
-included)
+Summary:                    snd-hda-intel no suitable model
 Description: 
-I recently bought me a Creative Audigy 4 and was surprised it didn't work
-at all ... I noticed it wasn't detected and made it detectable and copied
-the settings from Audigy 4 Pro. I have to click the "Audigy Analog/Digital
-Output switch" switch to make it work. Front/Center, Mic works, however I
-have no idea about wether SPDIF is ok or not (I have no devices). It might
-be that a lot of functionality is missing still but it's a start.
+Hi,
 
-First, output of "$ lspci -vn | grep -1 0401"
-0000:02:09.0 0401: 1102:0008
-        Subsystem: 1102:1021
+I can't find a suitable model for the ALC880 on my Fujitsi Siemens Amilo
+1439G.
+The following devices are present:
+- internal speakers (possibly emulating pc beep)
+- internal mic
+- one jack for mic/line-in
+- one jack for Headset/IEC958
+- volume control wheel
 
-Then, using "modprobe emu10k1 sumsystem=xxxxxx" does not work at all for
-me, doesn't get the interrupt up and errors about probe failing.
+status:
+- volume control wheel does not work at all
+- Headset jack disables internal speakers
+- Headset and internal Speakers have a different output control :( (or no
+master volume)
+- Internal Mic gets disabled when external mic is plugged in
+- Mic works with a lot of try and error
 
-So I added did this to my kernel sound/pci/emu10k1/emu10k1_main.c:
+the best config would be:
+- volume wheel working
+- the control for internal speakers and headphone combined into one or
+both and a master volume
+- correct recording device and volume selection
+- microphone boost setting if available
 
-	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
-	 .driver = "Audigy2", .name = "Audigy 4 [A400?]", 
-	 .id = "Audigy2",
-	 .emu10k2_chip = 1,
-	 .ca0102_chip = 1,
-	 /*.ca0151_chip = 1, */
-	 /*.spk71 = 1,	*/
-	 /*.spdif_bug = 1,*/
-	 .ac97_chip = 1} ,
-
-I left those commented out as I've tried the options and noticed no
-difference in operation. Also, I don't know the SB0xxx model (can't remove
-the card and look at it at the moment either).
 ======================================================================
 
 ----------------------------------------------------------------------
- khampf - 01-15-06 20:34 
+ rlrevell - 01-15-06 19:59 
 ----------------------------------------------------------------------
-Ok guys, back home from holidays, took a while longer than expected. My
-card has developed problems, distortions on the front right channel
-(verified on another computer with other speakers). But while the card was
-pulled out I tried to take som pictures of it and read what was printed on
-the chips.
-
-First of all, I do _not_ have the same card as on the picture earlier in
-this thread. That picture has a CA0103 while I have a CA0108 as "the big
-one". This is the DSP, right?
-
-This is what I could find out:
-
-SOUND BLASTER AUDIGY 4
-MODEL: SB0610
-
-The big one (DSP?):
-	Creative
-	CA0108-IAT LF
-	@CREATIVE TECH '03
-	55AC6LW
-
-DAC or ADC:
-	Cirrus Logic
-	CS4382-KQZ
-	WAEXAX0510
-	TAIWAN
-
-AC97:
-	Sigmatel
-	STAC9750
-	(the rest hard to make out)
-
-I was not able to find both a DAC and an ADC .. you can look at the
-pictures and see for yourself (at least some parts are readable).
-
-http://www.c0r3.org/audigy4/
-
-Now my question is ... how does this card work with the CA102 part of the
-driver and the CA0108 part disabled? Is there some init in CA0102 that is
-bringing it online? And why does the card posted earlier sport a CA10300
-and mine CA0108?
-
-The PCB is exactly the same as far as I can see, all other components than
-"the big one" seems to be identical too.
-
-But I did recompile my kernel before I took the card out and this worked
-perfectly (at least 5.1 sound) with my Audigy 4 an kernel 2.6.15 (in
-emu10k1_main.c):
-
-{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10211102,
-	 .driver = "Audigy2", .name = "Audigy 4 [SB0610]", 
-	 .id = "Audigy2",
-	 .emu10k2_chip = 1,
-	 .ca0102_chip = 1
-	 /* .ca0151_chip = 1, */
-	 /* .spk71 = 1, */
-	 /* .spdif_bug = 1, */
-	 /* .ac97_chip = 1 */ } ,
-
-Untested: digital out, 7.1 surround
-Working: stereo sound (2.1), 5.1 surround, AC97 mixer
-
-I can however not test the card more before I get a replacement, and I've
-got an Audigy 2 with firewire now instead (works perfectly) so I'm not too
-sure I'll use the Audigy 4 in my workstation even after a warranty
-replacement.
+What exactly is the problem with the mic, the original report said "the mic
+works with lots of trial and error".
 
 ----------------------------------------------------------------------
- jprk - 01-15-06 21:48 
+ tuxlover - 01-15-06 21:55 
 ----------------------------------------------------------------------
-Just before Christmas I bought what seems to be a bulk version of Audigy 4
-(named "SB Audigy 4 OEM" at www.czechcomputer.cz). The DSP is CA0108-IATLF
-(and not CA10300-IAT as reported by BerndBuechs and as jcdutton found on
-the Creative website), but the rest is the same: DAC is Phillips 1361T,
-ADC is CirrusLogic CS4382-KQZ ADC and AC97 is SigmaTel STAC9750.
-
-Photographs of the card (2-4MB files, beware) can be found at
- 
-http://euler.fd.cvut.cz/audigy4/SB_Audigy_4_OEM_cropped.jpg
-http://euler.fd.cvut.cz/audigy4/SB_Audigy_4_OEM.jpg
-http://euler.fd.cvut.cz/audigy4/SB_Audigy_4_OEM_detail.jpg
-
-I am running Ubuntu 5.10 with an almost vanilla 2.6.12 kernel (V4L
-subsystem taken from V4L CVS, ALSA is unpatched, version 1.0.9). I have
-on-board AC97 and this Audigy, audigy being indexed as the first one and
-connected to a 5.1 analog sound system. This combinaction works nice under
-Win XP. Under Linux, the only thing that I can make my Audigy to do is to
-click - by switching the digital/analog output. The on-board AC97 seems to
-work. The Audigy is being detected as "Audigy 2 Value [Unknown]", exactly
-as khampf mentions in the post from 24th November.
-
-I am now going to get the last version of ALSA, try to replace the kernel
-modules with the newer ones without crippling everything and report if the
-card works or not.
+the problem for me is that I can't find any way to get the mic in
+function.
+I don't know how to us the information in the description above.
+I use kernel Version 2.6.14-xx an 2.6.15. Loadind the kernel with the
+option "index=0 model=W810", "index=0 model=auto" and without any option.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-05 03:35 khampf         New Issue                                    
-11-24-05 03:35 khampf         Distribution              => Debian 3
-testing/unstable hybrid
-11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
-(-ckX+swsusp2+bootsplash)
-11-24-05 03:39 khampf         Issue Monitored: khampf                      
-11-24-05 03:41 khampf         Note Added: 0006837                          
-11-24-05 21:54 jcdutton       Note Added: 0006845                          
-11-26-05 22:33 khampf         Note Added: 0006850                          
-11-29-05 22:55 BerndBuechs    Issue Monitored: BerndBuechs                    
-11-29-05 22:56 BerndBuechs    Note Added: 0006874                          
-12-22-05 13:28 jcdutton       Note Added: 0007124                          
-12-22-05 13:29 jcdutton       Note Added: 0007125                          
-12-22-05 15:07 khampf         Note Added: 0007126                          
-12-22-05 20:22 jcdutton       Note Added: 0007129                          
-12-23-05 11:02 BerndBuechs    Note Added: 0007132                          
-12-28-05 13:40 vsu            Issue Monitored: vsu                         
-01-06-06 00:49 kjes           Note Added: 0007485                          
-01-09-06 22:28 jcdutton       Status                   new => assigned     
-01-09-06 22:28 jcdutton       Assigned To               => jcdutton        
-01-15-06 20:34 khampf         Note Added: 0007670                          
-01-15-06 21:48 jprk           Note Added: 0007672                          
+12-07-05 21:00 Elfe           New Issue                                    
+12-08-05 17:26 tiwai          Note Added: 0006960                          
+01-15-06 19:55 tuxlover       Note Added: 0007668                          
+01-15-06 19:59 rlrevell       Note Added: 0007669                          
+01-15-06 21:55 tuxlover       Note Added: 0007673                          
 ======================================================================
 
 
