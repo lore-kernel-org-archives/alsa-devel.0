@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable model
-Date: Sun, 15 Jan 2006 19:55:11 +0100
-Message-ID: <e7e77c80dce93e31b9d55f82216b3970@bugtrack.alsa-project.org>
+Date: Sun, 15 Jan 2006 19:59:23 +0100
+Message-ID: <74e88b6db7c52457d76b02ed3a016f7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABD8D137
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 19:55:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC5B0127
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 19:59:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-07-2005 21:00 CET
-Last Modified:              01-15-2006 19:55 CET
+Last Modified:              01-15-2006 19:59 CET
 ======================================================================
 Summary:                    snd-hda-intel no suitable model
 Description: 
@@ -73,14 +73,6 @@ both and a master volume
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-08-05 17:26 
-----------------------------------------------------------------------
-The volume control wheel isn't implemented yet.
-Also, on this chipset, there is no real "master" volume.  Each output is
-controlled separately.  We need to implement it virtually, and this should
-be better done in user-space.
-
-----------------------------------------------------------------------
  tuxlover - 01-15-06 19:55 
 ----------------------------------------------------------------------
 how can I use the information in the part " additional information.
@@ -94,12 +86,19 @@ Thans for your help
 
 tuxlover
 
+----------------------------------------------------------------------
+ rlrevell - 01-15-06 19:59 
+----------------------------------------------------------------------
+What exactly is the problem with the mic, the original report said "the mic
+works with lots of trial and error".
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-07-05 21:00 Elfe           New Issue                                    
 12-08-05 17:26 tiwai          Note Added: 0006960                          
 01-15-06 19:55 tuxlover       Note Added: 0007668                          
+01-15-06 19:59 rlrevell       Note Added: 0007669                          
 ======================================================================
 
 
