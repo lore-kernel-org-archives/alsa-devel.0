@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001749]: SPDIF sound only in stereo
-Date: Sun, 15 Jan 2006 05:22:02 +0100
-Message-ID: <b6d2a35156371f7fc70bae6a353917c5@bugtrack.alsa-project.org>
+Date: Sun, 15 Jan 2006 06:37:06 +0100
+Message-ID: <4652d9179410faa702ed9502014e6799@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E74F13E
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 05:22:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E495E12A
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 06:37:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             01-15-2006 04:56 CET
-Last Modified:              01-15-2006 05:22 CET
+Last Modified:              01-15-2006 06:37 CET
 ======================================================================
 Summary:                    SPDIF sound only in stereo
 Description: 
@@ -65,6 +65,21 @@ surround sound system.
 You need a much newer ALSA than the one that comes with 2.6.12.  Try
 1.0.11-rc2 (alsa-driver and alsa-lib).
 
+----------------------------------------------------------------------
+ MechCow - 01-15-06 06:37 
+----------------------------------------------------------------------
+I installed alsa-driver and alsa-lib 1.0.11-rc2 . Modules installed fine
+and loaded fine, prints this as output 
+
+ACPI: PCI Interrupt 0000:00:09.0[A] -> GSI 17 (level, low) -> IRQ 193
+Model 1006 Rev 00000000 Serial 10061102
+
+I'm using gcc version 3.3.6 (Debian 1:3.3.6-12) cause its the one I've had
+the least problems with.
+
+Driver still does not output sound to the center speaker. Sound system
+unit identifies only a left and right channel.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -72,6 +87,7 @@ Date Modified  Username       Field                    Change
 01-15-06 04:56 MechCow        Distribution              => Debian          
 01-15-06 04:56 MechCow        Kernel Version            => 2.6.12          
 01-15-06 05:22 rlrevell       Note Added: 0007661                          
+01-15-06 06:37 MechCow        Note Added: 0007662                          
 ======================================================================
 
 
