@@ -1,12 +1,14 @@
-From: Anderson Briglia <briglia.anderson@gmail.com>
-Subject: Testing framework
-Date: Sun, 15 Jan 2006 18:55:31 -0400
-Message-ID: <e55525570601151455v537dffdhe37befc992499b5a@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001749]: SPDIF sound only in stereo
+Date: Mon, 16 Jan 2006 00:22:59 +0100
+Message-ID: <ad4864040f283b6874933cb5d427dfae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE8F1137
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 00:22:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-Is there some testing framework for testing newer ALSA drivers? I've
-been using speaker-test and aplay, from alsa-utils package but I think
-it could be automated or give more specific results.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1749> 
+======================================================================
+Reported By:                MechCow
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1749
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             01-15-2006 04:56 CET
+Last Modified:              01-16-2006 00:22 CET
+======================================================================
+Summary:                    SPDIF sound only in stereo
+Description: 
+I can only get stereo sound out of the ca0106. All other volumes are at
+standard levels. 
 
-Thanks in advance
+I'm using the SB Live 24Bit card. 
 
-Anderson Briglia
-Linux Embedded Lab
-INdT - Manaus
+0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+
+I'm using a 2.6.12 kernel I compiled myself and alsa installed from debian
+unstable. 
+
+I have connected the soundcard up as it specifies in the manual, the top
+slot connected by a miniplug-to-rca into the coaxial of my panasonic 5.1
+surround sound system. 
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 01-15-06 13:59 
+----------------------------------------------------------------------
+"Driver still does not output sound to the center speaker. Sound system
+unit identifies only a left and right channel."
+
+How are you testing this?
+
+----------------------------------------------------------------------
+ MechCow - 01-16-06 00:22 
+----------------------------------------------------------------------
+By running:
+
+speaker-test -c6 -Dplug:surround51
+
+And listening for sound. Also the sound unit heads up display has an
+indicator for what channels of input it is receiving.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-15-06 04:56 MechCow        New Issue                                    
+01-15-06 04:56 MechCow        Distribution              => Debian          
+01-15-06 04:56 MechCow        Kernel Version            => 2.6.12          
+01-15-06 05:22 rlrevell       Note Added: 0007661                          
+01-15-06 06:37 MechCow        Note Added: 0007662                          
+01-15-06 13:59 rlrevell       Note Added: 0007664                          
+01-16-06 00:22 MechCow        Note Added: 0007681                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
