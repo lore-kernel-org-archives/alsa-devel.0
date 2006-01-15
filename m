@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001751]: I can't "make" it
-Date: Sun, 15 Jan 2006 15:37:33 +0100
-Message-ID: <ed7889ac6a4fb1ba75ff721716f9b76a@bugtrack.alsa-project.org>
+Date: Sun, 15 Jan 2006 15:40:24 +0100
+Message-ID: <f1e88f788a81ab85dd95b5261a9253a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F17A112B
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 15:37:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 828A812B
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 15:40:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1751> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-15-2006 15:37 CET
-Last Modified:              01-15-2006 15:37 CET
+Last Modified:              01-15-2006 15:40 CET
 ======================================================================
 Summary:                    I can't "make" it
 Description: 
@@ -431,10 +431,17 @@ make: *** [compile] Error 1
 */
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 01-15-06 15:40 
+----------------------------------------------------------------------
+1.0.9-rc4 is not the latest version, and 0.9.4 is ancient.  Try 1.0.10 or
+1.0.11-rc2.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-15-06 15:37 DavidJ         New Issue                                    
+01-15-06 15:40 rlrevell       Note Added: 0007665                          
 ======================================================================
 
 
