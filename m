@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001749]: SPDIF sound only in stereo
-Date: Mon, 16 Jan 2006 00:22:59 +0100
-Message-ID: <ad4864040f283b6874933cb5d427dfae@bugtrack.alsa-project.org>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Alsa questions
+Date: Mon, 16 Jan 2006 10:23:09 +1100
+Message-ID: <1137367389.4823.40.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE8F1137
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 00:22:59 +0100 (MET)
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DBD7137
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 00:23:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi !
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1749> 
-======================================================================
-Reported By:                MechCow
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1749
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             01-15-2006 04:56 CET
-Last Modified:              01-16-2006 00:22 CET
-======================================================================
-Summary:                    SPDIF sound only in stereo
-Description: 
-I can only get stereo sound out of the ca0106. All other volumes are at
-standard levels. 
+I'm trying to figure out how to properly design a new sound driver for
+powermac with Alsa.
 
-I'm using the SB Live 24Bit card. 
+Most earlier machines are easy enough in that they have one codec on one
+bus. However, things get more tricky on G5 and newer laptops, where you
+end up with more than one bus and multiple codecs (I think both multiple
+codecs on one bus and multiple busses with separate codecs setups
+exist).
 
-0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+I'm not too sure what kind of relationship Alsa has between PCMs and
+mixer devices, and that sort of things yet
 
-I'm using a 2.6.12 kernel I compiled myself and alsa installed from debian
-unstable. 
+The main question that comes to mind is how I represent the multiple
+busses. Each bus has an independant pair of DMA channels (playback and
+capture). 
 
-I have connected the soundcard up as it specifies in the manual, the top
-slot connected by a miniplug-to-rca into the coaxial of my panasonic 5.1
-surround sound system. 
-======================================================================
+ - should I instanciate a different card object for each bus or not ?
+Busses _seem_ to be mostly independent, though I yet have to double
+check if they have any kind of crossover clocking...
 
-----------------------------------------------------------------------
- rlrevell - 01-15-06 13:59 
-----------------------------------------------------------------------
-"Driver still does not output sound to the center speaker. Sound system
-unit identifies only a left and right channel."
+ - should I instanciate one card, but 2 PCM devices ?
 
-How are you testing this?
+ - should I instanciate one card and one PCM device but with 2 playback
+and 2 capture substreams ?
 
-----------------------------------------------------------------------
- MechCow - 01-16-06 00:22 
-----------------------------------------------------------------------
-By running:
+It _seems_ to me, but I may be wrong, that the later would mean that you
+have N substreams getting in the same codec and beeing mixed, which
+isn't the case. My 2 i2s busses are wired to different codecs and thus
+different inputs and outputs. However, it's not yet clear to me if both
+busses always have both inputs and outputs... I _think_ that in some
+models at least, one of the 2 busses is only used for digital input or
+output, not sure, I'm still digging into darwin and machine device-trees
+to try to write down a complete "map" of apple hw setup.
 
-speaker-test -c6 -Dplug:surround51
+So if the above feeling is right, that would mean that I need either 2
+cards or 2 PCM devices, is that right ?
 
-And listening for sound. Also the sound unit heads up display has an
-indicator for what channels of input it is receiving.
+Then, comes the various codec controls (volumes, mutes, ...)... I am
+supposed to set them all to "MIXER" or should I in some way attach them
+to the proper PCM on which the codec ?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-15-06 04:56 MechCow        New Issue                                    
-01-15-06 04:56 MechCow        Distribution              => Debian          
-01-15-06 04:56 MechCow        Kernel Version            => 2.6.12          
-01-15-06 05:22 rlrevell       Note Added: 0007661                          
-01-15-06 06:37 MechCow        Note Added: 0007662                          
-01-15-06 13:59 rlrevell       Note Added: 0007664                          
-01-16-06 00:22 MechCow        Note Added: 0007681                          
-======================================================================
+Another question that comes to mind is locking with external event...
+things like input detection interrupts etc... Changing controls seem to
+be trivially done with the snd_ctl_notify) interface,  but what about
+PCM settings ? For example, if you plug a digital input in, the driver
+needs to change all it's internal clocking network and force it's PCM
+settings to match the incoming signal. (In fact, it's not even yet clear
+to me if I can have a digital input plugged _and_ output at a different
+clock rate a different data yet, at least not if they are on the same
+i2s bus, but some machine have separate busses so ...). In some cases,
+that include changing the PCM format. The typical case where it has the
+most impact on the driver is when inputing AC3...
+
+
+Thanks in advance for your replies,
+Cheers,
+Ben.
 
 
 
