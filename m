@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Mon, 16 Jan 2006 00:32:12 +0100
-Message-ID: <bcc4bde3e46fcaa3e426ce02e1928011@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001749]: SPDIF sound only in stereo
+Date: Mon, 16 Jan 2006 00:32:27 +0100
+Message-ID: <1577e3acfabe60670e6c71deab01e28e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D224142
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 00:32:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71694142
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 00:32:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,152 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1749> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                MechCow
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
+Issue ID:                   1749
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Distribution:               Debian
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
+Date Submitted:             01-15-2006 04:56 CET
 Last Modified:              01-16-2006 00:32 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    SPDIF sound only in stereo
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+I can only get stereo sound out of the ca0106. All other volumes are at
+standard levels. 
+
+I'm using the SB Live 24Bit card. 
+
+0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+
+I'm using a 2.6.12 kernel I compiled myself and alsa installed from debian
+unstable. 
+
+I have connected the soundcard up as it specifies in the manual, the top
+slot connected by a miniplug-to-rca into the coaxial of my panasonic 5.1
+surround sound system. 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-======================================================================
 
 ----------------------------------------------------------------------
- eudoxos - 01-13-06 08:03 
+ MechCow - 01-16-06 00:22 
 ----------------------------------------------------------------------
-ALSA-Configuration.txt mentions 'test' parameter to the snd-hda-intel
-module (if debug-compiled) which whould enable almost all controls to be
-set --- would this make it possible to test the real arrangement of
-different i/o?
+By running:
 
-jwoithe: If it is not the case, could you post a bit more elaborate HOWTO
-on how to experiment with pin assignment you mentioned in your first post
-to this bug? I would consider it interesting for many of those having the
-problem and some model descriptions (patches) could be obtained from users
-themselves (like me) rather than waiting for the devs to fix it.
+speaker-test -c6 -Dplug:surround51
 
-BTW #1517 is a dupe of this bug (although has not been marked as such
-yet).
+And listening for sound. Also the sound unit heads up display has an
+indicator for what channels of input it is receiving.
 
 ----------------------------------------------------------------------
- jwoithe - 01-16-06 00:32 
+ rlrevell - 01-16-06 00:32 
 ----------------------------------------------------------------------
-In response to eudoxos' request, here's a *really brief* outline of how I
-went about deducing the connection layout on the S7020.  Note that there
-may well be a better, more streamlined way of going about this.  However,
-this worked for me and was quick.
-
-Firstly you really must get hold of the ALC260 datasheet from Realtek. 
-This is available for download on the realtek website.  The datasheet
-details the internal arrangement of the ALC260, the IDs of the various
-widgets, and what command verbs each widget accepts.  Of particular
-interest are the widget IDs of the the I/O widgets which connect to
-physical input/output pins on the chip.  It is these which are in turn
-connected to jacks, internal speakers etc.
-
-It is also quite helpful to understand the basic details about the HDA
-system structure and how it all fits together.  This can be acquireed by
-reading the source code or the HDA docs from Intel (downloadable from
-their website).
-
-Armed with the widget IDs of interest, I hacked the patch-realtek.c
-module.  In particular I concentrated on the mixer and initialisation verb
-structures.  Since I did my tests the structure of patch-realtek has
-changed slightly, but for the purposes of this exercise changing
-alc260_base_output_mixer and alc260_init_verbs in the most recent versions
-of alsa-driver (1.0.11rc1 and later) should be fine.
-
-To discover the output routings, add mixer controls for all the output
-widgets of the ALC260 chip to the mixer definition -
-alc260_base_output_mixer in this case.  Then add initialisation verbs for
-each of these widgets to the alc260_init_verbs list, making each of them
-an output.  Recompile and insert the new hda-* modules.
-
-Use aplay (or anything really) to send output to the chip.  Then play with
-the controls in alsamixer until you discover which control sends output to
-what.
-
-The technique for input jacks is pretty much the same, but this time
-you're configuring widgets for input and using a capture program instead
-of a player.  It's most convenient to use one which has input level meters
-of some kind so you can monitor what the chip ADC is seeing as you change
-the capture source in alsamixer.
-
-At the end of all this you should end up with a list of widgets and which
-jacks/devices each is connected to.  This can then be used to construct a
-new ALC260 model in patch-realtek.c in a similar way as for the existing
-HP and Fujitsu models.
-
-If you require more details, please contact me via the alsa-devel mailing
-list and we'll pick this up off-list.
+SPDIF only supports stereo PCM, unless it's AC3 encoded.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
-01-04-06 22:00 robertw        Note Added: 0007453                          
-01-04-06 22:16 robertw        Note Edited: 0007453                         
-01-11-06 23:38 lobstaj        Note Added: 0007572                          
-01-11-06 23:48 rlrevell       Note Added: 0007573                          
-01-12-06 00:20 lobstaj        Note Added: 0007575                          
-01-12-06 00:26 rlrevell       Note Added: 0007576                          
-01-12-06 01:16 mytux          Note Added: 0007577                          
-01-12-06 01:20 mytux          Note Edited: 0007577                         
-01-12-06 14:13 robertw        Note Added: 0007586                          
-01-12-06 14:43 lobstaj        Note Added: 0007587                          
-01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
-01-12-06 21:04 rlrevell       Note Added: 0007591                          
-01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
-01-13-06 08:03 eudoxos        Note Added: 0007631                          
-01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
-01-16-06 00:32 jwoithe        Note Added: 0007682                          
+01-15-06 04:56 MechCow        New Issue                                    
+01-15-06 04:56 MechCow        Distribution              => Debian          
+01-15-06 04:56 MechCow        Kernel Version            => 2.6.12          
+01-15-06 05:22 rlrevell       Note Added: 0007661                          
+01-15-06 06:37 MechCow        Note Added: 0007662                          
+01-15-06 13:59 rlrevell       Note Added: 0007664                          
+01-16-06 00:22 MechCow        Note Added: 0007681                          
+01-16-06 00:32 rlrevell       Note Added: 0007683                          
 ======================================================================
 
 
