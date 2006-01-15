@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
-Date: Sun, 15 Jan 2006 04:30:32 +0100
-Message-ID: <4d12b21ef0fb61cd77cd3ed86386b1ee@bugtrack.alsa-project.org>
+Date: Sun, 15 Jan 2006 04:39:40 +0100
+Message-ID: <48a7c1e82c29fa5e73d9c4394cc1adf1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9535130
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 04:30:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83B3C137
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 04:39:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.13-rc6
 ======================================================================
 Date Submitted:             09-09-2005 05:11 CEST
-Last Modified:              01-15-2006 04:30 CET
+Last Modified:              01-15-2006 04:39 CET
 ======================================================================
 Summary:                    Can't use rear speaker channels
 Description: 
@@ -60,14 +60,6 @@ but I'll be glad to debug it if someone can give me a pointer.
 ======================================================================
 
 ----------------------------------------------------------------------
- drow - 11-01-05 00:35 
-----------------------------------------------------------------------
-Still no luck with this.  However, I now have Windows installed on the same
-machine, and the VIA drivers can talk to the rear speakers just fine.  Is
-there any way I can dump useful information from the chip registers while
-in Windows?
-
-----------------------------------------------------------------------
  nono31 - 01-15-06 04:30 
 ----------------------------------------------------------------------
 Hi,
@@ -85,6 +77,11 @@ Thanks
 
 Nono31
 
+----------------------------------------------------------------------
+ rlrevell - 01-15-06 04:39 
+----------------------------------------------------------------------
+Update alsa-lib (or just ICE1724.conf) to 1.0.11-rc2.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -95,6 +92,7 @@ Date Modified  Username       Field                    Change
 09-12-05 18:05 drow           Note Added: 0006148                          
 11-01-05 00:35 drow           Note Added: 0006591                          
 01-15-06 04:30 nono31         Note Added: 0007658                          
+01-15-06 04:39 rlrevell       Note Added: 0007659                          
 ======================================================================
 
 
