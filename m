@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable model
-Date: Sun, 15 Jan 2006 22:07:11 +0100
-Message-ID: <932e6163fa6fc2b6d34164ef75b42606@bugtrack.alsa-project.org>
+Date: Sun, 15 Jan 2006 22:15:00 +0100
+Message-ID: <40ef89645f921f3f788ab7bec9ed3f0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8356913E
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 22:07:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B3AF13E
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 22:15:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-07-2005 21:00 CET
-Last Modified:              01-15-2006 22:07 CET
+Last Modified:              01-15-2006 22:14 CET
 ======================================================================
 Summary:                    snd-hda-intel no suitable model
 Description: 
@@ -73,18 +73,16 @@ both and a master volume
 ======================================================================
 
 ----------------------------------------------------------------------
- tuxlover - 01-15-06 22:01 
-----------------------------------------------------------------------
-I read this in a description on the amilo-forum (fujitsu Simens). This is a
-Part of the hda-driver. I don't find anything about fujitsu. Do I need a
-patch, if yes where can i get it.
-
-----------------------------------------------------------------------
  rlrevell - 01-15-06 22:07 
 ----------------------------------------------------------------------
 No you don't need a patch, just try the various model=foo options described
 in Documentation/ALSA-Configuration.txt.  If that does not work then it's
 a bug in the driver.
+
+----------------------------------------------------------------------
+ tuxlover - 01-15-06 22:14 
+----------------------------------------------------------------------
+I've tested all option given in the driver. Without any success.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -99,6 +97,7 @@ Date Modified  Username       Field                    Change
 01-15-06 21:59 rlrevell       Note Added: 0007675                          
 01-15-06 22:01 tuxlover       Note Added: 0007676                          
 01-15-06 22:07 rlrevell       Note Added: 0007677                          
+01-15-06 22:14 tuxlover       Note Added: 0007678                          
 ======================================================================
 
 
