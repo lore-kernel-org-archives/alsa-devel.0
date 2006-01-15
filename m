@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
-Date: Sun, 15 Jan 2006 19:18:52 +0100
-Message-ID: <e499bcef23e2a682e601ec708a4cef39@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable model
+Date: Sun, 15 Jan 2006 19:55:11 +0100
+Message-ID: <e7e77c80dce93e31b9d55f82216b3970@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2119A12B
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 19:18:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABD8D137
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 19:55:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1627> 
 ======================================================================
-Reported By:                robertdavid
-Assigned To:                
+Reported By:                Elfe
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1744
-Category:                   PCI - ice1724
-Reproducibility:            sometimes
-Severity:                   tweak
+Issue ID:                   1627
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo linux
-Kernel Version:             2.6.14-archck-r7
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-13-2006 22:16 CET
-Last Modified:              01-15-2006 19:18 CET
+Date Submitted:             12-07-2005 21:00 CET
+Last Modified:              01-15-2006 19:55 CET
 ======================================================================
-Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
-chanel work and sound is quick...
+Summary:                    snd-hda-intel no suitable model
 Description: 
-Im very glad that was added support for Prodigy, but there is still only
-two channel working (7,8), the others are silent (tryed all volume
-settings).
-The sound from 7,8 chanel is good in case of quality, but is faster than
-it should be (turn off Multi Track Rate Locking didnt do anything).
-I've tryed mpalyer and XMMS, both the same.
-I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
-Prodigy 7.1LT) 
+Hi,
+
+I can't find a suitable model for the ALC880 on my Fujitsi Siemens Amilo
+1439G.
+The following devices are present:
+- internal speakers (possibly emulating pc beep)
+- internal mic
+- one jack for mic/line-in
+- one jack for Headset/IEC958
+- volume control wheel
+
+status:
+- volume control wheel does not work at all
+- Headset jack disables internal speakers
+- Headset and internal Speakers have a different output control :( (or no
+master volume)
+- Internal Mic gets disabled when external mic is plugged in
+- Mic works with a lot of try and error
+
+the best config would be:
+- volume wheel working
+- the control for internal speakers and headphone combined into one or
+both and a master volume
+- correct recording device and volume selection
+- microphone boost setting if available
+
 ======================================================================
 
 ----------------------------------------------------------------------
- robertdavid - 01-14-06 18:09 
+ tiwai - 12-08-05 17:26 
 ----------------------------------------------------------------------
-and dont know how to get input line-in play to H.P. or speakers
+The volume control wheel isn't implemented yet.
+Also, on this chipset, there is no real "master" volume.  Each output is
+controlled separately.  We need to implement it virtually, and this should
+be better done in user-space.
 
 ----------------------------------------------------------------------
- Anho Ki - 01-15-06 19:18 
+ tuxlover - 01-15-06 19:55 
 ----------------------------------------------------------------------
-Analog inputs(both mic and line-in) do NOT work,
-I also can't get any sound from them.
+how can I use the information in the part " additional information.
 
-Anyway... does anyone succeed optical output?
-When I run "aplay -D plug:spdif some_blahblah.wav", didn't get any error
-messages,
-but no lights from optical cable.
-(It tested with my portable CDP, and works correctly)
+I've a Amilo M1437G. The sound is acceptable. The sound output downside
+the notebook doesn't funktion anyway (is not the main problem). The bigger
+problem is the mic. The mic is one of the most important think for me. I
+looking for a way to make the mic funktion.
+
+Thans for your help
+
+tuxlover
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-06 22:16 robertdavid    New Issue                                    
-01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
-01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
-01-14-06 00:13 drfindley      File Added: asound.state                     
-01-14-06 00:15 drfindley      Note Added: 0007650                          
-01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
-01-14-06 00:28 robertdavid    Note Added: 0007651                          
-01-14-06 00:29 robertdavid    Note Edited: 0007651                         
-01-14-06 18:09 robertdavid    Note Added: 0007654                          
-01-15-06 19:18 Anho Ki        Note Added: 0007667                          
+12-07-05 21:00 Elfe           New Issue                                    
+12-08-05 17:26 tiwai          Note Added: 0006960                          
+01-15-06 19:55 tuxlover       Note Added: 0007668                          
 ======================================================================
 
 
