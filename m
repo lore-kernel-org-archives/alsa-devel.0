@@ -1,14 +1,14 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Alsa questions
-Date: Mon, 16 Jan 2006 10:23:09 +1100
-Message-ID: <1137367389.4823.40.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Mon, 16 Jan 2006 00:32:12 +0100
+Message-ID: <bcc4bde3e46fcaa3e426ce02e1928011@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DBD7137
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 00:23:16 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D224142
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 00:32:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +18,159 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi !
 
-I'm trying to figure out how to properly design a new sound driver for
-powermac with Alsa.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+======================================================================
+Reported By:                robertw
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1618
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
+======================================================================
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              01-16-2006 00:32 CET
+======================================================================
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
+Description: 
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
+======================================================================
 
-Most earlier machines are easy enough in that they have one codec on one
-bus. However, things get more tricky on G5 and newer laptops, where you
-end up with more than one bus and multiple codecs (I think both multiple
-codecs on one bus and multiple busses with separate codecs setups
-exist).
+----------------------------------------------------------------------
+ eudoxos - 01-13-06 08:03 
+----------------------------------------------------------------------
+ALSA-Configuration.txt mentions 'test' parameter to the snd-hda-intel
+module (if debug-compiled) which whould enable almost all controls to be
+set --- would this make it possible to test the real arrangement of
+different i/o?
 
-I'm not too sure what kind of relationship Alsa has between PCMs and
-mixer devices, and that sort of things yet
+jwoithe: If it is not the case, could you post a bit more elaborate HOWTO
+on how to experiment with pin assignment you mentioned in your first post
+to this bug? I would consider it interesting for many of those having the
+problem and some model descriptions (patches) could be obtained from users
+themselves (like me) rather than waiting for the devs to fix it.
 
-The main question that comes to mind is how I represent the multiple
-busses. Each bus has an independant pair of DMA channels (playback and
-capture). 
+BTW #1517 is a dupe of this bug (although has not been marked as such
+yet).
 
- - should I instanciate a different card object for each bus or not ?
-Busses _seem_ to be mostly independent, though I yet have to double
-check if they have any kind of crossover clocking...
+----------------------------------------------------------------------
+ jwoithe - 01-16-06 00:32 
+----------------------------------------------------------------------
+In response to eudoxos' request, here's a *really brief* outline of how I
+went about deducing the connection layout on the S7020.  Note that there
+may well be a better, more streamlined way of going about this.  However,
+this worked for me and was quick.
 
- - should I instanciate one card, but 2 PCM devices ?
+Firstly you really must get hold of the ALC260 datasheet from Realtek. 
+This is available for download on the realtek website.  The datasheet
+details the internal arrangement of the ALC260, the IDs of the various
+widgets, and what command verbs each widget accepts.  Of particular
+interest are the widget IDs of the the I/O widgets which connect to
+physical input/output pins on the chip.  It is these which are in turn
+connected to jacks, internal speakers etc.
 
- - should I instanciate one card and one PCM device but with 2 playback
-and 2 capture substreams ?
+It is also quite helpful to understand the basic details about the HDA
+system structure and how it all fits together.  This can be acquireed by
+reading the source code or the HDA docs from Intel (downloadable from
+their website).
 
-It _seems_ to me, but I may be wrong, that the later would mean that you
-have N substreams getting in the same codec and beeing mixed, which
-isn't the case. My 2 i2s busses are wired to different codecs and thus
-different inputs and outputs. However, it's not yet clear to me if both
-busses always have both inputs and outputs... I _think_ that in some
-models at least, one of the 2 busses is only used for digital input or
-output, not sure, I'm still digging into darwin and machine device-trees
-to try to write down a complete "map" of apple hw setup.
+Armed with the widget IDs of interest, I hacked the patch-realtek.c
+module.  In particular I concentrated on the mixer and initialisation verb
+structures.  Since I did my tests the structure of patch-realtek has
+changed slightly, but for the purposes of this exercise changing
+alc260_base_output_mixer and alc260_init_verbs in the most recent versions
+of alsa-driver (1.0.11rc1 and later) should be fine.
 
-So if the above feeling is right, that would mean that I need either 2
-cards or 2 PCM devices, is that right ?
+To discover the output routings, add mixer controls for all the output
+widgets of the ALC260 chip to the mixer definition -
+alc260_base_output_mixer in this case.  Then add initialisation verbs for
+each of these widgets to the alc260_init_verbs list, making each of them
+an output.  Recompile and insert the new hda-* modules.
 
-Then, comes the various codec controls (volumes, mutes, ...)... I am
-supposed to set them all to "MIXER" or should I in some way attach them
-to the proper PCM on which the codec ?
+Use aplay (or anything really) to send output to the chip.  Then play with
+the controls in alsamixer until you discover which control sends output to
+what.
 
-Another question that comes to mind is locking with external event...
-things like input detection interrupts etc... Changing controls seem to
-be trivially done with the snd_ctl_notify) interface,  but what about
-PCM settings ? For example, if you plug a digital input in, the driver
-needs to change all it's internal clocking network and force it's PCM
-settings to match the incoming signal. (In fact, it's not even yet clear
-to me if I can have a digital input plugged _and_ output at a different
-clock rate a different data yet, at least not if they are on the same
-i2s bus, but some machine have separate busses so ...). In some cases,
-that include changing the PCM format. The typical case where it has the
-most impact on the driver is when inputing AC3...
+The technique for input jacks is pretty much the same, but this time
+you're configuring widgets for input and using a capture program instead
+of a player.  It's most convenient to use one which has input level meters
+of some kind so you can monitor what the chip ADC is seeing as you change
+the capture source in alsamixer.
 
+At the end of all this you should end up with a list of widgets and which
+jacks/devices each is connected to.  This can then be used to construct a
+new ALC260 model in patch-realtek.c in a similar way as for the existing
+HP and Fujitsu models.
 
-Thanks in advance for your replies,
-Cheers,
-Ben.
+If you require more details, please contact me via the alsa-devel mailing
+list and we'll pick this up off-list.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+01-12-06 00:26 rlrevell       Note Added: 0007576                          
+01-12-06 01:16 mytux          Note Added: 0007577                          
+01-12-06 01:20 mytux          Note Edited: 0007577                         
+01-12-06 14:13 robertw        Note Added: 0007586                          
+01-12-06 14:43 lobstaj        Note Added: 0007587                          
+01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
+01-12-06 21:04 rlrevell       Note Added: 0007591                          
+01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
+01-13-06 08:03 eudoxos        Note Added: 0007631                          
+01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
+01-16-06 00:32 jwoithe        Note Added: 0007682                          
+======================================================================
 
 
 
