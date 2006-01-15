@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001749]: SPDIF sound only in stereo
-Date: Sun, 15 Jan 2006 06:37:06 +0100
-Message-ID: <4652d9179410faa702ed9502014e6799@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001694]: snd-intel8x0m unable to initialize the Modem device ICH6
+Date: Sun, 15 Jan 2006 13:57:07 +0100
+Message-ID: <009b42f298b3c568f1323d331289a4bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E495E12A
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 06:37:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EDDB412B
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 13:57:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1749> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1694> 
 ======================================================================
-Reported By:                MechCow
-Assigned To:                jcdutton
+Reported By:                guido
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1749
-Category:                   PCI - ca0106
+Issue ID:                   1694
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.12
+Distribution:               Debian "Sarge" with kernel and alsa from "SID"
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             01-15-2006 04:56 CET
-Last Modified:              01-15-2006 06:37 CET
+Date Submitted:             12-29-2005 22:43 CET
+Last Modified:              01-15-2006 13:57 CET
 ======================================================================
-Summary:                    SPDIF sound only in stereo
+Summary:                    snd-intel8x0m unable to initialize the Modem device
+ICH6
 Description: 
-I can only get stereo sound out of the ca0106. All other volumes are at
-standard levels. 
+Dear Maintainer and Reader,
 
-I'm using the SB Live 24Bit card. 
+I couldn't get the modem in my Notebook "Acer Aspire 1692WLMi" working.
+I found a lot of things recommended in different Mailing lists and blogs
+but they did not solve my problem. I use alsa Ver. 1.0.10-1 with
+kernel Version 2.6.14 with source from Debian "SID".
+The current status is that two modules are loaded during boot,
+snd-intel8x0 and snd-intel8x0m. When both modules are loaded
+the sound doesn't works. Only when snd-intel8x0 is loaded alone the sound
+works fine.
+If I additionally load module snd-intel8x0m sound does not work anymore
+and error messages in syslog are printed.
+So I think the error messages are a buck in the snd-intel8x0m module.
+There is no /proc/asound/Modem present when I load the snd-intel8x0m
+module.
 
-0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+In the "Additional Information" Section I paste some debugging output.
 
-I'm using a 2.6.12 kernel I compiled myself and alsa installed from debian
-unstable. 
-
-I have connected the soundcard up as it specifies in the manual, the top
-slot connected by a miniplug-to-rca into the coaxial of my panasonic 5.1
-surround sound system. 
+Regards
+Guido
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-15-06 05:22 
+ guido - 01-14-06 23:48 
 ----------------------------------------------------------------------
-You need a much newer ALSA than the one that comes with 2.6.12.  Try
-1.0.11-rc2 (alsa-driver and alsa-lib).
+So let's resume:
+
+I can now load snd-intel8x0 and snd-intel8x0m at the same time and the
+sound
+output still is working.
+I have a conexant modem chip and a intel ICH6 modem controller.
+For the conexant modem chip I will need the hsf codecs from linuxant.
+So is the snd-intel8x0m module for any use for my type of hardware
+combination?
+What can I do with this module?
+
+Regards
+Guido
 
 ----------------------------------------------------------------------
- MechCow - 01-15-06 06:37 
+ pzad - 01-15-06 13:57 
 ----------------------------------------------------------------------
-I installed alsa-driver and alsa-lib 1.0.11-rc2 . Modules installed fine
-and loaded fine, prints this as output 
+For you, snd-intel8x0m is not usable.
 
-ACPI: PCI Interrupt 0000:00:09.0[A] -> GSI 17 (level, low) -> IRQ 193
-Model 1006 Rev 00000000 Serial 10061102
-
-I'm using gcc version 3.3.6 (Debian 1:3.3.6-12) cause its the one I've had
-the least problems with.
-
-Driver still does not output sound to the center speaker. Sound system
-unit identifies only a left and right channel.
+Yu can delete it, rename, ....
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-15-06 04:56 MechCow        New Issue                                    
-01-15-06 04:56 MechCow        Distribution              => Debian          
-01-15-06 04:56 MechCow        Kernel Version            => 2.6.12          
-01-15-06 05:22 rlrevell       Note Added: 0007661                          
-01-15-06 06:37 MechCow        Note Added: 0007662                          
+12-29-05 22:43 guido          New Issue                                    
+12-29-05 22:43 guido          Distribution              => Debian "Sarge" with
+kernel and alsa from "SID"
+12-29-05 22:43 guido          Kernel Version            => 2.6.14          
+01-03-06 20:51 guido          Issue Monitored: guido                       
+01-07-06 01:56 sashak         Note Added: 0007501                          
+01-07-06 01:57 sashak         File Added: ich-cxt30amc-test.patch               
+    
+01-07-06 01:57 sashak         Note Added: 0007502                          
+01-12-06 23:39 guido          File Added: syslog                           
+01-12-06 23:40 guido          Note Added: 0007593                          
+01-12-06 23:43 guido          Note Edited: 0007593                         
+01-13-06 00:21 sashak         Note Added: 0007601                          
+01-13-06 10:06 guido          Note Added: 0007636                          
+01-13-06 10:15 pzad           Note Added: 0007637                          
+01-14-06 23:48 guido          Note Added: 0007657                          
+01-15-06 13:57 pzad           Note Added: 0007663                          
 ======================================================================
 
 
