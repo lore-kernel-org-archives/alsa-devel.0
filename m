@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001750]: SPDIF sound only in stereo
-Date: Sun, 15 Jan 2006 04:57:54 +0100
-Message-ID: <45c5e1ff9dc36cc0a3b78e9ffa3f16ec@bugtrack.alsa-project.org>
+Date: Sun, 15 Jan 2006 05:20:54 +0100
+Message-ID: <f5ff7e6f5da559d27f2ee292c292b78e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D52DA137
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 04:57:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B614E13E
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 05:20:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1750> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               Debian
 Kernel Version:             2.6.12
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-15-2006 04:57 CET
-Last Modified:              01-15-2006 04:57 CET
+Last Modified:              01-15-2006 05:20 CET
 ======================================================================
 Summary:                    SPDIF sound only in stereo
 Description: 
@@ -59,12 +61,19 @@ slot connected by a miniplug-to-rca into the coaxial of my panasonic 5.1
 surround sound system. 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 01-15-06 05:20 
+----------------------------------------------------------------------
+Dupe of 1749
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-15-06 04:57 MechCow        New Issue                                    
 01-15-06 04:57 MechCow        Distribution              => Debian          
 01-15-06 04:57 MechCow        Kernel Version            => 2.6.12          
+01-15-06 05:20 rlrevell       Status                   assigned => closed  
+01-15-06 05:20 rlrevell       Note Added: 0007660                          
 ======================================================================
 
 
