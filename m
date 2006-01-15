@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001753]: M-Audio Revolution 5.1: Mute Line-In / Mic
-Date: Sun, 15 Jan 2006 15:49:48 +0100
-Message-ID: <1d11626b4188b277899ff1ab5e7510a1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001754]: M-Audio Revolution 5.1: Headphone jack gets no signal
+Date: Sun, 15 Jan 2006 16:02:12 +0100
+Message-ID: <9d20e41ab1fce972da9d6512b3f782a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 602BCE2
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 15:49:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 946CCEB
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 16:02:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1753> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1754> 
 ======================================================================
 Reported By:                wollschaf
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1753
+Issue ID:                   1754
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-15-2006 15:49 CET
-Last Modified:              01-15-2006 15:49 CET
+Date Submitted:             01-15-2006 16:02 CET
+Last Modified:              01-15-2006 16:02 CET
 ======================================================================
-Summary:                    M-Audio Revolution 5.1: Mute Line-In / Mic
+Summary:                    M-Audio Revolution 5.1: Headphone jack gets no
+signal
 Description: 
-There is no mixer element to enable or disable Line and Mic inputs.
+Whatever I tried with alsamixer, I could not get the headphone jack to
+output any kind of signal.
 
-The problem is that even with all DAC mixers set to zero, white noise can
-be heard . It is pretty loud, and too loud to enjoy music / the good SNR
-of the card ;)
+In my understanding, it should output the line signal, but amplificated.
 
-Setting 
-#define VT1724_REVO_MUTE        (1<<22)
+As it does not even output the white noise of the inputs (see Issue
+0001753), I assume the headphone output is completely disabled.
 
-to 
-#define VT1724_REVO_MUTE        (0<<22)
-
-gets rid of the noise, but playback volume is pretty low, especially for
-headphones - even with the DAC mixer set to 100%.
-
-Even if there is no way to adjust input gain in hardware (correct?), there
-should be a possibility to disable / mute the inputs or change the routing
-so they are not played back internally.
-
+If photos of the card are needed to find out how it is connected, I will
+upload them...
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-15-06 15:49 wollschaf      New Issue                                    
-01-15-06 15:49 wollschaf      Kernel Version            => 2.6.15          
+01-15-06 16:02 wollschaf      New Issue                                    
+01-15-06 16:02 wollschaf      Kernel Version            => 2.6.15          
 ======================================================================
 
 
