@@ -1,13 +1,14 @@
-From: Mark Salazar <msalazar@justmyself.net>
-Subject: Re: [es18xx.c PATCH] #4/4 for Zoom Video - add Zoom Video support
-Date: Sun, 15 Jan 2006 15:37:53 -0500
-Message-ID: <43CAB2A1.5020505@justmyself.net>
-References: <43B0105B.2080900@justmyself.net> <43B02A50.3000601@justmyself.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001595]: Audigy 4 (bulk, non-Pro) unsupported (patch included)
+Date: Sun, 15 Jan 2006 21:48:22 +0100
+Message-ID: <2289e65aedcaab99c549893769be383f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020505090409040804060802"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43B02A50.3000601@justmyself.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B01F13E
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 21:48:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,143 +18,190 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020505090409040804060802
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-This is a rework of patch #4 which adds Zoom Video support.
-Tested only on an ES1879 system this time, but should still work for 
-ES1878 and ES1869.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1595> 
+======================================================================
+Reported By:                khampf
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1595
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian 3 testing/unstable hybrid
+Kernel Version:             2.6.14.2-c0r3 (-ckX+swsusp2+bootsplash)
+======================================================================
+Date Submitted:             11-24-2005 03:35 CET
+Last Modified:              01-15-2006 21:48 CET
+======================================================================
+Summary:                    Audigy 4 (bulk, non-Pro) unsupported (patch
+included)
+Description: 
+I recently bought me a Creative Audigy 4 and was surprised it didn't work
+at all ... I noticed it wasn't detected and made it detectable and copied
+the settings from Audigy 4 Pro. I have to click the "Audigy Analog/Digital
+Output switch" switch to make it work. Front/Center, Mic works, however I
+have no idea about wether SPDIF is ok or not (I have no devices). It might
+be that a lot of functionality is missing still but it's a start.
 
-Applying: should use -p0 instead of -p1
-cd alsa-driver/
-cat ../../es18xx.CVSmod4V2.diff |  patch -p0
+First, output of "$ lspci -vn | grep -1 0401"
+0000:02:09.0 0401: 1102:0008
+        Subsystem: 1102:1021
 
+Then, using "modprobe emu10k1 sumsystem=xxxxxx" does not work at all for
+me, doesn't get the interrupt up and errors about probe failing.
 
-Signed-off-by: Mark Salazar <markTheCoder@justmyself.net>
+So I added did this to my kernel sound/pci/emu10k1/emu10k1_main.c:
 
+	{.vendor = 0x1102, .device = 0x0008, .subsystem = 0x10211102,
+	 .driver = "Audigy2", .name = "Audigy 4 [A400?]", 
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1,
+	 /*.ca0151_chip = 1, */
+	 /*.spk71 = 1,	*/
+	 /*.spdif_bug = 1,*/
+	 .ac97_chip = 1} ,
 
+I left those commented out as I've tried the options and noticed no
+difference in operation. Also, I don't know the SB0xxx model (can't remove
+the card and look at it at the moment either).
+======================================================================
 
---------------020505090409040804060802
-Content-Type: text/plain;
- name="es18xx.CVSmod4V2.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="es18xx.CVSmod4V2.diff"
+----------------------------------------------------------------------
+ khampf - 01-15-06 20:34 
+----------------------------------------------------------------------
+Ok guys, back home from holidays, took a while longer than expected. My
+card has developed problems, distortions on the front right channel
+(verified on another computer with other speakers). But while the card was
+pulled out I tried to take som pictures of it and read what was printed on
+the chips.
 
---- alsa-kernel/isa/es18xx.c.orig	2006-01-15 11:59:50.000000000 -0500
-+++ alsa-kernel/isa/es18xx.c	2006-01-15 12:00:44.000000000 -0500
-@@ -49,6 +49,10 @@
-  * - contrarily to some pages in DS_1869.PDF the rates can be set
-  *   independently.
-  *
-+ * - Zoom Video is implemented by sharing the FM DAC, thus the user can
-+ *   have either FM playback or Video playback but not both simultaneously.
-+ *   The Video Playback Switch mixer control toggles this choice.
-+ *
-  * BUGS:
-  *
-  * - There is a major trouble I noted:
-@@ -63,7 +67,16 @@
-  *
-  */
+First of all, I do _not_ have the same card as on the picture earlier in
+this thread. That picture has a CA0103 while I have a CA0108 as "the big
+one". This is the DSP, right?
+
+This is what I could find out:
+
+SOUND BLASTER AUDIGY 4
+MODEL: SB0610
+
+The big one (DSP?):
+	Creative
+	CA0108-IAT LF
+	@CREATIVE TECH '03
+	55AC6LW
+
+DAC or ADC:
+	Cirrus Logic
+	CS4382-KQZ
+	WAEXAX0510
+	TAIWAN
+
+AC97:
+	Sigmatel
+	STAC9750
+	(the rest hard to make out)
+
+I was not able to find both a DAC and an ADC .. you can look at the
+pictures and see for yourself (at least some parts are readable).
+
+http://www.c0r3.org/audigy4/
+
+Now my question is ... how does this card work with the CA102 part of the
+driver and the CA0108 part disabled? Is there some init in CA0102 that is
+bringing it online? And why does the card posted earlier sport a CA10300
+and mine CA0108?
+
+The PCB is exactly the same as far as I can see, all other components than
+"the big one" seems to be identical too.
+
+But I did recompile my kernel before I took the card out and this worked
+perfectly (at least 5.1 sound) with my Audigy 4 an kernel 2.6.15 (in
+emu10k1_main.c):
+
+{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x10211102,
+	 .driver = "Audigy2", .name = "Audigy 4 [SB0610]", 
+	 .id = "Audigy2",
+	 .emu10k2_chip = 1,
+	 .ca0102_chip = 1
+	 /* .ca0151_chip = 1, */
+	 /* .spk71 = 1, */
+	 /* .spdif_bug = 1, */
+	 /* .ac97_chip = 1 */ } ,
+
+Untested: digital out, 7.1 surround
+Working: stereo sound (2.1), 5.1 surround, AC97 mixer
+
+I can however not test the card more before I get a replacement, and I've
+got an Audigy 2 with firewire now instead (works perfectly) so I'm not too
+sure I'll use the Audigy 4 in my workstation even after a warranty
+replacement.
+
+----------------------------------------------------------------------
+ jprk - 01-15-06 21:48 
+----------------------------------------------------------------------
+Just before Christmas I bought what seems to be a bulk version of Audigy 4
+(named "SB Audigy 4 OEM" at www.czechcomputer.cz). The DSP is CA0108-IATLF
+(and not CA10300-IAT as reported by BerndBuechs and as jcdutton found on
+the Creative website), but the rest is the same: DAC is Phillips 1361T,
+ADC is CirrusLogic CS4382-KQZ ADC and AC97 is SigmaTel STAC9750.
+
+Photographs of the card (2-4MB files, beware) can be found at
  
--
-+/*
-+ * ES1879 NOTES:
-+ * - When Zoom Video is enabled (reg 0x71 bit 6 toggled on) the PCM playback
-+ *   seems to be effected (speaker_test plays a lower frequency). Can't find
-+ *   anything in the datasheet to account for this, so a Video Playback Switch
-+ *   control has been included to allow ZV to be enabled only when necessary.
-+ *   Then again on at least one test system the 0x71 bit 6 enable bit is not 
-+ *   needed for ZV, so maybe the datasheet is entirely wrong here.
-+ */
-+ 
- #include <sound/driver.h>
- #include <linux/init.h>
- #include <linux/err.h>
-@@ -1317,10 +1330,20 @@
- 
- static struct snd_kcontrol_new snd_es18xx_opt_1869[] = {
- ES18XX_SINGLE("Capture Switch", 0, 0x1c, 4, 1, 1),
-+ES18XX_SINGLE("Video Playback Switch", 0, 0x7f, 0, 1, 0),
- ES18XX_DOUBLE("Mono Playback Volume", 0, 0x6d, 0x6d, 4, 0, 15, 0),
- ES18XX_DOUBLE("Mono Capture Volume", 0, 0x6f, 0x6f, 4, 0, 15, 0)
- };
- 
-+static struct snd_kcontrol_new snd_es18xx_opt_1878 =
-+	ES18XX_DOUBLE("Video Playback Volume", 0, 0x68, 0x68, 4, 0, 15, 0);
-+
-+static struct snd_kcontrol_new snd_es18xx_opt_1879[] = {
-+ES18XX_SINGLE("Video Playback Switch", 0, 0x71, 6, 1, 0),
-+ES18XX_DOUBLE("Video Playback Volume", 0, 0x6d, 0x6d, 4, 0, 15, 0),
-+ES18XX_DOUBLE("Video Capture Volume", 0, 0x6f, 0x6f, 4, 0, 15, 0)
-+};
-+
- static struct snd_kcontrol_new snd_es18xx_pcm1_controls[] = {
- ES18XX_DOUBLE("PCM Playback Volume", 0, 0x14, 0x14, 4, 0, 15, 0),
- };
-@@ -1365,7 +1388,6 @@
- ES18XX_SINGLE("Hardware Master Volume Split", 0, 0x64, 7, 1, 0),
- };
- 
--#if 0
- static int __devinit snd_es18xx_config_read(struct snd_es18xx *chip, unsigned char reg)
- {
- 	int data;
-@@ -1376,7 +1398,6 @@
-         spin_unlock_irqrestore(&chip->ctrl_lock, flags);
- 	return data;
- }
--#endif
- 
- static void __devinit snd_es18xx_config_write(struct snd_es18xx *chip, 
- 					      unsigned char reg, unsigned char data)
-@@ -1522,6 +1543,17 @@
- 		snd_es18xx_mixer_write(chip, 0x58, 0x94);
- 		snd_es18xx_mixer_write(chip, 0x5a, 0x80);
- 	}
-+	/* Flip the "enable I2S" bits for those chipsets that need it */
-+	switch (chip->version) {
-+	case 0x1879:
-+		//Leaving I2S enabled on the 1879 screws up the PCM playback (rate effected somehow)
-+		//so a Switch control has been added to toggle this 0x71 bit on/off:
-+		//snd_es18xx_mixer_bits(chip, 0x71, 0x40, 0x40);
-+		/* Note: we fall through on purpose here. */
-+	case 0x1878:
-+		snd_es18xx_config_write(chip, 0x29, snd_es18xx_config_read(chip, 0x29) | 0x40);
-+		break;
-+	}
- 	/* Mute input source */
- 	if (chip->caps & ES18XX_MUTEREC)
- 		mask = 0x10;
-@@ -1929,6 +1961,19 @@
- 			if (err < 0)
- 				return err;
- 		}
-+	} else if (chip->version == 0x1878) {
-+		err = snd_ctl_add(card, snd_ctl_new1(&snd_es18xx_opt_1878,
-+						     chip));
-+		if (err < 0)
-+			return err;
-+	} else if (chip->version == 0x1879) {
-+		for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_opt_1879); idx++) {
-+			err = snd_ctl_add(card,
-+					  snd_ctl_new1(&snd_es18xx_opt_1879[idx],
-+						       chip));
-+			if (err < 0)
-+				return err;
-+		}
- 	}
- 	return 0;
- }
+http://euler.fd.cvut.cz/audigy4/SB_Audigy_4_OEM_cropped.jpg
+http://euler.fd.cvut.cz/audigy4/SB_Audigy_4_OEM.jpg
+http://euler.fd.cvut.cz/audigy4/SB_Audigy_4_OEM_detail.jpg
 
---------------020505090409040804060802--
+I am running Ubuntu 5.10 with an almost vanilla 2.6.12 kernel (V4L
+subsystem taken from V4L CVS, ALSA is unpatched, version 1.0.9). I have
+on-board AC97 and this Audigy, audigy being indexed as the first one and
+connected to a 5.1 analog sound system. This combinaction works nice under
+Win XP. Under Linux, the only thing that I can make my Audigy to do is to
+click - by switching the digital/analog output. The on-board AC97 seems to
+work. The Audigy is being detected as "Audigy 2 Value [Unknown]", exactly
+as khampf mentions in the post from 24th November.
+
+I am now going to get the last version of ALSA, try to replace the kernel
+modules with the newer ones without crippling everything and report if the
+card works or not.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-24-05 03:35 khampf         New Issue                                    
+11-24-05 03:35 khampf         Distribution              => Debian 3
+testing/unstable hybrid
+11-24-05 03:35 khampf         Kernel Version            => 2.6.14.2-c0r3
+(-ckX+swsusp2+bootsplash)
+11-24-05 03:39 khampf         Issue Monitored: khampf                      
+11-24-05 03:41 khampf         Note Added: 0006837                          
+11-24-05 21:54 jcdutton       Note Added: 0006845                          
+11-26-05 22:33 khampf         Note Added: 0006850                          
+11-29-05 22:55 BerndBuechs    Issue Monitored: BerndBuechs                    
+11-29-05 22:56 BerndBuechs    Note Added: 0006874                          
+12-22-05 13:28 jcdutton       Note Added: 0007124                          
+12-22-05 13:29 jcdutton       Note Added: 0007125                          
+12-22-05 15:07 khampf         Note Added: 0007126                          
+12-22-05 20:22 jcdutton       Note Added: 0007129                          
+12-23-05 11:02 BerndBuechs    Note Added: 0007132                          
+12-28-05 13:40 vsu            Issue Monitored: vsu                         
+01-06-06 00:49 kjes           Note Added: 0007485                          
+01-09-06 22:28 jcdutton       Status                   new => assigned     
+01-09-06 22:28 jcdutton       Assigned To               => jcdutton        
+01-15-06 20:34 khampf         Note Added: 0007670                          
+01-15-06 21:48 jprk           Note Added: 0007672                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
