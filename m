@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable model
-Date: Sun, 15 Jan 2006 21:57:22 +0100
-Message-ID: <8b1ee3f64afb2281f6879affb2e227e3@bugtrack.alsa-project.org>
+Date: Sun, 15 Jan 2006 21:59:51 +0100
+Message-ID: <52300f7d2b09bb1e9891490b8af65998@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 281E5137
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 21:57:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCBB0137
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 21:59:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-07-2005 21:00 CET
-Last Modified:              01-15-2006 21:57 CET
+Last Modified:              01-15-2006 21:59 CET
 ======================================================================
 Summary:                    snd-hda-intel no suitable model
 Description: 
@@ -73,18 +73,16 @@ both and a master volume
 ======================================================================
 
 ----------------------------------------------------------------------
- tuxlover - 01-15-06 21:55 
-----------------------------------------------------------------------
-the problem for me is that I can't find any way to get the mic in
-function.
-I don't know how to us the information in the description above.
-I use kernel Version 2.6.14-xx an 2.6.15. Loadind the kernel with the
-option "index=0 model=W810", "index=0 model=auto" and without any option.
-
-----------------------------------------------------------------------
  rlrevell - 01-15-06 21:57 
 ----------------------------------------------------------------------
 Why "model=w810"?  The obvious choice for your hardware is "model=fujitsu".
+
+----------------------------------------------------------------------
+ rlrevell - 01-15-06 21:59 
+----------------------------------------------------------------------
+There is no information you can use in the original bug report, it's just a
+dump of the hardware config.  It appears that your hardware isn't fully
+supported yet (but try all the model= options)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +93,8 @@ Date Modified  Username       Field                    Change
 01-15-06 19:59 rlrevell       Note Added: 0007669                          
 01-15-06 21:55 tuxlover       Note Added: 0007673                          
 01-15-06 21:57 rlrevell       Note Added: 0007674                          
+01-15-06 21:57 tuxlover       Note Edited: 0007673                         
+01-15-06 21:59 rlrevell       Note Added: 0007675                          
 ======================================================================
 
 
