@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001754]: M-Audio Revolution 5.1: Headphone jack gets no signal
-Date: Sun, 15 Jan 2006 16:02:12 +0100
-Message-ID: <9d20e41ab1fce972da9d6512b3f782a0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
+Date: Sun, 15 Jan 2006 19:18:52 +0100
+Message-ID: <e499bcef23e2a682e601ec708a4cef39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 946CCEB
-	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 16:02:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2119A12B
+	for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2006 19:18:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1754> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
 ======================================================================
-Reported By:                wollschaf
+Reported By:                robertdavid
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1754
+Issue ID:                   1744
 Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
+Reproducibility:            sometimes
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.15
+Distribution:               Gentoo linux
+Kernel Version:             2.6.14-archck-r7
 ======================================================================
-Date Submitted:             01-15-2006 16:02 CET
-Last Modified:              01-15-2006 16:02 CET
+Date Submitted:             01-13-2006 22:16 CET
+Last Modified:              01-15-2006 19:18 CET
 ======================================================================
-Summary:                    M-Audio Revolution 5.1: Headphone jack gets no
-signal
+Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
+chanel work and sound is quick...
 Description: 
-Whatever I tried with alsamixer, I could not get the headphone jack to
-output any kind of signal.
-
-In my understanding, it should output the line signal, but amplificated.
-
-As it does not even output the white noise of the inputs (see Issue
-0001753), I assume the headphone output is completely disabled.
-
-If photos of the card are needed to find out how it is connected, I will
-upload them...
-
+Im very glad that was added support for Prodigy, but there is still only
+two channel working (7,8), the others are silent (tryed all volume
+settings).
+The sound from 7,8 chanel is good in case of quality, but is faster than
+it should be (turn off Multi Track Rate Locking didnt do anything).
+I've tryed mpalyer and XMMS, both the same.
+I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
+Prodigy 7.1LT) 
 ======================================================================
+
+----------------------------------------------------------------------
+ robertdavid - 01-14-06 18:09 
+----------------------------------------------------------------------
+and dont know how to get input line-in play to H.P. or speakers
+
+----------------------------------------------------------------------
+ Anho Ki - 01-15-06 19:18 
+----------------------------------------------------------------------
+Analog inputs(both mic and line-in) do NOT work,
+I also can't get any sound from them.
+
+Anyway... does anyone succeed optical output?
+When I run "aplay -D plug:spdif some_blahblah.wav", didn't get any error
+messages,
+but no lights from optical cable.
+(It tested with my portable CDP, and works correctly)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-15-06 16:02 wollschaf      New Issue                                    
-01-15-06 16:02 wollschaf      Kernel Version            => 2.6.15          
+01-13-06 22:16 robertdavid    New Issue                                    
+01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
+01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
+01-14-06 00:13 drfindley      File Added: asound.state                     
+01-14-06 00:15 drfindley      Note Added: 0007650                          
+01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
+01-14-06 00:28 robertdavid    Note Added: 0007651                          
+01-14-06 00:29 robertdavid    Note Edited: 0007651                         
+01-14-06 18:09 robertdavid    Note Added: 0007654                          
+01-15-06 19:18 Anho Ki        Note Added: 0007667                          
 ======================================================================
 
 
