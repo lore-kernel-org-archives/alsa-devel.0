@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
-Date: Mon, 16 Jan 2006 16:17:38 +0100
-Message-ID: <3c6c4288d3ed2d38aa1ee9189e117837@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
+Date: Mon, 16 Jan 2006 16:22:10 +0100
+Message-ID: <900aa2781ffba249a626fad3be018af7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F20F156
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 16:17:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E355B156
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 16:22:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
 ======================================================================
-Reported By:                drow
-Assigned To:                
+Reported By:                mikael
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1407
-Category:                   PCI - ice1724
+Issue ID:                   1663
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.13-rc6
+Status:                     assigned
+Distribution:               Archlinux
+Kernel Version:             2.4.13.4
 ======================================================================
-Date Submitted:             09-09-2005 05:11 CEST
-Last Modified:              01-16-2006 16:17 CET
+Date Submitted:             12-20-2005 19:11 CET
+Last Modified:              01-16-2006 16:22 CET
 ======================================================================
-Summary:                    Can't use rear speaker channels
+Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
+fix, please intergrate it!
 Description: 
-I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
-ice1724.  I've spent most of tonight trying to get surround sound to
-work... but the best I can get is four channels (specifically, front
-left/right, center, LFE).  Nothing happens when samples are sent to the
-rear channels.  And the front channels are mirrored onto the rear
-speakers, under control of the Headphone volume control.
+My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
 
-Which is really annoying, because it means that muting the master volume
-doesn't mute the back speakers.
+It though for some reason do not turn off the main speaker when you insert
+headphones. On the site
+http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
+there is a patched alsa package available which fixes this issue by adding
+a "Headphone" mixer which you can turn on/off and also gives you the
+availability to mute the main speakers without (as in 1.0.10/11-rc1)
+muting the headphones aswell.
 
-I realize this isn't much information.  I don't know what else to check
-but I'll be glad to debug it if someone can give me a pointer.
+Can you please intergrate this? I struggled trying to intergrate this
+properly but their alsa is built on 1.0.9 and I suppose I am not the
+sharpest of programers either for the job.
 
+Greets,
+  Mikael
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-15-06 04:39 
+ mikael - 01-16-06 16:22 
 ----------------------------------------------------------------------
-Update alsa-lib (or just ICE1724.conf) to 1.0.11-rc2.
-
-----------------------------------------------------------------------
- drow - 01-16-06 16:17 
-----------------------------------------------------------------------
-Just to be clear, the updated configuration file fixes dmix/dsnoop by
-default.  Still no love on the speaker channels.
+I realize this is a low prio matter but an update/status notification or
+anything would be very appreciated after one months time.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 05:11 drow           New Issue                                    
-09-09-05 05:11 drow           Distribution              => Debian          
-09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
-09-09-05 05:13 drow           Note Added: 0006091                          
-09-12-05 18:05 drow           Note Added: 0006148                          
-11-01-05 00:35 drow           Note Added: 0006591                          
-01-15-06 04:30 nono31         Note Added: 0007658                          
-01-15-06 04:39 rlrevell       Note Added: 0007659                          
-01-16-06 16:17 drow           Note Added: 0007687                          
+12-20-05 19:11 mikael         New Issue                                    
+12-20-05 19:11 mikael         Distribution              => Archlinux       
+12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
+01-16-06 16:22 mikael         Note Added: 0007688                          
 ======================================================================
 
 
