@@ -1,11 +1,14 @@
-From: "Oleg Salyakhov" <oleg.salyakhov@star-force.com>
-Subject: Creative SB X-Fi Xtreme Music
-Date: Mon, 16 Jan 2006 19:24:29 +0300
-Message-ID: <d89c6fb48cf1ed4bbafb610b91c167d9@star-force.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001745]: too few arguments to function `snd_info_entry_ioctl_old' when compile in Kernel 2.4
+Date: Mon, 16 Jan 2006 18:10:02 +0100
+Message-ID: <d9bc43db62aeb2202bae78463c02a7f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_19895_00019718.00018716"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A324C159
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 18:10:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,56 +18,114 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------_=_NextPart_19895_00019718.00018716
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-Hello All,
-Anyone knows any information about support of Creative SB X-Fi Xtreme
-Music ?
-Will Creavite Labs give documentation for future development ?
-Thanks,
-oleg.
- 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1745> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1745
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 1 (i386)
+Kernel Version:             2.4.22-1.2199.nptl
+======================================================================
+Date Submitted:             01-14-2006 03:19 CET
+Last Modified:              01-16-2006 18:10 CET
+======================================================================
+Summary:                    too few arguments to function
+`snd_info_entry_ioctl_old' when compile in Kernel 2.4
+Description: 
+gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa/cvs/alsa-driver/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=info   -c -o info.o info.c
+info.c: In function `snd_info_entry_ioctl_old':
+info.c:483: warning: passing arg 1 of `snd_info_entry_ioctl_old' from
+incompatible pointer type
+info.c:483: warning: passing arg 2 of `snd_info_entry_ioctl_old' makes
+pointer from integer without a cast
+info.c:483: too few arguments to function `snd_info_entry_ioctl_old'
+info.c: At top level:
+info.c:457: warning: `snd_info_entry_ioctl' defined but not used
+make[1]: *** [info.o] Error 1
+make[1]: Leaving directory `/alsa/cvs/alsa-driver/acore'
+make: *** [compile] Error 1
 
+======================================================================
 
+----------------------------------------------------------------------
+ Raymond - 01-14-06 04:26 
+----------------------------------------------------------------------
+RCS file: /cvsroot/alsa/alsa-driver/acore/info.patch,v
+retrieving revision 1.6
+diff -u -r1.6 info.patch
+--- alsa-driver/acore/info.patch	9 Jan 2006 17:09:15 -0000	1.6
++++ alsa-driver/acore/info.patch	14 Jan 2006 03:13:44 -0000
+@@ -60,7 +60,7 @@
+ +{
+ +	int err;
+ +	unlock_kernel();
+-+	err = snd_info_entry_ioctl_old(file, cmd, arg);
+++	err = snd_info_entry_ioctl(file, cmd, arg);
+ +	lock_kernel();
+ +	return err;
+ +}
 
-------_=_NextPart_19895_00019718.00018716
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ Raymond - 01-16-06 18:10 
+----------------------------------------------------------------------
+./cvscompile --with-cards=intel8x0 --with-debug=full
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-ascii"=
->
+gcc32 -D__KERNEL__ -DMODULE=1 -I/cvs/alsa-driver/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=intel8x0   -c -o intel8x0.o intel8x0.c
+In file included from /cvs/alsa-driver/include/sound/driver.h:47,
+                 from intel8x0.c:29:
+/cvs/alsa-driver/include/adriver.h:808:1: warning: "kmalloc" redefinedIn
+file included from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h:1247,
+                 from <command line>:1:
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modules/ksyms.ver:827:1:
+warning: this is the location of the previous definition
+In file included from /cvs/alsa-driver/include/sound/driver.h:47,
+                 from intel8x0.c:29:
+/cvs/alsa-driver/include/adriver.h:812:1: warning: "kfree" redefined
+In file included from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h:1247,
+                 from <command line>:1:
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modules/ksyms.ver:3851:1:
+warning: this is the location of the previous definition
+intel8x0.c:93: warning: `enable' defined but not used
+intel8x0.c:95: warning: `joystick' defined but not used
+rm -f snd-intel8x0.o
+ld  -r -o snd-intel8x0.o intel8x0.o
 
-
-<META content=3D"MSHTML 6.00.2900.2802" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D631552116-16012006>Hello 
-All,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D631552116-16012006>Anyone kn=
-ows any 
-information about support of Creative SB <B><B>X-Fi </B></B><B>Xtreme Music=
- 
-?</B></SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D631552116-16012006>Will Crea=
-vite Labs 
-give documentation for future development ?</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN 
-class=3D631552116-16012006>Thanks,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN 
-class=3D631552116-16012006>oleg.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN 
-class=3D631552116-16012006></SPAN></FONT>&nbsp;</DIV></BODY></HTML>
-
-
-------_=_NextPart_19895_00019718.00018716--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-14-06 03:19 Raymond        New Issue                                    
+01-14-06 03:19 Raymond        Distribution              => Fedora Core 1 (i386)
+01-14-06 03:19 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-14-06 04:26 Raymond        Note Added: 0007652                          
+01-16-06 18:10 Raymond        Note Added: 0007690                          
+======================================================================
 
 
 
