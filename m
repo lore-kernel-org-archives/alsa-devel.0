@@ -1,109 +1,179 @@
-From: Doug McLain <doug@nostar.net>
-Subject: Re: [Alsa-devel] Re: Real-world reports on two Delta
- 1010LTs/ice1712 synched?
-Date: Mon, 16 Jan 2006 14:26:59 -0500
-Message-ID: <43CBF383.3000807@nostar.net>
-References: <20051224124823.GA4183@localhost.localdomain> <20051224144548.GA4306@localhost.localdomain> <20051224165610.GA4484@localhost.localdomain> <43AE9FA6.2020207@nostar.net> <20051226130327.GA4763@localhost.localdomain> <43B059A3.2050302@nostar.net> <20051227000428.GA3805@localhost.localdomain> <43B0A83F.1040907@nostar.net> <20051227130029.GB3770@localhost.localdomain> <43B1A8FA.8080408@nostar.net> <20060116175652.GM28738@edu.joroinen.fi>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Mon, 16 Jan 2006 20:19:39 +0100
+Message-ID: <ff7627a7b2b91a35243370d1f7cc764e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060116175652.GM28738@edu.joroinen.fi>
-Sender: jackit-devel-admin@lists.sourceforge.net
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: =?ISO-8859-1?Q?Pasi_K=E4rkk=E4inen?= <pasik@iki.fi>
-Cc: John Rigg <j@sound-man.co.uk>, alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D62BE10E
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 20:19:39 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Good timing, I was just about to give a summary of my findings so far:
 
-First of all, the differences in the 1010LT vs the 1010 that are most=20
-relevent here, I believe, is the SPDIF i/o chips (cs8413 receiver,=20
-cs8404 xmitter) used on the 1010 vs the one single transceiver (cs8427)=20
-used on the 1010LT.  They also use different ADC/DAC's, but at this=20
-point in the game they dont appear to be relevent to this problem, and=20
-they appear to be completely functional.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+======================================================================
+Reported By:                chrmue
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1733
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
+======================================================================
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              01-16-2006 20:19 CET
+======================================================================
+Summary:                    Intel HDA Modem ?
+Description: 
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-Last night I got my oscope back and took a look at the wordclock output=20
-signal, first in windows.  As expected, the card outputs at the=20
-frequency the card is running at, wether its via internal clock, SPDIF=20
-in, or word clock input.  I checked all three.  Also in windows, SPDIF=20
-Out works in all 3 modes as well, as it should.
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
-In Linux, There is no word clock output signal nor an SPDIF signal=20
-unless I either input a word clock signal or an SPDIF signal, and then=20
-the signal stays at the speed of the input signal, even if I switch to=20
-various internal clock speeds.  Basically the input clock is just being=20
-passed thru.  Also, the card will not sync to an input word clock signal=20
-no way, no how.  It will sync to an spdif signal though.  This is=20
-actually the only way to get spdif out to work.  On a delta 1010LT in=20
-Linux, the only way to get SPDIF out, is if there is a valid SPDIF In
-signal, and I am clocked off it.
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
 
-Knowing this, I am currently able to run two delta 1010LT's synced via=20
-spdif (spdif out of card 1 to spdif of card 2), with JACK (using john=20
-rigg's asoundrc, alsa-lib, and jack patches), with an external spdif=20
-signal coming into card 1's SPDIF In from a digital mixer. I did many=20
-mutitrack recordings of all 16 inputs simultaneously into ardour,=20
-everything worked great. This just confirms that the only thing keeping=20
-the 1010LT's from playing nice together is the clock problem.  Otherwise=20
-they are ready to go.  A possible option while the clock issue remains=20
-at large, is to use the spdif output from your on board sound card(if so=20
-equipped) as an spdif source to your first delta.  I gave this about 5=20
-minutes of my time, and didnt have the best of luck.  I couldnt keep the=20
-signal coming out of my via82xx alive all the time, etc.  I don't know=20
-it well enough to use alsamixer, etc and I had to keep xmms running (set=20
-to use the alsa driver on the via82xx directly) all the time to keep the=20
-signal alive.  I wasnt too interested in getting it working well like=20
-this, but it was an idea.
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
+======================================================================
 
-I've been studying the ice1712 alsa driver closely over the past few=20
-weeks, and comparing all relevent ice1712 control register values in=20
-windows vs linux (in windows I got ahold of this nice program called=20
-PCIScope, a dream for reverse engineering pci hardware!) and I think=20
-(hope) the problem is in the init and configuration of the cs8427 spdif=20
-transceiver.  There are differences in bit values on the ice1712's GPIO=20
-data register. So my two areas of concern are deciphering the usage of=20
-the GPIO register and the cs8427 spdif transceiver. The ice1712 talks to=20
-the cs8427 over I2C, which isnt as straightforward to read as regular=20
-i/o registers, so it's more studying ahead.  I am focusing on fixing=20
-spdif functionality, since the cs8427 datasheet is very clear about=20
-spdif operation.  I am hoping by fixing regular spdif functionality on=20
-the ship, word clock will be fixed too. We'll see.
+----------------------------------------------------------------------
+ sashak - 01-13-06 00:16 
+----------------------------------------------------------------------
+> Can you send it
 
-Doug
---
-http://nostar.net/
+Sent.
+
+----------------------------------------------------------------------
+ chrmue - 01-16-06 20:19 
+----------------------------------------------------------------------
+thanks for the file! (the downloading problem was Internet Explorer
+related! It seems that IE has problems getting small plain-text files!!!
+That's another reason for getting this Modem to work in Linux!!!)
+
+I applied it to the 1.0.11rc2 of alsa-driver release (had no CVS handy and
+didn't wanted to download 15MB with analog) - seemed to fit well there
+too.
+And it worked! - i couldn't test it at this moment because i ran into
+other problems with my wlan-card. In the end i had to apply irqpoll as
+kernel-parameter, and while testing this my system once froze at booting
+printing this message hundrets of times:
+
+Jan 16 11:36:19 schmuckstueck kernel: ALSA
+/usr/src/alsa/alsa-driver-1.0.11rc2/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:520:
+azx_get_response timeout
+
+After i got the irq-problem fixed this was gone (my wlan now works well
+too! but still i need the modem at my parents...)
+btw: now the message appears again when starting jackd but doesn't freeze
+(even jack is working!)
+so i didn't bother anymore, but could this happen because i used the
+release not the CVS? or is this irq-related?
+
+anyway - my system now works fine with all hardware (had to patch yenta
+too, but this is another story).
+
+back to the modem aplay -l now gives me:
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 1: ALC880 Digital [ALC880 Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+
+-- Yipiiee!
+But i went off-hook on bootup, which i found out was KMix! IT turned the
+new recognized switch "Off-hook" on by default (this was the same with the
+IEC958-Switch as i got to the release where it was introduced), so i
+turned it off shut down kde (to save this settting) and voila! (good thing
+that i saw the switches this moment!)
+
+Then i got slmodemd running (just "slmodemd -a" didn't work - it assumes
+modem:1 by default, but "slmodemd -a modem:0" works well!)
+After a few tries i found out that i had to disconnect the telephone line
+after an connection (or attempt) else NO DIALTONE was the result. I looked
+at the switches in alsamixer and found out that the Off-hook switch STAYS
+ON after slmodemd has got an disconnect (on serial side there is no
+problem - on disconnect slmodemd gives NO CARRIER and gets back to
+AT-Command mode and after switching the Off-hook switch off in alsamixer
+or temporarily disconnecting the telephone-line i can connect again)
+
+Now i got to: "connecting to my ISP via pppd"
+After some unsuccessful tries, i found out that i had to switch Caller-Id
+off for connecting to my ISP - What's this switch good for?
+So i got CONNECTED!!!! momentary sending this message over it!
+
+For the Off-hook-thing i got " disconnect "amixer sset Off-hook off >
+/dev/null" " in my /etc/ppp/options, but this only works with pppd, which
+is okay for me. (it just prevents me from staying off-hook after pppd has
+disconnected by timeout, because i was fallen asleep viewing a website at
+6 o' clock in the morning)
+
+A good thing would be also to hear the negotiation process in the speakers
+(in Windows there is a helper-program - agrsmmsg.exe . I suppose it
+captures the sound from modem-line and plays it back thru the normal PCM
+until connected. If I don't start this exe in windows i don't hear the
+negotiation too (but get connected anyway))
+
+But this far THANK YOU very very much. It is a good thing to got my
+Notebook working with all hardware i need in linux, so again thank you for
+the modem.
+
+PS: speed is quite good: i get connections with 40-48kbit/s (as negotiated
+speed) - at the moment 46667 - and downloading an 1.5MB file was done with
+4.3KByte/s. In Windows i got 52kbit/s most times, but 40 is absolutely
+okay for me. The download seemed to "hang" temporarily sometimes, but the
+connection was stable. I suppose this is slmodemd-related (same with the
+speed), but okay for me. (I think i saw these "hang"s in windows too, so
+maybe it's my ISP...)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+======================================================================
 
 
-Pasi K=E4rkk=E4inen wrote:
-
->=20
-> Doug,=20
->=20
-> Have you found out anything?=20
->=20
-> - Pasi K=E4rkk=E4inen
->=20
->=20
->=20
-> -------------------------------------------------------
-> This SF.net email is sponsored by: Splunk Inc. Do you grep through log =
-files
-> for problems?  Stop!  Download the new AJAX search engine that makes
-> searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-> http://ads.osdn.com/?ad_idv37&alloc_id=16865&op=3Dclick
-> _______________________________________________
-> Jackit-devel mailing list
-> Jackit-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/jackit-devel
 
 
 -------------------------------------------------------
