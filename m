@@ -1,13 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Testing framework
-Date: Sun, 15 Jan 2006 18:35:51 -0500
-Message-ID: <1137368151.25801.119.camel@mindpipe>
-References: <e55525570601151455v537dffdhe37befc992499b5a@mail.gmail.com>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: How are multiple capture sources confusing alsamixer?
+Date: Mon, 16 Jan 2006 11:51:53 +1030 (CST)
+Message-ID: <200601160121.k0G1LrSU013170@auster.physics.adelaide.edu.au>
+References: <20060115233401.2AB0F12666@sc8-sf-spam2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <e55525570601151455v537dffdhe37befc992499b5a@mail.gmail.com>
+In-Reply-To: <20060115233401.2AB0F12666@sc8-sf-spam2.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Jan 15, 2006 03:33:01 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Anderson Briglia <briglia.anderson@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-01-15 at 18:55 -0400, Anderson Briglia wrote:
-> Hi all,
-> 
-> Is there some testing framework for testing newer ALSA drivers? I've
-> been using speaker-test and aplay, from alsa-utils package but I think
-> it could be automated or give more specific results.
+Hi all
 
-How would you test whether sound is coming out (no sound is by far the
-most common sympton of incomplete hardware support) other than listening
-to it?
+I've noticed the following comment in a variety of drivers:
 
-It really depends what you want to test.
+  /* The multiple "Capture Source" controls confuse alsamixer
+   * So call somewhat different..
+   * FIXME: the controls appear in the "playback" view!
+   */
+  /* .name = "Capture Source", */
 
-Lee
+I've been working on adding the second capture source to the ALC260 Fujitsu
+configuration and have not really seen any major problems with alsamixer's
+interpretation when two capture sources are declared.  What seems to happen
+for me is that each potential source gets two capture switches; one switches
+to the first capture source and the other switches to the second capture
+source.  Furthermore, all this appears to work fine.
 
+So, in what way(s) does the presence of multiple capture sources confuse
+alsamixer and give rise to the source-code comment quoted above?
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
