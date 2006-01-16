@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
-Date: Mon, 16 Jan 2006 16:22:10 +0100
-Message-ID: <900aa2781ffba249a626fad3be018af7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001755]: nforce4 - missing rear right channel
+Date: Mon, 16 Jan 2006 16:59:35 +0100
+Message-ID: <22b3906ed60e1433c7d8e095acec21bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E355B156
-	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 16:22:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7B24154
+	for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2006 16:59:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1755> 
 ======================================================================
-Reported By:                mikael
-Assigned To:                tiwai
+Reported By:                fearofcarpet
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1663
-Category:                   PCI - hda-intel
+Issue ID:                   1755
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Archlinux
-Kernel Version:             2.4.13.4
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             12-20-2005 19:11 CET
-Last Modified:              01-16-2006 16:22 CET
+Date Submitted:             01-16-2006 16:59 CET
+Last Modified:              01-16-2006 16:59 CET
 ======================================================================
-Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
-fix, please intergrate it!
+Summary:                    nforce4 - missing rear right channel
 Description: 
-My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
-
-It though for some reason do not turn off the main speaker when you insert
-headphones. On the site
-http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
-there is a patched alsa package available which fixes this issue by adding
-a "Headphone" mixer which you can turn on/off and also gives you the
-availability to mute the main speakers without (as in 1.0.10/11-rc1)
-muting the headphones aswell.
-
-Can you please intergrate this? I struggled trying to intergrate this
-properly but their alsa is built on 1.0.9 and I suppose I am not the
-sharpest of programers either for the job.
-
-Greets,
-  Mikael
+On an ASUS A8N-SLI Deluxe w/integrated RealTek ALC850 (nforce4) sound the
+rear right channel is missing when using analog outputs. In alsamixer all
+the channels respond correctly (e.g. if I mute 'center' the center speaker
+mutes), but the rear channel is only outputting to the rear left speaker.
+It is not downmixing the rear channels either; the rear right is simply
+missing. Using the ASUS drivers in Windows the rear channels work
+correctly.
 ======================================================================
-
-----------------------------------------------------------------------
- mikael - 01-16-06 16:22 
-----------------------------------------------------------------------
-I realize this is a low prio matter but an update/status notification or
-anything would be very appreciated after one months time.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-05 19:11 mikael         New Issue                                    
-12-20-05 19:11 mikael         Distribution              => Archlinux       
-12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
-01-16-06 16:22 mikael         Note Added: 0007688                          
+01-16-06 16:59 fearofcarpet   New Issue                                    
+01-16-06 16:59 fearofcarpet   Distribution              => Gentoo          
+01-16-06 16:59 fearofcarpet   Kernel Version            => 2.6.15          
 ======================================================================
 
 
