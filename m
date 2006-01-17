@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001366]: 3D control, EQ peaks and EQ controls appear in capture view of alsamixer and they also have capture channels in amixer
-Date: Tue, 17 Jan 2006 12:55:37 +0100
-Message-ID: <8481ed4dc460770b125e82334fd9d41a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001745]: too few arguments to function `snd_info_entry_ioctl_old' when compile in Kernel 2.4
+Date: Tue, 17 Jan 2006 13:08:12 +0100
+Message-ID: <0beb2954a28fb31b1b6f599c232d4773@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F398815D
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 12:55:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1B8E15E
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 13:08:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,123 +24,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1366> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1745> 
 ======================================================================
 Reported By:                Raymond
-Assigned To:                
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1366
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1745
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora Core 1 (i386)
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             08-24-2005 09:26 CEST
-Last Modified:              01-17-2006 12:55 CET
+Date Submitted:             01-14-2006 03:19 CET
+Last Modified:              01-17-2006 13:08 CET
 ======================================================================
-Summary:                    3D control, EQ peaks and EQ controls appear in
-capture view of alsamixer and they also have capture channels in amixer
+Summary:                    too few arguments to function
+`snd_info_entry_ioctl_old' when compile in Kernel 2.4
 Description: 
-3D control (Depth and Rear Depth) appear in capture view of alsamixer.
+gcc32 -D__KERNEL__ -DMODULE=1 -I/alsa/cvs/alsa-driver/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=info   -c -o info.o info.c
+info.c: In function `snd_info_entry_ioctl_old':
+info.c:483: warning: passing arg 1 of `snd_info_entry_ioctl_old' from
+incompatible pointer type
+info.c:483: warning: passing arg 2 of `snd_info_entry_ioctl_old' makes
+pointer from integer without a cast
+info.c:483: too few arguments to function `snd_info_entry_ioctl_old'
+info.c: At top level:
+info.c:457: warning: `snd_info_entry_ioctl' defined but not used
+make[1]: *** [info.o] Error 1
+make[1]: Leaving directory `/alsa/cvs/alsa-driver/acore'
+make: *** [compile] Error 1
 
-amixer display these controls have capture channels.
-
-
-
-EQ peaks
-
-alsamixer cannot display 10-bands EQ peaks properly.
-
-amixer display the wrong channel name for EQ peaks (Feature request).
-
-Refer to 5.2.3.4.2.6 Graphical Equalizer Controls in USB audio
-http://www.usb.org/developers/devclass_docs/audio10.pdf
-
-Is it feasible to adopt the naming convention of the EQ center frequency
-in amixer/alsamixer ?
-
-
-
-10-bands stereo EQ controls
-
-alsamixer display 10-bands stereo EQ controls in capture view.
-
-amixer display the 10 EQ controls have capture channels.
-
-In theory, the EQ controls can be connected to regulate the capture audio
-from AC97, but this will need a rewrite of the existing driver to support
-dynamic disconnect of the equalizer from the playback device and connect
-the capture device and vice versa.
-
-Most au8810/au8830 users perfer to use the Equalizer to control playback
-only.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 12-22-05 15:44 
+ Raymond - 01-16-06 18:10 
 ----------------------------------------------------------------------
-amixer 
+./cvscompile --with-cards=intel8x0 --with-debug=full
 
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono   <--------------------------
-  Limits: 0 - 15
-  Mono: 0 [0%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono   <--------------------------
-  Limits: 0 - 15
-  Mono: 0 [0%]
+gcc32 -D__KERNEL__ -DMODULE=1 -I/cvs/alsa-driver/include 
+-I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=intel8x0   -c -o intel8x0.o intel8x0.c
+In file included from /cvs/alsa-driver/include/sound/driver.h:47,
+                 from intel8x0.c:29:
+/cvs/alsa-driver/include/adriver.h:808:1: warning: "kmalloc" redefinedIn
+file included from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h:1247,
+                 from <command line>:1:
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modules/ksyms.ver:827:1:
+warning: this is the location of the previous definition
+In file included from /cvs/alsa-driver/include/sound/driver.h:47,
+                 from intel8x0.c:29:
+/cvs/alsa-driver/include/adriver.h:812:1: warning: "kfree" redefined
+In file included from
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h:1247,
+                 from <command line>:1:
+/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modules/ksyms.ver:3851:1:
+warning: this is the location of the previous definition
+intel8x0.c:93: warning: `enable' defined but not used
+intel8x0.c:95: warning: `joystick' defined but not used
+rm -f snd-intel8x0.o
+ld  -r -o snd-intel8x0.o intel8x0.o
 
 ----------------------------------------------------------------------
- Raymond - 01-17-06 12:55 
+ tiwai - 01-17-06 13:08 
 ----------------------------------------------------------------------
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono <----------------------
-  Limits: 0 - 3
-  Mono: 1 [33%]
-
-
-cat   /proc/asound/I82801BAICH2/codec97#0/ac97#0-0
-0-0/0: Realtek ALC200,200P rev 0
- 
- 
-Capabilities     : -headphone out-
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
- 
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF VRA
-Extended status  : SPCV SPDIF=7/8 VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+They are all just warnings, right?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-24-05 09:26 Raymond        New Issue                                    
-09-05-05 15:18 Raymond        File Added: Capture.png                      
-09-05-05 15:19 Raymond        File Added: alsamixer.png                    
-11-03-05 14:17 Raymond        Note Added: 0006603                          
-11-08-05 13:50 Raymond        Note Added: 0006620                          
-12-22-05 15:44 Raymond        Note Added: 0007127                          
-01-17-06 12:55 Raymond        Note Added: 0007698                          
+01-14-06 03:19 Raymond        New Issue                                    
+01-14-06 03:19 Raymond        Distribution              => Fedora Core 1 (i386)
+01-14-06 03:19 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-14-06 04:26 Raymond        Note Added: 0007652                          
+01-16-06 18:10 Raymond        Note Added: 0007690                          
+01-17-06 13:08 tiwai          Note Added: 0007699                          
 ======================================================================
 
 
