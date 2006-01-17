@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
-Date: Tue, 17 Jan 2006 00:05:27 +0100
-Message-ID: <352b6a5f1eb53e2d2214cfb661ba4ed6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
+Date: Tue, 17 Jan 2006 01:21:53 +0100
+Message-ID: <168bb6e6c7d26bbe5e74e1232d81f65d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 042F4149
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 00:05:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31ECE153
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 01:21:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
 ======================================================================
-Reported By:                mikael
-Assigned To:                tiwai
+Reported By:                robertdavid
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1663
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
+Issue ID:                   1744
+Category:                   PCI - ice1724
+Reproducibility:            sometimes
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Archlinux
-Kernel Version:             2.4.13.4
+Status:                     new
+Distribution:               Gentoo linux
+Kernel Version:             2.6.14-archck-r7
 ======================================================================
-Date Submitted:             12-20-2005 19:11 CET
-Last Modified:              01-17-2006 00:05 CET
+Date Submitted:             01-13-2006 22:16 CET
+Last Modified:              01-17-2006 01:21 CET
 ======================================================================
-Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
-fix, please intergrate it!
+Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
+chanel work and sound is quick...
 Description: 
-My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
-
-It though for some reason do not turn off the main speaker when you insert
-headphones. On the site
-http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
-there is a patched alsa package available which fixes this issue by adding
-a "Headphone" mixer which you can turn on/off and also gives you the
-availability to mute the main speakers without (as in 1.0.10/11-rc1)
-muting the headphones aswell.
-
-Can you please intergrate this? I struggled trying to intergrate this
-properly but their alsa is built on 1.0.9 and I suppose I am not the
-sharpest of programers either for the job.
-
-Greets,
-  Mikael
+Im very glad that was added support for Prodigy, but there is still only
+two channel working (7,8), the others are silent (tryed all volume
+settings).
+The sound from 7,8 chanel is good in case of quality, but is faster than
+it should be (turn off Multi Track Rate Locking didnt do anything).
+I've tryed mpalyer and XMMS, both the same.
+I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
+Prodigy 7.1LT) 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-16-06 19:24 
+ Anho Ki - 01-15-06 19:18 
 ----------------------------------------------------------------------
-All of the Realtek code should have been merged into the latest ALSA
-drivers, is it still broken with 1.0.11-rc2?
+Analog inputs(both mic and line-in) do NOT work,
+I also can't get any sound from them.
+
+Anyway... does anyone succeed optical output?
+When I run "aplay -D plug:spdif some_blahblah.wav", didn't get any error
+messages,
+but no lights from optical cable.
+(It tested with my portable CDP, and works correctly)
 
 ----------------------------------------------------------------------
- mikael - 01-17-06 00:05 
+ Anho Ki - 01-17-06 01:21 
 ----------------------------------------------------------------------
-I think you misinterpretated the bug report. 
+I found how to increase front channel volume to normal level.
 
-I have just tried the 1.0.11-rc2 with the same result. 
+Use prodigytest by ungod (found in #1090), "# ./prodigytest 8 10 9 0"
+then, you can get acceptable volume level...
 
-To clarify the bug report:
-
- * My laptop has a set of stereo front speakers
- * It has 1 mic input and 1 lineout and 1 headphone jack
- * When inserting the headphones to either lineout or headphone jack the
-front speakers will not mute
- * If you mute the "Front" bar in alsamixer both front speakers and
-headphones mute
- * Realtek.com.tw has implemented a bar named "Headphone" which you can by
-software mute / unmute in combination of muting only the "Front" bar,
-which solves the problem.
-
-Screenshots:
-
- * Realtek.com.tw drivers:
-http://ircgeeks.net/~nicon/pics/rlt_alsamixer.png
- * Alsa-project.org drivers:
-http://ircgeeks.net/~nicon/pics/11rc2_alsamixer.png
-
-Please add a comment if you need a more clear bug report.
+maybe driver don't initialize soundcard correctly...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-05 19:11 mikael         New Issue                                    
-12-20-05 19:11 mikael         Distribution              => Archlinux       
-12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
-01-16-06 16:22 mikael         Note Added: 0007688                          
-01-16-06 19:24 rlrevell       Note Added: 0007691                          
-01-17-06 00:05 mikael         Note Added: 0007693                          
+01-13-06 22:16 robertdavid    New Issue                                    
+01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
+01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
+01-14-06 00:13 drfindley      File Added: asound.state                     
+01-14-06 00:15 drfindley      Note Added: 0007650                          
+01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
+01-14-06 00:28 robertdavid    Note Added: 0007651                          
+01-14-06 00:29 robertdavid    Note Edited: 0007651                         
+01-14-06 18:09 robertdavid    Note Added: 0007654                          
+01-15-06 19:18 Anho Ki        Note Added: 0007667                          
+01-17-06 01:21 Anho Ki        Note Added: 0007694                          
 ======================================================================
 
 
