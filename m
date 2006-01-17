@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
-Date: Tue, 17 Jan 2006 11:13:58 +0100
-Message-ID: <2b3478c7e30eeed32e23025b8a14deea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Tue, 17 Jan 2006 12:27:19 +0100
+Message-ID: <476be8db01218933aed708b92cbecb83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D805E165
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 11:13:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A32AD156
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 12:27:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,98 +24,176 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                robertdavid
-Assigned To:                
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1744
-Category:                   PCI - ice1724
+Issue ID:                   1047
+Category:                   PCI - au88x0
 Reproducibility:            sometimes
-Severity:                   tweak
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo linux
-Kernel Version:             2.6.14-archck-r7
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             01-13-2006 22:16 CET
-Last Modified:              01-17-2006 11:13 CET
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              01-17-2006 12:27 CET
 ======================================================================
-Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
-chanel work and sound is quick...
+Summary:                    module hangs at seemingly random times
 Description: 
-Im very glad that was added support for Prodigy, but there is still only
-two channel working (7,8), the others are silent (tryed all volume
-settings).
-The sound from 7,8 chanel is good in case of quality, but is faster than
-it should be (turn off Multi Track Rate Locking didnt do anything).
-I've tryed mpalyer and XMMS, both the same.
-I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
-Prodigy 7.1LT) 
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
+
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
+
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
+
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001090 Support for new Prodigy 7.1 LT
-======================================================================
 
 ----------------------------------------------------------------------
- Anho Ki - 01-17-06 09:38 
+ Raymond - 01-14-06 05:00 
 ----------------------------------------------------------------------
-I made a small patch.
+When the equalizer is in bypass mode, the gain of the 10 bands of the left
+and
+right channels should be the same, therefore this14_array only need 10
+values instead of 20.
 
-eeprom data returned to original prodigy's,
-and using GPIO 5 to switch hp amp.
 
-spdif optical output is works,
-(i don't know it works correctly, but there's a light from optical jack :)
-)
-and external amp. setting is works, too.
+Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_eq.h,v
+retrieving revision 1.2
+diff -u -r1.2 au88x0_eq.h
+--- alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h	13 Jan 2006 17:16:29
+-0000	1.2
++++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_eq.h	14 Jan 2006 03:43:23
+-0000
+@@ -13,18 +13,18 @@
+ typedef struct {
+ 	u16 LeftCoefs[50];	//0x4
+ 	u16 RightCoefs[50];	// 0x68
+-	u16 LeftGains[20];	//0xd0
+-	u16 RightGains[20];	//0xe4
++	u16 LeftGains[10];	//0xd0
++	u16 RightGains[10];	//0xe4
+ } auxxEqCoeffSet_t;
+ 
+ typedef struct {
+-	u32 ptr_this00;		/*CAsp4HwIO */
++//	u32 ptr_this00;		/*CAsp4HwIO */
+ 	s32 this04;		/* How many filters for each side (default = 10) */
+ 	s32 this08;		/* inited to cero. Stereo flag? */
+ } eqhw_t;
+ 
+ typedef struct {
+-	u32  ptr_this00;	/*CAsp4Core */
++//	u32  ptr_this00;	/*CAsp4Core */
+ 	eqhw_t this04;		/* CHwEq */
+ 	u16 this08;		/* Bad codec flag ? SetBypassGain: bypass gain */
+ 	u16 this0a;
+@@ -32,8 +32,7 @@
+ 	u16 this0e;
+ 
+ 	s32 this10;		/* How many gains are used for each side (right or left).
+*/
+-	u16 this14_array[32];	/* SetLeftGainsTarget: Left (and right?) EQ gains 
+*/
+-	s32 this24;
++	u16 this14_array[10];	/* Gains Target when EQ is bypassed */
+ 	s32 this28;		/* flag related to EQ enabled or not. Gang flag ? */
+ 	s32 this54;		/* SetBypass */
+ 	s32 this58;
 
-when turn on ext.amp, 7,8 channel works as hp channel
-turn it off, 7,8 channel may work as sb channel...
-(not tested... does anyone use surround system? plz test it)
 
-after applying this patch, i feel sound quality is a little poor than
-before...
-:(
 
 ----------------------------------------------------------------------
- robertdavid - 01-17-06 11:13 
+ Raymond - 01-17-06 12:27 
 ----------------------------------------------------------------------
-I have tryed that,you are right, it sounds litlle worse.
-Dont know what you did, but it looks like link 7,8 output to 1,2 because
-if I play mplayer w/o your patch I can hear only the truth 1,2 channel
-(AC3 5.1), but If I use patch I can hear everything in 1,2 channel, so its
-look like downmixed all to 1,2.. 
-music is OK, but still little slower that it shoul be,, dont know it is
-XMMS mistake, or driver.. But w/o the patch it sounds better (I have good
-H.P. so I could hear it)
-With AMP turned down nothing works, its like to swich off the soundcard..
+The function vortex_EqHw_SetLevels() only set 20 eq peaks and 4 other
+registers, so eq_levels[] need 24 values instead of 64 values.
 
-I have 5.1 surround system but still never heard any sound from center,
-rear..
-What is exactly mutli track peak??
+
+Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_eqdata.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_eqdata.c,v
+retrieving revision 1.2
+diff -u -r1.2 au88x0_eqdata.c
+--- alsa-driver/alsa-kernel/pci/au88x0/au88x0_eqdata.c	13 Jan 2006
+17:16:29 -0000	1.2
++++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_eqdata.c	17 Jan 2006
+09:55:43 -0000
+@@ -104,12 +104,7 @@
+ };
+ 
+ /*_rodataba0:*/
+-static u16 eq_levels[64] = {
+-	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+-	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+-	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+-	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+-	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
++static u16 eq_levels[24] = {
+ 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+ 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+ 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-06 22:16 robertdavid    New Issue                                    
-01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
-01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
-01-14-06 00:13 drfindley      File Added: asound.state                     
-01-14-06 00:15 drfindley      Note Added: 0007650                          
-01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
-01-14-06 00:28 robertdavid    Note Added: 0007651                          
-01-14-06 00:29 robertdavid    Note Edited: 0007651                         
-01-14-06 18:09 robertdavid    Note Added: 0007654                          
-01-15-06 19:18 Anho Ki        Note Added: 0007667                          
-01-17-06 01:21 Anho Ki        Note Added: 0007694                          
-01-17-06 01:48 rlrevell       Relationship added       related to 0001090  
-01-17-06 09:24 Anho Ki        File Added: prodigy71.patch                    
-01-17-06 09:24 Anho Ki        Issue Monitored: Anho Ki                     
-01-17-06 09:38 Anho Ki        Note Added: 0007695                          
-01-17-06 11:13 robertdavid    Note Added: 0007696                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
+01-13-06 18:18 tiwai          Note Added: 0007648                          
+01-14-06 04:53 Raymond        Note Added: 0007653                          
+01-14-06 05:00 Raymond        Note Edited: 0007653                         
+01-17-06 12:27 Raymond        Note Added: 0007697                          
 ======================================================================
 
 
