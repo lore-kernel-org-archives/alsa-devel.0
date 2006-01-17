@@ -1,17 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [2.6 patch] sound/pci/cs46xx/dsp_spos_scb_lib.c:
-	fix an assertion
-Date: Tue, 17 Jan 2006 13:52:37 -0500
-Message-ID: <1137523957.19444.72.camel__47060.5931863703$1137524003$gmane$org@mindpipe>
-References: <20060117184701.GC19398@stusta.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001760]: bad digital output
+Date: Tue, 17 Jan 2006 21:46:43 +0100
+Message-ID: <73b00727dbdc63e5e45bdf64d1d5171d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 60354156
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 19:52:40 +0100 (MET)
-In-Reply-To: <20060117184701.GC19398@stusta.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB2E715E
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 21:46:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,15 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian Bunk <bunk@stusta.de>
-Cc: perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, D Binderman <dcb314@hotmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-01-17 at 19:47 +0100, Adrian Bunk wrote:
-> D Binderman <dcb314@hotmail.com> reported the following in kernel 
-> Bugzilla #5903 [1]:
 
-Already fixed in CVS
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1760> 
+======================================================================
+Reported By:                koloom
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1760
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             01-17-2006 21:46 CET
+Last Modified:              01-17-2006 21:46 CET
+======================================================================
+Summary:                    bad digital output
+Description: 
+Notebook and receiver is connected using digital optical cable. Then I
+start aplay --device spdif some_stereo.wav. The receiver correctly detects
+stereo PCM. The left channel works well, but only noise comes from the
+right channel. I tried iec958 and hw:0.1 devices with the same result.
+Playing AC3 does not work at all - the receiver is unable to detect the
+data format (dolby etc).
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-17-06 21:46 koloom         New Issue                                    
+01-17-06 21:46 koloom         Distribution              => gentoo          
+01-17-06 21:46 koloom         Kernel Version            => 2.6.14          
+======================================================================
+
 
 
 
