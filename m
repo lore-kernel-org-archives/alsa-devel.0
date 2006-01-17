@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001758]: Sound card won't work proper.
-Date: Tue, 17 Jan 2006 08:02:06 +0100
-Message-ID: <940815f334d154067fa8c63be723d17a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
+Date: Tue, 17 Jan 2006 09:38:16 +0100
+Message-ID: <caf8f7374d233edb0b0ea46e965344ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A472114
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 08:02:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1280165
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 09:38:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1758> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
 ======================================================================
-Reported By:                terminal2000
+Reported By:                robertdavid
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1758
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1744
+Category:                   PCI - ice1724
+Reproducibility:            sometimes
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo linux
+Kernel Version:             2.6.14-archck-r7
 ======================================================================
-Date Submitted:             01-17-2006 08:02 CET
-Last Modified:              01-17-2006 08:02 CET
+Date Submitted:             01-13-2006 22:16 CET
+Last Modified:              01-17-2006 09:38 CET
 ======================================================================
-Summary:                    Sound card won't work proper.
+Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
+chanel work and sound is quick...
 Description: 
-My sound card is a CT-4810 one using 5880 chip.
-It's using ens1371 driver and everything seems to be OK look from the
-screen.
-But it makes a strange sound whenever it plays.
-And i found if i play a sound file and at the same time drag another
-window and keep moving, the strange sound became normal. Once i stoped,
-it's back.
-So I thought it will work when CPU load is heavy. So i tried play music
-while compiling kernel and everything's OK.
-
-It work just OK when the system is busy but makes strange sounds when it's
-free.
-
+Im very glad that was added support for Prodigy, but there is still only
+two channel working (7,8), the others are silent (tryed all volume
+settings).
+The sound from 7,8 chanel is good in case of quality, but is faster than
+it should be (turn off Multi Track Rate Locking didnt do anything).
+I've tryed mpalyer and XMMS, both the same.
+I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
+Prodigy 7.1LT) 
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001090 Support for new Prodigy 7.1 LT
+======================================================================
+
+----------------------------------------------------------------------
+ Anho Ki - 01-17-06 01:21 
+----------------------------------------------------------------------
+I found how to increase front channel volume to normal level.
+
+Use prodigytest by ungod (found in #1090), "# ./prodigytest 8 10 9 0"
+then, you can get acceptable volume level...
+
+maybe driver don't initialize soundcard correctly...
+
+----------------------------------------------------------------------
+ Anho Ki - 01-17-06 09:38 
+----------------------------------------------------------------------
+I made a small patch.
+
+eeprom data returned to original prodigy's,
+and using GPIO 5 to switch hp amp.
+
+spdif optical output is works,
+(i don't know it works correctly, but there's a light from optical jack :)
+)
+and external amp. setting is works, too.
+
+when turn on ext.amp, 7,8 channel works as hp channel
+turn it off, 7,8 channel may work as sb channel...
+(not tested... does anyone use surround system? plz test it)
+
+after applying this patch, i feel sound quality is a little poor than
+before...
+:(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-06 08:02 terminal2000   New Issue                                    
+01-13-06 22:16 robertdavid    New Issue                                    
+01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
+01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
+01-14-06 00:13 drfindley      File Added: asound.state                     
+01-14-06 00:15 drfindley      Note Added: 0007650                          
+01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
+01-14-06 00:28 robertdavid    Note Added: 0007651                          
+01-14-06 00:29 robertdavid    Note Edited: 0007651                         
+01-14-06 18:09 robertdavid    Note Added: 0007654                          
+01-15-06 19:18 Anho Ki        Note Added: 0007667                          
+01-17-06 01:21 Anho Ki        Note Added: 0007694                          
+01-17-06 01:48 rlrevell       Relationship added       related to 0001090  
+01-17-06 09:24 Anho Ki        File Added: prodigy71.patch                    
+01-17-06 09:24 Anho Ki        Issue Monitored: Anho Ki                     
+01-17-06 09:38 Anho Ki        Note Added: 0007695                          
 ======================================================================
 
 
