@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001486]: headphone control disappeared
-Date: Tue, 17 Jan 2006 17:56:29 +0100
-Message-ID: <f241523e5a8b1487bdd87a92bc1a6832@bugtrack.alsa-project.org>
+Date: Tue, 17 Jan 2006 17:57:45 +0100
+Message-ID: <b56e69be6cc7aa0c0ca3ee766de35ec4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A35D162
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 17:56:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9FAD162
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 17:57:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             10-20-2005 11:07 CEST
-Last Modified:              01-17-2006 17:56 CET
+Last Modified:              01-17-2006 17:57 CET
 ======================================================================
 Summary:                    headphone control disappeared
 Description: 
@@ -62,15 +62,15 @@ for additional info.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-04-06 14:40 
-----------------------------------------------------------------------
-Adriaan Peeters says:
-> I just loaded up to Dapper Flight 2 live cd and this bug still exists.
-
-----------------------------------------------------------------------
  jdthood - 01-17-06 17:56 
 ----------------------------------------------------------------------
 tiwai: How could the Headphone control disappear?
+
+----------------------------------------------------------------------
+ jdthood - 01-17-06 17:57 
+----------------------------------------------------------------------
+There is a "Phone" control.  Am I right in assuming that this means
+"Telephone"?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +88,7 @@ Date Modified  Username       Field                    Change
 11-09-05 13:57 apeeters       Note Added: 0006652                          
 01-04-06 14:40 jdthood        Note Added: 0007421                          
 01-17-06 17:56 jdthood        Note Added: 0007701                          
+01-17-06 17:57 jdthood        Note Added: 0007702                          
 ======================================================================
 
 
