@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001745]: too few arguments to function `snd_info_entry_ioctl_old' when compile in Kernel 2.4
-Date: Tue, 17 Jan 2006 13:08:12 +0100
-Message-ID: <0beb2954a28fb31b1b6f599c232d4773@bugtrack.alsa-project.org>
+Date: Tue, 17 Jan 2006 14:07:53 +0100
+Message-ID: <eceed5d4451489366483bd7f42ca1808@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1B8E15E
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 13:08:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69303160
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 14:07:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 1 (i386)
 Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
 Date Submitted:             01-14-2006 03:19 CET
-Last Modified:              01-17-2006 13:08 CET
+Last Modified:              01-17-2006 14:07 CET
 ======================================================================
 Summary:                    too few arguments to function
 `snd_info_entry_ioctl_old' when compile in Kernel 2.4
@@ -67,42 +67,18 @@ make: *** [compile] Error 1
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-16-06 18:10 
-----------------------------------------------------------------------
-./cvscompile --with-cards=intel8x0 --with-debug=full
-
-gcc32 -D__KERNEL__ -DMODULE=1 -I/cvs/alsa-driver/include 
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h 
--DKBUILD_BASENAME=intel8x0   -c -o intel8x0.o intel8x0.c
-In file included from /cvs/alsa-driver/include/sound/driver.h:47,
-                 from intel8x0.c:29:
-/cvs/alsa-driver/include/adriver.h:808:1: warning: "kmalloc" redefinedIn
-file included from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h:1247,
-                 from <command line>:1:
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modules/ksyms.ver:827:1:
-warning: this is the location of the previous definition
-In file included from /cvs/alsa-driver/include/sound/driver.h:47,
-                 from intel8x0.c:29:
-/cvs/alsa-driver/include/adriver.h:812:1: warning: "kfree" redefined
-In file included from
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modversions.h:1247,
-                 from <command line>:1:
-/lib/modules/2.4.22-1.2199.nptl/build/include/linux/modules/ksyms.ver:3851:1:
-warning: this is the location of the previous definition
-intel8x0.c:93: warning: `enable' defined but not used
-intel8x0.c:95: warning: `joystick' defined but not used
-rm -f snd-intel8x0.o
-ld  -r -o snd-intel8x0.o intel8x0.o
-
-----------------------------------------------------------------------
  tiwai - 01-17-06 13:08 
 ----------------------------------------------------------------------
 They are all just warnings, right?
+
+----------------------------------------------------------------------
+ Raymond - 01-17-06 14:07 
+----------------------------------------------------------------------
+make will re-compile the whole alsa-driver tree instead of those modified
+programs since all programs contain #include <sound/driver.h>
+
+Is it possible to fix the automake issue of alsa/lib in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1641 ?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +89,7 @@ Date Modified  Username       Field                    Change
 01-14-06 04:26 Raymond        Note Added: 0007652                          
 01-16-06 18:10 Raymond        Note Added: 0007690                          
 01-17-06 13:08 tiwai          Note Added: 0007699                          
+01-17-06 14:07 Raymond        Note Added: 0007700                          
 ======================================================================
 
 
