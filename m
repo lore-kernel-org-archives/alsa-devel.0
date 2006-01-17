@@ -1,22 +1,14 @@
-From: Eric Shattow <lucent@gmail.com>
-Subject: Re: Hercules PC DJ Console (Windows Edition) information
-Date: Tue, 17 Jan 2006 00:05:23 -0600
-Message-ID: <2c746f620601162205x4bfbfefcl493cdb330dc4b5fd@mail.gmail.com>
-References: <2c746f620510180211hf803801mdda93f93aeae84c2@mail.gmail.com>
-	 <Pine.HPX.4.33n.0510181124030.2094-100000@studcom.urz.uni-halle.de>
-	 <2c746f620510182301j3419d000o857c2c72ef29880a@mail.gmail.com>
-	 <2c746f620510182303k782e04f2xa18b60cea49030a@mail.gmail.com>
-	 <1129746748.5203.1.camel@mindpipe>
-	 <2c746f620510191410v5032b3ebp673545e5958192ac@mail.gmail.com>
-	 <2c746f620601102330s337d7744r7b98dad75dbbf374@mail.gmail.com>
-	 <1136964861.27255.17.camel@mindpipe>
-	 <1137055672.43c617b8297f6@webmail.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001758]: Sound card won't work proper.
+Date: Tue, 17 Jan 2006 08:02:06 +0100
+Message-ID: <940815f334d154067fa8c63be723d17a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1137055672.43c617b8297f6@webmail.uni-halle.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3A472114
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 08:02:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,67 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 1/12/06, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Lee Revell wrote:
-> > On Wed, 2006-01-11 at 01:30 -0600, Eric Shattow wrote:
-> > > arecord: xrun:1077: read/write error, state =3D PREPARED
->
-> There may be a message in the system log.
->
-> > Assuming this worked with previous versions, the problem may be that US=
-B
-> > audio has been broken since kernel 2.6.14 (ALSA 1.0.10rcsomething).
-> >
-> > Try the patch attached to this bug report.
-> >
-> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1585
->
-> Now fixed in CVS.
->
-> I've added another patch to the above bug report, or wait for the next AL=
-SA
-> release.
->
->
-> HTH
-> Clemens
->
 
-I applied the patch, and behavior is still broken for my device.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1758> 
+======================================================================
+Reported By:                terminal2000
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1758
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-17-2006 08:02 CET
+Last Modified:              01-17-2006 08:02 CET
+======================================================================
+Summary:                    Sound card won't work proper.
+Description: 
+My sound card is a CT-4810 one using 5880 chip.
+It's using ens1371 driver and everything seems to be OK look from the
+screen.
+But it makes a strange sound whenever it plays.
+And i found if i play a sound file and at the same time drag another
+window and keep moving, the strange sound became normal. Once i stoped,
+it's back.
+So I thought it will work when CPU load is heavy. So i tried play music
+while compiling kernel and everything's OK.
 
-dmesg shows the following output after plugging in the HPCDJ Console:
-+usb 3-1.6: new full speed USB device using ehci_hcd and address 5
-+snd-usb-audio: probe of 3-1.6:1.0 failed with error -5
-+input: Hercules Hercules DJ Console as /class/input/input4
-+input: USB HID v1.10 Joystick [Hercules Hercules DJ Console] on
-usb-0000:00:02.2-1.6
-+input: Hercules Hercules DJ Console as /class/input/input5
-+input: USB HID v1.10 Mouse [Hercules Hercules DJ Console] on
-usb-0000:00:02.2-1.6
-+input: Hercules Hercules DJ Console as /class/input/input6
-+input: USB HID v1.10 Keyboard [Hercules Hercules DJ Console] on
-usb-0000:00:02.2-1.6
-+snd-usb-audio: probe of 3-1.6:1.5 failed with error -5
-+usbcore: registered new driver yealink
-+drivers/usb/input/yealink.c: Yealink phone driver:yld-20050816
+It work just OK when the system is busy but makes strange sounds when it's
+free.
 
-...and trying to play a sound with alsaplayer to the device:
+======================================================================
 
-+ALSA /usr/src/modules/alsa-driver/usb/usbaudio.c:835: cannot submit
-datapipe for urb 0, err =3D -38
-+ALSA /usr/src/modules/alsa-driver/usb/usbaudio.c:835: cannot submit
-datapipe for urb 0, err =3D -38
-+ALSA /usr/src/modules/alsa-driver/usb/usbaudio.c:835: cannot submit
-datapipe for urb 0, err =3D -38
-+ALSA /usr/src/modules/alsa-driver/usb/usbaudio.c:835: cannot submit
-datapipe for urb 0, err =3D -38
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-17-06 08:02 terminal2000   New Issue                                    
+======================================================================
 
-help?
 
- Eric
 
 
 -------------------------------------------------------
