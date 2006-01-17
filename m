@@ -1,12 +1,14 @@
-From: Juan Pedro Paredes Caballero <juampe@iquis.com>
-Subject: Re: ALSA driver - snd-bt87x and Flyvideo`98
-Date: Tue, 17 Jan 2006 13:56:45 +0100
-Message-ID: <dqiphh$bc7$1@sea.gmane.org>
-References: <43C0F637.1020100@dabrowa.pl> <s5hoe2lh2z1.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001759]: Tip top color of bar depends on windows size
+Date: Tue, 17 Jan 2006 17:41:18 +0100
+Message-ID: <b5c87c3703a14c89ce1996a1dc384f8b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E493162
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 17:41:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,39 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
-> At Sun, 08 Jan 2006 12:23:35 +0100,
-> Pawe? Goleniowski wrote:
->>=20
->> Hi,
->> My TV card used to work as additional sound device with snd-bt87x. But
->> not any more.
->> Under 2.6.12 it still works - dmesg shows info that card is
->> unrecognized and gives this address to send informations:
->> Card: Flyvideo 98 (probably) LR50
->> ID: 0x1851:0x1850 (but scanpci shows that BT audio device is 0x109e
->> 0x0878)
->>=20
->> Under 2.6.15 or ALSA 1.0.11rc2 the BT audio device doesn't work any
->> more nor even gives any information in dmesg.
->=20
-> Please elaborate what do you mean "doesn't work any more".
-> If the loading failed, try load_all=3D1 module option.
->=20
->=20
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1759> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1759
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-17-2006 17:41 CET
+Last Modified:              01-17-2006 17:41 CET
+======================================================================
+Summary:                    Tip top color of bar depends on windows size
+Description: 
+To reproduce:
 
-Please see http://bugzilla.kernel.org/show_bug.cgi?id=3D5851
+Set volume level to 73.  On an 80x24 screen, the tip top of the level
+bar is red.  When the screen is enlarged, the tip top of the level bar
+is no longer red but green.
+
+Originally reported in Debian bug report #348535.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-17-06 17:41 jdthood        New Issue                                    
+======================================================================
+
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
-les
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D103432&bid=3D230486&dat=3D=
-121642
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
