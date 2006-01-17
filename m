@@ -1,13 +1,14 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: Re: SBLive! change of front channel routing broke wavetable synth?
-Date: Wed, 18 Jan 2006 00:17:48 +0100
-Message-ID: <43CD7B1C.7050104@glocalnet.net>
-References: <1137533552.19678.38.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001603]: via8235 no sound since kernel 2.6.13
+Date: Wed, 18 Jan 2006 00:38:20 +0100
+Message-ID: <7db098be268bd73ee28c4040da6fa183@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1137533552.19678.38.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5152816C
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 00:38:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> Several SBLive! users are reporting that the wavetable synth is silent
-> in recent ALSA versions.  I know that the wavetable synth output is
-> routed by the driver to the front channels (as we have had user requests
-> to allow it to output to the rear channels or all speakers in a 5.1
-> setup).
-> 
-> Is it possible that the recent change in the routing of front channels
-> from FXBUS 0,1 to FXBUS 8,9 has broken the wavetable synth?  It would
-> explain why I cannot reproduce the problem on my Audigy.
-> 
-> Lee
-> 
 
-I use ALSA version 1.0.10, and I don't experience any problems with the 
-wavetable synth on SBLive 5.1 [SB0060]. I usually run ld10k1, which 
-resets the dsp program, but I verified that the synth also works after 
-reloading the modules without starting ld10k1.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
+======================================================================
+Reported By:                picobyte
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1603
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               slackware 10.2
+Kernel Version:             2.6.13 - 2.6.14.2
+======================================================================
+Date Submitted:             11-27-2005 15:06 CET
+Last Modified:              01-18-2006 00:38 CET
+======================================================================
+Summary:                    via8235 no sound since kernel 2.6.13
+Description: 
+I have no sound after a kernel upgrade. I seem to have lost it in 2.6.13.
+Sound was available in 2.6.12. 2.6.14.2 didn't give sound either. The
+problem is in 1.0.9b and 1.0.10. The modules are loaded as supposed
+without error messages and alsamixer is set to volume.
+======================================================================
 
-/Mikael
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 03:38 
+----------------------------------------------------------------------
+Any improvement with later releases?
+
+----------------------------------------------------------------------
+ picobyte - 01-18-06 00:38 
+----------------------------------------------------------------------
+yes, actually, the problem seems to have been resolved in 2.6.15 :)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-27-05 15:06 picobyte       New Issue                                    
+11-27-05 15:06 picobyte       Distribution              => slackware 10.2  
+11-27-05 15:06 picobyte       Kernel Version            => 2.6.13 - 2.6.14.2
+12-31-05 03:38 rlrevell       Note Added: 0007330                          
+01-18-06 00:38 picobyte       Note Added: 0007704                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
