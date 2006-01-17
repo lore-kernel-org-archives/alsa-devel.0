@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001341]: No volume control
-Date: Tue, 17 Jan 2006 23:22:27 +0100
-Message-ID: <3cd36486447b46ff0d7912de5e1e0a4a@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: Re: SBLive! change of front channel routing broke wavetable synth?
+Date: Wed, 18 Jan 2006 00:17:48 +0100
+Message-ID: <43CD7B1C.7050104@glocalnet.net>
+References: <1137533552.19678.38.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABBC1167
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 23:22:27 +0100 (MET)
+In-Reply-To: <1137533552.19678.38.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> Several SBLive! users are reporting that the wavetable synth is silent
+> in recent ALSA versions.  I know that the wavetable synth output is
+> routed by the driver to the front channels (as we have had user requests
+> to allow it to output to the rear channels or all speakers in a 5.1
+> setup).
+> 
+> Is it possible that the recent change in the routing of front channels
+> from FXBUS 0,1 to FXBUS 8,9 has broken the wavetable synth?  It would
+> explain why I cannot reproduce the problem on my Audigy.
+> 
+> Lee
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1341> 
-======================================================================
-Reported By:                chui101
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1341
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Arch
-Kernel Version:             2.6.12-ARCH
-======================================================================
-Date Submitted:             08-16-2005 12:51 CEST
-Last Modified:              01-17-2006 23:22 CET
-======================================================================
-Summary:                    No volume control
-Description: 
-Initially, there was no sound, but to enable sound output the "IEC958
-Capture Monitor" switch must be turned off.
+I use ALSA version 1.0.10, and I don't experience any problems with the 
+wavetable synth on SBLive 5.1 [SB0060]. I usually run ld10k1, which 
+resets the dsp program, but I verified that the synth also works after 
+reloading the modules without starting ld10k1.
 
-Once there is sound, there is no way to control the volume. All the volume
-sliders in the playback tab of the GNOME Volume Control are functionless.
-PCM appears as a switch, perhaps it should be a slider?
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 08-26-05 14:49 
-----------------------------------------------------------------------
-First show the contents of /proc/asound/card0/codec97#0/* files.
-If it's a C-Media codec, it really has no PCM/Master volume controls.
-The solution with softvol as Lee proposed is the only way to go.
-
-----------------------------------------------------------------------
- rlrevell - 01-17-06 23:22 
-----------------------------------------------------------------------
-Takashi-san,
-
-This patch is still sitting in my tree.  I guess we have to identify which
-codecs need softvol enabled by default.  Can we do anything about this
-without the /proc/asound/card0/codec97#0/* file from the user?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-16-05 12:51 chui101        New Issue                                    
-08-16-05 12:51 chui101        Distribution              => Arch            
-08-16-05 12:51 chui101        Kernel Version            => 2.6.12-ARCH     
-08-16-05 12:54 chui101        Note Added: 0005827                          
-08-16-05 12:58 chui101        Issue Monitored: chui101                     
-08-18-05 18:12 chui101        Note Added: 0005849                          
-08-19-05 02:33 rlrevell       File Added: atiixp-softvol.patch                  
- 
-08-19-05 02:35 rlrevell       Note Added: 0005862                          
-08-26-05 14:49 tiwai          Note Added: 0005950                          
-01-17-06 23:22 rlrevell       Note Added: 0007703                          
-======================================================================
-
-
+/Mikael
 
 
 -------------------------------------------------------
