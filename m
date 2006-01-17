@@ -1,14 +1,17 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/pci/cs46xx/dsp_spos_scb_lib.c: fix an assertion
-Date: Tue, 17 Jan 2006 19:47:01 +0100
-Message-ID: <20060117184701.GC19398__41358.7515162819$1137523716$gmane$org@stusta.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [2.6 patch] sound/pci/cs46xx/dsp_spos_scb_lib.c:
+	fix an assertion
+Date: Tue, 17 Jan 2006 13:52:37 -0500
+Message-ID: <1137523957.19444.72.camel__47060.5931863703$1137524003$gmane$org@mindpipe>
+References: <20060117184701.GC19398@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 90E7A153
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 19:47:02 +0100 (MET)
-Content-Disposition: inline
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 60354156
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 19:52:40 +0100 (MET)
+In-Reply-To: <20060117184701.GC19398@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +21,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, D Binderman <dcb314@hotmail.com>
+To: Adrian Bunk <bunk@stusta.de>
+Cc: perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, D Binderman <dcb314@hotmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-D Binderman <dcb314@hotmail.com> reported the following in kernel 
-Bugzilla #5903 [1]:
+On Tue, 2006-01-17 at 19:47 +0100, Adrian Bunk wrote:
+> D Binderman <dcb314@hotmail.com> reported the following in kernel 
+> Bugzilla #5903 [1]:
 
-
-<--  snip  -->
-
-I just tried to compile kernel 2.6.15.1 with the Intel C compiler. 
-
-It said
-
-sound/pci/cs46xx/dsp_spos_scb_lib.c(673): warning #187: use of "=" where 
-"==" may have been intended
-
-The source code is
-
-           snd_assert (rate = 48000);
-
-I agree with the compiler. Suggest new code
-
-           snd_assert (rate == 48000);
-
-<--  snip  -->
-
-
-Thankfully this bug would only become visible if the assertion was 
-false, but anyways it's a bug.
-
-[1] http://bugzilla.kernel.org/show_bug.cgi?id=5903
-
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
---- linux-2.6.15-mm4-full/sound/pci/cs46xx/dsp_spos_scb_lib.c.old	2006-01-16 20:20:23.000000000 +0100
-+++ linux-2.6.15-mm4-full/sound/pci/cs46xx/dsp_spos_scb_lib.c	2006-01-16 20:21:17.000000000 +0100
-@@ -677,7 +677,7 @@
- 		if (pass_through) {
- 			/* wont work with any other rate than
- 			   the native DSP rate */
--			snd_assert (rate = 48000);
-+			snd_assert (rate == 48000);
- 
- 			scb = cs46xx_dsp_create_generic_scb(chip,scb_name,(u32 *)&src_task_scb,
- 							    dest,"DMAREADER",parent_scb,
+Already fixed in CVS
 
 
 
