@@ -1,11 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: SBLive! subsystem 8066
-Date: Tue, 17 Jan 2006 17:18:51 -0500
-Message-ID: <1137536331.19678.47.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001341]: No volume control
+Date: Tue, 17 Jan 2006 23:22:27 +0100
+Message-ID: <3cd36486447b46ff0d7912de5e1e0a4a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABBC1167
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 23:22:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,25 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: James Courtier-Dutton <James@superbug.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-...is still "Unknown" by the ALSA driver.
 
-Can we get something like this merged before the 1.0.11 release:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1341> 
+======================================================================
+Reported By:                chui101
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1341
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Arch
+Kernel Version:             2.6.12-ARCH
+======================================================================
+Date Submitted:             08-16-2005 12:51 CEST
+Last Modified:              01-17-2006 23:22 CET
+======================================================================
+Summary:                    No volume control
+Description: 
+Initially, there was no sound, but to enable sound output the "IEC958
+Capture Monitor" switch must be turned off.
 
-+       /* See ALSA bug #1036 - model is from windows driver */
-+       {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80661102,
-+        .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
-+        .id = "Live",
-+        .emu10k1_chip = 1,
-+        .ac97_chip = 1,
-+        .sblive51 = 1} ,
+Once there is sound, there is no way to control the volume. All the volume
+sliders in the playback tab of the GNOME Volume Control are functionless.
+PCM appears as a switch, perhaps it should be a slider?
+======================================================================
 
-It might be SB0222, I am not 100% certain.
+----------------------------------------------------------------------
+ tiwai - 08-26-05 14:49 
+----------------------------------------------------------------------
+First show the contents of /proc/asound/card0/codec97#0/* files.
+If it's a C-Media codec, it really has no PCM/Master volume controls.
+The solution with softvol as Lee proposed is the only way to go.
 
-Lee
+----------------------------------------------------------------------
+ rlrevell - 01-17-06 23:22 
+----------------------------------------------------------------------
+Takashi-san,
+
+This patch is still sitting in my tree.  I guess we have to identify which
+codecs need softvol enabled by default.  Can we do anything about this
+without the /proc/asound/card0/codec97#0/* file from the user?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-16-05 12:51 chui101        New Issue                                    
+08-16-05 12:51 chui101        Distribution              => Arch            
+08-16-05 12:51 chui101        Kernel Version            => 2.6.12-ARCH     
+08-16-05 12:54 chui101        Note Added: 0005827                          
+08-16-05 12:58 chui101        Issue Monitored: chui101                     
+08-18-05 18:12 chui101        Note Added: 0005849                          
+08-19-05 02:33 rlrevell       File Added: atiixp-softvol.patch                  
+ 
+08-19-05 02:35 rlrevell       Note Added: 0005862                          
+08-26-05 14:49 tiwai          Note Added: 0005950                          
+01-17-06 23:22 rlrevell       Note Added: 0007703                          
+======================================================================
+
 
 
 
