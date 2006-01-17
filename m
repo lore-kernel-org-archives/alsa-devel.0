@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001759]: Tip top color of bar depends on windows size
-Date: Tue, 17 Jan 2006 17:41:18 +0100
-Message-ID: <b5c87c3703a14c89ce1996a1dc384f8b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001486]: headphone control disappeared
+Date: Tue, 17 Jan 2006 17:56:29 +0100
+Message-ID: <f241523e5a8b1487bdd87a92bc1a6832@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E493162
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 17:41:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A35D162
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 17:56:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,39 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1759> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1759
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1486
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-17-2006 17:41 CET
-Last Modified:              01-17-2006 17:41 CET
+Date Submitted:             10-20-2005 11:07 CEST
+Last Modified:              01-17-2006 17:56 CET
 ======================================================================
-Summary:                    Tip top color of bar depends on windows size
+Summary:                    headphone control disappeared
 Description: 
-To reproduce:
+The submitter of Ubuntu bug report 18024 reports that the "Headphone"
+control disappeared when he upgraded from linux-image-2.6.10-5-386
+(2.6.10-34.7, from
+hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
 
-Set volume level to 73.  On an 80x24 screen, the tip top of the level
-bar is red.  When the screen is enlarged, the tip top of the level bar
-is no longer red but green.
+$cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
+                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
+irq 7
 
-Originally reported in Debian bug report #348535.
+See
+
+    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+
+for additional info.
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 01-04-06 14:40 
+----------------------------------------------------------------------
+Adriaan Peeters says:
+> I just loaded up to Dapper Flight 2 live cd and this bug still exists.
+
+----------------------------------------------------------------------
+ jdthood - 01-17-06 17:56 
+----------------------------------------------------------------------
+tiwai: How could the Headphone control disappear?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-06 17:41 jdthood        New Issue                                    
+10-20-05 11:07 jdthood        New Issue                                    
+10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
+10-20-05 14:51 tiwai          Note Added: 0006503                          
+11-06-05 16:58 apeeters       Note Added: 0006607                          
+11-06-05 16:58 apeeters       File Added: alsa_headphone                    
+11-08-05 18:34 tiwai          Note Added: 0006633                          
+11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
+
+11-09-05 13:44 apeeters       Note Added: 0006650                          
+11-09-05 13:47 tiwai          Note Added: 0006651                          
+11-09-05 13:57 apeeters       Note Added: 0006652                          
+01-04-06 14:40 jdthood        Note Added: 0007421                          
+01-17-06 17:56 jdthood        Note Added: 0007701                          
 ======================================================================
 
 
