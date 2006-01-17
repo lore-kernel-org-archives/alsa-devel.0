@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001486]: headphone control disappeared
-Date: Tue, 17 Jan 2006 17:57:45 +0100
-Message-ID: <b56e69be6cc7aa0c0ca3ee766de35ec4@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] sound/pci/cs46xx/dsp_spos_scb_lib.c: fix an assertion
+Date: Tue, 17 Jan 2006 19:47:01 +0100
+Message-ID: <20060117184701.GC19398__41358.7515162819$1137523716$gmane$org@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9FAD162
-	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 17:57:45 +0100 (MET)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 90E7A153
+	for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2006 19:47:02 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, D Binderman <dcb314@hotmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+D Binderman <dcb314@hotmail.com> reported the following in kernel 
+Bugzilla #5903 [1]:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1486
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-20-2005 11:07 CEST
-Last Modified:              01-17-2006 17:57 CET
-======================================================================
-Summary:                    headphone control disappeared
-Description: 
-The submitter of Ubuntu bug report 18024 reports that the "Headphone"
-control disappeared when he upgraded from linux-image-2.6.10-5-386
-(2.6.10-34.7, from
-hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
 
-$cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
-irq 7
+<--  snip  -->
 
-See
+I just tried to compile kernel 2.6.15.1 with the Intel C compiler. 
 
-    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+It said
 
-for additional info.
-======================================================================
+sound/pci/cs46xx/dsp_spos_scb_lib.c(673): warning #187: use of "=" where 
+"==" may have been intended
 
-----------------------------------------------------------------------
- jdthood - 01-17-06 17:56 
-----------------------------------------------------------------------
-tiwai: How could the Headphone control disappear?
+The source code is
 
-----------------------------------------------------------------------
- jdthood - 01-17-06 17:57 
-----------------------------------------------------------------------
-There is a "Phone" control.  Am I right in assuming that this means
-"Telephone"?
+           snd_assert (rate = 48000);
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-20-05 11:07 jdthood        New Issue                                    
-10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
-10-20-05 14:51 tiwai          Note Added: 0006503                          
-11-06-05 16:58 apeeters       Note Added: 0006607                          
-11-06-05 16:58 apeeters       File Added: alsa_headphone                    
-11-08-05 18:34 tiwai          Note Added: 0006633                          
-11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
+I agree with the compiler. Suggest new code
 
-11-09-05 13:44 apeeters       Note Added: 0006650                          
-11-09-05 13:47 tiwai          Note Added: 0006651                          
-11-09-05 13:57 apeeters       Note Added: 0006652                          
-01-04-06 14:40 jdthood        Note Added: 0007421                          
-01-17-06 17:56 jdthood        Note Added: 0007701                          
-01-17-06 17:57 jdthood        Note Added: 0007702                          
-======================================================================
+           snd_assert (rate == 48000);
 
+<--  snip  -->
+
+
+Thankfully this bug would only become visible if the assertion was 
+false, but anyways it's a bug.
+
+[1] http://bugzilla.kernel.org/show_bug.cgi?id=5903
+
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+--- linux-2.6.15-mm4-full/sound/pci/cs46xx/dsp_spos_scb_lib.c.old	2006-01-16 20:20:23.000000000 +0100
++++ linux-2.6.15-mm4-full/sound/pci/cs46xx/dsp_spos_scb_lib.c	2006-01-16 20:21:17.000000000 +0100
+@@ -677,7 +677,7 @@
+ 		if (pass_through) {
+ 			/* wont work with any other rate than
+ 			   the native DSP rate */
+-			snd_assert (rate = 48000);
++			snd_assert (rate == 48000);
+ 
+ 			scb = cs46xx_dsp_create_generic_scb(chip,scb_name,(u32 *)&src_task_scb,
+ 							    dest,"DMAREADER",parent_scb,
 
 
 
