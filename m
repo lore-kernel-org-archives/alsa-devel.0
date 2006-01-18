@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0001664]: GTK2-patch for envy24control
-Date: Wed, 18 Jan 2006 21:49:47 +0100
-Message-ID: <b253308bcc0acf8207989a9d0b60ea3b@bugtrack.alsa-project.org>
+Date: Wed, 18 Jan 2006 21:59:05 +0100
+Message-ID: <234f8cf39f9bee3023ca2a9ea2dffba1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF65A154
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 21:49:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6739154
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 21:59:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             12-21-2005 01:56 CET
-Last Modified:              01-18-2006 21:49 CET
+Last Modified:              01-18-2006 21:59 CET
 ======================================================================
 Summary:                    GTK2-patch for envy24control
 Description: 
@@ -66,6 +66,11 @@ patch included into portage...
 
 ALSA-devs: when is this going into the alsa-tools package???
 
+----------------------------------------------------------------------
+ HaroldAling - 01-18-06 21:59 
+----------------------------------------------------------------------
+And I just did: http://bugs.gentoo.org/show_bug.cgi?id=119478
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -73,6 +78,7 @@ Date Modified  Username       Field                    Change
 12-21-05 01:56 electropura    File Added: envy24control-gtk2.patch              
      
 01-18-06 21:49 HaroldAling    Note Added: 0007713                          
+01-18-06 21:59 HaroldAling    Note Added: 0007714                          
 ======================================================================
 
 
