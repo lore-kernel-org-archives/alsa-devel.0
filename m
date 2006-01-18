@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001658]: Capture happens only on one channel
-Date: Wed, 18 Jan 2006 11:53:36 +0100
-Message-ID: <64edc038a9201ce3e997f7642326e4df@bugtrack.alsa-project.org>
+From: "Kaarle Hoekstra" <hoekst@ncsi.co.nz>
+Subject: Fine Pharam acwy
+Date: Wed, 18 Jan 2006 05:54:10 -0500
+Message-ID: <000001c61c1d$830d6400$a68fa8c0@Chinawoman>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C61BF3.9A375C00"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5139B158
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 11:53:36 +0100 (MET)
+Received: from ncsi.co.nz (MN1-4A-u-0148.mc.onolab.com [62.42.134.149])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E42EC159
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 11:54:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +18,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jonie Captain <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
-======================================================================
-Reported By:                phil_troin
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1658
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r2
-======================================================================
-Date Submitted:             12-18-2005 08:40 CET
-Last Modified:              01-18-2006 11:53 CET
-======================================================================
-Summary:                    Capture happens only on one channel
-Description: 
-When I am playing a CD, if I capture the sound output via the capture
-channel OR the CD channel (amixer output attached), the captured sound is
-only one one channel (the right one) and is very distorted.
-The audio plays normally in stereo on the speakers.
-======================================================================
+------=_NextPart_000_0001_01C61BF3.9A375C00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- vsu - 01-13-06 18:17 
-----------------------------------------------------------------------
-Yes, upgrading only alsa-lib to 1.0.11rc2 seems to fix this problem for me.
+=20
+Ci
+Va
+Vi
+ali
+liu
+ag
+s
+m
+ra
+=20
+  10 x 20 mg on
+  30 x 10 mg on
+  4 x 100 mg on=20
+ly $
+ly $
+ly $
+7
+1
+7
+9.95
+55.00
+4.00
 
-----------------------------------------------------------------------
- Matthias Koenig - 01-18-06 11:53 
-----------------------------------------------------------------------
-Indeed, updating alsa-lib to the latest version fixes the problem.
-I misleadingly assumed the bug in the kernel driver.
-Thank you very much!
+=20
+View these and many other at http://www.rubaaa.info
+<http://www.rubaaa.info>=20
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-18-05 08:40 phil_troin     New Issue                                    
-12-18-05 08:40 phil_troin     File Added: amixout                          
-12-18-05 08:40 phil_troin     Distribution              => Gentoo          
-12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
-12-18-05 12:00 linuxbear      Note Added: 0007071                          
-12-18-05 12:02 linuxbear      Note Edited: 0007071                         
-12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
-01-07-06 06:24 tgutwin        Note Added: 0007508                          
-01-07-06 06:25 tgutwin        Issue Monitored: tgutwin                     
-01-09-06 01:34 legluondunet   Note Added: 0007529                          
-01-09-06 01:35 legluondunet   File Added: alsa.conf.record1channel              
-     
-01-09-06 01:37 legluondunet   File Added: alsa.conf.ubuntu                    
-01-09-06 01:43 legluondunet   Note Added: 0007530                          
-01-13-06 02:17 rlrevell       Note Added: 0007615                          
-01-13-06 14:29 Matthias KoenigNote Added: 0007640                          
-01-13-06 17:12 legluondunet   Note Added: 0007644                          
-01-13-06 17:46 vsu            Note Added: 0007645                          
-01-13-06 17:49 vsu            Issue Monitored: vsu                         
-01-13-06 17:51 tiwai          Note Added: 0007646                          
-01-13-06 18:17 vsu            Note Added: 0007647                          
-01-18-06 11:53 Matthias KoenigNote Added: 0007709                          
-======================================================================
+------=_NextPart_000_0001_01C61BF3.9A375C00
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV style=3D"MARGIN-TOP: 0px;=20
+ FLOAT :
+left;"><FONT face=3DArial><DIV>Ci</DIV>
+<DIV>Va</DIV><DIV>Vi</DIV></FONT></DIV>
+<DIV style=3D"LINE-HEIGHT: normal;=20
+ FLOAT :
+left;"><FONT face=3DArial><DIV>ali</DIV><DIV>liu</DIV>
+<DIV>ag</DIV></FONT></DIV>
+<DIV style=3D"BORDER-TOP: 0px;=20
+ FLOAT :
+left;"><FONT =
+face=3DArial><DIV>s</DIV><DIV>m</DIV><DIV>ra</DIV></FONT></DIV>
+<DIV style=3D"BORDER-BOTTOM: 0px;=20
+ FLOAT :
+left;"><FONT face=3DArial><DIV>&nbsp;</DIV>
+<DIV> </DIV><DIV></DIV></FONT></DIV>
+<DIV style=3D"BORDER-BOTTOM-WIDTH: 0px;=20
+ FLOAT :
+left;"><FONT face=3DArial><DIV>&nbsp; 10 x 20 mg on</DIV><DIV>&nbsp; 30 =
+x 10 mg on</DIV>
+<DIV>&nbsp; 4 x 100 mg on </DIV>
+</FONT></DIV>
+<DIV style=3D"BORDER-RIGHT-WIDTH: 0px;=20
+ FLOAT :
+left;"><FONT face=3DArial><DIV>ly $</DIV><DIV>ly $</DIV><DIV>ly =
+$</DIV></FONT></DIV>
+<DIV style=3D"FONT-VARIANT: normal;=20
+ FLOAT :
+left;"><FONT =
+face=3DArial><DIV>7</DIV><DIV>1</DIV><DIV>7</DIV></FONT></DIV>
+<DIV style=3D"PADDING-TOP: 0px;=20
+ FLOAT :
+left;"><FONT face=3DArial><DIV>9.95</DIV>
+<DIV>55.00</DIV>
+<DIV>4.00</DIV>
+</FONT></DIV>
+<BR clear=3Dall>
+<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial>View these and many other at <A =
+href=3D"http://www.rubaaa.info"><FONT =
+face=3DArial>http://www.rubaaa.info</FONT></A></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C61BF3.9A375C00--
+
 
 
 
