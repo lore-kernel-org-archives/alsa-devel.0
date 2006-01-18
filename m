@@ -1,14 +1,15 @@
-From: "Kaarle Hoekstra" <hoekst@ncsi.co.nz>
-Subject: Fine Pharam acwy
-Date: Wed, 18 Jan 2006 05:54:10 -0500
-Message-ID: <000001c61c1d$830d6400$a68fa8c0@Chinawoman>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Re: [Jackit-devel] Real-world reports on two Delta 1010LTs/ice1712 synched?
+Date: Wed, 18 Jan 2006 10:56:30 +0000
+Message-ID: <200601181056.30490.gineera@aspect135.co.uk>
+References: <20051224124823.GA4183@localhost.localdomain> <20060116175652.GM28738@edu.joroinen.fi> <43CBF383.3000807@nostar.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C61BF3.9A375C00"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ncsi.co.nz (MN1-4A-u-0148.mc.onolab.com [62.42.134.149])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E42EC159
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 11:54:16 +0100 (MET)
+In-Reply-To: <43CBF383.3000807@nostar.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,102 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonie Captain <alsa-devel@alsa-project.org>
+To: Doug McLain <doug@nostar.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Monday 16 January 2006 19:26, Doug McLain wrote:
+> Good timing, I was just about to give a summary of my findings so far:
+>
+> First of all, the differences in the 1010LT vs the 1010 that are most
+> relevent here, I believe, is the SPDIF i/o chips (cs8413 receiver,
+> cs8404 xmitter) used on the 1010 vs the one single transceiver (cs8427)
+> used on the 1010LT.  
+>...
+>  I am focusing on fixing spdif functionality, 
+> Doug
 
-------=_NextPart_000_0001_01C61BF3.9A375C00
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+It may be of interest to know that the Terratec DMX6fire, which I have, also 
+uses the cs8427, but has both coax and optical SPDIF.  The dig out works OK 
+on both, as soon as the snd-ice-1712 is loaded.  It runs without needing any 
+'In' clock as you describe with 1010LT.  I can select internal clock freqs 
+and detect in my mini-disc recorder 32K, 44.1K, 48K using the coax (and 
+optical).  Other rates are not supported by the MD so I can't be sure.  There 
+are however some issues with digital in, but by selecting in the right 
+sequence this works fine also.
 
-=20
-Ci
-Va
-Vi
-ali
-liu
-ag
-s
-m
-ra
-=20
-  10 x 20 mg on
-  30 x 10 mg on
-  4 x 100 mg on=20
-ly $
-ly $
-ly $
-7
-1
-7
-9.95
-55.00
-4.00
+A look at the DMX6fire code therefore may be rewarding?
 
-=20
-View these and many other at http://www.rubaaa.info
-<http://www.rubaaa.info>=20
-
-------=_NextPart_000_0001_01C61BF3.9A375C00
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV style=3D"MARGIN-TOP: 0px;=20
- FLOAT :
-left;"><FONT face=3DArial><DIV>Ci</DIV>
-<DIV>Va</DIV><DIV>Vi</DIV></FONT></DIV>
-<DIV style=3D"LINE-HEIGHT: normal;=20
- FLOAT :
-left;"><FONT face=3DArial><DIV>ali</DIV><DIV>liu</DIV>
-<DIV>ag</DIV></FONT></DIV>
-<DIV style=3D"BORDER-TOP: 0px;=20
- FLOAT :
-left;"><FONT =
-face=3DArial><DIV>s</DIV><DIV>m</DIV><DIV>ra</DIV></FONT></DIV>
-<DIV style=3D"BORDER-BOTTOM: 0px;=20
- FLOAT :
-left;"><FONT face=3DArial><DIV>&nbsp;</DIV>
-<DIV> </DIV><DIV></DIV></FONT></DIV>
-<DIV style=3D"BORDER-BOTTOM-WIDTH: 0px;=20
- FLOAT :
-left;"><FONT face=3DArial><DIV>&nbsp; 10 x 20 mg on</DIV><DIV>&nbsp; 30 =
-x 10 mg on</DIV>
-<DIV>&nbsp; 4 x 100 mg on </DIV>
-</FONT></DIV>
-<DIV style=3D"BORDER-RIGHT-WIDTH: 0px;=20
- FLOAT :
-left;"><FONT face=3DArial><DIV>ly $</DIV><DIV>ly $</DIV><DIV>ly =
-$</DIV></FONT></DIV>
-<DIV style=3D"FONT-VARIANT: normal;=20
- FLOAT :
-left;"><FONT =
-face=3DArial><DIV>7</DIV><DIV>1</DIV><DIV>7</DIV></FONT></DIV>
-<DIV style=3D"PADDING-TOP: 0px;=20
- FLOAT :
-left;"><FONT face=3DArial><DIV>9.95</DIV>
-<DIV>55.00</DIV>
-<DIV>4.00</DIV>
-</FONT></DIV>
-<BR clear=3Dall>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>View these and many other at <A =
-href=3D"http://www.rubaaa.info"><FONT =
-face=3DArial>http://www.rubaaa.info</FONT></A></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C61BF3.9A375C00--
-
-
+Alan
 
 
 
