@@ -1,11 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: mutex problems
-Date: Tue, 17 Jan 2006 22:11:05 -0500
-Message-ID: <1137553866.3587.51.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001341]: No volume control
+Date: Wed, 18 Jan 2006 04:34:36 +0100
+Message-ID: <f8925180dd0feddef4614bcf4a44ad05@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23D0F156
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 04:34:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,70 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since the mutex patches were merged to CVS I can't build against 2.6.15:
 
-make -C /home/rlrevell/kernel-source/linux-2.6.15-rc5-rt2
-SUBDIRS=/smb/rlrevell/cvs/alsa/alsa-driver  modules
-make[1]: Entering directory
-`/smb/rlrevell/kernel-source/linux-2.6.15-rc5-rt2'
-  CC [M]  /smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.o
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:28:25: error:
-linux/mutex.h: No such file or directory
-In file included
-from /smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:32:
-/smb/rlrevell/cvs/alsa/alsa-driver/include/sound/hwdep.h:63: error:
-field 'open_mutex' has incomplete type
-In file included
-from /smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:33:
-/smb/rlrevell/cvs/alsa/alsa-driver/include/sound/info.h:87: error: field
-'access' has incomplete type
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:40: warning: type
-defaults to 'int' in declaration of 'DEFINE_MUTEX'
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:40: warning: parameter
-names (without types) in function declaration
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c: In function
-'snd_hwdep_open':
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:115: warning: implicit
-declaration of function 'mutex_lock'
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:132: warning: implicit
-declaration of function 'mutex_unlock'
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c: In function
-'snd_hwdep_control_ioctl':
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:276: error:
-'register_mutex' undeclared (first use in this function)
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:276: error: (Each
-undeclared identifier is reported only once
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:276: error: for each
-function it appears in.)
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c: In function
-'snd_hwdep_new':
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:398: warning: implicit
-declaration of function 'mutex_init'
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c: In function
-'snd_hwdep_dev_register':
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:424: error:
-'register_mutex' undeclared (first use in this function)
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c: In function
-'snd_hwdep_dev_unregister':
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:466: error:
-'register_mutex' undeclared (first use in this function)
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c: In function
-'snd_hwdep_proc_read':
-/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.c:492: error:
-'register_mutex' undeclared (first use in this function)
-make[3]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/acore/hwdep.o] Error 1
-make[2]: *** [/smb/rlrevell/cvs/alsa/alsa-driver/acore] Error 2
-make[1]: *** [_module_/smb/rlrevell/cvs/alsa/alsa-driver] Error 2
-make[1]: Leaving directory
-`/smb/rlrevell/kernel-source/linux-2.6.15-rc5-rt2'
-make: *** [compile] Error 2
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1341> 
+======================================================================
+Reported By:                chui101
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1341
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Arch
+Kernel Version:             2.6.12-ARCH
+======================================================================
+Date Submitted:             08-16-2005 12:51 CEST
+Last Modified:              01-18-2006 04:34 CET
+======================================================================
+Summary:                    No volume control
+Description: 
+Initially, there was no sound, but to enable sound output the "IEC958
+Capture Monitor" switch must be turned off.
 
-Shouldn't the patch handle this?
+Once there is sound, there is no way to control the volume. All the volume
+sliders in the playback tab of the GNOME Volume Control are functionless.
+PCM appears as a switch, perhaps it should be a slider?
+======================================================================
 
-Lee
+----------------------------------------------------------------------
+ rlrevell - 01-17-06 23:22 
+----------------------------------------------------------------------
+Takashi-san,
+
+This patch is still sitting in my tree.  I guess we have to identify which
+codecs need softvol enabled by default.  Can we do anything about this
+without the /proc/asound/card0/codec97#0/* file from the user?
+
+----------------------------------------------------------------------
+ chui101 - 01-18-06 04:34 
+----------------------------------------------------------------------
+Sorry, i kind of pushed this on the back burner and then completely
+forgot.
+Here's the contents of the files (attached)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-16-05 12:51 chui101        New Issue                                    
+08-16-05 12:51 chui101        Distribution              => Arch            
+08-16-05 12:51 chui101        Kernel Version            => 2.6.12-ARCH     
+08-16-05 12:54 chui101        Note Added: 0005827                          
+08-16-05 12:58 chui101        Issue Monitored: chui101                     
+08-18-05 18:12 chui101        Note Added: 0005849                          
+08-19-05 02:33 rlrevell       File Added: atiixp-softvol.patch                  
+ 
+08-19-05 02:35 rlrevell       Note Added: 0005862                          
+08-26-05 14:49 tiwai          Note Added: 0005950                          
+01-17-06 23:22 rlrevell       Note Added: 0007703                          
+01-18-06 04:34 chui101        Note Added: 0007705                          
+======================================================================
+
 
 
 
