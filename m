@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001486]: headphone control disappeared
-Date: Wed, 18 Jan 2006 09:12:10 +0100
-Message-ID: <cfc0960e2ea13ac16c90de3c8691ad67@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-lib compatibility
+Date: Wed, 18 Jan 2006 09:48:18 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0601180946050.9390@tm8103.perex-int.cz>
+References: <Pine.LNX.4.61.0601041006310.9321@tm8103.perex-int.cz>
+ <1137569646.30140.1.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6777D158
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 09:12:10 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5E7A158
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 09:48:19 +0100 (MET)
+In-Reply-To: <1137569646.30140.1.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +20,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 18 Jan 2006, Lee Revell wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1486
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-20-2005 11:07 CEST
-Last Modified:              01-18-2006 09:12 CET
-======================================================================
-Summary:                    headphone control disappeared
-Description: 
-The submitter of Ubuntu bug report 18024 reports that the "Headphone"
-control disappeared when he upgraded from linux-image-2.6.10-5-386
-(2.6.10-34.7, from
-hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
+> On Wed, 2006-01-04 at 10:12 +0100, Jaroslav Kysela wrote:
+> > Hi,
+> > 
+> > 	it seems that it is quite required (based on current LKML 
+> > discussion) to keep the alsa-lib compatibility with old drivers. Please, 
+> > keep in mind that for example renaming of control names will break using 
+> > old 2.6 kernel with new alsa-lib.
+> > 	The alsa-lib C code already checks for older drivers, but
+> > the extended configuration (like 5.1, s/pdif devices) in most cases
+> > changes a lot. We should add some runtime checks which driver version
+> > is running in XXXXX.conf files and apply the old behaviour if required.
+> > 
+> > 				Any comments?
+> > 						Jaroslav
+> > 
+> 
+> How do you propose we solve this problem:
+> 
+> /usr/lib/mozilla-firefox/firefox-bin: relocation
+> error: /usr/lib/libalsatoss.so.0: symbol
+> snd_pcm_hw_params_set_rate_near, version ALSA_0.9.0rc4 not defined in
+> file libasound.so.2 with link time reference
 
-$cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
-irq 7
+Hmm. It should work. The libasound.so.2 should have this symbol defined:
 
-See
+perex@tm8103:~/alsa/alsa-lib/src/.libs> nm libasound.so.2 | grep rate_near | grep rc4
+00041460 T snd_pcm_hw_params_set_rate_near@@ALSA_0.9.0rc4
 
-    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+and the libalsatoss.0.0.0:
 
-for additional info.
-======================================================================
+perex@tm8103:~/alsa/alsa-oss/alsa> nm .libs/libalsatoss.0.0.0  | grep rate_near
+         U snd_pcm_hw_params_set_rate_near@@ALSA_0.9.0rc4
 
-----------------------------------------------------------------------
- jdthood - 01-17-06 17:57 
-----------------------------------------------------------------------
-There is a "Phone" control.  Am I right in assuming that this means
-"Telephone"?
+Could you check it?
 
-----------------------------------------------------------------------
- apeeters - 01-18-06 09:12 
-----------------------------------------------------------------------
-I guess it is, but it has nothing to do with Headphone, it only appears as
-a capture control.
+						Jaroslav
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-20-05 11:07 jdthood        New Issue                                    
-10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
-10-20-05 14:51 tiwai          Note Added: 0006503                          
-11-06-05 16:58 apeeters       Note Added: 0006607                          
-11-06-05 16:58 apeeters       File Added: alsa_headphone                    
-11-08-05 18:34 tiwai          Note Added: 0006633                          
-11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
-
-11-09-05 13:44 apeeters       Note Added: 0006650                          
-11-09-05 13:47 tiwai          Note Added: 0006651                          
-11-09-05 13:57 apeeters       Note Added: 0006652                          
-01-04-06 14:40 jdthood        Note Added: 0007421                          
-01-17-06 17:56 jdthood        Note Added: 0007701                          
-01-17-06 17:57 jdthood        Note Added: 0007702                          
-01-18-06 09:12 apeeters       Note Added: 0007708                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
