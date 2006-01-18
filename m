@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001664]: GTK2-patch for envy24control
-Date: Wed, 18 Jan 2006 23:21:01 +0100
-Message-ID: <b992ec952922d8c2eb14def69f1a0117@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
+Date: Wed, 18 Jan 2006 23:42:49 +0100
+Message-ID: <6aa3f2d4bf377df3a73134833bf54107@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D59B5154
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 23:21:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E539D154
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 23:42:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,94 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1664> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
 ======================================================================
-Reported By:                electropura
+Reported By:                robertdavid
 Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1664
-Category:                   envy24control
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - driver
+Issue ID:                   1744
+Category:                   PCI - ice1724
+Reproducibility:            sometimes
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo linux
+Kernel Version:             2.6.14-archck-r7
 ======================================================================
-Date Submitted:             12-21-2005 01:56 CET
-Last Modified:              01-18-2006 23:21 CET
+Date Submitted:             01-13-2006 22:16 CET
+Last Modified:              01-18-2006 23:42 CET
 ======================================================================
-Summary:                    GTK2-patch for envy24control
+Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
+chanel work and sound is quick...
 Description: 
-Here is a simple patch to make it convenient to link envy24control against
-GTK2.
-This is essentially from a patch I found via google some year ago. I can't
-find it anymore, so I don't know who made it in the first place.
-
-I also changed the policy for scrolled windows from GTK_POLICY_ALWAYS to
-GTK_POLICY_AUTOMATIC. This makes it look much nicer with cards that have
-fewer channels (like m-audio audiophile).
-
+Im very glad that was added support for Prodigy, but there is still only
+two channel working (7,8), the others are silent (tryed all volume
+settings).
+The sound from 7,8 chanel is good in case of quality, but is faster than
+it should be (turn off Multi Track Rate Locking didnt do anything).
+I've tryed mpalyer and XMMS, both the same.
+I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
+Prodigy 7.1LT) 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001090 Support for new Prodigy 7.1 LT
 ======================================================================
 
 ----------------------------------------------------------------------
- alanmann - 01-18-06 23:18 
+ robertdavid - 01-17-06 11:13 
 ----------------------------------------------------------------------
-For your information, GTK_POLICY_AUTOMATIC has already been applied to cvs
-as part of other changes to envy24control -see posting on alsa-devel 7th
-and 9th Jan 06.
+I have tryed that,you are right, it sounds litlle worse.
+Dont know what you did, but it looks like link 7,8 output to 1,2 because
+if I play mplayer w/o your patch I can hear only the truth 1,2 channel
+(AC3 5.1), but If I use patch I can hear everything in 1,2 channel, so its
+look like downmixed all to 1,2.. 
+music is OK, but still little slower that it shoul be,, dont know it is
+XMMS mistake, or driver.. But w/o the patch it sounds better (I have good
+H.P. so I could hear it)
+With AMP turned down nothing works, its like to swich off the soundcard..
+
+I have 5.1 surround system but still never heard any sound from center,
+rear..
+What is exactly mutli track peak??
 
 ----------------------------------------------------------------------
- rlrevell - 01-18-06 23:21 
+ Anho Ki - 01-18-06 23:42 
 ----------------------------------------------------------------------
-Can I close this bug?
+with Ext.Amp. option turned on, 7,8 channels just work same as channel 1,2
+with it turned off, 7,8 channels work as SB channels...
+
+my patch is not from my idea, just do as moffa says in BTS#1090.
+i don't know what i change is means... :)
+
+anyway, i can't hear sounds from line-in or mic.
+of course, i change HW & HW 1 to "HW IN 0"/"HW IN 1", but no sounds.
+
+does anyone have ideas?
+i enable on-board intel8x0 sound just for viewing TV. :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-21-05 01:56 electropura    New Issue                                    
-12-21-05 01:56 electropura    File Added: envy24control-gtk2.patch              
-     
-01-18-06 21:49 HaroldAling    Note Added: 0007713                          
-01-18-06 21:59 HaroldAling    Note Added: 0007714                          
-01-18-06 23:18 alanmann       Note Added: 0007715                          
-01-18-06 23:21 rlrevell       Note Added: 0007716                          
+01-13-06 22:16 robertdavid    New Issue                                    
+01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
+01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
+01-14-06 00:13 drfindley      File Added: asound.state                     
+01-14-06 00:15 drfindley      Note Added: 0007650                          
+01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
+01-14-06 00:28 robertdavid    Note Added: 0007651                          
+01-14-06 00:29 robertdavid    Note Edited: 0007651                         
+01-14-06 18:09 robertdavid    Note Added: 0007654                          
+01-15-06 19:18 Anho Ki        Note Added: 0007667                          
+01-17-06 01:21 Anho Ki        Note Added: 0007694                          
+01-17-06 01:48 rlrevell       Relationship added       related to 0001090  
+01-17-06 09:24 Anho Ki        File Added: prodigy71.patch                    
+01-17-06 09:24 Anho Ki        Issue Monitored: Anho Ki                     
+01-17-06 09:38 Anho Ki        Note Added: 0007695                          
+01-17-06 11:13 robertdavid    Note Added: 0007696                          
+01-17-06 16:39 tinez          Issue Monitored: tinez                       
+01-18-06 23:42 Anho Ki        Note Added: 0007717                          
 ======================================================================
 
 
