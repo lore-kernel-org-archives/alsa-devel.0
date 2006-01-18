@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Wed, 18 Jan 2006 15:51:34 +0100
-Message-ID: <1b3edd7f2594c02aaac336bbc9870e92@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
+Date: Wed, 18 Jan 2006 16:07:39 +0100
+Message-ID: <09646c826a322a083f4b673d76c5c6f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D70FA16A
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 15:51:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1AB216A
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 16:07:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,129 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
 ======================================================================
-Reported By:                alien999999999
+Reported By:                Osiris
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
+Issue ID:                   1025
 Category:                   PCI - au88x0
-Reproducibility:            sometimes
+Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Distribution:               Debian
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              01-18-2006 15:51 CET
+Date Submitted:             03-30-2005 22:50 CEST
+Last Modified:              01-18-2006 16:07 CET
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    kernel panic when trying to load module snd-au8830
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+kernel panic occurs on boot when system tries to load kernel module for
+Aureal Vortex 2. The same thing happens when driver is compiled into
+kernel, not module
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
-
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-17-06 12:27 
+ Raymond - 01-05-06 08:28 
 ----------------------------------------------------------------------
-The function vortex_EqHw_SetLevels() only set 20 eq peaks and 4 other
-registers, so eq_levels[] need 24 values instead of 64 values.
+Refer to those MMIO trace logs on your web site.
 
+Not all MMIO are read/write in 32bits (e.g. hardware mixer input volume
+seem to be read/write in 8-bits instead of 32bits)
 
-Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_eqdata.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_eqdata.c,v
-retrieving revision 1.2
-diff -u -r1.2 au88x0_eqdata.c
---- alsa-driver/alsa-kernel/pci/au88x0/au88x0_eqdata.c	13 Jan 2006
-17:16:29 -0000	1.2
-+++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_eqdata.c	17 Jan 2006
-09:55:43 -0000
-@@ -104,12 +104,7 @@
- };
- 
- /*_rodataba0:*/
--static u16 eq_levels[64] = {
--	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
--	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
--	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
--	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
--	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-+static u16 eq_levels[24] = {
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
+One set of WT frequency register(0x20a) seem to be write in 16-bits and
+0x20a is aligned to word boundary and not double word boudnary.
 
 ----------------------------------------------------------------------
- Raymond - 01-18-06 15:51 
+ Raymond - 01-18-06 16:07 
 ----------------------------------------------------------------------
-- fix the init of codec interface of au8810 and au8830
-- enable the rear pcm slots when codec is quad
+Do your au8830 has the swap of front and rear channels problem ?
 
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
-01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
-      
-01-13-06 13:51 Raymond        Note Added: 0007639                          
-01-13-06 18:18 tiwai          Note Added: 0007648                          
-01-14-06 04:53 Raymond        Note Added: 0007653                          
-01-14-06 05:00 Raymond        Note Edited: 0007653                         
-01-17-06 12:27 Raymond        Note Added: 0007697                          
-01-18-06 15:51 Raymond        Note Added: 0007710                          
+03-30-05 22:50 Osiris         New Issue                                    
+03-30-05 22:50 Osiris         Distribution              => Debian          
+03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
+03-31-05 11:34 mjander        Note Added: 0004278                          
+04-03-05 21:16 Osiris         Note Added: 0004320                          
+04-04-05 10:19 alien999999999 Issue Monitored: alien999999999                   
+
+04-04-05 11:00 alien999999999 File Added: alsa-changes.tar.bz2                  
+ 
+04-04-05 11:00 alien999999999 Note Added: 0004325                          
+08-24-05 11:04 Raymond        Note Added: 0005927                          
+11-25-05 08:22 Raymond        Note Added: 0006848                          
+12-21-05 04:05 ponchick       Issue Monitored: ponchick                    
+12-21-05 04:18 ponchick       Note Added: 0007107                          
+12-21-05 04:19 ponchick       File Added: diff11.diff.bz2                    
+12-22-05 13:01 Raymond        Note Added: 0007123                          
+01-02-06 09:57 Raymond        Note Deleted: 0007123                        
+01-05-06 08:28 Raymond        Note Added: 0007463                          
+01-18-06 16:07 Raymond        Note Added: 0007712                          
 ======================================================================
 
 
