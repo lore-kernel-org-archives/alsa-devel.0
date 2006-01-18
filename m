@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0001664]: GTK2-patch for envy24control
-Date: Wed, 18 Jan 2006 21:59:05 +0100
-Message-ID: <234f8cf39f9bee3023ca2a9ea2dffba1@bugtrack.alsa-project.org>
+Date: Wed, 18 Jan 2006 23:18:17 +0100
+Message-ID: <33028810cd6a3eea5123bfa4deb944a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6739154
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 21:59:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D38E6154
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 23:18:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             12-21-2005 01:56 CET
-Last Modified:              01-18-2006 21:59 CET
+Last Modified:              01-18-2006 23:18 CET
 ======================================================================
 Summary:                    GTK2-patch for envy24control
 Description: 
@@ -54,22 +54,16 @@ fewer channels (like m-audio audiophile).
 ======================================================================
 
 ----------------------------------------------------------------------
- HaroldAling - 01-18-06 21:49 
-----------------------------------------------------------------------
-This is great!
-
-I just needed to remove the alsa-tools/ prefix since the alsa-tools
-package unpacks in alsa-tools-1.0.10/.
-
-I'm about to file a bug(/featurerequest) in bugs.gentoo.org to get this
-patch included into portage...
-
-ALSA-devs: when is this going into the alsa-tools package???
-
-----------------------------------------------------------------------
  HaroldAling - 01-18-06 21:59 
 ----------------------------------------------------------------------
 And I just did: http://bugs.gentoo.org/show_bug.cgi?id=119478
+
+----------------------------------------------------------------------
+ alanmann - 01-18-06 23:18 
+----------------------------------------------------------------------
+For your information, GTK_POLICY_AUTOMATIC has already been applied to cvs
+as part of other changes to envy24control -see posting on alsa-devel 7th
+and 9th Jan 06.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,6 +73,7 @@ Date Modified  Username       Field                    Change
      
 01-18-06 21:49 HaroldAling    Note Added: 0007713                          
 01-18-06 21:59 HaroldAling    Note Added: 0007714                          
+01-18-06 23:18 alanmann       Note Added: 0007715                          
 ======================================================================
 
 
