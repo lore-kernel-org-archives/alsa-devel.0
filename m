@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001658]: Capture happens only on one channel
-Date: Wed, 18 Jan 2006 18:16:49 +0100
-Message-ID: <2ed9a9c547be30b4c3024c3d44d1b4f9@bugtrack.alsa-project.org>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
+Subject: Re: [RFC] Moving snd-bt87x and btaudio to drivers/media
+Date: Wed, 18 Jan 2006 15:51:21 -0200
+Message-ID: <1137606681.28917.31.camel@localhost>
+References: <1137590968.32449.46.camel@localhost>
+	 <s5h8xtdtsej.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40B0516A
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 18:16:50 +0100 (MET)
+In-Reply-To: <s5h8xtdtsej.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,87 +18,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Lee Revell <rlrevell@joe-job.com>, alsa devel <alsa-devel@lists.sourceforge.net>, Andrew Morton <akpm@osdl.org>, Linus Torvalds <torvalds@osdl.org>, Johannes Stezenbach <js@linuxtv.org>, Linux and Kernel Video <video4linux-list@redhat.com>, Manu Abraham <abraham.manu@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Em Qua, 2006-01-18 =E0s 17:25 +0100, Takashi Iwai escreveu:
+> At Wed, 18 Jan 2006 11:29:28 -0200,
+> Mauro Carvalho Chehab wrote:
+> >=20
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
-======================================================================
-Reported By:                phil_troin
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1658
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r2
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-18-2005 08:40 CET
-Last Modified:              01-18-2006 18:16 CET
-======================================================================
-Summary:                    Capture happens only on one channel
-Description: 
-When I am playing a CD, if I capture the sound output via the capture
-channel OR the CD channel (amixer output attached), the captured sound is
-only one one channel (the right one) and is very distorted.
-The audio plays normally in stereo on the speakers.
-======================================================================
-
-----------------------------------------------------------------------
- vsu - 01-13-06 18:17 
-----------------------------------------------------------------------
-Yes, upgrading only alsa-lib to 1.0.11rc2 seems to fix this problem for me.
-
-----------------------------------------------------------------------
- Matthias Koenig - 01-18-06 11:53 
-----------------------------------------------------------------------
-Indeed, updating alsa-lib to the latest version fixes the problem.
-I misleadingly assumed the bug in the kernel driver.
-Thank you very much!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-18-05 08:40 phil_troin     New Issue                                    
-12-18-05 08:40 phil_troin     File Added: amixout                          
-12-18-05 08:40 phil_troin     Distribution              => Gentoo          
-12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
-12-18-05 12:00 linuxbear      Note Added: 0007071                          
-12-18-05 12:02 linuxbear      Note Edited: 0007071                         
-12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
-01-07-06 06:24 tgutwin        Note Added: 0007508                          
-01-07-06 06:25 tgutwin        Issue Monitored: tgutwin                     
-01-09-06 01:34 legluondunet   Note Added: 0007529                          
-01-09-06 01:35 legluondunet   File Added: alsa.conf.record1channel              
-     
-01-09-06 01:37 legluondunet   File Added: alsa.conf.ubuntu                    
-01-09-06 01:43 legluondunet   Note Added: 0007530                          
-01-13-06 02:17 rlrevell       Note Added: 0007615                          
-01-13-06 14:29 Matthias KoenigNote Added: 0007640                          
-01-13-06 17:12 legluondunet   Note Added: 0007644                          
-01-13-06 17:46 vsu            Note Added: 0007645                          
-01-13-06 17:49 vsu            Issue Monitored: vsu                         
-01-13-06 17:51 tiwai          Note Added: 0007646                          
-01-13-06 18:17 vsu            Note Added: 0007647                          
-01-18-06 11:53 Matthias KoenigNote Added: 0007709                          
-01-18-06 18:16 rlrevell       Status                   new => resolved     
-01-18-06 18:16 rlrevell       Resolution               open => fixed       
-01-18-06 18:16 rlrevell       Assigned To               => rlrevell        
-======================================================================
-
+> Which directory do you suppose exactly?  drivers/media/tv (or
+> something like that), or existing one like drivers/media/video?
+	Better is to be at the same dir as other bttv modules. Currently, it
+wil be under drivers/media/video. It seems to me that drivers/media
+should be better organized, since lots of shared code between dvb and
+v4l are emerging. IMHO, it seems to be a good idea to create a newer dir
+to handle chipsets like:
+ /drivers/media/chips/
+	and include bttv, cx88, em28xx, saa7134 and others as separate dirs
+under /chips. This way, it would be easier to detect code duplications
+and similarities.
+>=20
+> I personally have no big objection to move snd-bt87x location.
+> although the external alsa-driver tarball would require a tune.
+> It was there simply because the driver is basically independent from
+> other layers but sound.
+	True.
+>   From the functionality viewpoint, it's better
+> to gather all modules, of course.
+>=20
+> One point I'm conerned is, however, the order of objects in the
+> built-in kernel.  Recently we had a problem of initializations of
+> saa7134-alsa and sound core stuff.  We should be careful about that.
+	I've waited to the end of 2.6.16 window to start these discussions to
+give us some time to fix compilation order and to realign all necessary
+stuff. I think we will have some time until 2.6.17 to prioritize sound
+core loading as Linus suggested. There's no rush for such changes.
+>=20
+> Also, more intutive Kconfig would be nice to have.  For example, it'd
+> be better to use a choice type for saa7134-alsa and -oss drivers.
+> Also, to my eyes, it's better to select CONFIG_SND from saa7134-alsa
+> instead of depending on it.
+	Agreed. I have already a patch for it to use choice type. I'll work on
+it to select CONFIG_SND and CONFIG_SND_PCM.
+>=20
+>=20
+> Takashi
+Cheers,=20
+Mauro.
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
+les
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D103432&bid=3D230486&dat=3D=
+121642
