@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001414]: Hercules Digifire - ADC control only mutes left channel
-Date: Wed, 18 Jan 2006 08:43:30 +0100
-Message-ID: <15d63290d9e9f6250cb70a94ce221a80@bugtrack.alsa-project.org>
+Date: Wed, 18 Jan 2006 08:48:57 +0100
+Message-ID: <4d9319d771ece4b6aa0af4683e53fc2d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10490158
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 08:43:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89147FE
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 08:48:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandrivia
 Kernel Version:             2.6.13
 ======================================================================
 Date Submitted:             09-11-2005 19:12 CEST
-Last Modified:              01-18-2006 08:43 CET
+Last Modified:              01-18-2006 08:48 CET
 ======================================================================
 Summary:                    Hercules Digifire - ADC control only mutes left
 channel
@@ -53,14 +53,14 @@ far, but did not really care up to now...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:31 
-----------------------------------------------------------------------
-Any improvement in later releases?
-
-----------------------------------------------------------------------
  a_r_schulz - 01-18-06 08:43 
 ----------------------------------------------------------------------
 Still the same for 1.0.10rc1 from Kernel 2.6.14.
+
+----------------------------------------------------------------------
+ rlrevell - 01-18-06 08:48 
+----------------------------------------------------------------------
+Did this ever work, for example with kernel 2.4?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -70,6 +70,7 @@ Date Modified  Username       Field                    Change
 09-11-05 19:12 a_r_schulz     Kernel Version            => 2.6.13          
 12-30-05 23:31 rlrevell       Note Added: 0007291                          
 01-18-06 08:43 a_r_schulz     Note Added: 0007706                          
+01-18-06 08:48 rlrevell       Note Added: 0007707                          
 ======================================================================
 
 
