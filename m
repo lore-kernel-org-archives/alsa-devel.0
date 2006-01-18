@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001414]: Hercules Digifire - ADC control only mutes left channel
-Date: Wed, 18 Jan 2006 08:48:57 +0100
-Message-ID: <4d9319d771ece4b6aa0af4683e53fc2d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001486]: headphone control disappeared
+Date: Wed, 18 Jan 2006 09:12:10 +0100
+Message-ID: <cfc0960e2ea13ac16c90de3c8691ad67@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89147FE
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 08:48:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6777D158
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 09:12:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1414> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1486> 
 ======================================================================
-Reported By:                a_r_schulz
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1414
-Category:                   PCI - cs46xx
+Issue ID:                   1486
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Mandrivia
-Kernel Version:             2.6.13
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-11-2005 19:12 CEST
-Last Modified:              01-18-2006 08:48 CET
+Date Submitted:             10-20-2005 11:07 CEST
+Last Modified:              01-18-2006 09:12 CET
 ======================================================================
-Summary:                    Hercules Digifire - ADC control only mutes left
-channel
+Summary:                    headphone control disappeared
 Description: 
-I would like to use my card for recording with audacity in LINUX, but it's
-a little hard to get the levels right, since the ADC slider in both
-alsamixer and kmix affect only the left input channel, leaving the right
-channel at full volume. Had this problem with all 2.6 kernel versions so
-far, but did not really care up to now...
+The submitter of Ubuntu bug report 18024 reports that the "Headphone"
+control disappeared when he upgraded from linux-image-2.6.10-5-386
+(2.6.10-34.7, from
+hoary) to linux-image-2.6.12-9-386 (2.6.12-9.23, breezy).
+
+$cat /proc/asound/cards
+0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
+                     Intel 82801DB-ICH4 with STAC9750,51 at 0xfaeff800,
+irq 7
+
+See
+
+    http://bugzilla.ubuntu.com/show_bug.cgi?id=18024
+
+for additional info.
 ======================================================================
 
 ----------------------------------------------------------------------
- a_r_schulz - 01-18-06 08:43 
+ jdthood - 01-17-06 17:57 
 ----------------------------------------------------------------------
-Still the same for 1.0.10rc1 from Kernel 2.6.14.
+There is a "Phone" control.  Am I right in assuming that this means
+"Telephone"?
 
 ----------------------------------------------------------------------
- rlrevell - 01-18-06 08:48 
+ apeeters - 01-18-06 09:12 
 ----------------------------------------------------------------------
-Did this ever work, for example with kernel 2.4?
+I guess it is, but it has nothing to do with Headphone, it only appears as
+a capture control.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-11-05 19:12 a_r_schulz     New Issue                                    
-09-11-05 19:12 a_r_schulz     Distribution              => Mandrivia       
-09-11-05 19:12 a_r_schulz     Kernel Version            => 2.6.13          
-12-30-05 23:31 rlrevell       Note Added: 0007291                          
-01-18-06 08:43 a_r_schulz     Note Added: 0007706                          
-01-18-06 08:48 rlrevell       Note Added: 0007707                          
+10-20-05 11:07 jdthood        New Issue                                    
+10-20-05 12:58 apeeters       Issue Monitored: apeeters                    
+10-20-05 14:51 tiwai          Note Added: 0006503                          
+11-06-05 16:58 apeeters       Note Added: 0006607                          
+11-06-05 16:58 apeeters       File Added: alsa_headphone                    
+11-08-05 18:34 tiwai          Note Added: 0006633                          
+11-08-05 18:34 tiwai          File Added: ac97-check-fix.diff                   
+
+11-09-05 13:44 apeeters       Note Added: 0006650                          
+11-09-05 13:47 tiwai          Note Added: 0006651                          
+11-09-05 13:57 apeeters       Note Added: 0006652                          
+01-04-06 14:40 jdthood        Note Added: 0007421                          
+01-17-06 17:56 jdthood        Note Added: 0007701                          
+01-17-06 17:57 jdthood        Note Added: 0007702                          
+01-18-06 09:12 apeeters       Note Added: 0007708                          
 ======================================================================
 
 
