@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: alsa-lib compatibility
-Date: Wed, 18 Jan 2006 02:34:05 -0500
-Message-ID: <1137569646.30140.1.camel@mindpipe>
-References: <Pine.LNX.4.61.0601041006310.9321@tm8103.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001414]: Hercules Digifire - ADC control only mutes left channel
+Date: Wed, 18 Jan 2006 08:43:30 +0100
+Message-ID: <15d63290d9e9f6250cb70a94ce221a80@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6EC7D158
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 08:34:14 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.61.0601041006310.9321@tm8103.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10490158
+	for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2006 08:43:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,37 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-01-04 at 10:12 +0100, Jaroslav Kysela wrote:
-> Hi,
-> 
-> 	it seems that it is quite required (based on current LKML 
-> discussion) to keep the alsa-lib compatibility with old drivers. Please, 
-> keep in mind that for example renaming of control names will break using 
-> old 2.6 kernel with new alsa-lib.
-> 	The alsa-lib C code already checks for older drivers, but
-> the extended configuration (like 5.1, s/pdif devices) in most cases
-> changes a lot. We should add some runtime checks which driver version
-> is running in XXXXX.conf files and apply the old behaviour if required.
-> 
-> 				Any comments?
-> 						Jaroslav
-> 
 
-How do you propose we solve this problem:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1414> 
+======================================================================
+Reported By:                a_r_schulz
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1414
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Mandrivia
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             09-11-2005 19:12 CEST
+Last Modified:              01-18-2006 08:43 CET
+======================================================================
+Summary:                    Hercules Digifire - ADC control only mutes left
+channel
+Description: 
+I would like to use my card for recording with audacity in LINUX, but it's
+a little hard to get the levels right, since the ADC slider in both
+alsamixer and kmix affect only the left input channel, leaving the right
+channel at full volume. Had this problem with all 2.6 kernel versions so
+far, but did not really care up to now...
+======================================================================
 
-/usr/lib/mozilla-firefox/firefox-bin: relocation
-error: /usr/lib/libalsatoss.so.0: symbol
-snd_pcm_hw_params_set_rate_near, version ALSA_0.9.0rc4 not defined in
-file libasound.so.2 with link time reference
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 23:31 
+----------------------------------------------------------------------
+Any improvement in later releases?
 
-My apps are compiled against alsa-lib 1.0.9 but I have 1.0.11-rc2
-installed.
+----------------------------------------------------------------------
+ a_r_schulz - 01-18-06 08:43 
+----------------------------------------------------------------------
+Still the same for 1.0.10rc1 from Kernel 2.6.14.
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-11-05 19:12 a_r_schulz     New Issue                                    
+09-11-05 19:12 a_r_schulz     Distribution              => Mandrivia       
+09-11-05 19:12 a_r_schulz     Kernel Version            => 2.6.13          
+12-30-05 23:31 rlrevell       Note Added: 0007291                          
+01-18-06 08:43 a_r_schulz     Note Added: 0007706                          
+======================================================================
+
 
 
 
