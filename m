@@ -1,56 +1,78 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Re: [Jackit-devel] Real-world reports on two Delta 1010LTs/ice1712 synched?
-Date: Wed, 18 Jan 2006 10:56:30 +0000
-Message-ID: <200601181056.30490.gineera@aspect135.co.uk>
-References: <20051224124823.GA4183@localhost.localdomain> <20060116175652.GM28738@edu.joroinen.fi> <43CBF383.3000807@nostar.net>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
+Subject: [RFC] Moving snd-bt87x and btaudio to drivers/media
+Date: Wed, 18 Jan 2006 11:29:28 -0200
+Message-ID: <1137590968.32449.46.camel@localhost>
+Reply-To: Linux and Kernel Video <video4linux-list@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43CBF383.3000807@nostar.net>
-Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Doug McLain <doug@nostar.net>
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <video4linux-list-bounces@redhat.com>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
+List-Post: <mailto:video4linux-list@redhat.com>
+List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
+Sender: video4linux-list-bounces@redhat.com
+Errors-To: video4linux-list-bounces@redhat.com
+To: LKML <linux-kernel@vger.kernel.org>, Lee Revell <rlrevell@joe-job.com>, Takashi Iwai <tiwai@suse.de>, alsa devel <alsa-devel@lists.sourceforge.net>, Andrew Morton <akpm@osdl.org>, Linus Torvalds <torvalds@osdl.org>
+Cc: Linux and Kernel Video <video4linux-list@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 16 January 2006 19:26, Doug McLain wrote:
-> Good timing, I was just about to give a summary of my findings so far:
->
-> First of all, the differences in the 1010LT vs the 1010 that are most
-> relevent here, I believe, is the SPDIF i/o chips (cs8413 receiver,
-> cs8404 xmitter) used on the 1010 vs the one single transceiver (cs8427)
-> used on the 1010LT.  
->...
->  I am focusing on fixing spdif functionality, 
-> Doug
+Lee/Andrew/Linus/Takashi and others,
 
-It may be of interest to know that the Terratec DMX6fire, which I have, also 
-uses the cs8427, but has both coax and optical SPDIF.  The dig out works OK 
-on both, as soon as the snd-ice-1712 is loaded.  It runs without needing any 
-'In' clock as you describe with 1010LT.  I can select internal clock freqs 
-and detect in my mini-disc recorder 32K, 44.1K, 48K using the coax (and 
-optical).  Other rates are not supported by the MD so I can't be sure.  There 
-are however some issues with digital in, but by selecting in the right 
-sequence this works fine also.
+	Currently, we have some audio modules for multimedia devices under
+drivers/media and others under sound. They also appear under different
+points at Kconfig menus. 
 
-A look at the DMX6fire code therefore may be rewarding?
+	So, for BTTV support, current structure at linus -git is (from Kconfig
+perspective):
 
-Alan
+	Sound/ALSA/PCI Devices/Bt87x Audio capture
+		sound/snd-bt87x.ko - ALSA audio for bttv boards
+	Sound/OSS/TV Card (bt848) mixer support
+		drivers/media/video/tvmixer.ko
 
+	Multimedia/V4L/BT848 V4L
+		drivers/media/video/bttv.ko
+	Multimedia/V4L/BT848 V4L/DVB-ATSC support
+		drivers/media/dvb/bt8xx/bt878.ko
+		drivers/media/dvb/bt8xx/dvb-bt8xx.o
 
+	This I couldn't found at any Kconfig (but module exists, and also an
+entry at Makefile):
+sound/oss/Makefile:obj-$(CONFIG_SOUND_BT878)    += btaudio.o
 
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+	For SAA7134 and CX88, all are under Multimedia/V4L. All
+OSS/ALSA/DVB/MPEG options are under the driver name.
+
+	IMHO, from users perspective, it makes much more sense if all BTTV
+moules (even sound ones) being under bttv video driver. Current module
+allows using audio driver without video, but this doesn't make sense,
+since audio will be only available, in practice, after selecting a
+video/audio input or tuning a channel. These functionalities are
+provided by bttv. So, we could even disable audio modules if bttv were
+not compiled.
+
+	Also, bug 5995 showed a problem when user have a bttv card and dvb is
+also probed. dvb also handles audio, so, currently, it is mutually
+exclusive with snd-bt87x audio.
+
+	So, my proposal is to move sound/snd-bt87x.ko to drivers/media, moving
+also its menu, and moving tvmixer menu also. After it, should move some
+related code at bttv dvb modules, to reduce or eliminate mutually
+exclusiveness between the two. 
+
+	We might keep supporting btaudio, but I think this is already obsoleted
+by alsa one, so, IMHO, we can just drop it. We intend to do the same
+with saa7134-oss after some time (kernel 2.6.15 is the first with this
+module, so we may remove it on 2.6.18 to give some time for testing).
+
+Cheers, 
+Mauro.
+
+--
+video4linux-list mailing list
+Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/video4linux-list
