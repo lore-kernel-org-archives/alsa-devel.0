@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001414]: Hercules Digifire - ADC control only mutes left channel
-Date: Thu, 19 Jan 2006 08:48:35 +0100
-Message-ID: <0881b42c91b97eaa2cf3c27056fcf052@bugtrack.alsa-project.org>
+From: =?utf-8?B?VsOhY2xhdiDFoG1pbGF1ZXI=?= <eudoxos@arcig.cz>
+Subject: pin assignment for ALC260 (hda-intel)
+Date: Thu, 19 Jan 2006 10:46:53 +0100
+Message-ID: <20060119094653.GA3838@ag-smil.arcig>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25F85171
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 08:48:36 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +15,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+(jwoithe: respond privately, we take this off list unless someone else
+gets in.)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1414> 
-======================================================================
-Reported By:                a_r_schulz
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1414
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Mandrivia
-Kernel Version:             2.6.13
-======================================================================
-Date Submitted:             09-11-2005 19:12 CEST
-Last Modified:              01-19-2006 08:48 CET
-======================================================================
-Summary:                    Hercules Digifire - ADC control only mutes left
-channel
-Description: 
-I would like to use my card for recording with audacity in LINUX, but it's
-a little hard to get the levels right, since the ADC slider in both
-alsamixer and kmix affect only the left input channel, leaving the right
-channel at full volume. Had this problem with all 2.6 kernel versions so
-far, but did not really care up to now...
-======================================================================
+I've been playing with ALC260 (patch_realtek.c) following the directions
+for bug #1618.
 
-----------------------------------------------------------------------
- rlrevell - 01-18-06 08:48 
-----------------------------------------------------------------------
-Did this ever work, for example with kernel 2.4?
+What I've done is the following:
 
-----------------------------------------------------------------------
- a_r_schulz - 01-19-06 08:48 
-----------------------------------------------------------------------
-Cannot tell - I had a different soundcard before. I'm trying right now with
-a Knoppix 3.4 CD and found my card as 'Cirrus Logic CS 4294' in KMix. KMix
-shows a slider 'IGain' for the card, which appears to work properly, both
-in combined and split-channel mode, together with the recording volume
-slider of Audacity.
+1. I did not modify alc260_base_mixer, as it seems to cover all mixers
+on the chip (i.e. 0x7-0xa, following the diagram in the datasheet); I
+assume that if it is HDA_INPUT or HDA_OUTPUT makes only the difference
+whether the mixer displays it under playback or capture.
 
-The Kernel on this distribution is:
-Linux Knoppix 2.4.23-xfs #1 SMP Mi Dez 10 22:25:03 CET 2003 i686
-GNU/Linux
-but appears to still use OSS drivers (nothing of alsa in dmesg). Dmesg
-says about sound:
-Crystal 4280/46xx + AC97 Audio, version 1.28.32, 22:39:02 Dec 10 2003
-cs46xx: Card found at 0xe3100000 and 0xe3000000, IRQ 9
-cs46xx: Unknown card (1681:A012) at 0xe3100000/0xe3000000, IRQ 9
-ac97_codec: AC97 Modem codec, id: CRY45 (Cirrus Logic CS4294)
+2. alc260_init_verbs is problematic for me. I did
+{0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT} for all the i/o widgets,
+i.e. 0xf-0x16. No sound so far. PIN_OUT is defined as 0x40, which is not
+a number I was able to find in the datasheet. Can I assume that widgets
+connected to PIN_OUT are relly going to the real output.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-11-05 19:12 a_r_schulz     New Issue                                    
-09-11-05 19:12 a_r_schulz     Distribution              => Mandrivia       
-09-11-05 19:12 a_r_schulz     Kernel Version            => 2.6.13          
-12-30-05 23:31 rlrevell       Note Added: 0007291                          
-01-18-06 08:43 a_r_schulz     Note Added: 0007706                          
-01-18-06 08:48 rlrevell       Note Added: 0007707                          
-01-19-06 08:48 a_r_schulz     Note Added: 0007718                          
-======================================================================
+I am at loss also with AC_VERB_CONNECT_SEL. What is its parameter 0x0?
+/* select line-out */ {0x15, AC_VERB_SET_CONNECT_SEL, 0x00}.? Is the
+only point that I will try to connect all line IO (0xf-0x16) to 0x0-0x3
+(or more?) (which is, according to some comments in the realtek_patch.c:
+HP, line, mic?) I don't find any such numbers on the datasheet.
 
+I am sorry that I pose such questtions, but I don't really know nothing
+about ALSA internals.
 
+I had the idea of having a Windows program querying the ALC260 chip for
+those widget settings with the get verbs - the laptop has XP
+preinstalled and sound works fine there. Or perhaps reverse-engineer the
+initilization verbs from the Windows driver?
+
+Thanks for any help,
+
+Vaclav Smilauer
 
 
 -------------------------------------------------------
