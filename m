@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001762]: alsa-driver-cvs build fails if configured with relative kernel source path
-Date: Thu, 19 Jan 2006 21:55:15 +0100
-Message-ID: <6a124ae2866c1e42d78b5d373c9e9928@bugtrack.alsa-project.org>
+From: Jesper Juhl <jesper.juhl@gmail.com>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 22:06:47 +0100
+Message-ID: <9a8748490601191306q75b101b5g488aee398d420a00__7302.04978394813$1137704913$gmane$org@mail.gmail.com>
+References: <20060119174600.GT19398@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 380FC16F
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 21:55:15 +0100 (MET)
+Received: from wproxy.gmail.com (wproxy.gmail.com [64.233.184.207])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3691F15E
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 22:06:49 +0100 (MET)
+Received: by wproxy.gmail.com with SMTP id 70so318428wra
+        for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 13:06:47 -0800 (PST)
+In-Reply-To: <20060119174600.GT19398@stusta.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +23,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian Bunk <bunk@stusta.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+On 1/19/06, Adrian Bunk <bunk@stusta.de> wrote:
+[snip]
+> My proposed timeline is:
+[snip]
+> - after the release of 2.6.17 (and before 2.6.18):
+>   remove the subset of drivers marked at OBSOLETE_OSS_DRIVER without
+>   known regressions in the ALSA drivers for the same hardware
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1762> 
-======================================================================
-Reported By:                Will
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1762
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.x
-======================================================================
-Date Submitted:             01-19-2006 21:55 CET
-Last Modified:              01-19-2006 21:55 CET
-======================================================================
-Summary:                    alsa-driver-cvs build fails if configured with
-relative kernel source path
-Description: 
-If you configure alsa-driver giving a *relative* path such as ../linux for
-the kernel source tree, the build always fails. This looks like a new
-issue because relative paths work ok with alsa-driver-1.0.9 and earlier
-versions.
-======================================================================
+May I suggest you also update the "When" part of this entry in
+Documentation/feature-removal-schedule.txt :
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-19-06 21:55 Will           New Issue                                    
-01-19-06 21:55 Will           Kernel Version            => 2.6.x           
-======================================================================
+What:   drivers depending on OBSOLETE_OSS_DRIVER
+When:   January 2006
+Why:    OSS drivers with ALSA replacements
+Who:    Adrian Bunk <bunk@stusta.de>
 
-
+--
+Jesper Juhl <jesper.juhl@gmail.com>
+Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
+Plain text mails only, please      http://www.expita.com/nomime.html
 
 
 -------------------------------------------------------
