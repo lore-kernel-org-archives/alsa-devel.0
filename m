@@ -1,15 +1,18 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: RFC: OSS driver removal, a slightly different approach
-Date: Thu, 19 Jan 2006 23:45:01 +0100
-Message-ID: <20060119224501.GC19398__8567.11643650687$1137710789$gmane$org@stusta.de>
-References: <20060119174600.GT19398@stusta.de> <m3ek34vucz.fsf@defiant.localdomain> <1137709308.8471.77.camel@localhost.localdomain>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: RFC: OSS driver removal, a slightly different
+	approach
+Date: Thu, 19 Jan 2006 17:45:47 -0500
+Message-ID: <1137710747.3241.4.camel@mindpipe>
+References: <20060119174600.GT19398@stusta.de>
+	 <m3ek34vucz.fsf@defiant.localdomain>
+	 <1137709308.8471.77.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0702211F
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:45:03 +0100 (MET)
-Content-Disposition: inline
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A7ED711F
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:45:49 +0100 (MET)
 In-Reply-To: <1137709308.8471.77.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,32 +24,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Krzysztof Halasa <khc@pm.waw.pl>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+Cc: Krzysztof Halasa <khc@pm.waw.pl>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 19, 2006 at 10:21:47PM +0000, Alan Cox wrote:
-> On Iau, 2006-01-19 at 21:24 +0100, Krzysztof Halasa wrote:
->...
+On Thu, 2006-01-19 at 22:21 +0000, Alan Cox wrote:
 > > > SOUND_WAVEARTIST
 > 
 > Not sure
+> 
 
-config SOUND_WAVEARTIST
-        tristate "Netwinder WaveArtist"
-        depends on ARM && SOUND_OSS && ARCH_NETWINDER
-        help
-          Say Y here to include support for the Rockwell WaveArtist sound
-          system.  This driver is mainly for the NetWinder.
+ARM, specifically this:
 
-cu
-Adrian
+http://www.netwinder.org/about.html
 
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+Lee
 
 
 
