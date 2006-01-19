@@ -1,20 +1,16 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+From: Adrian Bunk <bunk@stusta.de>
 Subject: Re: RFC: OSS driver removal, a slightly different approach
-Date: Thu, 19 Jan 2006 21:28:27 +0000
-Message-ID: <1137706107.8471.44.camel@localhost.localdomain>
-References: <20060119174600.GT19398@stusta.de>
-	 <1137694944.32195.1.camel@mindpipe>  <20060119182859.GW19398@stusta.de>
+Date: Thu, 19 Jan 2006 22:43:32 +0100
+Message-ID: <20060119214332.GZ19398__1336.78903007439$1137707128$gmane$org@stusta.de>
+References: <20060119174600.GT19398@stusta.de> <9a8748490601191306q75b101b5g488aee398d420a00@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3CCD141
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 22:40:21 +0100 (MET)
-Received: from lxorguk.ukuu.org.uk (unknown [81.2.110.250])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 385EC957F2
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 22:40:21 +0100 (MET)
-In-Reply-To: <20060119182859.GW19398@stusta.de>
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A26C9141
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 22:43:34 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <9a8748490601191306q75b101b5g488aee398d420a00@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,19 +20,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian Bunk <bunk@stusta.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+To: Jesper Juhl <jesper.juhl@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Iau, 2006-01-19 at 19:28 +0100, Adrian Bunk wrote:
-> > ALSA certainly does support "100% Sound Blaster compatibles (SB16/32/64,
-> > ESS, Jazz16)", it would be a joke if it didn't...
+On Thu, Jan 19, 2006 at 10:06:47PM +0100, Jesper Juhl wrote:
+> On 1/19/06, Adrian Bunk <bunk@stusta.de> wrote:
+> [snip]
+> > My proposed timeline is:
+> [snip]
+> > - after the release of 2.6.17 (and before 2.6.18):
+> >   remove the subset of drivers marked at OBSOLETE_OSS_DRIVER without
+> >   known regressions in the ALSA drivers for the same hardware
 > 
-> That's not the problem, I should have added an explanation:
+> May I suggest you also update the "When" part of this entry in
+> Documentation/feature-removal-schedule.txt :
+> 
+> What:   drivers depending on OBSOLETE_OSS_DRIVER
+> When:   January 2006
+> Why:    OSS drivers with ALSA replacements
+> Who:    Adrian Bunk <bunk@stusta.de>
 
+Sure. This will be sent as part of my patch to update the 
+OBSOLETE_OSS_DRIVER dependencies.
 
-OSS supports several "not quite compatibles", notably Cyrix 55x0 systems
-where the SB firmware blows up on 64/128K transfers. 
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
 
 
 -------------------------------------------------------
