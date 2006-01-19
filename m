@@ -1,22 +1,16 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: Re: RFC: OSS driver removal, a slightly different
-	approach
-Date: Thu, 19 Jan 2006 22:11:03 +0000
-Message-ID: <1137708663.8471.67.camel@localhost.localdomain>
-References: <20060119174600.GT19398@stusta.de>
-	 <1137694944.32195.1.camel@mindpipe>  <20060119182859.GW19398@stusta.de>
-	 <1137696885.32195.12.camel@mindpipe>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: Re: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 23:18:13 +0100
+Message-ID: <20060119221813.GB19398__23326.3388312936$1137709169$gmane$org@stusta.de>
+References: <20060119174600.GT19398@stusta.de> <m3ek34vucz.fsf@defiant.localdomain> <1137703413.32195.23.camel@mindpipe> <20060119215008.GB6595@devserv.devel.redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45929141
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:11:09 +0100 (MET)
-Received: from lxorguk.ukuu.org.uk (unknown [81.2.110.250])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id D0B4399212
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:11:08 +0100 (MET)
-In-Reply-To: <1137696885.32195.12.camel@mindpipe>
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 39F82141
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:18:13 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20060119215008.GB6595@devserv.devel.redhat.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,28 +20,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+To: Lee Revell <rlrevell@joe-job.com>, Krzysztof Halasa <khc@pm.waw.pl>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Iau, 2006-01-19 at 13:54 -0500, Lee Revell wrote:
-> /*
->  *      Initialisation code for Cyrix/NatSemi VSA1 softaudio
->  *
->  *      (C) Copyright 2003 Red Hat Inc <alan@redhat.com>
->  *
+On Thu, Jan 19, 2006 at 04:50:08PM -0500, Bill Nottingham wrote:
+> Lee Revell (rlrevell@joe-job.com) said: 
+> > Yes, it would require a collector of ancient sound hardware... do you
+> > know anyone like that?
 > 
-> Why was a new OSS driver written and accepted at such a late date, when
-> OSS was already deprecated?
+> If someone desparately wants a AdLib or PAS16 I might be able to
+> scrounge one up. However, are there really users out there
+> insisting that their Linux experience is suffering because they
+> don't have support for their 8-bit ISA FM synth card?
 
-Because
-	1.	I wanted the support
-	2.	It was needed for my employers systems which like everyone else were
-still OSS at the time
+Half of the cards without ALSA drivers are ancient PC hardware and the 
+other half are drivers for !i386 platforms.
 
-Welcome to the *real world*
+Me scheduling other OSS drivers for removal brought me indirectly in
+contact with two users of SOUND_TRIX and one user of SOUND_VIDC - and 
+I'd assume that most of such hardware has some users somewhere.
 
-Alan
+I don't consider it a big problem if a handful OSS drivers for obscure 
+hardware will stay forever (although getting ALSA drivers for all 
+hardware would be the superior solution).
+
+We are already able to both remove a serious amount of code and getting 
+many bug reports against the ALSA drivers without removing support for a 
+single piece of hardware.
+
+> Bill
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
 
 
 -------------------------------------------------------
