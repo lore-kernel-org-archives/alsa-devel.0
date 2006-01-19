@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Thu, 19 Jan 2006 13:51:32 +0100
-Message-ID: <92d8a84f26d00adf450110b919164875@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
+Date: Thu, 19 Jan 2006 14:05:10 +0100
+Message-ID: <a08de773c0cb7dd3cbbe5138274c70fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 557CF156
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 13:51:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2DCC156
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 14:05:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,117 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
 ======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
+Reported By:                mikael
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
+Issue ID:                   1663
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Distribution:               Archlinux
+Kernel Version:             2.4.13.4
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              01-19-2006 13:51 CET
+Date Submitted:             12-20-2005 19:11 CET
+Last Modified:              01-19-2006 14:05 CET
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
+fix, please intergrate it!
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
+It though for some reason do not turn off the main speaker when you insert
+headphones. On the site
+http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
+there is a patched alsa package available which fixes this issue by adding
+a "Headphone" mixer which you can turn on/off and also gives you the
+availability to mute the main speakers without (as in 1.0.10/11-rc1)
+muting the headphones aswell.
 
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
+Can you please intergrate this? I struggled trying to intergrate this
+properly but their alsa is built on 1.0.9 and I suppose I am not the
+sharpest of programers either for the job.
 
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
+Greets,
+  Mikael
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-18-06 15:51 
+ mikael - 01-17-06 00:05 
 ----------------------------------------------------------------------
-- fix the init of codec interface of au8810 and au8830
-- enable the rear pcm slots when codec is quad
+I think you misinterpretated the bug report. 
 
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+I have just tried the 1.0.11-rc2 with the same result. 
+
+To clarify the bug report:
+
+ * My laptop has a set of stereo front speakers
+ * It has 1 mic input and 1 lineout and 1 headphone jack
+ * When inserting the headphones to either lineout or headphone jack the
+front speakers will not mute
+ * If you mute the "Front" bar in alsamixer both front speakers and
+headphones mute
+ * Realtek.com.tw has implemented a bar named "Headphone" which you can by
+software mute / unmute in combination of muting only the "Front" bar,
+which solves the problem.
+
+Screenshots:
+
+ * Realtek.com.tw drivers:
+http://ircgeeks.net/~nicon/pics/rlt_alsamixer.png
+ * Alsa-project.org drivers:
+http://ircgeeks.net/~nicon/pics/11rc2_alsamixer.png
+
+Please add a comment if you need a more clear bug report.
 
 ----------------------------------------------------------------------
- Raymond - 01-19-06 13:51 
+ mjsb - 01-19-06 14:05 
 ----------------------------------------------------------------------
-static char
-vortex_adb_checkinout(vortex_t * vortex, int resmap[], int out, int
-restype)
-{ 
-           int i;
- ...
-           return i;
- ...
-
-      return return -ENOMEM;
-}
-
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/au88x0/au88x0.h?r1=1.6&r2=1.7
+I had submited bug #0001572 describing the same problem back in November
+17, 2005.
+The bug still applies to current alsa-driver 1.0.11_rc2.
+I'm running the same laptop LG LW20 with gentoo linux (kernel 2.6.14).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
-01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
-      
-01-13-06 13:51 Raymond        Note Added: 0007639                          
-01-13-06 18:18 tiwai          Note Added: 0007648                          
-01-14-06 04:53 Raymond        Note Added: 0007653                          
-01-14-06 05:00 Raymond        Note Edited: 0007653                         
-01-17-06 12:27 Raymond        Note Added: 0007697                          
-01-18-06 15:51 Raymond        Note Added: 0007710                          
-01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
-01-19-06 13:51 Raymond        Note Added: 0007719                          
+12-20-05 19:11 mikael         New Issue                                    
+12-20-05 19:11 mikael         Distribution              => Archlinux       
+12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
+01-16-06 16:22 mikael         Note Added: 0007688                          
+01-16-06 19:24 rlrevell       Note Added: 0007691                          
+01-17-06 00:05 mikael         Note Added: 0007693                          
+01-19-06 14:05 mjsb           Note Added: 0007720                          
 ======================================================================
 
 
