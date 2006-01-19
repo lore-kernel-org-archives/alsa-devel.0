@@ -1,17 +1,13 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Building ALSA utils for a minimal cross compiled environment
-Date: Thu, 19 Jan 2006 23:01:40 +0000
-Message-ID: <1137711700.9365.13.camel@localhost.localdomain>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: hda/patch-realtek.c: minor bug?
+Date: Fri, 20 Jan 2006 10:06:20 +1030 (CST)
+Message-ID: <200601192336.k0JNaKPt011667@auster.physics.adelaide.edu.au>
+References: <20060119230301.D55FB13F94@sc8-sf-spam2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6E71A134
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 00:01:50 +0100 (MET)
-Received: from bossclass (bossclass [192.168.62.105])
-	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k0JN1feO009798
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:01:41 GMT
+In-Reply-To: <20060119230301.D55FB13F94@sc8-sf-spam2.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Jan 19, 2006 03:02:02 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,18 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Any advice on this? I have compiled a patched alsa-lib (for SH4 on the
-Dreamcast) but the readme with the alsa utils suggests it might be
-pretty difficult to build it in my situation (I am writing an ALSA
-driver for the Dreamcast).
+Hi everyone
 
-Thanks
+While looking through patch-realtek.c for a completely unrelated reason
+I noticed what I think is a small bug in the setup of the initialisation
+verbs.  This is in 1.0.11rc1.  I noticed the following fragment at line
+2474 in the alc260_init_verbs definition:
 
-Adrian
+        /* LINE-2 is used for line-out in rear */
+        {0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+        /* select line-out */
+        {0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
 
+Obviously the intention is to select the LOUT1 sum widget to be the source
+for the LINE-2 pin widget.  However, the input selector for the LINE-2 pin
+widget isn't actually a part of the pin widget - it is a separate widget
+with its own NID (0x0e).  This is apparent when looking at the "get/set
+connection select" sections of the ALC260 datasheet; NID 0x15 does not
+accept this verb, and NID 0x0e is described as the "LINE2 Selector". It
+would of course be helpful and clearer if the selector NIDs were mentioned
+on the block diagram of the datasheet.
+
+Anyway, as far as my understanding goes, to select LOUT1 as the source for
+the LINE-2 pin widget, the correct AC_VERB_SET_CONNECT_SEL entry should be
+
+        {0x0e, AC_VERB_SET_CONNECT_SEL, 0x00},
+
+As it stands things still work: the LINE-2 widget ignores the verb and
+the default setting for the 0x0e selector is 0x00.  However, perhaps 
+the initialisation verb list in the driver should still be corrected
+for completeness?
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
