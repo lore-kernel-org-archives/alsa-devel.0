@@ -1,23 +1,22 @@
 From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: Re: RFC: OSS driver removal, a slightly
-	different	approach
-Date: Thu, 19 Jan 2006 22:09:33 +0000
-Message-ID: <1137708573.8471.65.camel@localhost.localdomain>
+Subject: Re: Re: RFC: OSS driver removal, a slightly different
+	approach
+Date: Thu, 19 Jan 2006 22:11:03 +0000
+Message-ID: <1137708663.8471.67.camel@localhost.localdomain>
 References: <20060119174600.GT19398@stusta.de>
-	 <1137694944.32195.1.camel@mindpipe> <20060119182859.GW19398@stusta.de>
-	 <1137696885.32195.12.camel@mindpipe>  <s5hk6cw9h07.wl%tiwai@suse.de>
-	 <1137697269.32195.14.camel@mindpipe>
+	 <1137694944.32195.1.camel@mindpipe>  <20060119182859.GW19398@stusta.de>
+	 <1137696885.32195.12.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C4F13E
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:09:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45929141
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:11:09 +0100 (MET)
 Received: from lxorguk.ukuu.org.uk (unknown [81.2.110.250])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id DD6A699212
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:09:40 +0100 (MET)
-In-Reply-To: <1137697269.32195.14.camel@mindpipe>
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id D0B4399212
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:11:08 +0100 (MET)
+In-Reply-To: <1137696885.32195.12.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,42 +27,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+Cc: Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Iau, 2006-01-19 at 14:01 -0500, Lee Revell wrote:
-> > > Hmm.  From sound/oss/kahlua.c:
-> > > 
-> > > /*
-> > >  *      Initialisation code for Cyrix/NatSemi VSA1 softaudio
-> > >  *
-> > >  *      (C) Copyright 2003 Red Hat Inc <alan@redhat.com>
-> > >  *
-> > > 
-> > > Why was a new OSS driver written and accepted at such a late date, when
-> > > OSS was already deprecated?
-> > 
-> > You'll find out that it must be pretty easy to write kahlua driver for
-> > ALSA, too, if you look at kahlua.c.  Just need a hardware to certify
-> > if this is really demanded...
+On Iau, 2006-01-19 at 13:54 -0500, Lee Revell wrote:
+> /*
+>  *      Initialisation code for Cyrix/NatSemi VSA1 softaudio
+>  *
+>  *      (C) Copyright 2003 Red Hat Inc <alan@redhat.com>
+>  *
 > 
-> Yes, it looks simple enough to write a driver without the hardware, as
-> long as someone volunteers to test it...
+> Why was a new OSS driver written and accepted at such a late date, when
+> OSS was already deprecated?
 
-Most of the Kahlua logic is in the SB driver. It was a wrapper added
-later to make autoconfiguration simple for end users. CS55x0 (VSA1
-variants) are generic sound blaster 16 emulation via SMI traps. There
-are certain things you must not do
+Because
+	1.	I wanted the support
+	2.	It was needed for my employers systems which like everyone else were
+still OSS at the time
 
-1.	Use a 64K or 128K in 16bit ring buffer
-2.	Disable/Enable DMA on the sound channel while audio is running
+Welcome to the *real world*
 
-#1 causes the box to hang dead (firmware emulation bug)
-#2 mistakenly flushes the FIFOs so breaks up the audio
-
-Otherwise its SB16 compatible.
-
-
+Alan
 
 
 -------------------------------------------------------
