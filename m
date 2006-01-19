@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
-Date: Thu, 19 Jan 2006 18:27:12 +0100
-Message-ID: <ac5951d9e2d4839c788db721d380d9cf@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 18:46:00 +0100
+Message-ID: <20060119174600.GT19398@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B35B173
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 18:27:13 +0100 (MET)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BD486142
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 18:46:00 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +18,146 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+My proposal to remove OSS drivers where ALSA drivers for the same 
+hardware exists had two reasons:
 
-The issue 0001663 has been set as DUPLICATE OF the following issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
-======================================================================
-Reported By:                mjsb
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1572
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.1.13-gentoo-r3
-======================================================================
-Date Submitted:             11-17-2005 16:31 CET
-Last Modified:              01-16-2006 11:19 CET
-======================================================================
-Summary:                    Simultaneous sound from speakers and headphone
-Description: 
-I cannot ear headphones without having sound from front speakers
-simultaneously.
-Volume of headphones is adjusted by front speakers and when muting front
-speakers also mutes headphones.
-(in MS Windows, inserting headphones automatically disables sound from
-front speakers)
+1. remove obsolete and mostly unmaintained code
+2. get bugs in the ALSA drivers reported that weren't previously
+   reported due to the possible workaround of using the OSS drivers
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001663 LW20 bugs with headphone input, realtek...
-======================================================================
+I'm slowly getting more and more reports for the second case.
 
-----------------------------------------------------------------------
- mjsb - 12-08-05 21:23 
-----------------------------------------------------------------------
-Correction: kernel is 2.6.13-gentoo-r3.
 
-----------------------------------------------------------------------
- mjsb - 01-16-06 11:19 
-----------------------------------------------------------------------
-Someone else has reported bug #0001663 which describes the same problem as
-here (#0001572).
+The list below divides the OSS drivers into the following three 
+categories:
+1. ALSA drivers for the same hardware
+2. ALSA drivers for the same hardware with known problems
+3. no ALSA drivers for the same hardware
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-17-05 16:31 mjsb           New Issue                                    
-11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
-11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
-11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
-12-08-05 21:23 mjsb           Note Added: 0006962                          
-01-16-06 11:19 mjsb           Note Added: 0007685                          
-01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
-======================================================================
 
+My proposed timeline is:
+- shortly before 2.6.16 is released:
+  adjust OBSOLETE_OSS_DRIVER dependencies to match exactly the
+  drivers under 1.
+- from the release of 2.6.16 till the release of 2.6.17:
+  approx. two months for users to report problems with the ALSA
+  drivers for the same hardware
+- after the release of 2.6.17 (and before 2.6.18):
+  remove the subset of drivers marked at OBSOLETE_OSS_DRIVER without
+  known regressions in the ALSA drivers for the same hardware
+
+
+To make a long story short:
+
+If you are using an OSS driver because the ALSA driver doesn't work 
+equally well on your hardware, send me an email with a bug number in the 
+ALSA bug tracking system now.
+
+
+A small FAQ:
+
+Q: But OSS is kewl and ALSA sucks!
+A: The decision for the OSS->ALSA move was four years ago.
+   If ALSA sucks, please help to improve ALSA.
+
+Q: What about the OSS emulation in ALSA?
+A: The OSS emulation in ALSA is not affected by my patches
+   (abd it's not in any way scheduled for removal).
+
+
+Please review the following list:
+
+
+1. ALSA drivers for the same hardware 
+
+SOUND_AD1889
+SOUND_AD1980
+SOUND_ALI5455
+SOUND_AU1000
+SOUND_AWE32_SYNTH
+SOUND_CMPCI
+SOUND_CS4232
+SOUND_CS4281
+SOUND_ES1370
+SOUND_ES1371
+SOUND_ESSSOLO1
+SOUND_FORTE
+SOUND_FUSION
+SOUND_GUS
+SOUND_HARMONY
+SOUND_MAD16
+SOUND_MAESTRO
+SOUND_MAESTRO3
+SOUND_MAUI
+SOUND_OPL3SA1
+SOUND_OPL3SA2
+SOUND_RME96XX
+SOUND_SGALAXY
+SOUND_SONICVIBES
+SOUND_SSCAPE
+SOUND_VIA82CXXX
+SOUND_WAVEFRONT
+SOUND_YMFPCI
+
+
+2. ALSA drivers for the same hardware with known problems
+
+SOUND_AD1816
+- ALSA #1301 (Kernel OSS emulation stops working after a few seconds
+              when used with VoIP softphones)
+
+SOUND_EMU10K1
+- ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
+
+SOUND_ICH
+- Alan Cox: ALSA driver lacks "support for AC97 wired touchscreens
+                               and the like"
+
+SOUND_NM256
+- ALSA #328 (snd-nm256 freezes Dell Latitude LS)
+
+SOUND_TRIDENT
+- ALSA #1293 (device supported by OSS but not by ALSA)
+- maintainer of the OSS driver wants his driver to stay
+
+
+3. no ALSA drivers for the same hardware
+
+SOUND_ACI_MIXER
+SOUND_ADLIB
+SOUND_AEDSP16
+SOUND_AU1550_AC97
+SOUND_BCM_CS4297A
+SOUND_HAL2
+SOUND_IT8172
+SOUND_KAHLUA
+SOUND_MSNDCLAS
+SOUND_MSNDPIN
+SOUND_PAS
+SOUND_PSS
+SOUND_SB
+SOUND_SH_DAC_AUDIO
+SOUND_TRIX
+SOUND_VIDC
+SOUND_VRC5477
+SOUND_VWSND
+SOUND_WAVEARTIST
+
+
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
