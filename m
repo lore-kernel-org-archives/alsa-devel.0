@@ -1,18 +1,16 @@
-From: Dave Raggett <dsr@w3.org>
-Subject: dealing with under runs?
-Date: Thu, 19 Jan 2006 19:15:57 +0000 (GMT)
-Message-ID: <Pine.LNX.4.61.0601191828330.9960@holly>
-References: <20060119174600.GT19398@stusta.de> <1137694944.32195.1.camel@mindpipe>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 20:44:32 +0100
+Message-ID: <20060119194432.GX19398@stusta.de>
+References: <20060119174600.GT19398@stusta.de> <1137694944.32195.1.camel@mindpipe> <20060119182859.GW19398@stusta.de> <1137695945.32195.7.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from homer.w3.org (homer.w3.org [128.30.52.30])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85B0115E
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 20:15:25 +0100 (MET)
-Received: from localhost (homer.w3.org [128.30.52.30])
-	by homer.w3.org (Postfix) with ESMTP id D4B6B4F35B
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 14:15:23 -0500 (EST)
-In-Reply-To: <1137694944.32195.1.camel@mindpipe>
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id ED7C015E
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 20:44:31 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1137695945.32195.7.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +20,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thu, Jan 19, 2006 at 01:39:04PM -0500, Lee Revell wrote:
+> 
+> Are there any other cases like that?  Maybe you could indent the list to
+> clearly show the relationship?
 
-Excuse what are probably dumb questions from a newbie to writing
-ALSA applications.
+Updated list below.
 
-I am trying to figure out how to deal with preparing for play
-back and recovering from underruns in a network application that 
-downloads audio as part of an HTTP response. I am using the 
-asynchronous call back mechanism.
+> Lee
 
-When the audio data is already available when I set up the
-audio interface all goes well. If there is a delay then I am
-having problems. This happens when the HTTP headers for the
-response are in one packet and the audio data for the start
-of the HTTP body are in another. I currently initialize the
-ALSA PCM interface when the HTTP response headers have been
-parsed and the content type has been determined.
+cu
+Adrian
 
-  Initializing audio playback:
 
-   a) snd_pcm_open
-   b) set_hwparams
-   c) set_swparams
-   d) snd_async_add_pcm_handler
-   e) snd_pcm_writei with audio data
+<--  snip  -->
 
-If no audio data is available in step (e) I call snd_pcm_start to 
-ensure that the callback will be regularly invoked and therefore 
-able to transfer data from the network to the PCM interface. I use 
-snd_pcm_avail_update to check for the available space in the PCM 
-buffer and substitute silence (170 samples @ 8Khz) if no audio data 
-is available. If an underrun does occur (presumably the cpu was too 
-busy to attend to the call back in sufficient time) I then use the 
-xrun_recovery routine to try to recover.
 
-Unfortunately, I then get:
+1. ALSA drivers for the same hardware 
 
-ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
-params->avail_min problem for start_threshold
-speechproxy: pcm.c:2094: snd_pcm_wait: Assertion `err == 1' failed.
-Aborted
+SOUND_AD1889
+SOUND_AD1980
+SOUND_ALI5455
+SOUND_AU1000
+SOUND_AWE32_SYNTH
+SOUND_CMPCI
+SOUND_CS4232
+SOUND_CS4281
+SOUND_ES1370
+SOUND_ES1371
+SOUND_ESSSOLO1
+SOUND_FORTE
+SOUND_FUSION
+SOUND_GUS
+SOUND_HARMONY
+SOUND_MAD16
+SOUND_MAESTRO
+SOUND_MAESTRO3
+SOUND_MAUI
+SOUND_OPL3SA1
+SOUND_OPL3SA2
+SOUND_RME96XX
+SOUND_SGALAXY
+SOUND_SONICVIBES
+SOUND_SSCAPE
+SOUND_VIA82CXXX
+SOUND_WAVEFRONT
+SOUND_YMFPCI
 
-Any ideas?
 
-p.s. is there a routine for mapping the pcm state into a string
-for use with printf?  That would be handy for debugging.
+2. ALSA drivers for the same hardware with known problems
 
-- -- 
-  Dave Raggett <dsr@w3.org>  W3C lead for multimodal interaction
-  http://www.w3.org/People/Raggett +44 1225 866240 (or 867351)
+SOUND_AD1816
+- ALSA #1301 (Kernel OSS emulation stops working after a few seconds
+              when used with VoIP softphones)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+SOUND_EMU10K1
+- ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
 
-iD8DBQFDz+Vzb3AdEmxAsUsRAvF7AJ9LErj+zYL/hYPN/MZfZYhzrhsTKwCbBc7J
-rLTgP71kQ32GA/nb93fVodU=
-=B/es
------END PGP SIGNATURE-----
+SOUND_ICH
+- Alan Cox: ALSA driver lacks "support for AC97 wired touchscreens
+                               and the like"
+
+SOUND_NM256
+- ALSA #328 (snd-nm256 freezes Dell Latitude LS)
+
+SOUND_TRIDENT
+- ALSA #1293 (device supported by OSS but not by ALSA)
+- maintainer of the OSS driver wants his driver to stay
+
+
+3. no ALSA drivers for the same hardware
+
+SOUND_ACI_MIXER
+SOUND_ADLIB
+SOUND_AEDSP16
+SOUND_AU1550_AC97
+SOUND_BCM_CS4297A
+SOUND_HAL2
+SOUND_IT8172
+SOUND_KAHLUA
+SOUND_MSNDCLAS
+SOUND_MSNDPIN
+SOUND_MSS (also due to SOUND_PSS, SOUND_TRIX and perhaps SOUND_AEDSP16)
+SOUND_PAS
+SOUND_PSS
+SOUND_SB (due to SOUND_KAHLUA, SOUND_PAS and perhaps SOUND_AEDSP16)
+SOUND_SH_DAC_AUDIO
+SOUND_TRIX
+SOUND_VIDC
+SOUND_VRC5477
+SOUND_VWSND
+SOUND_WAVEARTIST
+
 
 
 -------------------------------------------------------
