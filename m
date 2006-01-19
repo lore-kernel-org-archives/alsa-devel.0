@@ -1,14 +1,16 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: RFC: OSS driver removal, a slightly different approach
-Date: Thu, 19 Jan 2006 18:46:00 +0100
-Message-ID: <20060119174600.GT19398@stusta.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 13:22:23 -0500
+Message-ID: <1137694944.32195.1.camel__27547.6706018255$1137695236$gmane$org@mindpipe>
+References: <20060119174600.GT19398@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BD486142
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 18:46:00 +0100 (MET)
-Content-Disposition: inline
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 12E5D15E
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 19:22:26 +0100 (MET)
+In-Reply-To: <20060119174600.GT19398@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,146 +20,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, perex@suse.cz
+To: Adrian Bunk <bunk@stusta.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-My proposal to remove OSS drivers where ALSA drivers for the same 
-hardware exists had two reasons:
+On Thu, 2006-01-19 at 18:46 +0100, Adrian Bunk wrote:
+> 3. no ALSA drivers for the same hardware
+> 
+> SOUND_SB 
 
-1. remove obsolete and mostly unmaintained code
-2. get bugs in the ALSA drivers reported that weren't previously
-   reported due to the possible workaround of using the OSS drivers
+ALSA certainly does support "100% Sound Blaster compatibles (SB16/32/64,
+ESS, Jazz16)", it would be a joke if it didn't...
 
-I'm slowly getting more and more reports for the second case.
-
-
-The list below divides the OSS drivers into the following three 
-categories:
-1. ALSA drivers for the same hardware
-2. ALSA drivers for the same hardware with known problems
-3. no ALSA drivers for the same hardware
-
-
-My proposed timeline is:
-- shortly before 2.6.16 is released:
-  adjust OBSOLETE_OSS_DRIVER dependencies to match exactly the
-  drivers under 1.
-- from the release of 2.6.16 till the release of 2.6.17:
-  approx. two months for users to report problems with the ALSA
-  drivers for the same hardware
-- after the release of 2.6.17 (and before 2.6.18):
-  remove the subset of drivers marked at OBSOLETE_OSS_DRIVER without
-  known regressions in the ALSA drivers for the same hardware
-
-
-To make a long story short:
-
-If you are using an OSS driver because the ALSA driver doesn't work 
-equally well on your hardware, send me an email with a bug number in the 
-ALSA bug tracking system now.
-
-
-A small FAQ:
-
-Q: But OSS is kewl and ALSA sucks!
-A: The decision for the OSS->ALSA move was four years ago.
-   If ALSA sucks, please help to improve ALSA.
-
-Q: What about the OSS emulation in ALSA?
-A: The OSS emulation in ALSA is not affected by my patches
-   (abd it's not in any way scheduled for removal).
-
-
-Please review the following list:
-
-
-1. ALSA drivers for the same hardware 
-
-SOUND_AD1889
-SOUND_AD1980
-SOUND_ALI5455
-SOUND_AU1000
-SOUND_AWE32_SYNTH
-SOUND_CMPCI
-SOUND_CS4232
-SOUND_CS4281
-SOUND_ES1370
-SOUND_ES1371
-SOUND_ESSSOLO1
-SOUND_FORTE
-SOUND_FUSION
-SOUND_GUS
-SOUND_HARMONY
-SOUND_MAD16
-SOUND_MAESTRO
-SOUND_MAESTRO3
-SOUND_MAUI
-SOUND_OPL3SA1
-SOUND_OPL3SA2
-SOUND_RME96XX
-SOUND_SGALAXY
-SOUND_SONICVIBES
-SOUND_SSCAPE
-SOUND_VIA82CXXX
-SOUND_WAVEFRONT
-SOUND_YMFPCI
-
-
-2. ALSA drivers for the same hardware with known problems
-
-SOUND_AD1816
-- ALSA #1301 (Kernel OSS emulation stops working after a few seconds
-              when used with VoIP softphones)
-
-SOUND_EMU10K1
-- ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
-
-SOUND_ICH
-- Alan Cox: ALSA driver lacks "support for AC97 wired touchscreens
-                               and the like"
-
-SOUND_NM256
-- ALSA #328 (snd-nm256 freezes Dell Latitude LS)
-
-SOUND_TRIDENT
-- ALSA #1293 (device supported by OSS but not by ALSA)
-- maintainer of the OSS driver wants his driver to stay
-
-
-3. no ALSA drivers for the same hardware
-
-SOUND_ACI_MIXER
-SOUND_ADLIB
-SOUND_AEDSP16
-SOUND_AU1550_AC97
-SOUND_BCM_CS4297A
-SOUND_HAL2
-SOUND_IT8172
-SOUND_KAHLUA
-SOUND_MSNDCLAS
-SOUND_MSNDPIN
-SOUND_PAS
-SOUND_PSS
-SOUND_SB
-SOUND_SH_DAC_AUDIO
-SOUND_TRIX
-SOUND_VIDC
-SOUND_VRC5477
-SOUND_VWSND
-SOUND_WAVEARTIST
-
-
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+Lee
 
 
 
