@@ -1,21 +1,20 @@
 From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: Re: RFC: OSS driver removal, a slightly different
-	approach
-Date: Thu, 19 Jan 2006 22:18:55 +0000
-Message-ID: <1137709135.8471.73.camel@localhost.localdomain>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 22:21:47 +0000
+Message-ID: <1137709308.8471.77.camel@localhost.localdomain>
 References: <20060119174600.GT19398@stusta.de>
-	 <m3ek34vucz.fsf@defiant.localdomain>  <1137703413.32195.23.camel@mindpipe>
+	 <m3ek34vucz.fsf@defiant.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 30896141
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:19:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5056141
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:21:54 +0100 (MET)
 Received: from lxorguk.ukuu.org.uk (unknown [81.2.110.250])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id C1D417619F
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:19:00 +0100 (MET)
-In-Reply-To: <1137703413.32195.23.camel@mindpipe>
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 57C6799212
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:21:54 +0100 (MET)
+In-Reply-To: <m3ek34vucz.fsf@defiant.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,17 +24,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Krzysztof Halasa <khc@pm.waw.pl>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+To: Krzysztof Halasa <khc@pm.waw.pl>
+Cc: Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Iau, 2006-01-19 at 15:43 -0500, Lee Revell wrote:
-> Even the NeoMagic 256 which is a Pentium II era device and was in
-> widespread use we cannot find a tester for.
+On Iau, 2006-01-19 at 21:24 +0100, Krzysztof Halasa wrote:
+> > SOUND_ADLIB
+> 
+> IIRC 8-bit sound, ISA. GUS on DOS used to emulate it
 
-There are plenty of neomagic audio users around, I've seen bug reports
-about neomagic + ALSA hangs that have been filed.
+Very early ISA
 
+> > SOUND_AU1550_AC97
+> 
+> Never heard but ac97 suggests it's not that old
+
+Embedded platform
+
+> > SOUND_BCM_CS4297A
+Ditto
+
+> > SOUND_IT8172
+Ditto
+
+> > SOUND_KAHLUA
+> 
+> Kahlua is a liquor in Mexico named after some ancient (Mayan or Aztec)
+> deity :-)
+Code name for Cyrix CS5530
+
+> Pro Audio Spectrum. Earlier than GUS? 8-bit I think
+PAS16 is the 16bit system, both are prehistoric
+
+> > SOUND_SH_DAC_AUDIO
+
+Embedded
+
+> > SOUND_TRIX
+Old sound card
+
+> > SOUND_VIDC
+ARM
+
+> > SOUND_VRC5477
+Embedded
+
+> > SOUND_VWSND
+
+SGI workstation
+
+> > SOUND_WAVEARTIST
+
+Not sure
 
 
 -------------------------------------------------------
