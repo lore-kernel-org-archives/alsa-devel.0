@@ -1,11 +1,23 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: presario x1000, 1.0.11rc2, no sound
-Date: Thu, 19 Jan 2006 13:50:34 -0800
-Message-ID: <1137707434.4841.19.camel@cmn3.stanford.edu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: Re: RFC: OSS driver removal, a slightly
+	different	approach
+Date: Thu, 19 Jan 2006 22:09:33 +0000
+Message-ID: <1137708573.8471.65.camel@localhost.localdomain>
+References: <20060119174600.GT19398@stusta.de>
+	 <1137694944.32195.1.camel@mindpipe> <20060119182859.GW19398@stusta.de>
+	 <1137696885.32195.12.camel@mindpipe>  <s5hk6cw9h07.wl%tiwai@suse.de>
+	 <1137697269.32195.14.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C4F13E
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:09:41 +0100 (MET)
+Received: from lxorguk.ukuu.org.uk (unknown [81.2.110.250])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id DD6A699212
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 23:09:40 +0100 (MET)
+In-Reply-To: <1137697269.32195.14.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,137 +27,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
-Cc: nando@ccrma.Stanford.EDU
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I'm looking for some advice. A student of mine can't get sound from
-her laptop, apparently she was able to hear sound from an install of FC3
-(don't know the particular versions of the kernel or alsa involved) and
-now with a FC4 install and up to the latest drivers I could find
-(1.0.11rc2) sound just does not happen. 
+On Iau, 2006-01-19 at 14:01 -0500, Lee Revell wrote:
+> > > Hmm.  From sound/oss/kahlua.c:
+> > > 
+> > > /*
+> > >  *      Initialisation code for Cyrix/NatSemi VSA1 softaudio
+> > >  *
+> > >  *      (C) Copyright 2003 Red Hat Inc <alan@redhat.com>
+> > >  *
+> > > 
+> > > Why was a new OSS driver written and accepted at such a late date, when
+> > > OSS was already deprecated?
+> > 
+> > You'll find out that it must be pretty easy to write kahlua driver for
+> > ALSA, too, if you look at kahlua.c.  Just need a hardware to certify
+> > if this is really demanded...
+> 
+> Yes, it looks simple enough to write a driver without the hardware, as
+> long as someone volunteers to test it...
 
-I have twiddled with all possible settings, everything seems happy but
-there's no sound (on headphones or speakers). 
+Most of the Kahlua logic is in the SB driver. It was a wrapper added
+later to make autoconfiguration simple for end users. CS55x0 (VSA1
+variants) are generic sound blaster 16 emulation via SMI traps. There
+are certain things you must not do
 
-I'm including some info about the hardware...
-Advice appreciated...
--- Fernando
+1.	Use a 64K or 128K in 16bit ring buffer
+2.	Disable/Enable DMA on the sound channel while audio is running
 
-cat /proc/asound/cards
- 0 [I82801DBICH4   ]: ICH4 - Intel 82801DB-ICH4
-                      Intel 82801DB-ICH4 with AD1981B at 0xa0200000, irq
-10
+#1 causes the box to hang dead (firmware emulation bug)
+#2 mistakenly flushes the FIFOs so breaks up the audio
 
-cat /proc/asound/devices
-  0: [ 0]   : control
-  1:        : sequencer
- 16: [ 0- 0]: digital audio playback
- 20: [ 0- 4]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 25: [ 0- 1]: digital audio capture
- 26: [ 0- 2]: digital audio capture
- 27: [ 0- 3]: digital audio capture
- 33:        : timer
-
-the ac97 info from /proc/asound/...
-
-0-0/0: Analog Devices AD1981B
-
-PCI Subsys Vendor: 0x0e11
-PCI Subsys Device: 0x0860
-
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 16-bit
-3D enhancement   : No 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF VRA
-Extended status  : SPCV SPDIF=3/4 VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-
-
-
-AD18XX configuration
-Unchained        : 0x1000,0x0000,0x0000
-Chained          : 0x0000,0x0000,0x0000
-
-and the registers:
-0:00 = 0090
-0:02 = 0808
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 0000
-0:0c = 0000
-0:0e = 8040
-0:10 = 8080
-0:12 = 9f9f
-0:14 = 0000
-0:16 = 9f9f
-0:18 = 0000
-0:1a = 0000
-0:1c = 8f8f
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 0605
-0:2a = 0401
-0:2c = bb80
-0:2e = 0000
-0:30 = 0000
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 2824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 4000
-0:5e = 0000
-0:60 = 8080
-0:62 = 0000
-0:64 = 8000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0004
-0:74 = 1001
-0:76 = 2010
-0:78 = 0000
-0:7a = 0000
-0:7c = 4144
-0:7e = 5374
+Otherwise its SB16 compatible.
 
 
 
