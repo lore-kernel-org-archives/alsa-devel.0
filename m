@@ -1,16 +1,16 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: RFC: OSS driver removal, a slightly different approach
-Date: Thu, 19 Jan 2006 22:43:32 +0100
-Message-ID: <20060119214332.GZ19398__1336.78903007439$1137707128$gmane$org@stusta.de>
-References: <20060119174600.GT19398@stusta.de> <9a8748490601191306q75b101b5g488aee398d420a00@mail.gmail.com>
+From: Bill Nottingham <notting@redhat.com>
+Subject: Re: Re: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 16:50:08 -0500
+Message-ID: <20060119215008.GB6595@devserv.devel.redhat.com>
+References: <20060119174600.GT19398@stusta.de> <m3ek34vucz.fsf@defiant.localdomain> <1137703413.32195.23.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A26C9141
-	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 22:43:34 +0100 (MET)
+Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 868AC141
+	for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2006 22:50:15 +0100 (MET)
 Content-Disposition: inline
-In-Reply-To: <9a8748490601191306q75b101b5g488aee398d420a00@mail.gmail.com>
+In-Reply-To: <1137703413.32195.23.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,40 +20,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jesper Juhl <jesper.juhl@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Krzysztof Halasa <khc@pm.waw.pl>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 19, 2006 at 10:06:47PM +0100, Jesper Juhl wrote:
-> On 1/19/06, Adrian Bunk <bunk@stusta.de> wrote:
-> [snip]
-> > My proposed timeline is:
-> [snip]
-> > - after the release of 2.6.17 (and before 2.6.18):
-> >   remove the subset of drivers marked at OBSOLETE_OSS_DRIVER without
-> >   known regressions in the ALSA drivers for the same hardware
-> 
-> May I suggest you also update the "When" part of this entry in
-> Documentation/feature-removal-schedule.txt :
-> 
-> What:   drivers depending on OBSOLETE_OSS_DRIVER
-> When:   January 2006
-> Why:    OSS drivers with ALSA replacements
-> Who:    Adrian Bunk <bunk@stusta.de>
+Lee Revell (rlrevell@joe-job.com) said: 
+> Yes, it would require a collector of ancient sound hardware... do you
+> know anyone like that?
 
-Sure. This will be sent as part of my patch to update the 
-OBSOLETE_OSS_DRIVER dependencies.
+If someone desparately wants a AdLib or PAS16 I might be able to
+scrounge one up. However, are there really users out there
+insisting that their Linux experience is suffering because they
+don't have support for their 8-bit ISA FM synth card?
 
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+Bill
 
 
 -------------------------------------------------------
