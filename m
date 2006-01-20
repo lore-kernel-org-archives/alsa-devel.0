@@ -1,12 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ladspa plugins (patch)
-Date: Fri, 20 Jan 2006 09:18:30 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0601200917540.9036@tm8103.perex-int.cz>
-References: <20060119210043.GC19795@first.verse.com>
+From: Dag Nygren <dag@newtech.fi>
+Subject: Re: Re: RFC: OSS driver removal, a slightly different
+ approach
+Date: Fri, 20 Jan 2006 10:21:55 +0200
+Message-ID: <20060120082155.24254.qmail__18486.8300021209$1137745397$gmane$org@dag.newtech.fi>
+References: <rlrevell@joe-job.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060119210043.GC19795@first.verse.com>
+Received: from dag.newtech.fi (ip213-185-39-113.laajakaista.mtv3.fi [213.185.39.113])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0D3FD156
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 09:21:56 +0100 (MET)
+In-Reply-To: Message from Lee Revell <rlrevell@joe-job.com>
+   of "Thu, 19 Jan 2006 15:43:33 EST." <1137703413.32195.23.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,28 +21,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nathan Kurz <nate@verse.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Krzysztof Halasa <khc@pm.waw.pl>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz, dag@newtech.fi
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Jan 2006, Nathan Kurz wrote:
-
-> I haven't tested this patch well, but compiles without error and
-> appears to be working on my system.  While not perfect, I think the
-> functions I've created are clearer than what came before.  I tried to
-> follow the established coding patterns, and apologize if I haven't
-> succeeded.  The patch is against alsa-lib-1.0.11rc2.
+> On Thu, 2006-01-19 at 21:24 +0100, Krzysztof Halasa wrote:
+> > Don't you all think a large part (if not most) of the
+> > "ALSA-unsupported"
+> > cards is no longed in any (Linux-related) use? I wouldn't be surprised
+> > if they just don't exist anymore. Who is to write drivers for them and
+> > -
+> > more importantly - who can test them? 
 > 
-> I hope this is useful enough for inclusion in CVS,
+> Yes, it would require a collector of ancient sound hardware... do you
+> know anyone like that?
+> 
+> Even the NeoMagic 256 which is a Pentium II era device and was in
+> widespread use we cannot find a tester for.
 
-Thanks. It works for my test configuration, too. I applied it to CVS.
+I could do that, my boy is still playing tuxpaint and other stuff on my old 
+laptop
+with such a chip.
 
-						Jaroslav
+BRGDS
+Dag
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+
 
 
 -------------------------------------------------------
