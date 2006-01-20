@@ -1,14 +1,18 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/isa/cs423x/cs4236.c: PnP ids for Netfinity 3000
-Date: Fri, 20 Jan 2006 23:29:15 +0100
-Message-ID: <20060120222914.GD31803__40334.898493211$1137796223$gmane$org@stusta.de>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: RFC: OSS driver removal, a slightly different
+	approach
+Date: Sat, 21 Jan 2006 10:15:31 +1100
+Message-ID: <1137798931.12998.56.camel@localhost.localdomain>
+References: <20060119174600.GT19398@stusta.de>
+	 <20060120115443.GA16582@palantir8>  <20060120190415.GM19398@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 192BF183
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 23:29:15 +0100 (MET)
-Content-Disposition: inline
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 655EE185
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 00:15:42 +0100 (MET)
+In-Reply-To: <20060120190415.GM19398@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,34 +22,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lukasz Stemach <stelmacl@ee.pw.edu.pl>
+To: Adrian Bunk <bunk@stusta.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Lukasz Stemach <stelmacl@ee.pw.edu.pl>
+On Fri, 2006-01-20 at 20:04 +0100, Adrian Bunk wrote:
+> On Fri, Jan 20, 2006 at 11:54:43AM +0000, Martin Habets wrote:
+> 
+> > It seems to me we can already get rid of sound/oss/dmasound now.
+> > I cannot find anything refering to it anymore, and the ALSA powermac
+> > driver is being maintained.
+> 
+> You are correct that I forgot to add the dmasound drivers to my list, 
+> but I don't think we can get rid of all of them since I doubt the ALSA 
+> powermac driver was able to drive m68k hardware.
+> 
+> Can someone from the ppc developers drop me a small note whether 
+> SND_POWERMAC completely replaces DMASOUND_PMAC?
 
+It should...
 
-PnP ids for Netfinity 3000 builtin soundcard.
+Ben.
 
-This one works for me.
-
-
-This patch was submitted through kernel Bugzilla #4214.
-
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
---- l/sound/isa/cs423x/cs4236.c.orig	2004-10-23 10:54:33.000000000 +0200
-+++ l/sound/isa/cs423x/cs4236.c	2004-12-27 01:01:31.000000000 +0100
-@@ -174,6 +173,8 @@
- 	{ .id = "CSC7632", .devs = { { "CSC0000" }, { "CSC0010" }, { "PNPb006" } } },
- 	/* SIC CrystalWave 32 (CS4232) */
- 	{ .id = "CSCf032", .devs = { { "CSC0000" }, { "CSC0010" }, { "CSC0003" } } },
-+	/* Netfinity 3000 on-board soundcard */
-+	{ .id = "CSCe825", .devs = { { "CSC0100" }, { "CSC0110" }, { "CSC010f" } } },
- 	/* --- */
- 	{ .id = "" }	/* end */
- };
 
 
 
