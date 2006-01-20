@@ -1,16 +1,17 @@
-From: Dave Jones <davej@redhat.com>
-Subject: Re: Re: RFC: OSS driver removal, a slightly different approach
-Date: Thu, 19 Jan 2006 20:34:02 -0500
-Message-ID: <20060120013402.GF3798@redhat.com>
-References: <20060119174600.GT19398@stusta.de> <m3ek34vucz.fsf@defiant.localdomain> <1137703413.32195.23.camel@mindpipe> <1137709135.8471.73.camel@localhost.localdomain> <20060119224222.GW21663@redhat.com> <1137711088.3241.9.camel@mindpipe> <1137719627.8471.89.camel@localhost.localdomain>
+From: Erik Andersen <andersen@codepoet.org>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 19:55:13 -0700
+Message-ID: <20060120025513.GA2438@codepoet.org>
+References: <20060119174600.GT19398@stusta.de> <m3ek34vucz.fsf@defiant.localdomain> <1137709308.8471.77.camel@localhost.localdomain> <20060119224501.GC19398@stusta.de>
+Reply-To: andersen@codepoet.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00140148
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 02:34:16 +0100 (MET)
+Received: from codepoet.org (codepoet.org [166.70.99.138])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 245D2114
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 03:55:16 +0100 (MET)
 Content-Disposition: inline
-In-Reply-To: <1137719627.8471.89.camel@localhost.localdomain>
+In-Reply-To: <20060119224501.GC19398@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,33 +21,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Lee Revell <rlrevell@joe-job.com>, Krzysztof Halasa <khc@pm.waw.pl>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, Krzysztof Halasa <khc@pm.waw.pl>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 20, 2006 at 01:13:47AM +0000, Alan Cox wrote:
- > On Iau, 2006-01-19 at 17:51 -0500, Lee Revell wrote:
- > > The status is we need someone who has the hardware who can add printk's
- > > to the driver to identify what triggers the hang.  It should not be
- > > hard, the OSS driver reportedly works.
- > > 
- > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328
- > > 
- > > The bug has been in FEEDBACK state for a long time.
- > 
- > 99.9% of users don't ever look in ALSA bugzilla. 
- > 
- > A dig shows
- > 
- > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=157371
- > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=171221
+On Thu Jan 19, 2006 at 11:45:01PM +0100, Adrian Bunk wrote:
+> config SOUND_WAVEARTIST
+>         tristate "Netwinder WaveArtist"
+>         depends on ARM && SOUND_OSS && ARCH_NETWINDER
+>         help
+>           Say Y here to include support for the Rockwell WaveArtist sound
+>           system.  This driver is mainly for the NetWinder.
 
-Lee, if you can point me at a patch with debugging printk's I'm
-happy to throw that into the next Fedora test update for the
-users in the latter bug to test. (The first one seemed to go AWOL)
+I own two netwinders (strongArm SA110) and I would be glad to
+fire them up to test things if someone feels like writing a
+driver....
 
-		Dave
+ -Erik
 
+--
+Erik B. Andersen             http://codepoet-consulting.com/
+--This message was written using 73% post-consumer electrons--
 
 
 -------------------------------------------------------
