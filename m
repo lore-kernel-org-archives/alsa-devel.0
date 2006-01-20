@@ -1,17 +1,16 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Building ALSA utils for a minimal cross compiled
-	environment
-Date: Fri, 20 Jan 2006 20:18:35 +0000
-Message-ID: <1137788315.11084.1.camel@localhost.localdomain>
-References: <1137711700.9365.13.camel@localhost.localdomain>
+From: Olaf Hering <olh@suse.de>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Fri, 20 Jan 2006 22:29:17 +0100
+Message-ID: <20060120212917.GA14405__6150.03959178484$1137792618$gmane$org@suse.de>
+References: <20060119174600.GT19398@stusta.de> <20060120115443.GA16582@palantir8> <20060120190415.GM19398@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7D2E1174
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 21:18:42 +0100 (MET)
-In-Reply-To: <1137711700.9365.13.camel@localhost.localdomain>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AD0516F
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 22:29:29 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20060120190415.GM19398@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,34 +20,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: linuxsh-dev@lists.sourceforge.net
+To: Adrian Bunk <bunk@stusta.de>
+Cc: benh@kernel.crashing.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-01-19 at 23:01 +0000, Adrian McMenamin wrote:
-> Any advice on this? I have compiled a patched alsa-lib (for SH4 on the
-> Dreamcast) but the readme with the alsa utils suggests it might be
-> pretty difficult to build it in my situation (I am writing an ALSA
-> driver for the Dreamcast).
-> 
-> Thanks
-> 
-> Adrian
-> 
+ On Fri, Jan 20, Adrian Bunk wrote:
 
-For the record this seems to work...
+ 
+> Can someone from the ppc developers drop me a small note whether 
+> SND_POWERMAC completely replaces DMASOUND_PMAC?
 
-./configure --host=sh4-linux
-CC=/home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-gcc
---with-alsa-prefix=/home/adrian/alsa-lib-1.0.10/src/.libs/
---with-alsa-inc-prefix=/home/adrian/alsa-lib-1.0.10/include
---disable-alsamixer
+It doesnt. Some tumbler models work only after one plug/unplug cycle of
+the headphone. early powerbooks report/handle the mute settings
+incorrectly. there are likely more bugs.
 
-(I need to disable the alsamixer because I don't have a curses library
-built for the target as yet)
-
-
-
+-- 
+short story of a lazy sysadmin:
+ alias appserv=wotan
 
 
 -------------------------------------------------------
