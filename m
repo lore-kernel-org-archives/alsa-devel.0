@@ -1,16 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: RFC: OSS driver removal, a slightly different approach
-Date: Fri, 20 Jan 2006 20:04:15 +0100
-Message-ID: <20060120190415.GM19398__10399.67562906$1137783990$gmane$org@stusta.de>
-References: <20060119174600.GT19398@stusta.de> <20060120115443.GA16582@palantir8>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001754]: M-Audio Revolution 5.1: Headphone jack gets no signal
+Date: Fri, 20 Jan 2006 21:04:58 +0100
+Message-ID: <0340152d24fe5a8e369b39d39ba11116@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DD4E1176
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 20:04:16 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <20060120115443.GA16582@palantir8>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2691317B
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 21:04:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,34 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: benh@kernel.crashing.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: linuxppc-dev@ozlabs.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 20, 2006 at 11:54:43AM +0000, Martin Habets wrote:
 
-> It seems to me we can already get rid of sound/oss/dmasound now.
-> I cannot find anything refering to it anymore, and the ALSA powermac
-> driver is being maintained.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1754> 
+======================================================================
+Reported By:                wollschaf
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1754
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             01-15-2006 16:02 CET
+Last Modified:              01-20-2006 21:04 CET
+======================================================================
+Summary:                    M-Audio Revolution 5.1: Headphone jack gets no
+signal
+Description: 
+Whatever I tried with alsamixer, I could not get the headphone jack to
+output any kind of signal.
 
-You are correct that I forgot to add the dmasound drivers to my list, 
-but I don't think we can get rid of all of them since I doubt the ALSA 
-powermac driver was able to drive m68k hardware.
+In my understanding, it should output the line signal, but amplificated.
 
-Can someone from the ppc developers drop me a small note whether 
-SND_POWERMAC completely replaces DMASOUND_PMAC?
+As it does not even output the white noise of the inputs (see Issue
+0001753), I assume the headphone output is completely disabled.
 
-> Martin
+If photos of the card are needed to find out how it is connected, I will
+upload them...
 
-TIA
-Adrian
+======================================================================
 
--- 
+----------------------------------------------------------------------
+ cyan - 01-16-06 15:47 
+----------------------------------------------------------------------
+Same problem here. Now I use preamlifier for my headphones, but it would be
+better to use directly buffered output on the card.
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+----------------------------------------------------------------------
+ wollschaf - 01-20-06 21:04 
+----------------------------------------------------------------------
+Looking at the AK4358 datasheet, this chip has 8 DACs - I assume the
+headphones are connected using the two unused channels (driver has 6 DACs
+defined).
+
+Maybe a photo of the card helps figuring out how to enable them:
+http://www.flickr.com/photos/88892686@N00/89003057/
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-15-06 16:02 wollschaf      New Issue                                    
+01-15-06 16:02 wollschaf      Kernel Version            => 2.6.15          
+01-15-06 16:02 wollschaf      Issue Monitored: wollschaf                    
+01-16-06 15:47 cyan           Note Added: 0007686                          
+01-16-06 15:47 cyan           Issue Monitored: cyan                        
+01-20-06 21:04 wollschaf      Note Added: 0007727                          
+======================================================================
+
 
 
 
