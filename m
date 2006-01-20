@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001664]: GTK2-patch for envy24control
-Date: Fri, 20 Jan 2006 12:22:37 +0100
-Message-ID: <888fe505628faee1f02fbf25eeec9418@bugtrack.alsa-project.org>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Fri, 20 Jan 2006 11:54:43 +0000
+Message-ID: <20060120115443.GA16582__41070.7580078908$1137758182$gmane$org@palantir8>
+References: <20060119174600.GT19398@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28140153
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 12:22:38 +0100 (MET)
+Received: from mra02.ch.as12513.net (mra02.ch.as12513.net [82.153.252.24])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CF7F153
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 12:54:55 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20060119174600.GT19398@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +20,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian Bunk <bunk@stusta.de>, benh@kernel.crashing.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+It seems to me we can already get rid of sound/oss/dmasound now.
+I cannot find anything refering to it anymore, and the ALSA powermac
+driver is being maintained.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1664> 
-======================================================================
-Reported By:                electropura
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1664
-Category:                   envy24control
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-21-2005 01:56 CET
-Last Modified:              01-20-2006 12:22 CET
-======================================================================
-Summary:                    GTK2-patch for envy24control
-Description: 
-Here is a simple patch to make it convenient to link envy24control against
-GTK2.
-This is essentially from a patch I found via google some year ago. I can't
-find it anymore, so I don't know who made it in the first place.
+Martin
 
-I also changed the policy for scrolled windows from GTK_POLICY_ALWAYS to
-GTK_POLICY_AUTOMATIC. This makes it look much nicer with cards that have
-fewer channels (like m-audio audiophile).
-
-======================================================================
-
-----------------------------------------------------------------------
- electropura - 01-20-06 08:02 
-----------------------------------------------------------------------
-Well if someone with write access to the cvs-tree apply the
-configure.in-part I would be happy.
-
-----------------------------------------------------------------------
- tiwai - 01-20-06 12:22 
-----------------------------------------------------------------------
-The configure.in for gtk2 exists already as configure.in-gtk2.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-21-05 01:56 electropura    New Issue                                    
-12-21-05 01:56 electropura    File Added: envy24control-gtk2.patch              
-     
-01-18-06 21:49 HaroldAling    Note Added: 0007713                          
-01-18-06 21:59 HaroldAling    Note Added: 0007714                          
-01-18-06 23:18 alanmann       Note Added: 0007715                          
-01-18-06 23:21 rlrevell       Note Added: 0007716                          
-01-20-06 08:02 electropura    Note Added: 0007724                          
-01-20-06 12:22 tiwai          Status                   new => resolved     
-01-20-06 12:22 tiwai          Resolution               open => fixed       
-01-20-06 12:22 tiwai          Assigned To               => tiwai           
-01-20-06 12:22 tiwai          Note Added: 0007725                          
-======================================================================
-
-
+On Thu, Jan 19, 2006 at 06:46:00PM +0100, Adrian Bunk wrote:
+> My proposal to remove OSS drivers where ALSA drivers for the same 
+> hardware exists had two reasons:
+> 
+> 1. remove obsolete and mostly unmaintained code
+> 2. get bugs in the ALSA drivers reported that weren't previously
+>    reported due to the possible workaround of using the OSS drivers
+> 
+> I'm slowly getting more and more reports for the second case.
+> 
+> 
+> The list below divides the OSS drivers into the following three 
+> categories:
+> 1. ALSA drivers for the same hardware
+> 2. ALSA drivers for the same hardware with known problems
+> 3. no ALSA drivers for the same hardware
+> 
+> 
+> My proposed timeline is:
+> - shortly before 2.6.16 is released:
+>   adjust OBSOLETE_OSS_DRIVER dependencies to match exactly the
+>   drivers under 1.
+> - from the release of 2.6.16 till the release of 2.6.17:
+>   approx. two months for users to report problems with the ALSA
+>   drivers for the same hardware
+> - after the release of 2.6.17 (and before 2.6.18):
+>   remove the subset of drivers marked at OBSOLETE_OSS_DRIVER without
+>   known regressions in the ALSA drivers for the same hardware
+> 
+> 
+> To make a long story short:
+> 
+> If you are using an OSS driver because the ALSA driver doesn't work 
+> equally well on your hardware, send me an email with a bug number in the 
+> ALSA bug tracking system now.
 
 
 -------------------------------------------------------
