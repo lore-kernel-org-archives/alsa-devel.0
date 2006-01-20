@@ -1,17 +1,18 @@
-From: Dag Nygren <dag@newtech.fi>
-Subject: Re: Re: RFC: OSS driver removal, a slightly different
- approach
-Date: Fri, 20 Jan 2006 10:21:55 +0200
-Message-ID: <20060120082155.24254.qmail__18486.8300021209$1137745397$gmane$org@dag.newtech.fi>
-References: <rlrevell@joe-job.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: RFC: OSS driver removal,
+ a slightly different approach
+Date: Fri, 20 Jan 2006 09:25:50 +0100
+Message-ID: <1137745550.43d09e8ebde13@webmail.uni-halle.de>
+References: <20060119174600.GT19398@stusta.de>
+ <m3ek34vucz.fsf@defiant.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from dag.newtech.fi (ip213-185-39-113.laajakaista.mtv3.fi [213.185.39.113])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0D3FD156
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 09:21:56 +0100 (MET)
-In-Reply-To: Message from Lee Revell <rlrevell@joe-job.com>
-   of "Thu, 19 Jan 2006 15:43:33 EST." <1137703413.32195.23.camel@mindpipe>
+Received: from mailgate2.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41128153
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 09:26:35 +0100 (MET)
+In-reply-to: <m3ek34vucz.fsf@defiant.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,33 +22,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Krzysztof Halasa <khc@pm.waw.pl>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz, dag@newtech.fi
+To: Krzysztof Halasa <khc@pm.waw.pl>, Martin Langer <martin-langer@gmx.de>
+Cc: Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Thu, 2006-01-19 at 21:24 +0100, Krzysztof Halasa wrote:
-> > Don't you all think a large part (if not most) of the
-> > "ALSA-unsupported"
-> > cards is no longed in any (Linux-related) use? I wouldn't be surprised
-> > if they just don't exist anymore. Who is to write drivers for them and
-> > -
-> > more importantly - who can test them? 
-> 
-> Yes, it would require a collector of ancient sound hardware... do you
-> know anyone like that?
-> 
-> Even the NeoMagic 256 which is a Pentium II era device and was in
-> widespread use we cannot find a tester for.
+Krzysztof Halasa wrote:
 
-I could do that, my boy is still playing tuxpaint and other stuff on my old 
-laptop
-with such a chip.
+> Adrian Bunk <bunk@stusta.de> writes:
+>
+> > 3. no ALSA drivers for the same hardware
+> >
+> > SOUND_ACI_MIXER
+>
+> Never heard
 
-BRGDS
-Dag
+A chip used on miroPCM (ISA) cards.  An ALSA driver has been written for it,
+and it seems the ACI stuff is supported.  (This driver is not yet in the
+kernel tree.)
+
+Martin, has your miro.c a complete implementation of what is in aci.c?
 
 
-
+Clemens
 
 
 -------------------------------------------------------
