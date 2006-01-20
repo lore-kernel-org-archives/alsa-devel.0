@@ -1,40 +1,58 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: [Alsa-devel] RFC: OSS driver removal, a slightly different approach
-Date: Fri, 20 Jan 2006 18:44:29 +0100
-Message-ID: <200601201844.29873.pzad@pobox.sk>
-References: <20060119174600.GT19398@stusta.de> <s5hmzhr7xsr.wl%tiwai@suse.de> <Pine.LNX.4.61.0601201729370.10065@yvahk01.tjqt.qr>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Fri, 20 Jan 2006 20:04:15 +0100
+Message-ID: <20060120190415.GM19398__10399.67562906$1137783990$gmane$org@stusta.de>
+References: <20060119174600.GT19398@stusta.de> <20060120115443.GA16582@palantir8>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751105AbWATRlN@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.61.0601201729370.10065@yvahk01.tjqt.qr>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DD4E1176
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 20:04:16 +0100 (MET)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@lists.sourceforge.net
-Cc: Jan Engelhardt <jengelh@linux01.gwdg.de>, Takashi Iwai <tiwai@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, perex@suse.cz
+In-Reply-To: <20060120115443.GA16582@palantir8>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: benh@kernel.crashing.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 20 January 2006 17:30, Jan Engelhardt wrote:
-> >> >If I understand alsa - oss emulation correctly, I think, this will be
-> >> > not fixed soon (my opinion - never). This is too much work for too
-> >> > little gain.
-> >>
-> >> On that way, I'd like to inquiry something:
-> >> I have a card that works with the snd-cs46xx module.
-> >> With the OSS emulation (/dev/dsp), I can only output 2 channels, and the
-> >> other two must be sent to /dev/adsp. Is this intended? Would not it be
-> >> easier to make /dev/dsp allow receiving an ioctl setting 4 channels?
-> >
-> >This is exactly like the case of emu10k1.  The chip supports only
-> >2-channel stereo streams.  If you need a 4-channel interleaved stream,
-> >you have to merge the data in two individual streams to a single
-> >4-channel stream on software.  Currently, this isn't handled in ALSA
-> >kernel-space OSS emulation.
->
-> Ah, so http://alphagate.hopto.org/quad_dsp/ which I had created
-> is The Right Thing?
+On Fri, Jan 20, 2006 at 11:54:43AM +0000, Martin Habets wrote:
 
-This will work for your card, but not for emu10k1.
+> It seems to me we can already get rid of sound/oss/dmasound now.
+> I cannot find anything refering to it anymore, and the ALSA powermac
+> driver is being maintained.
 
-Peter Zubaj
+You are correct that I forgot to add the dmasound drivers to my list, 
+but I don't think we can get rid of all of them since I doubt the ALSA 
+powermac driver was able to drive m68k hardware.
+
+Can someone from the ppc developers drop me a small note whether 
+SND_POWERMAC completely replaces DMASOUND_PMAC?
+
+> Martin
+
+TIA
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+for problems?  Stop!  Download the new AJAX search engine that makes
+searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
