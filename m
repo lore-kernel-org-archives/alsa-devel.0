@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001754]: M-Audio Revolution 5.1: Headphone jack gets no signal
-Date: Fri, 20 Jan 2006 21:04:58 +0100
-Message-ID: <0340152d24fe5a8e369b39d39ba11116@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Building ALSA utils for a minimal cross compiled
+	environment
+Date: Fri, 20 Jan 2006 20:18:35 +0000
+Message-ID: <1137788315.11084.1.camel@localhost.localdomain>
+References: <1137711700.9365.13.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2691317B
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 21:04:59 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7D2E1174
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 21:18:42 +0100 (MET)
+In-Reply-To: <1137711700.9365.13.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,71 +22,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: linuxsh-dev@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2006-01-19 at 23:01 +0000, Adrian McMenamin wrote:
+> Any advice on this? I have compiled a patched alsa-lib (for SH4 on the
+> Dreamcast) but the readme with the alsa utils suggests it might be
+> pretty difficult to build it in my situation (I am writing an ALSA
+> driver for the Dreamcast).
+> 
+> Thanks
+> 
+> Adrian
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1754> 
-======================================================================
-Reported By:                wollschaf
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1754
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-15-2006 16:02 CET
-Last Modified:              01-20-2006 21:04 CET
-======================================================================
-Summary:                    M-Audio Revolution 5.1: Headphone jack gets no
-signal
-Description: 
-Whatever I tried with alsamixer, I could not get the headphone jack to
-output any kind of signal.
+For the record this seems to work...
 
-In my understanding, it should output the line signal, but amplificated.
+./configure --host=sh4-linux
+CC=/home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-gcc
+--with-alsa-prefix=/home/adrian/alsa-lib-1.0.10/src/.libs/
+--with-alsa-inc-prefix=/home/adrian/alsa-lib-1.0.10/include
+--disable-alsamixer
 
-As it does not even output the white noise of the inputs (see Issue
-0001753), I assume the headphone output is completely disabled.
+(I need to disable the alsamixer because I don't have a curses library
+built for the target as yet)
 
-If photos of the card are needed to find out how it is connected, I will
-upload them...
-
-======================================================================
-
-----------------------------------------------------------------------
- cyan - 01-16-06 15:47 
-----------------------------------------------------------------------
-Same problem here. Now I use preamlifier for my headphones, but it would be
-better to use directly buffered output on the card.
-
-----------------------------------------------------------------------
- wollschaf - 01-20-06 21:04 
-----------------------------------------------------------------------
-Looking at the AK4358 datasheet, this chip has 8 DACs - I assume the
-headphones are connected using the two unused channels (driver has 6 DACs
-defined).
-
-Maybe a photo of the card helps figuring out how to enable them:
-http://www.flickr.com/photos/88892686@N00/89003057/
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-15-06 16:02 wollschaf      New Issue                                    
-01-15-06 16:02 wollschaf      Kernel Version            => 2.6.15          
-01-15-06 16:02 wollschaf      Issue Monitored: wollschaf                    
-01-16-06 15:47 cyan           Note Added: 0007686                          
-01-16-06 15:47 cyan           Issue Monitored: cyan                        
-01-20-06 21:04 wollschaf      Note Added: 0007727                          
-======================================================================
 
 
 
