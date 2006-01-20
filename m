@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001763]: How to provide patch for the soundcard matrix ?
-Date: Fri, 20 Jan 2006 09:10:40 +0100
-Message-ID: <ab4e929b7bb2af4633d47dae55ee7c46@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: ladspa plugins (patch)
+Date: Fri, 20 Jan 2006 09:18:30 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0601200917540.9036@tm8103.perex-int.cz>
+References: <20060119210043.GC19795@first.verse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4141156
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 09:10:40 +0100 (MET)
+In-Reply-To: <20060119210043.GC19795@first.verse.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Nathan Kurz <nate@verse.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 19 Jan 2006, Nathan Kurz wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1763> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1763
-Category:                   soundcard matrix
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-20-2006 09:10 CET
-Last Modified:              01-20-2006 09:10 CET
-======================================================================
-Summary:                    How to provide patch for the soundcard matrix ?
-Description: 
-How to provide patch for the soundcard matrix ?
+> I haven't tested this patch well, but compiles without error and
+> appears to be working on my system.  While not perfect, I think the
+> functions I've created are clearer than what came before.  I tried to
+> follow the established coding patterns, and apologize if I haven't
+> succeeded.  The patch is against alsa-lib-1.0.11rc2.
+> 
+> I hope this is useful enough for inclusion in CVS,
 
-http://www.alsa-project.org/alsa-doc/index.php?vendor=All#matrix
+Thanks. It works for my test configuration, too. I applied it to CVS.
 
-(e.g. Is there any description of the xml file submitted in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938 ? )
+						Jaroslav
 
-1) Is mpu401 uart regarded as [MIDIio] ?
-
-2) Is coaxial SPDIF in/out regarded as [RCAio] ?
-
-3) Is optical SPDIF out classified as [TOSo] ?
-
-4) Add "modem not support" to Note
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-20-06 09:10 Raymond        New Issue                                    
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
