@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001181]: ice1724: Invalid EEPROM version 1
-Date: Fri, 20 Jan 2006 02:27:05 +0100
-Message-ID: <c920dee1daf5d68f0d721836d97c6a89@bugtrack.alsa-project.org>
+From: Dave Jones <davej@redhat.com>
+Subject: Re: Re: RFC: OSS driver removal, a slightly different approach
+Date: Thu, 19 Jan 2006 20:34:02 -0500
+Message-ID: <20060120013402.GF3798@redhat.com>
+References: <20060119174600.GT19398@stusta.de> <m3ek34vucz.fsf@defiant.localdomain> <1137703413.32195.23.camel@mindpipe> <1137709135.8471.73.camel@localhost.localdomain> <20060119224222.GW21663@redhat.com> <1137711088.3241.9.camel@mindpipe> <1137719627.8471.89.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B941F148
-	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 02:27:05 +0100 (MET)
+Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00140148
+	for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2006 02:34:16 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1137719627.8471.89.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,91 +20,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Lee Revell <rlrevell@joe-job.com>, Krzysztof Halasa <khc@pm.waw.pl>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jan 20, 2006 at 01:13:47AM +0000, Alan Cox wrote:
+ > On Iau, 2006-01-19 at 17:51 -0500, Lee Revell wrote:
+ > > The status is we need someone who has the hardware who can add printk's
+ > > to the driver to identify what triggers the hang.  It should not be
+ > > hard, the OSS driver reportedly works.
+ > > 
+ > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328
+ > > 
+ > > The bug has been in FEEDBACK state for a long time.
+ > 
+ > 99.9% of users don't ever look in ALSA bugzilla. 
+ > 
+ > A dig shows
+ > 
+ > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=157371
+ > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=171221
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1181> 
-======================================================================
-Reported By:                bjl667
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1181
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo 2005.0
-Kernel Version:             2.6.12-rc4-love2
-======================================================================
-Date Submitted:             06-10-2005 22:28 CEST
-Last Modified:              01-20-2006 02:27 CET
-======================================================================
-Summary:                    ice1724: Invalid EEPROM version 1
-Description: 
- Upon starting alsa, in dmesg I get:
- EcX / # dmesg | grep ice
- ice1724: Invalid EEPROM version 1
+Lee, if you can point me at a patch with debugging printk's I'm
+happy to throw that into the next Fedora test update for the
+users in the latter bug to test. (The first one seemed to go AWOL)
 
- EcX / # cat /proc/asound/cards
- 0 [AV710          ]: ICE1724 - Chaintech AV-710
-                      Chaintech AV-710 at 0xa000, irq 16
-
- I can play music in XMMS.. Then close it after that my sound stops
-working I gotta restart alsasound to make it work again. I dunno wtf it is
-my card is a Chaintech AV-710 (ENVY24HT-S)
-
- From what it seems this is another version of the Chaintech card..
-======================================================================
-
-----------------------------------------------------------------------
- robhancock - 12-28-05 21:54 
-----------------------------------------------------------------------
-I think the "invalid EEPROM version" thing can likely be ignored.
-Supposedly ICE1712 cards should use EEPROM version 1 and ICE1724 cards
-should use version 2, but on many ICE1724 cards (including Chaintech
-AV-710) the EEPROM version indicates version 1. I don't think this really
-affects anything.
-
-----------------------------------------------------------------------
- bjl667 - 01-20-06 02:27 
-----------------------------------------------------------------------
-Thanks for all the help and info, I just didn't know..  I could probably
-fix it in  my own time, just been very busy lately.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-10-05 22:28 bjl667         New Issue                                    
-06-10-05 22:28 bjl667         Distribution              => Gentoo 2005.0   
-06-10-05 22:28 bjl667         Kernel Version            => 2.6.12-rc4-love2
-06-14-05 01:56 bjl667         Note Added: 0005014                          
-06-15-05 22:35 bjl667         Note Added: 0005047                          
-06-16-05 00:00 bjl667         Note Edited: 0005047                         
-06-17-05 22:48 bjl667         Note Added: 0005081                          
-06-18-05 12:24 bjl667         Note Edited: 0005081                         
-06-18-05 12:26 bjl667         Note Deleted: 0005014                        
-06-20-05 02:41 bjl667         Note Edited: 0005047                         
-06-25-05 02:12 bjl667         Note Added: 0005255                          
-06-30-05 21:12 bjl667         Note Edited: 0005255                         
-07-04-05 08:46 bjl667         Note Added: 0005381                          
-07-05-05 04:15 bjl667         Note Added: 0005389                          
-07-05-05 04:16 bjl667         Note Deleted: 0005047                        
-07-06-05 21:44 bjl667         Note Deleted: 0005389                        
-07-06-05 21:56 bjl667         Note Edited: 0005381                         
-07-08-05 12:08 tiwai          Note Added: 0005414                          
-07-08-05 19:14 bjl667         Note Added: 0005434                          
-07-08-05 19:14 bjl667         File Added: xmms-snap.jpg                    
-07-08-05 19:51 bjl667         Note Edited: 0005434                         
-07-08-05 19:51 bjl667         Note Edited: 0005434                         
-12-28-05 21:54 robhancock     Note Added: 0007181                          
-01-20-06 02:27 bjl667         Note Added: 0007723                          
-======================================================================
-
+		Dave
 
 
 
