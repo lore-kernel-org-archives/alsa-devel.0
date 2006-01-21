@@ -1,23 +1,14 @@
-From: Ben Collins <bcollins@ubuntu.com>
-Subject: Re: RFC: OSS driver removal, a slightly different	approach
-Date: Fri, 20 Jan 2006 18:22:10 -0500
-Message-ID: <1137799330.13530.30.camel__30448.0849802077$1137818709$gmane$org@grayson>
-References: <20060119174600.GT19398@stusta.de>
- <20060120115443.GA16582@palantir8> <20060120190415.GM19398@stusta.de>
- <20060120212917.GA14405@suse.de>
- <1137799001.12998.59.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
+Date: Sat, 21 Jan 2006 07:36:13 +0100
+Message-ID: <289859f8cff164ca2f7205c7d8f44259@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from a34-mta01.direcway.com (a34-mta01.direcpc.com [66.82.4.90])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA12C192
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 05:44:46 +0100 (MET)
-Received: from mail.phunnypharm.org ([67.142.247.22]) by a34-mta01.direcway.com
- (iPlanet Messaging Server 5.2 HotFix 2.05 (built Mar  3 2005))
- with ESMTP id <0ITE0060PZNKK2@a34-mta01.direcway.com> for
- alsa-devel@alsa-project.org; Fri, 20 Jan 2006 18:23:48 -0500 (EST)
-In-reply-to: <1137799001.12998.59.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9ED0618F
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 07:36:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,38 +18,107 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Olaf Hering <olh@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org, Ben Collins <ben.collins@ubuntu.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-01-21 at 10:16 +1100, Benjamin Herrenschmidt wrote:
-> On Fri, 2006-01-20 at 22:29 +0100, Olaf Hering wrote:
-> >  On Fri, Jan 20, Adrian Bunk wrote:
-> > 
-> >  
-> > > Can someone from the ppc developers drop me a small note whether 
-> > > SND_POWERMAC completely replaces DMASOUND_PMAC?
-> > 
-> > It doesnt. Some tumbler models work only after one plug/unplug cycle of
-> > the headphone. early powerbooks report/handle the mute settings
-> > incorrectly. there are likely more bugs.
-> 
-> Interesting... Ben Collins hacked something to have Toonie work as a
-> "default" driver for non supported machine and saw that problem too, I
-> think he fixes it, I'll check with him what's up there and if his fix
-> applied to tumbler.c as well.
 
-My "fix" was basically the result of converting to the platform
-functions. It's hit or miss whether this works with tumbler too.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1766
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              01-21-2006 07:36 CET
+======================================================================
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
+Description: 
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-You can try the Ubuntu kernel packages (they can be unpacked and used on
-non Ubuntu systems pretty easily) to see if it works for you. Tumbler
-platform function conversion isn't even tested, so I'd be happy to hear
-any feedback.
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
--- 
-Ben Collins
-Kernel Developer - Ubuntu Linux
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
+
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
+
+jackd -d alsa hw:0 -S
+jackd 0.100.9
+
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
+
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 01-21-06 07:36 
+----------------------------------------------------------------------
+It's bug in au8830 driver, it return 4 when jack call
+nd_pcm_hw_params_get_channels_max(), but au8830 driver
+vortex_adb_allocroute() return EBUSY when jack open 4 channels for
+capture.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-21-06 05:02 Raymond        New Issue                                    
+01-21-06 05:25 rlrevell       Note Added: 0007735                          
+01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
+01-21-06 07:36 Raymond        Note Added: 0007736                          
+======================================================================
+
 
 
 
