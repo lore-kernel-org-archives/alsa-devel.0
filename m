@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000854]: Can't load module snd-cs4236, snd-cs4236 or snd-sb8
-Date: Sat, 21 Jan 2006 03:39:09 +0100
-Message-ID: <08e81ae59e7ed2e95fc256e957d29a72@bugtrack.alsa-project.org>
+Date: Sat, 21 Jan 2006 03:45:10 +0100
+Message-ID: <9d1f4ff5ea4cb9e35bd96b2a20ec3e7b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE22C191
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 03:39:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF8AED8
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 03:45:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.8-2-386
 ======================================================================
 Date Submitted:             01-28-2005 13:18 CET
-Last Modified:              01-21-2006 03:39 CET
+Last Modified:              01-21-2006 03:45 CET
 ======================================================================
 Summary:                    Can't load module snd-cs4236, snd-cs4236 or snd-sb8
 Description: 
@@ -56,15 +56,19 @@ http://www.talkaboutsoftware.com/group/linux.debian.laptop/messages/7049.html
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:22 
-----------------------------------------------------------------------
-Any improvement with later ALSA releases?
-
-----------------------------------------------------------------------
  briand - 01-21-06 03:39 
 ----------------------------------------------------------------------
-apparently not, as this sound suspicously like the problem I reported on my
-Dell Inspiron 3200 (0001748).
+apparently not, as this sounds suspicously like the problem I reported on
+my Dell Inspiron 3200 (0001748).
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 01-21-06 03:45 
+----------------------------------------------------------------------
+This bug report is too vague to be actionable.  Please provide more
+information - what EXACTLY did you do that produced the "no such device"
+message, etc.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -77,6 +81,9 @@ Date Modified  Username       Field                    Change
 03-30-05 09:49 mrpee          Note Added: 0004264                          
 12-30-05 05:22 rlrevell       Note Added: 0007243                          
 01-21-06 03:39 briand         Note Added: 0007731                          
+01-21-06 03:39 briand         Note Edited: 0007731                         
+01-21-06 03:40 briand         Issue Monitored: briand                      
+01-21-06 03:45 rlrevell       Note Added: 0007732                          
 ======================================================================
 
 
