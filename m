@@ -1,18 +1,14 @@
-From: "Wieslaw Suriel" <wieslasuri@umanitaria.it>
-Subject: See the details Phara mac y to be well-informed
-Date: Sat, 21 Jan 2006 03:02:10 -0500
-Message-ID: <000001c61e60$fb4589d0$f698a8c0@palm>
-Reply-To: "Wieslaw Suriel" <wieslasuri@umanitaria.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001754]: M-Audio Revolution 5.1: Headphone jack gets no signal
+Date: Sat, 21 Jan 2006 09:39:01 +0100
+Message-ID: <d5bf014f782941a1f544ab56f81f37b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C61E37.126F81D0"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F2AA177
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 09:02:39 +0100 (MET)
-Received: from umanitaria.it (unknown [85.69.104.56])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id DFAC59923D
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 09:02:38 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF24D176
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 09:39:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,117 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dante Koo <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C61E37.126F81D0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1754> 
+======================================================================
+Reported By:                wollschaf
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1754
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             01-15-2006 16:02 CET
+Last Modified:              01-21-2006 09:39 CET
+======================================================================
+Summary:                    M-Audio Revolution 5.1: Headphone jack gets no
+signal
+Description: 
+Whatever I tried with alsamixer, I could not get the headphone jack to
+output any kind of signal.
 
-=20
-http://www.ciofardico.com <http://www.ciofardico.com>=20
-=20
-VIA
-Amb
-VAL
-Xan
-Som
-CIA
+In my understanding, it should output the line signal, but amplificated.
 
-GRA
-ien
-IUM
-ax=20
-a =20
-LIS
+As it does not even output the white noise of the inputs (see Issue
+0001753), I assume the headphone output is completely disabled.
 
+If photos of the card are needed to find out how it is connected, I will
+upload them...
 
+======================================================================
 
+----------------------------------------------------------------------
+ wollschaf - 01-20-06 21:04 
+----------------------------------------------------------------------
+Looking at the AK4358 datasheet, this chip has 8 DACs - I assume the
+headphones are connected using the two unused channels (driver has 6 DACs
+defined).
 
+Maybe a photo of the card helps figuring out how to enable them:
+http://www.flickr.com/photos/88892686@N00/89003057/
 
+----------------------------------------------------------------------
+ cyan - 01-21-06 09:39 
+----------------------------------------------------------------------
+Yes, I think that internally it is similar to Revolution 7.1, but two
+chanels are conected to amplifier (I found it somewhere, but only in czech
+language).
 
-from=20
-
-$3,
-$2,
-$1,
-$1,
-$1,
-$3,
-
-75
-89
-21
-42
-12
-75
-
-=20
-
-------=_NextPart_000_0001_01C61E37.126F81D0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV><A href=3D"http://www.ciofardico.com"><FONT face
-=3DArial size
-=3D
-2>http://www.ciofardico.com</FONT></A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"BORDER-LEFT:
- 0px
-; FLOAT : left;
-"><FONT=20
-face=3DArial=20
-size=3D
-2>VIA<BR>Amb<BR>VAL<BR>Xan<BR>Som<BR>CIA<BR></FONT></DIV>
-<DIV style
-=3D"BORDER-LEFT-WIDTH: 0px;
- FLOAT :=20
-left;"><FONT=20
-face=3DArial
- size
-=3D2>GRA<BR>ien<BR>IUM<BR>ax&nbsp;<BR>a&nbsp;&nbsp;<BR>LIS<BR></FONT></DI=
-V>
-<DIV style=3D"FLOAT=20
-:=20
-left
-; WORD-SPACING: normal;"><FONT=20
-face
-=3DArial
- size=3D2> <BR> <BR> <BR> <BR> <BR>from <BR></FONT></DIV>
-<DIV style=3D
-"PADDING-TOP:
- 0px; FLOAT
- : left;"><FONT=20
-face=3DArial
- size=3D
-2>$3,<BR>$2,<BR>$1,<BR>$1,<BR>$1,<BR>$3,<BR></FONT></DIV>
-<DIV=20
-style=3D"VERTICAL-ALIGN: baseline
-;
- FLOAT : left;"><FONT=20
-face=3DArial
- size
-=3D2>75<BR>89<BR>21<BR>42<BR>12<BR>75<BR></FONT></DIV><DIV =
-style=3D"LINE-HEIGHT: normal;
- CLEAR
- :
- both;">&nbsp;</DIV></BODY></HTML>
-------=_NextPart_000_0001_01C61E37.126F81D0--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-15-06 16:02 wollschaf      New Issue                                    
+01-15-06 16:02 wollschaf      Kernel Version            => 2.6.15          
+01-15-06 16:02 wollschaf      Issue Monitored: wollschaf                    
+01-16-06 15:47 cyan           Note Added: 0007686                          
+01-16-06 15:47 cyan           Issue Monitored: cyan                        
+01-20-06 21:04 wollschaf      Note Added: 0007727                          
+01-21-06 09:39 cyan           Note Added: 0007738                          
+======================================================================
 
 
 
