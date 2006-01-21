@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001765]: Issue 001595 does not fix Audigy 4
-Date: Sun, 22 Jan 2006 00:06:10 +0100
-Message-ID: <0e4e1f2d237dc46fe454632f7b793c79@bugtrack.alsa-project.org>
+Date: Sun, 22 Jan 2006 00:06:36 +0100
+Message-ID: <8715f7dcb090a60050e1c1d8aee30a16@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25F58178
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 00:06:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51C52178
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 00:06:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been set as RELATED TO issue 0001595.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1765> 
 ======================================================================
@@ -51,6 +51,10 @@ I have an Audigy 4 with the same device/subsystem as khampf from issue
 I did experience the same confusion where loading one driver with ca0108
 will make any subsequent driver work (e.g., ca0102) until the next reboot.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001595 Audigy 4 (bulk, non-Pro) unsupported (p...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -58,6 +62,7 @@ Date Modified  Username       Field                    Change
 01-21-06 01:49 alexholkner    New Issue                                    
 01-22-06 00:06 jcdutton       Status                   new => assigned     
 01-22-06 00:06 jcdutton       Assigned To               => jcdutton        
+01-22-06 00:06 jcdutton       Relationship added       related to 0001595  
 ======================================================================
 
 
