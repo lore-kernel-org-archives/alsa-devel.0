@@ -1,14 +1,17 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Subject: Re: RFC: OSS driver removal, a slightly different
  approach
-Date: Sat, 21 Jan 2006 09:58:42 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0601210958010.21704@yvahk01.tjqt.qr>
-References: <20060119174600.GT19398@stusta.de> <s5hmzhr7xsr.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0601201729370.10065@yvahk01.tjqt.qr> <200601201844.29873.pzad@pobox.sk>
+Date: Sat, 21 Jan 2006 10:01:33 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0601211000060.21704@yvahk01.tjqt.qr>
+References: <20060119174600.GT19398@stusta.de>  <200601191947.20748.pzad@pobox.sk>
+  <Pine.LNX.4.61.0601201524080.22940@yvahk01.tjqt.qr> <1137810430.3241.97.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200601201844.29873.pzad@pobox.sk>
+Received: from linux01.gwdg.de (linux01.gwdg.de [134.76.13.21])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97839176
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 10:01:34 +0100 (MET)
+In-Reply-To: <1137810430.3241.97.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,16 +21,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, perex@suse.cz
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
->> Ah, so http://alphagate.hopto.org/quad_dsp/ which I had created
->> is The Right Thing?
+>> I have a card that works with the snd-cs46xx module.
+>> With the OSS emulation (/dev/dsp), I can only output 2 channels, and the 
+>> other two must be sent to /dev/adsp. Is this intended? Would not it be 
+>> easier to make /dev/dsp allow receiving an ioctl setting 4 channels?
 >
->This will work for your card, but not for emu10k1.
+>Why can't you just use aoss?
 
-Does emu10k1 provide no adsp, how does it work?
+Did not know it before.
 
 
 Jan Engelhardt
