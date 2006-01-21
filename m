@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: ALSA bugs in the kernel Bugzilla
-Date: Fri, 20 Jan 2006 21:33:51 -0500
-Message-ID: <1137810832.3241.105.camel@mindpipe>
-References: <20060121005432.GN31803@stusta.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000854]: Can't load module snd-cs4236, snd-cs4236 or snd-sb8
+Date: Sat, 21 Jan 2006 03:39:09 +0100
+Message-ID: <08e81ae59e7ed2e95fc256e957d29a72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CA83F191
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 03:33:53 +0100 (MET)
-In-Reply-To: <20060121005432.GN31803@stusta.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE22C191
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 03:39:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,21 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian Bunk <bunk@stusta.de>
-Cc: perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-01-21 at 01:54 +0100, Adrian Bunk wrote:
-> The kernel Bugzilla [1] currently lists 54 open [2] ALSA bugs.
-> 
-> Please review these bugs (some might as a first step require to ask the 
-> submitters whether they are still present in recent kernels).
 
-I'll take a look but in the future these should go straight into the
-ALSA bugzilla.  We do not have the resources to track the kernel
-bugzilla.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=854> 
+======================================================================
+Reported By:                mrpee
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   854
+Category:                   ISA - cs4236
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8-2-386
+======================================================================
+Date Submitted:             01-28-2005 13:18 CET
+Last Modified:              01-21-2006 03:39 CET
+======================================================================
+Summary:                    Can't load module snd-cs4236, snd-cs4236 or snd-sb8
+Description: 
+I can't load any modules for my sound carc Cirrus Logic cs4237b on my Dell
+Latitude CP M233XT. I tried snd-cs4236, snd-cs4236 and also the
+soundblaster module snd-sb8 with the same result "no such device".
 
-Lee
+I think I'll tried everything, kernel 2.4 with alsamodules, 2.6.1, alsa
+1.0.7-2. half/full duplex, changing irq, dma etc.
+
+Here is a link from another forum whith the same problem:
+http://www.talkaboutsoftware.com/group/linux.debian.laptop/messages/7049.html
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 05:22 
+----------------------------------------------------------------------
+Any improvement with later ALSA releases?
+
+----------------------------------------------------------------------
+ briand - 01-21-06 03:39 
+----------------------------------------------------------------------
+apparently not, as this sound suspicously like the problem I reported on my
+Dell Inspiron 3200 (0001748).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-28-05 13:18 mrpee          New Issue                                    
+01-28-05 13:18 mrpee          Distribution              => Debian          
+01-28-05 13:18 mrpee          Kernel Version            => 2.6.8-2-386     
+01-28-05 13:23 mrpee          Note Added: 0003426                          
+03-28-05 04:23 jdthood        Note Added: 0004233                          
+03-30-05 09:49 mrpee          Note Added: 0004264                          
+12-30-05 05:22 rlrevell       Note Added: 0007243                          
+01-21-06 03:39 briand         Note Added: 0007731                          
+======================================================================
+
 
 
 
