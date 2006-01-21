@@ -1,17 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: RFC: OSS driver removal, a slightly different
-	approach
-Date: Fri, 20 Jan 2006 22:52:50 -0500
-Message-ID: <1137815571.3241.133.camel__38597.9041610428$1137815673$gmane$org@mindpipe>
-References: <20060120082155.24254.qmail@dag.newtech.fi>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
+Date: Sat, 21 Jan 2006 05:02:58 +0100
+Message-ID: <4587c33fc232133dc9260835e20844cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 04A3718C
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 04:52:59 +0100 (MET)
-In-Reply-To: <20060120082155.24254.qmail@dag.newtech.fi>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CBFE18D
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 05:02:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,40 +18,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dag Nygren <dag@newtech.fi>
-Cc: Krzysztof Halasa <khc@pm.waw.pl>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-01-20 at 10:21 +0200, Dag Nygren wrote:
-> > On Thu, 2006-01-19 at 21:24 +0100, Krzysztof Halasa wrote:
-> > > Don't you all think a large part (if not most) of the
-> > > "ALSA-unsupported"
-> > > cards is no longed in any (Linux-related) use? I wouldn't be surprised
-> > > if they just don't exist anymore. Who is to write drivers for them and
-> > > -
-> > > more importantly - who can test them? 
-> > 
-> > Yes, it would require a collector of ancient sound hardware... do you
-> > know anyone like that?
-> > 
-> > Even the NeoMagic 256 which is a Pentium II era device and was in
-> > widespread use we cannot find a tester for.
-> 
-> I could do that, my boy is still playing tuxpaint and other stuff on my old 
-> laptop
-> with such a chip.
 
-Thanks!
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1766
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              01-21-2006 05:02 CET
+======================================================================
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
+Description: 
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-Basically just see if you can produce a hang by repeatedly loading and
-unloading snd-nm256, preferably at a console, so you can see any Oops.
-If you do see the hang, try the reset_workaround options described in
-ALSA-Configuration.txt.
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
-If you can reproduce a hang add printks in the module __init code and
-try to narrow down where it dies.
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
 
-Lee
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
+
+jackd -d alsa hw:0 -S
+jackd 0.100.9
+
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-21-06 05:02 Raymond        New Issue                                    
+======================================================================
+
 
 
 
