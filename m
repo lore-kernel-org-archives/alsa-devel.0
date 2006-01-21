@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001754]: M-Audio Revolution 5.1: Headphone jack gets no signal
-Date: Sat, 21 Jan 2006 09:39:01 +0100
-Message-ID: <d5bf014f782941a1f544ab56f81f37b9@bugtrack.alsa-project.org>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: RFC: OSS driver removal, a slightly different
+ approach
+Date: Sat, 21 Jan 2006 09:58:42 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0601210958010.21704@yvahk01.tjqt.qr>
+References: <20060119174600.GT19398@stusta.de> <s5hmzhr7xsr.wl%tiwai@suse.de>
+ <Pine.LNX.4.61.0601201729370.10065@yvahk01.tjqt.qr> <200601201844.29873.pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF24D176
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 09:39:01 +0100 (MET)
+In-Reply-To: <200601201844.29873.pzad@pobox.sk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +18,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Peter Zubaj <pzad@pobox.sk>
+Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+>> Ah, so http://alphagate.hopto.org/quad_dsp/ which I had created
+>> is The Right Thing?
+>
+>This will work for your card, but not for emu10k1.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1754> 
-======================================================================
-Reported By:                wollschaf
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1754
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-15-2006 16:02 CET
-Last Modified:              01-21-2006 09:39 CET
-======================================================================
-Summary:                    M-Audio Revolution 5.1: Headphone jack gets no
-signal
-Description: 
-Whatever I tried with alsamixer, I could not get the headphone jack to
-output any kind of signal.
-
-In my understanding, it should output the line signal, but amplificated.
-
-As it does not even output the white noise of the inputs (see Issue
-0001753), I assume the headphone output is completely disabled.
-
-If photos of the card are needed to find out how it is connected, I will
-upload them...
-
-======================================================================
-
-----------------------------------------------------------------------
- wollschaf - 01-20-06 21:04 
-----------------------------------------------------------------------
-Looking at the AK4358 datasheet, this chip has 8 DACs - I assume the
-headphones are connected using the two unused channels (driver has 6 DACs
-defined).
-
-Maybe a photo of the card helps figuring out how to enable them:
-http://www.flickr.com/photos/88892686@N00/89003057/
-
-----------------------------------------------------------------------
- cyan - 01-21-06 09:39 
-----------------------------------------------------------------------
-Yes, I think that internally it is similar to Revolution 7.1, but two
-chanels are conected to amplifier (I found it somewhere, but only in czech
-language).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-15-06 16:02 wollschaf      New Issue                                    
-01-15-06 16:02 wollschaf      Kernel Version            => 2.6.15          
-01-15-06 16:02 wollschaf      Issue Monitored: wollschaf                    
-01-16-06 15:47 cyan           Note Added: 0007686                          
-01-16-06 15:47 cyan           Issue Monitored: cyan                        
-01-20-06 21:04 wollschaf      Note Added: 0007727                          
-01-21-06 09:39 cyan           Note Added: 0007738                          
-======================================================================
+Does emu10k1 provide no adsp, how does it work?
 
 
+Jan Engelhardt
+-- 
 
 
 -------------------------------------------------------
