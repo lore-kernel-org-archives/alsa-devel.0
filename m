@@ -1,14 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Sat, 21 Jan 2006 02:03:14 +0100
-Message-ID: <87d1f11775cb49ff4b7f57139366b035@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: RFC: OSS driver removal, a slightly different
+	approach
+Date: Fri, 20 Jan 2006 20:03:23 -0500
+Message-ID: <1137805405.3241.56.camel__5131.4300312244$1137805467$gmane$org@mindpipe>
+References: <20060119174600.GT19398@stusta.de>
+	 <m3ek34vucz.fsf@defiant.localdomain> <1137703413.32195.23.camel@mindpipe>
+	 <1137709135.8471.73.camel@localhost.localdomain>
+	 <20060119224222.GW21663@redhat.com> <1137711088.3241.9.camel@mindpipe>
+	 <1137719627.8471.89.camel@localhost.localdomain>
+	 <20060120013402.GF3798@redhat.com> <s5hacdr9mdi.wl%tiwai@suse.de>
+	 <1137803349.3241.21.camel@mindpipe>  <20060121005728.GO31803@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3218C191
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 02:03:15 +0100 (MET)
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D65BF193
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 02:03:26 +0100 (MET)
+In-Reply-To: <20060121005728.GO31803@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,94 +27,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Dave Jones <davej@redhat.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Krzysztof Halasa <khc@pm.waw.pl>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2006-01-21 at 01:57 +0100, Adrian Bunk wrote:
+> On Fri, Jan 20, 2006 at 07:29:09PM -0500, Lee Revell wrote:
+> > On Fri, 2006-01-20 at 12:20 +0100, Takashi Iwai wrote:
+> > > At Thu, 19 Jan 2006 20:34:02 -0500,
+> > > Dave Jones wrote:
+> > > > 
+> > > > On Fri, Jan 20, 2006 at 01:13:47AM +0000, Alan Cox wrote:
+> > > >  > On Iau, 2006-01-19 at 17:51 -0500, Lee Revell wrote:
+> > > >  > > The status is we need someone who has the hardware who can add printk's
+> > > >  > > to the driver to identify what triggers the hang.  It should not be
+> > > >  > > hard, the OSS driver reportedly works.
+> > > >  > > 
+> > > >  > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328
+> > > >  > > 
+> > > >  > > The bug has been in FEEDBACK state for a long time.
+> > > >  > 
+> > > >  > 99.9% of users don't ever look in ALSA bugzilla. 
+> > > >  > 
+> > > >  > A dig shows
+> > > >  > 
+> > > >  > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=157371
+> > > >  > https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=171221
+> > > > 
+> > > > Lee, if you can point me at a patch with debugging printk's I'm
+> > > > happy to throw that into the next Fedora test update for the
+> > > > users in the latter bug to test. (The first one seemed to go AWOL)
+> > > 
+> > > The bug for Latitude CSx should have been fixed by the following
+> > > commit:
+> > > 
+> > > 	commit 47530cf44cb5f3945ed04a5ae65d06bf423cd97b
+> > > 	Author: John W. Linville <linville@tuxdriver.com>
+> > > 	Date:   Wed Oct 19 16:03:10 2005 +0200
+> > > 
+> > > 	    [ALSA] nm256: reset workaround for Latitude CSx
+> > > 
+> > > This might not conver all Dell models.  In such a case, try
+> > > reset_workaround2=1.  See the section of nm256 in
+> > > ALSA-Configuration.txt for details.
+> > 
+> > OK I will update the ALSA bug report with this info.  IIRC at least one
+> > user already reported that the above commit does not fix the hangs.
+> 
+> The bug reporter reported this in the last comment of the bug (1.0.10rc3 
+> already included the mentioned fix).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
-======================================================================
-Reported By:                aaronkaplan
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   328
-Category:                   PCI - nm256
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398
-======================================================================
-Date Submitted:             06-08-2004 23:13 CEST
-Last Modified:              01-21-2006 02:03 CET
-======================================================================
-Summary:                    snd-nm256 freezes Dell Latitude LS
-Description: 
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
+They did not try "reset_workaround".  I have updated the bug report with
+this advice.
 
-The OSS driver works fine.
-
-======================================================================
-
-----------------------------------------------------------------------
- aaronkaplan - 11-12-05 17:58 
-----------------------------------------------------------------------
-No, it still hangs with 1.0.10rc3.
-
-During my testing, the first modprobe snd-nm256 after booting went ok, but
-then rmmod and modprobe again caused it to hang.  Not sure if this is by
-chance, but it happened three boots in a row.
-
-----------------------------------------------------------------------
- rlrevell - 01-21-06 02:03 
-----------------------------------------------------------------------
-tiwai on LKML:
-
-"This might not conver all Dell models.  In such a case, try
-reset_workaround2=1.  See the section of nm256 in
-ALSA-Configuration.txt for details."
-
-Try the various reset_workaround options amd report which (if any) help.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-08-04 23:13 aaronkaplan    New Issue                                    
-06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
-06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
-06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
-06-30-04 16:55 tiwai          Note Added: 0001362                          
-06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
-
-07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
-07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
-08-13-04 01:33 fridolin       Note Added: 0001559                          
-08-13-04 12:46 fridolin       Note Added: 0001562                          
-08-13-04 15:17 fridolin       Note Added: 0001564                          
-08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
-08-19-04 19:18 tiwai          Status                   assigned => resolved
-08-19-04 19:18 tiwai          Resolution               open => fixed       
-08-19-04 19:18 tiwai          Note Added: 0001593                          
-09-24-04 13:43 tiwai          Status                   resolved => closed  
-09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
-Core 4
-09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
-2.6.12-1.1398
-09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
-09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
-09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
-09-04-05 00:33 rlrevell       Note Added: 0006031                          
-09-13-05 11:49 florentb5      Note Added: 0006152                          
-11-08-05 18:47 tiwai          Note Added: 0006636                          
-11-12-05 17:58 aaronkaplan    Note Added: 0006687                          
-01-05-06 10:52 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-01-21-06 02:03 rlrevell       Note Added: 0007729                          
-======================================================================
-
+Lee
 
 
 
