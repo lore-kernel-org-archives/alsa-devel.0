@@ -1,17 +1,14 @@
-From: Stuffed Crust <pizza@shaftnet.org>
-Subject: Re: Re: RFC: OSS driver removal, a slightly different approach
-Date: Fri, 20 Jan 2006 19:55:25 -0500
-Message-ID: <20060121005525.GA29562__5390.90672177753$1137808599$gmane$org@shaftnet.org>
-References: <20060119174600.GT19398@stusta.de> <m3ek34vucz.fsf@defiant.localdomain> <43D05D0C.1030900@keyaccess.nl> <0D5E76A0-FA1B-4CCC-BFA6-D84FBA1EE39D@yahoo.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: SBLive! subsystem 8066
+Date: Fri, 20 Jan 2006 21:22:53 -0500
+Message-ID: <1137810173.3241.95.camel@mindpipe>
+References: <1137536331.19678.47.camel@mindpipe>
+	 <s5hlkxb7xg8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from shaft.shaftnet.org (rrcs-24-73-230-86.se.biz.rr.com [24.73.230.86])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 444D718F
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 01:55:57 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <0D5E76A0-FA1B-4CCC-BFA6-D84FBA1EE39D@yahoo.com>
+In-Reply-To: <s5hlkxb7xg8.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,64 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brent Cook <busterbcook@yahoo.com>
-Cc: Rene Herman <rene.herman@keyaccess.nl>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2006-01-20 at 16:04 +0100, Takashi Iwai wrote:
+> At Tue, 17 Jan 2006 17:18:51 -0500,
+> Lee Revell wrote:
+> > 
+> > ...is still "Unknown" by the ALSA driver.
+> > 
+> > Can we get something like this merged before the 1.0.11 release:
+> > 
+> > +       /* See ALSA bug #1036 - model is from windows driver */
+> > +       {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80661102,
+> > +        .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
+> > +        .id = "Live",
+> > +        .emu10k1_chip = 1,
+> > +        .ac97_chip = 1,
+> > +        .sblive51 = 1} ,
+> > 
+> > It might be SB0222, I am not 100% certain.
+> 
+> Isn't it already in CVS?  The name is different (it's "SB Live 5.1
+> Dell OEM [SB0220]", though).
 
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I thought so too but "cvs diff" said it was not, and now ALSA CVS is
+broken, AGAIN...
 
-On Fri, Jan 20, 2006 at 01:04:30AM -0600, Brent Cook wrote:
-> The Adlib card that I had was just an OPL-2 synthesizer, no PCM =20
-> support at all. Normally, it was mono, 9 voices, 2 FM operators per =20
-> voice + 3 noise channels, but there was a mode that supported 4 =20
-> operators and reduced the number of voices to 4 or 5.
+$ cvs diff pci/emu10k1/emu10k1_main.c
+cvs [diff aborted]: end of file from server (consult above messages if
+any)
 
-> An OPL-3 is just 2 OPL-2's, one for each stereo channel. I think that =20
-> any card with an OPL-3 (SB-16) can act like an OPL-2.
+Lee
 
-The OPL2 is a 2-operator mono synth, While the OPL3 can operate in a
-mode that makes it appear as two OPL2s (stereo, yay!) it has a native
-4-operator mode that halves the number of resultant voices, but allows
-much more complex instruments, as well as crude native stereo=20
-capabilities.  (In the end, to do proper stereo panning you had to use=20
-two voices and vary the volumes directly)
-
-Meanwhile.  The original Adlib did indeed use an OPL2, and since the
-original Sound Blaster was little more than an adlib with PCM bolted on,
-so did the first few Sound Blaster cards (newer ones also dropped the
-CMS AM synth chip, first by making them socketed and optional, later by
-eliminating the capability altogether) The Sound Blaster Pro upped the
-ante to include a mixer, stereo PCM and two OPL2s, one for each channel.=20
-Creative Labs quickly revised the SBPro to include a single OPL3
-instead, and that's also what went into the SB16 and its ilk (Vibra16,
-AWE32, SB32, AWE64, with and without the CSP chip).  They dropped the FM
-synthesis capability entirely when they went to PCI cards.
-
-But I digress.
-
- - Solomon [I think I've used every card Creative put out in the ISA days]
---=20
-Solomon Peachy        				 ICQ: 1318344
-Melbourne, FL 					=20
-Quidquid latine dictum sit, altum viditur.
-
---YiEDa0DAkWCtVeE4
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFD0YZ9PuLgii2759ARAkg9AKDmDCmbkOw+vxGi4qucKOvEu7fgPgCgxgmJ
-Le3PWrHT9VSTuTPqkPd9TQ8=
-=eGSd
------END PGP SIGNATURE-----
-
---YiEDa0DAkWCtVeE4--
 
 
 -------------------------------------------------------
