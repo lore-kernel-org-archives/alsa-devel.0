@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Sat, 21 Jan 2006 03:48:50 +0100
-Message-ID: <bb72166739027a93f56efed5bc73a16d@bugtrack.alsa-project.org>
+Date: Sat, 21 Jan 2006 04:13:19 +0100
+Message-ID: <6c10cfc4f80a97e3b2959d82ad31cb3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8A4D191
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 03:48:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B038E191
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 04:13:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9-1.667
 ======================================================================
 Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-21-2006 03:48 CET
+Last Modified:              01-21-2006 04:13 CET
 ======================================================================
 Summary:                    sound driver will not load (CS4237B chip)
 Description: 
@@ -144,6 +144,14 @@ I tried to file-attach the manufacturer's spec sheet for the CS4237B chip
 (1.4M), but the upload software here kept crashing during the upload
 phase.
 
+----------------------------------------------------------------------
+ rlrevell - 01-21-06 04:13 
+----------------------------------------------------------------------
+Don't bother uploading the spec sheet, if it's available on the web
+already.
+
+Did this ever work with any previous kernel?  Does the OSS driver work?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -152,6 +160,7 @@ Date Modified  Username       Field                    Change
 01-14-06 23:47 briand         Kernel Version            => 2.6.9-1.667     
 01-14-06 23:51 briand         Issue Monitored: briand                      
 01-21-06 03:48 briand         Note Added: 0007733                          
+01-21-06 04:13 rlrevell       Note Added: 0007734                          
 ======================================================================
 
 
