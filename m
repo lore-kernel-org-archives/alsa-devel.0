@@ -1,19 +1,14 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: RFC: OSS driver removal, a slightly different
-	approach
-Date: Fri, 20 Jan 2006 21:27:10 -0500
-Message-ID: <1137810430.3241.97.camel@mindpipe>
-References: <20060119174600.GT19398@stusta.de>
-	 <200601191947.20748.pzad@pobox.sk>
-	 <Pine.LNX.4.61.0601201524080.22940@yvahk01.tjqt.qr>
+Subject: Re: SBLive! subsystem 8066
+Date: Fri, 20 Jan 2006 21:30:04 -0500
+Message-ID: <1137810605.3241.100.camel@mindpipe>
+References: <1137536331.19678.47.camel@mindpipe>
+	 <s5hlkxb7xg8.wl%tiwai@suse.de>  <1137810173.3241.95.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B62B818D
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 03:27:13 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.61.0601201524080.22940@yvahk01.tjqt.qr>
+In-Reply-To: <1137810173.3241.95.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,28 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-01-20 at 15:25 +0100, Jan Engelhardt wrote:
-> >Hi,
-> >
-> >On Thursday 19 January 2006 18:46, Adrian Bunk wrote:
-> >> SOUND_EMU10K1
-> >> - ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
-> >
-> >If I understand alsa - oss emulation correctly, I think, this will be not 
-> >fixed soon (my opinion - never). This is too much work for too little gain.
+On Fri, 2006-01-20 at 21:22 -0500, Lee Revell wrote:
+> On Fri, 2006-01-20 at 16:04 +0100, Takashi Iwai wrote:
+> > Isn't it already in CVS?  The name is different (it's "SB Live 5.1
+> > Dell OEM [SB0220]", though).
 > 
-> On that way, I'd like to inquiry something:
-> I have a card that works with the snd-cs46xx module.
-> With the OSS emulation (/dev/dsp), I can only output 2 channels, and the 
-> other two must be sent to /dev/adsp. Is this intended? Would not it be 
-> easier to make /dev/dsp allow receiving an ioctl setting 4 channels?
+> I thought so too but "cvs diff" said it was not, and now ALSA CVS is
+> broken, AGAIN...
 > 
+> $ cvs diff pci/emu10k1/emu10k1_main.c
+> cvs [diff aborted]: end of file from server (consult above messages if
+> any)
 
-Why can't you just use aoss?
+Never mind, this was a merge error on my part.
+
+ALSA CVS is still hosed but interestingly if I retry 20 or 30 times the
+"cvs diff" will eventually succeed.
+
+It feels like SF has all the CVS servers behind a load balancer and
+there are a bunch of broken servers and one good one in the load balance
+group, and if you retry over and over you will hit the good one...
 
 Lee
 
