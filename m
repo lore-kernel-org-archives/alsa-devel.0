@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: SBLive! subsystem 8066
-Date: Fri, 20 Jan 2006 21:22:53 -0500
-Message-ID: <1137810173.3241.95.camel@mindpipe>
-References: <1137536331.19678.47.camel@mindpipe>
-	 <s5hlkxb7xg8.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Sat, 21 Jan 2006 03:24:23 +0100
+Message-ID: <823164fe2c3122904ad6949ade3ffd00@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlkxb7xg8.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 834A718D
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 03:24:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,39 +18,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-01-20 at 16:04 +0100, Takashi Iwai wrote:
-> At Tue, 17 Jan 2006 17:18:51 -0500,
-> Lee Revell wrote:
-> > 
-> > ...is still "Unknown" by the ALSA driver.
-> > 
-> > Can we get something like this merged before the 1.0.11 release:
-> > 
-> > +       /* See ALSA bug #1036 - model is from windows driver */
-> > +       {.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80661102,
-> > +        .driver = "EMU10K1", .name = "SB Live 5.1 [SB0220]", 
-> > +        .id = "Live",
-> > +        .emu10k1_chip = 1,
-> > +        .ac97_chip = 1,
-> > +        .sblive51 = 1} ,
-> > 
-> > It might be SB0222, I am not 100% certain.
-> 
-> Isn't it already in CVS?  The name is different (it's "SB Live 5.1
-> Dell OEM [SB0220]", though).
 
-I thought so too but "cvs diff" said it was not, and now ALSA CVS is
-broken, AGAIN...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+======================================================================
+Reported By:                mjsb
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1572
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
+======================================================================
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              01-21-2006 03:24 CET
+======================================================================
+Summary:                    Simultaneous sound from speakers and headphone
+Description: 
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-$ cvs diff pci/emu10k1/emu10k1_main.c
-cvs [diff aborted]: end of file from server (consult above messages if
-any)
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
+======================================================================
 
-Lee
+----------------------------------------------------------------------
+ mjsb - 01-16-06 11:19 
+----------------------------------------------------------------------
+Someone else has reported bug #0001663 which describes the same problem as
+here (#0001572).
+
+----------------------------------------------------------------------
+ mjsb - 01-21-06 03:24 
+----------------------------------------------------------------------
+I have just recompiled the alsa-kernel driver with ./cofigure
+--with-debug=full and discovered using 'option model=test' that it is
+possible to have all four combinations:
+  1) speakers off and HP off
+  2) speakers off and HP on
+  3) speakers on and HP off
+  4) speakers on and HP on
+I have tried all models available in the patch_realtek.c but could only
+have it working with the  'test' model. None of the other models allowed
+me to have 2) working.
+
+The 'In-4 Pin Mode' mutes/unmutes HP,
+and 'Front Pin Mode' mutes/unmutes internal speakers.
+
+Doing a 'cat /proc/asound/card0/codec#0' in the combinations above I only
+get differences in two places. Namely in sections 'Node 0x14' and 'Node
+0x1b' for speakers and HP, respectively.
+Differences are on a line containing:
+  Pin-ctls: 0x00:                 --> when muted (applies to both sections
+0x14 and 1x1b)
+  Pin-ctls: 0xc0: OUT HP    --> when unmuted (applies to both sections
+0x14 and 1x1b)
+
+I'm uploading two files, one generated with sound from speakers and the
+other with sound from HeadPhones, where you can verify this.
+
+If mode information is needed, just ask ;)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+======================================================================
+
 
 
 
