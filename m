@@ -1,14 +1,16 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: SBLive! subsystem 8066
-Date: Fri, 20 Jan 2006 21:30:04 -0500
-Message-ID: <1137810605.3241.100.camel@mindpipe>
-References: <1137536331.19678.47.camel@mindpipe>
-	 <s5hlkxb7xg8.wl%tiwai@suse.de>  <1137810173.3241.95.camel@mindpipe>
+Subject: Re: ALSA bugs in the kernel Bugzilla
+Date: Fri, 20 Jan 2006 21:33:51 -0500
+Message-ID: <1137810832.3241.105.camel@mindpipe>
+References: <20060121005432.GN31803@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1137810173.3241.95.camel@mindpipe>
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CA83F191
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 03:33:53 +0100 (MET)
+In-Reply-To: <20060121005432.GN31803@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,30 +20,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
+To: Adrian Bunk <bunk@stusta.de>
+Cc: perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-01-20 at 21:22 -0500, Lee Revell wrote:
-> On Fri, 2006-01-20 at 16:04 +0100, Takashi Iwai wrote:
-> > Isn't it already in CVS?  The name is different (it's "SB Live 5.1
-> > Dell OEM [SB0220]", though).
+On Sat, 2006-01-21 at 01:54 +0100, Adrian Bunk wrote:
+> The kernel Bugzilla [1] currently lists 54 open [2] ALSA bugs.
 > 
-> I thought so too but "cvs diff" said it was not, and now ALSA CVS is
-> broken, AGAIN...
-> 
-> $ cvs diff pci/emu10k1/emu10k1_main.c
-> cvs [diff aborted]: end of file from server (consult above messages if
-> any)
+> Please review these bugs (some might as a first step require to ask the 
+> submitters whether they are still present in recent kernels).
 
-Never mind, this was a merge error on my part.
-
-ALSA CVS is still hosed but interestingly if I retry 20 or 30 times the
-"cvs diff" will eventually succeed.
-
-It feels like SF has all the CVS servers behind a load balancer and
-there are a bunch of broken servers and one good one in the load balance
-group, and if you retry over and over you will hit the good one...
+I'll take a look but in the future these should go straight into the
+ALSA bugzilla.  We do not have the resources to track the kernel
+bugzilla.
 
 Lee
 
