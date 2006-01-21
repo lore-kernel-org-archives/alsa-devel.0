@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
-Date: Sat, 21 Jan 2006 07:59:37 +0100
-Message-ID: <76b44b43206b553df8ed1bf32c332ed9@bugtrack.alsa-project.org>
+From: "Wieslaw Suriel" <wieslasuri@umanitaria.it>
+Subject: See the details Phara mac y to be well-informed
+Date: Sat, 21 Jan 2006 03:02:10 -0500
+Message-ID: <000001c61e60$fb4589d0$f698a8c0@palm>
+Reply-To: "Wieslaw Suriel" <wieslasuri@umanitaria.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C61E37.126F81D0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98F46188
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 07:59:38 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F2AA177
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 09:02:39 +0100 (MET)
+Received: from umanitaria.it (unknown [85.69.104.56])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id DFAC59923D
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 09:02:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,118 +22,117 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Dante Koo <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1766
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-21-2006 05:02 CET
-Last Modified:              01-21-2006 07:59 CET
-======================================================================
-Summary:                    jackd : ALSA: cannot set period size to 1024 frames
-for capture
-Description: 
-snd_pcm_hw_params_get_channels_max() return 4 for capture stream
+------=_NextPart_000_0001_01C61E37.126F81D0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
-	.info =
-	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
-	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-	     SNDRV_PCM_INFO_MMAP_VALID),
-	.formats =
-	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
-	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
-	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-	.rate_min = 5000,
-	.rate_max = 48000,
-	.channels_min = 1,
-#ifdef CHIP_AU8830
-	.channels_max = 4,
-#else
-	.channels_max = 2,
-#endif
-	.buffer_bytes_max = 0x10000,
-	.period_bytes_min = 0x1,
-	.period_bytes_max = 0x1000,
-	.periods_min = 2,
-	.periods_max = 32,
-};
+=20
+http://www.ciofardico.com <http://www.ciofardico.com>=20
+=20
+VIA
+Amb
+VAL
+Xan
+Som
+CIA
 
-static int
-vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
-type)
-{
-	stream_t *stream;
-	int i, en;
-	
-	if ((nr_ch == 3)
-	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
-		return -EBUSY;
-
-therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
-capture"
-
-jackd -d alsa hw:0 -S
-jackd 0.100.9
-
-...
- 
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
-ALSA: cannot set period size to 1024 frames for capture
-ALSA: cannot configure capture channel
-cannot load driver module alsa
-no message buffer overruns
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 01-21-06 07:41 
-----------------------------------------------------------------------
-It's bug in au8830 driver, it return 4 when jack call
-snd_pcm_hw_params_get_channels_max(), but au8830 driver
-vortex_adb_allocroute() return EBUSY when jack open 4 channels for
-capture.
-
-au88x0 driver should return 2 for capture stream when
-snd_pcm_hw_params_get_channels_max() is called
+GRA
+ien
+IUM
+ax=20
+a =20
+LIS
 
 
 
-----------------------------------------------------------------------
- rlrevell - 01-21-06 07:59 
-----------------------------------------------------------------------
-Yeah I saw that, which is why I deleted my comment ;-)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-21-06 05:02 Raymond        New Issue                                    
-01-21-06 05:25 rlrevell       Note Added: 0007735                          
-01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
-01-21-06 07:36 Raymond        Note Added: 0007736                          
-01-21-06 07:41 Raymond        Note Edited: 0007736                         
-01-21-06 07:59 rlrevell       Note Added: 0007737                          
-======================================================================
+
+
+from=20
+
+$3,
+$2,
+$1,
+$1,
+$1,
+$3,
+
+75
+89
+21
+42
+12
+75
+
+=20
+
+------=_NextPart_000_0001_01C61E37.126F81D0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV><A href=3D"http://www.ciofardico.com"><FONT face
+=3DArial size
+=3D
+2>http://www.ciofardico.com</FONT></A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV style=3D"BORDER-LEFT:
+ 0px
+; FLOAT : left;
+"><FONT=20
+face=3DArial=20
+size=3D
+2>VIA<BR>Amb<BR>VAL<BR>Xan<BR>Som<BR>CIA<BR></FONT></DIV>
+<DIV style
+=3D"BORDER-LEFT-WIDTH: 0px;
+ FLOAT :=20
+left;"><FONT=20
+face=3DArial
+ size
+=3D2>GRA<BR>ien<BR>IUM<BR>ax&nbsp;<BR>a&nbsp;&nbsp;<BR>LIS<BR></FONT></DI=
+V>
+<DIV style=3D"FLOAT=20
+:=20
+left
+; WORD-SPACING: normal;"><FONT=20
+face
+=3DArial
+ size=3D2> <BR> <BR> <BR> <BR> <BR>from <BR></FONT></DIV>
+<DIV style=3D
+"PADDING-TOP:
+ 0px; FLOAT
+ : left;"><FONT=20
+face=3DArial
+ size=3D
+2>$3,<BR>$2,<BR>$1,<BR>$1,<BR>$1,<BR>$3,<BR></FONT></DIV>
+<DIV=20
+style=3D"VERTICAL-ALIGN: baseline
+;
+ FLOAT : left;"><FONT=20
+face=3DArial
+ size
+=3D2>75<BR>89<BR>21<BR>42<BR>12<BR>75<BR></FONT></DIV><DIV =
+style=3D"LINE-HEIGHT: normal;
+ CLEAR
+ :
+ both;">&nbsp;</DIV></BODY></HTML>
+------=_NextPart_000_0001_01C61E37.126F81D0--
+
 
 
 
