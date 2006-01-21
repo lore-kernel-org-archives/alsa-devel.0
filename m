@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
-Date: Sat, 21 Jan 2006 07:36:13 +0100
-Message-ID: <289859f8cff164ca2f7205c7d8f44259@bugtrack.alsa-project.org>
+Date: Sat, 21 Jan 2006 07:59:37 +0100
+Message-ID: <76b44b43206b553df8ed1bf32c332ed9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9ED0618F
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 07:36:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98F46188
+	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 07:59:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-21-2006 05:02 CET
-Last Modified:              01-21-2006 07:36 CET
+Last Modified:              01-21-2006 07:59 CET
 ======================================================================
 Summary:                    jackd : ALSA: cannot set period size to 1024 frames
 for capture
@@ -103,12 +103,22 @@ no message buffer overruns
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-21-06 07:36 
+ Raymond - 01-21-06 07:41 
 ----------------------------------------------------------------------
 It's bug in au8830 driver, it return 4 when jack call
-nd_pcm_hw_params_get_channels_max(), but au8830 driver
+snd_pcm_hw_params_get_channels_max(), but au8830 driver
 vortex_adb_allocroute() return EBUSY when jack open 4 channels for
 capture.
+
+au88x0 driver should return 2 for capture stream when
+snd_pcm_hw_params_get_channels_max() is called
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 01-21-06 07:59 
+----------------------------------------------------------------------
+Yeah I saw that, which is why I deleted my comment ;-)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -117,6 +127,8 @@ Date Modified  Username       Field                    Change
 01-21-06 05:25 rlrevell       Note Added: 0007735                          
 01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
 01-21-06 07:36 Raymond        Note Added: 0007736                          
+01-21-06 07:41 Raymond        Note Edited: 0007736                         
+01-21-06 07:59 rlrevell       Note Added: 0007737                          
 ======================================================================
 
 
