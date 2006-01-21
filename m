@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Sat, 21 Jan 2006 14:41:42 +0100
-Message-ID: <ffce7534cabfe1575cb61f0cf1f22390@bugtrack.alsa-project.org>
+From: =?windows-1251?B?MzAg/+3i4PD/IC0gMiD05eLw4Ov/IDIwMDYg4+7k4A==?= <ascent@uk2.net>
+Subject: =?windows-1251?B?z9DAytLI18XRysjJIMrT0NEgz84gws3T0tDFzc3FzNMgys7N0tDOy94gyCDBztDc?=
+ =?windows-1251?B?wcUg0SDKztDPztDA0sjCzdvMIMzO2MXNzcjXxdHSws7M?=
+Date: Sat, 21 Jan 2006 18:40:32 +0000
+Message-ID: <f49601c61eba$6173370a$911d133b@uk2.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_24AA047A.4CAD01C7"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A6E21192
-	for <alsa-devel@alsa-project.org>; Sat, 21 Jan 2006 14:41:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,197 +17,223 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1748> 
-======================================================================
-Reported By:                briand
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1748
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9-1.667
-======================================================================
-Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-21-2006 14:41 CET
-======================================================================
-Summary:                    sound driver will not load (CS4237B chip)
-Description: 
-with BIOS set to "PnPOS" for sound chip:
-  `/sbin/modprobe snd-cs4236` produces the following on stdout:
-  "FATAL: Error inserting snd_cs4236 \
-   (/lib/modules/2.6.9-1.667/kernel/sound/isa/cs423x/snd-cs4236.ko): \
-   No such device"
-
-   -- occurs with 1.0.10, 1.0.11rc1, and (currently) 1.0.11rc2
-   alsaconf reports I have no sound card.
-   cat /proc/asound/cards reports I have no sound card.
+------=_NextPart_000_0000_24AA047A.4CAD01C7
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_804FD36B.3257D64D"
 
 
-with BIOS set to "Enable" for sound chip:
+------=_NextPart_001_0001_804FD36B.3257D64D
+Content-Type: text/plain;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
- `/sbin/modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
-irq=5`
+ =CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1
+=CF=CE =C2=CD=D3=D2=D0=C5=CD=CD=C5=CC=D3 =CA=CE=CD=D2=D0=CE=CB=DE =C8 =C1=
+=CE=D0=DC=C1=C5=20
+=D1 =CA=CE=D0=CF=CE=D0=C0=D2=C8=C2=CD=DB=CC =CC=CE=D8=C5=CD=CD=C8=D7=C5=D1=
+=D2=C2=CE=CC=20
 
-  ..produces nothing on stdout/stderr, but the laptop speakers click once,
-and dmesg shows:
-
- "ALSA /path/to/alsa/source/isa/cs423x/cs4236_lib.c:305: CS4236+ chip
-detected, but control port 0x538 is not valid"
-
-  - that message shows up in dmesg regardless of what i specify for
-'cport=' parameter (with, of course, the corresponding port value in the
-error message).
-
-  alsaconf seems to find the card, test the card, and reports all is fine;
-offers to modify /etc/modprobe.conf (with parameters shown above), and
-congratulates me.
-  cat /proc/asound/cards reports I have no sound card.
+30 =FF=ED=E2=E0=F0=FF - 2 =F4=E5=E2=F0=E0=EB=FF 2006 =E3=EE=E4=E0
 
 
-In looking at cs4236_lib.c, lines 301-307:
+=D0=EE=F1=F2 =EE=F2=E5=F7=E5=F1=F2=E2=E5=ED=ED=EE=E9 =FD=EA=EE=ED=EE=EC=E8=
+=EA=E8, =F0=E0=E7=E2=E8=F2=E8=E5 =F0=EE=F1=F1=E8=E9=F1=EA=E8=F5 =EF=F0=E5=
+=E4=EF=F0=E8=FF=F2=E8=E9, =F3=F1=E8=EB=E5=ED=E8=E5
+=EA=EE=ED=EA=F3=F0=E5=ED=F6=E8=E8 =E8 =E4=F0=F3=E3=E8=E5 =F4=E0=EA=F2=EE=F0=
+=FB =F1=EF=EE=F1=EE=E1=F1=F2=E2=F3=FE=F2 =EF=EE=E2=FB=F8=E5=ED=E8=FE =F0=EE=
+=EB=E8 =EA=EE=F0=EF=EE=F0=E0=F2=E8=E2=ED=EE=E3=EE
+=F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =E2 =EA=EE=EC=EF=E0=ED=E8=E8, =EE=E4=ED=E8=
+=EC =E8=E7 =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=EE=E2 =EA=EE=F2=EE=F0=EE=E3=EE =
+=FF=E2=EB=FF=E5=F2=F1=FF =E2=ED=F3=F2=F0=E5=ED=ED=E8=E9
+=EA=EE=ED=F2=F0=EE=EB=FC. =C5=F9=E5 =ED=E5=E4=E0=E2=ED=EE =F1=F0=E5=E4=E8=
+ =F1=EE=E1=F1=F2=E2=E5=ED=ED=E8=EA=EE=E2 =E8 =EC=E5=ED=E5=E4=E6=E5=F0=EE=E2=
+ =F0=EE=F1=F1=E8=E9=F1=EA=E8=F5 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=E9
+=ED=E5 =F1=F3=F9=E5=F1=F2=E2=EE=E2=E0=EB=EE =F7=E5=F2=EA=EE=E3=EE =EF=EE=ED=
+=E8=EC=E0=ED=E8=FF =E5=E3=EE =F0=EE=EB=E8 =E8 =EC=E5=F1=F2=E0 =E2 =F1=F2=F0=
+=F3=EA=F2=F3=F0=E5 =E1=E8=E7=ED=E5=F1=E0.
+=D1=E5=E9=F7=E0=F1 =E6=E5 =F3 =E2=F1=B8 =E1=EE=EB=FC=F8=E5=E3=EE =F7=E8=F1=
+=EB=E0 =EA=EE=EC=EF=E0=ED=E8=E9 =EF=EE=FF=E2=EB=FF=FE=F2=F1=FF =F1=EB=F3=E6=
+=E1=FB =E2=ED=F3=F2=F0=E5=ED=ED=E5=E3=EE =EA=EE=ED=F2=F0=EE=EB=FF,
+=EA=EE=F2=EE=F0=FB=E5 =EF=EE=EC=EE=E3=E0=FE=F2 =EF=F0=E5=E4=EF=F0=E8=FF=F2=
+=E8=FE =E4=EE=F1=F2=E8=F7=FC =EF=EE=F1=F2=E0=E2=EB=E5=ED=ED=FB=F5 =F6=E5=EB=
+=E5=E9, =E8=F1=EF=EE=EB=FC=E7=F3=FF =F1=E8=F1=F2=E5=EC=E0=F2=E8=E7=E8=F0=EE=
+=E2=E0=ED=ED=FB=E9
+=E8 =EF=EE=F1=EB=E5=E4=EE=E2=E0=F2=E5=EB=FC=ED=FB=E9 =EF=EE=E4=F5=EE=E4 =EA=
+ =EE=F6=E5=ED=EA=E5 =E8 =EF=EE=E2=FB=F8=E5=ED=E8=FE =FD=F4=F4=E5=EA=F2=E8=
+=E2=ED=EE=F1=F2=E8 =EF=F0=EE=F6=E5=F1=F1=EE=E2
+=F3=EF=F0=E0=E2=EB=E5=ED=E8=FF =F0=E8=F1=EA=E0=EC=E8, =EA=EE=ED=F2=F0=EE=EB=
+=FF =ED=E0=E4 =EC=EE=F8=E5=ED=ED=E8=F7=E5=F1=F2=E2=EE=EC, =E2=EE=F0=EE=E2=
+=F1=F2=E2=EE=EC =E8 =E7=EB=EE=F3=EF=EE=F2=F0=E5=E1=EB=E5=ED=E8=FF=EC=E8
+=F1=EE =F1=F2=EE=F0=EE=ED=FB =F1=EE=F2=F0=F3=E4=ED=E8=EA=EE=E2.
 
-        ver1 = snd_cs4236_ctrl_in(chip, 1);
-        ver2 = snd_cs4236_ext_in(chip, CS4236_VERSION);
-        snd_printdd("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n",
-cport, ver1, ver2);
-        if (ver1 != ver2) {
-                snd_printk("CS4236+ chip detected, but control port 0x%lx
-is not valid\n", cport);
-                snd_device_free(card, chip);
-                return -ENODEV;
-        }
+=D1=E5=EC=E8=ED=E0=F0 =F0=E0=F1=F1=F7=E8=F2=E0=ED =ED=E0 =F0=F3=EA=EE=E2=EE=
+=E4=E8=F2=E5=EB=E5=E9 =E2=ED=F3=F2=F0=E5=ED=ED=E8=F5 =EA=EE=ED=F2=F0=EE=EB=
+=FC=ED=FB=F5 =EE=F0=E3=E0=ED=EE=E2, =F7=EB=E5=ED=EE=E2
+=F1=EE=E2=E5=F2=EE=E2 =E4=E8=F0=E5=EA=F2=EE=F0=EE=E2 =E8 =F0=E5=E2=E8=E7=E8=
+=EE=ED=ED=FB=F5 =EA=EE=EC=E8=F1=F1=E8=E9, =E0 =F2=E0=EA=E6=E5 =F0=F3=EA=EE=
+=E2=EE=E4=E8=F2=E5=EB=E5=E9 =F4=E8=ED=E0=ED=F1=EE=E2=FB=F5
+=F1=EB=F3=E6=E1. =CF=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=E3=E8=
+=E8, =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=FB =E8 =F0=E5=EA=EE=EC=E5=ED=E4=E0=F6=
+=E8=E8 =EE=E1=FA=E5=E4=E8=ED=E5=ED=FB =E2 =EF=F0=EE=E3=F0=E0=EC=EC=F3
+=F7=E5=F2=FB=F0=E5=F5=E4=ED=E5=E2=ED=EE=E3=EE =F1=EF=E5=F6=E8=E0=EB=E8=E7=
+=E8=F0=EE=E2=E0=ED=ED=EE=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0-=EF=F0=E0=EA=F2=E8=
+=EA=F3=EC=E0:
 
-  ...it looks like ver1 and ver2 aren't agreeing.  ;)   Okay, so I
-experimented a bit.  I commented out (#if 0 ... #endif) the if (ver1 !=
-ver2) {...} block, and added:
+=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1=20
+=CF=CE =C2=CD=D3=D2=D0=C5=CD=CD=C5=CC=D3 =CA=CE=CD=D2=D0=CE=CB=DE =C8 =C1=
+=CE=D0=DC=C1=C5=20
+=D1 =CA=CE=D0=CF=CE=D0=C0=D2=C8=C2=CD=DB=CC =CC=CE=D8=C5=CD=CD=C8=D7=C5=D1=
+=D2=C2=CE=CC
+30 =FF=ED=E2=E0=F0=FF - 2 =F4=E5=E2=F0=E0=EB=FF 2006 =E3=EE=E4=E0
 
-   snd_printk("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n", cport,
-ver1, ver2);
+=D6=C5=CB=DC =CA=D3=D0=D1=C0: =F0=E0=F1=F1=EC=EE=F2=F0=E5=F2=FC =E4=E5=E9=
+=F1=F2=E2=F3=FE=F9=F3=FE =F1=E8=F1=F2=E5=EC=F3 =E8 =F2=E5=F5=ED=EE=EB=EE=E3=
+=E8=E8 =EE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8 =F0=E5=E3=F3=EB=FF=F0=ED=EE=E3=EE
+=EC=E5=ED=E5=E4=E6=EC=E5=ED=F2=E0 =E2 =F1=EE=F7=E5=F2=E0=ED=E8=E8 =F1 =FD=
+=F4=F4=E5=EA=F2=E8=E2=ED=EE=E9 =F1=E8=F1=F2=E5=EC=EE=E9 =E2=ED=F3=F2=F0=E5=
+=ED=ED=E5=E3=EE =EA=EE=ED=F2=F0=EE=EB=FF, =EA=EE=F2=EE=F0=E0=FF=20
+=EF=EE=E7=E2=EE=EB=E8=F2 =F3=F7=E0=F1=F2=ED=E8=EA=E0=EC =EA=F3=F0=F1=E0 =EE=
+=EF=F2=E8=EC=E8=E7=E8=F0=EE=E2=E0=F2=FC =F0=E0=F1=F5=EE=E4=FB =F7=E5=F0=E5=
+=E7 =F1=ED=E8=E6=E5=ED=E8=E5 =F3=F0=EE=E2=ED=FF
+=E7=EB=EE=F3=EF=EE=F2=F0=E5=E1=EB=E5=ED=E8=FF =F1=EE=F2=F0=F3=E4=ED=E8=EA=
+=E0=EC=E8 =E8 =EA=EE=F0=EF=EE=F0=E0=F2=E8=E2=ED=EE=E3=EE =E2=EE=F0=EE=E2=F1=
+=F2=E2=E0. =C8=F1=EF=EE=EB=FC=E7=F3=FF =E5=E5 =E4=EB=FF
+=F3=EF=EE=F0=FF=E4=EE=F7=E8=E2=E0=ED=E8=FF =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=
+=F2=E8, =EC=EE=E6=ED=EE =EF=EE=EB=F3=F7=E8=F2=FC =EE=F9=F3=F2=E8=EC=F3=FE=
+ =FD=EA=EE=ED=EE=EC=E8=FE =E4=E5=ED=E5=E6=ED=FB=F5
+=F0=E5=F1=F3=F0=F1=EE=E2 =E8 =E0=EA=F2=E8=E2=EE=E2 =EF=F0=E5=E4=EF=F0=E8=FF=
+=F2=E8=FF =E2 =F6=E5=EB=EE=EC
 
- ...recompiled, reinstalled... and then:
+=D1=E5=EC=E8=ED=E0=F0 =EF=F0=EE=F5=EE=E4=E8=F2 =E2 =E8=ED=F2=E5=ED=F1=E8=E2=
+=ED=EE=E9 =E8=ED=F2=E5=F0=E0=EA=F2=E8=E2=ED=EE=E9 =F4=EE=F0=EC=E5 =F1 =F0=
+=E0=E7=E1=EE=F0=EE=EC =E1=EE=EB=FC=F8=EE=E3=EE
+=EA=EE=EB=E8=F7=E5=F1=F2=E2=E0 =EF=F0=E8=EC=E5=F0=EE=E2 =E8=E7 =EF=F0=E0=EA=
+=F2=E8=EA=E8 =F0=EE=F1=F1=E8=E9=F1=EA=E8=F5 =E8 =E7=E0=F0=F3=E1=E5=E6=ED=FB=
+=F5 =EA=EE=EC=EF=E0=ED=E8=E9. =CD=E0 =F1=E5=EC=E8=ED=E0=F0=E5
+=E1=F3=E4=E5=F2 =EF=F0=EE=E2=E5=E4=E5=ED =CC=C0=D1=D2=C5=D0-=CA=CB=C0=D1=D1=
+ "=C8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5 =F0=E5=E7=F3=EB=FC=F2=E0=F2=EE=E2=
+ =E2=ED=F3=F2=F0=E5=ED=ED=E5=E3=EE =EA=EE=ED=F2=F0=EE=EB=FF
+=EF=F0=E8 =E7=E0=F9=E8=F2=E5 =EE=F2 =ED=E5=EF=F0=E0=E2=EE=EC=E5=F0=ED=FB=F5=
+ =E4=E5=E9=F1=F2=E2=E8=E9 =EF=F0=E0=E2=EE=EE=F5=F0=E0=ED=E8=F2=E5=EB=FC=ED=
+=FB=F5 =E8 =EA=EE=ED=F2=F0=EE=EB=E8=F0=F3=FE=F9=E8=F5
+=EE=F0=E3=E0=ED=EE=E2", =E0 =F2=E0=EA=E6=E5 =F0=E0=F1=F1=EC=EE=F2=F0=E5=ED=
+=FB =E8 =F0=E5=F8=E5=ED=FB =EA=EE=ED=EA=F0=E5=F2=ED=FB=E5 =F1=E8=F2=F3=E0=
+=F6=E8=E8 =E8=E7 =E4=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=E8
+=F0=E5=E0=EB=FC=ED=FB=F5 =EA=EE=EC=EF=E0=ED=E8=E9.
 
-  `modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
-irq=5`
+=C7=E2=EE=ED=E8=F2=E5: (=CE95) 980-65-l6, 980-65-=D79
 
-  results in:
+  =20
+------=_NextPart_001_0001_804FD36B.3257D64D
+Content-Type: text/html;
+    charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
-   /dev/dsp, /dev/audio, /dev/snd/* all appear, laptop speakers click once
-(as before), followed quickly by a <blart>, and we're on our way...
-almost.
+<HTML>
+<BODY text=3D#000000 bgColor=3D#ffffff>
 
-  my shorthand dmesg (printk) shows me that the driver was unloading
-because 0xFF did not equal 0xE8. (I'm going from memory here.  I'm
-positive that the value of "ver1" was 0xFF -- not quite sure about "ver2",
-but it's close.  ..it definitely wasn't 0xFF (obviously!) which is why the
-driver load aborted).
+<font size=3D"3" face=3D"Times New Roman"><P align=3Dcenter><FONT face=3D=
+Arial><b>=CF=D0=C0=CA=D2=C8=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1</b><br>
+<FONT size=3D5><b>=CF=CE =C2=CD=D3=D2=D0=C5=CD=CD=C5=CC=D3 =CA=CE=CD=D2=D0=
+=CE=CB=DE =C8 =C1=CE=D0=DC=C1=C5 <br>
+=D1 =CA=CE=D0=CF=CE=D0=C0=D2=C8=C2=CD=DB=CC =CC=CE=D8=C5=CD=CD=C8=D7=C5=D1=
+=D2=C2=CE=CC</b></FONT> </FONT></P>
+<P align=3Dcenter><FONT face=3DArial><b>30 =FF=ED=E2=E0=F0=FF - 2 =F4=E5=E2=
+=F0=E0=EB=FF 2006 =E3=EE=E4=E0</b><br>
+</FONT></P>
 
-  cat /proc/asound/cards reports card 0 is a CS4237B at IRQ 5, DMA 1,0
+<P align=3Djustify><FONT face=3DArial>=D0=EE=F1=F2 =EE=F2=E5=F7=E5=F1=F2=E2=
+=E5=ED=ED=EE=E9 =FD=EA=EE=ED=EE=EC=E8=EA=E8, =F0=E0=E7=E2=E8=F2=E8=E5 =F0=
+=EE=F1=F1=E8=E9=F1=EA=E8=F5 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=E9, =F3=F1=E8=EB=
+=E5=ED=E8=E5 =EA=EE=ED=EA=F3=F0=E5=ED=F6=E8=E8 =E8 =E4=F0=F3=E3=E8=E5 =F4=
+=E0=EA=F2=EE=F0=FB =F1=EF=EE=F1=EE=E1=F1=F2=E2=F3=FE=F2 =EF=EE=E2=FB=F8=E5=
+=ED=E8=FE =F0=EE=EB=E8 =EA=EE=F0=EF=EE=F0=E0=F2=E8=E2=ED=EE=E3=EE =F3=EF=F0=
+=E0=E2=EB=E5=ED=E8=FF =E2 =EA=EE=EC=EF=E0=ED=E8=E8, =EE=E4=ED=E8=EC =E8=E7=
+ =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=EE=E2 =EA=EE=F2=EE=F0=EE=E3=EE =FF=E2=EB=FF=
+=E5=F2=F1=FF =E2=ED=F3=F2=F0=E5=ED=ED=E8=E9 =EA=EE=ED=F2=F0=EE=EB=FC. =C5=
+=F9=E5 =ED=E5=E4=E0=E2=ED=EE =F1=F0=E5=E4=E8 =F1=EE=E1=F1=F2=E2=E5=ED=ED=E8=
+=EA=EE=E2 =E8 =EC=E5=ED=E5=E4=E6=E5=F0=EE=E2 =F0=EE=F1=F1=E8=E9=F1=EA=E8=F5=
+ =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=E9 =ED=E5 =F1=F3=F9=E5=F1=F2=E2=EE=E2=E0=EB=
+=EE =F7=E5=F2=EA=EE=E3=EE =EF=EE=ED=E8=EC=E0=ED=E8=FF =E5=E3=EE =F0=EE=EB=
+=E8 =E8 =EC=E5=F1=F2=E0 =E2 =F1=F2=F0=F3=EA=F2=F3=F0=E5 =E1=E8=E7=ED=E5=F1=
+=E0. =D1=E5=E9=F7=E0=F1 =E6=E5 =F3 =E2=F1=B8 =E1=EE=EB=FC=F8=E5=E3=EE =F7=
+=E8=F1=EB=E0 =EA=EE=EC=EF=E0=ED=E8=E9 =EF=EE=FF=E2=EB=FF=FE=F2=F1=FF =F1=EB=
+=F3=E6=E1=FB =E2=ED=F3=F2=F0=E5=ED=ED=E5=E3=EE =EA=EE=ED=F2=F0=EE=EB=FF, =
+=EA=EE=F2=EE=F0=FB=E5 =EF=EE=EC=EE=E3=E0=FE=F2 =EF=F0=E5=E4=EF=F0=E8=FF=F2=
+=E8=FE =E4=EE=F1=F2=E8=F7=FC =EF=EE=F1=F2=E0=E2=EB=E5=ED=ED=FB=F5 =F6=E5=EB=
+=E5=E9, =E8=F1=EF=EE=EB=FC=E7=F3=FF =F1=E8=F1=F2=E5=EC=E0=F2=E8=E7=E8=F0=EE=
+=E2=E0=ED=ED=FB=E9 =E8 =EF=EE=F1=EB=E5=E4=EE=E2=E0=F2=E5=EB=FC=ED=FB=E9 =EF=
+=EE=E4=F5=EE=E4 =EA =EE=F6=E5=ED=EA=E5 =E8 =EF=EE=E2=FB=F8=E5=ED=E8=FE =FD=
+=F4=F4=E5=EA=F2=E8=E2=ED=EE=F1=F2=E8 =EF=F0=EE=F6=E5=F1=F1=EE=E2 =F3=EF=F0=
+=E0=E2=EB=E5=ED=E8=FF =F0=E8=F1=EA=E0=EC=E8, =EA=EE=ED=F2=F0=EE=EB=FF =ED=
+=E0=E4 =EC=EE=F8=E5=ED=ED=E8=F7=E5=F1=F2=E2=EE=EC, =E2=EE=F0=EE=E2=F1=F2=E2=
+=EE=EC =E8 =E7=EB=EE=F3=EF=EE=F2=F0=E5=E1=EB=E5=ED=E8=FF=EC=E8 =F1=EE =F1=
+=F2=EE=F0=EE=ED=FB =F1=EE=F2=F0=F3=E4=ED=E8=EA=EE=E2.</FONT></P>
+<P align=3Djustify><FONT face=3DArial>=D1=E5=EC=E8=ED=E0=F0 =F0=E0=F1=F1=F7=
+=E8=F2=E0=ED =ED=E0 =F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=E9 =E2=ED=F3=F2=F0=
+=E5=ED=ED=E8=F5 =EA=EE=ED=F2=F0=EE=EB=FC=ED=FB=F5 =EE=F0=E3=E0=ED=EE=E2, =
+=F7=EB=E5=ED=EE=E2 =F1=EE=E2=E5=F2=EE=E2 =E4=E8=F0=E5=EA=F2=EE=F0=EE=E2 =E8=
+ =F0=E5=E2=E8=E7=E8=EE=ED=ED=FB=F5 =EA=EE=EC=E8=F1=F1=E8=E9, =E0 =F2=E0=EA=
+=E6=E5 =F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=E9 =F4=E8=ED=E0=ED=F1=EE=E2=FB=
+=F5 =F1=EB=F3=E6=E1. =CF=F0=E8=EA=EB=E0=E4=ED=FB=E5 =F2=E5=F5=ED=EE=EB=EE=
+=E3=E8=E8, =E8=ED=F1=F2=F0=F3=EC=E5=ED=F2=FB =E8 =F0=E5=EA=EE=EC=E5=ED=E4=
+=E0=F6=E8=E8 =EE=E1=FA=E5=E4=E8=ED=E5=ED=FB =E2 =EF=F0=EE=E3=F0=E0=EC=EC=F3=
+ =F7=E5=F2=FB=F0=E5=F5=E4=ED=E5=E2=ED=EE=E3=EE =F1=EF=E5=F6=E8=E0=EB=E8=E7=
+=E8=F0=EE=E2=E0=ED=ED=EE=E3=EE =F1=E5=EC=E8=ED=E0=F0=E0-=EF=F0=E0=EA=F2=E8=
+=EA=F3=EC=E0:</FONT></P>
+<P align=3Dcenter><FONT face=3DArial><b><FONT size=3D4>=CF=D0=C0=CA=D2=C8=
+=D7=C5=D1=CA=C8=C9 =CA=D3=D0=D1 <br>
+=CF=CE =C2=CD=D3=D2=D0=C5=CD=CD=C5=CC=D3 =CA=CE=CD=D2=D0=CE=CB=DE =C8 =C1=
+=CE=D0=DC=C1=C5 <br>
+=D1 =CA=CE=D0=CF=CE=D0=C0=D2=C8=C2=CD=DB=CC =CC=CE=D8=C5=CD=CD=C8=D7=C5=D1=
+=D2=C2=CE=CC</FONT><br>
+30 =FF=ED=E2=E0=F0=FF - 2 =F4=E5=E2=F0=E0=EB=FF 2006 =E3=EE=E4=E0</b></FO=
+NT></P>
+<P align=3Djustify><FONT face=3DArial><b><i>=D6=C5=CB=DC =CA=D3=D0=D1=C0:=
+</i></b> =F0=E0=F1=F1=EC=EE=F2=F0=E5=F2=FC =E4=E5=E9=F1=F2=E2=F3=FE=F9=F3=
+=FE =F1=E8=F1=F2=E5=EC=F3 =E8 =F2=E5=F5=ED=EE=EB=EE=E3=E8=E8 =EE=F0=E3=E0=
+=ED=E8=E7=E0=F6=E8=E8 =F0=E5=E3=F3=EB=FF=F0=ED=EE=E3=EE =EC=E5=ED=E5=E4=E6=
+=EC=E5=ED=F2=E0 =E2 =F1=EE=F7=E5=F2=E0=ED=E8=E8 =F1 =FD=F4=F4=E5=EA=F2=E8=
+=E2=ED=EE=E9 =F1=E8=F1=F2=E5=EC=EE=E9 =E2=ED=F3=F2=F0=E5=ED=ED=E5=E3=EE =EA=
+=EE=ED=F2=F0=EE=EB=FF, =EA=EE=F2=EE=F0=E0=FF&nbsp; =EF=EE=E7=E2=EE=EB=E8=F2=
+ =F3=F7=E0=F1=F2=ED=E8=EA=E0=EC =EA=F3=F0=F1=E0 =EE=EF=F2=E8=EC=E8=E7=E8=F0=
+=EE=E2=E0=F2=FC =F0=E0=F1=F5=EE=E4=FB =F7=E5=F0=E5=E7 =F1=ED=E8=E6=E5=ED=E8=
+=E5 =F3=F0=EE=E2=ED=FF =E7=EB=EE=F3=EF=EE=F2=F0=E5=E1=EB=E5=ED=E8=FF =F1=EE=
+=F2=F0=F3=E4=ED=E8=EA=E0=EC=E8 =E8 =EA=EE=F0=EF=EE=F0=E0=F2=E8=E2=ED=EE=E3=
+=EE =E2=EE=F0=EE=E2=F1=F2=E2=E0. =C8=F1=EF=EE=EB=FC=E7=F3=FF =E5=E5 =E4=EB=
+=FF =F3=EF=EE=F0=FF=E4=EE=F7=E8=E2=E0=ED=E8=FF =E4=E5=FF=F2=E5=EB=FC=ED=EE=
+=F1=F2=E8, =EC=EE=E6=ED=EE =EF=EE=EB=F3=F7=E8=F2=FC =EE=F9=F3=F2=E8=EC=F3=
+=FE =FD=EA=EE=ED=EE=EC=E8=FE =E4=E5=ED=E5=E6=ED=FB=F5 =F0=E5=F1=F3=F0=F1=EE=
+=E2 =E8 =E0=EA=F2=E8=E2=EE=E2 =EF=F0=E5=E4=EF=F0=E8=FF=F2=E8=FF =E2 =F6=E5=
+=EB=EE=EC</FONT></P>
+<P align=3Djustify><FONT face=3DArial>=D1=E5=EC=E8=ED=E0=F0 =EF=F0=EE=F5=EE=
+=E4=E8=F2 =E2 =E8=ED=F2=E5=ED=F1=E8=E2=ED=EE=E9 =E8=ED=F2=E5=F0=E0=EA=F2=E8=
+=E2=ED=EE=E9 =F4=EE=F0=EC=E5 =F1 =F0=E0=E7=E1=EE=F0=EE=EC =E1=EE=EB=FC=F8=
+=EE=E3=EE =EA=EE=EB=E8=F7=E5=F1=F2=E2=E0 =EF=F0=E8=EC=E5=F0=EE=E2 =E8=E7 =
+=EF=F0=E0=EA=F2=E8=EA=E8 =F0=EE=F1=F1=E8=E9=F1=EA=E8=F5 =E8 =E7=E0=F0=F3=E1=
+=E5=E6=ED=FB=F5 =EA=EE=EC=EF=E0=ED=E8=E9. =CD=E0 =F1=E5=EC=E8=ED=E0=F0=E5=
+ =E1=F3=E4=E5=F2 =EF=F0=EE=E2=E5=E4=E5=ED <b>=CC=C0=D1=D2=C5=D0-=CA=CB=C0=
+=D1=D1</b> "=C8=F1=EF=EE=EB=FC=E7=EE=E2=E0=ED=E8=E5 =F0=E5=E7=F3=EB=FC=F2=
+=E0=F2=EE=E2 =E2=ED=F3=F2=F0=E5=ED=ED=E5=E3=EE =EA=EE=ED=F2=F0=EE=EB=FF =EF=
+=F0=E8 =E7=E0=F9=E8=F2=E5 =EE=F2 =ED=E5=EF=F0=E0=E2=EE=EC=E5=F0=ED=FB=F5 =
+=E4=E5=E9=F1=F2=E2=E8=E9 =EF=F0=E0=E2=EE=EE=F5=F0=E0=ED=E8=F2=E5=EB=FC=ED=
+=FB=F5 =E8 =EA=EE=ED=F2=F0=EE=EB=E8=F0=F3=FE=F9=E8=F5 =EE=F0=E3=E0=ED=EE=E2=
+", =E0 =F2=E0=EA=E6=E5 =F0=E0=F1=F1=EC=EE=F2=F0=E5=ED=FB =E8 =F0=E5=F8=E5=
+=ED=FB =EA=EE=ED=EA=F0=E5=F2=ED=FB=E5 =F1=E8=F2=F3=E0=F6=E8=E8 =E8=E7 =E4=
+=E5=FF=F2=E5=EB=FC=ED=EE=F1=F2=E8 =F0=E5=E0=EB=FC=ED=FB=F5 =EA=EE=EC=EF=E0=
+=ED=E8=E9.</FONT></P>
+<P align=3Dcenter><FONT face=3DArial size=3D4><b>=C7=E2=EE=ED=E8=F2=E5: (=
+=CE95) 980-65-l6, 980-65-=D79</b></FONT></P></font>
+</BODY>
+</HTML>
 
-  in KDE, kmix loads and allows me to play with buttons/sliders - I can
-get CD audio to play out the laptop speakers, but other audio does not
-work.  xmms will load an mp3 file, but when I click the play button, the
-display shows 0:00, and nothing plays.  No sound, and the "progress bar"
-and "time remaining" stay at 0.
-
-  in terminal, `alsamixer` results in a segmentation fault.
-
-  ..incidentally, in this "hacked" module, it doesn't really matter what
-(reasonable) value I specify for cport= in /etc/modprobe.conf (0x538,
-0x120, 0x110 ...).  The result is the same.  kmix allows some adjustment,
-cd audio plays, no other sound, and alsamixer seg faults.  No doubt, if I
-were to work at it, I could generate a kernel panic with the right
-value... ;)
-
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-21-06 04:13 
-----------------------------------------------------------------------
-Don't bother uploading the spec sheet, if it's available on the web
-already.
-
-Did this ever work with any previous kernel?  Does the OSS driver work?
-
-----------------------------------------------------------------------
- briand - 01-21-06 14:41 
-----------------------------------------------------------------------
-re: the spec sheet:  It is no longer available on the manufacturer's
-(Cirrus Logic) web site.  I did find one place (an IBM laptop site,
-concerned with making drivers for OS/2 and OS/2 Warp) that had a link to a
-"local copy" of the PDF file.  So, the file is not easily found, but out
-there.  If it is  needed/wanted, I have a copy I can send via email.
-
-I have not tried installing any earlier kernel on this machine,
-personally, but have read anecdotal evidence on the web (google search)
-that sound had not worked with the OSS driver(s), and everyone (FC2 era
-and earlier) that wrote about success with ALSA drivers did not get it to
-work as a PnP device, ever.
-
-I think the most recent modification to the driver (snd-cs4236) added the
-section outlined above (in cs4236_lib.c) to solve some (other, unknown to
-me) problems with actual cs4236 and cs4236b chips, but it appears (at that
-point) to have broken support for the cs4237b chip at that time.  My
-opinion here is bolstered by the fact that alsaconf purports to find the
-chip (albeit, not when it's in PnP mode) and "goes through the motions" to
-probe it, install the driver (and it always picks snd-cs4236), and even
-claims to have !tested! it (admittedly, this test goes by pretty quick,
-and no audio is heard outside of a couple clicks).  The actual driver,
-however, doesn't load ("CS4236+ chip detected, but control port 0x538 is
-not valid"), even when alsaconf is in the midst of
-loading/testing/installing it.
-
-I have not read anywhere online, nor talked to anybody (live or online)
-that has had success loading the driver (recent vintage) in "explicit"
-mode (it now aborts loading at the code snippet posted above), nor ever
-having loaded it successfully in PnP mode.
-
-My opinion (at this point) is that:
-
-a) PnP has never worked for this chip, using any version of any driver,
-and that 
-
-b) those who have had success in the past (using snd-cs4232 and later,
-snd-4236) did so by bypassing PnP (isapnp=0) and explicitly passing
-parameters, using an ALSA driver created before the most recent changes to
-the cs4236 library.
-
-Perhaps all that is needed is for this chip to be properly "identified" so
-that it passes the (ver1 == ver2) test [above].  Maybe it needs a whole
-new driver; I don't know.  I am certainly willing to work with the
-developers to help pinpoint the problem(s), and get sound working on this
-laptop.  :)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-14-06 23:47 briand         New Issue                                    
-01-14-06 23:47 briand         Distribution              => Fedora Core 3   
-01-14-06 23:47 briand         Kernel Version            => 2.6.9-1.667     
-01-14-06 23:51 briand         Issue Monitored: briand                      
-01-21-06 03:48 briand         Note Added: 0007733                          
-01-21-06 04:13 rlrevell       Note Added: 0007734                          
-01-21-06 14:41 briand         Note Added: 0007739                          
-======================================================================
-
+------=_NextPart_001_0001_804FD36B.3257D64D--
 
 
 
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+------=_NextPart_000_0000_24AA047A.4CAD01C7--
