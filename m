@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001765]: Issue 001595 does not fix Audigy 4
-Date: Sun, 22 Jan 2006 00:19:35 +0100
-Message-ID: <d463245146f344ff66e89692f895cc32@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
+Date: Sun, 22 Jan 2006 02:00:55 +0100
+Message-ID: <d3abc64dad3f027df37d4a8d7866d774@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4250197
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 00:19:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF1FC19C
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 02:00:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1765> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
 ======================================================================
-Reported By:                alexholkner
-Assigned To:                jcdutton
+Reported By:                aaronkaplan
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1765
-Category:                   PCI - emu10k1
+Issue ID:                   328
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     feedback
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1398
 ======================================================================
-Date Submitted:             01-21-2006 01:49 CET
-Last Modified:              01-22-2006 00:19 CET
+Date Submitted:             06-08-2004 23:13 CEST
+Last Modified:              01-22-2006 02:00 CET
 ======================================================================
-Summary:                    Issue 001595 does not fix Audigy 4
+Summary:                    snd-nm256 freezes Dell Latitude LS
 Description: 
-I have an Audigy 4 with the same device/subsystem as khampf from issue
-1595.  I applied his patch, but it does NOT work unless I change
-.ca0102_chip = 1 to .ca0108_chip = 1.
+My Dell Latitude LS with an NM256AV hangs when I insert the
+snd-nm256 module.
 
-I did experience the same confusion where loading one driver with ca0108
-will make any subsequent driver work (e.g., ca0102) until the next reboot.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001595 Audigy 4 (bulk, non-Pro) unsupported (p...
+The OSS driver works fine.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 01-22-06 00:19 
+ rlrevell - 01-21-06 02:03 
 ----------------------------------------------------------------------
-Please note that some settings on the sound card can survive a warm
-reboot.
-When testing, please cold reboot. I.e. Power off the PC.
-So, happily do modprobe/rmmod to test the patches, but then do a final
-cold reboot to double check it BEFORE posting anything more to this bug
-report.
+tiwai on LKML:
 
-By default, without any patches, the following will be applied:
-        {.vendor = 0x1102, .device = 0x0008,
-         .driver = "Audigy2", .name = "Audigy 2 Value [Unknown]", 
-         .id = "Audigy2",
-         .emu10k2_chip = 1,
-         .ca0108_chip = 1,
-         .ac97_chip = 1} ,
+"This might not conver all Dell models.  In such a case, try
+reset_workaround2=1.  See the section of nm256 in
+ALSA-Configuration.txt for details."
 
-So, if for "fix" is exactly the same as that, it is not a fix at all. :-)
+Try the various reset_workaround options amd report which (if any) help.
 
-If you do find another options that works reliably after a cold reboot,
-please post the entire record, not just one line of it.
-
-Do not try the options:
-         .ca_cardbus_chip = 1,
-         .spi_dac = 1,
-Something that might be worth trying could be adding:
-         .spk71 = 1,
-
-Also, if one does post a new record for the card, please also include the
-output of:
-cat /proc/asound/version
-cat /proc/asound/cards
-
-Thank you
-
+----------------------------------------------------------------------
+ aaronkaplan - 01-22-06 02:00 
+----------------------------------------------------------------------
+With alsa 1.0.11rc2, modprobe snd_nm256 hangs the machine with all four
+possible combinations of reset_workaround and reset_workaround_2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-21-06 01:49 alexholkner    New Issue                                    
-01-22-06 00:06 jcdutton       Status                   new => assigned     
-01-22-06 00:06 jcdutton       Assigned To               => jcdutton        
-01-22-06 00:06 jcdutton       Relationship added       related to 0001595  
-01-22-06 00:19 jcdutton       Note Added: 0007741                          
-01-22-06 00:19 jcdutton       Status                   assigned => feedback
+06-08-04 23:13 aaronkaplan    New Issue                                    
+06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
+06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
+06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
+06-30-04 16:55 tiwai          Note Added: 0001362                          
+06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
+
+07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
+07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
+08-13-04 01:33 fridolin       Note Added: 0001559                          
+08-13-04 12:46 fridolin       Note Added: 0001562                          
+08-13-04 15:17 fridolin       Note Added: 0001564                          
+08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
+08-19-04 19:18 tiwai          Status                   assigned => resolved
+08-19-04 19:18 tiwai          Resolution               open => fixed       
+08-19-04 19:18 tiwai          Note Added: 0001593                          
+09-24-04 13:43 tiwai          Status                   resolved => closed  
+09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
+Core 4
+09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
+2.6.12-1.1398
+09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
+09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
+09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
+09-04-05 00:33 rlrevell       Note Added: 0006031                          
+09-13-05 11:49 florentb5      Note Added: 0006152                          
+11-08-05 18:47 tiwai          Note Added: 0006636                          
+11-12-05 17:58 aaronkaplan    Note Added: 0006687                          
+01-05-06 10:52 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+01-21-06 02:03 rlrevell       Note Added: 0007729                          
+01-22-06 02:00 aaronkaplan    Note Added: 0007742                          
 ======================================================================
 
 
