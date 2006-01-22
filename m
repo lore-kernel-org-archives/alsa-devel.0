@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001768]: ALi5451 AC'97 mixer error on boot
-Date: Sun, 22 Jan 2006 12:53:37 +0100
-Message-ID: <98e0fa146ceba20b8fbe6ea83dc8bd75@bugtrack.alsa-project.org>
+Date: Sun, 22 Jan 2006 13:00:07 +0100
+Message-ID: <c8c26e1bd2ed04f4c720de8b42d0606e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0E1C156
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 12:53:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F12B156
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 13:00:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1768> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian sid
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             01-22-2006 12:53 CET
-Last Modified:              01-22-2006 12:53 CET
+Last Modified:              01-22-2006 13:00 CET
 ======================================================================
 Summary:                    ALi5451 AC'97 mixer error on boot
 Description: 
@@ -53,6 +53,13 @@ ali mixer 1 creating error.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ liontooth - 01-22-06 13:00 
+----------------------------------------------------------------------
+The "Additional information" about the AC97 softmodem oops may be
+irrelevant; the problem there may be caused by the failure to free the
+device from the serial driver.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -61,6 +68,8 @@ Date Modified  Username       Field                    Change
 
 01-22-06 12:53 liontooth      Distribution              => Debian sid      
 01-22-06 12:53 liontooth      Kernel Version            => 2.6.15          
+01-22-06 12:56 liontooth      Issue Monitored: liontooth                    
+01-22-06 13:00 liontooth      Note Added: 0007745                          
 ======================================================================
 
 
