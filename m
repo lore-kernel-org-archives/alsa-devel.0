@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Sun, 22 Jan 2006 17:38:08 +0100
-Message-ID: <e7631d3e5bdafacd40e5d0f1e0f83139@bugtrack.alsa-project.org>
+Date: Sun, 22 Jan 2006 19:45:37 +0100
+Message-ID: <cf1e2093e2a0262f80caee0dcd3135ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5694715E
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 17:38:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65A6C10A
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 19:45:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9-1.667
 ======================================================================
 Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-22-2006 17:38 CET
+Last Modified:              01-22-2006 19:45 CET
 ======================================================================
 Summary:                    sound driver will not load (CS4237B chip)
 Description: 
@@ -136,15 +136,6 @@ value... ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 01-22-06 10:18 
-----------------------------------------------------------------------
-What's output from this command on your machine (try to toggle the BIOS PnP
-OS option as well)?
-
-" for i in /sys/bus/pnp/devices/* ; do cat $i/id ; cat $i/resources ; done
-"
-
-----------------------------------------------------------------------
  briand - 01-22-06 17:38 
 ----------------------------------------------------------------------
 1) ----- BIOS ---------------------
@@ -219,6 +210,12 @@ cat: /sys/bus/pnp/devices/*/id: No such file or directory
 cat: /sys/bus/pnp/devices/*/resources: No such file or directory
 [root@scribbler ~]#
 
+----------------------------------------------------------------------
+ perex - 01-22-06 19:45 
+----------------------------------------------------------------------
+hmm. does FC3 have sysfs enabled (post output from mount here)? the
+directory /sys/bus/pnp should exist...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -231,6 +228,7 @@ Date Modified  Username       Field                    Change
 01-21-06 14:41 briand         Note Added: 0007739                          
 01-22-06 10:18 perex          Note Added: 0007744                          
 01-22-06 17:38 briand         Note Added: 0007750                          
+01-22-06 19:45 perex          Note Added: 0007751                          
 ======================================================================
 
 
