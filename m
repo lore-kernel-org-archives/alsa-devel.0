@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001434]: Java plugin sound not working in OSS emulation
-Date: Sun, 22 Jan 2006 14:45:00 +0100
-Message-ID: <e296db9954b85146531729d08a5f1858@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001769]: Echo Mia - Broken Link
+Date: Sun, 22 Jan 2006 15:15:50 +0100
+Message-ID: <6ea04e6bf302357a9245b6cae6f29d84@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5245510F
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 14:45:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 079F515A
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 15:15:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1434> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1769> 
 ======================================================================
-Reported By:                xolsonalsa
+Reported By:                owen
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1434
-Category:                   ISA - sb16/sbawe
+Project:                    ALSA - WWW server
+Issue ID:                   1769
+Category:                   bad link
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             09-18-2005 22:40 CEST
-Last Modified:              01-22-2006 14:44 CET
+Date Submitted:             01-22-2006 15:15 CET
+Last Modified:              01-22-2006 15:15 CET
 ======================================================================
-Summary:                    Java plugin sound not working in OSS emulation
+Summary:                    Echo Mia - Broken Link
 Description: 
-Tried 2 different soundblaster 16 cards, and ISA and a pnp isa vibra 16. 
-PCM sounds won't play if the Java Sound Audio Engine (software mixer that
-opens /dev/dsp) is in use. Tried it with the JavaSoundDemo and also pogo
-games. The symptom is it seems to play one sound and then io through
-/dev/dsp becomes blocked. The only workaround is to start the web browser
-using aoss so that it opens the native alsa pcm device instead of
-/dev/dsp.
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Echo+Digital+Audio+Corporation&card=Mia-midi.&chip=Motorola+56361&module=mia
+
+broken link form echo mia page
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- xolsonalsa - 01-22-06 13:57 
-----------------------------------------------------------------------
-Problem is getting worse, I just tried using the alsa drivers that came
-with Fedora Core 4, kernel version 2.6.14-1.1656_FC4, alsa kernel drivers
-version 1.0.10rc1; alsa-lib, alsa-util, alsa-oss all version 1.0.10.  And
-now when I start the web browser using aoss and test java sound it behaves
-exactly like the driver 1.0.9 did in oss emulation, plays one sound and
-dies.
-
-----------------------------------------------------------------------
- xolsonalsa - 01-22-06 14:44 
-----------------------------------------------------------------------
-Ok nevermind my previous comment about alsa 1.0.10, the workaround by
-starting the browser with aoss still works, I just had a problem with my
-asound.conf being overwritten by fedora system-config-soundcard (which
-doesn't work with a non plug and play isa soundcard).  So it wasn't
-loading the dmix plugin.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-18-05 22:40 xolsonalsa     New Issue                                    
-09-23-05 14:46 xolsonalsa     Note Added: 0006367                          
-09-25-05 01:07 xolsonalsa     Note Added: 0006380                          
-09-25-05 12:38 xolsonalsa     Note Added: 0006385                          
-09-27-05 03:54 xolsonalsa     Note Added: 0006402                          
-01-22-06 13:57 xolsonalsa     Note Added: 0007746                          
-01-22-06 14:44 xolsonalsa     Note Added: 0007747                          
+01-22-06 15:15 owen           New Issue                                    
 ======================================================================
 
 
