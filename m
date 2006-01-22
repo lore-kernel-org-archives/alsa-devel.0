@@ -1,37 +1,95 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [Alsa-devel] RFC: OSS driver removal, a slightly different
- approach
-Date: Sun, 22 Jan 2006 16:34:07 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0601221632250.9516@tm8103.perex-int.cz>
-References: <20060119174600.GT19398@stusta.de> <s5hmzhr7xsr.wl%tiwai@suse.de>
- <Pine.LNX.4.61.0601201729370.10065@yvahk01.tjqt.qr> <200601201844.29873.pzad@pobox.sk>
- <Pine.LNX.4.61.0601210958010.21704@yvahk01.tjqt.qr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001434]: Java plugin sound not working in OSS emulation
+Date: Sun, 22 Jan 2006 17:28:28 +0100
+Message-ID: <aba23acd204fb13007f31950f30d09c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932236AbWAVPeK@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.61.0601210958010.21704@yvahk01.tjqt.qr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7BF215E
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 17:28:28 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 21 Jan 2006, Jan Engelhardt wrote:
 
-> >> Ah, so http://alphagate.hopto.org/quad_dsp/ which I had created
-> >> is The Right Thing?
-> >
-> >This will work for your card, but not for emu10k1.
-> 
-> Does emu10k1 provide no adsp, how does it work?
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1434> 
+======================================================================
+Reported By:                xolsonalsa
+Assigned To:                rlrevell
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1434
+Category:                   ISA - sb16/sbawe
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             09-18-2005 22:40 CEST
+Last Modified:              01-22-2006 17:28 CET
+======================================================================
+Summary:                    Java plugin sound not working in OSS emulation
+Description: 
+Tried 2 different soundblaster 16 cards, and ISA and a pnp isa vibra 16. 
+PCM sounds won't play if the Java Sound Audio Engine (software mixer that
+opens /dev/dsp) is in use. Tried it with the JavaSoundDemo and also pogo
+games. The symptom is it seems to play one sound and then io through
+/dev/dsp becomes blocked. The only workaround is to start the web browser
+using aoss so that it opens the native alsa pcm device instead of
+/dev/dsp.
+======================================================================
 
-It supports multi-open and then the application can set channel routing 
-specific per file descriptor (alsa-lib does this setup for user offering 
-only abstract device names like front, rear, center_lfe, surround40, 
-surround51 etc.).
+----------------------------------------------------------------------
+ xolsonalsa - 01-22-06 14:44 
+----------------------------------------------------------------------
+Ok nevermind my previous comment about alsa 1.0.10, the workaround by
+starting the browser with aoss still works, I just had a problem with my
+asound.conf being overwritten by fedora system-config-soundcard (which
+doesn't work with a non plug and play isa soundcard).  So it wasn't
+loading the dmix plugin.
 
-						Jaroslav
+----------------------------------------------------------------------
+ rlrevell - 01-22-06 17:28 
+----------------------------------------------------------------------
+OK closing.  Please report the system-config-soundcard bug to Fedora.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-18-05 22:40 xolsonalsa     New Issue                                    
+09-23-05 14:46 xolsonalsa     Note Added: 0006367                          
+09-25-05 01:07 xolsonalsa     Note Added: 0006380                          
+09-25-05 12:38 xolsonalsa     Note Added: 0006385                          
+09-27-05 03:54 xolsonalsa     Note Added: 0006402                          
+01-22-06 13:57 xolsonalsa     Note Added: 0007746                          
+01-22-06 14:44 xolsonalsa     Note Added: 0007747                          
+01-22-06 17:28 rlrevell       Status                   new => resolved     
+01-22-06 17:28 rlrevell       Resolution               open => fixed       
+01-22-06 17:28 rlrevell       Assigned To               => rlrevell        
+01-22-06 17:28 rlrevell       Note Added: 0007748                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+for problems?  Stop!  Download the new AJAX search engine that makes
+searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
