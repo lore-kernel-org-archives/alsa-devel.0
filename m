@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001434]: Java plugin sound not working in OSS emulation
-Date: Sun, 22 Jan 2006 13:57:02 +0100
-Message-ID: <a5bdd73b0f997dd09d51d5ae0ad19793@bugtrack.alsa-project.org>
+Date: Sun, 22 Jan 2006 14:45:00 +0100
+Message-ID: <e296db9954b85146531729d08a5f1858@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9115147
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 13:57:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5245510F
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 14:45:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             09-18-2005 22:40 CEST
-Last Modified:              01-22-2006 13:57 CET
+Last Modified:              01-22-2006 14:44 CET
 ======================================================================
 Summary:                    Java plugin sound not working in OSS emulation
 Description: 
@@ -54,32 +54,6 @@ using aoss so that it opens the native alsa pcm device instead of
 ======================================================================
 
 ----------------------------------------------------------------------
- xolsonalsa - 09-27-05 03:54 
-----------------------------------------------------------------------
-Well i was wrong about the 16-bit dma allocation control being changed by
-Java Sound. I tried disabling the creation of that control and it still
-had the problem.  There is still the bug when both dma8 and dma16 are set
-normally and it seems to be related to full duplex operation. In
-sb16_main.c, commenting out the control this way fixes the problem:
-
-/*	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
-		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
-	else */
-		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
-
-commenting out the control this way does not:
-/*	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
-		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
-	else 
-		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
-*/
-
--------
-So it looks like if pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX; the
-problem appears, and if pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX; it
-works.
-
-----------------------------------------------------------------------
  xolsonalsa - 01-22-06 13:57 
 ----------------------------------------------------------------------
 Problem is getting worse, I just tried using the alsa drivers that came
@@ -88,6 +62,15 @@ version 1.0.10rc1; alsa-lib, alsa-util, alsa-oss all version 1.0.10.  And
 now when I start the web browser using aoss and test java sound it behaves
 exactly like the driver 1.0.9 did in oss emulation, plays one sound and
 dies.
+
+----------------------------------------------------------------------
+ xolsonalsa - 01-22-06 14:44 
+----------------------------------------------------------------------
+Ok nevermind my previous comment about alsa 1.0.10, the workaround by
+starting the browser with aoss still works, I just had a problem with my
+asound.conf being overwritten by fedora system-config-soundcard (which
+doesn't work with a non plug and play isa soundcard).  So it wasn't
+loading the dmix plugin.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,6 +81,7 @@ Date Modified  Username       Field                    Change
 09-25-05 12:38 xolsonalsa     Note Added: 0006385                          
 09-27-05 03:54 xolsonalsa     Note Added: 0006402                          
 01-22-06 13:57 xolsonalsa     Note Added: 0007746                          
+01-22-06 14:44 xolsonalsa     Note Added: 0007747                          
 ======================================================================
 
 
