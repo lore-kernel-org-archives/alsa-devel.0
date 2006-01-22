@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001771]: License on two files lacks GPL version option
-Date: Sun, 22 Jan 2006 20:15:07 +0100
-Message-ID: <f0d9e2c8ca8cfbdeaa82140dbc0d426e@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0001772]: License on one file lacks GPL version option
+Date: Sun, 22 Jan 2006 20:27:00 +0100
+Message-ID: <e018521481749452fd248c6f6131cdb3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCAB6144
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 20:15:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2436E14B
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 20:27:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1771> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1772> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1771
-Category:                   aconnect
+Project:                    ALSA - tools
+Issue ID:                   1772
+Category:                   echomixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             01-22-2006 20:15 CET
-Last Modified:              01-22-2006 20:15 CET
+Date Submitted:             01-22-2006 20:27 CET
+Last Modified:              01-22-2006 20:27 CET
 ======================================================================
-Summary:                    License on two files lacks GPL version option
+Summary:                    License on one file lacks GPL version option
 Description: 
-Most alsa-utils source files contain this text:
+Most alsa-tools source files contain this text:
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+However, one file contains this text:
 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
-
-However, two files contain this text:
-
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License version 2 as
- *  published by the Free Software Foundation.
+ *  the Free Software Foundation; version 2 of the License.
 
 The latter text does not grant the user the option of using a later
 version of the GPL.
 
-I found the anomalous license statements in:
+I found the anomalous license statement in:
 
-  ./seq/aconnect/aconnect.c
-  ./seq/aseqnet/aseqnet.c
+  echomixer/echomixer.c
 
+I have written to the author asking whether or not he really meant not
+to grant the version option.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-22-06 20:15 jdthood        New Issue                                    
+01-22-06 20:27 jdthood        New Issue                                    
 ======================================================================
 
 
