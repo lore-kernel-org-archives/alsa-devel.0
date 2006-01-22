@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Sun, 22 Jan 2006 20:52:04 +0100
-Message-ID: <a4cb907bbf492f0d4ac4676e454165b2@bugtrack.alsa-project.org>
+Date: Sun, 22 Jan 2006 21:19:39 +0100
+Message-ID: <6a16c6381b5b4cf3ffde757f7a0348f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DC47FE
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 20:52:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99EBD150
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 21:19:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9-1.667
 ======================================================================
 Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-22-2006 20:52 CET
+Last Modified:              01-22-2006 21:19 CET
 ======================================================================
 Summary:                    sound driver will not load (CS4237B chip)
 Description: 
@@ -136,12 +136,6 @@ value... ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 01-22-06 19:45 
-----------------------------------------------------------------------
-hmm. does FC3 have sysfs enabled (post output from mount here)? the
-directory /sys/bus/pnp should exist...
-
-----------------------------------------------------------------------
  briand - 01-22-06 20:52 
 ----------------------------------------------------------------------
 [root@scribbler ~]# mount
@@ -154,6 +148,15 @@ usbfs on /proc/bus/usb type usbfs (rw)
 none on /dev/shm type tmpfs (rw)
 none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
 sunrpc on /var/lib/nfs/rpc_pipefs type rpc_pipefs (rw)
+
+----------------------------------------------------------------------
+ perex - 01-22-06 21:19 
+----------------------------------------------------------------------
+I see. It seems that your system does not support ACPI and PnP BIOS access
+might be disable in your kernel (CONFIG_PNPBIOS). Try to find the right
+cport value, it might be also something line 0x100, 0x110, 0x120 on some
+systems. Also, if you have dual-boot machine, windows might provide the
+resource map information for audio device.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -169,6 +172,7 @@ Date Modified  Username       Field                    Change
 01-22-06 17:38 briand         Note Added: 0007750                          
 01-22-06 19:45 perex          Note Added: 0007751                          
 01-22-06 20:52 briand         Note Added: 0007752                          
+01-22-06 21:19 perex          Note Added: 0007753                          
 ======================================================================
 
 
