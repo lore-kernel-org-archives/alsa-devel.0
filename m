@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Sun, 22 Jan 2006 22:35:18 +0100
-Message-ID: <2332c6e9eae1bd150d1c566e8cac955c@bugtrack.alsa-project.org>
+Date: Sun, 22 Jan 2006 23:09:58 +0100
+Message-ID: <01ba664540949cf44090a608fc77ef9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0720613B
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 22:35:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 889CC142
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 23:09:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9-1.667
 ======================================================================
 Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-22-2006 22:35 CET
+Last Modified:              01-22-2006 23:09 CET
 ======================================================================
 Summary:                    sound driver will not load (CS4237B chip)
 Description: 
@@ -136,17 +136,6 @@ value... ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 01-22-06 21:20 
-----------------------------------------------------------------------
-I see. It seems that your system does not support ACPI and PnP BIOS access
-might be disabled in your kernel (CONFIG_PNPBIOS). Try to find the right
-cport value, it might be also something line 0x100, 0x110, 0x120 on some
-systems. Also, if you have dual-boot machine, windows might provide the
-resource map information for audio device.
-
-
-
-----------------------------------------------------------------------
  briand - 01-22-06 22:35 
 ----------------------------------------------------------------------
 I would presume those were the exact configuration gymnastics performed by
@@ -169,6 +158,11 @@ this parameter? 0x100, 0x101, 0x102 ... 0xFFF   ??
 If so, that's a lot of rebooting... or is it sufficient to simply
 /sbin/modprobe -r snd-cs4236 and /sbin/modprobe snd-cs4236 3,839 times?
 
+----------------------------------------------------------------------
+ rlrevell - 01-22-06 23:09 
+----------------------------------------------------------------------
+What if you enable CONFIG_PNPBIOS?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -186,6 +180,7 @@ Date Modified  Username       Field                    Change
 01-22-06 21:19 perex          Note Added: 0007753                          
 01-22-06 21:20 perex          Note Edited: 0007753                         
 01-22-06 22:35 briand         Note Added: 0007754                          
+01-22-06 23:09 rlrevell       Note Added: 0007755                          
 ======================================================================
 
 
