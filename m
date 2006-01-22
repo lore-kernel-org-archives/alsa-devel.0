@@ -1,11 +1,14 @@
-From: MAILER-DAEMON@triton.paru.cas.cz (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Sun, 22 Jan 2006 21:18:59 +0100 (CET)
-Message-ID: <20060122201859.D44B213019F@triton.paru.cas.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
+Date: Sun, 22 Jan 2006 22:35:18 +0100
+Message-ID: <2332c6e9eae1bd150d1c566e8cac955c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="B79C01301B7.1137961139/triton.paru.cas.cz"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0720613B
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2006 22:35:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,108 +18,177 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
 
---B79C01301B7.1137961139/triton.paru.cas.cz
-Content-Description: Notification
-Content-Type: text/plain
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1748> 
+======================================================================
+Reported By:                briand
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1748
+Category:                   ISA - cs4236
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9-1.667
+======================================================================
+Date Submitted:             01-14-2006 23:47 CET
+Last Modified:              01-22-2006 22:35 CET
+======================================================================
+Summary:                    sound driver will not load (CS4237B chip)
+Description: 
+with BIOS set to "PnPOS" for sound chip:
+  `/sbin/modprobe snd-cs4236` produces the following on stdout:
+  "FATAL: Error inserting snd_cs4236 \
+   (/lib/modules/2.6.9-1.667/kernel/sound/isa/cs423x/snd-cs4236.ko): \
+   No such device"
 
-This is the Postfix program at host triton.paru.cas.cz.
-
-I'm sorry to have to inform you that the message returned
-below could not be delivered to one or more destinations.
-
-For further assistance, please send mail to <postmaster>
-
-If you do so, please include this problem report. You can
-delete your own text from the message returned below.
-
-			The Postfix program
-
-<hubicka@paru.cas.cz>: host ixodes.paru.cas.cz[10.0.3.6] said: 550 No such
-    recipient (in reply to RCPT TO command)
-
---B79C01301B7.1137961139/triton.paru.cas.cz
-Content-Description: Delivery error report
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; triton.paru.cas.cz
-Arrival-Date: Sun, 22 Jan 2006 21:18:59 +0100 (CET)
-
-Final-Recipient: rfc822; hubicka@paru.cas.cz
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-Postfix; host ixodes.paru.cas.cz[10.0.3.6] said: 550 No such
-    recipient (in reply to RCPT TO command)
-
---B79C01301B7.1137961139/triton.paru.cas.cz
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
-
-Received: from triton.paru.cas.cz (localhost [127.0.0.1])
-	by nod32.paru.cas.cz (Postfix) with ESMTP id B79C01301B7
-	for <hubicka@paru.cas.cz>; Sun, 22 Jan 2006 21:18:59 +0100 (CET)
-X-Virus-Scanner: This message was checked by NOD32 Antivirus system
-	NOD32 for Linux Mail Server.
-	For more information on NOD32 Antivirus System,
-	please, visit our website: http://www.nod32.com/.
-Received: by triton.paru.cas.cz (Postfix, from userid 501)
-	id A1B1613019F; Sun, 22 Jan 2006 21:18:59 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.1.0 (2005-09-13) on triton.paru.cas.cz
-X-Spam-Level: ****
-X-Spam-Status: No, hits=4.0 required=5.0 tests=ALL_TRUSTED,BAYES_05,
-	MIME_BOUND_NEXTPART,MISSING_MIMEOLE,NO_REAL_NAME,PRIORITY_NO_NAME
-	autolearn=no version=3.1.0
-Received: from paru.cas.cz (unknown [86.53.37.88])
-	by triton.paru.cas.cz (Postfix) with SMTP id B942A1301B7
-	for <hubicka@paru.cas.cz>; Sun, 22 Jan 2006 21:18:41 +0100 (CET)
-From: alsa-devel@lists.sourceforge.net
-To: hubicka@paru.cas.cz
-Subject: [NOD32: deleted] Re: excel document
-Date: Sun, 22 Jan 2006 20:20:02 +0000
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
-Message-Id: <20060122201841.B942A1301B7@triton.paru.cas.cz>
-X-NOD32Result: deleted
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-Please read the attached file!
-
-++++ Attachment: No Virus found
-++++ Norman AntiVirus - www.norman.com
+   -- occurs with 1.0.10, 1.0.11rc1, and (currently) 1.0.11rc2
+   alsaconf reports I have no sound card.
+   cat /proc/asound/cards reports I have no sound card.
 
 
+with BIOS set to "Enable" for sound chip:
 
-________ Notification from NOD32 ________
-Warning: NOD32 Antivirus System for Linux Mail Server found the following infiltrations in this message:
+ `/sbin/modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
+irq=5`
 
-  document_hubicka.pif - Win32/Netsky.Q worm - unable to clean - deleted
+  ..produces nothing on stdout/stderr, but the laptop speakers click once,
+and dmesg shows:
 
-http://www.nod32.com
+ "ALSA /path/to/alsa/source/isa/cs423x/cs4236_lib.c:305: CS4236+ chip
+detected, but control port 0x538 is not valid"
 
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain
-X-Removed: Removed by NOD32 Antivirus System
+  - that message shows up in dmesg regardless of what i specify for
+'cport=' parameter (with, of course, the corresponding port value in the
+error message).
+
+  alsaconf seems to find the card, test the card, and reports all is fine;
+offers to modify /etc/modprobe.conf (with parameters shown above), and
+congratulates me.
+  cat /proc/asound/cards reports I have no sound card.
+
+
+In looking at cs4236_lib.c, lines 301-307:
+
+        ver1 = snd_cs4236_ctrl_in(chip, 1);
+        ver2 = snd_cs4236_ext_in(chip, CS4236_VERSION);
+        snd_printdd("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n",
+cport, ver1, ver2);
+        if (ver1 != ver2) {
+                snd_printk("CS4236+ chip detected, but control port 0x%lx
+is not valid\n", cport);
+                snd_device_free(card, chip);
+                return -ENODEV;
+        }
+
+  ...it looks like ver1 and ver2 aren't agreeing.  ;)   Okay, so I
+experimented a bit.  I commented out (#if 0 ... #endif) the if (ver1 !=
+ver2) {...} block, and added:
+
+   snd_printk("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n", cport,
+ver1, ver2);
+
+ ...recompiled, reinstalled... and then:
+
+  `modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
+irq=5`
+
+  results in:
+
+   /dev/dsp, /dev/audio, /dev/snd/* all appear, laptop speakers click once
+(as before), followed quickly by a <blart>, and we're on our way...
+almost.
+
+  my shorthand dmesg (printk) shows me that the driver was unloading
+because 0xFF did not equal 0xE8. (I'm going from memory here.  I'm
+positive that the value of "ver1" was 0xFF -- not quite sure about "ver2",
+but it's close.  ..it definitely wasn't 0xFF (obviously!) which is why the
+driver load aborted).
+
+  cat /proc/asound/cards reports card 0 is a CS4237B at IRQ 5, DMA 1,0
+
+  in KDE, kmix loads and allows me to play with buttons/sliders - I can
+get CD audio to play out the laptop speakers, but other audio does not
+work.  xmms will load an mp3 file, but when I click the play button, the
+display shows 0:00, and nothing plays.  No sound, and the "progress bar"
+and "time remaining" stay at 0.
+
+  in terminal, `alsamixer` results in a segmentation fault.
+
+  ..incidentally, in this "hacked" module, it doesn't really matter what
+(reasonable) value I specify for cport= in /etc/modprobe.conf (0x538,
+0x120, 0x110 ...).  The result is the same.  kmix allows some adjustment,
+cd audio plays, no other sound, and alsamixer seg faults.  No doubt, if I
+were to work at it, I could generate a kernel panic with the right
+value... ;)
 
 
 
-------=_NextPart_000_0016----=_NextPart_000_0016--
+
+======================================================================
+
+----------------------------------------------------------------------
+ perex - 01-22-06 21:20 
+----------------------------------------------------------------------
+I see. It seems that your system does not support ACPI and PnP BIOS access
+might be disabled in your kernel (CONFIG_PNPBIOS). Try to find the right
+cport value, it might be also something line 0x100, 0x110, 0x120 on some
+systems. Also, if you have dual-boot machine, windows might provide the
+resource map information for audio device.
 
 
 
---B79C01301B7.1137961139/triton.paru.cas.cz--
+----------------------------------------------------------------------
+ briand - 01-22-06 22:35 
+----------------------------------------------------------------------
+I would presume those were the exact configuration gymnastics performed by
+the alsaconf utility, when it "successfully exited" and modified my
+/etc/modprobe.conf file to specify a cport=0x538 parameter.
+
+I can assure you that, despite the output of alsaconf, I have tried a
+rather large variety of cport= settings, including the one (0x538) it
+recommended and most often quoted in various wikis, blogs, forums, and
+bugtracker databases available on the web.
+
+I just tried 0x100, 0x110, and 0x120 again, with the same (unsatisfactory)
+result.  I am inferring from your statement that the alsaconf utility did
+not, in fact, probe to find the correct control port, so I'll need to do
+it manually. 
+ 
+What would be the minimum value, maximum value, and incremental step for
+this parameter? 0x100, 0x101, 0x102 ... 0xFFF   ??  
+
+If so, that's a lot of rebooting... or is it sufficient to simply
+/sbin/modprobe -r snd-cs4236 and /sbin/modprobe snd-cs4236 3,839 times?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-14-06 23:47 briand         New Issue                                    
+01-14-06 23:47 briand         Distribution              => Fedora Core 3   
+01-14-06 23:47 briand         Kernel Version            => 2.6.9-1.667     
+01-14-06 23:51 briand         Issue Monitored: briand                      
+01-21-06 03:48 briand         Note Added: 0007733                          
+01-21-06 04:13 rlrevell       Note Added: 0007734                          
+01-21-06 14:41 briand         Note Added: 0007739                          
+01-22-06 10:18 perex          Note Added: 0007744                          
+01-22-06 17:38 briand         Note Added: 0007750                          
+01-22-06 19:45 perex          Note Added: 0007751                          
+01-22-06 20:52 briand         Note Added: 0007752                          
+01-22-06 21:19 perex          Note Added: 0007753                          
+01-22-06 21:20 perex          Note Edited: 0007753                         
+01-22-06 22:35 briand         Note Added: 0007754                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
