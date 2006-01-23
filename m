@@ -1,13 +1,25 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: some questions regarding multichannel devices
-Date: Mon, 23 Jan 2006 13:35:27 +0100
-Message-ID: <B3B8437F-3C75-479C-9F0B-0C5DB07C1E52@caiaq.de>
-References: <43E897D5-9150-4960-8946-F6760B627283@caiaq.de> <1137970009.1354.2.camel@mindpipe> <F3BA2D81-AA5D-4428-B2E9-82F8B52B8193@caiaq.de> <1137974965.1354.12.camel@mindpipe>
-Mime-Version: 1.0 (Apple Message framework v746.2)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Ben Collins <bcollins@ubuntu.com>
+Subject: Re: RFC: OSS driver removal, a slightly	different	approach
+Date: Mon, 23 Jan 2006 08:12:51 -0500
+Message-ID: <1138021971.22672.65.camel@grayson>
+References: <20060119174600.GT19398@stusta.de>
+ <20060120115443.GA16582@palantir8> <20060120190415.GM19398@stusta.de>
+ <20060120212917.GA14405@suse.de>
+ <1137799001.12998.59.camel@localhost.localdomain>
+ <1137799330.13530.30.camel@grayson> <s5hd5ijyw2q.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1137974965.1354.12.camel@mindpipe>
+Received: from a34-mta02.direcway.com (a34-mta02.direcpc.com [66.82.4.91])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B28F216F
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 14:13:05 +0100 (MET)
+Received: from mail.phunnypharm.org
+ (dpc67142247022.direcpc.com [67.142.247.22]) by a34-mta02.direcway.com
+ (iPlanet Messaging Server 5.2 HotFix 1.25 (built Mar  3 2004))
+ with ESMTP id <0ITJ00D8YRDPSM@a34-mta02.direcway.com> for
+ alsa-devel@alsa-project.org; Mon, 23 Jan 2006 08:13:04 -0500 (EST)
+In-reply-to: <s5hd5ijyw2q.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,78 +29,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Olaf Hering <olh@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lee,
+On Mon, 2006-01-23 at 13:20 +0100, Takashi Iwai wrote:
+> > > > > Can someone from the ppc developers drop me a small note whether 
+> > > > > SND_POWERMAC completely replaces DMASOUND_PMAC?
+> > > > 
+> > > > It doesnt. Some tumbler models work only after one plug/unplug cycle of
+> > > > the headphone. early powerbooks report/handle the mute settings
+> > > > incorrectly. there are likely more bugs.
+> > > 
+> > > Interesting... Ben Collins hacked something to have Toonie work as a
+> > > "default" driver for non supported machine and saw that problem too, I
+> > > think he fixes it, I'll check with him what's up there and if his fix
+> > > applied to tumbler.c as well.
+> > 
+> > My "fix" was basically the result of converting to the platform
+> > functions. It's hit or miss whether this works with tumbler too.
+> > 
+> > You can try the Ubuntu kernel packages (they can be unpacked and used on
+> > non Ubuntu systems pretty easily) to see if it works for you. Tumbler
+> > platform function conversion isn't even tested, so I'd be happy to hear
+> > any feedback.
+> 
+> Don't forget to forward your patches to alsa-devel or me ;)
 
-On Jan 23, 2006, at 1:09 AM, Lee Revell wrote:
-> Look at some existing drivers for details or the "Writing an ALSA
-> driver" document.
+I'm passing everything through to BenH, especially since it's all using
+functions new in his ppc tree.
 
-I read that. But besides the fact that it seems to be somewhat
-outdated ('struct snd_pcm' vs. 'snd_pcm_t' confusion all over
-the place), I couldn't find this issue explained. Thanks for
-the hint.
+Update on this "fix", it worked only because platform function
+interrupts weren't enabled. Now that they are, it's back to the same old
+thing.
 
-> You have to use "aplay -d plughw:0", not "aplay -d hw:0".
+At least that's a clue, though.
 
-I guess you mean '-D', not '-d'? Unfortunately, This also does
-not help. I still get:
-
-$ aplay -D plughw:0 test.wav
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,  
-Stereo
-aplay: set_params:935: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (46439 46440)
-PERIOD_SIZE: 2048
-PERIOD_BYTES: 8192
-PERIODS: 4
-BUFFER_TIME: (185759 185760)
-BUFFER_SIZE: 8192
-BUFFER_BYTES: 32768
-TICK_TIME: 4000
-
-and I suspect the S16_LE to be the reason. My snd_pcm_hardware_t looks
-like this:
-
-{
-         .info           = (SNDRV_PCM_INFO_MMAP |  
-SNDRV_PCM_INFO_DOUBLE | SNDRV_PCM_INFO_INTERLEAVED |
-                            SNDRV_PCM_INFO_BLOCK_TRANSFER),
-         .formats        = SNDRV_PCM_FMTBIT_S24_BE |  
-SNDRV_PCM_FMTBIT_S16_BE,
-         .rates          = (SNDRV_PCM_RATE_44100 |  
-SNDRV_PCM_RATE_48000 |
-                            SNDRV_PCM_RATE_96000 |  
-SNDRV_PCM_RATE_192000),
-         .rate_min       = 44100,
-         .rate_max       = 192000,
-         .channels_min   = 2,
-         .channels_max   = 2,
-         .buffer_bytes_max = 32768,
-         .period_bytes_min = 4096,
-         .period_bytes_max = 32768,
-         .periods_min    = 1,
-         .periods_max    = 1024,
-};
-
-I have *no* ~/.asoundrc and no special entries about my hardware in
-/etc/asound* or /usr/share/alsa/*/*.
-
-What do I have to do to get the glue logic working?
-
-Greets,
-Daniel
-
+-- 
+Ben Collins
+Kernel Developer - Ubuntu Linux
 
 
 
