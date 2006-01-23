@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Print for tracing bugs
-Date: Mon, 23 Jan 2006 11:41:19 -0500
-Message-ID: <1138034480.1354.30.camel@mindpipe>
-References: <200601231442.52366.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001776]: Synchronisation of two m-audio delta 1010 cards
+Date: Mon, 23 Jan 2006 18:32:44 +0100
+Message-ID: <95b760b9da0df3d6e4d950ab1c7350bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200601231442.52366.gineera@aspect135.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11F4C167
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 18:32:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,19 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-01-23 at 14:42 +0000, Alan Horstmann wrote:
-> I am trying to trace problems with SPDIF in ice1712.c.  Is there an easy way 
-> to print messages/values out in a terminal window from the running sound 
-> driver (using a version of print added in the code), perhaps after doing  
-> 'rcalsasound restart' from a Konsole?
 
-Yes just add printk()'s to the driver code.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1776> 
+======================================================================
+Reported By:                Schafwoller
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1776
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             01-23-2006 18:32 CET
+Last Modified:              01-23-2006 18:32 CET
+======================================================================
+Summary:                    Synchronisation of two m-audio delta 1010 cards
+Description: 
+Now we´re able to use two ice1712 cards full duplex and without xruns. The
+synchronisation via word-clock (with the "no-signal"-state in
+envy24control) seems to work for audio up to 48kHz (using 75Ohm cable).
+Midi is running on both cards without any problems. We're able to use a tc
+m-one(external multi-effects-processor) over spdif connected to the master
+sound card.
+The problems:
+While using 88,2 kHz we get a lot of noise on the pcm-inputs of the
+slave-card. Also sending and receiving to/from m-one over spdif on the
+slave-card (using 48kHz) is impossible. The sync-signal seems to be broken
+because the m-one is reporting error messages regarding a wrong sync-rate!
+======================================================================
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-23-06 18:32 Schafwoller    New Issue                                    
+01-23-06 18:32 Schafwoller    Kernel Version            => 2.6.13          
+======================================================================
+
 
 
 
