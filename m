@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0001763]: How to provide patch for the soundcard matrix ?
-Date: Mon, 23 Jan 2006 05:19:34 +0100
-Message-ID: <a6c3e09939615c40a3acd00af9b0f256@bugtrack.alsa-project.org>
+Date: Mon, 23 Jan 2006 09:44:06 +0100
+Message-ID: <4e8f5566834f5e2b20d8ef93157582e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FFBE143
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 05:19:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44A3914B
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 09:44:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-20-2006 09:10 CET
-Last Modified:              01-23-2006 05:19 CET
+Last Modified:              01-23-2006 09:44 CET
 ======================================================================
 Summary:                    How to provide patch for the soundcard matrix ?
 Description: 
@@ -59,20 +59,6 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938 ? )
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- pochini - 01-22-06 17:34 
-----------------------------------------------------------------------
-Docs is here: http://www.alsa-project.org/alsa-doc/cards/README
-
-The source file of soundcard entry is in /cards directory. For example the
-source of:
-
-http://alsa-project.org/alsa-doc/index.php?vendor=vendor-Echo_Corporation
-
-is
-
-http://alsa-project.org/alsa-doc/cards/vendor-Echo_Corporation
 
 ----------------------------------------------------------------------
  Raymond - 01-23-06 05:19 
@@ -183,12 +169,19 @@ ul#sideMenu2
 : #Releases
     * Line : 364 (Level : 2) Redefinition of width : #ContentNews
 
+----------------------------------------------------------------------
+ Raymond - 01-23-06 09:44 
+----------------------------------------------------------------------
+Do has_analog_out count="2" mean that the card support playback of two
+stereo sound from two different jacks (front and rear) ?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-20-06 09:10 Raymond        New Issue                                    
 01-22-06 17:34 pochini        Note Added: 0007749                          
 01-23-06 05:19 Raymond        Note Added: 0007759                          
+01-23-06 09:44 Raymond        Note Added: 0007760                          
 ======================================================================
 
 
