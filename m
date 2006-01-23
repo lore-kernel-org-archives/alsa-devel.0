@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable model
-Date: Mon, 23 Jan 2006 21:05:46 +0100
-Message-ID: <74b48daf53d901f389f711d2a22691e6@bugtrack.alsa-project.org>
+Date: Mon, 23 Jan 2006 21:22:56 +0100
+Message-ID: <ac72bdfda5b0c893d6833b8b82834c6b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D6D1172
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 21:05:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 764D416F
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 21:22:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-07-2005 21:00 CET
-Last Modified:              01-23-2006 21:05 CET
+Last Modified:              01-23-2006 21:22 CET
 ======================================================================
 Summary:                    snd-hda-intel no suitable model
 Description: 
@@ -71,20 +71,6 @@ both and a master volume
 - microphone boost setting if available
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-15-06 22:26 
-----------------------------------------------------------------------
-Then unfortunately you will have to wait until the driver is fixed...
-
-A few more things, can you check:
-
-/sys/module/snd_hda_intel/parameters/model
-
-and verify that it says "fujitsu"?
-
-And, did anyone on that forum with the same laptop report that their mic
-works?
 
 ----------------------------------------------------------------------
  Alexander Lavrinenko - 01-23-06 21:05 
@@ -340,6 +326,38 @@ is better idea.
 PS: both 143xG/3438G Amilo series have smartlink softmodem onboard, what
 about porting intel-8x0m.ko to snd-hda-modem.ko?
 
+----------------------------------------------------------------------
+ rlrevell - 01-23-06 21:22 
+----------------------------------------------------------------------
+The original bug report is too vague.  Please comment individually on these
+problems:
+
+- volume control wheel does not work at all
+
+  It's not implemented yet.
+
+- Headset jack disables internal speakers
+
+  This is usually the behavior users want.
+
+- Headset and internal Speakers have a different output control :( (or no
+master volume)
+
+  As tiwai said, the hardware does not have a master volume
+
+- Internal Mic gets disabled when external mic is plugged in
+
+  This also seems correct to me.
+
+- Mic works with a lot of try and error
+
+  Please explain
+
+"the best config would be:
+- correct recording device and volume selection"
+
+This is too vague, what do you mean by "correct"?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -356,6 +374,7 @@ Date Modified  Username       Field                    Change
 01-15-06 22:14 tuxlover       Note Added: 0007678                          
 01-15-06 22:26 rlrevell       Note Added: 0007679                          
 01-23-06 21:05 Alexander LavrinenkoNote Added: 0007763                          
+01-23-06 21:22 rlrevell       Note Added: 0007764                          
 ======================================================================
 
 
