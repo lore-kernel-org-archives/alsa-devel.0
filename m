@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Mon, 23 Jan 2006 01:25:47 +0100
-Message-ID: <8ef7654478e17b983babe6bc2b2172bb@bugtrack.alsa-project.org>
+Date: Mon, 23 Jan 2006 01:36:19 +0100
+Message-ID: <bbdd0bf386cc92bc2ccdd304ffb63889@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC168147
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 01:25:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37817106
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 01:36:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9-1.667
 ======================================================================
 Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-23-2006 01:25 CET
+Last Modified:              01-23-2006 01:36 CET
 ======================================================================
 Summary:                    sound driver will not load (CS4237B chip)
 Description: 
@@ -136,11 +136,6 @@ value... ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-22-06 23:09 
-----------------------------------------------------------------------
-What if you enable CONFIG_PNPBIOS?
-
-----------------------------------------------------------------------
  briand - 01-23-06 01:25 
 ----------------------------------------------------------------------
 sure.  I'll try that.
@@ -148,6 +143,11 @@ sure.  I'll try that.
 what do I need to do?
 
 There is no CONFIG_PNPBIOS verb anywhere in the kernel .config file...
+
+----------------------------------------------------------------------
+ rlrevell - 01-23-06 01:36 
+----------------------------------------------------------------------
+I guess it's CONFIG_PNP
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -168,6 +168,7 @@ Date Modified  Username       Field                    Change
 01-22-06 22:35 briand         Note Added: 0007754                          
 01-22-06 23:09 rlrevell       Note Added: 0007755                          
 01-23-06 01:25 briand         Note Added: 0007756                          
+01-23-06 01:36 rlrevell       Note Added: 0007757                          
 ======================================================================
 
 
