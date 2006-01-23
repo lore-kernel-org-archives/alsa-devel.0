@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001777]: aumix doesn't work with snd-hda-intel driver
-Date: Mon, 23 Jan 2006 19:47:32 +0100
-Message-ID: <66d9d12620164ec493d16f6246e4902e@bugtrack.alsa-project.org>
+Date: Mon, 23 Jan 2006 19:53:45 +0100
+Message-ID: <871f35dfcbb0b04c289865716e472ae4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9BE1171
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 19:47:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E61A171
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 19:53:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1777> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Mandriva Linux
 Kernel Version:             2.6.12
 ======================================================================
 Date Submitted:             01-23-2006 19:47 CET
-Last Modified:              01-23-2006 19:47 CET
+Last Modified:              01-23-2006 19:53 CET
 ======================================================================
 Summary:                    aumix doesn't work with snd-hda-intel driver
 Description: 
@@ -57,12 +57,19 @@ the like whereas with snd-hda-intel, it just exits with an error message).
 I've unsuccessfully tried playing with softvol.
 ======================================================================
 
+----------------------------------------------------------------------
+ tvignaud - 01-23-06 19:53 
+----------------------------------------------------------------------
+to be more precise, we've tested kernel-2.6.12 with ALSA-=1.0.9b and
+2.6.14/1.0.10.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-23-06 19:47 tvignaud       New Issue                                    
 01-23-06 19:47 tvignaud       Distribution              => Mandriva Linux  
 01-23-06 19:47 tvignaud       Kernel Version            => 2.6.12          
+01-23-06 19:53 tvignaud       Note Added: 0007762                          
 ======================================================================
 
 
