@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Mon, 23 Jan 2006 01:36:19 +0100
-Message-ID: <bbdd0bf386cc92bc2ccdd304ffb63889@bugtrack.alsa-project.org>
+Date: Mon, 23 Jan 2006 02:15:04 +0100
+Message-ID: <d5914a244bc4cbf3178b98024aa04ead@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37817106
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 01:36:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D5AC150
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 02:15:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9-1.667
 ======================================================================
 Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-23-2006 01:36 CET
+Last Modified:              01-23-2006 02:15 CET
 ======================================================================
 Summary:                    sound driver will not load (CS4237B chip)
 Description: 
@@ -136,18 +136,18 @@ value... ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- briand - 01-23-06 01:25 
-----------------------------------------------------------------------
-sure.  I'll try that.
-
-what do I need to do?
-
-There is no CONFIG_PNPBIOS verb anywhere in the kernel .config file...
-
-----------------------------------------------------------------------
  rlrevell - 01-23-06 01:36 
 ----------------------------------------------------------------------
 I guess it's CONFIG_PNP
+
+----------------------------------------------------------------------
+ briand - 01-23-06 02:15 
+----------------------------------------------------------------------
+ah, no.. I have (had?) a CONFIG_PNP verb, and it was set to 'yes'
+
+...looks like it's something that was added after 2.6.9 ...I'm installing
+2.6.15.1, and I'll turn on CONFIG_PNPBIOS in that kernel build, and report
+back.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -169,6 +169,7 @@ Date Modified  Username       Field                    Change
 01-22-06 23:09 rlrevell       Note Added: 0007755                          
 01-23-06 01:25 briand         Note Added: 0007756                          
 01-23-06 01:36 rlrevell       Note Added: 0007757                          
+01-23-06 02:15 briand         Note Added: 0007758                          
 ======================================================================
 
 
