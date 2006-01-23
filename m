@@ -1,25 +1,16 @@
-From: Ben Collins <bcollins@ubuntu.com>
-Subject: Re: RFC: OSS driver removal, a slightly	different	approach
-Date: Mon, 23 Jan 2006 08:12:51 -0500
-Message-ID: <1138021971.22672.65.camel@grayson>
-References: <20060119174600.GT19398@stusta.de>
- <20060120115443.GA16582@palantir8> <20060120190415.GM19398@stusta.de>
- <20060120212917.GA14405@suse.de>
- <1137799001.12998.59.camel@localhost.localdomain>
- <1137799330.13530.30.camel@grayson> <s5hd5ijyw2q.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7BIT
+From: Dan Malek <dan@embeddedalley.com>
+Subject: Re: RFC: OSS driver removal, a slightly different approach
+Date: Mon, 23 Jan 2006 09:11:50 -0500
+Message-ID: <2edd3641fe1cb18d25e35abe40de5d4e@embeddedalley.com>
+References: <20060119174600.GT19398@stusta.de> <20060121210511.GD3456@linux-mips.org>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from a34-mta02.direcway.com (a34-mta02.direcpc.com [66.82.4.91])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B28F216F
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 14:13:05 +0100 (MET)
-Received: from mail.phunnypharm.org
- (dpc67142247022.direcpc.com [67.142.247.22]) by a34-mta02.direcway.com
- (iPlanet Messaging Server 5.2 HotFix 1.25 (built Mar  3 2004))
- with ESMTP id <0ITJ00D8YRDPSM@a34-mta02.direcway.com> for
- alsa-devel@alsa-project.org; Mon, 23 Jan 2006 08:13:04 -0500 (EST)
-In-reply-to: <s5hd5ijyw2q.wl%tiwai@suse.de>
+Received: from smtp104.biz.mail.re2.yahoo.com (smtp104.biz.mail.re2.yahoo.com [206.190.52.173])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0C3D4AC
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2006 15:11:52 +0100 (MET)
+In-Reply-To: <20060121210511.GD3456@linux-mips.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,45 +20,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Olaf Hering <olh@suse.de>, Adrian Bunk <bunk@stusta.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Adrian Bunk <bunk@stusta.de>, perex@suse.cz, linux-mips@linux-mips.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-01-23 at 13:20 +0100, Takashi Iwai wrote:
-> > > > > Can someone from the ppc developers drop me a small note whether 
-> > > > > SND_POWERMAC completely replaces DMASOUND_PMAC?
-> > > > 
-> > > > It doesnt. Some tumbler models work only after one plug/unplug cycle of
-> > > > the headphone. early powerbooks report/handle the mute settings
-> > > > incorrectly. there are likely more bugs.
-> > > 
-> > > Interesting... Ben Collins hacked something to have Toonie work as a
-> > > "default" driver for non supported machine and saw that problem too, I
-> > > think he fixes it, I'll check with him what's up there and if his fix
-> > > applied to tumbler.c as well.
-> > 
-> > My "fix" was basically the result of converting to the platform
-> > functions. It's hit or miss whether this works with tumbler too.
-> > 
-> > You can try the Ubuntu kernel packages (they can be unpacked and used on
-> > non Ubuntu systems pretty easily) to see if it works for you. Tumbler
-> > platform function conversion isn't even tested, so I'd be happy to hear
-> > any feedback.
-> 
-> Don't forget to forward your patches to alsa-devel or me ;)
 
-I'm passing everything through to BenH, especially since it's all using
-functions new in his ppc tree.
+On Jan 21, 2006, at 4:05 PM, Ralf Baechle wrote:
 
-Update on this "fix", it worked only because platform function
-interrupts weren't enabled. Now that they are, it's back to the same old
-thing.
+> On Thu, Jan 19, 2006 at 06:46:00PM +0100, Adrian Bunk wrote:
+>
+>> 3. no ALSA drivers for the same hardware
+> [...]
+>> SOUND_AU1550_AC97
 
-At least that's a clue, though.
+The Au1550 should have an ALSA driver.  It was done
+some time ago.  Perhaps we just didn't submit it to the
+proper maintainer.  I'll track that down.
 
--- 
-Ben Collins
-Kernel Developer - Ubuntu Linux
+	-- Dan
 
 
 
