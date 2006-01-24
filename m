@@ -1,13 +1,14 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: presario x1000, 1.0.11rc2, no sound
-Date: Mon, 23 Jan 2006 17:01:09 -0800
-Message-ID: <1138064470.4908.37.camel@cmn3.stanford.edu>
-References: <1137707434.4841.19.camel@cmn3.stanford.edu>
-	 <s5h8xtb9m8o.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
+Date: Tue, 24 Jan 2006 02:05:22 +0100
+Message-ID: <80ad6173f106dedbae0bb6da86d20848@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-Ey4CmwOWxbrS8X7SCcGp"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8xtb9m8o.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86EBC14B
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2006 02:05:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,364 +18,190 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-Ey4CmwOWxbrS8X7SCcGp
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1748> 
+======================================================================
+Reported By:                briand
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1748
+Category:                   ISA - cs4236
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9-1.667
+======================================================================
+Date Submitted:             01-14-2006 23:47 CET
+Last Modified:              01-24-2006 02:05 CET
+======================================================================
+Summary:                    sound driver will not load (CS4237B chip)
+Description: 
+with BIOS set to "PnPOS" for sound chip:
+  `/sbin/modprobe snd-cs4236` produces the following on stdout:
+  "FATAL: Error inserting snd_cs4236 \
+   (/lib/modules/2.6.9-1.667/kernel/sound/isa/cs423x/snd-cs4236.ko): \
+   No such device"
 
-On Fri, 2006-01-20 at 12:23 +0100, Takashi Iwai wrote:
-> At Thu, 19 Jan 2006 13:50:34 -0800,
-> Fernando Lopez-Lezcano wrote:
-> > 
-> > Hi, I'm looking for some advice. A student of mine can't get sound from
-> > her laptop, apparently she was able to hear sound from an install of FC3
-> > (don't know the particular versions of the kernel or alsa involved) and
-> > now with a FC4 install and up to the latest drivers I could find
-> > (1.0.11rc2) sound just does not happen. 
-> > 
-> > I have twiddled with all possible settings, everything seems happy but
-> > there's no sound (on headphones or speakers). 
-> > 
-> > I'm including some info about the hardware...
-> > Advice appreciated...
-> 
-> Could you attach /etc/asound.state, too?
-
-Sorry for the delay, I did not have access to the laptop in question...
-
-Please find the file attached (anything that is tweakable through gamix
-I probably tried already... :-)
-
--- Fernando
+   -- occurs with 1.0.10, 1.0.11rc1, and (currently) 1.0.11rc2
+   alsaconf reports I have no sound card.
+   cat /proc/asound/cards reports I have no sound card.
 
 
---=-Ey4CmwOWxbrS8X7SCcGp
-Content-Disposition: attachment; filename=asound.state
-Content-Type: text/plain; name=asound.state; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+with BIOS set to "Enable" for sound chip:
 
-state.I82801DBICH4 {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Master Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Headphone Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Mono Playback Switch'
-		value true
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 1
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Master Mono Playback Volume'
-		value 23
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Phone Playback Switch'
-		value true
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 1
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Phone Playback Volume'
-		value 31
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Mic Playback Switch'
-		value false
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 1
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Mic Playback Volume'
-		value 0
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Mic Boost (+20dB)'
-		value false
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Line Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Line Playback Volume'
-		value.0 29
-		value.1 29
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'CD Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'CD Playback Volume'
-		value.0 23
-		value.1 23
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Aux Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		value.0 28
-		value.1 28
-	}
-	control.18 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'PCM Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.19 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.20 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 2
-		comment.item.0 Mic
-		comment.item.1 CD
-		comment.item.2 Video
-		comment.item.3 Aux
-		comment.item.4 Line
-		comment.item.5 Mix
-		comment.item.6 'Mix Mono'
-		comment.item.7 Phone
-		iface MIXER
-		name 'Capture Source'
-		value.0 CD
-		value.1 Mic
-	}
-	control.21 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		value.0 false
-		value.1 false
-	}
-	control.22 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.23 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Mix
-		comment.item.1 Mic
-		iface MIXER
-		name 'Mono Output Select'
-		value Mix
-	}
-	control.24 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 Mic1
-		comment.item.1 Mic2
-		iface MIXER
-		name 'Mic Select'
-		value Mic1
-	}
-	control.25 {
-		comment.access read
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value '0fff000f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.26 {
-		comment.access read
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value cf00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	}
-	control.27 {
-		comment.access 'read write'
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0082000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.28 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value false
-	}
-	control.29 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 1
-		comment.range '0 - 3'
-		iface MIXER
-		name 'IEC958 Playback AC97-SPSA'
-		value 0
-	}
-	control.30 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 AC-Link
-		comment.item.1 'A/D Converter'
-		iface MIXER
-		name 'IEC958 Playback Source'
-		value AC-Link
-	}
-	control.31 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Stereo Mic'
-		value true
-	}
-	control.32 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Headphone Jack Sense'
-		value true
-	}
-	control.33 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Line Jack Sense'
-		value true
-	}
-}
-state.Modem {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Off-hook Switch'
-		value false
-	}
-}
+ `/sbin/modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
+irq=5`
 
---=-Ey4CmwOWxbrS8X7SCcGp--
+  ..produces nothing on stdout/stderr, but the laptop speakers click once,
+and dmesg shows:
+
+ "ALSA /path/to/alsa/source/isa/cs423x/cs4236_lib.c:305: CS4236+ chip
+detected, but control port 0x538 is not valid"
+
+  - that message shows up in dmesg regardless of what i specify for
+'cport=' parameter (with, of course, the corresponding port value in the
+error message).
+
+  alsaconf seems to find the card, test the card, and reports all is fine;
+offers to modify /etc/modprobe.conf (with parameters shown above), and
+congratulates me.
+  cat /proc/asound/cards reports I have no sound card.
+
+
+In looking at cs4236_lib.c, lines 301-307:
+
+        ver1 = snd_cs4236_ctrl_in(chip, 1);
+        ver2 = snd_cs4236_ext_in(chip, CS4236_VERSION);
+        snd_printdd("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n",
+cport, ver1, ver2);
+        if (ver1 != ver2) {
+                snd_printk("CS4236+ chip detected, but control port 0x%lx
+is not valid\n", cport);
+                snd_device_free(card, chip);
+                return -ENODEV;
+        }
+
+  ...it looks like ver1 and ver2 aren't agreeing.  ;)   Okay, so I
+experimented a bit.  I commented out (#if 0 ... #endif) the if (ver1 !=
+ver2) {...} block, and added:
+
+   snd_printk("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n", cport,
+ver1, ver2);
+
+ ...recompiled, reinstalled... and then:
+
+  `modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
+irq=5`
+
+  results in:
+
+   /dev/dsp, /dev/audio, /dev/snd/* all appear, laptop speakers click once
+(as before), followed quickly by a <blart>, and we're on our way...
+almost.
+
+  my shorthand dmesg (printk) shows me that the driver was unloading
+because 0xFF did not equal 0xE8. (I'm going from memory here.  I'm
+positive that the value of "ver1" was 0xFF -- not quite sure about "ver2",
+but it's close.  ..it definitely wasn't 0xFF (obviously!) which is why the
+driver load aborted).
+
+  cat /proc/asound/cards reports card 0 is a CS4237B at IRQ 5, DMA 1,0
+
+  in KDE, kmix loads and allows me to play with buttons/sliders - I can
+get CD audio to play out the laptop speakers, but other audio does not
+work.  xmms will load an mp3 file, but when I click the play button, the
+display shows 0:00, and nothing plays.  No sound, and the "progress bar"
+and "time remaining" stay at 0.
+
+  in terminal, `alsamixer` results in a segmentation fault.
+
+  ..incidentally, in this "hacked" module, it doesn't really matter what
+(reasonable) value I specify for cport= in /etc/modprobe.conf (0x538,
+0x120, 0x110 ...).  The result is the same.  kmix allows some adjustment,
+cd audio plays, no other sound, and alsamixer seg faults.  No doubt, if I
+were to work at it, I could generate a kernel panic with the right
+value... ;)
+
+
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ briand - 01-24-06 01:31 
+----------------------------------------------------------------------
+no, there is no (additional) output in dmesg following the seg fault. 
+Nothing in /var/log/messages, either.
+
+the alsamixer on this laptop is from alsa-utils-1.0.11rc2, compiled and
+installed mere moments after the cs4236 driver (from
+alsa-driver-1.0.11rc2).
+
+yes, I get the same results when the driver is loaded explicitly or via
+PnP under 2.6.15.1 -- the only difference under that kernel seems to be
+that PNPBIOS conflicts with detecting my network card, so i get to type on
+the tiny laptop keyboard rather than this one. ;)
+
+re: gdb -- it is installed on the laptop, but I have never set it up or
+used it... if you'll tell me what to do to get the backtrace, I'd be happy
+to oblige.
+
+ :)
+
+----------------------------------------------------------------------
+ briand - 01-24-06 02:05 
+----------------------------------------------------------------------
+okay, easy enough to figure out.  ;)
+
+
+
+-------------------------------------------------------------------------
+ Program received signal SIGSEGV, Segmentation fault.
+ [Switching to Thread -151070048 (LWP 2716)]
+ 0x00000000 in ?? ()
+ (gdb) backtrace
+ #0  0x00000000 in ?? ()
+ #1  0x0804b307 in mixer_update_cbar (elem_index=0) at alsamixer.c:991
+ #2  0x0804e4c1 in main (argc=1, argv=0xfee10b94) at alsamixer.c:1146
+ (gdb)
+ -------------------------------------------------------------------------
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-14-06 23:47 briand         New Issue                                    
+01-14-06 23:47 briand         Distribution              => Fedora Core 3   
+01-14-06 23:47 briand         Kernel Version            => 2.6.9-1.667     
+01-14-06 23:51 briand         Issue Monitored: briand                      
+01-21-06 03:48 briand         Note Added: 0007733                          
+01-21-06 04:13 rlrevell       Note Added: 0007734                          
+01-21-06 14:41 briand         Note Added: 0007739                          
+01-22-06 10:18 perex          Note Added: 0007744                          
+01-22-06 17:38 briand         Note Added: 0007750                          
+01-22-06 19:45 perex          Note Added: 0007751                          
+01-22-06 20:52 briand         Note Added: 0007752                          
+01-22-06 21:19 perex          Note Added: 0007753                          
+01-22-06 21:20 perex          Note Edited: 0007753                         
+01-22-06 22:35 briand         Note Added: 0007754                          
+01-22-06 23:09 rlrevell       Note Added: 0007755                          
+01-23-06 01:25 briand         Note Added: 0007756                          
+01-23-06 01:36 rlrevell       Note Added: 0007757                          
+01-23-06 02:15 briand         Note Added: 0007758                          
+01-24-06 00:44 briand         Note Added: 0007765                          
+01-24-06 01:12 rlrevell       Note Added: 0007766                          
+01-24-06 01:17 rlrevell       Note Added: 0007767                          
+01-24-06 01:31 briand         Note Added: 0007769                          
+01-24-06 02:05 briand         Note Added: 0007770                          
+======================================================================
+
 
 
 
