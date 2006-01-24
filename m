@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Tue, 24 Jan 2006 00:44:48 +0100
-Message-ID: <56c4752e3139e28dc98f68657f6cfd22@bugtrack.alsa-project.org>
+Date: Tue, 24 Jan 2006 01:12:31 +0100
+Message-ID: <09026337a09d4f30c238a35560a6623c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40AE6167
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2006 00:44:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 770B012E
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2006 01:12:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9-1.667
 ======================================================================
 Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-24-2006 00:44 CET
+Last Modified:              01-24-2006 01:12 CET
 ======================================================================
 Summary:                    sound driver will not load (CS4237B chip)
 Description: 
@@ -136,15 +136,6 @@ value... ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- briand - 01-23-06 02:15 
-----------------------------------------------------------------------
-ah, no.. I have (had?) a CONFIG_PNP verb, and it was set to 'yes'
-
-...looks like it's something that was added after 2.6.9 ...I'm installing
-2.6.15.1, and I'll turn on CONFIG_PNPBIOS in that kernel build, and report
-back.
-
-----------------------------------------------------------------------
  briand - 01-24-06 00:44 
 ----------------------------------------------------------------------
 okay...
@@ -181,6 +172,15 @@ alsamixer.
 
    I guess there is progress here.. but still some work to be done.  :/
 
+----------------------------------------------------------------------
+ rlrevell - 01-24-06 01:12 
+----------------------------------------------------------------------
+When alsamixer segfaults do you see an Oops in the dmesg output?
+
+Can you run alsamixer under gdb and get a backtrace?
+
+Are you using the latest alsamixer?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -203,6 +203,7 @@ Date Modified  Username       Field                    Change
 01-23-06 01:36 rlrevell       Note Added: 0007757                          
 01-23-06 02:15 briand         Note Added: 0007758                          
 01-24-06 00:44 briand         Note Added: 0007765                          
+01-24-06 01:12 rlrevell       Note Added: 0007766                          
 ======================================================================
 
 
