@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Tue, 24 Jan 2006 11:16:13 +0100
-Message-ID: <0732b96cea4cfd2c13a5c7fc8d6620eb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
+Date: Tue, 24 Jan 2006 11:25:19 +0100
+Message-ID: <ed01267755e3e86c7f2a49ca675d2f97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B489D159
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2006 11:16:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C851F159
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2006 11:25:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,183 +22,203 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1748> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
 ======================================================================
-Reported By:                briand
-Assigned To:                perex
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1748
-Category:                   ISA - cs4236
+Issue ID:                   1766
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9-1.667
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-24-2006 11:16 CET
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              01-24-2006 11:25 CET
 ======================================================================
-Summary:                    sound driver will not load (CS4237B chip)
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
 Description: 
-with BIOS set to "PnPOS" for sound chip:
-  `/sbin/modprobe snd-cs4236` produces the following on stdout:
-  "FATAL: Error inserting snd_cs4236 \
-   (/lib/modules/2.6.9-1.667/kernel/sound/isa/cs423x/snd-cs4236.ko): \
-   No such device"
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-   -- occurs with 1.0.10, 1.0.11rc1, and (currently) 1.0.11rc2
-   alsaconf reports I have no sound card.
-   cat /proc/asound/cards reports I have no sound card.
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
+
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
+
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
+
+jackd -d alsa hw:0 -S
+jackd 0.100.9
+
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
+
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 01-23-06 10:42 
+----------------------------------------------------------------------
+snd_pcm_hw_params_set_period_size() fail with 4 channels playback with
+err=-22
 
 
-with BIOS set to "Enable" for sound chip:
+jackd -d alsa hw:0 -S -i 2 
+jackd 0.100.0
 
- `/sbin/modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
-irq=5`
-
-  ..produces nothing on stdout/stderr, but the laptop speakers click once,
-and dmesg shows:
-
- "ALSA /path/to/alsa/source/isa/cs423x/cs4236_lib.c:305: CS4236+ chip
-detected, but control port 0x538 is not valid"
-
-  - that message shows up in dmesg regardless of what i specify for
-'cport=' parameter (with, of course, the corresponding port value in the
-error message).
-
-  alsaconf seems to find the card, test the card, and reports all is fine;
-offers to modify /etc/modprobe.conf (with parameters shown above), and
-congratulates me.
-  cat /proc/asound/cards reports I have no sound card.
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|2|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+nperiods = 2 for capture
+ALSA: cannot set period size to 1024 frames for playback
+ALSA: cannot configure playback channel
+cannot load driver module alsa
+no message buffer overruns
 
 
-In looking at cs4236_lib.c, lines 301-307:
 
-        ver1 = snd_cs4236_ctrl_in(chip, 1);
-        ver2 = snd_cs4236_ext_in(chip, CS4236_VERSION);
-        snd_printdd("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n",
-cport, ver1, ver2);
-        if (ver1 != ver2) {
-                snd_printk("CS4236+ chip detected, but control port 0x%lx
-is not valid\n", cport);
-                snd_device_free(card, chip);
-                return -ENODEV;
+----------------------------------------------------------------------
+jackd -d alsa hw:0 -S -i 2 -o 2
+jackd 0.100.0
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|2|2|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+nperiods = 2 for capture
+nperiods = 2 for playback
+ 
+ 
+**** alsa_pcm: xrun of at least 0.050 msecs
+ 
+ 
+ 
+**** alsa_pcm: xrun of at least 0.045 msecs
+ 
+ 
+ 
+**** alsa_pcm: xrun of at least 0.059 msecs
+ 
+ 
+ 
+**** alsa_pcm: xrun of at least 0.051 msecs
+
+
+----------------------------------------------------------------------
+jackd -d alsa hw:0 -S -i 2 -o 2 -n 4
+jackd 0.100.0
+
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|4|48000|2|2|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 4 periods
+nperiods = 4 for capture
+nperiods = 4 for playback
+
+----------------------------------------------------------------------
+Is it related to this "if (vortex_adbdma_bufshift(vortex, i)) ;" ?
+
+    if (source & IRQ_PCMOUT) {
+        /* ALSA period acknowledge. */
+        spin_lock(&vortex->lock);
+        for (i = 0; i < NR_ADB; i++) {
+            if (vortex->dma_adb[i].fifo_status == FIFO_START) {
+                if (vortex_adbdma_bufshift(vortex, i)) ;
+                spin_unlock(&vortex->lock);
+                snd_pcm_period_elapsed(vortex->dma_adb[i].
+                               substream);
+                spin_lock(&vortex->lock);
+            }
         }
 
-  ...it looks like ver1 and ver2 aren't agreeing.  ;)   Okay, so I
-experimented a bit.  I commented out (#if 0 ... #endif) the if (ver1 !=
-ver2) {...} block, and added:
 
-   snd_printk("CS4236: [0x%lx] C1 (version) = 0x%x, ext = 0x%x\n", cport,
-ver1, ver2);
-
- ...recompiled, reinstalled... and then:
-
-  `modprobe snd-cs4236 port=0x530 cport=0x538 isapnp=0 dma1=1 dma2=0
-irq=5`
-
-  results in:
-
-   /dev/dsp, /dev/audio, /dev/snd/* all appear, laptop speakers click once
-(as before), followed quickly by a <blart>, and we're on our way...
-almost.
-
-  my shorthand dmesg (printk) shows me that the driver was unloading
-because 0xFF did not equal 0xE8. (I'm going from memory here.  I'm
-positive that the value of "ver1" was 0xFF -- not quite sure about "ver2",
-but it's close.  ..it definitely wasn't 0xFF (obviously!) which is why the
-driver load aborted).
-
-  cat /proc/asound/cards reports card 0 is a CS4237B at IRQ 5, DMA 1,0
-
-  in KDE, kmix loads and allows me to play with buttons/sliders - I can
-get CD audio to play out the laptop speakers, but other audio does not
-work.  xmms will load an mp3 file, but when I click the play button, the
-display shows 0:00, and nothing plays.  No sound, and the "progress bar"
-and "time remaining" stay at 0.
-
-  in terminal, `alsamixer` results in a segmentation fault.
-
-  ..incidentally, in this "hacked" module, it doesn't really matter what
-(reasonable) value I specify for cport= in /etc/modprobe.conf (0x538,
-0x120, 0x110 ...).  The result is the same.  kmix allows some adjustment,
-cd audio plays, no other sound, and alsamixer seg faults.  No doubt, if I
-were to work at it, I could generate a kernel panic with the right
-value... ;)
-
-
-
-
-======================================================================
 
 ----------------------------------------------------------------------
- briand - 01-24-06 02:05 
+ Raymond - 01-24-06 11:25 
 ----------------------------------------------------------------------
-okay, easy enough to figure out.  ;)
+au88x0 driver only require period size to be power of two.
 
+au88x0 have to use "export PA_ALSA_PERIODSIZE=1024" in order to use
+capture function in audacity ( portaudio=v19 )
 
+The new pcm help function will not work with au88x0 driver
 
--------------------------------------------------------------------------
- Program received signal SIGSEGV, Segmentation fault.
- [Switching to Thread -151070048 (LWP 2716)]
- 0x00000000 in ?? ()
- (gdb) backtrace
- #0  0x00000000 in ?? ()
- #1  0x0804b307 in mixer_update_cbar (elem_index=0) at alsamixer.c:991
- #2  0x0804e4c1 in main (argc=1, argv=0xfee10b94) at alsamixer.c:1146
- (gdb)
- -------------------------------------------------------------------------
+int snd_pcm_set_params(snd_pcm_t *pcm,
+                       snd_pcm_format_t format,
+                       snd_pcm_access_t access,
+                       unsigned int channels,
+                       unsigned int rate,
+                       int soft_resample,
+                       unsigned int latency);
 
-----------------------------------------------------------------------
- perex - 01-24-06 11:16 
-----------------------------------------------------------------------
-Too many problems. I'm closing this bug, please, open two new bugs (select
-appropriate project) and add the relation to this bug:
-
-1) alsaconf creates wrong configuration for snd-cs4236
-2) alsamixer segfault (privide output from 'amixer contents' and 'amixer
-scontents' commands to this new bug)
-3) try aplay with some wav file, it if exits with -EIO (I/O error), then
-provide related output from /var/log/messages and create another
-bug-report
-about digital audio output problem
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-06 23:47 briand         New Issue                                    
-01-14-06 23:47 briand         Distribution              => Fedora Core 3   
-01-14-06 23:47 briand         Kernel Version            => 2.6.9-1.667     
-01-14-06 23:51 briand         Issue Monitored: briand                      
-01-21-06 03:48 briand         Note Added: 0007733                          
-01-21-06 04:13 rlrevell       Note Added: 0007734                          
-01-21-06 14:41 briand         Note Added: 0007739                          
-01-22-06 10:18 perex          Note Added: 0007744                          
-01-22-06 17:38 briand         Note Added: 0007750                          
-01-22-06 19:45 perex          Note Added: 0007751                          
-01-22-06 20:52 briand         Note Added: 0007752                          
-01-22-06 21:19 perex          Note Added: 0007753                          
-01-22-06 21:20 perex          Note Edited: 0007753                         
-01-22-06 22:35 briand         Note Added: 0007754                          
-01-22-06 23:09 rlrevell       Note Added: 0007755                          
-01-23-06 01:25 briand         Note Added: 0007756                          
-01-23-06 01:36 rlrevell       Note Added: 0007757                          
-01-23-06 02:15 briand         Note Added: 0007758                          
-01-24-06 00:44 briand         Note Added: 0007765                          
-01-24-06 01:12 rlrevell       Note Added: 0007766                          
-01-24-06 01:17 rlrevell       Note Added: 0007767                          
-01-24-06 01:31 briand         Note Added: 0007769                          
-01-24-06 02:05 briand         Note Added: 0007770                          
-01-24-06 11:16 perex          Status                   new => resolved     
-01-24-06 11:16 perex          Resolution               open => fixed       
-01-24-06 11:16 perex          Assigned To               => perex           
-01-24-06 11:16 perex          Note Added: 0007772                          
+01-21-06 05:02 Raymond        New Issue                                    
+01-21-06 05:25 rlrevell       Note Added: 0007735                          
+01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
+01-21-06 07:36 Raymond        Note Added: 0007736                          
+01-21-06 07:41 Raymond        Note Edited: 0007736                         
+01-21-06 07:59 rlrevell       Note Added: 0007737                          
+01-23-06 10:36 Raymond        Note Added: 0007761                          
+01-23-06 10:42 Raymond        Note Edited: 0007761                         
+01-24-06 11:25 Raymond        Note Added: 0007773                          
 ======================================================================
 
 
