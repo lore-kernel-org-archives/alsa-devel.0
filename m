@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001748]: sound driver will not load (CS4237B chip)
-Date: Tue, 24 Jan 2006 01:12:31 +0100
-Message-ID: <09026337a09d4f30c238a35560a6623c@bugtrack.alsa-project.org>
+Date: Tue, 24 Jan 2006 01:17:16 +0100
+Message-ID: <4b45ba0f3473efa49f7ae0904ce2e271@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 770B012E
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2006 01:12:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66BB7172
+	for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2006 01:17:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9-1.667
 ======================================================================
 Date Submitted:             01-14-2006 23:47 CET
-Last Modified:              01-24-2006 01:12 CET
+Last Modified:              01-24-2006 01:17 CET
 ======================================================================
 Summary:                    sound driver will not load (CS4237B chip)
 Description: 
@@ -136,43 +136,6 @@ value... ;)
 ======================================================================
 
 ----------------------------------------------------------------------
- briand - 01-24-06 00:44 
-----------------------------------------------------------------------
-okay...
-
-I downloaded, compiled, and installed 2.6.15.1 with CONFIG_PNPBIOS
-enabled.
-
- 1) my network card is no longer recognized.  :(
- 2) ..but, I was able to run your script against the /sys/bus/pnp/devices
-directory.
-
-  ...from that listing, I determined that the cport may well be 0xF00
-(hmm.. yeah, it would have taken quite a while to find that value by
-picking sequential port numbers starting at 0x100!!).  
-
-  Armed with this information, I modified /etc/modprobe.conf accordingly,
-rebooted back into 2.6.9-1.667 with a side-trip into BIOS to turn PnP off
-again, and I now have the driver loaded.
-
-  ...but, I'm where I was with the "hacked" version -- I can play CDs, but
-no digital sound formats.  xmms will load, for instance, an MP3 file, but
-will not play it.  I can open KMix in KDE and fiddle with some (but not
-all) settings (some show a slider, but won't allow me to move it, for
-instance).  If I run 'alsamixer' at the terminal prompt, it promptly spits
-out a segmentation fault and screws up my terminal settings (no
-scrollback, no cursor, no linefeed until I close the ssh session and
-re-open it, but even then the cursor and scrollback are still MIA).
-
-   So, I guess this bug (cannot load driver) can be closed out.. but
-there's obviously still a problem with a) alsaconf, which couldn't find
-the correct control port, and lied about it, and b) mostly non-functional
-CS4237B support in the CS4236 driver, as well as c) seg fault running
-alsamixer.
-
-   I guess there is progress here.. but still some work to be done.  :/
-
-----------------------------------------------------------------------
  rlrevell - 01-24-06 01:12 
 ----------------------------------------------------------------------
 When alsamixer segfaults do you see an Oops in the dmesg output?
@@ -180,6 +143,12 @@ When alsamixer segfaults do you see an Oops in the dmesg output?
 Can you run alsamixer under gdb and get a backtrace?
 
 Are you using the latest alsamixer?
+
+----------------------------------------------------------------------
+ rlrevell - 01-24-06 01:17 
+----------------------------------------------------------------------
+Also, do you have the same problem if you run alsa-driver 1.0.11-rc2 +
+kernel 2.6.15.1 as 2.6.9?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -204,6 +173,7 @@ Date Modified  Username       Field                    Change
 01-23-06 02:15 briand         Note Added: 0007758                          
 01-24-06 00:44 briand         Note Added: 0007765                          
 01-24-06 01:12 rlrevell       Note Added: 0007766                          
+01-24-06 01:17 rlrevell       Note Added: 0007767                          
 ======================================================================
 
 
