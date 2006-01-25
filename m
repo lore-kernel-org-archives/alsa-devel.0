@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
-Date: Wed, 25 Jan 2006 11:56:11 +0100
-Message-ID: <d99e2732562b6b50ab9dcbbe8338b397@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001783]: My DYI BurrBrown pcm2702 usb soundcard is making a lot of noise, crackling or only noise when playing music
+Date: Wed, 25 Jan 2006 12:04:06 +0100
+Message-ID: <3feaeeb2b96f40c85051ac87b7fd1dda@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73CB9E3
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 11:56:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B408163
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 12:04:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,169 +24,240 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1783> 
 ======================================================================
-Reported By:                mjsb
-Assigned To:                tiwai
+Reported By:                boniek
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1572
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1783
+Category:                   USB - usb-audio
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.1.13-gentoo-r3
+Distribution:               Gentoo GNU/Linux
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             11-17-2005 16:31 CET
-Last Modified:              01-25-2006 11:56 CET
+Date Submitted:             01-25-2006 11:51 CET
+Last Modified:              01-25-2006 12:04 CET
 ======================================================================
-Summary:                    Simultaneous sound from speakers and headphone
+Summary:                    My DYI BurrBrown pcm2702 usb soundcard is making a
+lot of noise, crackling or only noise when playing music
 Description: 
-I cannot ear headphones without having sound from front speakers
-simultaneously.
-Volume of headphones is adjusted by front speakers and when muting front
-speakers also mutes headphones.
-(in MS Windows, inserting headphones automatically disables sound from
-front speakers)
-
+Sound Card: PCM2702 BurrBrown DYI card (works perfectly in windows)
+Music Player: Does not matter. It is always the same. Using alsa plugin (
+I don't have oss emulation).
+ Upon starting playing you will hear either ok sound, sound with a lot
+background noise, or static only (like cat /dev/urandom > /dev/dsp in
+oss). On start of playing music (either on beggining or after
+unpause/unstop) there can be heard (almost always) a very loud crack.
+Music can degradate itself to noise only too. Whole thing occurs very
+often, but randomly (well I think things tend to get broken/repaired upon
+restarting music stream - stop/pause and play).
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001663 LW20 bugs with headphone input, realtek...
-======================================================================
 
 ----------------------------------------------------------------------
- mjsb - 01-21-06 03:30 
+ boniek - 01-25-06 12:04 
 ----------------------------------------------------------------------
-I have just recompiled the alsa-kernel driver with ./cofigure
---with-debug=full and discovered using 'option model=test' that it is
-possible to have all four combinations:
-  1) speakers off and HP off
-  2) speakers off and HP on
-  3) speakers on and HP off
-  4) speakers on and HP on
-I have tried all models available in the patch_realtek.c but could only
-have it working with the  'test' model. None of the other models allowed
-me to have 2) working.
-
-The 'In-4 Pin Mode' mutes/unmutes HP,
-and 'Front Pin Mode' mutes/unmutes internal speakers.
-
-Doing a 'cat /proc/asound/card0/codec#0' in the combinations above I only
-get differences in two places. Namely in sections 'Node 0x14' and 'Node
-0x1b' for speakers and HP, respectively.
-Differences are on a line containing:
-  Pin-ctls: 0x00:                 --> when muted (applies to both sections
-0x14 and 1x1b)
-  Pin-ctls: 0xc0: OUT HP    --> when unmuted (applies to both sections
-0x14 and 1x1b)
-
-I'm uploading two outputs of 'cat /proc/asound/card0/codec#0', one with
-sound from speakers and the other with sound from HeadPhones, where you
-can verify this.
-
-If more information is needed, just ask ;)
+Output of lsusb -v for my soundcard
 
 
-
-----------------------------------------------------------------------
- blackr2d - 01-25-06 11:56 
-----------------------------------------------------------------------
-Similar problems here, mixer controls not picked up correctly for ALC880:
-
-Laptop: Medion WD2040 (MD96500)
-
-lspci -vv:
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-        Subsystem: Wistron Corp. Unknown device 201a
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 169
-        Region 0: Memory at c0000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-lspci -nvv:
-00:1b.0 0403: 8086:2668 (rev 03)
-        Subsystem: 17c0:201a
-        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin A routed to IRQ 169
-        Region 0: Memory at c0000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-I've tried different models from realtek patch, but to no avail. All I
-could get is either sound only from headphones, or only from speakers.
-
-Since it's 10 years last time I coded anything - could somebody point me
-in the right direction, I would be more than happy to help.
+Bus 003 Device 002: ID 08bb:2702 Texas Instruments Japan
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x08bb Texas Instruments Japan
+  idProduct          0x2702
+  bcdDevice            1.00
+  iManufacturer           1 Burr-Brown Japan
+  iProduct                2 Burr-Brown Japan PCM2702
+  iSerial                 0
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength          165
+    bNumInterfaces          2
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength           40
+        bInCollection           1
+        baInterfaceNr( 0)       1
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             1
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bNrChannels             2
+        wChannelConfig     0x0003
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID             2
+        wTerminalType      0x0301 Speaker
+        bAssocTerminal          0
+        bSourceID               3
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                 3
+        bSourceID               1
+        bControlSize            1
+        bmaControls( 0)      0x03
+          Mute
+          Volume
+        bmaControls( 1)      0x02
+          Volume
+        bmaControls( 2)      0x02
+          Volume
+        iFeature                0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioStreaming Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioStreaming Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x00c0  1x 192 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       2
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioStreaming Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioStreaming Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x0060  1x 96 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-17-05 16:31 mjsb           New Issue                                    
-11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
-11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
-11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
-12-08-05 21:23 mjsb           Note Added: 0006962                          
-01-16-06 11:19 mjsb           Note Added: 0007685                          
-01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
-01-21-06 03:24 mjsb           Note Added: 0007730                          
-01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
-01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
-01-21-06 03:30 mjsb           Note Edited: 0007730                         
-01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
-01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:51 boniek         New Issue                                    
+01-25-06 11:51 boniek         Distribution              => Gentoo GNU/Linux
+01-25-06 11:51 boniek         Kernel Version            => 2.6.15          
+01-25-06 12:04 boniek         Note Added: 0007779                          
 ======================================================================
 
 
