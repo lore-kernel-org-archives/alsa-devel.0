@@ -1,9 +1,10 @@
-From: Pierre Ossman <drzeus-list@drzeus.cx>
-Subject: [PATCH] Remove bogus assert
-Date: Wed, 25 Jan 2006 20:29:35 +0100
-Message-ID: <43D7D19F.9070509@drzeus.cx>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH] fix typos in writing-an-alsa-driver
+Date: Wed, 25 Jan 2006 22:10:06 +0100
+Message-ID: <20060125221006.62102b50.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_hermes.drzeus.cx-7963-1138217376-0001-2"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -14,43 +15,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
-
---=_hermes.drzeus.cx-7963-1138217376-0001-2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-
-Freeing the global config update structure when it had been created
-without any configs present caused an assertion to trigger. Since this
-is a valid scenario and the assertion didn't really protect against
-anything, it should simply be removed. Attached patch does exactly that.
-
-Rgds
-Pierre
 
 
---=_hermes.drzeus.cx-7963-1138217376-0001-2
-Content-Type: text/x-patch; name="alsa-badassert.patch"; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-badassert.patch"
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
---- alsa-lib-1.0.10.orig/src/conf.c	2005-10-12 18:08:53.000000000 +0200
-+++ alsa-lib-1.0.10/src/conf.c	2006-01-25 20:18:30.000000000 +0100
-@@ -3106,7 +3106,6 @@
- 	unsigned int k;
+--- alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl__orig	2006-01-25 21:55:07.000000000 +0100
++++ alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl	2006-01-25 22:02:40.000000000 +0100
+@@ -5206,14 +5206,14 @@
+         You need to pass the <function>snd_dma_pci_data(pci)</function>,
+         where pci is the struct <structname>pci_dev</structname> pointer
+         of the chip as well.
+-        The <type>snd_sg_buf_t</type> instance is created as
++        The <type>struct snd_sg_buf</type> instance is created as
+         substream-&gt;dma_private. You can cast
+         the pointer like: 
  
- 	assert(update);
--	assert(update->count > 0 && update->finfo);
- 	for (k = 0; k < update->count; k++)
- 		free(update->finfo[k].name);
- 	if (update->finfo)
+         <informalexample>
+           <programlisting>
+ <![CDATA[
+-  struct snd_sg_buf *sgbuf = (struct snd_sg_buf_t*)substream->dma_private;
++  struct snd_sg_buf *sgbuf = (struct snd_sg_buf *)substream->dma_private;
+ ]]>
+           </programlisting>
+         </informalexample>
 
---=_hermes.drzeus.cx-7963-1138217376-0001-2--
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
