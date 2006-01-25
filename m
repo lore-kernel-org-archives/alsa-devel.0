@@ -1,15 +1,14 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: Print for tracing bugs
-Date: Wed, 25 Jan 2006 13:19:43 +0000
-Message-ID: <ad2655cb0601250519w71a16bccr@mail.gmail.com>
-References: <200601231442.52366.gineera@aspect135.co.uk>
-	 <1138034480.1354.30.camel@mindpipe>
-	 <200601242129.25181.gineera@aspect135.co.uk>
+From: Hadmut Danisch <hadmut@danisch.de>
+Subject: intel8x0: Driver does not recognize card
+Date: Wed, 25 Jan 2006 14:38:37 +0100
+Message-ID: <20060125133837.GA11527@danisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_38768_307155.1138195183542"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200601242129.25181.gineera@aspect135.co.uk>
+Received: from sklave3.rackland.de (sklave3.rackland.de [213.133.101.23])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEDF717A
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 14:38:37 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,51 +18,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Lee Revell <rlrevell@joe-job.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_38768_307155.1138195183542
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hi,
 
-On 24/01/06, Alan Horstmann <gineera@aspect135.co.uk> wrote:
->
-> On Monday 23 January 2006 16:41, you wrote:
-> > Yes just add printk()'s to the driver code.
-> >
-> Thanks.  I can get these to print to var/log/messsages, but how do I get
-> them
-> to come immediately to a konsole?
->
-> Alan
->
->
-In the konsole type
-tail -f /var/log/messages
+I have a FUjitsu-Siemens Celsius Workstation, 
+and Linux 2.6.15.1, but it does not recognize the sound card:
 
-As messages appear in the file, they will be displayed.
+# lspci -vv -s 0:1b.0
+0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 01)
+        Subsystem: Fujitsu Siemens Computer GmbH: Unknown device 1083
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+	ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+	<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin A routed to IRQ 18
+        Region 0: Memory at f0000000 (64-bit, non-prefetchable)
+	[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+		PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+
+	Queue=0/0 Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] #10 [0091]
 
-------=_Part_38768_307155.1138195183542
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-On 24/01/06, <b class=3D"gmail_sendername">Alan Horstmann</b> &lt;<a href=
-=3D"mailto:gineera@aspect135.co.uk">gineera@aspect135.co.uk</a>&gt; wrote:<=
-div><span class=3D"gmail_quote"></span><blockquote class=3D"gmail_quote" st=
-yle=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex=
-; padding-left: 1ex;">
-On Monday 23 January 2006 16:41, you wrote:<br>&gt; Yes just add printk()'s=
- to the driver code.<br>&gt;<br>Thanks.&nbsp;&nbsp;I can get these to print=
- to var/log/messsages, but how do I get them<br>to come immediately to a ko=
-nsole?
-<br><br>Alan<br><br></blockquote></div><br>In the konsole type<br>tail -f /=
-var/log/messages<br><br>As messages appear in the file, they will be displa=
-yed.<br><br>
+# lspci -n -s 0:1b.0
+0000:00:1b.0 0403: 8086:27d8 (rev 01)
 
-------=_Part_38768_307155.1138195183542--
+
+
+When inserting snd-intel8x0 just nothing happens.
+
+I saw that 8086:27d8 is not listed in sound/pci/intel8x0.c and added 
+        { 0x8086, 0x27d8, PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+        DEVICE_INTEL_ICH4 }, /* ICH7 */
+
+to snd_intel8x0_ids[], but it still does not work. 
+
+Kernel then says: 
+
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 18 (level, low) -> IRQ 18
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+codec_ready: codec is not ready [0xa0a0a0a0]
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+Intel ICH: probe of 0000:00:1b.0 failed with error -5
+
+
+
+regards
+Hadmut
+
 
 
 -------------------------------------------------------
