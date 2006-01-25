@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001778]: Only sound on line-out jack
-Date: Wed, 25 Jan 2006 11:51:33 +0100
-Message-ID: <def87554aea1ac8bbe2966afe1b0d0ff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001783]: My DYI BurrBrown pcm2702 usb soundcard is making a lot of noise, crackling or only noise when playing music
+Date: Wed, 25 Jan 2006 11:51:26 +0100
+Message-ID: <7461983c195daf38a8d79f619fe58495@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 068E0163
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 11:51:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFBDE163
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 11:51:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1778> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1783> 
 ======================================================================
-Reported By:                pw
-Assigned To:                tiwai
+Reported By:                boniek
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1778
-Category:                   PCI - hda-intel
-Reproducibility:            always
+Issue ID:                   1783
+Category:                   USB - usb-audio
+Reproducibility:            random
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo GNU/Linux
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-24-2006 15:24 CET
+Date Submitted:             01-25-2006 11:51 CET
 Last Modified:              01-25-2006 11:51 CET
 ======================================================================
-Summary:                    Only sound on line-out jack
+Summary:                    My DYI BurrBrown pcm2702 usb soundcard is making a
+lot of noise, crackling or only noise when playing music
 Description: 
-I'm using a Acer Extensa 6702-100 notebook (Intel ICH6 chipset / kernel
-2.6.15 / alsa-driver 1.0.11-rc2). The notebook has internal stereo
-speakers, a built-in microphone and three jacks (line-out, microphone and
-headphones).
-
-I've loaded the snd-hda-intel module with every model listed in the
-documentation. When using the fujitsu model option I'm getting sound on
-the line-out jack. The internal speakers, built-in microphone and
-headphone jack don't work. I've not tested the mic jack yet.
+Sound Card: PCM2702 BurrBrown DYI card (works perfectly in windows)
+Music Player: Does not matter. It is always the same. Using alsa plugin (
+I don't have oss emulation).
+ Upon starting playing you will hear either ok sound, sound with a lot
+background noise, or static only (like cat /dev/urandom > /dev/dsp in
+oss). On start of playing music (either on beggining or after
+unpause/unstop) there can be heard (almost always) a very loud crack.
+Music can degradate itself to noise only too. Whole thing occurs very
+often, but randomly (well I think things tend to get broken/repaired upon
+restarting music stream - stop/pause and play).
 ======================================================================
-
-----------------------------------------------------------------------
- blackr2d - 01-25-06 11:51 
-----------------------------------------------------------------------
-Duplicate of 1572 - mixer controls not picked up correctly for ALC880
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-06 15:24 pw             New Issue                                    
-01-24-06 15:26 pw             File Added: codec#0                          
-01-24-06 15:27 pw             File Added: codec#1                          
-01-25-06 11:51 blackr2d       Note Added: 0007777                          
+01-25-06 11:51 boniek         New Issue                                    
+01-25-06 11:51 boniek         Distribution              => Gentoo GNU/Linux
+01-25-06 11:51 boniek         Kernel Version            => 2.6.15          
 ======================================================================
 
 
