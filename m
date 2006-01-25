@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001782]: really poor sound with my SB Live 1024 and ALSA
-Date: Wed, 25 Jan 2006 06:30:56 +0100
-Message-ID: <31d005f67af7a2a75d5c2424d6e21565@bugtrack.alsa-project.org>
+From: "Gaston Armando" <eukriftm@acrylicpulpits.com>
+Subject: Re[4]:This is Moving .93 in 3 days
+Date: Wed, 25 Jan 2006 00:53:32 -0000
+Message-ID: <001101c6217c$0e2cb4b0$5f96f245@Workstation10>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_000D_01C62149.C39244B0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4539C172
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 06:30:57 +0100 (MET)
+Received: from pcp0010267936pcs.indpnd01.mo.comcast.net (pcp0010267936pcs.indpnd01.mo.comcast.net [69.242.150.95])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 91BDA152
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 07:53:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,65 +22,165 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1782> 
-======================================================================
-Reported By:                novazur
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1782
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             all what I tried, actually 2.6.15-1
-======================================================================
-Date Submitted:             01-25-2006 06:30 CET
-Last Modified:              01-25-2006 06:30 CET
-======================================================================
-Summary:                    really poor sound with my SB Live 1024 and ALSA
-Description: 
-Each time I tried to use ALSA with my SB Live, I always had a really very
-bad sound.
-I spent hours and hours to make it working better, but always had to come
-back to OSS. And, with OSS, I have a real perfect sound, on my 5.1 Altec
-Lansing kit.
-
-I'm afraid now to see OSS will definitively be removed from kernel.
-
-My english is too poor too, to explain exactly what I mean by "poor
-sound", but I can tell you the sound isn't good at all with ALSA and my
-card.
+------=_NextPart_000_000D_01C62149.C39244B0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000E_01C62149.C39244B0"
 
 
-00:06.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-0a)
-        Subsystem: Creative Labs SBLive! 5.1 Digital Model SB0220
-        Flags: bus master, medium devsel, latency 32, IRQ 11
-        I/O ports at b800 [size=32]
-        Capabilities: [dc] Power Management version 1
+------=_NextPart_001_000E_01C62149.C39244B0
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-======================================================================
+Platt=20
+Cecelia
+------=_NextPart_001_000E_01C62149.C39244B0
+Content-Type: text/html;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-06 06:30 novazur        New Issue                                    
-01-25-06 06:30 novazur        Distribution              => Gentoo          
-01-25-06 06:30 novazur        Kernel Version            => all what I tried,
-actually 2.6.15-1
-======================================================================
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3DISO-8859-1">
+<META content=3D"MSHTML 6.00.2900.2769" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<IMG alt=3D"" hspace=3D0 =
+src=3D"cid:000c01c6217c$0e2cb4b0$5f96f245@Workstation10"=20
+align=3Dbaseline border=3D0></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DCourier>Platt <BR>Cecelia</FONT></DIV></BODY></HTML>
 
+------=_NextPart_001_000E_01C62149.C39244B0--
 
+------=_NextPart_000_000D_01C62149.C39244B0
+Content-Type: image/gif;
+	name="ddpssnia.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000c01c6217c$0e2cb4b0$5f96f245@Workstation10>
 
-
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+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
+mBJfyYotGZUMOZYtmZQFWZYS6ZVI2ZVAOZddSY0XWZJ4KZdxGRHQaJElaY90CZh+6RKCaZaB
+CZWBeRBgMJhIGZYNUZgEyRGOqRCH4JeCyY2DmYyYmZh8CYybCYycyZiY+ZlvaRGFaYyceZqQ
+2RKTCZqoGZRz2Zph2ZqPyZjNyIumaZlbmZl0aZt22ZtOCZuvCZupCZwIOZy3CZB6uZfHSJyX
+qZu/qZwheZZEqZIGuZGxmZHNKZLLKZD/WBmdt6mV1OmOHMmVdXmX4jmd7diWjdmcJgmaxQmU
+0QkJG+meeLmatemcSemZTwmeRgmc/nifsWmfxGmb3zmV0yif2fmdCsqgDhqP4AmWFpmeC9qY
+CyqbFxmdEPqgy2mfv0mhF+qeIhqXWhmhvTmSz6mZ8DmhQgkRUNmUKrqZEcqNMJqcr2iivKmi
+HXqiDSqUdlmRDPqc1qmfISqgIPmhxlmgSHqhQ5qkHnqjFbqksRigKVqa8Rmk+1mgE5qXwcml
+OvqXXKqXkPmlRLqk8LmaJuqf6HmcBKqR4smhQ2mc/mmmPcqkcZqXZoqkZJqOaBqldrqQeNqg
+cKmbJCqjWlqh/3LplqNppN2JnG3Km+cZlCggpUkamp/5pWPqp5H6nExgp3sKpxq6pRxKm0Ja
+qqO6opS6qUw6o1uKo5eqpZnKnJBqlVMqjU0Kq1d5qze6j97pkGj5pu8ZrCxKoyiqmoyqjRp6
+lf6IrCw5lXcKllEpm2PZrNQqnXtqq+donbsqrO+pnn1KncQ6rMGKokPplkxBmySVBpGBrpXC
+rj9WCIfak/I6r/Q6YnhwUyxQr/q6r5PCnpIppuh6lCuxnaaJnPVorhIprVKJrEERoHzprjfh
+sFVpoBcxopVaqCxhsRLBlJF5sYYZnrPamYSJm2GaE/hZsgVLsbkZqh2rsiOhsQPhA//5Ga8k
+WrEtK5rK+BIQO6guSxMn27PC6KDWapAa6ZVuepcUu60fypUP2a1UmqVvCqxq2ZCqeZLuCKxr
+SbVserUkuasbSrVfa4xM653+2pFPya3leaB1+ZDXOa5i+6PoKbEuWqegKrRWWqI8qqTaqba7
+2AIDKrQcK6p4W59/Cq2JubR8e6U4q7ZwC6eMm7cbCrDZ2bgjSrmvGasQOghXK7gZiaVimqGO
+mxGWW7Qiyq4pyrB6W7cDmqqzyZaTu7hA6opHwKfiCriBuqNGKpVa8Lmqip1ZK6G3W5ROW66R
+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
+CSeksEILL5wvIAA7
+------=_NextPart_000_000D_01C62149.C39244B0--
