@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001783]: My DYI BurrBrown pcm2702 usb soundcard is making a lot of noise, crackling or only noise when playing music
-Date: Wed, 25 Jan 2006 12:04:06 +0100
-Message-ID: <3feaeeb2b96f40c85051ac87b7fd1dda@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
+Date: Wed, 25 Jan 2006 12:17:06 +0100
+Message-ID: <b81527f27c5cbda53a9115a2d5d87769@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B408163
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 12:04:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AC52163
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 12:17:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,240 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1783> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
 ======================================================================
-Reported By:                boniek
-Assigned To:                Clemens Ladisch
+Reported By:                robertdavid
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1783
-Category:                   USB - usb-audio
-Reproducibility:            random
-Severity:                   minor
+Issue ID:                   1744
+Category:                   PCI - ice1724
+Reproducibility:            sometimes
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo GNU/Linux
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               Gentoo linux
+Kernel Version:             2.6.14-archck-r7
 ======================================================================
-Date Submitted:             01-25-2006 11:51 CET
-Last Modified:              01-25-2006 12:04 CET
+Date Submitted:             01-13-2006 22:16 CET
+Last Modified:              01-25-2006 12:17 CET
 ======================================================================
-Summary:                    My DYI BurrBrown pcm2702 usb soundcard is making a
-lot of noise, crackling or only noise when playing music
+Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
+chanel work and sound is quick...
 Description: 
-Sound Card: PCM2702 BurrBrown DYI card (works perfectly in windows)
-Music Player: Does not matter. It is always the same. Using alsa plugin (
-I don't have oss emulation).
- Upon starting playing you will hear either ok sound, sound with a lot
-background noise, or static only (like cat /dev/urandom > /dev/dsp in
-oss). On start of playing music (either on beggining or after
-unpause/unstop) there can be heard (almost always) a very loud crack.
-Music can degradate itself to noise only too. Whole thing occurs very
-often, but randomly (well I think things tend to get broken/repaired upon
-restarting music stream - stop/pause and play).
+Im very glad that was added support for Prodigy, but there is still only
+two channel working (7,8), the others are silent (tryed all volume
+settings).
+The sound from 7,8 chanel is good in case of quality, but is faster than
+it should be (turn off Multi Track Rate Locking didnt do anything).
+I've tryed mpalyer and XMMS, both the same.
+I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
+Prodigy 7.1LT) 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001090 Support for new Prodigy 7.1 LT
 ======================================================================
 
 ----------------------------------------------------------------------
- boniek - 01-25-06 12:04 
+ Anho Ki - 01-18-06 23:42 
 ----------------------------------------------------------------------
-Output of lsusb -v for my soundcard
+with Ext.Amp. option turned on, 7,8 channels just work same as channel 1,2
+with it turned off, 7,8 channels work as SB channels...
 
+my patch is not from my idea, just do as moffa says in BTS#1090.
+i don't know what i change is means... :)
 
-Bus 003 Device 002: ID 08bb:2702 Texas Instruments Japan
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0         8
-  idVendor           0x08bb Texas Instruments Japan
-  idProduct          0x2702
-  bcdDevice            1.00
-  iManufacturer           1 Burr-Brown Japan
-  iProduct                2 Burr-Brown Japan PCM2702
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          165
-    bNumInterfaces          2
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x40
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           40
-        bInCollection           1
-        baInterfaceNr( 0)       1
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             2
-        wTerminalType      0x0301 Speaker
-        bAssocTerminal          0
-        bSourceID               3
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 3
-        bSourceID               1
-        bControlSize            1
-        bmaControls( 0)      0x03
-          Mute
-          Volume
-        bmaControls( 1)      0x02
-          Volume
-        bmaControls( 2)      0x02
-          Volume
-        iFeature                0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        32000
-        tSamFreq[ 1]        44100
-        tSamFreq[ 2]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-          Usage Type               Data
-        wMaxPacketSize     0x00c0  1x 192 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         2 Decoded PCM samples
-          wLockDelay            512 Decoded PCM samples
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       2
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             1
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        32000
-        tSamFreq[ 1]        44100
-        tSamFreq[ 2]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-          Usage Type               Data
-        wMaxPacketSize     0x0060  1x 96 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         2 Decoded PCM samples
-          wLockDelay            512 Decoded PCM samples
+anyway, i can't hear sounds from line-in or mic.
+of course, i change HW & HW 1 to "HW IN 0"/"HW IN 1", but no sounds.
+
+does anyone have ideas?
+i enable on-board intel8x0 sound just for viewing TV. :(
+
+----------------------------------------------------------------------
+ Anho Ki - 01-25-06 12:17 
+----------------------------------------------------------------------
+i found the reason of poor sound quality,
+there's some problem in my prodigy 7.1lt and my bt878 based tv tuner
+card...
+
+i upgrade bt878 based tv tuner card to cx88 based ATSC card :-)
+and there're no quality matters...
+
+how'bout applying patch i uploaded to alsa cvs?
+(i know more tests must be done...)
+
+any other progress?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-25-06 11:51 boniek         New Issue                                    
-01-25-06 11:51 boniek         Distribution              => Gentoo GNU/Linux
-01-25-06 11:51 boniek         Kernel Version            => 2.6.15          
-01-25-06 12:04 boniek         Note Added: 0007779                          
+01-13-06 22:16 robertdavid    New Issue                                    
+01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
+01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
+01-14-06 00:13 drfindley      File Added: asound.state                     
+01-14-06 00:15 drfindley      Note Added: 0007650                          
+01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
+01-14-06 00:28 robertdavid    Note Added: 0007651                          
+01-14-06 00:29 robertdavid    Note Edited: 0007651                         
+01-14-06 18:09 robertdavid    Note Added: 0007654                          
+01-15-06 19:18 Anho Ki        Note Added: 0007667                          
+01-17-06 01:21 Anho Ki        Note Added: 0007694                          
+01-17-06 01:48 rlrevell       Relationship added       related to 0001090  
+01-17-06 09:24 Anho Ki        File Added: prodigy71.patch                    
+01-17-06 09:24 Anho Ki        Issue Monitored: Anho Ki                     
+01-17-06 09:38 Anho Ki        Note Added: 0007695                          
+01-17-06 11:13 robertdavid    Note Added: 0007696                          
+01-17-06 16:39 tinez          Issue Monitored: tinez                       
+01-18-06 23:42 Anho Ki        Note Added: 0007717                          
+01-22-06 00:20 msmigiel       Issue Monitored: msmigiel                    
+01-23-06 18:23 Demosthenes    Issue Monitored: Demosthenes                    
+01-24-06 06:38 mccart         Issue Monitored: mccart                      
+01-25-06 12:17 Anho Ki        Note Added: 0007780                          
 ======================================================================
 
 
