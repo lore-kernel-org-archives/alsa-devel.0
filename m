@@ -1,19 +1,14 @@
-From: Arnaud Patard <apatard@mandriva.com>
-Subject: HDA pin sense and presence detect capability
-Date: Wed, 25 Jan 2006 16:34:22 +0100
-Message-ID: <m3k6copbi9.fsf@anduin.mandrakesoft.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: [PATCH] ALS300(+)
+Date: Wed, 25 Jan 2006 15:32:55 +0000
+Message-ID: <ad2655cb0601250732t70582fc6r@mail.gmail.com>
+References: <200601242303.k0ON3EX20911@cal1-1.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3C7218F
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 16:32:33 +0100 (MET)
-Received: from anduin.mandrakesoft.com (anduin.mandrakesoft.com [192.168.100.45])
-	by office.mandriva.com (Postfix) with ESMTP id 4976153EB7
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 16:32:33 +0100 (CET)
-Received: from anduin.mandrakesoft.com (localhost [127.0.0.1])
-	by anduin.mandrakesoft.com (Postfix) with ESMTP id BE4CFFF855
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 16:34:22 +0100 (CET)
+In-Reply-To: <200601242303.k0ON3EX20911@cal1-1.us4.outblaze.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,29 +18,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Ash Willis <ashwillis@programmer.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 24/01/06, Ash Willis <ashwillis@programmer.net> wrote:
+> This is a patch to add Avance Logic ALS300 and ALS300+ support.
+> It covers playback and capture but legacy devices are not yet implemented=
+.
+>
+> I have the datasheet for the ALS300 chip and was given permission to dist=
+ribute it if anyone is interested.
+>
+> Ash Willis
+>
 
-
-On some laptops with HDA codecs, there are different nids for the
-Headphones and for the built-in speakers. This results in having sound
-on speakers and on headphones at the same time. imho, the expected
-behaviour is to have sound only on headphones (without having to play
-with the mixer).
-
-This can be achieve with the presence detect capability (0x709,0xf09): When
-plug/unplugging the headphones, one gets an unsollicited responsed and
-the driver mute the channels.
-
-Is there something to do that in the code or should I go and code it ?
-Any opinion/comments about that ?
-
-
-Regards,
-Arnaud
-
+I have put the datasheet in:
+http://alsa-project.org/~james/datasheets/advance-logic/
 
 
 -------------------------------------------------------
