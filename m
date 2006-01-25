@@ -1,16 +1,14 @@
 From: Matt Porter <mporter@embeddedalley.com>
-Subject: Re: HDA pin sense and presence detect capability
-Date: Wed, 25 Jan 2006 10:14:22 -0700
-Message-ID: <20060125101422.D29602@cox.net>
-References: <m3k6copbi9.fsf@anduin.mandrakesoft.com> <s5hu0bsb9du.wl%tiwai@suse.de> <m3fyncpar3.fsf@anduin.mandrakesoft.com> <20060125090825.B29602@cox.net> <m3bqy0p7n9.fsf@anduin.mandrakesoft.com>
+Subject: [PATCH] hda: sigmatel fixes
+Date: Wed, 25 Jan 2006 10:22:19 -0700
+Message-ID: <20060125102219.E29602@cox.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from fed1rmmtao02.cox.net (fed1rmmtao02.cox.net [68.230.241.37])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD908199
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 18:14:25 +0100 (MET)
+Received: from fed1rmmtao07.cox.net (fed1rmmtao07.cox.net [68.230.241.32])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BD1E17A
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2006 18:22:24 +0100 (MET)
 Content-Disposition: inline
-In-Reply-To: <m3bqy0p7n9.fsf@anduin.mandrakesoft.com>; from apatard@mandriva.com on Wed, Jan 25, 2006 at 05:57:46PM +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,54 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arnaud Patard <apatard@mandriva.com>
-Cc: Matt Porter <mporter@embeddedalley.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 25, 2006 at 05:57:46PM +0100, Arnaud Patard wrote:
-> Matt Porter <mporter@embeddedalley.com> writes:
-> 
-> > On Wed, Jan 25, 2006 at 04:50:40PM +0100, Arnaud Patard wrote:
-> >> About what's done in patch_sigmatel.c : what's the point of disabling
-> >> the output ? imho, you only need to mute the nid. 
-> >
-> > It seemed easier to disable the actual pin nid outputs for all line outs
-> > (thing surround) than walk back to the associated DAC nids (which can
-> 
-> I see... but afaik, muting the DAC is not the solution because you may
-> have one DAC with the HP and speakers nids connected to it (for instance
-> on the ad1981hd). My point was about muting the nid itself. 
+* Fix init sequence so manually retaskable jacks don't get added to
+  the line_out list.
+* Update intel mobo config defaults to specify surround outputs
+  as line outs rather than speakers.
 
-Indeed, that's the other reason for not doing it that way. What do
-you mean by "muting the nid itself"? The pin widget nid? There's no
-mute on the sigmatel codec pin widgets since there's no amp capability
-there. Disabling the output is the way to mute at the pin widget...
-at least on sigmatel hda codecs.
+Signed-off-by: Matt Porter <mporter@embeddedalley.com>
 
-> > vary on sigmatel codecs) and mute those. It accomplishes the same
-> > thing as muting...except there's no change in mixer state.
-> 
-> Reflecting a change in the mixer state is more userfriendly but as long
-> as it's working as the user expects, that's not a real worry.
-
-Yeah, I wasn't sure about that. On the sigmatel codecs, the output
-amps are in the DAC nids so we'd have to mute all of them in an
-associated group if this is the desired userfriendly view of things.
-Not a big deal to do, just not as simple as my first pass.
-
-> >> Also, if there are several users of similar functions and on others chips than
-> >> sigmatel, shouldn't it be better to put something in hda_codec.c ?
-> >  
-> > I think so, but this was somewhat of an experimental first attempt
-> > at this support. I just haven't had time to do much more with it yet.
-> 
-> okay. I'm trying to have something working for my codec and then I'll
-> try to work on this. If you don't agree, scream :)
-
-I think it's great. Sounds like Takashi wants to see more shared
-code as well and his opinion if far more important. ;)
-
--Matt
+Index: alsa-kernel/pci/hda/patch_sigmatel.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/patch_sigmatel.c,v
+retrieving revision 1.16
+diff -u -r1.16 patch_sigmatel.c
+--- alsa-kernel/pci/hda/patch_sigmatel.c	24 Jan 2006 10:34:34 -0000	1.16
++++ alsa-kernel/pci/hda/patch_sigmatel.c	25 Jan 2006 17:17:56 -0000
+@@ -277,14 +277,14 @@
+ };
+ 
+ static unsigned int d945gtp3_pin_configs[10] = {
+-	0x0221401f, 0x01a19022, 0x01813021, 0x01114010,
++	0x0221401f, 0x01a19022, 0x01813021, 0x01014010,
+ 	0x40000100, 0x40000100, 0x40000100, 0x40000100,
+ 	0x02a19120, 0x40000100,
+ };
+ 
+ static unsigned int d945gtp5_pin_configs[10] = {
+-	0x0221401f, 0x01111012, 0x01813024, 0x01114010,
+-	0x01a19021, 0x01116011, 0x01452130, 0x40000100,
++	0x0221401f, 0x01011012, 0x01813024, 0x01014010,
++	0x01a19021, 0x01016011, 0x01452130, 0x40000100,
+ 	0x02a19320, 0x40000100,
+ };
+ 
+@@ -855,12 +855,14 @@
+ 
+ 	if ((err = snd_hda_parse_pin_def_config(codec, &spec->autocfg, NULL)) < 0)
+ 		return err;
++	if (! spec->autocfg.line_outs && ! spec->autocfg.hp_pin)
++		return 0; /* can't find valid pin config */
++	stac92xx_auto_init_multi_out(codec);
++	stac92xx_auto_init_hp_out(codec);
+ 	if ((err = stac92xx_add_dyn_out_pins(codec, &spec->autocfg)) < 0)
+ 		return err;
+ 	if ((err = stac92xx_auto_fill_dac_nids(codec, &spec->autocfg)) < 0)
+ 		return err;
+-	if (! spec->autocfg.line_outs && ! spec->autocfg.hp_pin)
+-		return 0; /* can't find valid pin config */
+ 
+ 	if ((err = stac92xx_auto_create_multi_out_ctls(spec, &spec->autocfg)) < 0 ||
+ 	    (err = stac92xx_auto_create_hp_ctls(codec, &spec->autocfg)) < 0 ||
+@@ -922,9 +924,6 @@
+ 
+ 	snd_hda_sequence_write(codec, spec->init);
+ 
+-	stac92xx_auto_init_multi_out(codec);
+-	stac92xx_auto_init_hp_out(codec);
+-
+ 	return 0;
+ }
+ 
 
 
 -------------------------------------------------------
