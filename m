@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001784]: line input not recording right channel
-Date: Thu, 26 Jan 2006 07:41:52 +0100
-Message-ID: <55d914b9a3b5dacaa12bda0750420154@bugtrack.alsa-project.org>
+Date: Thu, 26 Jan 2006 07:50:39 +0100
+Message-ID: <614879698d06c79c1b7c50d98472f162@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53538197
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 07:41:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2D1A197
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 07:50:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14
 ======================================================================
 Date Submitted:             01-26-2006 07:33 CET
-Last Modified:              01-26-2006 07:41 CET
+Last Modified:              01-26-2006 07:50 CET
 ======================================================================
 Summary:                    line input not recording right channel
 Description: 
@@ -65,6 +65,11 @@ on it to hear anything from the line-in jack.
 Is it possible for you to try each release from 1.0.6 - the latest and see
 when it broke?
 
+----------------------------------------------------------------------
+ rlrevell - 01-26-06 07:50 
+----------------------------------------------------------------------
+Actually, can you just try 1.0.9 and see if that works?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -72,6 +77,7 @@ Date Modified  Username       Field                    Change
 01-26-06 07:33 Eil            Distribution              => Gentoo          
 01-26-06 07:33 Eil            Kernel Version            => 2.6.14          
 01-26-06 07:41 rlrevell       Note Added: 0007783                          
+01-26-06 07:50 rlrevell       Note Added: 0007784                          
 ======================================================================
 
 
