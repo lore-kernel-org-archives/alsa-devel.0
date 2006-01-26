@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001784]: line input not recording right channel
-Date: Thu, 26 Jan 2006 07:50:39 +0100
-Message-ID: <614879698d06c79c1b7c50d98472f162@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001556]: Fortissimo 4: No Volume Control
+Date: Thu, 26 Jan 2006 08:35:54 +0100
+Message-ID: <3185d08890839d6f38610dc4a5934c75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2D1A197
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 07:50:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABA0E197
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 08:35:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,88 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1784> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556> 
 ======================================================================
-Reported By:                Eil
-Assigned To:                
+Reported By:                bladus
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1784
-Category:                   PCI - emu10k1
+Issue ID:                   1556
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14
+Status:                     feedback
+Distribution:               Gentoo Linux 2005.1
+Kernel Version:             2.6.14-ck1
 ======================================================================
-Date Submitted:             01-26-2006 07:33 CET
-Last Modified:              01-26-2006 07:50 CET
+Date Submitted:             11-13-2005 22:06 CET
+Last Modified:              01-26-2006 08:35 CET
 ======================================================================
-Summary:                    line input not recording right channel
+Summary:                    Fortissimo 4: No Volume Control
 Description: 
-I'm trying to set up my computer to record audio from the line-in jack
-(blue) on a SoundBlaster Live! Value card (CT4832). No matter what
-adjustments I make to the mixer (using alsamixer or kmix), I cannot get it
-to record sound from the right channel. Additionally, sound on the left
-sounds quieter than it should, but this may be a perception issue since
-stereo is missing. I've tried the drivers that ship with the 2.6.14 kernel
-and the 1.0.10-r2 Gentoo alsa-driver package, both do the same thing. On a
-whim, I booted an old MEPIS live CD with 1.0.5 (or maybe 1.0.6) drivers
-and those worked just fine. It's almost as if the right Capture slider in
-alsamixer isn't working and the left one won't go high enough.
-Additionally, the Line slider doesn't do anything, like I would expect it
-to, muted or not. However, the Line slider does have to have capture set
-on it to hear anything from the line-in jack.
+With the Hercules Fortissimo 4 (Envy24HT) there's no posibillity to control
+the volume.
+It's always at max.
+
+Under Windows the card uses the reference drivers from VIA, so maybe you
+can fix that issue.
+I would be very happy if you could send me a response to this issue within
+a week, since when it's not possible i can return the card to the
+merchant.
+
+Thank you.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-26-06 07:41 
+ liiwi - 01-10-06 19:58 
 ----------------------------------------------------------------------
-Is it possible for you to try each release from 1.0.6 - the latest and see
-when it broke?
+Hrm, with the same card I cannot even get a bleep out. Trying to use spdif,
+don't have at the moment anything to connect to analog out. Kernel is
+2.6.15.
+
+Same "No matching model" error as above, and envy24control does not
+start:
+
+$ envy24control 
+No ICE1712 cards found
+
+Trying different model numbers with module options does not change
+anything.
+
+Hrm, seems that I have slightly different problem, as "Simple mixer
+control 'Multi Track Peak'" has all volumes at 0%, and I cannot change
+them.
+
+Anything I can do?
 
 ----------------------------------------------------------------------
- rlrevell - 01-26-06 07:50 
+ rolling - 01-26-06 08:35 
 ----------------------------------------------------------------------
-Actually, can you just try 1.0.9 and see if that works?
+I have same problem volume control.  
+Both of these options does solve the problem. Is there any more ideas how
+to make it work. 
+Distribution Ubuntu 5.10
+Kernel 2.6.12
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-26-06 07:33 Eil            New Issue                                    
-01-26-06 07:33 Eil            Distribution              => Gentoo          
-01-26-06 07:33 Eil            Kernel Version            => 2.6.14          
-01-26-06 07:41 rlrevell       Note Added: 0007783                          
-01-26-06 07:50 rlrevell       Note Added: 0007784                          
+11-13-05 22:06 bladus         New Issue                                    
+11-13-05 22:06 bladus         Distribution              => Gentoo Linux 2005.1
+11-13-05 22:06 bladus         Kernel Version            => 2.6.14-ck1      
+11-14-05 11:02 perex          Note Added: 0006713                          
+11-14-05 11:02 perex          Assigned To               => perex           
+11-14-05 11:02 perex          Status                   new => feedback     
+11-14-05 13:39 bladus         Note Added: 0006722                          
+11-14-05 13:55 bladus         Note Added: 0006723                          
+11-14-05 14:01 perex          Note Added: 0006724                          
+11-15-05 16:37 bladus         Note Added: 0006731                          
+11-19-05 10:27 bladus         Note Added: 0006761                          
+01-10-06 19:37 liiwi          Issue Monitored: liiwi                       
+01-10-06 19:58 liiwi          Note Added: 0007552                          
+01-26-06 08:35 rolling        Note Added: 0007785                          
 ======================================================================
 
 
