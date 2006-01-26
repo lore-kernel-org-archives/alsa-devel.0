@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
-Date: Thu, 26 Jan 2006 23:19:59 +0100
-Message-ID: <1a90535b3b2af7eeaa35097e7528ae3f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001271]: Changes in ALSA driver between 2.6.11.10 and 2.6.12.3 mean echo-cancelling mics fail
+Date: Thu, 26 Jan 2006 23:22:58 +0100
+Message-ID: <8af310ae9ff5ffdc55c8c551f5146f8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED91E19E
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 23:19:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 573D119E
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 23:22:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1501> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1271> 
 ======================================================================
-Reported By:                dkoch
+Reported By:                dcpiper
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1501
-Category:                   PCI - intel8x0
+Issue ID:                   1271
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.14-rc5-gac9b9c66
+Distribution:               Debian Sarge
+Kernel Version:             2.6.12.3
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-25-2005 16:45 CEST
-Last Modified:              01-26-2006 23:19 CET
+Date Submitted:             07-21-2005 18:50 CEST
+Last Modified:              01-26-2006 23:22 CET
 ======================================================================
-Summary:                    intel8x0 surround channels missing and swapped
+Summary:                    Changes in ALSA driver between 2.6.11.10 and
+2.6.12.3 mean echo-cancelling mics fail
 Description: 
-By default, the front channels are OK, the rear channels come out on the
-center/LFE jack and the center/LFE channels don't come out at all.
+Under 2.6.12.3, terrible feedback happens when the echo-cancelling
+microphone (A ClearOne AccuMic II) is enabled. No matter if the microphone
+is set to mute or not through alsamixer or gnome-volume-control there is
+persistent feedback that howls increasingly louder until the microphone's
+own enable button is turned off again.
 
-Using ICH5/AD1985 (Intel P865PERL motherboard).
-
-Anomolies found: double-rate slot (DRSLOT) is set to 7,8 instead of the
-default
-10,11 (register 0x20=0400 instead of 0).  After setting 0x20 to 0, the
-rear
-channel jack starts working.  RL/RR and Center/LFE are still swapped.
-
-I would assume the swappage was hardware, but the Center and LFE volume
-controls
-affect the speakers on the Center/LFE jack which would indicate the driver
-is
-incorrectly routing the signals.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001521 Speakers misplaced in 5.1 surround
-related to          0001369 Rear left/right channels swapped with c...
-related to          0001173 No sound from rear channels
-related to          0001206 No center channel; rear left and right ...
-related to          0001191 Center channel and 32-bit emulation bro...
+Rebooting solved nothing, as did resetting the power on the microphone.
+Reboot to 2.6.11.10 and the problem is gone again. Something changed in
+ALSA somewhere between those kernel versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 03:11 
+ rlrevell - 12-31-05 00:01 
 ----------------------------------------------------------------------
-Any improvement with the patch and/or later ALSA releases?
+Was this resolved in later releases?
 
 ----------------------------------------------------------------------
- rlrevell - 01-26-06 23:19 
+ rlrevell - 01-26-06 23:22 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-05 16:45 dkoch          New Issue                                    
-10-25-05 16:45 dkoch          Distribution              => Fedora Core 3   
-10-25-05 16:45 dkoch          Kernel Version            => 2.6.14-rc5-gac9b9c66
-10-25-05 17:56 tiwai          Note Added: 0006546                          
-10-25-05 18:09 dkoch          Note Added: 0006547                          
-10-25-05 18:11 tiwai          Note Added: 0006548                          
-10-25-05 18:12 tiwai          File Added: ac97-dra-conflict.diff                
-   
-11-01-05 15:27 jdthood        Relationship added       related to 0001521  
-11-01-05 15:35 jdthood        Relationship added       related to 0001369  
-11-01-05 15:42 jdthood        Relationship added       related to 0001173  
-11-01-05 15:43 jdthood        Relationship added       related to 0001206  
-11-01-05 15:45 jdthood        Relationship added       related to 0001191  
-11-06-05 10:11 densg          Issue Monitored: densg                       
-12-31-05 03:11 rlrevell       Note Added: 0007321                          
-01-10-06 12:08 C-MoH          Issue Monitored: C-MoH                       
-01-26-06 23:19 rlrevell       Status                   new => closed       
-01-26-06 23:19 rlrevell       Note Added: 0007792                          
+07-21-05 18:50 dcpiper        New Issue                                    
+07-21-05 18:50 dcpiper        Distribution              => Debian Sarge    
+07-21-05 18:50 dcpiper        Kernel Version            => 2.6.12.3        
+12-31-05 00:01 rlrevell       Note Added: 0007307                          
+01-26-06 23:22 rlrevell       Status                   new => closed       
+01-26-06 23:22 rlrevell       Note Added: 0007793                          
 ======================================================================
 
 
