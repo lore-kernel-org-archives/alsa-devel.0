@@ -1,15 +1,11 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Print for tracing bugs
-Date: Thu, 26 Jan 2006 16:42:17 +0000
-Message-ID: <200601261642.17034.gineera@aspect135.co.uk>
-References: <200601231442.52366.gineera@aspect135.co.uk> <200601242129.25181.gineera@aspect135.co.uk> <ad2655cb0601250519w71a16bccr@mail.gmail.com>
+From: Timo Steuerwald <timo.steuerwald@gmx.de>
+Subject: Newbie question to period/buffer/tick time
+Date: Thu, 26 Jan 2006 18:32:37 +0100
+Message-ID: <43D907B5.3020002@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <ad2655cb0601250519w71a16bccr@mail.gmail.com>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,20 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 25 January 2006 13:19, you wrote:
-> In the konsole type
-> tail -f /var/log/messages
->
-> As messages appear in the file, they will be displayed.
+Hi all!
 
-That's great; thanks for the help.
+I have some simple newbie questions:
+How will be the period/buffer/tick time calculated?
+How depends it on the other values?
+What exactly means period and tick in ALSA?
+And last but not least, where can I found the document where all this is 
+explained? :-)
 
-Alan
+Cheers,
 
+Timo
 
 
 -------------------------------------------------------
