@@ -1,14 +1,14 @@
-From: =?ISO-8859-1?Q?Petter_Sundl=F6f?= <petter.sundlof@findus.dhs.org>
-Subject: Some problems with two 1010LTs (pcm_multi & jackd)
-Date: Thu, 26 Jan 2006 15:04:25 +0100
-Message-ID: <43D8D6E9.80902@findus.dhs.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001784]: line input not recording right channel
+Date: Thu, 26 Jan 2006 15:02:51 +0100
+Message-ID: <0ff5ddefc8ef7c062426eea1ca5930c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000606050203070900060107"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from findus.dhs.org (gl177a.glassen.ac [82.182.223.101])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 710C718B
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 14:58:00 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A002C18B
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 15:02:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,208 +21,66 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000606050203070900060107
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
 
-Hello.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1784> 
+======================================================================
+Reported By:                Eil
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1784
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             01-26-2006 07:33 CET
+Last Modified:              01-26-2006 15:02 CET
+======================================================================
+Summary:                    line input not recording right channel
+Description: 
+I'm trying to set up my computer to record audio from the line-in jack
+(blue) on a SoundBlaster Live! Value card (CT4832). No matter what
+adjustments I make to the mixer (using alsamixer or kmix), I cannot get it
+to record sound from the right channel. Additionally, sound on the left
+sounds quieter than it should, but this may be a perception issue since
+stereo is missing. I've tried the drivers that ship with the 2.6.14 kernel
+and the 1.0.10-r2 Gentoo alsa-driver package, both do the same thing. On a
+whim, I booted an old MEPIS live CD with 1.0.5 (or maybe 1.0.6) drivers
+and those worked just fine. It's almost as if the right Capture slider in
+alsamixer isn't working and the left one won't go high enough.
+Additionally, the Line slider doesn't do anything, like I would expect it
+to, muted or not. However, the Line slider does have to have capture set
+on it to hear anything from the line-in jack.
+======================================================================
 
-I've added a second 1010LT in my studio box. The two LTs are card1 and=20
-card2.
-Following the steps from=20
-http://www.sound-man.co.uk/linuxaudio/ice1712multi.html I created the=20
-.asoundrc (and modified it to hw:1 and 2 where appropriate. I have=20
-attached this file.
-I then proceeded to patch jack 0.100.7 (release tarball) with the=20
-MMAP_COMPLEX patch. This was installed to the /usr/ prefix.
+----------------------------------------------------------------------
+ rlrevell - 01-26-06 07:50 
+----------------------------------------------------------------------
+Actually, can you just try 1.0.9 and see if that works?
 
-I then downloaded alsa-lib-1.0.10 (release) and applied pcm_multi-patch.=20
-I installed this over the existing alsa-lib, into prefix /usr/lib.
+----------------------------------------------------------------------
+ Eil - 01-26-06 15:02 
+----------------------------------------------------------------------
+I will give that a try.
 
-After this I tried to run jackd -d alsa -r44100 -p512 -C multi_capture=20
--P multi_playback
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-26-06 07:33 Eil            New Issue                                    
+01-26-06 07:33 Eil            Distribution              => Gentoo          
+01-26-06 07:33 Eil            Kernel Version            => 2.6.14          
+01-26-06 07:41 rlrevell       Note Added: 0007783                          
+01-26-06 07:50 rlrevell       Note Added: 0007784                          
+01-26-06 15:02 Eil            Note Added: 0007787                          
+======================================================================
 
-I then get this stdout message:
 
-jackd 0.100.7
-Copyright 2001-2005 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ...=20
-multi_playback|multi_capture|1024|2|48000|0|0|nomon|swmeter|-|32bit
-configuring for 48000Hz, period =3D 1024 frames, buffer =3D 2 periods
-nperiods =3D 2 for capture
-nperiods =3D 2 for playback
-
-I then start Ardour and open a session. I place the playhead somewhere=20
-and try to start playback. Nothing happens. After a few seconds, Ardour=20
-is disconnected from JACK, and I receive this in jackd's stdout:
-
-ALSA: poll time out, polled for 17416024 usecs
-DRIVER NT: could not run driver cycle
-jack main caught signal 12
-no message buffer overruns
-
-Clues?
-
-Info: Kernel 2.6.14-0.10.rrt.rhfc4.ccrma #1 PREEMPT
-Cards are not connected via S/PDIF or World clock -- don't have any such=20
-cables, and besides, I read it isn't working _yet_ with LT cards.
-Hardware: Sempron 2600, 1GB RAM.
-Software: Fedora Core 4 + CCRMA.
-
-Any tips appreciated.
-
-Thanks in advance,
-Petter Sundl=F6f
-
---------------000606050203070900060107
-Content-Type: text/plain;
- name=".asoundrc"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename=".asoundrc"
-
-# .asoundrc for two Delta 1010s
-#
-# Create virtual devices out of multiple soundcards.
-# JACK will need MMAP_COMPLEX support to use this. 
-# ICE1712 chip has 12 capture channels and 10 playback channels.
-# No. of channels in slaves must equal 12 for capture and 10 for playback
-# otherwise "invalid argument" errors result.
-
-pcm.multi_capture {
-	type multi
-	slaves.a.pcm hw:1 
-	slaves.a.channels 12
-	slaves.b.pcm hw:2
-	slaves.b.channels 12
-
-# First 8 channels of first soundcard (capture)
- 	bindings.0.slave a
- 	bindings.0.channel 0
- 	bindings.1.slave a
- 	bindings.1.channel 1
- 	bindings.2.slave a
- 	bindings.2.channel 2
- 	bindings.3.slave a
- 	bindings.3.channel 3
- 	bindings.4.slave a
- 	bindings.4.channel 4
- 	bindings.5.slave a
- 	bindings.5.channel 5
- 	bindings.6.slave a
- 	bindings.6.channel 6
- 	bindings.7.slave a
- 	bindings.7.channel 7
-    
-# First 8 channels of second soundcard (capture)
- 	bindings.8.slave b
- 	bindings.8.channel 0
- 	bindings.9.slave b
- 	bindings.9.channel 1
- 	bindings.10.slave b
- 	bindings.10.channel 2
- 	bindings.11.slave b
- 	bindings.11.channel 3
- 	bindings.12.slave b
- 	bindings.12.channel 4
- 	bindings.13.slave b
- 	bindings.13.channel 5
- 	bindings.14.slave b
- 	bindings.14.channel 6
- 	bindings.15.slave b
- 	bindings.15.channel 7
-
-# S/PDIF section. Comment out if not required.
-
-# S/PDIF first soundcard (capture)
- 	bindings.16.slave a
- 	bindings.16.channel 8
- 	bindings.17.slave a
- 	bindings.17.channel 9
-    
-# S/PDIF second soundcard (capture)
- 	bindings.18.slave b
- 	bindings.18.channel 8
- 	bindings.19.slave b
- 	bindings.19.channel 9
-}
-
-ctl.multi_capture {
-	type hw
-	card 1
-}
-
-pcm.multi_playback {
-	type multi
-	slaves.a.pcm hw:1
-	slaves.a.channels 10
-	slaves.b.pcm hw:2
-	slaves.b.channels 10
-
-# First 8 channels of first soundcard (playback)
- 	bindings.0.slave a
- 	bindings.0.channel 0
- 	bindings.1.slave a
- 	bindings.1.channel 1
- 	bindings.2.slave a
- 	bindings.2.channel 2
- 	bindings.3.slave a
- 	bindings.3.channel 3
- 	bindings.4.slave a
- 	bindings.4.channel 4
- 	bindings.5.slave a
- 	bindings.5.channel 5
- 	bindings.6.slave a
- 	bindings.6.channel 6
- 	bindings.7.slave a
- 	bindings.7.channel 7
-
-# First 8 channels of second soundcard (playback)
- 	bindings.8.slave b
- 	bindings.8.channel 0
- 	bindings.9.slave b
- 	bindings.9.channel 1
- 	bindings.10.slave b
- 	bindings.10.channel 2
- 	bindings.11.slave b
- 	bindings.11.channel 3
- 	bindings.12.slave b
- 	bindings.12.channel 4
- 	bindings.13.slave b
- 	bindings.13.channel 5
- 	bindings.14.slave b
- 	bindings.14.channel 6
- 	bindings.15.slave b
- 	bindings.15.channel 7
-
-# S/PDIF section. Comment out if not required.
-
-# S/PDIF first soundcard (playback)
- 	bindings.16.slave a
- 	bindings.16.channel 8
- 	bindings.17.slave a
- 	bindings.17.channel 9
-    
-# S/PDIF second soundcard (playback)
- 	bindings.18.slave b
- 	bindings.18.channel 8
- 	bindings.19.slave b
- 	bindings.19.channel 9
-}
-
-ctl.multi_playback {
-	type hw
-	card 1
-}
-
---------------000606050203070900060107--
 
 
 -------------------------------------------------------
