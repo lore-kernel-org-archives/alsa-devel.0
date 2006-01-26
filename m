@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001784]: line input not recording right channel
-Date: Thu, 26 Jan 2006 07:33:09 +0100
-Message-ID: <fd88a6d60d32b3ef42f9d17a3bf1d6f8@bugtrack.alsa-project.org>
+Date: Thu, 26 Jan 2006 07:41:52 +0100
+Message-ID: <55d914b9a3b5dacaa12bda0750420154@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3BE2197
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 07:33:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53538197
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 07:41:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1784> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14
 ======================================================================
 Date Submitted:             01-26-2006 07:33 CET
-Last Modified:              01-26-2006 07:33 CET
+Last Modified:              01-26-2006 07:41 CET
 ======================================================================
 Summary:                    line input not recording right channel
 Description: 
@@ -59,12 +59,19 @@ to, muted or not. However, the Line slider does have to have capture set
 on it to hear anything from the line-in jack.
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 01-26-06 07:41 
+----------------------------------------------------------------------
+Is it possible for you to try each release from 1.0.6 - the latest and see
+when it broke?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-26-06 07:33 Eil            New Issue                                    
 01-26-06 07:33 Eil            Distribution              => Gentoo          
 01-26-06 07:33 Eil            Kernel Version            => 2.6.14          
+01-26-06 07:41 rlrevell       Note Added: 0007783                          
 ======================================================================
 
 
