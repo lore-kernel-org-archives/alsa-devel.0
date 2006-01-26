@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001784]: line input not recording right channel
-Date: Thu, 26 Jan 2006 20:41:05 +0100
-Message-ID: <df9969480a224227ae7c8c0288c2851d@bugtrack.alsa-project.org>
+Date: Thu, 26 Jan 2006 20:45:35 +0100
+Message-ID: <c84308143dd26f55223ee40c14d0e7f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C012119C
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 20:41:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49A3F197
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 20:45:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as DUPLICATE OF issue 0001658.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1784> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14
 ======================================================================
 Date Submitted:             01-26-2006 07:33 CET
-Last Modified:              01-26-2006 20:41 CET
+Last Modified:              01-26-2006 20:45 CET
 ======================================================================
 Summary:                    line input not recording right channel
 Description: 
@@ -58,6 +58,21 @@ Additionally, the Line slider doesn't do anything, like I would expect it
 to, muted or not. However, the Line slider does have to have capture set
 on it to hear anything from the line-in jack.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001658 Capture happens only on one channel
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 01-26-06 07:41 
+----------------------------------------------------------------------
+Is it possible for you to try each release from 1.0.6 - the latest and see
+when it broke?
+
+----------------------------------------------------------------------
+ rlrevell - 01-26-06 07:50 
+----------------------------------------------------------------------
+Actually, can you just try 1.0.9 and see if that works?
 
 ----------------------------------------------------------------------
  Eil - 01-26-06 15:02 
@@ -90,6 +105,7 @@ Date Modified  Username       Field                    Change
 01-26-06 07:50 rlrevell       Note Added: 0007784                          
 01-26-06 15:02 Eil            Note Added: 0007787                          
 01-26-06 20:41 Eil            Note Added: 0007788                          
+01-26-06 20:45 rlrevell       Relationship added       duplicate of 0001658
 ======================================================================
 
 
