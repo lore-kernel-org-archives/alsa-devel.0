@@ -1,13 +1,14 @@
-From: =?windows-1251?B?0ODh7vLgINDz6u7i7uTo8uXr/w==?= <acculturate@topmail.com.ar>
-Subject: =?windows-1251?B?0+/w4OLr//756OkgLSDt5SDy7vIg6vLuIPPv8ODi6//l8iDgIPLu8iDq8u4g8+/w?=
- =?windows-1251?B?4OLr/+Xy8f8=?=
-Date: Wed, 25 Jan 2006 16:26:08 +0000
-Message-ID: <f4eb01c621cc$8c2c6907$eb873aa3@topmail.com.ar>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001784]: line input not recording right channel
+Date: Thu, 26 Jan 2006 07:33:09 +0100
+Message-ID: <fd88a6d60d32b3ef42f9d17a3bf1d6f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_E6518873.354A9B6C"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3BE2197
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 07:33:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,190 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_E6518873.354A9B6C
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_5F58BEB5.26D13A43"
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1784> 
+======================================================================
+Reported By:                Eil
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1784
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             01-26-2006 07:33 CET
+Last Modified:              01-26-2006 07:33 CET
+======================================================================
+Summary:                    line input not recording right channel
+Description: 
+I'm trying to set up my computer to record audio from the line-in jack
+(blue) on a SoundBlaster Live! Value card (CT4832). No matter what
+adjustments I make to the mixer (using alsamixer or kmix), I cannot get it
+to record sound from the right channel. Additionally, sound on the left
+sounds quieter than it should, but this may be a perception issue since
+stereo is missing. I've tried the drivers that ship with the 2.6.14 kernel
+and the 1.0.10-r2 Gentoo alsa-driver package, both do the same thing. On a
+whim, I booted an old MEPIS live CD with 1.0.5 (or maybe 1.0.6) drivers
+and those worked just fine. It's almost as if the right Capture slider in
+alsamixer isn't working and the left one won't go high enough.
+Additionally, the Line slider doesn't do anything, like I would expect it
+to, muted or not. However, the Line slider does have to have capture set
+on it to hear anything from the line-in jack.
+======================================================================
 
-
-------=_NextPart_001_0001_5F58BEB5.26D13A43
-Content-Type: text/plain;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
- =D3=EF=F0=E0=E2=EB=FF=FE=F9=E8=E9 - =ED=E5 =F2=EE=F2, =EA=F2=EE=20
-=F3=EF=F0=E0=E2=EB=FF=E5=F2, =E0 =F2=EE=F2, =EA=F2=EE =F3=EF=F0=E0=E2=EB=FF=
-=E5=F2=F1=FF=20
-=D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =ED=E5 =F0=EE=E6=E4=E0=FE=F2=F1=FF=
-,=20
-=F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =F1=F2=E0=ED=EE=E2=FF=F2=F1=FF=20
-
-
-=CA=E0=EA =EF=EE=EB=F3=F7=E0=F2=FC =F0=E5=E7=F3=EB=FC=F2=E0=F2=FB =F1 =F2=
-=E5=EC=E8 =EB=FE=E4=FC=EC=E8, =EA=F2=EE =E5=F1=F2=FC =F1=E5=E9=F7=E0=F1:=20
-
-=D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF
-
-=F2=E5=EB=E5=F4=EE=ED (095) 518-05-75, 544-88-14=20
-
- =CB=FE=E4=E8 =ED=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =F2=EE=E3=EE, =EA=F2=EE =
-=E8=F5 =EF=F0=E5=F1=F1=F3=E5=F2 - =EE=ED=E8 =EE=F0=E3=E0=ED=E8=E7=F3=FE=F2=
- =F2=E8=F5=E8=E9 =F1=E0=E1=EE=F2=E0=E6.
-=CD=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =E8 =F2=EE=E3=EE, =EA=F2=EE =EF=F0=EE=E3=
-=E8=E1=E0=E5=F2=F1=FF - =EE=ED=E8 =E5=E3=EE =ED=E5 =F3=E2=E0=E6=E0=FE=F2.=
- =CA=EE=E3=EE =EB=FE=E4=E8 =F1=EB=F3=F8=E0=FE=F2=F1=FF?
-=C8 =F7=F2=EE =E4=EB=FF =FD=F2=EE=E3=EE =ED=E0=E4=EE =E4=E5=EB=E0=F2=FC? =
- =D7=F2=EE =EC=EE=F2=E8=E2=E8=F0=F3=E5=F2 =EB=FE=E4=E5=E9 - =E8 =EF=EE=F7=
-=E5=EC=F3 =EE=E4=ED=E8=F5 =EE=E4=ED=EE,
-=E0 =E4=F0=F3=E3=E8=F5 =E4=F0=F3=E3=EE=E5?  =CA=E0=EA =EA=EE=ED=F2=F0=EE=EB=
-=E8=F0=EE=E2=E0=F2=FC? =D7=F2=EE =F2=E0=EA=EE=E5 "=F2=F0=E8 =EF=E5=F2=EB=E8=
- =EA=EE=ED=F2=F0=EE=EB=FF"?=20
-=CA=E0=EA =EF=F0=E0=E2=E8=EB=FC=ED=EE =F1=F2=E0=E2=E8=F2=FC =E7=E0=E4=E0=F7=
-=E8?  =CF=EE=F7=E5=EC=F3-=F2=EE, =F7=F2=EE =EA=EE=E3=E4=E0-=F2=EE =F0=E0=E1=
-=EE=F2=E0=EB=EE, =F0=E0=ED=EE =E8=EB=E8
-=EF=EE=E7=E4=ED=EE =F3=F1=F2=E0=F0=E5=E2=E0=E5=F2 =E8 =F1=F2=E0=ED=EE=E2=E8=
-=F2=F1=FF =ED=E5=FD=F4=F4=E5=EA=F2=E8=E2=ED=FB=EC? =C8 =EA=E0=EA =FD=F2=EE=
-=EC=F3 =EF=F0=EE=F2=E8=E2=EE=F1=F2=EE=FF=F2=FC?
- =CF=EE=F7=E5=EC=F3 =ED=E5=F2 =E5=E4=E8=ED=EE=E9 =F1=F5=E5=EC=FB =F0=E0=E1=
-=EE=F2=FB? =CA=E0=EA =F0=E0=E7=E4=E5=EB=FF=F2=FC =F4=F3=ED=EA=F6=E8=E8 =E8=
- =EF=EE=F7=E5=EC=F3 =EE=F0=E3=F1=F2=F0=F3=EA=F2=F3=F0=E0
-=ED=E8=EA=EE=E3=E4=E0 =ED=E5 =F1=EE=E2=EF=E0=E4=E0=E5=F2 =F1 =F4=F3=ED=EA=
-=F6=E8=EE=ED=E0=EB=FC=ED=EE=E9?  =CA=E0=EA =F1=EE=F7=E5=F2=E0=F2=FC =E4=E5=
-=EB=EE=E2=EE=E5 =E8 =EB=E8=F7=ED=EE=E5?
-=D7=F2=EE =F2=E0=EA=EE=E5 "=F0=E0=E1=EE=F7=E8=E5 =EE=F2=ED=EE=F8=E5=ED=E8=
-=FF"? =CA=E0=EA =E8=F5 =EF=EE=F1=F2=F0=EE=E8=F2=FC?  =CF=EE=F7=E5=EC=F3 =EE=
-=E1=FB=F7=ED=EE =EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=E8=E5
-- =ED=E5 =F0=E0=E1=EE=F2=E0=E5=F2? =C8 =EA=E0=EA=EE=E2=FB =EE=E1=FF=E7=E0=
-=F2=E5=EB=FC=ED=FB=E5 =EA=EE=EC=EF=EE=ED=E5=ED=F2=FB, =E4=E5=EB=E0=FE=F9=E8=
-=E5 =EF=EB=E0=ED=FB =F0=E5=E0=EB=E8=F1=F2=E8=F7=ED=FB=EC=E8,
-=E0 =E7=E0=EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=ED=EE=E5 - =E2=FB=EF=EE=EB=ED=E5=
-=ED=ED=FB=EC?  =D1=EB=EE=E6=ED=EE=F1=F2=E8 =E2=EE =E2=E7=E0=E8=EC=EE=EE=F2=
-=ED=EE=F8=E5=ED=E8=FF=F5 - =EE=F2=EA=F3=E4=E0
-=E1=E5=F0=F3=F2=F1=FF, =E8 =EA=E0=EA =E8=F5 =F0=E5=F8=E0=F2=FC?  =CA=EE=ED=
-=F4=EB=E8=EA=F2=FB - =F7=F2=EE =F1=EE=E7=E4=E0=E5=F2 =E8=F5 =EF=EE=F7=E2=F3=
-, =F7=F2=EE =E8=F5 =EF=F0=EE=E2=EE=F6=E8=F0=F3=E5=F2,
-=E8 =EA=E0=EA=EE=E2=E0 =EF=F0=EE=F4=E8=EB=E0=EA=F2=E8=EA=E0?  =D0=E0=E1=EE=
-=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF
-
-
-=C2=F1=E5 =FD=F2=EE =E8 =EC=ED=EE=E3=EE=E5 =E4=F0=F3=E3=EE=E5 - =E2 =F0=E5=
-=E6=E8=EC=E5 =EF=F0=E0=EA=F2=E8=F7=E5=F1=EA=EE=E3=EE =F2=F0=E5=ED=E8=ED=E3=
-=E0, =F1 =F3=EF=F0=E0=E6=ED=E5=ED=E8=FF=EC=E8
-=E8 =F0=E0=E7=E1=EE=F0=E0=EC=E8 =ED=E0 =F0=E5=E0=EB=FC=ED=FB=F5 =EF=F0=E8=
-=EC=E5=F0=E0=F5=20
-
-=D1=E5=EC=E8=ED=E0=F0-=F2=F0=E5=ED=E8=ED=E3 =EF=F0=EE=F5=EE=E4=E8=F2 2 =E4=
-=ED=FF =F1 10:00 =E4=EE 18:00=20
-=D1=F2=EE=E8=EC=EE=F1=F2=FC =F3=F7=E0=F1=F2=E8=FF 14200 =F0=F3=E1.=20
-=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=
-=F4=E5-=EF=E0=F3=E7=FB, =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=E8=E5 =EF=EE=F1=EE=
-=E1=E8=FF.=20
-=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =EF=F0=EE=E3=F0=E0=EC=
-=EC=F3 =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0 =C2=
-=FB =EC=EE=E6=E5=F2=E5 =EF=EE=20
-=F2=E5=EB=E5=F4=EE=ED=E0=EC (095) 518-05-75, 544-88-14
-
-  =20
-------=_NextPart_001_0001_5F58BEB5.26D13A43
-Content-Type: text/html;
-    charset="windows-1251"
-Content-Transfer-Encoding: quoted-printable
-
-<HTML>
-<BODY text=3D#000000 bgColor=3D#ffffff>
-
-<font size=3D"3" face=3D"Times New Roman"><P style=3D"BACKGROUND-COLOR: #=
-aab2fa" align=3Dright><FONT face=3DArial color=3Dcrimson><B><I><FONT size=
-=3D4>=D3=EF=F0=E0=E2=EB=FF=FE=F9=E8=E9 - =ED=E5 =F2=EE=F2, =EA=F2=EE <br>
-=F3=EF=F0=E0=E2=EB=FF=E5=F2, =E0 =F2=EE=F2, =EA=F2=EE =F3=EF=F0=E0=E2=EB=FF=
-=E5=F2=F1=FF <br>
-=D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =ED=E5 =F0=EE=E6=E4=E0=FE=F2=F1=FF=
-, <br>
-=F0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=E5=EC =F1=F2=E0=ED=EE=E2=FF=F2=F1=FF</F=
-ONT> <br>
-</I></B></FONT></P>
-<P align=3Dcenter>=CA=E0=EA =EF=EE=EB=F3=F7=E0=F2=FC =F0=E5=E7=F3=EB=FC=F2=
-=E0=F2=FB =F1 =F2=E5=EC=E8 =EB=FE=E4=FC=EC=E8, =EA=F2=EE =E5=F1=F2=FC =F1=
-=E5=E9=F7=E0=F1: </P>
-<P style=3D"MARGIN-BOTTOM: 0px; BACKGROUND-COLOR: #f6f000" align=3Dcenter=
-><FONT size=3D6><B><I>=D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=
-=FF</I></B></FONT></P>
-<P style=3D"MARGIN-TOP: 0px; BACKGROUND-COLOR: #aab2fa" align=3Dcenter><B=
-><FONT color=3Dcrimson>=F2=E5=EB=E5=F4=EE=ED (095) 518-05-75, 544-88-14</=
-FONT></B> </P>
-<UL>
-<LI><FONT face=3DArial>=CB=FE=E4=E8 =ED=E5 =F1=EB=F3=F8=E0=FE=F2=F1=FF =F2=
-=EE=E3=EE, =EA=F2=EE =E8=F5 =EF=F0=E5=F1=F1=F3=E5=F2 - =EE=ED=E8 =EE=F0=E3=
-=E0=ED=E8=E7=F3=FE=F2 =F2=E8=F5=E8=E9 =F1=E0=E1=EE=F2=E0=E6. =CD=E5 =F1=EB=
-=F3=F8=E0=FE=F2=F1=FF =E8 =F2=EE=E3=EE, =EA=F2=EE =EF=F0=EE=E3=E8=E1=E0=E5=
-=F2=F1=FF - =EE=ED=E8 =E5=E3=EE =ED=E5 =F3=E2=E0=E6=E0=FE=F2. =CA=EE=E3=EE=
- =EB=FE=E4=E8 =F1=EB=F3=F8=E0=FE=F2=F1=FF? =C8 =F7=F2=EE =E4=EB=FF =FD=F2=
-=EE=E3=EE =ED=E0=E4=EE =E4=E5=EB=E0=F2=FC? </FONT>
-<LI><FONT face=3DArial>=D7=F2=EE =EC=EE=F2=E8=E2=E8=F0=F3=E5=F2 =EB=FE=E4=
-=E5=E9 - =E8 =EF=EE=F7=E5=EC=F3 =EE=E4=ED=E8=F5 =EE=E4=ED=EE, =E0 =E4=F0=F3=
-=E3=E8=F5 =E4=F0=F3=E3=EE=E5? </FONT>
-<LI><FONT face=3DArial>=CA=E0=EA =EA=EE=ED=F2=F0=EE=EB=E8=F0=EE=E2=E0=F2=FC=
-? =D7=F2=EE =F2=E0=EA=EE=E5 "=F2=F0=E8 =EF=E5=F2=EB=E8 =EA=EE=ED=F2=F0=EE=
-=EB=FF"? </FONT>
-<LI><FONT face=3DArial>=CA=E0=EA =EF=F0=E0=E2=E8=EB=FC=ED=EE =F1=F2=E0=E2=
-=E8=F2=FC =E7=E0=E4=E0=F7=E8? </FONT>
-<LI><FONT face=3DArial>=CF=EE=F7=E5=EC=F3-=F2=EE, =F7=F2=EE =EA=EE=E3=E4=E0=
--=F2=EE =F0=E0=E1=EE=F2=E0=EB=EE, =F0=E0=ED=EE =E8=EB=E8 =EF=EE=E7=E4=ED=EE=
- =F3=F1=F2=E0=F0=E5=E2=E0=E5=F2 =E8 =F1=F2=E0=ED=EE=E2=E8=F2=F1=FF =ED=E5=
-=FD=F4=F4=E5=EA=F2=E8=E2=ED=FB=EC? =C8 =EA=E0=EA =FD=F2=EE=EC=F3 =EF=F0=EE=
-=F2=E8=E2=EE=F1=F2=EE=FF=F2=FC? </FONT>
-<LI><FONT face=3DArial>=CF=EE=F7=E5=EC=F3 =ED=E5=F2 =E5=E4=E8=ED=EE=E9 =F1=
-=F5=E5=EC=FB =F0=E0=E1=EE=F2=FB? =CA=E0=EA =F0=E0=E7=E4=E5=EB=FF=F2=FC =F4=
-=F3=ED=EA=F6=E8=E8 =E8 =EF=EE=F7=E5=EC=F3 =EE=F0=E3=F1=F2=F0=F3=EA=F2=F3=F0=
-=E0 =ED=E8=EA=EE=E3=E4=E0 =ED=E5 =F1=EE=E2=EF=E0=E4=E0=E5=F2 =F1 =F4=F3=ED=
-=EA=F6=E8=EE=ED=E0=EB=FC=ED=EE=E9? </FONT>
-<LI><FONT face=3DArial>=CA=E0=EA =F1=EE=F7=E5=F2=E0=F2=FC =E4=E5=EB=EE=E2=
-=EE=E5 =E8 =EB=E8=F7=ED=EE=E5? =D7=F2=EE =F2=E0=EA=EE=E5 "=F0=E0=E1=EE=F7=
-=E8=E5 =EE=F2=ED=EE=F8=E5=ED=E8=FF"? =CA=E0=EA =E8=F5 =EF=EE=F1=F2=F0=EE=E8=
-=F2=FC? </FONT>
-<LI><FONT face=3DArial>=CF=EE=F7=E5=EC=F3 =EE=E1=FB=F7=ED=EE =EF=EB=E0=ED=
-=E8=F0=EE=E2=E0=ED=E8=E5 - =ED=E5 =F0=E0=E1=EE=F2=E0=E5=F2? =C8 =EA=E0=EA=
-=EE=E2=FB =EE=E1=FF=E7=E0=F2=E5=EB=FC=ED=FB=E5 =EA=EE=EC=EF=EE=ED=E5=ED=F2=
-=FB, =E4=E5=EB=E0=FE=F9=E8=E5 =EF=EB=E0=ED=FB =F0=E5=E0=EB=E8=F1=F2=E8=F7=
-=ED=FB=EC=E8, =E0 =E7=E0=EF=EB=E0=ED=E8=F0=EE=E2=E0=ED=ED=EE=E5 - =E2=FB=EF=
-=EE=EB=ED=E5=ED=ED=FB=EC? </FONT>
-<LI><FONT face=3DArial>=D1=EB=EE=E6=ED=EE=F1=F2=E8 =E2=EE =E2=E7=E0=E8=EC=
-=EE=EE=F2=ED=EE=F8=E5=ED=E8=FF=F5 - =EE=F2=EA=F3=E4=E0 =E1=E5=F0=F3=F2=F1=
-=FF, =E8 =EA=E0=EA =E8=F5 =F0=E5=F8=E0=F2=FC? </FONT>
-<LI><FONT face=3DArial>=CA=EE=ED=F4=EB=E8=EA=F2=FB - =F7=F2=EE =F1=EE=E7=E4=
-=E0=E5=F2 =E8=F5 =EF=EE=F7=E2=F3, =F7=F2=EE =E8=F5 =EF=F0=EE=E2=EE=F6=E8=F0=
-=F3=E5=F2, =E8 =EA=E0=EA=EE=E2=E0 =EF=F0=EE=F4=E8=EB=E0=EA=F2=E8=EA=E0?</=
-FONT> </LI></UL>
-<P style=3D"BACKGROUND-COLOR: #f6f600" align=3Dcenter><B><I><FONT size=3D=
-6>=D0=E0=E1=EE=F2=E0 =D0=F3=EA=EE=E2=EE=E4=E8=F2=E5=EB=FF</FONT></I></B><=
-br>
-</P>
-<P align=3Dleft><FONT face=3DArial>=C2=F1=E5 =FD=F2=EE =E8 =EC=ED=EE=E3=EE=
-=E5 =E4=F0=F3=E3=EE=E5 - =E2 =F0=E5=E6=E8=EC=E5 =EF=F0=E0=EA=F2=E8=F7=E5=F1=
-=EA=EE=E3=EE =F2=F0=E5=ED=E8=ED=E3=E0, =F1 =F3=EF=F0=E0=E6=ED=E5=ED=E8=FF=
-=EC=E8 =E8 =F0=E0=E7=E1=EE=F0=E0=EC=E8 =ED=E0 =F0=E5=E0=EB=FC=ED=FB=F5 =EF=
-=F0=E8=EC=E5=F0=E0=F5</FONT> </P>
-<P style=3D"BACKGROUND-COLOR: #aab2fa" align=3Dcenter><FONT size=3D5><B>=D1=
-=E5=EC=E8=ED=E0=F0-=F2=F0=E5=ED=E8=ED=E3 =EF=F0=EE=F5=EE=E4=E8=F2 2 =E4=ED=
-=FF =F1 10:00 =E4=EE 18:00</B></FONT> <br>
-<B>=D1=F2=EE=E8=EC=EE=F1=F2=FC =F3=F7=E0=F1=F2=E8=FF 14200 =F0=F3=E1. <br=
->
-=C2 =F1=F2=EE=E8=EC=EE=F1=F2=FC =E2=F5=EE=E4=FF=F2 =EE=E1=E5=E4=FB, =EA=EE=
-=F4=E5-=EF=E0=F3=E7=FB, =EC=E5=F2=EE=E4=E8=F7=E5=F1=EA=E8=E5 =EF=EE=F1=EE=
-=E1=E8=FF. <br>
-=CF=EE=EB=F3=F7=E8=F2=FC =EF=EE=E4=F0=EE=E1=ED=F3=FE =EF=F0=EE=E3=F0=E0=EC=
-=EC=F3 =E8 =E7=E0=EF=E8=F1=E0=F2=FC=F1=FF =ED=E0 =F1=E5=EC=E8=ED=E0=F0 =C2=
-=FB =EC=EE=E6=E5=F2=E5 =EF=EE <br>
-=F2=E5=EB=E5=F4=EE=ED=E0=EC (095) 518-05-75, 544-88-14</B></P></font>
-</BODY>
-</HTML>
-
-------=_NextPart_001_0001_5F58BEB5.26D13A43--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-26-06 07:33 Eil            New Issue                                    
+01-26-06 07:33 Eil            Distribution              => Gentoo          
+01-26-06 07:33 Eil            Kernel Version            => 2.6.14          
+======================================================================
 
 
 
-------=_NextPart_000_0000_E6518873.354A9B6C--
+
+-------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+for problems?  Stop!  Download the new AJAX search engine that makes
+searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
