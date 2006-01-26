@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000719]: 24 bit 96-192 KHz not supported on emu10k1 (Audigy2 Platinum)
-Date: Thu, 26 Jan 2006 21:43:32 +0100
-Message-ID: <c4ffad5eca87cb3564e43cb6f5a6bda3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
+Date: Thu, 26 Jan 2006 21:52:04 +0100
+Message-ID: <b33d31edc80fcdbf4199387980b66c70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F70418F
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 21:43:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A420197
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 21:52:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=719> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
 ======================================================================
-Reported By:                bscipioni
+Reported By:                garden
 Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   719
+Issue ID:                   324
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.4.20-31.9smp
-Resolution:                 fixed
-Fixed in Version:           1.0.10
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             12-10-2004 14:08 CET
-Last Modified:              01-26-2006 21:43 CET
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              01-26-2006 21:52 CET
 ======================================================================
-Summary:                    24 bit 96-192 KHz not supported on emu10k1 (Audigy2
-Platinum)
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
 Description: 
-24 bit 96-192 KHz not supported on emu10k1 (Audigy2 Platinum)
-
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 08-31-05 18:54 
+----------------------------------------------------------------------
+Could this be related to the "x4" stuff in the kX driver?  Inputs from the
+ADC are multiplied by 4 (since the ADC is 16 bit and the DSP 32 bit) then
+divided by 4 at the output.
+
+----------------------------------------------------------------------
+ pzad - 01-26-06 21:52 
+----------------------------------------------------------------------
+I played with DSP and if everything is on 100 % then you get (when
+recording) on output of DSP same amplitude of signal as on input. 
+Playback can be diffrent and can be lower than in windows, but I don't
+know, if it is, how much.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-04 14:08 bscipioni      New Issue                                    
-12-10-04 14:08 bscipioni      Kernel Version            => 2.4.20-31.9smp  
-01-26-06 21:43 pzad           Status                   assigned => resolved
-01-26-06 21:43 pzad           Fixed in Version          => 1.0.10          
-01-26-06 21:43 pzad           Resolution               open => fixed       
+06-06-04 13:17 garden         New Issue                                    
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Status                   new => assigned     
+06-28-04 09:17 pzad           Assigned To               => pzad            
+09-14-04 15:24 garden         Note Added: 0001758                          
+09-16-04 10:16 pzad           Note Added: 0001766                          
+09-16-04 11:32 garden         File Added: amixer.out                       
+09-16-04 11:37 garden         Note Added: 0001769                          
+09-16-04 12:17 pzad           Note Added: 0001772                          
+09-16-04 13:23 garden         Note Added: 0001773                          
+08-30-05 12:23 jdthood        Note Added: 0005975                          
+08-30-05 12:32 garden         Note Added: 0005978                          
+08-30-05 20:21 rlrevell       Note Added: 0005981                          
+08-31-05 14:01 pzad           Note Added: 0005988                          
+08-31-05 18:54 rlrevell       Note Added: 0005990                          
+01-26-06 21:52 pzad           Note Added: 0007789                          
 ======================================================================
 
 
