@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001784]: line input not recording right channel
-Date: Thu, 26 Jan 2006 15:02:51 +0100
-Message-ID: <0ff5ddefc8ef7c062426eea1ca5930c5@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Print for tracing bugs
+Date: Thu, 26 Jan 2006 16:42:17 +0000
+Message-ID: <200601261642.17034.gineera@aspect135.co.uk>
+References: <200601231442.52366.gineera@aspect135.co.uk> <200601242129.25181.gineera@aspect135.co.uk> <ad2655cb0601250519w71a16bccr@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A002C18B
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 15:02:51 +0100 (MET)
+In-Reply-To: <ad2655cb0601250519w71a16bccr@mail.gmail.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +19,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <james.dutton@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wednesday 25 January 2006 13:19, you wrote:
+> In the konsole type
+> tail -f /var/log/messages
+>
+> As messages appear in the file, they will be displayed.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1784> 
-======================================================================
-Reported By:                Eil
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1784
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             01-26-2006 07:33 CET
-Last Modified:              01-26-2006 15:02 CET
-======================================================================
-Summary:                    line input not recording right channel
-Description: 
-I'm trying to set up my computer to record audio from the line-in jack
-(blue) on a SoundBlaster Live! Value card (CT4832). No matter what
-adjustments I make to the mixer (using alsamixer or kmix), I cannot get it
-to record sound from the right channel. Additionally, sound on the left
-sounds quieter than it should, but this may be a perception issue since
-stereo is missing. I've tried the drivers that ship with the 2.6.14 kernel
-and the 1.0.10-r2 Gentoo alsa-driver package, both do the same thing. On a
-whim, I booted an old MEPIS live CD with 1.0.5 (or maybe 1.0.6) drivers
-and those worked just fine. It's almost as if the right Capture slider in
-alsamixer isn't working and the left one won't go high enough.
-Additionally, the Line slider doesn't do anything, like I would expect it
-to, muted or not. However, the Line slider does have to have capture set
-on it to hear anything from the line-in jack.
-======================================================================
+That's great; thanks for the help.
 
-----------------------------------------------------------------------
- rlrevell - 01-26-06 07:50 
-----------------------------------------------------------------------
-Actually, can you just try 1.0.9 and see if that works?
-
-----------------------------------------------------------------------
- Eil - 01-26-06 15:02 
-----------------------------------------------------------------------
-I will give that a try.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-26-06 07:33 Eil            New Issue                                    
-01-26-06 07:33 Eil            Distribution              => Gentoo          
-01-26-06 07:33 Eil            Kernel Version            => 2.6.14          
-01-26-06 07:41 rlrevell       Note Added: 0007783                          
-01-26-06 07:50 rlrevell       Note Added: 0007784                          
-01-26-06 15:02 Eil            Note Added: 0007787                          
-======================================================================
-
+Alan
 
 
 
