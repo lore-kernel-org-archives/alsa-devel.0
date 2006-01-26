@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001397]: mic volume very low
-Date: Thu, 26 Jan 2006 09:17:47 +0100
-Message-ID: <1e478f4c2849cb5dee9ae7ebd3dedf7c@bugtrack.alsa-project.org>
+From: "Stefano Papini" <s.papini@tbridge.it>
+Subject: Re: snd-usb-audio
+Date: Thu, 26 Jan 2006 09:53:47 +0100
+Message-ID: <43D88E1B.8030006@tbridge.it>
+References: <43D60350.5090003@tbridge.it> <1138120858.43d6589a3c429@webmail.uni-halle.de> <43D730B4.3030907@tbridge.it> <20060125174317.GA26956@ifiu25.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5527197
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 09:17:47 +0100 (MET)
+Content-class: urn:content-classes:message
+In-Reply-To: <20060125174317.GA26956@ifiu25.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +20,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Ciao Clemens,
+first of all thanks a lot for your kind feedback, I think you do have=20
+more important things than following an alsa newbie...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1397> 
-======================================================================
-Reported By:                pengu
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1397
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Kubuntu
-Kernel Version:             2.6.10-5-686
-======================================================================
-Date Submitted:             09-05-2005 02:21 CEST
-Last Modified:              01-26-2006 09:17 CET
-======================================================================
-Summary:                    mic volume very low
-Description: 
-Hello,
+Anyway, yesterday late evening I tried with the asound.conf which gave=20
+me a lot of trouble (and the U24 keeps on muting).
 
-This bug is similar to the bug # 0001232
+Clemens Ladisch wrote:
 
-I have a Shuttle SB83G5 (  FB83 mainboad - Intel 915G chipset - Intel
-Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family))
-The Audio is Realtek ALC658.
-The mic record volume is very low, not audible even with the boost
-activated.
-There is only a front mic, so I cannot try on an other plug.
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 21:59 
-----------------------------------------------------------------------
-Any improvement in later releases?
-
-----------------------------------------------------------------------
- pengu - 01-26-06 09:17 
-----------------------------------------------------------------------
-I've just installed the 1.0.11rc2 , but nothing changes. The sound is still
-very low, even with the "boost" option checked.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-05-05 02:21 pengu          New Issue                                    
-09-05-05 02:21 pengu          Distribution              => Kubuntu         
-09-05-05 02:21 pengu          Kernel Version            => 2.6.10-5-686    
-12-30-05 21:59 rlrevell       Note Added: 0007266                          
-01-26-06 09:17 pengu          Note Added: 0007786                          
-======================================================================
+> Stefano Papini wrote:
+>
+>> Perhaps I did something wrong in /etc/asound.conf (I follwed =
+PlanetCCRMA
+>> hints on writing one)???
+>
+>
+> You shouldn't need to write such a file.
 
 
+I'll try without it.
+
+>> iManufacturer 1 Ego Systems Inc.
+>> iProduct 2 U24
+>
+>
+> I guess this is your "Swissonic Studio D MkII"?
+>
+Exactly.
+
+>>Intel 810 + AC97 Audio, version 1.01, 10:51:24 Jan 24 2006
+>>
+>
+>This is a message from the OSS driver for your internal sound card.
+>Better don't use OSS and ALSA drivers at the same time.
+>
+>
+I see, but how can I disable it? I have already added snd-intel8x0 in=20
+/etc/hotplug/
+
+>>aplay: main:544: audio open error: Broken pipe
+>>ALSA usbaudio.c:821: cannot submit datapipe for urb 3, err =3D -28
+>>
+>
+>Disable USB bandwidth checking (CONFIG_USB_BANDWIDTH) in the kernel
+>configuration.
+>
+>
+I'll cook a kernel and will report you. Many thanks!
+
+Stefano
+
+>
+>HTH
+>Clemens
+>
+>
+
+
+ATTENZIONE: Il contenuto di questo messaggio e' rivolto unicamente alle =
+persone cui e' indirizzato e puo' contenere informazioni la cui =
+riservatezza e' tutelata legalmente. Ne sono vietati la riproduzione, la =
+diffusione e l'uso in mancanza di autorizzazione del destinatario. Se =
+l'avete ricevuto per errore vogliate eliminare il messaggio in modo =
+permanente e darcene cortesemente notizia. I messaggi e gli allegati =
+sono analizzati automaticamente per ricercare tutti i virus conosciuti. =
+Se questo messaggio contiene allegati protetti da password, i files NON =
+saranno analizzati per ricercare i virus dal dominio di posta. =
+Analizzate sempre gli allegati prima di aprirli.
+
+ATTENTION: This message and any files transmitted with it is intended =
+for the adressee only and may contain information that is confidential =
+or privileged. Unauthorised use is strictly prohibited and may be =
+unlawful. If you are not the addressee, you should not read, copy, =
+disclose or otherwise use this  message, except  for the purpose of =
+delivery to the addressee. In case of accidental receipt, please inform =
+us. Messages and attachments are scanned for all viruses known. If this =
+message contains password-protected attachments, the files have NOT been =
+scanned for viruses by the mail domain. Always scan attachments before =
+opening them.
 
 
 -------------------------------------------------------
