@@ -1,19 +1,19 @@
-From: Arnaud Patard <apatard@mandriva.com>
-Subject: [PATCH] patch_realtek.c: Add new model
-Date: Thu, 26 Jan 2006 11:53:28 +0100
-Message-ID: <m3y813ntuf.fsf@anduin.mandrakesoft.com>
+From: "Adrian McMenamin" <adrian@mcmen.demon.co.uk>
+Subject: Some quick pointers requested
+Date: Thu, 26 Jan 2006 12:41:38 -0000 (GMT)
+Message-ID: <33237.217.150.108.178.1138279298.squirrel@newgolddream.dyndns.info>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain;charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D78819C
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 11:51:33 +0100 (MET)
-Received: from anduin.mandrakesoft.com (anduin.mandrakesoft.com [192.168.100.45])
-	by office.mandriva.com (Postfix) with ESMTP id 383F95341B
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 11:51:33 +0100 (CET)
-Received: from anduin.mandrakesoft.com (localhost [127.0.0.1])
-	by anduin.mandrakesoft.com (Postfix) with ESMTP id ECA84FF855
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 11:53:28 +0100 (CET)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 69FBD19E
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 13:41:46 +0100 (MET)
+Received: from newgolddream.dyndns.info (localhost.localdomain [127.0.0.1])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k0QCfcx1029927
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 12:41:38 GMT
+References: 
+In-Reply-To: 
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,36 +26,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
+I am writing a driver for the sound card on the Dreamcast (I have been fo=
+r
+about three years now, but i am actually making progress now).
 
-Hi,
+I have a shell of a driver which doesn't do very much (you can see the
+sources at http://newgolddream.dyndns.info/repos) but I have now built an=
+d
+installed alsalib and alsa-utils against uClibc to test what I have.
 
-This little patch add the model for the motherboard K8N51 from Gigabyte
-to the known models of ALC boards.
+However a quick use of aplay generates a number of errors:
 
 
-Signed-off-by: Arnaud Patard <apatard@mandriva.com>
- ---
+/sys/devices/platform/snd_card_aica # aplay -L
+aplay: pcm_list:280: snd_config_update: Invalid argument
+/sys/devices/platform/snd_card_aica # aplay -v
+aplay: main:533: audio open error: Invalid argument
+/sys/devices/platform/snd_card_aica # aplay -vvv
+aplay: main:533: audio open error: Invalid argument
+/sys/devices/platform/snd_card_aica # aplay -v -L
+aplay: pcm_list:280: snd_config_update: Invalid argument
+/sys/devices/platform/snd_card_aica # aplay -v -l
+**** List of PLAYBACK Hardware Devices ****
+aplay: device_list:226: control open (0): Invalid argument
 
---=-=-=
-Content-Type: text/x-patch
-Content-Disposition: inline;
- filename=patch_realtek_add_gigabyte_k8n51.patch
 
-Index: alsa-cvs/alsa-kernel/pci/hda/patch_realtek.c
-===================================================================
---- a/sound/pci/hda.orig/patch_realtek.c
-+++ a/sound/pci/hda/patch_realtek.c
-@@ -1668,6 +1668,7 @@ static struct hda_board_config alc880_cf
- 	{ .pci_subvendor = 0x1043, .pci_subdevice = 0x8196, .config = ALC880_6ST }, /* ASUS P5GD1-HVM */
- 	{ .pci_subvendor = 0x1043, .pci_subdevice = 0x81b4, .config = ALC880_6ST },
- 	{ .pci_subvendor = 0x1019, .pci_subdevice = 0xa884, .config = ALC880_6ST }, /* Acer APFV */
-+	{ .pci_subvendor = 0x1458, .pci_subdevice = 0xa102, .config = ALC880_6ST }, /* Gigabyte K8N51 */
- 
- 	{ .modelname = "6stack-digout", .config = ALC880_6ST_DIG },
- 	{ .pci_subvendor = 0x2668, .pci_subdevice = 0x8086, .config = ALC880_6ST_DIG },
+Could somebody point me as to what is likely to be wrong to get me starte=
+d
+on fixing it? Thanks
 
---=-=-=--
+Adrian
 
 
 
