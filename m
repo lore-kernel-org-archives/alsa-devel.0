@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
-Date: Thu, 26 Jan 2006 22:03:18 +0100
-Message-ID: <4547e57da1d852864e1115f13858dd63@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001501]: intel8x0 surround channels missing and swapped
+Date: Thu, 26 Jan 2006 23:19:59 +0100
+Message-ID: <1a90535b3b2af7eeaa35097e7528ae3f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18515171
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 22:03:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED91E19E
+	for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2006 23:19:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1501> 
 ======================================================================
-Reported By:                garden
-Assigned To:                pzad
+Reported By:                dkoch
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   324
-Category:                   PCI - emu10k1
+Issue ID:                   1501
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.5
+Status:                     closed
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.14-rc5-gac9b9c66
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-06-2004 13:17 CEST
-Last Modified:              01-26-2006 22:03 CET
+Date Submitted:             10-25-2005 16:45 CEST
+Last Modified:              01-26-2006 23:19 CET
 ======================================================================
-Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Summary:                    intel8x0 surround channels missing and swapped
 Description: 
-Both the input and output levels of my Audigy2 Platinum seem to be very low
-if compared to the same card with Windows (win98se). For example, I
-connected an external source (a MD player with very loud music in the
-disc) to the optical input, then to the aux input, then to the aux2 input.
-With the mixer settings to 100% the input level still does not go over
-20-25% of the maximum amplitude (while with Windows I have to lower the
-input level or it will be too high). The same thing applies to the output
-level of my analog speakers. [I must be *very* careful when I reboot with
-Windows and must not forget to turn the volume knob from 10 to 2]. I had
-exactly the same problem when I used the emu10k1 drivers from sourceforge.
+By default, the front channels are OK, the rear channels come out on the
+center/LFE jack and the center/LFE channels don't come out at all.
+
+Using ICH5/AD1985 (Intel P865PERL motherboard).
+
+Anomolies found: double-rate slot (DRSLOT) is set to 7,8 instead of the
+default
+10,11 (register 0x20=0400 instead of 0).  After setting 0x20 to 0, the
+rear
+channel jack starts working.  RL/RR and Center/LFE are still swapped.
+
+I would assume the swappage was hardware, but the Center and LFE volume
+controls
+affect the speakers on the Center/LFE jack which would indicate the driver
+is
+incorrectly routing the signals.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001521 Speakers misplaced in 5.1 surround
+related to          0001369 Rear left/right channels swapped with c...
+related to          0001173 No sound from rear channels
+related to          0001206 No center channel; rear left and right ...
+related to          0001191 Center channel and 32-bit emulation bro...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-26-06 21:55 
+ rlrevell - 12-31-05 03:11 
 ----------------------------------------------------------------------
-OK, so NOTABUG?
+Any improvement with the patch and/or later ALSA releases?
 
 ----------------------------------------------------------------------
- pzad - 01-26-06 22:03 
+ rlrevell - 01-26-06 23:19 
 ----------------------------------------------------------------------
-For now keep this bug open.
-Recording from "mic in" is lower (compared to windows). I will post patch
-(capture gain on AC97 needs to be set to 3-6 dB).
-Recording from PCM is OK - when all volumes set 100% if you record PCM you
-will get same recording volume as it was played.
-
-I need to check recording from "line in" and playback part.
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 13:17 garden         New Issue                                    
-06-06-04 13:17 garden         Distribution              => Debian sid      
-06-06-04 13:17 garden         Kernel Version            => 2.6.5           
-06-28-04 09:17 pzad           Status                   new => assigned     
-06-28-04 09:17 pzad           Assigned To               => pzad            
-09-14-04 15:24 garden         Note Added: 0001758                          
-09-16-04 10:16 pzad           Note Added: 0001766                          
-09-16-04 11:32 garden         File Added: amixer.out                       
-09-16-04 11:37 garden         Note Added: 0001769                          
-09-16-04 12:17 pzad           Note Added: 0001772                          
-09-16-04 13:23 garden         Note Added: 0001773                          
-08-30-05 12:23 jdthood        Note Added: 0005975                          
-08-30-05 12:32 garden         Note Added: 0005978                          
-08-30-05 20:21 rlrevell       Note Added: 0005981                          
-08-31-05 14:01 pzad           Note Added: 0005988                          
-08-31-05 18:54 rlrevell       Note Added: 0005990                          
-01-26-06 21:52 pzad           Note Added: 0007789                          
-01-26-06 21:55 rlrevell       Note Added: 0007790                          
-01-26-06 22:03 pzad           Note Added: 0007791                          
+10-25-05 16:45 dkoch          New Issue                                    
+10-25-05 16:45 dkoch          Distribution              => Fedora Core 3   
+10-25-05 16:45 dkoch          Kernel Version            => 2.6.14-rc5-gac9b9c66
+10-25-05 17:56 tiwai          Note Added: 0006546                          
+10-25-05 18:09 dkoch          Note Added: 0006547                          
+10-25-05 18:11 tiwai          Note Added: 0006548                          
+10-25-05 18:12 tiwai          File Added: ac97-dra-conflict.diff                
+   
+11-01-05 15:27 jdthood        Relationship added       related to 0001521  
+11-01-05 15:35 jdthood        Relationship added       related to 0001369  
+11-01-05 15:42 jdthood        Relationship added       related to 0001173  
+11-01-05 15:43 jdthood        Relationship added       related to 0001206  
+11-01-05 15:45 jdthood        Relationship added       related to 0001191  
+11-06-05 10:11 densg          Issue Monitored: densg                       
+12-31-05 03:11 rlrevell       Note Added: 0007321                          
+01-10-06 12:08 C-MoH          Issue Monitored: C-MoH                       
+01-26-06 23:19 rlrevell       Status                   new => closed       
+01-26-06 23:19 rlrevell       Note Added: 0007792                          
 ======================================================================
 
 
