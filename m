@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001763]: How to provide patch for the soundcard matrix ?
-Date: Fri, 27 Jan 2006 13:34:44 +0100
-Message-ID: <dc3ac8f7ccad03c90891d27a910ecb52@bugtrack.alsa-project.org>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: Re: Some problems with two 1010LTs (pcm_multi & jackd)
+Date: Fri, 27 Jan 2006 12:53:17 +0000
+Message-ID: <20060127125317.GA3768@localhost.localdomain>
+References: <43D8D6E9.80902@findus.dhs.org> <20060126184843.GA3747@localhost.localdomain> <43D957E1.3030608@findus.dhs.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18F921AD
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 13:34:45 +0100 (MET)
+Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80ED31AD
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 13:42:11 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <43D957E1.3030608@findus.dhs.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +21,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Petter =?iso-8859-1?Q?Sundl=F6f?= <petter.sundlof@findus.dhs.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jan 27, 2006 at 12:14:41AM +0100, Petter Sundl=F6f wrote:
+>=20
+> >>After this I tried to run jackd -d alsa -r44100 -p512 -C multi_captur=
+e=20
+> >>-P multi_playback
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1763> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1763
-Category:                   soundcard matrix
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-20-2006 09:10 CET
-Last Modified:              01-27-2006 13:34 CET
-======================================================================
-Summary:                    How to provide patch for the soundcard matrix ?
-Description: 
-How to provide patch for the soundcard matrix ?
+> >>I then start Ardour and open a session. I place the playhead somewher=
+e=20
+> >>and try to start playback. Nothing happens. After a few seconds, Ardo=
+ur=20
+> >>is disconnected from JACK, and I receive this in jackd's stdout:
+> >>
+> >>ALSA: poll time out, polled for 17416024 usecs
 
-http://www.alsa-project.org/alsa-doc/index.php?vendor=All#matrix
+Just thought of something else. envy24control has `Locked' and `Reset'
+buttons. `Locked' keeps the master card's clock set to whatever rate
+is set by envy24control's radio buttons, regardless of what you specify
+on the command line.
+If you have `Locked' set and specify a different rate on the command
+line, jackd just hangs and will probably give a poll timeout=20
+(or if you're running it in realtime the jackd watchdog times out).
 
-(e.g. Is there any description of the xml file submitted in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938 ? )
+Make sure you have the `Locked' button unchecked and the `Reset' button
+checked. `Reset' allows the command line to override the envy24control
+setting for sample rate. I suspect these buttons should be mutually exclu=
+sive,
+ie. radio buttons, but they're not (looks like a bug).
 
-1) Is mpu401 uart regarded as [MIDIio] ?
-
-2) Is coaxial SPDIF in/out regarded as [RCAio] ?
-
-3) Is optical SPDIF out classified as [TOSo] ?
-
-4) Add "modem not support" to Note
-
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 01-27-06 13:26 
-----------------------------------------------------------------------
-patch to update of Aureal sound cards in ALSA sound card matrix
-
-The whole list can be found in
-
-http://portal.suse.de/sdb/en/2000/05/randall_aureal.html
-
-----------------------------------------------------------------------
- lmike - 01-27-06 13:34 
-----------------------------------------------------------------------
-About the list http://portal.suse.de/sdb/en/2000/05/randall_aureal.html -
-it doesn't contain Genius Soundmaker 64 - it was based on 8820 chip.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-20-06 09:10 Raymond        New Issue                                    
-01-22-06 17:34 pochini        Note Added: 0007749                          
-01-23-06 05:19 Raymond        Note Added: 0007759                          
-01-23-06 09:44 Raymond        Note Added: 0007760                          
-01-24-06 08:58 Raymond        File Added: soundcardmatrix_au88x0.patch          
-         
-01-27-06 13:26 Raymond        Note Added: 0007799                          
-01-27-06 13:34 lmike          Note Added: 0007800                          
-======================================================================
-
-
+John
 
 
 -------------------------------------------------------
