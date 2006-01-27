@@ -1,17 +1,14 @@
-From: John Rigg <ad@sound-man.co.uk>
-Subject: Re: Some problems with two 1010LTs (pcm_multi & jackd)
-Date: Fri, 27 Jan 2006 12:53:17 +0000
-Message-ID: <20060127125317.GA3768@localhost.localdomain>
-References: <43D8D6E9.80902@findus.dhs.org> <20060126184843.GA3747@localhost.localdomain> <43D957E1.3030608@findus.dhs.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001785]: ice1712 driver -cs8427 SPDIF chip not always set up correctly
+Date: Fri, 27 Jan 2006 14:45:35 +0100
+Message-ID: <ce1537b66d6e98c4fc7698e7e9c01113@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail3.uklinux.net (mail3.uklinux.net [80.84.72.33])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80ED31AD
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 13:42:11 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <43D957E1.3030608@findus.dhs.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D907E135
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 14:45:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,39 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Petter =?iso-8859-1?Q?Sundl=F6f?= <petter.sundlof@findus.dhs.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 27, 2006 at 12:14:41AM +0100, Petter Sundl=F6f wrote:
->=20
-> >>After this I tried to run jackd -d alsa -r44100 -p512 -C multi_captur=
-e=20
-> >>-P multi_playback
 
-> >>I then start Ardour and open a session. I place the playhead somewher=
-e=20
-> >>and try to start playback. Nothing happens. After a few seconds, Ardo=
-ur=20
-> >>is disconnected from JACK, and I receive this in jackd's stdout:
-> >>
-> >>ALSA: poll time out, polled for 17416024 usecs
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1785> 
+======================================================================
+Reported By:                alanmann
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1785
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-26-2006 23:27 CET
+Last Modified:              01-27-2006 14:45 CET
+======================================================================
+Summary:                    ice1712 driver -cs8427 SPDIF chip not always set up
+correctly
+Description: 
+There are regular occasions when SPDIF IN operates spuriously, on Terratec
+DMX6fire (& presumably others, like delta1010LT?).
 
-Just thought of something else. envy24control has `Locked' and `Reset'
-buttons. `Locked' keeps the master card's clock set to whatever rate
-is set by envy24control's radio buttons, regardless of what you specify
-on the command line.
-If you have `Locked' set and specify a different rate on the command
-line, jackd just hangs and will probably give a poll timeout=20
-(or if you're running it in realtime the jackd watchdog times out).
+At start-up or when changing between non-spdif master clock settings,
+Digital Input stream has incorrect signal present, real enough to be
+recorded with audacity.  The cause is errors in writing to the cs8427
+spdif chip.  Will add notes with my findings.
+======================================================================
 
-Make sure you have the `Locked' button unchecked and the `Reset' button
-checked. `Reset' allows the command line to override the envy24control
-setting for sample rate. I suspect these buttons should be mutually exclu=
-sive,
-ie. radio buttons, but they're not (looks like a bug).
+----------------------------------------------------------------------
+ alanmann - 01-27-06 10:10 
+----------------------------------------------------------------------
+The previous note has been added to, but the extra didn't come to
+alsa-devel list.
 
-John
+----------------------------------------------------------------------
+ perex - 01-27-06 14:45 
+----------------------------------------------------------------------
+Ok, I selected the second way. I implemented the initialization for
+ice1712.c. Could you test it and change the cs8427 code if necessary when
+rate changes?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-26-06 23:27 alanmann       New Issue                                    
+01-26-06 23:41 alanmann       Note Added: 0007795                          
+01-26-06 23:50 alanmann       Note Edited: 0007795                         
+01-27-06 10:10 alanmann       Note Added: 0007797                          
+01-27-06 14:30 perex          File Added: out.txt                          
+01-27-06 14:44 perex          File Deleted: out.txt                        
+01-27-06 14:44 perex          File Added: out.txt                          
+01-27-06 14:45 perex          Note Added: 0007801                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
