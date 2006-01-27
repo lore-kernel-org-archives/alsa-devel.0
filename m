@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001760]: bad digital output
-Date: Fri, 27 Jan 2006 19:22:01 +0100
-Message-ID: <3c42bba6d254eebd4917751aba57c2c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001787]: Terratec Aureon Universe - No sound on first startup, sound after reboot
+Date: Fri, 27 Jan 2006 19:58:28 +0100
+Message-ID: <dc9465483e5d005d8e70b67d8f74c66b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 182CC1B5
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 19:22:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E357F1B4
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 19:58:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1760> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1787> 
 ======================================================================
-Reported By:                koloom
-Assigned To:                tiwai
+Reported By:                paskharen
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1760
-Category:                   PCI - hda-intel
+Issue ID:                   1787
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               gentoo
-Kernel Version:             2.6.14
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             01-17-2006 21:46 CET
-Last Modified:              01-27-2006 19:22 CET
+Date Submitted:             01-27-2006 19:58 CET
+Last Modified:              01-27-2006 19:58 CET
 ======================================================================
-Summary:                    bad digital output
+Summary:                    Terratec Aureon Universe - No sound on first
+startup, sound after reboot
 Description: 
-Notebook and receiver is connected using digital optical cable. Then I
-start aplay --device spdif some_stereo.wav. The receiver correctly detects
-stereo PCM. The left channel works well, but only noise comes from the
-right channel. I tried iec958 and hw:0.1 devices with the same result.
-Playing AC3 does not work at all - the receiver is unable to detect the
-data format (dolby etc).
-
-
+When I first start the computer, you can hear no sound. If I turn all
+volume to max and press my ear against the speaker I can hear the correct
+sounds/music very faintly. After a reboot sound is fine.
 ======================================================================
-
-----------------------------------------------------------------------
- koloom - 01-27-06 10:59 
-----------------------------------------------------------------------
-The problems disappeared when I stopped alsa and removed /etc/asound.state.
-I guess that the file contained some wrong values set by some older
-driver. Everything works fine now, including AC3 passtrough. I am sorry
-for the troubles and please close this bug.
-
-
-
-----------------------------------------------------------------------
- rlrevell - 01-27-06 19:22 
-----------------------------------------------------------------------
-Mixer settings
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-06 21:46 koloom         New Issue                                    
-01-17-06 21:46 koloom         Distribution              => gentoo          
-01-17-06 21:46 koloom         Kernel Version            => 2.6.14          
-01-27-06 10:58 koloom         Note Added: 0007798                          
-01-27-06 10:59 koloom         Note Edited: 0007798                         
-01-27-06 19:22 rlrevell       Status                   assigned => closed  
-01-27-06 19:22 rlrevell       Note Added: 0007805                          
+01-27-06 19:58 paskharen      New Issue                                    
+01-27-06 19:58 paskharen      Distribution              => Ubuntu          
+01-27-06 19:58 paskharen      Kernel Version            => 2.6.12          
 ======================================================================
 
 
