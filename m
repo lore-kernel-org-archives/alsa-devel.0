@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001785]: ice1712 driver -cs8427 SPDIF chip not always set up correctly
-Date: Fri, 27 Jan 2006 22:15:38 +0100
-Message-ID: <02eb17fe33351a8be44caa8e8f982d6c@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Some quick pointers requested
+Date: Fri, 27 Jan 2006 21:16:30 +0000
+Message-ID: <1138396590.9446.4.camel@localhost.localdomain>
+References: <33237.217.150.108.178.1138279298.squirrel@newgolddream.dyndns.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 002DF171
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 22:15:38 +0100 (MET)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 72FD019D
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 22:16:43 +0100 (MET)
+Received: from bossclass (bossclass [192.168.62.105])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k0RLGVp9019555
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 21:16:31 GMT
+In-Reply-To: <33237.217.150.108.178.1138279298.squirrel@newgolddream.dyndns.info>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,97 +26,195 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2006-01-26 at 12:41 +0000, Adrian McMenamin wrote:
+> I am writing a driver for the sound card on the Dreamcast (I have been for
+> about three years now, but i am actually making progress now).
+> 
+> I have a shell of a driver which doesn't do very much (you can see the
+> sources at http://newgolddream.dyndns.info/repos) but I have now built and
+> installed alsalib and alsa-utils against uClibc to test what I have.
+> 
+> However a quick use of aplay generates a number of errors:
+> 
+> 
+> /sys/devices/platform/snd_card_aica # aplay -L
+> aplay: pcm_list:280: snd_config_update: Invalid argument
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1785> 
-======================================================================
-Reported By:                alanmann
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1785
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-26-2006 23:27 CET
-Last Modified:              01-27-2006 22:15 CET
-======================================================================
-Summary:                    ice1712 driver -cs8427 SPDIF chip not always set up
-correctly
-Description: 
-There are regular occasions when SPDIF IN operates spuriously, on Terratec
-DMX6fire (& presumably others, like delta1010LT?).
+> 
+> 
+OK, reading through the sources I worked out that this was essentially
+because I didn't have any config files and I just copied over the
+alsa.conf file in the lib sources - but, for instance, typing aplay -L
+doesn't really produce any sensible output (see below) - do I have to
+build a sensible config file by hand? (I cannot find much documentation
+so any points would be a great help)
 
-At start-up or when changing between non-spdif master clock settings,
-Digital Input stream has incorrect signal present, real enough to be
-recorded with audacity.  The cause is errors in writing to the cs8427
-spdif chip.  Will add notes with my findings.
-======================================================================
-
-----------------------------------------------------------------------
- nostar - 01-27-06 21:48 
-----------------------------------------------------------------------
-I have a Delta 1010LT with broken SPDIF as well. I tried manually
-overriding the conditional, and applying the patch.  Neither of these mods
-fix my problem.  This test in question, "if ((oval & ICE1712_SPDIF_MASTER)
-!= (inb(ICEMT(ice, RATE)) & ICE1712_SPDIF_MASTER))" seems okay to me. 
-It's only purpose is to test if the old master clock source had changed
-between SPDIF In and any of the Internal clock settings. By toggling
-between 48k and 44.1k as in the example given, they are both Internal
-clock settings and therefore toggling the SPDIF In signal on or off as the
-master clock source is not necessary.  
-
-See my reply to "ice1712 -wordclock and SPDIF" on the alsa-devel list for
-a description of the behavior I am seeing
-
-----------------------------------------------------------------------
- nostar - 01-27-06 22:15 
-----------------------------------------------------------------------
-I will add my cards behavior here, since I have more to describe that I
-didn't add to the list. First, the descripion I posted:
-
-When trying to use SPDIF In as the clock source, I have to keep toggling
-between any Int clock setting and SPDIF IN over and over, getting usually
-static or barely audible audio (I've got audio coming from my digital
-mixer into the SPDIF In during this procedure so I know when I get the
-right sync), untill eventually i'll hit it dead on and it will be synced
-perfectly (or very close, with an occasional pop). This behavior is the
-same with and without your test removed from the driver code.  I wonder if
-you might try doing this too, toggling back n forth between any Int clock
-setting and SPDIF In (without jack running of course so the changes will
-actually take), using an external SPDIF signal coming in and spdif out
-going to somewhere audible (directly to digital monitors, receiver, etc)
-to make sure your problem is really fixed?  Of course you can only do this
-if you have the means available.
-
-Also, In Envy24control mixer, I see (and hear) no audio on the level
-meters for SPDIF In if I am set on any of the internal clock settings. 
-Once I set the master clock source to SPDIF In, then the signals appear on
-the level meters, and the noise/static is heard, at which time I start the
-toggle procedure described above untill I get an audio.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-26-06 23:27 alanmann       New Issue                                    
-01-26-06 23:41 alanmann       Note Added: 0007795                          
-01-26-06 23:50 alanmann       Note Edited: 0007795                         
-01-27-06 10:10 alanmann       Note Added: 0007797                          
-01-27-06 14:30 perex          File Added: out.txt                          
-01-27-06 14:44 perex          File Deleted: out.txt                        
-01-27-06 14:44 perex          File Added: out.txt                          
-01-27-06 14:45 perex          Note Added: 0007801                          
-01-27-06 14:46 perex          Note Edited: 0007801                         
-01-27-06 21:48 nostar         Note Added: 0007806                          
-01-27-06 22:00 nostar         Issue Monitored: nostar                      
-01-27-06 22:15 nostar         Note Added: 0007807                          
-======================================================================
+/ # aplay -L
+PCM list:
+hw {
+        @args.0 CARD
+        @args.1 DEV
+        @args.2 SUBDEV
+        @args.CARD {
+                type string
+                default {
+                        @func getenv
+                        vars {
+                                0 ALSA_PCM_CARD
+                                1 ALSA_CARD
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.card'
+                        }
+                }
+        }
+        @args.DEV {
+                type integer
+                default {
+                        @func igetenv
+                        vars {
+                                0 ALSA_PCM_DEVICE
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.device'
+                        }
+                }
+        }
+        @args.SUBDEV {
+                type integer
+                default {
+                        @func refer
+                        name 'defaults.pcm.subdevice'
+                }
+        }
+        type hw
+        card $CARD
+        device $DEV
+        subdevice $SUBDEV
+}
+plughw {
+        @args.0 CARD
+        @args.1 DEV
+        @args.2 SUBDEV
+        @args.CARD {
+                type string
+                default {
+                        @func getenv
+                        vars {
+                                0 ALSA_PCM_CARD
+                                1 ALSA_CARD
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.card'
+                        }
+                }
+        }
+        @args.DEV {
+                type integer
+                default {
+                        @func igetenv
+                        vars {
+                                0 ALSA_PCM_DEVICE
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.device'
+                        }
+                }
+        }
+        @args.SUBDEV {
+                type integer
+                default {
+                        @func refer
+                        name 'defaults.pcm.subdevice'
+                }
+        }
+        type plug
+        slave.pcm {
+                type hw
+                card $CARD
+                device $DEV
+                subdevice $SUBDEV
+        }
+}
+plug {
+        @args.0 SLAVE
+        @args.SLAVE {
+                type string
+        }
+        type plug
+        slave.pcm $SLAVE
+}
+shm {
+        @args.0 SOCKET
+        @args.1 PCM
+        @args.SOCKET {
+                type string
+        }
+        @args.PCM {
+                type string
+        }
+        type shm
+        server $SOCKET
+        pcm $PCM
+}
+tee {
+        @args.0 SLAVE
+        @args.1 FILE
+        @args.2 FORMAT
+        @args.SLAVE {
+                type string
+        }
+        @args.FILE {
+                type string
+        }
+        @args.FORMAT {
+                type string
+                default raw
+        }
+        type file
+        slave.pcm $SLAVE
+        file $FILE
+        format $FORMAT
+}
+file {
+        @args.0 FILE
+        @args.1 FORMAT
+        @args.FILE {
+                type string
+        }
+        @args.FORMAT {
+                type string
+                default raw
+        }
+        type file
+        slave.pcm null
+        file $FILE
+        format $FORMAT
+}
+null {
+        type null
+}
+cards 'cards.pcm'
+front 'cards.pcm.front'
+rear 'cards.pcm.rear'
+center_lfe 'cards.pcm.center_lfe'
+side 'cards.pcm.side'
+surround40 'cards.pcm.surround40'
+surround41 'cards.pcm.surround41'
+surround50 'cards.pcm.surround50'
+surround51 'cards.pcm.surround51'
+surround71 'cards.pcm.surround71'
+iec958 'cards.pcm.iec958'
+spdif 'cards.pcm.iec958'
+modem 'cards.pcm.modem'
+phoneline 'cards.pcm.phoneline'
+default 'cards.pcm.default'
+dmix 'cards.pcm.dmix'
+dsnoop 'cards.pcm.dsnoop'
 
 
 
