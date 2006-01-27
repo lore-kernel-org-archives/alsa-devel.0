@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001785]: ice1712 driver -cs8427 SPDIF chip not always set up correctly
-Date: Fri, 27 Jan 2006 10:10:16 +0100
-Message-ID: <1be783c2347435fb95a3f88db3c7dd9b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001760]: bad digital output
+Date: Fri, 27 Jan 2006 10:58:48 +0100
+Message-ID: <3ce0374d895b013171344958f4b42abc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7093D1A6
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 10:10:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B795194
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 10:58:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,90 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1785> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1760> 
 ======================================================================
-Reported By:                alanmann
-Assigned To:                
+Reported By:                koloom
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1785
-Category:                   PCI - ice1712
+Issue ID:                   1760
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             01-26-2006 23:27 CET
-Last Modified:              01-27-2006 10:10 CET
+Date Submitted:             01-17-2006 21:46 CET
+Last Modified:              01-27-2006 10:58 CET
 ======================================================================
-Summary:                    ice1712 driver -cs8427 SPDIF chip not always set up
-correctly
+Summary:                    bad digital output
 Description: 
-There are regular occasions when SPDIF IN operates spuriously, on Terratec
-DMX6fire (& presumably others, like delta1010LT?).
+Notebook and receiver is connected using digital optical cable. Then I
+start aplay --device spdif some_stereo.wav. The receiver correctly detects
+stereo PCM. The left channel works well, but only noise comes from the
+right channel. I tried iec958 and hw:0.1 devices with the same result.
+Playing AC3 does not work at all - the receiver is unable to detect the
+data format (dolby etc).
 
-At start-up or when changing between non-spdif master clock settings,
-Digital Input stream has incorrect signal present, real enough to be
-recorded with audacity.  The cause is errors in writing to the cs8427
-spdif chip.  Will add notes with my findings.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- alanmann - 01-26-06 23:50 
+ koloom - 01-27-06 10:58 
 ----------------------------------------------------------------------
-I have traced the problems to the following, if I understand correctly:
-
-1. In ice1712.c, function snd_ice1712_pro_internal_clock_put L1858:
-	if ((oval & ICE1712_SPDIF_MASTER) !=
-	    (inb(ICEMT(ice, RATE)) & ICE1712_SPDIF_MASTER)) {
-tests if spdif has changed, and updates the chip if so.
-
-When the driver is started, the test fails, so the chip is not sent spdif
-set-up data, and operates wrong.  Selecting spdif writes correct data and
-all is OK .
-
-2. When set to eg 44K, selecting eg 48K results in
-snd_ice1712_pro_internal_clock_put calling snd_ice1712_set_pro_rate which
-ends up in cs8427.c with function snd_cs8427_iec958_pcm.  This sets spdif
-status & rate data then performs a reset, writing to 0x04 and deleting the
-spdif set-up.  As the spdif has not been set changed, back in
-snd_ice1712_pro_internal_clock_put the spdif test in 1. is failed again so
-the chip has become un-set as in 1.
-
-
-The easiest solution to both is to remove the test L1858 shown above from
-ice1712.c so that the cs8427 is written to every time master clock is
-changed.  I have tried this and it does work.  Then the cs8427 is written
-or re-written each time, but is the test there for any other reason?
-
-Otherwise I suppose extra spdif set-up is needed during driver start-up,
-AND the reset routine in cs8427.c would need changing to perhaps read the
-register state and re-establish the spdif setting.
-
-The former solution sounds preferable to me if it doesn't break anything
-else.
-
-If this were agreed, I could prepare a patch to submit.
-
-Please add comments.
-
-
-
-----------------------------------------------------------------------
- alanmann - 01-27-06 10:10 
-----------------------------------------------------------------------
-The previous note has been added to, but the extra didn't come to
-alsa-devel list.
+The problems dissapeared when I stopped alsa and removed /etc/asound.state.
+I guess that the file contained some wrong values set by some older
+driver. Everything works fine now, including AC3 passtrough. I am sorry
+for the troubles and please close this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-26-06 23:27 alanmann       New Issue                                    
-01-26-06 23:41 alanmann       Note Added: 0007795                          
-01-26-06 23:50 alanmann       Note Edited: 0007795                         
-01-27-06 10:10 alanmann       Note Added: 0007797                          
+01-17-06 21:46 koloom         New Issue                                    
+01-17-06 21:46 koloom         Distribution              => gentoo          
+01-17-06 21:46 koloom         Kernel Version            => 2.6.14          
+01-27-06 10:58 koloom         Note Added: 0007798                          
 ======================================================================
 
 
