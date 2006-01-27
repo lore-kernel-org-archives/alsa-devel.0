@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0001763]: How to provide patch for the soundcard matrix ?
-Date: Fri, 27 Jan 2006 13:26:38 +0100
-Message-ID: <88cefe68fbabd85f946ee12a1d3ea16e@bugtrack.alsa-project.org>
+Date: Fri, 27 Jan 2006 13:34:44 +0100
+Message-ID: <dc3ac8f7ccad03c90891d27a910ecb52@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFD5D1AD
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 13:26:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18F921AD
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 13:34:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-20-2006 09:10 CET
-Last Modified:              01-27-2006 13:26 CET
+Last Modified:              01-27-2006 13:34 CET
 ======================================================================
 Summary:                    How to provide patch for the soundcard matrix ?
 Description: 
@@ -61,12 +61,6 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938 ? )
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-23-06 09:44 
-----------------------------------------------------------------------
-Do has_analog_out count="2" mean that the card support playback of two
-stereo sound from two different jacks (front and rear) ?
-
-----------------------------------------------------------------------
  Raymond - 01-27-06 13:26 
 ----------------------------------------------------------------------
 patch to update of Aureal sound cards in ALSA sound card matrix
@@ -74,6 +68,12 @@ patch to update of Aureal sound cards in ALSA sound card matrix
 The whole list can be found in
 
 http://portal.suse.de/sdb/en/2000/05/randall_aureal.html
+
+----------------------------------------------------------------------
+ lmike - 01-27-06 13:34 
+----------------------------------------------------------------------
+About the list http://portal.suse.de/sdb/en/2000/05/randall_aureal.html -
+it doesn't contain Genius Soundmaker 64 - it was based on 8820 chip.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +85,7 @@ Date Modified  Username       Field                    Change
 01-24-06 08:58 Raymond        File Added: soundcardmatrix_au88x0.patch          
          
 01-27-06 13:26 Raymond        Note Added: 0007799                          
+01-27-06 13:34 lmike          Note Added: 0007800                          
 ======================================================================
 
 
