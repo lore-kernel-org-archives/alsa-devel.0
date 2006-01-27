@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001785]: ice1712 driver -cs8427 SPDIF chip not always set up correctly
-Date: Fri, 27 Jan 2006 21:48:12 +0100
-Message-ID: <eb520a375bdf97b51f60add8ee5b88e0@bugtrack.alsa-project.org>
+Date: Fri, 27 Jan 2006 22:15:38 +0100
+Message-ID: <02eb17fe33351a8be44caa8e8f982d6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 093421B6
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 21:48:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 002DF171
+	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 22:15:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-26-2006 23:27 CET
-Last Modified:              01-27-2006 21:48 CET
+Last Modified:              01-27-2006 22:15 CET
 ======================================================================
 Summary:                    ice1712 driver -cs8427 SPDIF chip not always set up
 correctly
@@ -53,17 +53,6 @@ Digital Input stream has incorrect signal present, real enough to be
 recorded with audacity.  The cause is errors in writing to the cs8427
 spdif chip.  Will add notes with my findings.
 ======================================================================
-
-----------------------------------------------------------------------
- perex - 01-27-06 14:46 
-----------------------------------------------------------------------
-Ok, I selected the second way. I implemented the initialization for
-ice1712.c. Could you test it and change the cs8427 code if necessary when
-rate changes?
-
-My code is in out.txt file attached to this bug.
-
-
 
 ----------------------------------------------------------------------
  nostar - 01-27-06 21:48 
@@ -81,6 +70,32 @@ master clock source is not necessary.
 See my reply to "ice1712 -wordclock and SPDIF" on the alsa-devel list for
 a description of the behavior I am seeing
 
+----------------------------------------------------------------------
+ nostar - 01-27-06 22:15 
+----------------------------------------------------------------------
+I will add my cards behavior here, since I have more to describe that I
+didn't add to the list. First, the descripion I posted:
+
+When trying to use SPDIF In as the clock source, I have to keep toggling
+between any Int clock setting and SPDIF IN over and over, getting usually
+static or barely audible audio (I've got audio coming from my digital
+mixer into the SPDIF In during this procedure so I know when I get the
+right sync), untill eventually i'll hit it dead on and it will be synced
+perfectly (or very close, with an occasional pop). This behavior is the
+same with and without your test removed from the driver code.  I wonder if
+you might try doing this too, toggling back n forth between any Int clock
+setting and SPDIF In (without jack running of course so the changes will
+actually take), using an external SPDIF signal coming in and spdif out
+going to somewhere audible (directly to digital monitors, receiver, etc)
+to make sure your problem is really fixed?  Of course you can only do this
+if you have the means available.
+
+Also, In Envy24control mixer, I see (and hear) no audio on the level
+meters for SPDIF In if I am set on any of the internal clock settings. 
+Once I set the master clock source to SPDIF In, then the signals appear on
+the level meters, and the noise/static is heard, at which time I start the
+toggle procedure described above untill I get an audio.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -94,6 +109,8 @@ Date Modified  Username       Field                    Change
 01-27-06 14:45 perex          Note Added: 0007801                          
 01-27-06 14:46 perex          Note Edited: 0007801                         
 01-27-06 21:48 nostar         Note Added: 0007806                          
+01-27-06 22:00 nostar         Issue Monitored: nostar                      
+01-27-06 22:15 nostar         Note Added: 0007807                          
 ======================================================================
 
 
