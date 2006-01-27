@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001785]: ice1712 driver -cs8427 SPDIF chip not always set up correctly
-Date: Fri, 27 Jan 2006 14:45:35 +0100
-Message-ID: <ce1537b66d6e98c4fc7698e7e9c01113@bugtrack.alsa-project.org>
+From: "Thibault LE MEUR" <Thibault.LeMeur@supelec.fr>
+Subject: Audiophile USB analog capture byte alignment error
+Date: Fri, 27 Jan 2006 14:45:40 +0100
+Message-ID: <044601c62347$f9917ef0$a578e4a0@supelec.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D907E135
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 14:45:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +16,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1785> 
-======================================================================
-Reported By:                alanmann
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1785
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-26-2006 23:27 CET
-Last Modified:              01-27-2006 14:45 CET
-======================================================================
-Summary:                    ice1712 driver -cs8427 SPDIF chip not always set up
-correctly
-Description: 
-There are regular occasions when SPDIF IN operates spuriously, on Terratec
-DMX6fire (& presumably others, like delta1010LT?).
+The audiophile usb analog capture seems to be unreliably initialized by =
+the
+ALSA=20
+driver. Just after bootup (or after an /etc/init.d/alsasound restart) =
+the
+sound=20
+recorded on the analog capture port is sometimes either:
+- Case A: saturated/distorted (as if it had a very high volume gain) :-(
+or
+- Case B: completly inaudible and loud white noised :-( )
+or
+- Case C: sometimes the sound is good :-)
 
-At start-up or when changing between non-spdif master clock settings,
-Digital Input stream has incorrect signal present, real enough to be
-recorded with audacity.  The cause is errors in writing to the cs8427
-spdif chip.  Will add notes with my findings.
-======================================================================
+Reproductability:
+* Affects only the analog audiophile USB capture interface (also =
+reported by
+other users)
+* It doesn't affect the Digital capture input
+* Same issue when using the plugin "plughw:1,1"
 
-----------------------------------------------------------------------
- alanmann - 01-27-06 10:10 
-----------------------------------------------------------------------
-The previous note has been added to, but the extra didn't come to
-alsa-devel list.
+Environment:
+* Advanced Linux Sound Architecture Driver Version 1.0.11rc2. + CVS =
+patches
+for the audiophile USB (ALSA bugid 0001585)
+* kernel 2.6.15.1 + PREEMPT patch
 
-----------------------------------------------------------------------
- perex - 01-27-06 14:45 
-----------------------------------------------------------------------
-Ok, I selected the second way. I implemented the initialization for
-ice1712.c. Could you test it and change the cs8427 code if necessary when
-rate changes?
+A way to make the analog capture functionnal is to restart alsa
+(/etc/init.d/alsasound restart), test again analog audio capture and if =
+not
+Ok restart again until a good initialization is done (usually one or two
+restarts are enough).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-26-06 23:27 alanmann       New Issue                                    
-01-26-06 23:41 alanmann       Note Added: 0007795                          
-01-26-06 23:50 alanmann       Note Edited: 0007795                         
-01-27-06 10:10 alanmann       Note Added: 0007797                          
-01-27-06 14:30 perex          File Added: out.txt                          
-01-27-06 14:44 perex          File Deleted: out.txt                        
-01-27-06 14:44 perex          File Added: out.txt                          
-01-27-06 14:45 perex          Note Added: 0007801                          
-======================================================================
+It _sounds_ like the alsa driver doesn't begin to read at the right byte
+inside the 3bytes-BigEndian-word=20
+sequence (S24_3BE).
+
+In order to investigate this issue, I've recorded a sound with arecord:
+ arecord -D hw:1,1 -c2  -t raw -r48000 -fS24_3BE test.raw
+If I play the test.raw file it sounds like a very loud white noise:
+ aplay -D hw:1,0 -c2 -t raw -r48000 -fS24_3BE test.raw
+
+I edited the test.raw file with KHexEdit (it begins like this):
+ 0000:0000 c2 ff fd 9b ff fd 6e ff fe 07 ff fd 4e ff ff e7
+ 0000:0010 ff fd 62 ff fd cb ff fd ca ff ff bb ff fc 56 ff
+ 0000:0020 fc ef ff fd 2e ff fe d7 ff ff 7e ff fd 43 ff fc
+ 0000:0030 2a ff fe e3 ff fd e6 ff fb bc ff fd 26 ff fe a0
+
+In order to realign the stream, I inserted a leading 00:
+ 0000:0000 00 c2 ff fd 9b ff fd 6e ff fe 07 ff fd 4e ff ff
+ 0000:0010 e7 ff fd 62 ff fd cb ff fd ca ff ff bb ff fc 56
+ 0000:0020 ff fc ef ff fd 2e ff fe d7 ff ff 7e ff fd 43 ff
+ 0000:0030 fc 2a ff fe e3 ff fd e6 ff fb bc ff fd 26 ff fe
+ 0000:0040 a0 ff fe d3 ff fe 40 ff fe 03 ff fe b4 ff fe b3
+
+Now If I play the sound I get less white noise, I can hear notes, but=20
+my sound is saturated (far too loud) exactly the same distortion as I=20
+got sometimes after an "alsasound restart" (see the beginning of my=20
+mail).
+
+Then I added another leading 00 byte:
+ 0000:0000 00 00 c2 ff fd 9b ff fd 6e ff fe 07 ff fd 4e ff
+ 0000:0010 ff e7 ff fd 62 ff fd cb ff fd ca ff ff bb ff fc
+ 0000:0020 56 ff fc ef ff fd 2e ff fe d7 ff ff 7e ff fd 43
+ 0000:0030 ff fc 2a ff fe e3 ff fd e6 ff fb bc ff fd 26 ff
+
+The audio file is now normal, I can hear music and not noise nor=20
+saturated sounds with "aplay -D hw:1,0 -c2 -t raw -r48000 -fS24_3BE
+test.raw"
+
+Of course I can get the same result by patching my original file in the=20
+opposite way (by substracting the leading "c2" byte instead of adding 2
+bytes "00 00"):
+ 0000:0000 ff fd 9b ff fd 6e ff fe 07 ff fd 4e ff ff e7 ff
+ 0000:0010 fd 62 ff fd cb ff fd ca ff ff bb ff fc 56 ff fc
+ 0000:0020 ef ff fd 2e ff fe d7 ff ff 7e ff fd 43 ff fc 2a
+ 0000:0030 ff fe e3 ff fd e6 ff fb bc ff fd 26 ff fe a0 ff
+ 0000:0040 fe d3 ff fe 40 ff fe 03 ff fe b4 ff fe b3 ff fb
+
+Is someone able to patch it or help me identify the part of=20
+the driver causing this issue inside the alsa-driver source code?
+
+I haven't found any bugreport on this particular issue, do you want me =
+to
+fill a bug report?
+
+Thanks in advance for your help,
+Regards,
+Thibault
 
 
 
