@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Sat, 28 Jan 2006 05:38:48 +0100
-Message-ID: <78230d7ec19fe043d36d2db97edefd8c@bugtrack.alsa-project.org>
+Date: Sat, 28 Jan 2006 06:11:11 +0100
+Message-ID: <b43323e8e9f948578911ec1bd6faf456@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB5451B1
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 05:38:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E41C1B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 06:11:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              01-28-2006 05:38 CET
+Last Modified:              01-28-2006 06:11 CET
 ======================================================================
 Summary:                    Skype Does not work with aoss
 Description: 
@@ -58,26 +58,37 @@ related to          0001224 artsd-like style
 ======================================================================
 
 ----------------------------------------------------------------------
- nono31 - 01-28-06 05:34 
-----------------------------------------------------------------------
-I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
-ice1724.
-
-I use 1.0.11rc2 card's config file to have mutilple apps playing at the
-same time.
-
-I use a chrooted environment to run skype.
-I've almost skype working:
-
-I've got the call ringing (no sound blocking). But after the call
-establishment, it is sound less: I can't hear what the other party is
-saying and they can't hear me neither.
-
-----------------------------------------------------------------------
  rlrevell - 01-28-06 05:38 
 ----------------------------------------------------------------------
 As a test, can you also try "kiax" (open source VOIP app) with aoss, and
 see if you get the same symptoms as skype?
+
+----------------------------------------------------------------------
+ nono31 - 01-28-06 06:11 
+----------------------------------------------------------------------
+kiax:
+
+Pa_SetLatency: could not SNDCTL_DSP_SETFRAGMENT
+Pa_SetLatency: numBuffers = 5, framesPerBuffer = 160, powerOfTwo = 9
+Pa_SetupDeviceFormat: could not SNDCTL_DSP_SETFMT
+Pa_SetLatency: could not SNDCTL_DSP_SETFRAGMENT
+Pa_SetLatency: numBuffers = 5, framesPerBuffer = 160, powerOfTwo = 10
+Pa_SetupDeviceFormat: could not SNDCTL_DSP_SETFMT
+PortAudio error at opening separate input stream: Host error.
+IaxWrapper::interrupt_call() hanging up and exiting..
+Sáb Jan 28 05:10:06 2006 IaxWrapper::event_text() Message: Type=1
+Message=Hanging up call 0
+Sáb Jan 28 05:10:06 2006 IaxWrapper::event_state() processing IAX event..
+Sáb Jan 28 05:10:06 2006 IaxWrapper::event_state() call state 0 :
+active=0, outgoing=0, ringing=0, complete=0, selected=0
+Sáb Jan 28 05:10:06 2006 IaxWrapper::event_state() call info 0 : remote=,
+remote_name=, local=Mathieu, local_context=default
+Sáb Jan 28 05:10:06 2006 IaxWrapper::event_state() INACTIVE 0
+Sáb Jan 28 05:10:06 2006 IaxWrapper::event_text() Message: Type=4
+Message=iaxclient audio: Can't open Audio Device, we tried 5 times. 
+Perhaps you do not have an input or output device?
+Sáb Jan 28 05:10:06 2006 IaxWrapper::event_text() Message: Type=3
+Message=Can't start audio
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +108,7 @@ Date Modified  Username       Field                    Change
 01-28-06 05:34 nono31         Note Added: 0007824                          
 01-28-06 05:35 nono31         Issue Monitored: nono31                      
 01-28-06 05:38 rlrevell       Note Added: 0007825                          
+01-28-06 06:11 nono31         Note Added: 0007826                          
 ======================================================================
 
 
