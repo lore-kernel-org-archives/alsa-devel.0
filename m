@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001780]: alsamixer seg faults immediately after invocation
-Date: Fri, 27 Jan 2006 23:54:46 +0100
-Message-ID: <fda2b25ba1b350c868907fc5c73b3852@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
+Date: Sat, 28 Jan 2006 01:33:51 +0100
+Message-ID: <cde6d567b65b7f9396c8764521271ccf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E85D31A4
-	for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2006 23:54:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C8F21B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 01:33:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,386 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1780> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
 ======================================================================
-Reported By:                briand
+Reported By:                drow
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1780
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1407
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.13-rc6
 ======================================================================
-Date Submitted:             01-25-2006 05:10 CET
-Last Modified:              01-27-2006 23:54 CET
+Date Submitted:             09-09-2005 05:11 CEST
+Last Modified:              01-28-2006 01:33 CET
 ======================================================================
-Summary:                    alsamixer seg faults immediately after invocation
+Summary:                    Can't use rear speaker channels
 Description: 
-FC3 2.6.9-1.667 (or 2.6.15.1) on Dell Inspiron 3200 D266XT.  Audio chip is
-a CS4237B, driver is snd-cs4236.  See also:  0001748
+I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
+ice1724.  I've spent most of tonight trying to get surround sound to
+work... but the best I can get is four channels (specifically, front
+left/right, center, LFE).  Nothing happens when samples are sent to the
+rear channels.  And the front channels are mirrored onto the rear
+speakers, under control of the Headphone volume control.
 
-----[ amixer contents
-]-----------------------------------------------------
-numid=2,iface=MIXER,name='Master Digital Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=1,iface=MIXER,name='Master Digital Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=3,iface=MIXER,name='Master Digital Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=71,step=0
-  : values=31,31
-numid=38,iface=MIXER,name='3D Control - Center'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0
-  : values=13
-numid=40,iface=MIXER,name='3D Control - IEC958'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=39,iface=MIXER,name='3D Control - Mono'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=37,iface=MIXER,name='3D Control - Space'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0
-  : values=13
-numid=36,iface=MIXER,name='3D Control - Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=5,iface=MIXER,name='PCM Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=6,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=57,39
-numid=14,iface=MIXER,name='Synth Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=27,27
-numid=13,iface=MIXER,name='Synth Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=15,iface=MIXER,name='Synth Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=16,iface=MIXER,name='Synth Capture Bypass'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=9,iface=MIXER,name='FM Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=10,iface=MIXER,name='FM Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=23,7
-numid=11,iface=MIXER,name='Wavetable Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=12,iface=MIXER,name='Wavetable Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=51,35
-numid=7,iface=MIXER,name='DSP Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=8,iface=MIXER,name='DSP Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=55,39
-numid=22,iface=MIXER,name='Line Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=27,27
-numid=21,iface=MIXER,name='Line Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=23,iface=MIXER,name='Line Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=24,iface=MIXER,name='Line Capture Bypass'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=26,iface=MIXER,name='CD Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=28,28
-numid=25,iface=MIXER,name='CD Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=27,iface=MIXER,name='CD Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=19,iface=MIXER,name='Mic Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=23,7
-numid=20,iface=MIXER,name='Mic Playback Boost'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=17,iface=MIXER,name='Mic Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=18,iface=MIXER,name='Mic Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=28,iface=MIXER,name='Mono Output Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=29,iface=MIXER,name='Mono Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=30,iface=MIXER,name='Mono Playback Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0
-  : values=13
-numid=31,iface=MIXER,name='Mono Playback Bypass'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=4,iface=MIXER,name='Capture Boost Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=3,step=0
-  : values=1,1
-numid=32,iface=MIXER,name='Capture Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=15,step=0
-  : values=0,0
-numid=33,iface=MIXER,name='Analog Loopback Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=34,iface=MIXER,name='Digital Loopback Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=35,iface=MIXER,name='Digital Loopback Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=27,23
-numid=46,iface=MIXER,name='IEC958 Output Channel Status High'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=255,step=0
-  : values=151
-numid=45,iface=MIXER,name='IEC958 Output Channel Status Low'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=127,step=0
-  : values=121
-numid=44,iface=MIXER,name='IEC958 Output CSBR'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=41,iface=MIXER,name='IEC958 Output Enable'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=43,iface=MIXER,name='IEC958 Output User'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=42,iface=MIXER,name='IEC958 Output Validity'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-----------------------------------------------------------------------------
+Which is really annoying, because it means that muting the master volume
+doesn't mute the back speakers.
 
-----[ amixer scontents
-]----------------------------------------------------
-Simple mixer control 'Master Digital',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 71
-  Front Left: 31 [44%] Playback [off] Capture [off]
-  Front Right: 31 [44%] Playback [off] Capture [off]
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 13 [87%]
-Simple mixer control '3D Control - IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control '3D Control - Mono',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control '3D Control - Space',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 13 [87%]
-Simple mixer control '3D Control - Switch',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 57 [90%] [on]
-  Front Right: Playback 39 [62%] [on]
-Simple mixer control 'Synth',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 31
-  Front Left: 27 [87%] Playback [on] Capture [off]
-  Front Right: 27 [87%] Playback [on] Capture [off]
-Simple mixer control 'Synth Capture Bypass',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'FM',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 23 [37%] [on]
-  Front Right: Playback 7 [11%] [on]
-Simple mixer control 'Wavetable',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 51 [81%] [on]
-  Front Right: Playback 35 [56%] [on]
-Simple mixer control 'DSP',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 55 [87%] [off]
-  Front Right: Playback 39 [62%] [off]
-Simple mixer control 'Line',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 31
-  Front Left: 27 [87%] Playback [on] Capture [off]
-  Front Right: 27 [87%] Playback [on] Capture [off]
-Simple mixer control 'Line Capture Bypass',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'CD',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 31
-  Front Left: 28 [90%] Playback [on] Capture [off]
-  Front Right: 28 [90%] Playback [on] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 31
-  Front Left: 23 [74%] Playback [on] Capture [off]
-  Front Right: 7 [23%] Playback [on] Capture [off]
-Simple mixer control 'Mic Playback Boost',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'IEC958 Output CSBR',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Output Channel Status High',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 255
-  Mono: 151 [59%]
-Simple mixer control 'IEC958 Output Channel Status Low',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 127
-  Mono: 121 [95%]
-Simple mixer control 'IEC958 Output Enable',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Output User',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Output Validity',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mono',0
-  Capabilities: pvolume pvolume-joined pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 15
-  Front Left: Playback 13 [87%] [on]
-  Front Right: Playback 13 [87%] [on]
-Simple mixer control 'Mono Output',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'Mono Playback Bypass',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%]
-  Front Right: Capture 0 [0%]
-Simple mixer control 'Capture Boost',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Limits: 0 - 3
-  Mono: 1 [33%]
-  Front Left:
-  Front Right:
-Simple mixer control 'Analog Loopback',0
-  Capabilities: cswitch
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Digital Loopback',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 27 [43%] [off]
-  Front Right: Playback 23 [37%] [off]
-----------------------------------------------------------------------------
+I realize this isn't much information.  I don't know what else to check
+but I'll be glad to debug it if someone can give me a pointer.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- briand - 01-27-06 23:09 
+ drow - 01-16-06 16:17 
 ----------------------------------------------------------------------
-sure, no problem.
-
-=========================================================================
-[root@scribbler ~]# gdb alsamixer
-
-GNU gdb Red Hat Linux (6.1post-1.20040607.41rh)
-Copyright 2004 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you
-are
-welcome to change it and/or distribute copies of it under certain
-conditions.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for
-details.
-This GDB was configured as "i386-redhat-linux-gnu"...Using host
-libthread_db library "/lib/tls/libthread_db.so.1".
-
-(gdb) run
-
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread -151070048 (LWP 4556)]
-0x00000000 in ?? ()
-(gdb) backtrace
-#0  0x00000000 in ?? ()
-#1  0x0804b307 in mixer_update_cbar (elem_index=0) at alsamixer.c:991
-#2  0x0804e4c1 in main (argc=1, argv=0xfeeb9944) at alsamixer.c:1146
-(gdb) quit
-The program is running.  Exit anyway? (y or n) y
-[root@scribbler ~]# 
-=========================================================================
+Just to be clear, the updated configuration file fixes dmix/dsnoop by
+default.  Still no love on the speaker channels.
 
 ----------------------------------------------------------------------
- rlrevell - 01-27-06 23:54 
+ nono31 - 01-28-06 01:33 
 ----------------------------------------------------------------------
-Can you try to compile with debugging symbols (gcc -g ...), to get a better
-backtrace?
+Fixed! :-)
+I just replace the card config file.
+
+I can play xmms and mplayer at the same time.
+
+Now my problem is: I want to use skype... 
+I found a aoss wiki, and the first thing they ask to test is :
+ aplay -D plug:dmix one_file.wav &  aplay -D plug:dmix one_file.wav
+
+I have the following error:
+
+ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave) requested or
+auto-format is not available
+ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
+aplay: main:544: audio open error: Invalid argument
+
+
+I have this error when running just one:  aplay -D plug:dmix one_file.wav
+
+I still configures /etc/asound.conf and tried skype. Skype runs fine but I
+go back to my initial problem: it blocks the device for other
+applications!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-25-06 05:10 briand         New Issue                                    
-01-27-06 15:11 tiwai          Note Added: 0007802                          
-01-27-06 23:09 briand         Note Added: 0007808                          
-01-27-06 23:54 rlrevell       Note Added: 0007810                          
+09-09-05 05:11 drow           New Issue                                    
+09-09-05 05:11 drow           Distribution              => Debian          
+09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
+09-09-05 05:13 drow           Note Added: 0006091                          
+09-12-05 18:05 drow           Note Added: 0006148                          
+11-01-05 00:35 drow           Note Added: 0006591                          
+01-15-06 04:30 nono31         Note Added: 0007658                          
+01-15-06 04:39 rlrevell       Note Added: 0007659                          
+01-16-06 16:17 drow           Note Added: 0007687                          
+01-16-06 16:45 fearofcarpet   Issue Monitored: fearofcarpet                    
+01-28-06 01:33 nono31         Note Added: 0007811                          
 ======================================================================
 
 
