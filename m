@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001789]: aoss skype is blocking.
-Date: Sat, 28 Jan 2006 04:24:49 +0100
-Message-ID: <bcd0e430bb51a56b9f3950159d1eccb5@bugtrack.alsa-project.org>
+Date: Sat, 28 Jan 2006 04:24:33 +0100
+Message-ID: <efebf04b26e8c0fed76b7d1e5d002d45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D597A1B1
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 04:24:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36CEF1B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 04:24:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1789> 
 ======================================================================
@@ -35,9 +35,7 @@ Category:
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
 ======================================================================
 Date Submitted:             01-28-2006 03:15 CET
 Last Modified:              01-28-2006 04:24 CET
@@ -114,7 +112,6 @@ Date Modified  Username       Field                    Change
 01-28-06 04:15 nono31         File Added: asound.conf                      
 01-28-06 04:16 nono31         Note Added: 0007821                          
 01-28-06 04:24 rlrevell       Note Added: 0007823                          
-01-28-06 04:24 rlrevell       Status                   new => closed       
 ======================================================================
 
 
