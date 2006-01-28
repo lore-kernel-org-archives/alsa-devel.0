@@ -1,84 +1,120 @@
-From: Greg KH <gregkh@suse.de>
-Subject: [patch 01/12] usb-audio: don't use empty packets at start of playback
-Date: Fri, 27 Jan 2006 18:20:36 -0800
-Message-ID: <20060128022036.GB17001@kroah.com>
-References: <20060128020629.908825000@press.kroah.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0001789]: aoss skype is blocking.
+Date: Sat, 28 Jan 2006 04:16:19 +0100
+Message-ID: <ec9ac3693b9737b81a0f411e0ae151dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1422800AbWA1C0u@vger.kernel.org>
-Content-Disposition: inline; filename="usb-audio-dont-use-empty-packets-at-start-of-playback.patch"
-In-Reply-To: <20060128022023.GA17001@kroah.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: Justin Forbes <jmforbes@linuxtx.org>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Randy Dunlap <rdunlap@xenotime.net>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, torvalds@osdl.org, akpm@osdl.org, alan@lxorguk.ukuu.org.uk, clemens@ladisch.de, tiwai@suse.de, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23A9B1B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 04:16:20 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2.6.15.2 -stable review patch.  If anyone has any objections, please let
-us know.
 
-------------------
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1789> 
+======================================================================
+Reported By:                nono31
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Issue ID:                   1789
+Category:                   
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-28-2006 03:15 CET
+Last Modified:              01-28-2006 04:16 CET
+======================================================================
+Summary:                    aoss skype is blocking.
+Description: 
+I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
+ice1724.
 
-From: Clemens Ladisch <clemens@ladisch.de>
+I use 1.0.11rc2 card's config file to have mutilple apps playing at the
+same time.
+This works great :-)
+I have xmms, mplayer using alsa, aoss mplayer using oss working at the
+same time.
 
-Some widespread USB interface chips with adaptive iso endpoints hang
-after receiving a series of empty packets when they expect data.  This
-completely disables audio playback on those devices.  To avoid this, we
-have to send packets containing silence (zero samples) instead.
+The only problem I have is with skype: it still blocks my sound dev!
 
-ALSA bug: http://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585
+no way I can use other sound app when I am using skype... (so no way I can
+hear gaim notification)...
+======================================================================
 
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
-Signed-off-by: Chris Wright <chrisw@sous-sol.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
----
- sound/usb/usbaudio.c |   26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+----------------------------------------------------------------------
+ rlrevell - 01-28-06 03:22 
+----------------------------------------------------------------------
+Please attach the output of "strace aoss skype"
 
---- linux-2.6.15.1.orig/sound/usb/usbaudio.c
-+++ linux-2.6.15.1/sound/usb/usbaudio.c
-@@ -480,22 +480,38 @@ static int retire_playback_sync_urb_hs(s
- /*
-  * Prepare urb for streaming before playback starts.
-  *
-- * We don't care about (or have) any data, so we just send a transfer delimiter.
-+ * We don't yet have data, so we send a frame of silence.
-  */
- static int prepare_startup_playback_urb(snd_usb_substream_t *subs,
- 					snd_pcm_runtime_t *runtime,
- 					struct urb *urb)
- {
--	unsigned int i;
-+	unsigned int i, offs, counts;
- 	snd_urb_ctx_t *ctx = urb->context;
-+	int stride = runtime->frame_bits >> 3;
- 
-+	offs = 0;
- 	urb->dev = ctx->subs->dev;
- 	urb->number_of_packets = subs->packs_per_ms;
- 	for (i = 0; i < subs->packs_per_ms; ++i) {
--		urb->iso_frame_desc[i].offset = 0;
--		urb->iso_frame_desc[i].length = 0;
-+		/* calculate the size of a packet */
-+		if (subs->fill_max)
-+			counts = subs->maxframesize; /* fixed */
-+		else {
-+			subs->phase = (subs->phase & 0xffff)
-+				+ (subs->freqm << subs->datainterval);
-+			counts = subs->phase >> 16;
-+			if (counts > subs->maxframesize)
-+				counts = subs->maxframesize;
-+		}
-+		urb->iso_frame_desc[i].offset = offs * stride;
-+		urb->iso_frame_desc[i].length = counts * stride;
-+		offs += counts;
- 	}
--	urb->transfer_buffer_length = 0;
-+	urb->transfer_buffer_length = offs * stride;
-+	memset(urb->transfer_buffer,
-+	       subs->cur_audiofmt->format == SNDRV_PCM_FORMAT_U8 ? 0x80 : 0,
-+	       offs * stride);
- 	return 0;
- }
- 
+----------------------------------------------------------------------
+ nono31 - 01-28-06 04:16 
+----------------------------------------------------------------------
+So. I've investigate deeper my problem.
 
---
+Seems that skype is not blocking, but the way I was running skype because
+of my chroot is not good. 
+
+my chroot start script (do_chroot) is :
+#!/bin/zsh
+ARGS=""
+for i in "$@" ; do
+        ARGS="$ARGS '$i'"
+done
+exec dchroot -c ia32 -d -q "`basename $0`" "$ARGS"
+
+I've a "ln -s do_chroot skype" 
+
+I do: aoss skype and  skype is blocking my dev.
+
+when i tried strace aoss skype. skype did not start.
+
+I've entered into my chroot envirronment the classic way, ran aoss skype.
+
+And then this is magic: I have ringing sound that does not block! 
+But I don't have any sound at all in the call: I can't hear the other one
+talking. And he can't hear me neither...
+
+skype (without aoss) in chrooted environment works fine (less the blocking
+thing).
+I tried 2 mplayers in chrooted environment using oss with aoss, and worked
+fine.
+
+
+I attached the strace file.
+I attached my asound.conf file
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-28-06 03:15 nono31         New Issue                                    
+01-28-06 03:22 rlrevell       Note Added: 0007820                          
+01-28-06 04:15 nono31         File Added: strace_aoss_skype.bz2                 
+  
+01-28-06 04:15 nono31         File Added: asound.conf                      
+01-28-06 04:16 nono31         Note Added: 0007821                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+for problems?  Stop!  Download the new AJAX search engine that makes
+searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
