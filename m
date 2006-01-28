@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
-Date: Sat, 28 Jan 2006 02:55:54 +0100
-Message-ID: <377fc1a5c3405f5cfa81b35ec9b77e4b@bugtrack.alsa-project.org>
+Date: Sat, 28 Jan 2006 02:55:05 +0100
+Message-ID: <f87d1fe17976602fd3d1bf88edf29ed4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 216BE1B8
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 02:55:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 813CB1B8
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 02:55:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
 ======================================================================
 Reported By:                drow
-Assigned To:                rlrevell
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1407
@@ -35,11 +35,9 @@ Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               Debian
 Kernel Version:             2.6.13-rc6
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
 Date Submitted:             09-09-2005 05:11 CEST
 Last Modified:              01-28-2006 02:55 CET
@@ -62,6 +60,15 @@ but I'll be glad to debug it if someone can give me a pointer.
 ======================================================================
 
 ----------------------------------------------------------------------
+ rlrevell - 01-28-06 02:08 
+----------------------------------------------------------------------
+Skype should not block anything as long as it is run as "aoss skype".
+
+openwengo should work too - apps do not have to do anything special to
+"support dmix", as long as it's using the "default" PCM and not one of the
+"hw:x" devices.
+
+----------------------------------------------------------------------
  rlrevell - 01-28-06 02:55 
 ----------------------------------------------------------------------
 I have just installed wengophone to investigate, and its device selection
@@ -72,11 +79,6 @@ required for dmix to work.
 You may be able to work around this by defining a PCM in ~/.asoundrc that
 is just an alias for the "default" PCM.  But this bug should really be
 reported to the openwengo developers.
-
-----------------------------------------------------------------------
- rlrevell - 01-28-06 02:55 
-----------------------------------------------------------------------
-Rear speakers bug fixed - dmix/openwengo is an application bug
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,10 +100,6 @@ Date Modified  Username       Field                    Change
 01-28-06 02:01 nono31         Note Added: 0007813                          
 01-28-06 02:08 rlrevell       Note Added: 0007814                          
 01-28-06 02:55 rlrevell       Note Added: 0007817                          
-01-28-06 02:55 rlrevell       Status                   new => resolved     
-01-28-06 02:55 rlrevell       Resolution               open => fixed       
-01-28-06 02:55 rlrevell       Assigned To               => rlrevell        
-01-28-06 02:55 rlrevell       Note Added: 0007818                          
 ======================================================================
 
 
