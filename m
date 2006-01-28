@@ -1,13 +1,13 @@
 From: Adrian Bunk <bunk@stusta.de>
 Subject: OSS driver removal, a slightly different approach (v3)
 Date: Sat, 28 Jan 2006 23:47:58 +0100
-Message-ID: <20060128224758.GR3777__9546.35090097344$1138521130$gmane$org@stusta.de>
+Message-ID: <20060128224758.GR3777__14158.3780678504$1138521440$gmane$org@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from petasus.png.intel.com (petasus.png.intel.com [192.198.147.99])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DEB017C
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 08:51:02 +0100 (MET)
+Received: from petasus.icv.intel.com (petasus.icv.intel.com [192.55.40.98])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7986D17C
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 08:56:48 +0100 (MET)
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
