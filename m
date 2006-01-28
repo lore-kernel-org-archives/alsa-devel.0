@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001789]: aoss skype is blocking.
-Date: Sat, 28 Jan 2006 04:16:19 +0100
-Message-ID: <ec9ac3693b9737b81a0f411e0ae151dc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
+Date: Sat, 28 Jan 2006 04:17:43 +0100
+Message-ID: <a3aa0e689e9354966fbbb1e3552ee6d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 23A9B1B1
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 04:16:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E6761B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 04:17:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,92 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1789> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
 ======================================================================
-Reported By:                nono31
-Assigned To:                
+Reported By:                drow
+Assigned To:                rlrevell
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1789
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1407
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.13-rc6
 ======================================================================
-Date Submitted:             01-28-2006 03:15 CET
-Last Modified:              01-28-2006 04:16 CET
+Date Submitted:             09-09-2005 05:11 CEST
+Last Modified:              01-28-2006 04:17 CET
 ======================================================================
-Summary:                    aoss skype is blocking.
+Summary:                    Can't use rear speaker channels
 Description: 
 I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
-ice1724.
+ice1724.  I've spent most of tonight trying to get surround sound to
+work... but the best I can get is four channels (specifically, front
+left/right, center, LFE).  Nothing happens when samples are sent to the
+rear channels.  And the front channels are mirrored onto the rear
+speakers, under control of the Headphone volume control.
 
-I use 1.0.11rc2 card's config file to have mutilple apps playing at the
-same time.
-This works great :-)
-I have xmms, mplayer using alsa, aoss mplayer using oss working at the
-same time.
+Which is really annoying, because it means that muting the master volume
+doesn't mute the back speakers.
 
-The only problem I have is with skype: it still blocks my sound dev!
+I realize this isn't much information.  I don't know what else to check
+but I'll be glad to debug it if someone can give me a pointer.
 
-no way I can use other sound app when I am using skype... (so no way I can
-hear gaim notification)...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-28-06 03:22 
+ rlrevell - 01-28-06 02:55 
 ----------------------------------------------------------------------
-Please attach the output of "strace aoss skype"
+Rear speakers bug fixed - dmix/openwengo is an application bug
 
 ----------------------------------------------------------------------
- nono31 - 01-28-06 04:16 
+ drow - 01-28-06 04:17 
 ----------------------------------------------------------------------
-So. I've investigate deeper my problem.
-
-Seems that skype is not blocking, but the way I was running skype because
-of my chroot is not good. 
-
-my chroot start script (do_chroot) is :
-#!/bin/zsh
-ARGS=""
-for i in "$@" ; do
-        ARGS="$ARGS '$i'"
-done
-exec dchroot -c ia32 -d -q "`basename $0`" "$ARGS"
-
-I've a "ln -s do_chroot skype" 
-
-I do: aoss skype and  skype is blocking my dev.
-
-when i tried strace aoss skype. skype did not start.
-
-I've entered into my chroot envirronment the classic way, ran aoss skype.
-
-And then this is magic: I have ringing sound that does not block! 
-But I don't have any sound at all in the call: I can't hear the other one
-talking. And he can't hear me neither...
-
-skype (without aoss) in chrooted environment works fine (less the blocking
-thing).
-I tried 2 mplayers in chrooted environment using oss with aoss, and worked
-fine.
-
-
-I attached the strace file.
-I attached my asound.conf file
+No, nono31's unrelated dmix bug was fixed; using current ALSA I still can't
+use my rear speaker channels or control their volume normally.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-06 03:15 nono31         New Issue                                    
-01-28-06 03:22 rlrevell       Note Added: 0007820                          
-01-28-06 04:15 nono31         File Added: strace_aoss_skype.bz2                 
-  
-01-28-06 04:15 nono31         File Added: asound.conf                      
-01-28-06 04:16 nono31         Note Added: 0007821                          
+09-09-05 05:11 drow           New Issue                                    
+09-09-05 05:11 drow           Distribution              => Debian          
+09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
+09-09-05 05:13 drow           Note Added: 0006091                          
+09-12-05 18:05 drow           Note Added: 0006148                          
+11-01-05 00:35 drow           Note Added: 0006591                          
+01-15-06 04:30 nono31         Note Added: 0007658                          
+01-15-06 04:39 rlrevell       Note Added: 0007659                          
+01-16-06 16:17 drow           Note Added: 0007687                          
+01-16-06 16:45 fearofcarpet   Issue Monitored: fearofcarpet                    
+01-28-06 01:33 nono31         Note Added: 0007811                          
+01-28-06 01:34 nono31         Note Edited: 0007811                         
+01-28-06 01:45 rlrevell       Note Added: 0007812                          
+01-28-06 01:56 nono31         Issue Monitored: nono31                      
+01-28-06 02:01 nono31         Note Added: 0007813                          
+01-28-06 02:08 rlrevell       Note Added: 0007814                          
+01-28-06 02:55 rlrevell       Note Added: 0007817                          
+01-28-06 02:55 rlrevell       Status                   new => resolved     
+01-28-06 02:55 rlrevell       Resolution               open => fixed       
+01-28-06 02:55 rlrevell       Assigned To               => rlrevell        
+01-28-06 02:55 rlrevell       Note Added: 0007818                          
+01-28-06 04:17 drow           Status                   resolved => feedback
+01-28-06 04:17 drow           Resolution               fixed => reopened   
+01-28-06 04:17 drow           Note Added: 0007822                          
 ======================================================================
 
 
