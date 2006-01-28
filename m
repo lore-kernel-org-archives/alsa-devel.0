@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Sat, 28 Jan 2006 06:11:11 +0100
-Message-ID: <b43323e8e9f948578911ec1bd6faf456@bugtrack.alsa-project.org>
+Date: Sat, 28 Jan 2006 06:13:09 +0100
+Message-ID: <e2efbdf37229d38f3ddd86f691146fdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E41C1B1
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 06:11:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A9DB1B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 06:13:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              01-28-2006 06:11 CET
+Last Modified:              01-28-2006 06:13 CET
 ======================================================================
 Summary:                    Skype Does not work with aoss
 Description: 
@@ -56,12 +56,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0001224 artsd-like style
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-28-06 05:38 
-----------------------------------------------------------------------
-As a test, can you also try "kiax" (open source VOIP app) with aoss, and
-see if you get the same symptoms as skype?
 
 ----------------------------------------------------------------------
  nono31 - 01-28-06 06:11 
@@ -90,6 +84,11 @@ Perhaps you do not have an input or output device?
 Sáb Jan 28 05:10:06 2006 IaxWrapper::event_text() Message: Type=3
 Message=Can't start audio
 
+----------------------------------------------------------------------
+ nono31 - 01-28-06 06:13 
+----------------------------------------------------------------------
+Uploaded strace just in case...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -109,6 +108,9 @@ Date Modified  Username       Field                    Change
 01-28-06 05:35 nono31         Issue Monitored: nono31                      
 01-28-06 05:38 rlrevell       Note Added: 0007825                          
 01-28-06 06:11 nono31         Note Added: 0007826                          
+01-28-06 06:12 nono31         File Added: strace_aoss_kiax.bz2                  
+ 
+01-28-06 06:13 nono31         Note Added: 0007827                          
 ======================================================================
 
 
