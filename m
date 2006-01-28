@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001789]: aoss skype is blocking.
-Date: Sat, 28 Jan 2006 03:15:19 +0100
-Message-ID: <820ad011bcf7ed095714369bfe25a172@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001489]: Sound blocking.
+Date: Sat, 28 Jan 2006 03:17:12 +0100
+Message-ID: <f46961aca140378627ad6b8971dcfff7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07751138
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 03:15:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C4C41B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 03:17:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1789> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1489> 
 ======================================================================
 Reported By:                nono31
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1789
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1489
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             2.6.11-2.6.14
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-28-2006 03:15 CET
-Last Modified:              01-28-2006 03:15 CET
+Date Submitted:             10-21-2005 14:56 CEST
+Last Modified:              01-28-2006 03:17 CET
 ======================================================================
-Summary:                    aoss skype is blocking.
+Summary:                    Sound blocking.
 Description: 
-I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
-ice1724.
+Onboard card is:
 
-I use 1.0.11rc2 card's config file to have mutilple apps playing at the
-same time.
-This works great :-)
-I have xmms, mplayer using alsa, aoss mplayer using oss working at the
-same time.
+ VIA Technologies Inc. VT1720/24 [Envy24PT/HT] PCI Multi-Channel Audio
+Controller (rev 01)
 
-The only problem I have is with skype: it still blocks my sound dev!
+I can't have multi-channel working (not big deal for me, I'm not using).
+I can't have 2 softwares accessing sound device...
+This is very annoying, apps just block and need to be stop... sometimes
+need to stop my desktop manager.
+As skype have fame of having bad sound support, it is beeing worse when I
+come to use it.
+Another example: I'm playing music with xmms and at the same time I start
+vmware... vmware will start without sound support... If I have vmware
+running, and then play music with xmms, it will block sound device. So
+vmware will complain each time it want to use sound...
 
-no way I can use other sound app when I am using skype... (so no way I can
-hear gaim notification)...
+Every information I got from internet shows that every user with my
+configuration have this problem...
+
+I don't know if it is a driver problem (i guess it is not configuration
+problem as I did not have this problem with my SBLive and that everybody
+seems to be in the same case as I am).
+
+I have this problem on 2.6.11, 2.6.12, 2.6.13.2, 2.6.14-rc4
+
+
+More information is just asking!
+
+Thanks
+
+Mathieu
+
+
 ======================================================================
+
+----------------------------------------------------------------------
+ nono31 - 01-28-06 03:07 
+----------------------------------------------------------------------
+This bug is fixed in 1.0.11rc2. thanks.
+I'll still open a new bug about aoss skype blocking.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-06 03:15 nono31         New Issue                                    
+10-21-05 14:56 nono31         New Issue                                    
+10-21-05 14:56 nono31         Distribution              => Debian          
+10-21-05 14:56 nono31         Kernel Version            => 2.6.11-2.6.14   
+01-28-06 03:06 nono31         Issue Monitored: nono31                      
+01-28-06 03:07 nono31         Note Added: 0007819                          
+01-28-06 03:17 rlrevell       Status                   new => resolved     
+01-28-06 03:17 rlrevell       Resolution               open => fixed       
+01-28-06 03:17 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
