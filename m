@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
-Date: Sat, 28 Jan 2006 01:45:30 +0100
-Message-ID: <85318f952e2ac9be21e4a448d2c40e5e@bugtrack.alsa-project.org>
+Date: Sat, 28 Jan 2006 02:01:41 +0100
+Message-ID: <491be735458bf127949ebdb9d87a7305@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD0D11B1
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 01:45:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1C6516B
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 02:01:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.13-rc6
 ======================================================================
 Date Submitted:             09-09-2005 05:11 CEST
-Last Modified:              01-28-2006 01:45 CET
+Last Modified:              01-28-2006 02:01 CET
 ======================================================================
 Summary:                    Can't use rear speaker channels
 Description: 
@@ -60,38 +60,25 @@ but I'll be glad to debug it if someone can give me a pointer.
 ======================================================================
 
 ----------------------------------------------------------------------
- nono31 - 01-28-06 01:34 
-----------------------------------------------------------------------
-Fixed! :-)
-I just replace the card config file.
-
-I can play xmms and mplayer at the same time.
-
-Now my problem is: I want to use skype... 
-I found an aoss wiki, and the first thing they ask to test is :
- aplay -D plug:dmix one_file.wav &  aplay -D plug:dmix one_file.wav
-
-I have the following error:
-
-ALSA lib pcm_direct.c:812:(snd_pcm_direct_initialize_slave) requested or
-auto-format is not available
-ALSA lib pcm_dmix.c:831:(snd_pcm_dmix_open) unable to initialize slave
-aplay: main:544: audio open error: Invalid argument
-
-
-I have this error when running just one:  aplay -D plug:dmix one_file.wav
-
-I still configured /etc/asound.conf and tried skype. Skype runs fine but I
-go back to my initial problem: it blocks the device for other
-applications!
-
-
-
-----------------------------------------------------------------------
  rlrevell - 01-28-06 01:45 
 ----------------------------------------------------------------------
 The advice on that wiki is outdated; aplay one_file.wav & aplay
 one_file.wav should work.
+
+----------------------------------------------------------------------
+ nono31 - 01-28-06 02:01 
+----------------------------------------------------------------------
+Hum. so was just this...
+
+Anyway, I still have the problem that skype is block my resource.
+
+
+NB: Skype is running chrooted because there is no 64bits versions of
+skype. chrooted user is same,  groups are ported to the chroot
+environment, /dev is binded...
+
+NB2: openwengo block sound too even that it is using alsa. They say that
+it is because openwengo is not supporting dmix...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -109,6 +96,8 @@ Date Modified  Username       Field                    Change
 01-28-06 01:33 nono31         Note Added: 0007811                          
 01-28-06 01:34 nono31         Note Edited: 0007811                         
 01-28-06 01:45 rlrevell       Note Added: 0007812                          
+01-28-06 01:56 nono31         Issue Monitored: nono31                      
+01-28-06 02:01 nono31         Note Added: 0007813                          
 ======================================================================
 
 
