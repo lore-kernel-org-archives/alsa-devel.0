@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
-Date: Sat, 28 Jan 2006 01:33:51 +0100
-Message-ID: <cde6d567b65b7f9396c8764521271ccf@bugtrack.alsa-project.org>
+Date: Sat, 28 Jan 2006 01:45:30 +0100
+Message-ID: <85318f952e2ac9be21e4a448d2c40e5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C8F21B1
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 01:33:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD0D11B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 01:45:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.13-rc6
 ======================================================================
 Date Submitted:             09-09-2005 05:11 CEST
-Last Modified:              01-28-2006 01:33 CET
+Last Modified:              01-28-2006 01:45 CET
 ======================================================================
 Summary:                    Can't use rear speaker channels
 Description: 
@@ -60,13 +60,7 @@ but I'll be glad to debug it if someone can give me a pointer.
 ======================================================================
 
 ----------------------------------------------------------------------
- drow - 01-16-06 16:17 
-----------------------------------------------------------------------
-Just to be clear, the updated configuration file fixes dmix/dsnoop by
-default.  Still no love on the speaker channels.
-
-----------------------------------------------------------------------
- nono31 - 01-28-06 01:33 
+ nono31 - 01-28-06 01:34 
 ----------------------------------------------------------------------
 Fixed! :-)
 I just replace the card config file.
@@ -74,7 +68,7 @@ I just replace the card config file.
 I can play xmms and mplayer at the same time.
 
 Now my problem is: I want to use skype... 
-I found a aoss wiki, and the first thing they ask to test is :
+I found an aoss wiki, and the first thing they ask to test is :
  aplay -D plug:dmix one_file.wav &  aplay -D plug:dmix one_file.wav
 
 I have the following error:
@@ -87,9 +81,17 @@ aplay: main:544: audio open error: Invalid argument
 
 I have this error when running just one:  aplay -D plug:dmix one_file.wav
 
-I still configures /etc/asound.conf and tried skype. Skype runs fine but I
+I still configured /etc/asound.conf and tried skype. Skype runs fine but I
 go back to my initial problem: it blocks the device for other
 applications!
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 01-28-06 01:45 
+----------------------------------------------------------------------
+The advice on that wiki is outdated; aplay one_file.wav & aplay
+one_file.wav should work.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +107,8 @@ Date Modified  Username       Field                    Change
 01-16-06 16:17 drow           Note Added: 0007687                          
 01-16-06 16:45 fearofcarpet   Issue Monitored: fearofcarpet                    
 01-28-06 01:33 nono31         Note Added: 0007811                          
+01-28-06 01:34 nono31         Note Edited: 0007811                         
+01-28-06 01:45 rlrevell       Note Added: 0007812                          
 ======================================================================
 
 
