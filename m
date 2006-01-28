@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001790]: add ability to set different applications apart (one line of code needs to change)
-Date: Sat, 28 Jan 2006 10:26:05 +0100
-Message-ID: <47db60535fb95a290ac4d1b97c6a5963@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: what does alsaconf do?
+Date: Sat, 28 Jan 2006 13:58:44 +0000
+Message-ID: <1138456724.9726.13.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81E6F1BF
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 10:26:05 +0100 (MET)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 467A21AE
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 14:58:51 +0100 (MET)
+Received: from bossclass (bossclass [192.168.62.105])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k0SDwip2028993
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 13:58:44 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,47 +24,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I have been looking through the sources because I cannot get it to run
+properly on my set up and I may need to rewrite it or patch it and
+possibly also modinfo and wonder if someone could give me a short
+summary?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1790> 
-======================================================================
-Reported By:                madman2003
-Assigned To:                
-======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1790
-Category:                   PCM - jack
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-28-2006 10:26 CET
-Last Modified:              01-28-2006 10:26 CET
-======================================================================
-Summary:                    add ability to set different applications apart (one
-line of code needs to change)
-Description: 
-Currently there is no way of making multiple alsa-jack plugins and setting
-them apart by their name. Which can be inconvient in some cases (when
-using qjackctl patchbay) when you want one or two apps treated
-differently.
-
-I know very little c, but i was able to change it after fiddling around a
-while.
-
-It's only one line of code that needs changing, i'm not sure if the patch
-is in the right format, but it should be applied directly to pcm_jack.c .
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-28-06 10:26 madman2003     New Issue                                    
-01-28-06 10:26 madman2003     File Added: patch.txt                        
-======================================================================
-
+My setup is pretty limited - ash (from busybox) not bash, uclibc not
+glibc, no awk, no dialog, buildroot supplied modinfo does not appear to
+give the output alsaconf is looking for etc...
 
 
 
