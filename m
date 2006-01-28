@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001780]: alsamixer seg faults immediately after invocation
-Date: Sat, 28 Jan 2006 02:09:00 +0100
-Message-ID: <7888de9929ff7657f0f94494218d5aaa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
+Date: Sat, 28 Jan 2006 02:23:50 +0100
+Message-ID: <58926eda576de67febd8bf2356dc6654@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C123718B
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 02:09:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 701091B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 02:23:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,365 +24,423 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1780> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
 ======================================================================
-Reported By:                briand
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1780
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1766
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-25-2006 05:10 CET
-Last Modified:              01-28-2006 02:09 CET
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              01-28-2006 02:23 CET
 ======================================================================
-Summary:                    alsamixer seg faults immediately after invocation
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
 Description: 
-FC3 2.6.9-1.667 (or 2.6.15.1) on Dell Inspiron 3200 D266XT.  Audio chip is
-a CS4237B, driver is snd-cs4236.  See also:  0001748
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-----[ amixer contents
-]-----------------------------------------------------
-numid=2,iface=MIXER,name='Master Digital Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=1,iface=MIXER,name='Master Digital Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=3,iface=MIXER,name='Master Digital Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=71,step=0
-  : values=31,31
-numid=38,iface=MIXER,name='3D Control - Center'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0
-  : values=13
-numid=40,iface=MIXER,name='3D Control - IEC958'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=39,iface=MIXER,name='3D Control - Mono'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=37,iface=MIXER,name='3D Control - Space'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0
-  : values=13
-numid=36,iface=MIXER,name='3D Control - Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=5,iface=MIXER,name='PCM Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=6,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=57,39
-numid=14,iface=MIXER,name='Synth Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=27,27
-numid=13,iface=MIXER,name='Synth Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=15,iface=MIXER,name='Synth Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=16,iface=MIXER,name='Synth Capture Bypass'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=9,iface=MIXER,name='FM Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=10,iface=MIXER,name='FM Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=23,7
-numid=11,iface=MIXER,name='Wavetable Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=12,iface=MIXER,name='Wavetable Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=51,35
-numid=7,iface=MIXER,name='DSP Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=8,iface=MIXER,name='DSP Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=55,39
-numid=22,iface=MIXER,name='Line Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=27,27
-numid=21,iface=MIXER,name='Line Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=23,iface=MIXER,name='Line Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=24,iface=MIXER,name='Line Capture Bypass'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=26,iface=MIXER,name='CD Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=28,28
-numid=25,iface=MIXER,name='CD Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=27,iface=MIXER,name='CD Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=19,iface=MIXER,name='Mic Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=23,7
-numid=20,iface=MIXER,name='Mic Playback Boost'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=17,iface=MIXER,name='Mic Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=18,iface=MIXER,name='Mic Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=28,iface=MIXER,name='Mono Output Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=29,iface=MIXER,name='Mono Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=30,iface=MIXER,name='Mono Playback Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0
-  : values=13
-numid=31,iface=MIXER,name='Mono Playback Bypass'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=4,iface=MIXER,name='Capture Boost Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=3,step=0
-  : values=1,1
-numid=32,iface=MIXER,name='Capture Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=15,step=0
-  : values=0,0
-numid=33,iface=MIXER,name='Analog Loopback Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=off,off
-numid=34,iface=MIXER,name='Digital Loopback Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=35,iface=MIXER,name='Digital Loopback Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=63,step=0
-  : values=27,23
-numid=46,iface=MIXER,name='IEC958 Output Channel Status High'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=255,step=0
-  : values=151
-numid=45,iface=MIXER,name='IEC958 Output Channel Status Low'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=127,step=0
-  : values=121
-numid=44,iface=MIXER,name='IEC958 Output CSBR'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=41,iface=MIXER,name='IEC958 Output Enable'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=43,iface=MIXER,name='IEC958 Output User'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=42,iface=MIXER,name='IEC958 Output Validity'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-----------------------------------------------------------------------------
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
-----[ amixer scontents
-]----------------------------------------------------
-Simple mixer control 'Master Digital',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 71
-  Front Left: 31 [44%] Playback [off] Capture [off]
-  Front Right: 31 [44%] Playback [off] Capture [off]
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 13 [87%]
-Simple mixer control '3D Control - IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control '3D Control - Mono',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control '3D Control - Space',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 13 [87%]
-Simple mixer control '3D Control - Switch',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 57 [90%] [on]
-  Front Right: Playback 39 [62%] [on]
-Simple mixer control 'Synth',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 31
-  Front Left: 27 [87%] Playback [on] Capture [off]
-  Front Right: 27 [87%] Playback [on] Capture [off]
-Simple mixer control 'Synth Capture Bypass',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'FM',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 23 [37%] [on]
-  Front Right: Playback 7 [11%] [on]
-Simple mixer control 'Wavetable',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 51 [81%] [on]
-  Front Right: Playback 35 [56%] [on]
-Simple mixer control 'DSP',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 55 [87%] [off]
-  Front Right: Playback 39 [62%] [off]
-Simple mixer control 'Line',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 31
-  Front Left: 27 [87%] Playback [on] Capture [off]
-  Front Right: 27 [87%] Playback [on] Capture [off]
-Simple mixer control 'Line Capture Bypass',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'CD',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 31
-  Front Left: 28 [90%] Playback [on] Capture [off]
-  Front Right: 28 [90%] Playback [on] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: volume pswitch cswitch
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 31
-  Front Left: 23 [74%] Playback [on] Capture [off]
-  Front Right: 7 [23%] Playback [on] Capture [off]
-Simple mixer control 'Mic Playback Boost',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'IEC958 Output CSBR',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Output Channel Status High',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 255
-  Mono: 151 [59%]
-Simple mixer control 'IEC958 Output Channel Status Low',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 127
-  Mono: 121 [95%]
-Simple mixer control 'IEC958 Output Enable',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Output User',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Output Validity',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mono',0
-  Capabilities: pvolume pvolume-joined pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 15
-  Front Left: Playback 13 [87%] [on]
-  Front Right: Playback 13 [87%] [on]
-Simple mixer control 'Mono Output',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'Mono Playback Bypass',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%]
-  Front Right: Capture 0 [0%]
-Simple mixer control 'Capture Boost',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Limits: 0 - 3
-  Mono: 1 [33%]
-  Front Left:
-  Front Right:
-Simple mixer control 'Analog Loopback',0
-  Capabilities: cswitch
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Digital Loopback',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 63
-  Front Left: Playback 27 [43%] [off]
-  Front Right: Playback 23 [37%] [off]
-----------------------------------------------------------------------------
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
+
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
+
+jackd -d alsa hw:0 -S
+jackd 0.100.9
+
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-27-06 23:54 
+ Raymond - 01-24-06 11:25 
 ----------------------------------------------------------------------
-Can you try to compile with debugging symbols (gcc -g ...), to get a better
-backtrace?
+au88x0 driver only require period size to be power of two.
+
+au88x0 have to use "export PA_ALSA_PERIODSIZE=1024" in order to use
+capture function in audacity ( portaudio=v19 )
+
+The new pcm help function will not work with au88x0 driver
+
+int snd_pcm_set_params(snd_pcm_t *pcm,
+                       snd_pcm_format_t format,
+                       snd_pcm_access_t access,
+                       unsigned int channels,
+                       unsigned int rate,
+                       int soft_resample,
+                       unsigned int latency);
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724
 
 ----------------------------------------------------------------------
- briand - 01-28-06 02:09 
+ Raymond - 01-28-06 02:23 
 ----------------------------------------------------------------------
-I believe the -g option was already passed to the compiler:
+define RULES_DEBUG In core/pcm_native.c 
 
-if gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -MT alsamixer.o -MD
--MP -MF ".deps/alsamixer.Tpo" -c -o alsamixer.o alsamixer.c; \
-then mv -f ".deps/alsamixer.Tpo" ".deps/alsamixer.Po"; else rm -f
-".deps/alsamixer.Tpo"; exit 1; fi
-gcc  -g -O2   -o alsamixer  alsamixer.o -lncurses -lasound -lm -ldl
--lpthread
+jackd -d alsa hw:0 -S -i 2 
+
+vortex_pcm_open substream->stream=0
+vortex_pcm_open substream->stream=1
+ACCESS = 00000000ffffffffffffffff -> 0000000000000009
+FORMAT = 00000000ffffffffffffffff -> 000000000000300006
+SUBFORMAT = 00000000ffffffffffffffff -> 0000000000000001
+SAMPLE_BITS = [0 4294967295] -> [0 4294967295]
+FRAME_BITS = [0 4294967295] -> [0 4294967295]
+CHANNELS = [0 4294967295] -> [1 2]
+RATE = [0 4294967295] -> [5000 48000]
+PERIOD_TIME = [0 4294967295] -> [0 4294967295]
+PERIOD_SIZE = [0 4294967295] -> [0 4294967295]
+PERIOD_BYTES = [0 4294967295] -> [1 4096]
+PERIODS = [0 4294967295] -> [2 32]
+BUFFER_TIME = [0 4294967295] -> [0 4294967295]
+BUFFER_SIZE = [0 4294967295] -> [0 4294967295]
+BUFFER_BYTES = [0 4294967295] -> [1 65536]
+TICK_TIME = [0 4294967295] -> [10000 10000]
+Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
+Rule 1 [e1cff140]: SAMPLE_BITS = [0 4294967295] -> [8 16]
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
+Rule 3 [e1cfee30]: FRAME_BITS = [0 4294967295] -> [8 32]
+Rule 4 [e1cfef90]: FRAME_BITS = [8 32] -> [8 32]
+Rule 5 [e1cfef90]: FRAME_BITS = [8 32] -> [8 32]
+Rule 6 [e1cfeea0]: CHANNELS = [1 2] -> [1 2]
+Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [0 4294967295] -> [0 2147483647]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [0 2147483647] -> [1 4096]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [0 4294967295] -> [2 131072]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 131072] -> [2 65536]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [1 65536] -> [2 65536]
+Rule 18 [e1cfef90]: PERIOD_TIME = [0 4294967295] -> (20 819200]
+Rule 19 [e1cfef90]: BUFFER_TIME = [0 4294967295] -> (41 13107200]
+Rule 20 [e1d047f0]: PERIOD_BYTES = [1 4096] -> [1 4096]
+Rule 21 [e1cff230]: BUFFER_BYTES = [2 65536] -> [2 65536]
+Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
+Rule 4 [e1cfef90]: FRAME_BITS = [8 32] -> [8 32]
+Rule 5 [e1cfef90]: FRAME_BITS = [8 32] -> [8 32]
+Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
+ACCESS = 0000000000000001 -> 0000000000000001
+FORMAT = 0000000000000004 -> 0000000000000004
+Rule 1 [e1cff140]: SAMPLE_BITS = [8 16] -> [16 16]
+Rule 3 [e1cfee30]: FRAME_BITS = [8 32] -> [16 32]
+Rule 6 [e1cfeea0]: CHANNELS = [1 2] -> [1 2]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1 4096] -> [1 2048]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 32768]
+Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [2 4096]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [4 65536]
+Rule 18 [e1cfef90]: PERIOD_TIME = (20 819200] -> (20 409600]
+Rule 19 [e1cfef90]: BUFFER_TIME = (41 13107200] -> (41 6553600]
+Rule 20 [e1d047f0]: PERIOD_BYTES = [2 4096] -> [2 4096]
+Rule 21 [e1cff230]: BUFFER_BYTES = [4 65536] -> [4 65536]
+Rule 0 [e1cff010]: FORMAT = 4 -> 4
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [16 16] -> [16 16]
+Rule 4 [e1cfef90]: FRAME_BITS = [16 32] -> [16 32]
+Rule 5 [e1cfef90]: FRAME_BITS = [16 32] -> [16 32]
+Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 32768] -> [2 32768]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 32768] -> [2 32768]
+RATE = [48000 48000] -> [48000 48000]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 32768] -> [2 32768]
+Rule 18 [e1cfef90]: PERIOD_TIME = (20 409600] -> (20 42667)
+Rule 19 [e1cfef90]: BUFFER_TIME = (41 6553600] -> (41 682667)
+Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 32768] -> [2 32768]
+CHANNELS = [2 2] -> [2 2]
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [16 16] -> [16 16]
+Rule 3 [e1cfee30]: FRAME_BITS = [16 32] -> [32 32]
+Rule 6 [e1cfeea0]: CHANNELS = [2 2] -> [2 2]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1 2048] -> [1 1024]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [2 32768] -> [2 32768]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 32768] -> [2 16384]
+Rule 16 [e1cfef10]: PERIOD_BYTES = [2 4096] -> [4 4096]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [4 65536] -> [8 65536]
+Rule 18 [e1cfef90]: PERIOD_TIME = (20 42667) -> (20 21334)
+Rule 19 [e1cfef90]: BUFFER_TIME = (41 682667) -> (41 341334)
+Rule 20 [e1d047f0]: PERIOD_BYTES = [4 4096] -> [4 4096]
+Rule 21 [e1cff230]: BUFFER_BYTES = [8 65536] -> [8 65536]
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [16 16] -> [16 16]
+Rule 4 [e1cfef90]: FRAME_BITS = [32 32] -> [32 32]
+Rule 5 [e1cfef90]: FRAME_BITS = [32 32] -> [32 32]
+Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 1024] -> [1 1024]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1 1024] -> [1 1024]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 1024] -> [1 1024]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 16384] -> [2 16384]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 16384] -> [2 16384]
+PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 4 [e1cfef90]: FRAME_BITS = [32 32] -> [32 32]
+Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 16]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [2 16384] -> [2048 16384]
+Rule 16 [e1cfef10]: PERIOD_BYTES = [4 4096] -> [4096 4096]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [8 65536] -> [8192 65536]
+Rule 18 [e1cfef90]: PERIOD_TIME = (20 21334) -> (21333 21334)
+Rule 19 [e1cfef90]: BUFFER_TIME = (41 341334) -> (42666 341334)
+Rule 20 [e1d047f0]: PERIOD_BYTES = [4096 4096] -> [4096 4096]
+Rule 21 [e1cff230]: BUFFER_BYTES = [8192 65536] -> [8192 65536]
+Rule 4 [e1cfef90]: FRAME_BITS = [32 32] -> [32 32]
+Rule 5 [e1cfef90]: FRAME_BITS = [32 32] -> [32 32]
+Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 16] -> [2 16]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2048 16384] -> [2048 16384]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2048 16384] -> [2048 16384]
+PERIODS = [2 2] -> [2 2]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [2048 16384] -> [2048 2048]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [8192 65536] -> [8192 8192]
+Rule 19 [e1cfef90]: BUFFER_TIME = (42666 341334) -> (42666 42667)
+Rule 21 [e1cff230]: BUFFER_BYTES = [8192 8192] -> [8192 8192]
+Rule 5 [e1cfef90]: FRAME_BITS = [32 32] -> [32 32]
+Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 2] -> [2 2]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2048 2048] -> [2048 2048]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2048 2048] -> [2048 2048]
+ACCESS = 0000000000000001 -> 0000000000000001
+FORMAT = 0000000000000004 -> 0000000000000004
+SUBFORMAT = 0000000000000001 -> 0000000000000001
+SAMPLE_BITS = [16 16] -> [16 16]
+FRAME_BITS = [32 32] -> [32 32]
+CHANNELS = [2 2] -> [2 2]
+RATE = [48000 48000] -> [48000 48000]
+PERIOD_TIME = (21333 21334) -> (21333 21334)
+PERIOD_SIZE = [1024 1024] -> [1024 1024]
+PERIOD_BYTES = [4096 4096] -> [4096 4096]
+PERIODS = [2 2] -> [2 2]
+BUFFER_TIME = (42666 42667) -> (42666 42667)
+BUFFER_SIZE = [2048 2048] -> [2048 2048]
+BUFFER_BYTES = [8192 8192] -> [8192 8192]
+TICK_TIME = [10000 10000] -> [10000 10000]
+Rule 0 [e1cff010]: FORMAT = 4 -> 4
+Rule 1 [e1cff140]: SAMPLE_BITS = [16 16] -> [16 16]
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [16 16] -> [16 16]
+Rule 3 [e1cfee30]: FRAME_BITS = [32 32] -> [32 32]
+Rule 4 [e1cfef90]: FRAME_BITS = [32 32] -> [32 32]
+Rule 5 [e1cfef90]: FRAME_BITS = [32 32] -> [32 32]
+Rule 6 [e1cfeea0]: CHANNELS = [2 2] -> [2 2]
+Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 2] -> [2 2]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1024 1024] -> [1024 1024]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [2048 2048] -> [2048 2048]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2048 2048] -> [2048 2048]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2048 2048] -> [2048 2048]
+Rule 16 [e1cfef10]: PERIOD_BYTES = [4096 4096] -> [4096 4096]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [8192 8192] -> [8192 8192]
+Rule 18 [e1cfef90]: PERIOD_TIME = (21333 21334) -> (21333 21334)
+Rule 19 [e1cfef90]: BUFFER_TIME = (42666 42667) -> (42666 42667)
+Rule 20 [e1d047f0]: PERIOD_BYTES = [4096 4096] -> [4096 4096]
+Rule 21 [e1cff230]: BUFFER_BYTES = [8192 8192] -> [8192 8192]
+vortex_pcm_hw_params substream->stream=1
+vortex_pcm_prepare substream->stream=1
+ACCESS = 00000000ffffffffffffffff -> 0000000000000009
+FORMAT = 00000000ffffffffffffffff -> 000000000000300006
+SUBFORMAT = 00000000ffffffffffffffff -> 0000000000000001
+SAMPLE_BITS = [0 4294967295] -> [0 4294967295]
+FRAME_BITS = [0 4294967295] -> [0 4294967295]
+CHANNELS = [0 4294967295] -> [1 4]
+RATE = [0 4294967295] -> [5000 48000]
+PERIOD_TIME = [0 4294967295] -> [0 4294967295]
+PERIOD_SIZE = [0 4294967295] -> [0 4294967295]
+PERIOD_BYTES = [0 4294967295] -> [1 4096]
+PERIODS = [0 4294967295] -> [2 32]
+BUFFER_TIME = [0 4294967295] -> [0 4294967295]
+BUFFER_SIZE = [0 4294967295] -> [0 4294967295]
+BUFFER_BYTES = [0 4294967295] -> [1 65536]
+TICK_TIME = [0 4294967295] -> [10000 10000]
+Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
+Rule 1 [e1cff140]: SAMPLE_BITS = [0 4294967295] -> [8 16]
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
+Rule 3 [e1cfee30]: FRAME_BITS = [0 4294967295] -> [8 64]
+Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
+Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
+Rule 6 [e1cfeea0]: CHANNELS = [1 4] -> [1 4]
+Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [0 4294967295] -> [0 2147483647]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [0 2147483647] -> [1 4096]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [0 4294967295] -> [2 131072]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 131072] -> [2 65536]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [1 65536] -> [2 65536]
+Rule 18 [e1cfef90]: PERIOD_TIME = [0 4294967295] -> (20 819200]
+Rule 19 [e1cfef90]: BUFFER_TIME = [0 4294967295] -> (41 13107200]
+Rule 20 [e1d047f0]: PERIOD_BYTES = [1 4096] -> [1 4096]
+Rule 21 [e1cff230]: BUFFER_BYTES = [2 65536] -> [2 65536]
+Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
+Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
+Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
+Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
+ACCESS = 0000000000000001 -> 0000000000000001
+FORMAT = 0000000000000004 -> 0000000000000004
+Rule 1 [e1cff140]: SAMPLE_BITS = [8 16] -> [16 16]
+Rule 3 [e1cfee30]: FRAME_BITS = [8 64] -> [16 64]
+Rule 6 [e1cfeea0]: CHANNELS = [1 4] -> [1 4]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1 4096] -> [1 2048]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 32768]
+Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [2 4096]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [4 65536]
+Rule 18 [e1cfef90]: PERIOD_TIME = (20 819200] -> (20 409600]
+Rule 19 [e1cfef90]: BUFFER_TIME = (41 13107200] -> (41 6553600]
+Rule 20 [e1d047f0]: PERIOD_BYTES = [2 4096] -> [2 4096]
+Rule 21 [e1cff230]: BUFFER_BYTES = [4 65536] -> [4 65536]
+Rule 0 [e1cff010]: FORMAT = 4 -> 4
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [16 16] -> [16 16]
+Rule 4 [e1cfef90]: FRAME_BITS = [16 64] -> [16 64]
+Rule 5 [e1cfef90]: FRAME_BITS = [16 64] -> [16 64]
+Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 32768] -> [2 32768]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 32768] -> [2 32768]
+RATE = [48000 48000] -> [48000 48000]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 32768] -> [2 32768]
+Rule 18 [e1cfef90]: PERIOD_TIME = (20 409600] -> (20 42667)
+Rule 19 [e1cfef90]: BUFFER_TIME = (41 6553600] -> (41 682667)
+Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 2048] -> [1 2048]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 32768] -> [2 32768]
+CHANNELS = [4 4] -> [4 4]
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [16 16] -> [16 16]
+Rule 3 [e1cfee30]: FRAME_BITS = [16 64] -> [64 64]
+Rule 6 [e1cfeea0]: CHANNELS = [4 4] -> [4 4]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1 2048] -> [1 512]
+Rule 13 [e1cfee30]: BUFFER_SIZE = [2 32768] -> [2 16384]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 16384] -> [2 8192]
+Rule 16 [e1cfef10]: PERIOD_BYTES = [2 4096] -> [8 4096]
+Rule 17 [e1cfef10]: BUFFER_BYTES = [4 65536] -> [16 65536]
+Rule 18 [e1cfef90]: PERIOD_TIME = (20 42667) -> (20 10667)
+Rule 19 [e1cfef90]: BUFFER_TIME = (41 682667) -> (41 170667)
+Rule 20 [e1d047f0]: PERIOD_BYTES = [8 4096] -> [8 4096]
+Rule 21 [e1cff230]: BUFFER_BYTES = [16 65536] -> [16 65536]
+Rule 2 [e1cfeea0]: SAMPLE_BITS = [16 16] -> [16 16]
+Rule 4 [e1cfef90]: FRAME_BITS = [64 64] -> [64 64]
+Rule 5 [e1cfef90]: FRAME_BITS = [64 64] -> [64 64]
+Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
+Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 512] -> [1 512]
+Rule 11 [e1cfef90]: PERIOD_SIZE = [1 512] -> [1 512]
+Rule 12 [e1cfef10]: PERIOD_SIZE = [1 512] -> [1 512]
+Rule 14 [e1cfef90]: BUFFER_SIZE = [2 8192] -> [2 8192]
+Rule 15 [e1cfef10]: BUFFER_SIZE = [2 8192] -> [2 8192]
+vortex_pcm_hw_free substream->stream=1
+vortex_pcm_hw_free substream->stream=1
+vortex_pcm_close substream->stream=1
+vortex_pcm_hw_free substream->stream=0
+vortex_pcm_close substream->stream=0
+
+
+Is there any parameter in snd_vortex_playback_hw_adb cause
+snd_pcm_set_period_size fail with -EINVAL ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-25-06 05:10 briand         New Issue                                    
-01-27-06 15:11 tiwai          Note Added: 0007802                          
-01-27-06 23:09 briand         Note Added: 0007808                          
-01-27-06 23:54 rlrevell       Note Added: 0007810                          
-01-28-06 02:09 briand         Note Added: 0007815                          
+01-21-06 05:02 Raymond        New Issue                                    
+01-21-06 05:25 rlrevell       Note Added: 0007735                          
+01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
+01-21-06 07:36 Raymond        Note Added: 0007736                          
+01-21-06 07:41 Raymond        Note Edited: 0007736                         
+01-21-06 07:59 rlrevell       Note Added: 0007737                          
+01-23-06 10:36 Raymond        Note Added: 0007761                          
+01-23-06 10:42 Raymond        Note Edited: 0007761                         
+01-24-06 11:25 Raymond        Note Added: 0007773                          
+01-28-06 02:23 Raymond        Note Added: 0007816                          
 ======================================================================
 
 
