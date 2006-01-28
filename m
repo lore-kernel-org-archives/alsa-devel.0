@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
-Date: Sat, 28 Jan 2006 05:34:47 +0100
-Message-ID: <b1d9d08fbda95255f12cea15f7232216@bugtrack.alsa-project.org>
+Date: Sat, 28 Jan 2006 05:38:48 +0100
+Message-ID: <78230d7ec19fe043d36d2db97edefd8c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0FF71B1
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 05:34:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB5451B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 05:38:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             07-03-2005 09:09 CEST
-Last Modified:              01-28-2006 05:34 CET
+Last Modified:              01-28-2006 05:38 CET
 ======================================================================
 Summary:                    Skype Does not work with aoss
 Description: 
@@ -58,30 +58,6 @@ related to          0001224 artsd-like style
 ======================================================================
 
 ----------------------------------------------------------------------
- Hetfield - 01-05-06 22:01 
-----------------------------------------------------------------------
-no, check the bug 1224, i still have the same problems.
-
-seg fault was fixed lots time ago.
-
-the problem is:
-1) setting the suggested values in my .asoundrc skype works with aoss
-(OK!!)
-2) complete dmix system gets faked. i mean..xmms and mplayer (with skype
-closed) can't use sound drivers.
-3) as 2), using skype with aoss is useless, cause other devices can't use
-dsp at the same time.
-
-removing .asoundrc settings fix the 2) but, obviusly keeps 1).
-
-i can do a fast summary:
-
-i hear mp3s/watch dvd. can i hear skype ring in the meanwhile?
-actually not.
-
-ps. card is always ens1370
-
-----------------------------------------------------------------------
  nono31 - 01-28-06 05:34 
 ----------------------------------------------------------------------
 I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
@@ -96,6 +72,12 @@ I've almost skype working:
 I've got the call ringing (no sound blocking). But after the call
 establishment, it is sound less: I can't hear what the other party is
 saying and they can't hear me neither.
+
+----------------------------------------------------------------------
+ rlrevell - 01-28-06 05:38 
+----------------------------------------------------------------------
+As a test, can you also try "kiax" (open source VOIP app) with aoss, and
+see if you get the same symptoms as skype?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +95,8 @@ Date Modified  Username       Field                    Change
 01-05-06 21:42 rlrevell       Note Added: 0007481                          
 01-05-06 22:01 Hetfield       Note Added: 0007482                          
 01-28-06 05:34 nono31         Note Added: 0007824                          
+01-28-06 05:35 nono31         Issue Monitored: nono31                      
+01-28-06 05:38 rlrevell       Note Added: 0007825                          
 ======================================================================
 
 
