@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001407]: Can't use rear speaker channels
-Date: Sat, 28 Jan 2006 02:55:05 +0100
-Message-ID: <f87d1fe17976602fd3d1bf88edf29ed4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001489]: Sound blocking.
+Date: Sat, 28 Jan 2006 03:07:22 +0100
+Message-ID: <6484445ceac6ef59cdbf6f872ef96eb0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 813CB1B8
-	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 02:55:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFC851B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2006 03:07:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1407> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1489> 
 ======================================================================
-Reported By:                drow
+Reported By:                nono31
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1407
+Issue ID:                   1489
 Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 Distribution:               Debian
-Kernel Version:             2.6.13-rc6
+Kernel Version:             2.6.11-2.6.14
 ======================================================================
-Date Submitted:             09-09-2005 05:11 CEST
-Last Modified:              01-28-2006 02:55 CET
+Date Submitted:             10-21-2005 14:56 CEST
+Last Modified:              01-28-2006 03:07 CET
 ======================================================================
-Summary:                    Can't use rear speaker channels
+Summary:                    Sound blocking.
 Description: 
-I'm using a Shuttle SN25P, which is an nForce4 motherboard with onboard
-ice1724.  I've spent most of tonight trying to get surround sound to
-work... but the best I can get is four channels (specifically, front
-left/right, center, LFE).  Nothing happens when samples are sent to the
-rear channels.  And the front channels are mirrored onto the rear
-speakers, under control of the Headphone volume control.
+Onboard card is:
 
-Which is really annoying, because it means that muting the master volume
-doesn't mute the back speakers.
+ VIA Technologies Inc. VT1720/24 [Envy24PT/HT] PCI Multi-Channel Audio
+Controller (rev 01)
 
-I realize this isn't much information.  I don't know what else to check
-but I'll be glad to debug it if someone can give me a pointer.
+I can't have multi-channel working (not big deal for me, I'm not using).
+I can't have 2 softwares accessing sound device...
+This is very annoying, apps just block and need to be stop... sometimes
+need to stop my desktop manager.
+As skype have fame of having bad sound support, it is beeing worse when I
+come to use it.
+Another example: I'm playing music with xmms and at the same time I start
+vmware... vmware will start without sound support... If I have vmware
+running, and then play music with xmms, it will block sound device. So
+vmware will complain each time it want to use sound...
+
+Every information I got from internet shows that every user with my
+configuration have this problem...
+
+I don't know if it is a driver problem (i guess it is not configuration
+problem as I did not have this problem with my SBLive and that everybody
+seems to be in the same case as I am).
+
+I have this problem on 2.6.11, 2.6.12, 2.6.13.2, 2.6.14-rc4
+
+
+More information is just asking!
+
+Thanks
+
+Mathieu
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-28-06 02:08 
+ nono31 - 01-28-06 03:07 
 ----------------------------------------------------------------------
-Skype should not block anything as long as it is run as "aoss skype".
-
-openwengo should work too - apps do not have to do anything special to
-"support dmix", as long as it's using the "default" PCM and not one of the
-"hw:x" devices.
-
-----------------------------------------------------------------------
- rlrevell - 01-28-06 02:55 
-----------------------------------------------------------------------
-I have just installed wengophone to investigate, and its device selection
-is incorrect: it only allows the choice of the hw devices, and anything
-defined in ~/.asoundrc - making it impossible to select the "default" PCM
-required for dmix to work.
-
-You may be able to work around this by defining a PCM in ~/.asoundrc that
-is just an alias for the "default" PCM.  But this bug should really be
-reported to the openwengo developers.
+This bug is fixed in 1.0.11rc2. thanks.
+I'll still open a new bug about aoss skype blocking.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-05 05:11 drow           New Issue                                    
-09-09-05 05:11 drow           Distribution              => Debian          
-09-09-05 05:11 drow           Kernel Version            => 2.6.13-rc6      
-09-09-05 05:13 drow           Note Added: 0006091                          
-09-12-05 18:05 drow           Note Added: 0006148                          
-11-01-05 00:35 drow           Note Added: 0006591                          
-01-15-06 04:30 nono31         Note Added: 0007658                          
-01-15-06 04:39 rlrevell       Note Added: 0007659                          
-01-16-06 16:17 drow           Note Added: 0007687                          
-01-16-06 16:45 fearofcarpet   Issue Monitored: fearofcarpet                    
-01-28-06 01:33 nono31         Note Added: 0007811                          
-01-28-06 01:34 nono31         Note Edited: 0007811                         
-01-28-06 01:45 rlrevell       Note Added: 0007812                          
-01-28-06 01:56 nono31         Issue Monitored: nono31                      
-01-28-06 02:01 nono31         Note Added: 0007813                          
-01-28-06 02:08 rlrevell       Note Added: 0007814                          
-01-28-06 02:55 rlrevell       Note Added: 0007817                          
+10-21-05 14:56 nono31         New Issue                                    
+10-21-05 14:56 nono31         Distribution              => Debian          
+10-21-05 14:56 nono31         Kernel Version            => 2.6.11-2.6.14   
+01-28-06 03:06 nono31         Issue Monitored: nono31                      
+01-28-06 03:07 nono31         Note Added: 0007819                          
 ======================================================================
 
 
