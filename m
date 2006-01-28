@@ -1,14 +1,14 @@
-From: Akhmad Muhamad <muhamakhmad@lycos.co.uk>
-Subject: From: Akhmad Muhamad
-Date: Sun, 29 Jan 2006 06:11:34 +0100
-Message-ID: <20060129051128.75DFD187@alsa.jcu.cz>
-Reply-To: muhamadakhmad@katamail.com
+From: Adrian Bunk <bunk@stusta.de>
+Subject: OSS driver removal, a slightly different approach (v3)
+Date: Sat, 28 Jan 2006 23:47:58 +0100
+Message-ID: <20060128224758.GR3777__24594.6247283884$1138520117$gmane$org@stusta.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="769caaa7-ba83-45cf-a6aa-1b43bf463245"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from lycos1247.com (ml82.128.3.151.multilinks.com [82.128.3.151])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 75DFD187
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 06:11:28 +0100 (MET)
+Received: from petasus.png.intel.com (petasus.png.intel.com [192.198.147.99])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2863F1A0
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 08:34:14 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +18,166 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+My proposal to remove OSS drivers where ALSA drivers for the same
+hardware exists had two reasons:
 
-This is a multi-part message in MIME format
---769caaa7-ba83-45cf-a6aa-1b43bf463245
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+1. remove obsolete and mostly unmaintained code
+2. get bugs in the ALSA drivers reported that weren't previously
+   reported due to the possible workaround of using the OSS drivers
 
-DEAREST,
+I'm slowly getting more and more reports for the second case.
 
-My name is Akhmad Muhamad, A Bahrain national I have been diagnosed with =
-Oesophageal cancer. It has defied all forms of medical treatment, and right =
-now I have only about a few months to live, according to medical experts. I =
-have not particularly lived my life so well, as I never really cared for =
-anyone (not even myself) but my business.
 
-Though I am very rich, I was never generous, I was always hostile to people =
-and only focused on my business as that was the only thing I cared for. But =
-now I regret all this as I now know that there is more to life than just =
-wanting to have or make all the money in the world. I believe when God gives =
-me a second chance to come to this world I would live my life a different way =
-from how I have lived it. Now that God has called me, I have willed and given =
-most of my property and assets to my immediate and extended family members as =
-well as a few close friends.
+The list below divides the OSS drivers into the following three
+categories:
+1. ALSA drivers for the same hardware
+2. ALSA drivers for the same hardware with known problems
+3. no ALSA drivers for the same hardware
 
-I want God to be merciful to me and accept my soul so, I have decided to give =
-alms to charity organizations, as I want this to be one of the last good =
-deeds I do on earth. So far, I have distributed money to some charity =
-organizations in the U.A.E, Somalia and Malaysia. Now that my health has =
-deteriorated so badly, I cannot do this myself anymore. I once asked members =
-of my family to close one of my accounts and distribute the money which I =
-have there to charity
-organization in Bulgaria and Pakistan, they refused and kept the money to =
-themselves.
 
-Hence, I do not trust them anymore, as they seem not to be contended with =
-what I have left for them. The last of my money which no one knows of is the =
-huge cash deposit of (Eighteen Million and five hundred thousand united =
-states Dollars) ($18,500,000, 00) that I have with a security and finance =
-House abroad for safe keeping.
+My proposed timeline is:
+- shortly before 2.6.16 is released:
+  adjust OBSOLETE_OSS_DRIVER dependencies to match exactly the
+  drivers under 1.
+- from the release of 2.6.16 till the release of 2.6.17:
+  approx. two months for users to report problems with the ALSA
+  drivers for the same hardware
+- after the release of 2.6.17 (and before 2.6.18):
+  remove the subset of drivers marked at OBSOLETE_OSS_DRIVER without
+  known regressions in the ALSA drivers for the same hardware
 
-I will want you to help me collect this deposit and dispatch it to charity =
-organizations.
 
-N/B: KINDLY NOTE THAT 20% of this fund must go to the Hurricane Katrina and =
-Rita victims and another 10% foryour effort and time. Please if you are =
-willing only reply to my private email address: muhamakhmad@katamail.com
+To make a long story short:
 
-God be with you.
+If you are using an OSS driver because the ALSA driver doesn't work
+equally well on your hardware, send me an email with a bug number in the
+ALSA bug tracking system now.
 
-Akhmad Muhamad
-muhamakhmad@katamail.com
 
-  
---769caaa7-ba83-45cf-a6aa-1b43bf463245--
+A small FAQ:
 
+Q: But OSS is kewl and ALSA sucks!
+A: The decision for the OSS->ALSA move was four years ago.
+   If ALSA sucks, please help to improve ALSA.
+
+Q: What about the OSS emulation in ALSA?
+A: The OSS emulation in ALSA is not affected by my patches
+   (and it's not in any way scheduled for removal).
+
+
+Please review the following list:
+
+
+1. ALSA drivers for the same hardware 
+
+SOUND_AD1889
+SOUND_AD1980
+SOUND_ALI5455
+SOUND_AU1000
+SOUND_AWE32_SYNTH
+SOUND_CMPCI
+SOUND_CS4232
+SOUND_CS4281
+SOUND_ES1370
+SOUND_ESSSOLO1
+SOUND_FORTE
+SOUND_FUSION
+SOUND_GUS
+SOUND_HARMONY
+SOUND_MAD16
+SOUND_MAESTRO
+SOUND_MAESTRO3
+SOUND_MAUI
+SOUND_OPL3SA1
+SOUND_OPL3SA2
+SOUND_RME96XX
+SOUND_SGALAXY
+SOUND_SONICVIBES
+SOUND_SSCAPE
+SOUND_VIA82CXXX
+SOUND_WAVEFRONT
+SOUND_YMFPCI
+
+
+2. ALSA drivers for the same hardware with known problems
+
+DMASOUND_PMAC
+- Olaf Hering regarding regressions in SND_POWERMAC:
+  Some tumbler models work only after one plug/unplug cycle of
+  the headphone. early powerbooks report/handle the mute settings
+  incorrectly. there are likely more bugs.
+
+SOUND_AD1816
+- ALSA #1301 (Kernel OSS emulation stops working after a few seconds
+              when used with VoIP softphones)
+
+SOUND_EMU10K1
+- ALSA #1735 (OSS emulation 4-channel mode rear channels not working)
+- ALSA #1782 (really poor sound with my SB Live 1024 and ALSA)
+
+SOUND_ES1371
+- ALSA #1774 (missing joystick connector support for PCI Ensoniq ES1371) (*)
+
+SOUND_ICH
+- ALSA #1764 (Recording signal quality is inacceptable (using OSS API))
+- Alan Cox:
+  ALSA driver lacks "support for AC97 wired touchscreens and the like"
+
+SOUND_NM256
+- ALSA #328 (snd-nm256 freezes Dell Latitude LS)
+
+SOUND_TRIDENT
+- ALSA #1293 (device supported by OSS but not by ALSA)
+- maintainer of the OSS driver wants his driver to stay
+
+
+3. no ALSA drivers for the same hardware
+
+DMASOUND_ATARI
+DMASOUND_PAULA
+DMASOUND_Q40
+SOUND_ACI_MIXER
+SOUND_ADLIB
+SOUND_AEDSP16
+SOUND_AU1550_AC97
+SOUND_BCM_CS4297A
+SOUND_HAL2
+SOUND_IT8172
+SOUND_KAHLUA
+SOUND_MSNDCLAS
+SOUND_MSNDPIN
+SOUND_MSS (also due to SOUND_PSS, SOUND_TRIX and perhaps SOUND_AEDSP16)
+SOUND_PAS
+SOUND_PSS
+SOUND_SB (also due to SOUND_KAHLUA, SOUND_PAS and perhaps SOUND_AEDSP16)
+SOUND_SH_DAC_AUDIO
+SOUND_TRIX
+SOUND_VIDC
+SOUND_VRC5477
+SOUND_VWSND
+SOUND_WAVEARTIST
+
+
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
+-
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
 
 -------------------------------------------------------
