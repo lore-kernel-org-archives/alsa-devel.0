@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001793]: No sound on ASUS A8N-VM CSM
-Date: Sun, 29 Jan 2006 18:31:20 +0100
-Message-ID: <3ff04b33c0dd4cac485363c6f662eab5@bugtrack.alsa-project.org>
+Date: Sun, 29 Jan 2006 18:54:23 +0100
+Message-ID: <95ac3d6fbed6e7f52953a1d82d1fb5f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9DEF17C
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 18:31:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47C6F175
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 18:54:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1793> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15 standard
 ======================================================================
 Date Submitted:             01-29-2006 18:31 CET
-Last Modified:              01-29-2006 18:31 CET
+Last Modified:              01-29-2006 18:54 CET
 ======================================================================
 Summary:                    No sound on ASUS A8N-VM CSM
 Description: 
@@ -215,12 +215,33 @@ lspci -nv :
 
 ======================================================================
 
+----------------------------------------------------------------------
+ labene - 01-29-06 18:54 
+----------------------------------------------------------------------
+lspci -nv
+
+
+0000:00:10.1 0403: nVidia Corporation MCP51 High Definition Audio (rev
+a2)
+        Subsystem: nVidia Corporation: Unknown device cb84
+<------------!!!!!
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0 (500ns min, 1250ns max)
+        Interrupt: pin B routed to IRQ 5
+        Region 0: Memory at febd8000 (32-bit, non-prefetchable)
+[size=16K]
+        Capabilities: <available only to root>
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-29-06 18:31 labene         New Issue                                    
 01-29-06 18:31 labene         Distribution              => Debian          
 01-29-06 18:31 labene         Kernel Version            => 2.6.15 standard 
+01-29-06 18:54 labene         Note Added: 0007833                          
 ======================================================================
 
 
