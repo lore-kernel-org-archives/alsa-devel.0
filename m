@@ -1,14 +1,29 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001791]: reporting working dxs_support=5
-Date: Sun, 29 Jan 2006 11:03:29 +0100
-Message-ID: <0a9bb353edf0d4ef3fbb4c85fdab754f@bugtrack.alsa-project.org>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: Re: what does alsaconf do?
+Date: Sun, 29 Jan 2006 11:40:23 +0000
+Message-ID: <20060129114023.GA16314@palantir8>
+References: <1138456724.9726.13.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F06AD197
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 11:03:29 +0100 (MET)
+Received: from mra04.ch.as12513.net (mra04.ch.as12513.net [82.153.252.44])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0511188
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 12:40:26 +0100 (MET)
+Received: from localhost (localhost [127.0.0.1])
+	by mra04.ch.as12513.net (Postfix) with ESMTP id BDB59C0401
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 11:40:27 +0000 (GMT)
+Received: from mra04.ch.as12513.net ([127.0.0.1])
+ by localhost (mra04.ch.as12513.net [127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id 17970-01-58 for <alsa-devel@alsa-project.org>;
+ Sun, 29 Jan 2006 11:40:27 +0000 (GMT)
+Received: from palantir8.mph.eclipse.net (unknown [81.168.73.77])
+	by mra04.ch.as12513.net (Postfix) with ESMTP id 1FD7CC035F
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 11:40:27 +0000 (GMT)
+Received: from mhabets by palantir8.mph.eclipse.net with local (Exim 3.36 #1 (Debian))
+	id 1F3Aut-0004H2-00
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 11:40:23 +0000
+Content-Disposition: inline
+In-Reply-To: <1138456724.9726.13.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,50 +36,34 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Jan 28, 2006 at 01:58:44PM +0000, Adrian McMenamin wrote:
+> I have been looking through the sources because I cannot get it to run
+> properly on my set up and I may need to rewrite it or patch it and
+> possibly also modinfo and wonder if someone could give me a short
+> summary?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1791> 
-======================================================================
-Reported By:                djwlindenaar
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1791
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-Distribution:               Debian etch
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-29-2006 11:03 CET
-Last Modified:              01-29-2006 11:03 CET
-======================================================================
-Summary:                    reporting working dxs_support=5
-Description: 
-on my laptop, a ACER aspire 1315LM, the via82xx works flawlessly with
-dxs_support=5. Please add the id's to the list.
+I would say in essence it tries to:
+1) Detect your audio hardware (usually by scanning a system bus)
+2) Update /etc so the appropriate modules are loaded upon boot.
+   This part depends on distro and kernel version.
 
-lspci output:
-0000:00:11.5 0401: 1106:3059 (rev 50)
-        Subsystem: 1025:0030
+> My setup is pretty limited - ash (from busybox) not bash, uclibc not
+> glibc, no awk, no dialog, buildroot supplied modinfo does not appear to
+> give the output alsaconf is looking for etc...
 
-thanks,
-Daniel
+If your hardware does not vary an alternative is to avoid alsaconf and
+hardcode the entries in /etc/modules.conf (or whatever you use).
+It would be quite substantial to rewrite alsaconf for your setup.
+If you really need such a tool maybe it would be better to write a
+ucalsaconf. Hard to say really, as I have no clue about the actual
+hardware you have.
 
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-06 11:03 djwlindenaar   New Issue                                    
-01-29-06 11:03 djwlindenaar   Distribution              => Debian etch     
-01-29-06 11:03 djwlindenaar   Kernel Version            => 2.6.15          
-======================================================================
-
-
+-- 
+Martin
+---------------------------------------------------------------------------
+30 years from now GNU/Linux will be as redundant a term as MERT/UNIX is 
+today. - Martin Habets
+---------------------------------------------------------------------------
 
 
 -------------------------------------------------------
