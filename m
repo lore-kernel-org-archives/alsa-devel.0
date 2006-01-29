@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001779]: alsaconf creates incorrect configuration file for snd-cs4236
-Date: Sun, 29 Jan 2006 15:15:58 +0100
-Message-ID: <172f3bbedaa9ecaa661a355dd3b2e669@bugtrack.alsa-project.org>
+Date: Sun, 29 Jan 2006 17:56:26 +0100
+Message-ID: <846f795abc95595b3997ec4975b5815a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EC7817C
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 15:15:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E081019C
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 17:56:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-25-2006 05:01 CET
-Last Modified:              01-29-2006 15:15 CET
+Last Modified:              01-29-2006 17:56 CET
 ======================================================================
 Summary:                    alsaconf creates incorrect configuration file for
 snd-cs4236
@@ -95,36 +95,26 @@ related to          0001748 sound driver will not load (CS4237B chip)
 ======================================================================
 
 ----------------------------------------------------------------------
- briand - 01-27-06 23:19 
-----------------------------------------------------------------------
-This bug concerns alsaconf, not the cs4236 driver.  I've (finally) gotten
-the driver loaded, in non-PnP mode, despite what alsaconf attempted.
-
-The cs4236 module is already detected via PnP, and loads...  the problem
-there is, with CONFIG_PNPBIOS enabled in the kernel, which is necessary
-for PnP to work for this card, no other peripherals (my pcmcia network
-card, most importantly) will work. This seems to be a widely reported
-error, and the popular "solution" is to disable CONFIG_PNPBIOS in the
-kernel.
-
-   (Endless Loop -- see Loop, Endless)
-
-The point is, when I am not using PnP, alsaconf does not pick the correct
-values for the sound chip.  It picks values, claims they work, claims that
-it "tested" everything, and yet ... with the values it picks, the driver
-does not even load.  Without the driver loaded, the "test" should fail,
-not pass... and it shouldn't be offering to modify my /etc/modprobe.conf
-with values it really didn't test, that really don't work, and then claim
-everything is "good to go"...
-
-----------------------------------------------------------------------
- perex - 01-29-06 15:15 
+ perex - 01-29-06 15:16 
 ----------------------------------------------------------------------
 Yes, there is a comment in
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1748 that cport works
 with 0xf00 but
 alsaconf selects for some reason 0x538 . It seems like a bug in alsaconf
-script, because 0xf00 cport is there (probed) for cs4236 .
+script, because 0xf00 cport is there (probed) for cs4236 (in non-PnP
+detection).
+
+
+
+----------------------------------------------------------------------
+ briand - 01-29-06 17:56 
+----------------------------------------------------------------------
+Yes, I'm aware of the comment about 0xF00 working -- I'm the one who made
+that comment.
+
+And, yes... it does seem like a bug in the alsaconf script, which is why
+this is here, in the utils-alsaconf section, detailing a bug in the
+alsaconf utility. :)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -134,6 +124,8 @@ Date Modified  Username       Field                    Change
 01-27-06 23:19 briand         Note Added: 0007809                          
 01-29-06 15:13 perex          Relationship added       related to 0001748  
 01-29-06 15:15 perex          Note Added: 0007831                          
+01-29-06 15:16 perex          Note Edited: 0007831                         
+01-29-06 17:56 briand         Note Added: 0007832                          
 ======================================================================
 
 
