@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001622]: ASUS A8V-MX onboard sound does not work
-Date: Sun, 29 Jan 2006 02:14:19 +0100
-Message-ID: <5770c94afca9c195ba07ad08843aa0c6@bugtrack.alsa-project.org>
+From: "Crews Desiree" <jopipqjsl@p06.dasd.honeywell.com>
+Subject: hi
+Date: Sun, 29 Jan 2006 05:47:20 -0800
+Message-ID: <001301c6248f$16da3400$93c71b53@nerkimb826f03m>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_000F_01C62497.789E9C00"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B57018B
-	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 02:14:19 +0100 (MET)
+Received: from nerki-mb826f03m (bbj147.neoplus.adsl.tpnet.pl [83.27.199.147])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 1D2231B1
+	for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2006 05:47:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,507 +22,313 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622> 
-======================================================================
-Reported By:                m_yates
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1622
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12 (also reproduced using 2.6.15-rc2)
-======================================================================
-Date Submitted:             12-05-2005 18:59 CET
-Last Modified:              01-29-2006 02:14 CET
-======================================================================
-Summary:                    ASUS A8V-MX onboard sound does not work
-Description: 
-Onboard sound plays for a second, then freezes on Asus A8V-MX mainboard. 
-Here is sound output from lspci:
-
-matt@duster:~$ lspci | grep Multimedia
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
-
-Here is alsa version (version that came with Ubuntu 5.10):
-
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  alsa-base      1.0.9b-4       ALSA driver configuration files
-
-Here are the sound modules:
-
-root@duster:/home/matt# lsmod | grep snd
-snd_seq_dummy 4484 0
-snd_seq_oss 32128 0
-snd_seq_midi 9920 0
-snd_seq_midi_event 8064 2 snd_seq_oss,snd_seq_midi
-snd_seq 52032 6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_via82xx 29472 1
-gameport 16392 1 snd_via82xx
-snd_ac97_codec 87000 1 snd_via82xx
-snd_pcm_oss 51232 0
-snd_mixer_oss 17664 1 snd_pcm_oss
-snd_pcm 91020 3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer 24200 2 snd_seq,snd_pcm
-snd_page_alloc 11408 2 snd_via82xx,snd_pcm
-snd_mpu401_uart 7936 1 snd_via82xx
-snd_rawmidi 27040 2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device 9488 5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
-snd 55784 13
-snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu40
-1_uart,snd_rawmidi,snd_seq_device
-soundcore 10912 1 snd
-
-Asus lists the audio chip as "Realtek ALC653", alsamixer shows "Realtek
-ALC655 rev 1". 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001557 Sounds play only for a very short time ...
-======================================================================
-
-----------------------------------------------------------------------
- AlexCline - 01-03-06 20:41 
-----------------------------------------------------------------------
-I am also using Ubuntu 5.10 and the Asus A8v-MX, and I get one second of
-distorted sound whenever I play a sound, and then it stops. Here's the
-output of the debug script:
+------=_NextPart_000_000F_01C62497.789E9C00
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0010_01C62497.789E9C00"
 
 
-ALSA Audio Debug v0.1.0 - Tue Jan  3 14:34:43 EST 2006
-http://alsa.opensrc.org/index.php?page=aadebug
-http://www.gnu.org/licenses/gpl.txt
+------=_NextPart_001_0010_01C62497.789E9C00
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-Kernel ----------------------------------------------------
-Linux alex 2.6.12-10-amd64-generic #1 Thu Dec 22 10:56:42 UTC 2005 x86_64
-GNU/Linux
+to type  sing
+so bring  turnoff
+He lose  try
+those ask  dance
+comput=
+er explain  need
+No break  talk
+someone understand  listen
+Of spell  =
+cancel
+false see  worry
+A eat  buy
+My see  clean
+For break  drink
+O=
+f learn  find
+My do  play
+night live  draw
+Not travel  teach
 
-Loaded Modules --------------------------------------------
-snd_seq_dummy           4484  0
-snd_seq_oss            32128  0
-snd_seq_midi            9920  0
-snd_seq_midi_event      8064  2 snd_seq_oss,snd_seq_midi
-snd_seq                52032  6
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_via82xx            29472  28
-snd_ac97_codec         87000  1 snd_via82xx
-snd_pcm_oss            51232  0
-snd_mixer_oss          17664  3 snd_pcm_oss
-snd_pcm                91020  18 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer              24200  2 snd_seq,snd_pcm
-snd_page_alloc         11408  2 snd_via82xx,snd_pcm
-snd_mpu401_uart         7936  1 snd_via82xx
-snd_rawmidi            27040  2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device          9488  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
-snd                    55784  59
-snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+------=_NextPart_001_0010_01C62497.789E9C00
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-Proc Config -----------------------------------------------
-CONFIG_SOUND=m
-CONFIG_SND=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-CONFIG_SND_HWDEP=m
-CONFIG_SND_RAWMIDI=m
-CONFIG_SND_SEQUENCER=m
-CONFIG_SND_SEQ_DUMMY=m
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=m
-CONFIG_SND_PCM_OSS=m
-CONFIG_SND_SEQUENCER_OSS=y
-CONFIG_SND_RTCTIMER=m
-# CONFIG_SND_VERBOSE_PRINTK is not set
-# CONFIG_SND_DEBUG is not set
-CONFIG_SND_MPU401_UART=m
-CONFIG_SND_OPL3_LIB=m
-CONFIG_SND_VX_LIB=m
-CONFIG_SND_DUMMY=m
-CONFIG_SND_VIRMIDI=m
-CONFIG_SND_MTPAV=m
-CONFIG_SND_SERIAL_U16550=m
-CONFIG_SND_MPU401=m
-CONFIG_SND_AC97_CODEC=m
-CONFIG_SND_ALI5451=m
-CONFIG_SND_ATIIXP=m
-CONFIG_SND_ATIIXP_MODEM=m
-CONFIG_SND_AU8810=m
-CONFIG_SND_AU8820=m
-CONFIG_SND_AU8830=m
-CONFIG_SND_AZT3328=m
-CONFIG_SND_BT87X=m
-# CONFIG_SND_BT87X_OVERCLOCK is not set
-CONFIG_SND_CS46XX=m
-CONFIG_SND_CS46XX_NEW_DSP=y
-CONFIG_SND_CS4281=m
-CONFIG_SND_EMU10K1=m
-CONFIG_SND_EMU10K1X=m
-CONFIG_SND_CA0106=m
-CONFIG_SND_KORG1212=m
-CONFIG_SND_MIXART=m
-CONFIG_SND_NM256=m
-CONFIG_SND_RME32=m
-CONFIG_SND_RME96=m
-CONFIG_SND_RME9652=m
-CONFIG_SND_HDSP=m
-CONFIG_SND_HDSPM=m
-CONFIG_SND_TRIDENT=m
-CONFIG_SND_YMFPCI=m
-CONFIG_SND_ALS4000=m
-CONFIG_SND_CMIPCI=m
-CONFIG_SND_ENS1370=m
-CONFIG_SND_ENS1371=m
-CONFIG_SND_ES1938=m
-CONFIG_SND_ES1968=m
-CONFIG_SND_MAESTRO3=m
-CONFIG_SND_FM801=m
-CONFIG_SND_FM801_TEA575X=m
-CONFIG_SND_ICE1712=m
-CONFIG_SND_ICE1724=m
-CONFIG_SND_INTEL8X0=m
-CONFIG_SND_INTEL8X0M=m
-CONFIG_SND_SONICVIBES=m
-CONFIG_SND_VIA82XX=m
-CONFIG_SND_VIA82XX_MODEM=m
-CONFIG_SND_VX222=m
-CONFIG_SND_HDA_INTEL=m
-CONFIG_SND_USB_AUDIO=m
-CONFIG_SND_USB_USX2Y=m
-CONFIG_SOUND_PRIME=m
-CONFIG_SOUND_BT878=m
-CONFIG_SOUND_CMPCI=m
-# CONFIG_SOUND_CMPCI_FM is not set
-# CONFIG_SOUND_CMPCI_MIDI is not set
-CONFIG_SOUND_CMPCI_JOYSTICK=y
-CONFIG_SOUND_EMU10K1=m
-CONFIG_SOUND_FUSION=m
-CONFIG_SOUND_CS4281=m
-CONFIG_SOUND_ES1370=m
-CONFIG_SOUND_ES1371=m
-CONFIG_SOUND_ESSSOLO1=m
-CONFIG_SOUND_MAESTRO=m
-CONFIG_SOUND_MAESTRO3=m
-CONFIG_SOUND_ICH=m
-CONFIG_SOUND_SONICVIBES=m
-CONFIG_SOUND_TRIDENT=m
-# CONFIG_SOUND_MSNDCLAS is not set
-# CONFIG_SOUND_MSNDPIN is not set
-CONFIG_SOUND_VIA82CXXX=m
-CONFIG_SOUND_OSS=m
-# CONFIG_SOUND_TRACEINIT is not set
-# CONFIG_SOUND_DMAP is not set
-# CONFIG_SOUND_AD1816 is not set
-CONFIG_SOUND_AD1889=m
-CONFIG_SOUND_SGALAXY=m
-CONFIG_SOUND_ADLIB=m
-CONFIG_SOUND_ACI_MIXER=m
-CONFIG_SOUND_CS4232=m
-CONFIG_SOUND_SSCAPE=m
-CONFIG_SOUND_GUS=m
-CONFIG_SOUND_GUS16=y
-CONFIG_SOUND_GUSMAX=y
-CONFIG_SOUND_VMIDI=m
-CONFIG_SOUND_TRIX=m
-CONFIG_SOUND_MSS=m
-CONFIG_SOUND_MPU401=m
-CONFIG_SOUND_NM256=m
-CONFIG_SOUND_MAD16=m
-CONFIG_SOUND_PAS=m
-CONFIG_SOUND_PSS=m
-CONFIG_SOUND_SB=m
-# CONFIG_SOUND_AWE32_SYNTH is not set
-CONFIG_SOUND_WAVEFRONT=m
-CONFIG_SOUND_MAUI=m
-CONFIG_SOUND_YM3812=m
-CONFIG_SOUND_OPL3SA1=m
-CONFIG_SOUND_OPL3SA2=m
-CONFIG_SOUND_YMFPCI=m
-# CONFIG_SOUND_YMFPCI_LEGACY is not set
-CONFIG_SOUND_UART6850=m
-CONFIG_SOUND_AEDSP16=m
-CONFIG_SOUND_TVMIXER=m
-CONFIG_SOUND_KAHLUA=m
-CONFIG_SOUND_ALI5455=m
-CONFIG_SOUND_FORTE=m
-CONFIG_SOUND_RME96XX=m
-CONFIG_SOUND_AD1980=m
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><H=
+EAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3DWi=
+ndows-1252">
+<META content=3D"MSHTML 6.00.2900.2769" name=3DGENERATOR>
+=
 
-Modprobe Conf ---------------------------------------------
-alias char-major-116    snd
-alias char-major-116 snd
-alias char-major-14 soundcore
-alias sound-slot-0 snd-card-0
-alias sound-slot-1 snd-card-1
-alias sound-slot-2 snd-card-2
-alias sound-slot-3 snd-card-3
-alias sound-slot-4 snd-card-4
-alias sound-slot-5 snd-card-5
-alias sound-slot-6 snd-card-6
-alias sound-slot-7 snd-card-7
-above sound-slot-0 snd-pcm-oss snd-mixer-oss snd-seq-oss
-above sound-slot-1 snd-pcm-oss snd-mixer-oss snd-seq-oss
-above sound-slot-2 snd-pcm-oss snd-mixer-oss snd-seq-oss
-above sound-slot-3 snd-pcm-oss snd-mixer-oss snd-seq-oss
-above sound-slot-4 snd-pcm-oss snd-mixer-oss snd-seq-oss
-above sound-slot-5 snd-pcm-oss snd-mixer-oss snd-seq-oss
-above sound-slot-6 snd-pcm-oss snd-mixer-oss snd-seq-oss
-above sound-slot-7 snd-pcm-oss snd-mixer-oss snd-seq-oss
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-above snd-pcm snd-pcm-oss
-above snd-mixer snd-mixer-oss
-above snd-seq snd-seq-oss snd-seq-midi
-above snd-emu10k1 snd-emu10k1-synth
-above snd-via82xx snd-seq
-# Cause a script to be run after snd-*-synth module initialization
-post-install snd-emu8000-synth /lib/alsa/modprobe-post-install
-snd-emu8000-synthpost-install snd-emu10k1-synth
-/lib/alsa/modprobe-post-install snd-emu10k1-synthpost-install snd-ad1816a
-/lib/alsa/modprobe-post-install snd-ad1816a
-post-install snd-ad1848 /lib/alsa/modprobe-post-install snd-ad1848
-post-install snd-ali5451 /lib/alsa/modprobe-post-install snd-ali5451
-post-install snd-als100 /lib/alsa/modprobe-post-install snd-als100
-post-install snd-als4000 /lib/alsa/modprobe-post-install snd-als4000
-post-install snd-armaaci /lib/alsa/modprobe-post-install snd-armaaci
-post-install snd-asihpi /lib/alsa/modprobe-post-install snd-asihpi
-post-install snd-atiixp /lib/alsa/modprobe-post-install snd-atiixp
-post-install snd-au1x00 /lib/alsa/modprobe-post-install snd-au1x00
-post-install snd-au8810 /lib/alsa/modprobe-post-install snd-au8810
-post-install snd-au8820 /lib/alsa/modprobe-post-install snd-au8820
-post-install snd-au8830 /lib/alsa/modprobe-post-install snd-au8830
-post-install snd-azt2320 /lib/alsa/modprobe-post-install snd-azt2320
-post-install snd-azt3328 /lib/alsa/modprobe-post-install snd-azt3328
-post-install snd-ca0106 /lib/alsa/modprobe-post-install snd-ca0106
-post-install snd-cmi8330 /lib/alsa/modprobe-post-install snd-cmi8330
-post-install snd-cmipci /lib/alsa/modprobe-post-install snd-cmipci
-post-install snd-cs4231 /lib/alsa/modprobe-post-install snd-cs4231
-post-install snd-cs4232 /lib/alsa/modprobe-post-install snd-cs4232
-post-install snd-cs4236 /lib/alsa/modprobe-post-install snd-cs4236
-post-install snd-cs4281 /lib/alsa/modprobe-post-install snd-cs4281
-post-install snd-cs46xx /lib/alsa/modprobe-post-install snd-cs46xx
-post-install snd-darla20 /lib/alsa/modprobe-post-install snd-darla20
-post-install snd-darla24 /lib/alsa/modprobe-post-install snd-darla24
-post-install snd-dt019x /lib/alsa/modprobe-post-install snd-dt019x
-post-install snd-echo3g /lib/alsa/modprobe-post-install snd-echo3g
-post-install snd-emu10k1x /lib/alsa/modprobe-post-install snd-emu10k1x
-post-install snd-ens1370 /lib/alsa/modprobe-post-install snd-ens1370
-post-install snd-ens1371 /lib/alsa/modprobe-post-install snd-ens1371
-post-install snd-es1688 /lib/alsa/modprobe-post-install snd-es1688
-post-install snd-es18xx /lib/alsa/modprobe-post-install snd-es18xx
-post-install snd-es1938 /lib/alsa/modprobe-post-install snd-es1938
-post-install snd-es1968 /lib/alsa/modprobe-post-install snd-es1968
-post-install snd-es968 /lib/alsa/modprobe-post-install snd-es968
-post-install snd-fm801 /lib/alsa/modprobe-post-install snd-fm801
-post-install snd-fm801-tea575x /lib/alsa/modprobe-post-install
-snd-fm801-tea575xpost-install snd-gina20 /lib/alsa/modprobe-post-install
-snd-gina20
-post-install snd-gina24 /lib/alsa/modprobe-post-install snd-gina24
-post-install snd-gusclassic /lib/alsa/modprobe-post-install
-snd-gusclassic
-post-install snd-gusextreme /lib/alsa/modprobe-post-install
-snd-gusextreme
-post-install snd-gusmax /lib/alsa/modprobe-post-install snd-gusmax
-post-install snd-harmony /lib/alsa/modprobe-post-install snd-harmony
-post-install snd-hda-intel /lib/alsa/modprobe-post-install snd-hda-intel
-post-install snd-hdsp /lib/alsa/modprobe-post-install snd-hdsp
-post-install snd-hdspm /lib/alsa/modprobe-post-install snd-hdspm
-post-install snd-ice1712 /lib/alsa/modprobe-post-install snd-ice1712
-post-install snd-ice1724 /lib/alsa/modprobe-post-install snd-ice1724
-post-install snd-indigo /lib/alsa/modprobe-post-install snd-indigo
-post-install snd-indigodj /lib/alsa/modprobe-post-install snd-indigodj
-post-install snd-indigoio /lib/alsa/modprobe-post-install snd-indigoio
-post-install snd-intel8x0 /lib/alsa/modprobe-post-install snd-intel8x0
-post-install snd-interwave /lib/alsa/modprobe-post-install snd-interwave
-post-install snd-interwave-stb /lib/alsa/modprobe-post-install
-snd-interwave-stbpost-install snd-korg1212 /lib/alsa/modprobe-post-install
-snd-korg1212
-post-install snd-layla20 /lib/alsa/modprobe-post-install snd-layla20
-post-install snd-layla24 /lib/alsa/modprobe-post-install snd-layla24
-post-install snd-maestro3 /lib/alsa/modprobe-post-install snd-maestro3
-post-install snd-mia /lib/alsa/modprobe-post-install snd-mia
-post-install snd-miro /lib/alsa/modprobe-post-install snd-miro
-post-install snd-mixart /lib/alsa/modprobe-post-install snd-mixart
-post-install snd-mona /lib/alsa/modprobe-post-install snd-mona
-post-install snd-mpu401 /lib/alsa/modprobe-post-install snd-mpu401
-post-install snd-msnd-pinnacle /lib/alsa/modprobe-post-install
-snd-msnd-pinnaclepost-install snd-mtpav /lib/alsa/modprobe-post-install
-snd-mtpav
-post-install snd-nm256 /lib/alsa/modprobe-post-install snd-nm256
-post-install snd-opl3sa2 /lib/alsa/modprobe-post-install snd-opl3sa2
-post-install snd-opti92x-ad1848 /lib/alsa/modprobe-post-install
-snd-opti92x-ad1848
-post-install snd-opti92x-cs4231 /lib/alsa/modprobe-post-install
-snd-opti92x-cs4231
-post-install snd-opti93x /lib/alsa/modprobe-post-install snd-opti93x
-post-install snd-pc98-cs4232 /lib/alsa/modprobe-post-install
-snd-pc98-cs4232
-post-install snd-pcsp /lib/alsa/modprobe-post-install snd-pcsp
-post-install snd-pcxhr /lib/alsa/modprobe-post-install snd-pcxhr
-post-install snd-pdaudiocf /lib/alsa/modprobe-post-install snd-pdaudiocf
-post-install snd-pdplus /lib/alsa/modprobe-post-install snd-pdplus
-post-install snd-portman2x4 /lib/alsa/modprobe-post-install
-snd-portman2x4
-post-install snd-powermac /lib/alsa/modprobe-post-install snd-powermac
-post-install snd-pxa2xx-ac97 /lib/alsa/modprobe-post-install
-snd-pxa2xx-ac97
-post-install snd-rme32 /lib/alsa/modprobe-post-install snd-rme32
-post-install snd-rme96 /lib/alsa/modprobe-post-install snd-rme96
-post-install snd-rme9652 /lib/alsa/modprobe-post-install snd-rme9652
-post-install snd-s3c2410 /lib/alsa/modprobe-post-install snd-s3c2410
-post-install snd-sa11xx-uda1341 /lib/alsa/modprobe-post-install
-snd-sa11xx-uda1341
-post-install snd-sb16 /lib/alsa/modprobe-post-install snd-sb16
-post-install snd-sb8 /lib/alsa/modprobe-post-install snd-sb8
-post-install snd-sbawe /lib/alsa/modprobe-post-install snd-sbawe
-post-install snd-serialmidi /lib/alsa/modprobe-post-install
-snd-serialmidi
-post-install snd-serial-u16550 /lib/alsa/modprobe-post-install
-snd-serial-u16550post-install snd-sgalaxy /lib/alsa/modprobe-post-install
-snd-sgalaxy
-post-install snd-sonicvibes /lib/alsa/modprobe-post-install
-snd-sonicvibes
-post-install snd-sscape /lib/alsa/modprobe-post-install snd-sscape
-post-install snd-sun-amd7930 /lib/alsa/modprobe-post-install
-snd-sun-amd7930
-post-install snd-sun-cs4231 /lib/alsa/modprobe-post-install
-snd-sun-cs4231
-post-install snd-sun-dbri /lib/alsa/modprobe-post-install snd-sun-dbri
-post-install snd-trident /lib/alsa/modprobe-post-install snd-trident
-post-install snd-usb-audio /lib/alsa/modprobe-post-install snd-usb-audio
-post-install snd-usb-usx2y /lib/alsa/modprobe-post-install snd-usb-usx2y
-post-install snd-vx222 /lib/alsa/modprobe-post-install snd-vx222
-post-install snd-vxp440 /lib/alsa/modprobe-post-install snd-vxp440
-post-install snd-vxpocket /lib/alsa/modprobe-post-install snd-vxpocket
-post-install snd-wavefront /lib/alsa/modprobe-post-install snd-wavefront
-post-install snd-ymfpci /lib/alsa/modprobe-post-install snd-ymfpci
-options snd-bt87x index=-2
-options snd-atiixp-modem index=-2
-options snd-intel8x0m index=-2
-options snd-via82xx-modem index=-2
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV></DIV>
+<DIV><=
+IMG alt=3D"" hspace=3D0 =3D
+src=3D"cid:000e01c6248f$16da3400$93c71b53@n=
+erkimb826f03m"
+align=3Dbaseline border=3D0></DIV>
+<DIV><FONT size=3D1>=
+no
+watch
+cancel</FONT></DIV>
+<DIV><FONT size=3D1>For
+cancel
+clean</=
+FONT></DIV>
+<DIV><FONT size=3D1>he
+fit
+accept</FONT></DIV>
+<DIV><FON=
+T size=3D1>And
+wakeup
+see</FONT></DIV>
+<DIV><FONT size=3D1>english
+s=
+ay
+close</FONT></DIV>
+<DIV><FONT size=3D1>At
+put
+organise</FONT></DI=
+V>
+<DIV><FONT size=3D1>evening
+explain
+drive</FONT></DIV>
+<DIV><FONT=
+ size=3D1>The
+make
+sit</FONT></DIV>
+<DIV><FONT size=3D1>use
+finish
+=
+cancel</FONT></DIV>
+<DIV><FONT size=3D1>computer
+travel
+run</FONT></D=
+IV>
+<DIV><FONT size=3D1>super
+wait
+fall</FONT></DIV>
+</BODY></HTML>
 
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.9 (Sun May 29
-07:31:02 2005 UTC).
-0 [rev70          ]: VIA8237 - VIA 823x rev70
-                     VIA 823x rev70 with ALC655 at 0xd400, irq 22
- 17: [0- 1]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
-  1:       : sequencer
- 33:       : timer
-cat: /proc/asound/hwdep: No such file or directory
-00-00: VIA 823x rev70 : VIA 823x rev70 : playback 4 : capture 1
-00-01: VIA 823x rev70 : VIA 823x rev70 : playback 1 : capture 1
-Client info
-  cur  clients : 3
-  peak clients : 3
-  max  clients : 192
+------=_NextPart_001_0010_01C62497.789E9C00--
 
-Client   0 : "System" [Kernel]
-  Port   0 : "Timer" (Rwe-)
-  Port   1 : "Announce" (R-e-)
-    Connecting To: 63:0
-Client  62 : "Midi Through" [Kernel]
-  Port   0 : "Midi Through Port-0" (RWe-)
-Client  63 : "OSS sequencer" [Kernel]
-  Port   0 : "Receiver" (-we-)
-    Connected From: 0:1
+------=_NextPart_000_000F_01C62497.789E9C00
+Content-Type: image/gif;
+	name="aleimetdhb.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000e01c6248f$16da3400$93c71b53@nerkimb826f03m>
 
-Dev Snd ---------------------------------------------------
-controlC0  pcmC0D0c  pcmC0D0p  pcmC0D1c  pcmC0D1p  seq  timer
-
-CPU -------------------------------------------------------
-model name      : AMD Athlon(tm) 64 Processor 3200+
-cpu MHz         : 2000.157
-
-RAM -------------------------------------------------------
-MemTotal:      1021876 kB
-SwapTotal:     2996080 kB
-
-Hardware --------------------------------------------------
-0000:00:00.0 Host bridge: VIA Technologies, Inc.: Unknown device 0204
-0000:00:00.1 Host bridge: VIA Technologies, Inc.: Unknown device 1204
-0000:00:00.2 Host bridge: VIA Technologies, Inc.: Unknown device 2204
-0000:00:00.3 Host bridge: VIA Technologies, Inc.: Unknown device 3204
-0000:00:00.4 Host bridge: VIA Technologies, Inc.: Unknown device 4204
-0000:00:00.7 Host bridge: VIA Technologies, Inc.: Unknown device 7204
-0000:00:0b.0 Multimedia video controller: Internext Compression Inc iTVC16
-(CX23416) MPEG-2 Encoder (rev 01)
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
-0000:00:11.7 Host bridge: VIA Technologies, Inc.: Unknown device 287e
-0000:00:18.0 Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge
-0000:00:18.1 Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge
-0000:00:18.2 Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge
-0000:00:18.3 Host bridge: Advanced Micro Devices [AMD] K8 NorthBridge
-
-----------------------------------------------------------------------
- adaviel - 01-29-06 02:14 
-----------------------------------------------------------------------
-Me, too. ASUS A8V-MX board, AMD64 CPU, FC3-i386 system
-tried FC4 base kernel 2.6.11-1.1369_FC4 (hda DMA fails)
-FC updated 2.6.15-1.1871_FC5
-kernel.org 2.6.16-rc1
-
-lspci shows VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
-  Class 0401: 1106:3059 (rev 70)
-Sound is OK for about a second then stops.
-With dxs_support=5 sound is OK for about 4 seconds playing 11025/sec file
-
-Tried pci=noacpi, index=0,  id="VIA - no difference
-Tried looking for drivers at asus.com and viarena.com. ASUS has
-current ALSA driver (lists VT8233 up to rev 60, I have rev 70).
-VIA has mostly old stuff (2.4 kernel, RehHat8/9) which I could not build
-even though it says "FC4". Hard to find things on their site; their
-driver directory is not browsable and some links are broken.
-
-Have submitted this issue to ASUS
-http://vip.asus.com/eservice/techmailstatus.aspx?ID=WTM2006012863983987
-Looks like a boilerplate reply - talks about Windows though
-I checked "Linux".Some suggestions re. rearranging IRQ.
-
-Bootup syslog includes
-pcie_portdrv_probe->Dev[287c:1106] has invalid IRQ. Check vendor BIOS
-Hmm.. think that may be  VT8251 PCI bridge (match with "lspci -n")
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-05-05 18:59 m_yates        New Issue                                    
-12-05-05 18:59 m_yates        Distribution              => Ubuntu 5.10     
-12-05-05 18:59 m_yates        Kernel Version            => 2.6.12 (also
-reproduced using 2.6.15-rc2)
-12-06-05 15:53 tiwai          Note Added: 0006926                          
-12-06-05 18:21 m_yates        Note Added: 0006931                          
-12-06-05 20:16 m_yates        Note Added: 0006937                          
-12-07-05 01:09 Dakkus         Issue Monitored: Dakkus                      
-12-07-05 11:24 perex          Relationship added       has duplicate 0001557
-12-07-05 16:16 thijser        Issue Monitored: thijser                     
-01-02-06 23:53 AlexCline      Issue Monitored: AlexCline                    
-01-03-06 20:41 AlexCline      Note Added: 0007406                          
-01-29-06 02:14 adaviel        Note Added: 0007830                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+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
+NFYN5/NAF/RBJ/RC55gVMPREV5mAAAA7
+------=_NextPart_000_000F_01C62497.789E9C00--
