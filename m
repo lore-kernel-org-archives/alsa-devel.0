@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
-Date: Mon, 30 Jan 2006 13:40:51 +0100
-Message-ID: <0952a3396be9c4d58d71e468a6ebb73e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001796]: No capture on ALI Chip
+Date: Mon, 30 Jan 2006 14:24:22 +0100
+Message-ID: <4336ff145e1d456c432946113b12eaef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8418C1C8
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 13:40:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F04EE1C8
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 14:24:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,39 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1796> 
 ======================================================================
-Reported By:                kratz00
+Reported By:                Henne
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1714
-Category:                   1_OTHERS
+Issue ID:                   1796
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               LFS
-Kernel Version:             2.6.15
+Distribution:               Suse 10.0 x86_64
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-04-2006 18:04 CET
-Last Modified:              01-30-2006 13:40 CET
+Date Submitted:             01-30-2006 14:24 CET
+Last Modified:              01-30-2006 14:24 CET
 ======================================================================
-Summary:                    Intel HDA (AD1986A) no sound
+Summary:                    No capture on ALI Chip
 Description: 
-It's a Samsung M50 Notebook.
-I also tried Alsa 1.0.10 but the problem is the same.
-There are no specific module options for the AD1986A chip, right?
-
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-loaded modules:
-snd_pcm_oss            47136  0 
-snd_mixer_oss          16512  1 snd_pcm_oss
-snd_hda_intel          14224  0 
-snd_hda_codec         122624  1 snd_hda_intel
-snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              19844  1 snd_pcm
-snd                    46144  6
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
-
+I connected my guitar at line-in and captured with arecord, but get an
+empty file (just the wav-header with no data).
+Amplification works fine, so I can hear myself playing, digital playback
+works and the mixer works,too.
 ======================================================================
-
-----------------------------------------------------------------------
- kratz00 - 01-30-06 13:40 
-----------------------------------------------------------------------
-tried alsa-driver-1.0.11rc3 and still no luck :/
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 18:04 kratz00        New Issue                                    
-01-04-06 18:04 kratz00        Distribution              => LFS             
-01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
-01-30-06 13:40 kratz00        Note Added: 0007837                          
+01-30-06 14:24 Henne          New Issue                                    
+01-30-06 14:24 Henne          Distribution              => Suse 10.0 x86_64
 ======================================================================
 
 
