@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001757]: compilation breaks on hwdep.c
-Date: Mon, 30 Jan 2006 09:17:51 +0100
-Message-ID: <b5562d491eec2e148d7ea3bf8953da06@bugtrack.alsa-project.org>
+Date: Mon, 30 Jan 2006 09:20:19 +0100
+Message-ID: <a8937b86b1c2685a5650c2f0d48c4e52@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDB011B2
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 09:17:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 213EC1B2
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 09:20:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1757> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Suse 10.0 x86_64
 Kernel Version:             2.6.15-git8
+Resolution:                 fixed
+Fixed in Version:           1.0.11rc3
 ======================================================================
 Date Submitted:             01-16-2006 23:27 CET
-Last Modified:              01-30-2006 09:17 CET
+Last Modified:              01-30-2006 09:20 CET
 ======================================================================
 Summary:                    compilation breaks on hwdep.c
 Description: 
@@ -82,6 +84,9 @@ Date Modified  Username       Field                    Change
 01-16-06 23:27 Henne          Distribution              => Suse 10.0 x86_64
 01-16-06 23:27 Henne          Kernel Version            => 2.6.15-git8     
 01-30-06 09:17 Henne          Note Added: 0007835                          
+01-30-06 09:20 perex          Status                   assigned => resolved
+01-30-06 09:20 perex          Fixed in Version          => 1.0.11rc3       
+01-30-06 09:20 perex          Resolution               open => fixed       
 ======================================================================
 
 
