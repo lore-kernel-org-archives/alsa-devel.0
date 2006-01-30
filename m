@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001795]: compilation breaks on usbaudio.c
-Date: Mon, 30 Jan 2006 09:30:57 +0100
-Message-ID: <8c334679f60f2f898802949fe3ce9293@bugtrack.alsa-project.org>
+Date: Mon, 30 Jan 2006 13:24:38 +0100
+Message-ID: <68f174c532aa78d26696a2a3df14c9a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 999B81B2
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 09:30:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AAA721C8
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 13:24:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1795> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Suse 10.0 x86_64
 Kernel Version:             2.6.15-git8
 ======================================================================
 Date Submitted:             01-30-2006 09:30 CET
-Last Modified:              01-30-2006 09:30 CET
+Last Modified:              01-30-2006 13:24 CET
 ======================================================================
 Summary:                    compilation breaks on usbaudio.c
 Description: 
@@ -51,12 +51,18 @@ initialization from incompatible pointer type
 
 ======================================================================
 
+----------------------------------------------------------------------
+ Henne - 01-30-06 13:24 
+----------------------------------------------------------------------
+I forgot to mention, that CONFIG_SND_USB_AUDIO is not enabled in my kernel.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-30-06 09:30 Henne          New Issue                                    
 01-30-06 09:30 Henne          Distribution              => Suse 10.0 x86_64
 01-30-06 09:30 Henne          Kernel Version            => 2.6.15-git8     
+01-30-06 13:24 Henne          Note Added: 0007836                          
 ======================================================================
 
 
