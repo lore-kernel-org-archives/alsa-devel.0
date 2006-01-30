@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
-Date: Mon, 30 Jan 2006 23:53:09 +0100
-Message-ID: <e2aebfd4f6166c897fa490d6a1efdd1d@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: How do I get a pcm device?
+Date: Mon, 30 Jan 2006 23:43:39 +0000
+Message-ID: <1138664619.10183.7.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7702F195
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 23:53:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +15,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+My device module can be successfully loaded and itself loads the
+firmware it needs, but there is no device I can see in /dev. How do I
+create one?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
-======================================================================
-Reported By:                ikari_01
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1797
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.14.3
-======================================================================
-Date Submitted:             01-30-2006 23:46 CET
-Last Modified:              01-30-2006 23:53 CET
-======================================================================
-Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
-muting, intermittent muting of single channel)
-Description: 
-1. Setting (or muting/unmuting) of any of the Master, Center, LFE, or Side
-mixers eventually results in irrecoverably completely muted sound.
-Sometimes, at first only one channel is muted.
-Sometimes, at first the volume decreases before muting occurs.
+modprobe snd-pcm creates the /dev/snd directory but only puts a timer in
+it.
 
-This does not occur when touching the "Front" mixer.
-The only way to recover sound is to unload and reload at least the
-snd_ice1724 module.
-
-2. When muting and unmuting "PCM" repeatedly, sound is not always muted or
-unmuted accordingly, but only about 50% of the time. (meaning you have to
-toggle a couple of times to get the desired setting)
-
-3. When muting or unmuting Master, sometimes only one of the channels is
-muted or unmuted.
-
-note: None of the problems occurred when testing on a 32-bit distribution
-(Knoppix 4.0 / 2.6.12 / ALSA 1.0.9; different version, but I had the same
-problem with 1.0.9 on x86_64 anyway.)
-======================================================================
-
-----------------------------------------------------------------------
- ikari_01 - 01-30-06 23:51 
-----------------------------------------------------------------------
-the mixer tends to break on initial setting (alsactl restore), so often
-there is no sound at all after system startup
-
-----------------------------------------------------------------------
- ikari_01 - 01-30-06 23:53 
-----------------------------------------------------------------------
-Gah, think first, write later:
-I also tried #defining REALLY_SLOW_IO before #include <asm/io.h> in all
-relevant places, to no avail.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-30-06 23:46 ikari_01       New Issue                                    
-01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
-01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
-01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
-01-30-06 23:51 ikari_01       Note Added: 0007842                          
-01-30-06 23:53 ikari_01       Note Added: 0007843                          
-======================================================================
 
 
 
