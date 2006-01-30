@@ -1,11 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: pm, hello ??
-Date: Mon, 30 Jan 2006 22:55:11 +0100
-Message-ID: <20060130225511.5958e72c.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
+Date: Mon, 30 Jan 2006 23:46:53 +0100
+Message-ID: <bd91a30dd969636a3b27b741f677a077@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 449F21D1
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 23:46:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,19 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-I'm trying to add suspend/resume capability to the echoaudio driver. I wrote
-susp/res functions, I attached them to struct pci_driver, I added
-SNDRV_PCM_INFO_RESUME in struct snd_pcm_hardware.info, I added the two
-cases in the trigger callback and the kernel has CONFIG_PM enabled. None of
-the new code is called when I write in
-/sys/devices/pci0001:10/0001:10:15.0/power/state . What am I missing ?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
+======================================================================
+Reported By:                ikari_01
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1797
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.14.3
+======================================================================
+Date Submitted:             01-30-2006 23:46 CET
+Last Modified:              01-30-2006 23:46 CET
+======================================================================
+Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
+muting, intermittent muting of single channel)
+Description: 
+1. Setting (or muting/unmuting) of any of the Master, Center, LFE, or Side
+mixers eventually results in irrecoverably completely muted sound.
+Sometimes, at first only one channel is muted.
+Sometimes, at first the volume decreases before muting occurs.
 
---
-Giuliano.
+This does not occur when touching the "Front" mixer.
+The only way to recover sound is to unload and reload at least the
+snd_ice1724 module.
+
+2. When muting and unmuting "PCM" repeatedly, sound is not always muted or
+unmuted accordingly, but only about 50% of the time. (meaning you have to
+toggle a couple of times to get the desired setting)
+
+3. When muting or unmuting Master, sometimes only one of the channels is
+muted or unmuted.
+
+note: None of the problems occurred when testing on a 32-bit distribution
+(Knoppix 4.0 / 2.6.12 / ALSA 1.0.9; different version, but I had the same
+problem with 1.0.9 on x86_64 anyway.)
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-30-06 23:46 ikari_01       New Issue                                    
+01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
+01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
+======================================================================
+
+
 
 
 -------------------------------------------------------
