@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
-Date: Mon, 30 Jan 2006 23:51:22 +0100
-Message-ID: <c0398f1248f5e8bdabc4b8980a386b1a@bugtrack.alsa-project.org>
+Date: Mon, 30 Jan 2006 23:53:09 +0100
+Message-ID: <e2aebfd4f6166c897fa490d6a1efdd1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C7011D1
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 23:51:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7702F195
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 23:53:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.6.14.3
 ======================================================================
 Date Submitted:             01-30-2006 23:46 CET
-Last Modified:              01-30-2006 23:51 CET
+Last Modified:              01-30-2006 23:53 CET
 ======================================================================
 Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
 muting, intermittent muting of single channel)
@@ -72,6 +72,13 @@ problem with 1.0.9 on x86_64 anyway.)
 the mixer tends to break on initial setting (alsactl restore), so often
 there is no sound at all after system startup
 
+----------------------------------------------------------------------
+ ikari_01 - 01-30-06 23:53 
+----------------------------------------------------------------------
+Gah, think first, write later:
+I also tried #defining REALLY_SLOW_IO before #include <asm/io.h> in all
+relevant places, to no avail.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -80,6 +87,7 @@ Date Modified  Username       Field                    Change
 01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
 01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
 01-30-06 23:51 ikari_01       Note Added: 0007842                          
+01-30-06 23:53 ikari_01       Note Added: 0007843                          
 ======================================================================
 
 
