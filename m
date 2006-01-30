@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
-Date: Mon, 30 Jan 2006 23:46:53 +0100
-Message-ID: <bd91a30dd969636a3b27b741f677a077@bugtrack.alsa-project.org>
+Date: Mon, 30 Jan 2006 23:51:22 +0100
+Message-ID: <c0398f1248f5e8bdabc4b8980a386b1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 449F21D1
-	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 23:46:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C7011D1
+	for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2006 23:51:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.6.14.3
 ======================================================================
 Date Submitted:             01-30-2006 23:46 CET
-Last Modified:              01-30-2006 23:46 CET
+Last Modified:              01-30-2006 23:51 CET
 ======================================================================
 Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
 muting, intermittent muting of single channel)
@@ -66,12 +66,20 @@ note: None of the problems occurred when testing on a 32-bit distribution
 problem with 1.0.9 on x86_64 anyway.)
 ======================================================================
 
+----------------------------------------------------------------------
+ ikari_01 - 01-30-06 23:51 
+----------------------------------------------------------------------
+the mixer tends to break on initial setting (alsactl restore), so often
+there is no sound at all after system startup
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-30-06 23:46 ikari_01       New Issue                                    
 01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
 01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
+01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
+01-30-06 23:51 ikari_01       Note Added: 0007842                          
 ======================================================================
 
 
