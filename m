@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Tue, 31 Jan 2006 13:48:19 +0100
-Message-ID: <8a8731e3957578ec78a0b3cc640d51a7@bugtrack.alsa-project.org>
+Date: Tue, 31 Jan 2006 13:49:10 +0100
+Message-ID: <4ad312e921ed86ed56075371490b337d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E17911CC
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 13:48:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B88D51E0
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 13:49:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been set as RELATED TO issue 0001766.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
 ======================================================================
@@ -53,6 +53,10 @@ Playback open error: Invalid argument
 
 sound card is au8830, the au88x0 driver only accept period size in power
 of 2.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001766 jackd : ALSA: cannot set period size to...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -519,6 +523,7 @@ function => au88x0 PCM configuration problem - buffer_size constraint
 01-31-06 11:06 Raymond        Note Added: 0007848                          
 01-31-06 13:48 perex          Status                   new => assigned     
 01-31-06 13:48 perex          Assigned To               => mjander         
+01-31-06 13:49 perex          Relationship added       related to 0001766  
 ======================================================================
 
 
