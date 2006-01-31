@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001799]: alsamixer is not responding
-Date: Tue, 31 Jan 2006 12:17:38 +0100
-Message-ID: <f891f9530bb9f6a8a109215244038d91@bugtrack.alsa-project.org>
+Date: Tue, 31 Jan 2006 12:39:18 +0100
+Message-ID: <9ce3b24a628e22a5b683983175938203@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00A041AE
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 12:17:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 08513177
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 12:39:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1799> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-31-2006 12:17 CET
-Last Modified:              01-31-2006 12:17 CET
+Last Modified:              01-31-2006 12:39 CET
 ======================================================================
 Summary:                    alsamixer is not responding
 Description: 
@@ -177,10 +177,40 @@ ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
 Volume',0,0,0) appears twice or more
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 01-31-06 12:39 
+----------------------------------------------------------------------
+Something is wrong. Probably you changed source incorectly (looks like
+remove array is removed).
+Try to use alsa 1.0.11rc3 where bug was fixed.
+It should look like this:
+
+int err, pcm;
+struct snd_kcontrol *kctl;
+struct snd_card *card = emu->card;
+char **c;
+static char *emu10k1_remove_ctls[] = {
+	/* no AC97 mono, surround, center/lfe */
+	"Master Mono Playback Switch",
+	"Master Mono Playback Volume",
+	"PCM Out Path & Mute",
+	"Mono Output Select",
+	"Front Playback Switch",
+	"Front Playback Volume",
+	"Surround Playback Switch",
+	"Surround Playback Volume",
+	"Center Playback Switch",
+	"Center Playback Volume",
+	"LFE Playback Switch",
+	"LFE Playback Volume",
+	NULL
+};
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-31-06 12:17 tollimees      New Issue                                    
+01-31-06 12:39 pzad           Note Added: 0007849                          
 ======================================================================
 
 
