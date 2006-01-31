@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
-Date: Tue, 31 Jan 2006 21:43:04 +0100
-Message-ID: <55475066eae44080d3c04c595071f298@bugtrack.alsa-project.org>
+From: "Ukko Campion" <ukkoa@heraldt.com>
+Subject: chap tantivy
+Date: Tue, 31 Jan 2006 16:32:13 -0500
+Message-ID: <000001c626ad$cc9fa4d0$ef96a8c0@illative>
+Reply-To: "Ukko Campion" <ukkoa@heraldt.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C62683.E3C99CD0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2CF41E6
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 21:43:04 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1097D1AE
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 22:32:26 +0100 (MET)
+Received: from ago.net (222-152-172-78.jetstream.xtra.co.nz [222.152.172.78])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id E521691F06
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 22:32:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +22,116 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Ru Colombo <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
-======================================================================
-Reported By:                kees
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1678
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.15-rc6-git4
-======================================================================
-Date Submitted:             12-25-2005 02:29 CET
-Last Modified:              01-31-2006 21:43 CET
-======================================================================
-Summary:                    nForce (10de:026c) left channel squeals, right
-channel mostly okay
-Description: 
-This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
-is this is an "nForce410" board, with "6-channel HD audio".
+------=_NextPart_000_0001_01C62683.E3C99CD0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
-snd-hda-intel load fine, but during playback, the left channel squeals,
-while the right seems to play things okay.
+=20
+C=20
+V=20
+V=20
 
-I'm happy to dig around and try whatever needs trying to get this fixed. 
-Thanks!
-======================================================================
+l=20
+A=20
+l=20
 
-----------------------------------------------------------------------
- moreloci - 01-12-06 09:57 
-----------------------------------------------------------------------
-I experienced the static sounds too and experimented with the settings in
-KDE. If I selected OSS as the soundsystem (emulated by ALSA) the static
-was gone.
+A=20
+L=20
+A=20
 
-----------------------------------------------------------------------
- Xbalanque - 01-31-06 21:43 
-----------------------------------------------------------------------
-Same problem described by kees with alsa 1.0.11rc3. Just to let you all
-know.
+L=20
+l=20
+G=20
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-25-05 02:29 kees           New Issue                                    
-12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
-12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
-12-26-05 11:02 kees           Note Added: 0007149                          
-12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
-12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:50 morgoth666     Note Added: 0007300                          
-12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
-12-31-05 10:16 kees           Note Added: 0007355                          
-12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
-12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
-01-04-06 17:40 tiwai          Note Added: 0007446                          
-01-04-06 17:56 kees           Note Added: 0007449                          
-01-06-06 18:14 adel           Note Added: 0007490                          
-01-06-06 19:22 kees           Note Added: 0007494                          
-01-12-06 09:57 moreloci       Note Added: 0007583                          
-01-25-06 20:52 Ka-Ka          Issue Monitored: Ka-Ka                       
-01-31-06 21:43 Xbalanque      Note Added: 0007854                          
-======================================================================
+l=20
+U=20
+R=20
+
+S=20
+M=20
+A=20
+
+ =20
+ =20
+ =20
+
+$=20
+$=20
+$=20
+
+99=20
+85=20
+69=20
+
+(=20
+(=20
+(=20
+
+10=20
+30=20
+10=20
+
+)=20
+)=20
+)=20
+
+=20
+and many other at http://www.tempinut.com
+=20
+Good day , Do not over pay for your meds , save up to 70% with
+http://www.tempinut.com
+
+------=_NextPart_000_0001_01C62683.E3C99CD0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV>
+<DIV style=3D"font-family: Arial; float:left;">C <BR>
+V <BR>
+V <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">l <BR>A <BR>l <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">A <BR>L <BR>A <BR>
+</DIV>
+<DIV style=3D"font-family: Arial; float:left;">L <BR>l <BR>
+G <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">l <BR>U <BR>R <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">S <BR>M <BR>
+A <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">&nbsp; <BR>&nbsp; =
+<BR>&nbsp; <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">$ <BR>$ <BR>$ <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">99 <BR>85 <BR>
+69 <BR>
+</DIV>
+<DIV style=3D"font-family: Arial; float:left;">( <BR>( <BR>( <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">10 <BR>
+30 <BR>10 <BR></DIV>
+<DIV style=3D"font-family: Arial; float:left;">) <BR>) <BR>) =
+<BR></DIV><DIV style=3D"font-family: Arial; clear:both;">&nbsp;</DIV>
+<DIV style=3D"font-family: Arial; clear:both;">and many other at <A =
+href=3D"http://www.tempinut.com">http://www.tempinut.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV style=3D"font-family: Arial; clear:both;">Good day , Do not over =
+pay for your meds , save up to 70% with <A =
+href=3D"http://www.tempinut.com">http://www.tempinut.com</A></DIV></BODY>=
+</HTML>
+------=_NextPart_000_0001_01C62683.E3C99CD0--
+
 
 
 
