@@ -1,18 +1,14 @@
-From: "Ukko Campion" <ukkoa@heraldt.com>
-Subject: chap tantivy
-Date: Tue, 31 Jan 2006 16:32:13 -0500
-Message-ID: <000001c626ad$cc9fa4d0$ef96a8c0@illative>
-Reply-To: "Ukko Campion" <ukkoa@heraldt.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000692]: Possible ALSA support the EMU 0404 or other EMU card in the future?
+Date: Tue, 31 Jan 2006 22:35:48 +0100
+Message-ID: <c879f833af9931a85bd15aea02792ac7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C62683.E3C99CD0"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1097D1AE
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 22:32:26 +0100 (MET)
-Received: from ago.net (222-152-172-78.jetstream.xtra.co.nz [222.152.172.78])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id E521691F06
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 22:32:23 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C1EB1AE
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 22:35:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,116 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ru Colombo <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C62683.E3C99CD0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=692> 
+======================================================================
+Reported By:                comp
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   692
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-29-2004 14:03 CET
+Last Modified:              01-31-2006 22:35 CET
+======================================================================
+Summary:                    Possible ALSA support the EMU 0404 or other EMU card
+in the future?
+Description: 
+It is possible that ALSA supports EMU cards in the future?
 
-=20
-C=20
-V=20
-V=20
+======================================================================
 
-l=20
-A=20
-l=20
+----------------------------------------------------------------------
+ paperclip - 01-31-06 21:36 
+----------------------------------------------------------------------
+I know that the 0404 uses the same windows drivers as the emu 1212; I have
+seen changelogs to the affect that support is being added to the 1212 --
+however, I would hope when 1212 support is added that the driver will be
+able to see the 0404 as well.
 
-A=20
-L=20
-A=20
+----------------------------------------------------------------------
+ comp - 01-31-06 22:35 
+----------------------------------------------------------------------
+I have 0404 and 1212m cards, and some kernel driver writing experience (in
+the past I am worked as SuSE Developer at Hungary, and some other company
+projects which requires kernel driver), but I need deep soundcard
+information from Creative to estimate the possibility of developing the
+emu driver.
 
-L=20
-l=20
-G=20
-
-l=20
-U=20
-R=20
-
-S=20
-M=20
-A=20
-
- =20
- =20
- =20
-
-$=20
-$=20
-$=20
-
-99=20
-85=20
-69=20
-
-(=20
-(=20
-(=20
-
-10=20
-30=20
-10=20
-
-)=20
-)=20
-)=20
-
-=20
-and many other at http://www.tempinut.com
-=20
-Good day , Do not over pay for your meds , save up to 70% with
-http://www.tempinut.com
-
-------=_NextPart_000_0001_01C62683.E3C99CD0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"font-family: Arial; float:left;">C <BR>
-V <BR>
-V <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">l <BR>A <BR>l <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">A <BR>L <BR>A <BR>
-</DIV>
-<DIV style=3D"font-family: Arial; float:left;">L <BR>l <BR>
-G <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">l <BR>U <BR>R <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">S <BR>M <BR>
-A <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">&nbsp; <BR>&nbsp; =
-<BR>&nbsp; <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">$ <BR>$ <BR>$ <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">99 <BR>85 <BR>
-69 <BR>
-</DIV>
-<DIV style=3D"font-family: Arial; float:left;">( <BR>( <BR>( <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">10 <BR>
-30 <BR>10 <BR></DIV>
-<DIV style=3D"font-family: Arial; float:left;">) <BR>) <BR>) =
-<BR></DIV><DIV style=3D"font-family: Arial; clear:both;">&nbsp;</DIV>
-<DIV style=3D"font-family: Arial; clear:both;">and many other at <A =
-href=3D"http://www.tempinut.com">http://www.tempinut.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"font-family: Arial; clear:both;">Good day , Do not over =
-pay for your meds , save up to 70% with <A =
-href=3D"http://www.tempinut.com">http://www.tempinut.com</A></DIV></BODY>=
-</HTML>
-------=_NextPart_000_0001_01C62683.E3C99CD0--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-29-04 14:03 comp           New Issue                                    
+11-29-04 14:15 pzad           Note Added: 0002632                          
+01-31-06 21:36 paperclip      Note Added: 0007853                          
+01-31-06 22:35 comp           Note Added: 0007855                          
+======================================================================
 
 
 
