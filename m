@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Tue, 31 Jan 2006 11:06:56 +0100
-Message-ID: <2e78db7f9e76d4b2a20b080bf5dc19af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001799]: alsamixer is not responding
+Date: Tue, 31 Jan 2006 12:17:38 +0100
+Message-ID: <f891f9530bb9f6a8a109215244038d91@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C14DB19E
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 11:06:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00A041AE
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 12:17:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,112 +22,165 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1799> 
 ======================================================================
-Reported By:                Raymond
+Reported By:                tollimees
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
+Issue ID:                   1799
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              01-31-2006 11:06 CET
+Date Submitted:             01-31-2006 12:17 CET
+Last Modified:              01-31-2006 12:17 CET
 ======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
+Summary:                    alsamixer is not responding
 Description: 
-/cvs/alsa-lib/test/pcm_min
+Here is my problem:
+I get answer from $alsamixer as follows:
 
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
+ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Surround Playback
+Volume',0,0,0) appears twice or more
 
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
+alsamixer: function snd_mixer_load failed: Invalid argument
+
+"$amixer controls" gives:
+
+numid=53,iface=MIXER,name='Master Mono Playback Switch'
+numid=54,iface=MIXER,name='Master Mono Playback Volume'
+numid=43,iface=MIXER,name='Master Playback Switch'
+numid=44,iface=MIXER,name='Master Playback Volume'
+numid=91,iface=MIXER,name='Headphone +3dB Boost'
+numid=89,iface=MIXER,name='Headphone Amp'
+numid=40,iface=MIXER,name='Headphone Center Playback Switch',index=1
+numid=41,iface=MIXER,name='Headphone LFE Playback Switch',index=1
+numid=39,iface=MIXER,name='Headphone Playback Volume',index=1
+numid=35,iface=MIXER,name='Tone Control - Bass'
+numid=37,iface=MIXER,name='Tone Control - Switch'
+numid=36,iface=MIXER,name='Tone Control - Treble'
+numid=76,iface=MIXER,name='3D Control - Switch'
+numid=79,iface=MIXER,name='3D Control Sigmatel - Depth'
+numid=75,iface=MIXER,name='PCM Out Path & Mute'
+numid=70,iface=MIXER,name='PCM Playback Switch'
+numid=71,iface=MIXER,name='PCM Playback Volume'
+numid=66,iface=MIXER,name='Surround Mix Playback Switch'
+numid=67,iface=MIXER,name='Surround Mix Playback Volume'
+numid=49,iface=MIXER,name='Surround Playback Switch'
+numid=10,iface=MIXER,name='Surround Playback Volume'
+numid=50,iface=MIXER,name='Surround Playback Volume'
+numid=12,iface=MIXER,name='Surround Capture Switch'
+numid=11,iface=MIXER,name='Surround Capture Volume'
+numid=86,iface=MIXER,name='Center/LFE Jack'
+numid=45,iface=MIXER,name='Center Playback Switch'
+numid=13,iface=MIXER,name='Center Playback Volume'
+numid=46,iface=MIXER,name='Center Playback Volume'
+numid=47,iface=MIXER,name='LFE Playback Switch'
+numid=14,iface=MIXER,name='LFE Playback Volume'
+numid=48,iface=MIXER,name='LFE Playback Volume'
+numid=7,iface=MIXER,name='Synth Playback Volume'
+numid=9,iface=MIXER,name='Synth Capture Switch'
+numid=8,iface=MIXER,name='Synth Capture Volume'
+numid=3,iface=MIXER,name='Wave Center Playback Volume'
+numid=4,iface=MIXER,name='Wave LFE Playback Volume'
+numid=2,iface=MIXER,name='Wave Surround Playback Volume'
+numid=1,iface=MIXER,name='Wave Playback Volume'
+numid=6,iface=MIXER,name='Wave Capture Switch'
+numid=5,iface=MIXER,name='Wave Capture Volume'
+numid=88,iface=MIXER,name='Line Input Source'
+numid=28,iface=MIXER,name='Line LiveDrive Capture Switch'
+numid=27,iface=MIXER,name='Line LiveDrive Capture Volume'
+numid=26,iface=MIXER,name='Line LiveDrive Playback Volume'
+numid=34,iface=MIXER,name='Line2 LiveDrive Capture Switch',index=1
+numid=33,iface=MIXER,name='Line2 LiveDrive Capture Volume',index=1
+numid=32,iface=MIXER,name='Line2 LiveDrive Playback Volume',index=1
+numid=83,iface=MIXER,name='LineIn Jack'
+numid=62,iface=MIXER,name='Line Playback Switch'
+numid=63,iface=MIXER,name='Line Playback Volume'
+numid=64,iface=MIXER,name='CD Playback Switch'
+numid=65,iface=MIXER,name='CD Playback Volume'
+numid=61,iface=MIXER,name='Mic Boost (+20dB)'
+numid=87,iface=MIXER,name='Mic Input Source'
+numid=78,iface=MIXER,name='Mic Select'
+numid=82,iface=MIXER,name='Mic1 Jack'
+numid=59,iface=MIXER,name='Mic Playback Switch'
+numid=60,iface=MIXER,name='Mic Playback Volume'
+numid=57,iface=MIXER,name='Phone Playback Switch'
+numid=58,iface=MIXER,name='Phone Playback Volume'
+numid=55,iface=MIXER,name='PC Speaker Playback Switch'
+numid=56,iface=MIXER,name='PC Speaker Playback Volume'
+numid=68,iface=MIXER,name='Aux Playback Switch'
+numid=69,iface=MIXER,name='Aux Playback Volume'
+numid=77,iface=MIXER,name='Mono Output Select'
+numid=72,iface=MIXER,name='Capture Source'
+numid=73,iface=MIXER,name='Capture Switch'
+numid=74,iface=MIXER,name='Capture Volume'
+numid=31,iface=MIXER,name='IEC958 Coaxial Capture Switch'
+numid=30,iface=MIXER,name='IEC958 Coaxial Capture Volume'
+numid=29,iface=MIXER,name='IEC958 Coaxial Playback Volume'
+numid=25,iface=MIXER,name='IEC958 LiveDrive Capture Switch'
+numid=24,iface=MIXER,name='IEC958 LiveDrive Capture Volume'
+numid=23,iface=MIXER,name='IEC958 LiveDrive Playback Volume'
+numid=38,iface=MIXER,name='IEC958 Optical Raw Playback Switch'
+numid=22,iface=MIXER,name='IEC958 TTL Capture Switch'
+numid=21,iface=MIXER,name='IEC958 TTL Capture Volume'
+numid=20,iface=MIXER,name='IEC958 TTL Playback Volume'
+numid=19,iface=MIXER,name='AC97 Capture Volume'
+numid=18,iface=MIXER,name='AC97 Playback Volume'
+numid=90,iface=MIXER,name='Exchange Center/LFE'
+numid=92,iface=MIXER,name='External Amplifier'
+numid=17,iface=MIXER,name='Front Capture Switch'
+numid=16,iface=MIXER,name='Front Capture Volume'
+numid=84,iface=MIXER,name='Front Jack'
+numid=51,iface=MIXER,name='Front Playback Switch'
+numid=15,iface=MIXER,name='Front Playback Volume'
+numid=52,iface=MIXER,name='Front Playback Volume'
+numid=85,iface=MIXER,name='Rear Jack'
+numid=245,iface=MIXER,name='SB Live Analog/Digital Output Jack'
+numid=80,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
+numid=81,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
+numid=42,iface=PCM,name='Captured FX8010 Outputs',device=2
+numid=241,iface=PCM,name='IEC958 Playback Default',device=2
+numid=242,iface=PCM,name='IEC958 Playback Default',index=1,device=2
+numid=243,iface=PCM,name='IEC958 Playback Default',index=2,device=2
+numid=244,iface=PCM,name='IEC958 Playback Default',index=3,device=2
+numid=237,iface=PCM,name='IEC958 Playback Mask',device=2
+numid=238,iface=PCM,name='IEC958 Playback Mask',index=1,device=2
+numid=239,iface=PCM,name='IEC958 Playback Mask',index=2,device=2
+numid=240,iface=PCM,name='IEC958 Playback Mask',index=3,device=2
+
+As you see, there are couple of more duplicates listed:
+numid=46,iface=MIXER,name='Center Playback Volume'
+and
+numid=48,iface=MIXER,name='LFE Playback Volume'
+
+This message apepared after I fixed my aumixer.c source code according to
+Bug ID 0001681 here
+
+I modified /usr/src/linux/sound/pci/emu10k1/emumixer.c line "Front
+Playback Volume" to array called emu10k1_remove_ctls and compiled my
+kernel.
+
+"$uname -a" gives:
+2.6.15-gentoo-r1-teine #6 SMP PREEMPT Tue Jan 31 13:54:26 EET 2006 i686
+AMD Sempron(tm) 2500+ AuthenticAMD GNU/Linux
+
+Beforehand I had a message described in this bug :
+ALSA lib simple_none.c:1218:(simple_add1) helem (MIXER,'Front Playback
+Volume',0,0,0) appears twice or more
 ======================================================================
-
-----------------------------------------------------------------------
- perex - 01-31-06 10:26 
-----------------------------------------------------------------------
-To be sure: I'm talking about SNDRV_PCM_HW_PARAM_BUFFER_BYTES restriction.
-See pci/emu10k1/emupcm.c code how you can use the
-snd_pcm_hw_constraint_list() for this parameter.
-
-
-
-----------------------------------------------------------------------
- Raymond - 01-31-06 11:06 
-----------------------------------------------------------------------
-There are a number of bugs in snd_vortex_playback_hw_adb
-
-1) capture channels is 2 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766
-2) Turtle Beach Montego II (au8830) has stereo codec STAC9721, rear
-channels seem to use I2S on the daugther card, other au8830 have quad
-codec.
-3) SQ1500 (au8810) SuperQuad , other au8810 have stereo codec
-
-
-/* hardware definition */
-static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
-	.info =
-	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
-	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-	     SNDRV_PCM_INFO_MMAP_VALID),
-	.formats =
-	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
-	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
-	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-	.rate_min = 5000,
-	.rate_max = 48000,
-	.channels_min = 1,
-#ifdef CHIP_AU8830
-	.channels_max = 4,
-#else
-	.channels_max = 2,
-#endif
-	.buffer_bytes_max = 0x10000,
-	.period_bytes_min = 0x1,
-	.period_bytes_max = 0x1000,
-	.periods_min = 2,
-	.periods_max = 32,
-};
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
+01-31-06 12:17 tollimees      New Issue                                    
 ======================================================================
 
 
