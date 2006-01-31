@@ -1,14 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: How do I get a pcm device?
-Date: Tue, 31 Jan 2006 08:08:20 +0000
-Message-ID: <1138694900.9386.1.camel@localhost.localdomain>
-References: <1138664619.10183.7.camel@localhost.localdomain>
-	 <1138666024.16102.44.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001724]: simple PCM helper function
+Date: Tue, 31 Jan 2006 10:19:36 +0100
+Message-ID: <b1199d0c610c80965922be35270880a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1138666024.16102.44.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71793193
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 10:19:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,27 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-01-30 at 19:07 -0500, Lee Revell wrote:
-> On Mon, 2006-01-30 at 23:43 +0000, Adrian McMenamin wrote:
-> > My device module can be successfully loaded and itself loads the
-> > firmware it needs, but there is no device I can see in /dev. How do I
-> > create one?
-> > 
-> > modprobe snd-pcm creates the /dev/snd directory but only puts a timer in
-> > it.
-> 
-> This depends on whether you are using udev, devfs, etc.  You can rule
-> out a problem with those by testing with a static /dev.
-> 
-> Can you post a link to the source code for your driver?
-> 
-Apologies, should have done that and made it clear at the start:
-http://newgolddream.dyndns.info/repos for the source and the system is
-using udev
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1724
+Category:                   0_general
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-07-2006 05:10 CET
+Last Modified:              01-31-2006 10:19 CET
+======================================================================
+Summary:                    simple PCM helper function
+Description: 
+/cvs/alsa-lib/test/pcm_min
+
+ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
+(latency) 500000 for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
+
+sound card is au8830, the au88x0 driver only accept period size in power
+of 2.
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 01-31-06 09:48 
+----------------------------------------------------------------------
+It seem that au88x0 is the only driver which use
+snd_pcm_hw_constraint_pow2()
+
+	/* Force equal size periods */
+	if ((err =
+	     snd_pcm_hw_constraint_integer(runtime,
+					   SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
+		return err;
+	/* Avoid PAGE_SIZE boundary to fall inside of a period. */
+	if ((err =
+	     snd_pcm_hw_constraint_pow2(runtime, 0,
+					SNDRV_PCM_HW_PARAM_PERIOD_BYTES)) < 0)
+		return err;
+
+
+
+----------------------------------------------------------------------
+ perex - 01-31-06 10:19 
+----------------------------------------------------------------------
+Yes and no. It's combination pow2 and periods == integer issue. If the
+buffer size is 24000 and period size is 2048, then 24000 / 2048 = 11.7188
+which is not integer value and then configuration fails.
+
+In this case depends on the parameter order. Or a better fix maybe to
+describe that buffer_size must be N * period_size with pow2 restriction
+(create a list with all combinations).
+
+I've tried to add a workaround to snd_pcm_set_params() to CVS, but it does
+not prevent other apps using the hw_params ALSA API directly to fail.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-07-06 05:10 Raymond        New Issue                                    
+01-09-06 15:19 Raymond        Note Added: 0007537                          
+01-19-06 15:04 Raymond        Note Deleted: 0007537                        
+01-19-06 15:36 Raymond        Note Added: 0007721                          
+01-28-06 07:58 Raymond        Note Added: 0007828                          
+01-28-06 07:58 Raymond        Note Deleted: 0007721                        
+01-30-06 18:46 Raymond        Note Added: 0007840                          
+01-31-06 03:15 Raymond        Note Added: 0007844                          
+01-31-06 06:41 Raymond        Note Edited: 0007840                         
+01-31-06 07:03 Raymond        Note Edited: 0007840                         
+01-31-06 07:08 Raymond        Note Edited: 0007840                         
+01-31-06 07:11 Raymond        Note Edited: 0007840                         
+01-31-06 08:31 Raymond        Note Edited: 0007840                         
+01-31-06 09:48 Raymond        Note Edited: 0007844                         
+01-31-06 10:19 perex          Note Added: 0007845                          
+======================================================================
+
 
 
 
