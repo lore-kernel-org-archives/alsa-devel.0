@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001798]: jerky audio output from xmms,mplayer and every media player.
-Date: Tue, 31 Jan 2006 01:44:57 +0100
-Message-ID: <7f1f761eb0cdf5a7d1fef9f4b6affab9@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001724]: simple PCM helper function
+Date: Tue, 31 Jan 2006 03:15:47 +0100
+Message-ID: <ecc78125defe1975122d549141a164df@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C8EC1C1
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 01:44:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59163195
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 03:15:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1798> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
 ======================================================================
-Reported By:                ikostov
-Assigned To:                Clemens Ladisch
+Reported By:                Raymond
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1798
-Category:                   USB - usb-audio
-Reproducibility:            random
-Severity:                   major
+Project:                    ALSA - lib
+Issue ID:                   1724
+Category:                   0_general
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Suse 9.3
-Kernel Version:             Linux compaq 2.6.11.4-21.10-default #1 Tue Nov 29
-14:32:49 UTC 2005 i686 i686 i386 GNU/Linux
+Status:                     new
 ======================================================================
-Date Submitted:             01-31-2006 01:44 CET
-Last Modified:              01-31-2006 01:44 CET
+Date Submitted:             01-07-2006 05:10 CET
+Last Modified:              01-31-2006 03:15 CET
 ======================================================================
-Summary:                    jerky audio output from xmms,mplayer and every media
-player.
+Summary:                    simple PCM helper function
 Description: 
-I have USB Creative Sound Blaster Audigy2 NX running on suse 9.3 with
-generic kernel:
-Linux compaq 2.6.11.4-21.10-default #1 Tue Nov 29 14:32:49 UTC 2005 i686
-i686 i386 GNU/Linux
+/cvs/alsa-lib/test/pcm_min
 
-When I play some music ( with XMMS or mplayer) there is nasty cracking
-comming out from the speakers ..
+ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
+(latency) 500000 for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
+
+sound card is au8830, the au88x0 driver only accept period size in power
+of 2.
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 01-30-06 18:46 
+----------------------------------------------------------------------
+Why do Rule 9 [e1cfeea0]: PERIODS = [6 22] -> empty ? ( 16 )
+
+----------------------------------------------------------------------
+ Raymond - 01-31-06 03:15 
+----------------------------------------------------------------------
+It seem that au88x0 is the only driver which use
+snd_pcm_hw_constraint_pow2()
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-06 01:44 ikostov        New Issue                                    
-01-31-06 01:44 ikostov        Distribution              => Suse 9.3        
-01-31-06 01:44 ikostov        Kernel Version            => Linux compaq
-2.6.11.4-21.10-default #1 Tue Nov 29 14:32:49 UTC 2005 i686 i686 i386 GNU/Linux
+01-07-06 05:10 Raymond        New Issue                                    
+01-09-06 15:19 Raymond        Note Added: 0007537                          
+01-19-06 15:04 Raymond        Note Deleted: 0007537                        
+01-19-06 15:36 Raymond        Note Added: 0007721                          
+01-28-06 07:58 Raymond        Note Added: 0007828                          
+01-28-06 07:58 Raymond        Note Deleted: 0007721                        
+01-30-06 18:46 Raymond        Note Added: 0007840                          
+01-31-06 03:15 Raymond        Note Added: 0007844                          
 ======================================================================
 
 
