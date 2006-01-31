@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Tue, 31 Jan 2006 10:49:31 +0100
-Message-ID: <4765598c977020144819ee5d03d25167@bugtrack.alsa-project.org>
+Date: Tue, 31 Jan 2006 11:06:56 +0100
+Message-ID: <2e78db7f9e76d4b2a20b080bf5dc19af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB41A193
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 10:49:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C14DB19E
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 11:06:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              01-31-2006 10:49 CET
+Last Modified:              01-31-2006 11:06 CET
 ======================================================================
 Summary:                    au88x0 PCM configuration problem - buffer_size
 constraint
@@ -56,395 +56,6 @@ of 2.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 01-28-06 07:58 
-----------------------------------------------------------------------
-define RULES_DEBUG in /core/pcm_native.c
-
-alsa-lib/test/pcm_min
-
-
-vortex_pcm_open substream->stream=0
-ACCESS = 00000000ffffffffffffffff -> 0000000000000009
-FORMAT = 00000000ffffffffffffffff -> 000000000000300006
-SUBFORMAT = 00000000ffffffffffffffff -> 0000000000000001
-SAMPLE_BITS = [0 4294967295] -> [0 4294967295]
-FRAME_BITS = [0 4294967295] -> [0 4294967295]
-CHANNELS = [0 4294967295] -> [1 4]
-RATE = [0 4294967295] -> [5000 48000]
-PERIOD_TIME = [0 4294967295] -> [0 4294967295]
-PERIOD_SIZE = [0 4294967295] -> [0 4294967295]
-PERIOD_BYTES = [0 4294967295] -> [1 4096]
-PERIODS = [0 4294967295] -> [2 32]
-BUFFER_TIME = [0 4294967295] -> [0 4294967295]
-BUFFER_SIZE = [0 4294967295] -> [0 4294967295]
-BUFFER_BYTES = [0 4294967295] -> [1 65536]
-TICK_TIME = [0 4294967295] -> [10000 10000]
-Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
-Rule 1 [e1cff140]: SAMPLE_BITS = [0 4294967295] -> [8 16]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 3 [e1cfee30]: FRAME_BITS = [0 4294967295] -> [8 64]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 6 [e1cfeea0]: CHANNELS = [1 4] -> [1 4]
-Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [0 4294967295] -> [0 2147483647]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [0 2147483647] -> [1 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [0 4294967295] -> [2 131072]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 131072] -> [2 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [1 65536] -> [2 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = [0 4294967295] -> (20 819200]
-Rule 19 [e1cfef90]: BUFFER_TIME = [0 4294967295] -> (41 13107200]
-Rule 20 [e1d047f0]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 21 [e1cff230]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-TS = [0 4294967295] -> [8 64]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 6 [e1cfeea0]: CHANNELS = [1 4] -> [1 4]
-Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [0 4294967295] -> [0 2147483647]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [0 2147483647] -> [1 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [0 4294967295] -> [2 131072]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 131072] -> [2 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [1 65536] -> [2 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = [0 4294967295] -> (20 819200]
-Rule 19 [e1cfef90]: BUFFER_TIME = [0 4294967295] -> (41 13107200]
-Rule 20 [e1d047f0]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 21 [e1cff230]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-RATE = [48000 48000] -> [48000 48000]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = (20 819200] -> (20 85334)
-Rule 19 [e1cfef90]: BUFFER_TIME = (41 13107200] -> (41 1365334)
-Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-CHANNELS = [1 1] -> [1 1]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 3 [e1cfee30]: FRAME_BITS = [8 64] -> [8 16]
-Rule 6 [e1cfeea0]: CHANNELS = [1 1] -> [1 1]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-FORMAT = 0000000000000002 -> 0000000000000002
-Rule 1 [e1cff140]: SAMPLE_BITS = [8 16] -> [8 8]
-Rule 3 [e1cfee30]: FRAME_BITS = [8 16] -> [8 8]
-Rule 6 [e1cfeea0]: CHANNELS = [1 1] -> [1 1]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 0 [e1cff010]: FORMAT = 2 -> 2
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 8] -> [8 8]
-ACCESS = 00000000ffffffffffffffff -> 0000000000000009
-FORMAT = 00000000ffffffffffffffff -> 000000000000300006
-SUBFORMAT = 00000000ffffffffffffffff -> 0000000000000001
-SAMPLE_BITS = [0 4294967295] -> [0 4294967295]
-FRAME_BITS = [0 4294967295] -> [0 4294967295]
-CHANNELS = [0 4294967295] -> [1 4]
-RATE = [0 4294967295] -> [5000 48000]
-PERIOD_TIME = [0 4294967295] -> [0 4294967295]
-PERIOD_SIZE = [0 4294967295] -> [0 4294967295]
-PERIOD_BYTES = [0 4294967295] -> [1 4096]
-PERIODS = [0 4294967295] -> [2 32]
-BUFFER_TIME = [0 4294967295] -> [0 4294967295]
-BUFFER_SIZE = [0 4294967295] -> [0 4294967295]
-BUFFER_BYTES = [0 4294967295] -> [1 65536]
-TICK_TIME = [0 4294967295] -> [10000 10000]
-Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
-Rule 1 [e1cff140]: SAMPLE_BITS = [0 4294967295] -> [8 16]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 3 [e1cfee30]: FRAME_BITS = [0 4294967295] -> [8 64]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 6 [e1cfeea0]: CHANNELS = [1 4] -> [1 4]
-Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [0 4294967295] -> [0 2147483647]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [0 2147483647] -> [1 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [0 4294967295] -> [2 131072]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 131072] -> [2 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [1 65536] -> [2 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = [0 4294967295] -> (20 819200]
-Rule 19 [e1cfef90]: BUFFER_TIME = [0 4294967295] -> (41 13107200]
-Rule 20 [e1d047f0]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 21 [e1cff230]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-RATE = [48000 48000] -> [48000 48000]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = (20 819200] -> (20 85334)
-Rule 19 [e1cfef90]: BUFFER_TIME = (41 13107200] -> (41 1365334)
-Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-CHANNELS = [1 1] -> [1 1]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 3 [e1cfee30]: FRAME_BITS = [8 64] -> [8 16]
-Rule 6 [e1cfeea0]: CHANNELS = [1 1] -> [1 1]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-FORMAT = 0000000000000002 -> 0000000000000002
-Rule 1 [e1cff140]: SAMPLE_BITS = [8 16] -> [8 8]
-Rule 3 [e1cfee30]: FRAME_BITS = [8 16] -> [8 8]
-Rule 6 [e1cfeea0]: CHANNELS = [1 1] -> [1 1]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 0 [e1cff010]: FORMAT = 2 -> 2
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 8] -> [8 8]
-BUFFER_SIZE = [24000 65536] -> [24000 65536]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [6 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 4096] -> [750 4096]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [24000 65536] -> [24000 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [750 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [24000 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = (20 85334) -> [15625 85334)
-Rule 19 [e1cfef90]: BUFFER_TIME = (41 1365334) -> [500000 1365334)
-Rule 20 [e1d047f0]: PERIOD_BYTES = [750 4096] -> [1024 4096]
-Rule 21 [e1cff230]: BUFFER_BYTES = [24000 65536] -> [24000 65536]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [6 32] -> [6 32]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [750 4096] -> [1024 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1024 4096] -> [1024 4096]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [24000 65536] -> [24000 65536]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [24000 65536] -> [24000 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [24000 65536] -> [24000 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1024 4096] -> [1024 4096]
-Rule 18 [e1cfef90]: PERIOD_TIME = [15625 85334) -> (21333 85334)
-Rule 4 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [6 32] -> [6 32]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1024 4096] -> [1024 4096]
-ACCESS = 00000000ffffffffffffffff -> 0000000000000009
-FORMAT = 00000000ffffffffffffffff -> 000000000000300006
-SUBFORMAT = 00000000ffffffffffffffff -> 0000000000000001
-SAMPLE_BITS = [0 4294967295] -> [0 4294967295]
-FRAME_BITS = [0 4294967295] -> [0 4294967295]
-CHANNELS = [0 4294967295] -> [1 4]
-RATE = [0 4294967295] -> [5000 48000]
-PERIOD_TIME = [0 4294967295] -> [0 4294967295]
-PERIOD_SIZE = [0 4294967295] -> [0 4294967295]
-PERIOD_BYTES = [0 4294967295] -> [1 4096]
-PERIODS = [0 4294967295] -> [2 32]
-BUFFER_TIME = [0 4294967295] -> [0 4294967295]
-BUFFER_SIZE = [0 4294967295] -> [0 4294967295]
-BUFFER_BYTES = [0 4294967295] -> [1 65536]
-TICK_TIME = [0 4294967295] -> [10000 10000]
-Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
-Rule 1 [e1cff140]: SAMPLE_BITS = [0 4294967295] -> [8 16]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 3 [e1cfee30]: FRAME_BITS = [0 4294967295] -> [8 64]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 6 [e1cfeea0]: CHANNELS = [1 4] -> [1 4]
-Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [0 4294967295] -> [0 2147483647]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [0 2147483647] -> [1 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [0 4294967295] -> [2 131072]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 131072] -> [2 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [1 65536] -> [2 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = [0 4294967295] -> (20 819200]
-Rule 19 [e1cfef90]: BUFFER_TIME = [0 4294967295] -> (41 13107200]
-Rule 20 [e1d047f0]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 21 [e1cff230]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 0 [e1cff010]: FORMAT = 300006 -> 300006
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 64] -> [8 64]
-Rule 7 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 8 [e1cfef90]: RATE = [5000 48000] -> [5000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [2 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-RATE = [48000 48000] -> [48000 48000]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = (20 819200] -> (20 85334)
-Rule 19 [e1cfef90]: BUFFER_TIME = (41 13107200] -> (41 1365334)
-Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [2 65536] -> [2 65536]
-CHANNELS = [1 1] -> [1 1]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-Rule 3 [e1cfee30]: FRAME_BITS = [8 64] -> [8 16]
-Rule 6 [e1cfeea0]: CHANNELS = [1 1] -> [1 1]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 16] -> [8 16]
-FORMAT = 0000000000000002 -> 0000000000000002
-Rule 1 [e1cff140]: SAMPLE_BITS = [8 16] -> [8 8]
-Rule 3 [e1cfee30]: FRAME_BITS = [8 16] -> [8 8]
-Rule 6 [e1cfeea0]: CHANNELS = [1 1] -> [1 1]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [1 4096] -> [1 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [2 65536] -> [2 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [2 65536]
-Rule 0 [e1cff010]: FORMAT = 2 -> 2
-Rule 2 [e1cfeea0]: SAMPLE_BITS = [8 8] -> [8 8]
-PERIOD_TIME = (21333 85334) -> (21333 85334)
-PERIOD_SIZE = [1024 4096] -> [1024 4096]
-BUFFER_SIZE = [24000 65536] -> [24000 65536]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [2 32] -> [6 32]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [1024 4096] -> [1024 4096]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [1024 4096] -> [1024 4096]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [24000 65536] -> [24000 65536]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1 4096] -> [1024 4096]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [2 65536] -> [24000 65536]
-Rule 18 [e1cfef90]: PERIOD_TIME = (21333 85334) -> (21333 85334)
-Rule 19 [e1cfef90]: BUFFER_TIME = (41 1365334) -> [500000 1365334)
-Rule 20 [e1d047f0]: PERIOD_BYTES = [1024 4096] -> [1024 4096]
-Rule 21 [e1cff230]: BUFFER_BYTES = [24000 65536] -> [24000 65536]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [1024 4096] -> [1024 4096]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [24000 65536] -> [24000 65536]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [24000 65536] -> [24000 65536]
-BUFFER_SIZE = [24000 24000] -> [24000 24000]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [6 32] -> [6 23]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [1024 4096] -> [1044 4000]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [24000 24000] -> [24000 24000]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [1024 4096] -> [1044 4000]
-Rule 17 [e1cfef10]: BUFFER_BYTES = [24000 65536] -> [24000 24000]
-Rule 18 [e1cfef90]: PERIOD_TIME = (21333 85334) -> [21750 83334)
-Rule 19 [e1cfef90]: BUFFER_TIME = [500000 1365334) -> [500000 500000]
-Rule 20 [e1d047f0]: PERIOD_BYTES = [1044 4000] -> [2048 2048]
-Rule 21 [e1cff230]: BUFFER_BYTES = [24000 24000] -> [24000 24000]
-Rule 4 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 5 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 8 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [6 23] -> [6 22]
-Rule 10 [e1cfeea0]: PERIOD_SIZE = [1044 4000] -> [1091 4000]
-Rule 11 [e1cfef90]: PERIOD_SIZE = [1091 4000] -> [2048 2048]
-Rule 12 [e1cfef10]: PERIOD_SIZE = [2048 2048] -> [2048 2048]
-Rule 13 [e1cfee30]: BUFFER_SIZE = [24000 24000] -> [24000 24000]
-Rule 14 [e1cfef90]: BUFFER_SIZE = [24000 24000] -> [24000 24000]
-Rule 15 [e1cfef10]: BUFFER_SIZE = [24000 24000] -> [24000 24000]
-Rule 16 [e1cfef10]: PERIOD_BYTES = [2048 2048] -> [2048 2048]
-Rule 18 [e1cfef90]: PERIOD_TIME = [21750 83334) -> (42666 42667)
-Rule 4 [e1cfef90]: FRAME_BITS = [8 8] -> [8 8]
-Rule 7 [e1cfef90]: RATE = [48000 48000] -> [48000 48000]
-Rule 9 [e1cfeea0]: PERIODS = [6 22] -> empty
-vortex_pcm_hw_free substream->stream=0
-vortex_pcm_close substream->stream=0
-
-----------------------------------------------------------------------
- Raymond - 01-31-06 08:31 
-----------------------------------------------------------------------
-Why do Rule 9 [e1cfeea0]: PERIODS = [6 22] -> empty ?
-
-
-
-----------------------------------------------------------------------
- Raymond - 01-31-06 09:48 
-----------------------------------------------------------------------
-It seem that au88x0 is the only driver which use
-snd_pcm_hw_constraint_pow2()
-
-	/* Force equal size periods */
-	if ((err =
-	     snd_pcm_hw_constraint_integer(runtime,
-					   SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
-		return err;
-	/* Avoid PAGE_SIZE boundary to fall inside of a period. */
-	if ((err =
-	     snd_pcm_hw_constraint_pow2(runtime, 0,
-					SNDRV_PCM_HW_PARAM_PERIOD_BYTES)) < 0)
-		return err;
-
-
-
-----------------------------------------------------------------------
- perex - 01-31-06 10:19 
-----------------------------------------------------------------------
-Yes and no. It's combination pow2 and periods == integer issue. If the
-buffer size is 24000 and period size is 2048, then 24000 / 2048 = 11.7188
-which is not integer value and then configuration fails.
-
-In this case depends on the parameter order. Or a better fix maybe to
-describe that buffer_size must be N * period_size with pow2 restriction
-(create a list with all combinations).
-
-I've tried to add a workaround to snd_pcm_set_params() to CVS, but it does
-not prevent other apps using the hw_params ALSA API directly to fail.
-
-----------------------------------------------------------------------
  perex - 01-31-06 10:26 
 ----------------------------------------------------------------------
 To be sure: I'm talking about SNDRV_PCM_HW_PARAM_BUFFER_BYTES restriction.
@@ -452,6 +63,44 @@ See pci/emu10k1/emupcm.c code how you can use the
 snd_pcm_hw_constraint_list() for this parameter.
 
 
+
+----------------------------------------------------------------------
+ Raymond - 01-31-06 11:06 
+----------------------------------------------------------------------
+There are a number of bugs in snd_vortex_playback_hw_adb
+
+1) capture channels is 2 
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766
+2) Turtle Beach Montego II (au8830) has stereo codec STAC9721, rear
+channels seem to use I2S on the daugther card, other au8830 have quad
+codec.
+3) SQ1500 (au8810) SuperQuad , other au8810 have stereo codec
+
+
+/* hardware definition */
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -478,6 +127,7 @@ driver
 01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
 01-31-06 10:49 perex          Summary                  simple PCM helper
 function => au88x0 PCM configuration problem - buffer_size constraint
+01-31-06 11:06 Raymond        Note Added: 0007848                          
 ======================================================================
 
 
