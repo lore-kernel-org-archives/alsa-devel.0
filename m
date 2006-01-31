@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000692]: Possible ALSA support the EMU 0404 or other EMU card in the future?
-Date: Tue, 31 Jan 2006 21:36:52 +0100
-Message-ID: <d90494b9e7b521fd7ba78a3e47bfaf2b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
+Date: Tue, 31 Jan 2006 21:43:04 +0100
+Message-ID: <55475066eae44080d3c04c595071f298@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADDEB1E6
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 21:36:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2CF41E6
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 21:43:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=692> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
 ======================================================================
-Reported By:                comp
-Assigned To:                
+Reported By:                kees
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   692
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1678
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.15-rc6-git4
 ======================================================================
-Date Submitted:             11-29-2004 14:03 CET
-Last Modified:              01-31-2006 21:36 CET
+Date Submitted:             12-25-2005 02:29 CET
+Last Modified:              01-31-2006 21:43 CET
 ======================================================================
-Summary:                    Possible ALSA support the EMU 0404 or other EMU card
-in the future?
+Summary:                    nForce (10de:026c) left channel squeals, right
+channel mostly okay
 Description: 
-It is possible that ALSA supports EMU cards in the future?
+This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
+is this is an "nForce410" board, with "6-channel HD audio".
 
+Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
+snd-hda-intel load fine, but during playback, the left channel squeals,
+while the right seems to play things okay.
+
+I'm happy to dig around and try whatever needs trying to get this fixed. 
+Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-29-04 14:15 
+ moreloci - 01-12-06 09:57 
 ----------------------------------------------------------------------
-Probably main chips on these cards are supported (mostly they are Audigy
-based), but developpers need additional information from creative. These
-cards are expensive and there is no developper who will buy it and play
-with it (and card can be damaged by this play).
-
-I think these cards will be never supported under linux.
+I experienced the static sounds too and experimented with the settings in
+KDE. If I selected OSS as the soundsystem (emulated by ALSA) the static
+was gone.
 
 ----------------------------------------------------------------------
- paperclip - 01-31-06 21:36 
+ Xbalanque - 01-31-06 21:43 
 ----------------------------------------------------------------------
-I know that the 0404 uses the same windows drivers as the emu 1212; I have
-seen changelogs to the affect that support is being added to the 1212 --
-however, I would hope when 1212 support is added that the driver will be
-able to see the 0404 as well.
+Same problem described by kees with alsa 1.0.11rc3. Just to let you all
+know.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-29-04 14:03 comp           New Issue                                    
-11-29-04 14:15 pzad           Note Added: 0002632                          
-01-31-06 21:36 paperclip      Note Added: 0007853                          
+12-25-05 02:29 kees           New Issue                                    
+12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
+12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
+12-26-05 11:02 kees           Note Added: 0007149                          
+12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
+12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
+12-30-05 23:50 morgoth666     Note Added: 0007300                          
+12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
+12-31-05 10:16 kees           Note Added: 0007355                          
+12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
+12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
+01-04-06 17:40 tiwai          Note Added: 0007446                          
+01-04-06 17:56 kees           Note Added: 0007449                          
+01-06-06 18:14 adel           Note Added: 0007490                          
+01-06-06 19:22 kees           Note Added: 0007494                          
+01-12-06 09:57 moreloci       Note Added: 0007583                          
+01-25-06 20:52 Ka-Ka          Issue Monitored: Ka-Ka                       
+01-31-06 21:43 Xbalanque      Note Added: 0007854                          
 ======================================================================
 
 
