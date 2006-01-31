@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001799]: alsamixer is not responding
-Date: Tue, 31 Jan 2006 15:27:56 +0100
-Message-ID: <ea01207a89cb50c71d0f4c5fb0cd793c@bugtrack.alsa-project.org>
+Date: Tue, 31 Jan 2006 15:29:14 +0100
+Message-ID: <fc9c18cb553c0504b1920ffc6430b9ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16F851AE
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 15:27:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8A621AE
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 15:29:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-31-2006 12:17 CET
-Last Modified:              01-31-2006 15:27 CET
+Last Modified:              01-31-2006 15:29 CET
 ======================================================================
 Summary:                    alsamixer is not responding
 Description: 
@@ -178,35 +178,6 @@ Volume',0,0,0) appears twice or more
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-31-06 12:39 
-----------------------------------------------------------------------
-Something is wrong. Probably you changed source incorectly (looks like
-remove array is removed).
-Try to use alsa 1.0.11rc3 where bug was fixed.
-It should look like this:
-
-int err, pcm;
-struct snd_kcontrol *kctl;
-struct snd_card *card = emu->card;
-char **c;
-static char *emu10k1_remove_ctls[] = {
-	/* no AC97 mono, surround, center/lfe */
-	"Master Mono Playback Switch",
-	"Master Mono Playback Volume",
-	"PCM Out Path & Mute",
-	"Mono Output Select",
-	"Front Playback Switch",
-	"Front Playback Volume",
-	"Surround Playback Switch",
-	"Surround Playback Volume",
-	"Center Playback Switch",
-	"Center Playback Volume",
-	"LFE Playback Switch",
-	"LFE Playback Volume",
-	NULL
-};
-
-----------------------------------------------------------------------
  tollimees - 01-31-06 15:27 
 ----------------------------------------------------------------------
 Yes, something went wrong:
@@ -214,12 +185,18 @@ Yes, something went wrong:
 I managed to add line "Front Playback Volume" w/o comma at the end :)
 Doing so I messed up whole array. Silly me.
 
+----------------------------------------------------------------------
+ tollimees - 01-31-06 15:29 
+----------------------------------------------------------------------
+Case is closed for me. Everything is OK
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-31-06 12:17 tollimees      New Issue                                    
 01-31-06 12:39 pzad           Note Added: 0007849                          
 01-31-06 15:27 tollimees      Note Added: 0007850                          
+01-31-06 15:29 tollimees      Note Added: 0007851                          
 ======================================================================
 
 
