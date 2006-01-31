@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000692]: Possible ALSA support the EMU 0404 or other EMU card in the future?
-Date: Tue, 31 Jan 2006 22:35:48 +0100
-Message-ID: <c879f833af9931a85bd15aea02792ac7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001803]: hda-intel on my amilo fujitsu laptop dont produces any sound
+Date: Tue, 31 Jan 2006 23:30:34 +0100
+Message-ID: <708e6a541e7ee45a02dd1a03c6fb3ca4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C1EB1AE
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 22:35:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4592A1E7
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 23:30:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=692> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1803> 
 ======================================================================
-Reported By:                comp
-Assigned To:                
+Reported By:                DjCoke
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   692
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1803
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r1
 ======================================================================
-Date Submitted:             11-29-2004 14:03 CET
-Last Modified:              01-31-2006 22:35 CET
+Date Submitted:             01-31-2006 23:30 CET
+Last Modified:              01-31-2006 23:30 CET
 ======================================================================
-Summary:                    Possible ALSA support the EMU 0404 or other EMU card
-in the future?
+Summary:                    hda-intel on my amilo fujitsu laptop dont produces
+any sound
 Description: 
-It is possible that ALSA supports EMU cards in the future?
+driver don't procuce any sound at all.
 
+
+I have a amilo fujitsu laptop.
 ======================================================================
-
-----------------------------------------------------------------------
- paperclip - 01-31-06 21:36 
-----------------------------------------------------------------------
-I know that the 0404 uses the same windows drivers as the emu 1212; I have
-seen changelogs to the affect that support is being added to the 1212 --
-however, I would hope when 1212 support is added that the driver will be
-able to see the 0404 as well.
-
-----------------------------------------------------------------------
- comp - 01-31-06 22:35 
-----------------------------------------------------------------------
-I have 0404 and 1212m cards, and some kernel driver writing experience (in
-the past I am worked as SuSE Developer at Hungary, and some other company
-projects which requires kernel driver), but I need deep soundcard
-information from Creative to estimate the possibility of developing the
-emu driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-29-04 14:03 comp           New Issue                                    
-11-29-04 14:15 pzad           Note Added: 0002632                          
-01-31-06 21:36 paperclip      Note Added: 0007853                          
-01-31-06 22:35 comp           Note Added: 0007855                          
+01-31-06 23:30 DjCoke         New Issue                                    
+01-31-06 23:30 DjCoke         Distribution              => Gentoo          
+01-31-06 23:30 DjCoke         Kernel Version            => 2.6.15-gentoo-r1
 ======================================================================
 
 
