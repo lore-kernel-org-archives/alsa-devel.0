@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001801]: Audiophile USB noisy analog capture
-Date: Tue, 31 Jan 2006 16:04:43 +0100
-Message-ID: <01f48b14be00e8e1dba7162d5a69c989@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001802]: error: structure has no member named `cur_altsetting'
+Date: Tue, 31 Jan 2006 16:44:58 +0100
+Message-ID: <acee6f009d6432d86183b567ab610a49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 177571DB
-	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 16:04:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9CDE1DD
+	for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 16:44:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1801> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1802> 
 ======================================================================
-Reported By:                lemeur
-Assigned To:                Clemens Ladisch
+Reported By:                ldrolez
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1801
-Category:                   USB - usb-audio
-Reproducibility:            sometimes
+Issue ID:                   1802
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.15.1-rt3
+Distribution:               Debian
+Kernel Version:             2.6.4
 ======================================================================
-Date Submitted:             01-31-2006 16:04 CET
-Last Modified:              01-31-2006 16:04 CET
+Date Submitted:             01-31-2006 16:44 CET
+Last Modified:              01-31-2006 16:44 CET
 ======================================================================
-Summary:                    Audiophile USB noisy analog capture
+Summary:                    error: structure has no member named
+`cur_altsetting'
 Description: 
-The audiophile usb analog capture interface seems to be unreliably
-initialized by the ALSA driver.
+Here is the make error:
 
-Just after bootup (or after an /etc/init.d/alsasound restart) the sound
-recorded on the analog capture port is sometimes either:
-- Case A: saturated/distorted (as if it had a very high volume gain)
-or
-- Case B: completly inaudible and loud white noised
-or
-- Case C: sometimes the sound is good
-
-This issue affects:
-* only the analog capture interface and not the SPDIF digital capture
-interface
-* playback is always working
-* both hw:1,1 (analog capture) and plughw:1,1 (analog cpautre with plug)
-
+...
+...
+  CC [M]  /tmp/alsa-driver-1.0.11rc3/acore/seq/oss/seq_oss_synth.o
+  CC [M]  /tmp/alsa-driver-1.0.11rc3/acore/seq/oss/seq_oss_midi.o
+  CC [M]  /tmp/alsa-driver-1.0.11rc3/acore/seq/oss/seq_oss_readq.o
+  CC [M]  /tmp/alsa-driver-1.0.11rc3/acore/seq/oss/seq_oss_writeq.o
+  LD [M]  /tmp/alsa-driver-1.0.11rc3/acore/seq/oss/snd-seq-oss.o
+  CC [M]  /tmp/alsa-driver-1.0.11rc3/usb/usbaudio.o
+  CC [M]  /tmp/alsa-driver-1.0.11rc3/usb/usbmixer.o
+/tmp/alsa-driver-1.0.11rc3/usb/usbmixer.c: In function
+`snd_usb_mixer_disconnect':
+/tmp/alsa-driver-1.0.11rc3/usb/usbmixer.c:2011: warning: implicit
+declaration of function `usb_kill_urb'
+  CC [M]  /tmp/alsa-driver-1.0.11rc3/usb/usbmidi.o
+/tmp/alsa-driver-1.0.11rc3/usb/usbmidi.c: In function
+`snd_usbmidi_detect_endpoints':
+/tmp/alsa-driver-1.0.11rc3/usb/usbmidi.c:1312: error: structure has no
+member named `cur_altsetting'
+make[3]: *** [/tmp/alsa-driver-1.0.11rc3/usb/usbmidi.o] Error 1
+make[2]: *** [/tmp/alsa-driver-1.0.11rc3/usb] Error 2
+make[1]: *** [/tmp/alsa-driver-1.0.11rc3] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.4'
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-06 16:04 lemeur         New Issue                                    
-01-31-06 16:04 lemeur         Kernel Version            => 2.6.15.1-rt3    
+01-31-06 16:44 ldrolez        New Issue                                    
+01-31-06 16:44 ldrolez        Distribution              => Debian          
+01-31-06 16:44 ldrolez        Kernel Version            => 2.6.4           
 ======================================================================
 
 
