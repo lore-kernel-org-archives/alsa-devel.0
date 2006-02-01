@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001778]: Only sound on line-out jack
-Date: Wed, 1 Feb 2006 12:41:35 +0100
-Message-ID: <401ce49c3c83e5206de723d2fb455091@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001805]: sound in headphones, but not in speakers with SIS 7012 ALC 655 rev 0
+Date: Wed, 1 Feb 2006 16:33:38 +0100
+Message-ID: <5bd6026ee7ff88c287c1be8b4ea58aa0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 100C01DF
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2006 12:41:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D62761E1
+	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2006 16:33:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1778> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1805> 
 ======================================================================
-Reported By:                pw
-Assigned To:                tiwai
+Reported By:                dragonic_pchan
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1778
-Category:                   PCI - hda-intel
+Issue ID:                   1805
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               mandriva linux 2006
+Kernel Version:             2.6.15.2
 ======================================================================
-Date Submitted:             01-24-2006 15:24 CET
-Last Modified:              02-01-2006 12:41 CET
+Date Submitted:             02-01-2006 16:33 CET
+Last Modified:              02-01-2006 16:33 CET
 ======================================================================
-Summary:                    Only sound on line-out jack
+Summary:                    sound in headphones, but not in speakers with SIS
+7012 ALC 655 rev 0
 Description: 
-I'm using a Acer Extensa 6702-100 notebook (Intel ICH6 chipset / kernel
-2.6.15 / alsa-driver 1.0.11-rc2). The notebook has internal stereo
-speakers, a built-in microphone and three jacks (line-out, microphone and
-headphones).
+I dont have sounds through the speakers of my laptop (MSI megabook S250),
+but i can hear sound through headphones. I tried to mute/unmute things in
+alsamixer while headphones are plugged and mplayer is playing music. Here
+are the results :
 
-I've loaded the snd-hda-intel module with every model listed in the
-documentation. When using the fujitsu model option I'm getting sound on
-the line-out jack. The internal speakers, built-in microphone and
-headphone jack don't work. I've not tested the mic jack yet.
+master button : mutes sounds
+pcm button : mutes sound
+phones button : doesn't mute sound !!!
+other buttons do nothing when muting
+
+Under windows sounds works fine. Nothing changes wether i use in-kernel
+alsa or the latest alsa 1.0.11rc3.
+
+Note : I have to pass option "nolapic" to the kernel for the sound card to
+work, as well as the ethenet card.
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- blackr2d - 01-25-06 11:51 
-----------------------------------------------------------------------
-Duplicate of 1572 - mixer controls not picked up correctly for ALC880
-
-----------------------------------------------------------------------
- pw - 02-01-06 12:41 
-----------------------------------------------------------------------
-AFAIK mine is an ALC260 chipset... however, maybe it's the same issue
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-06 15:24 pw             New Issue                                    
-01-24-06 15:26 pw             File Added: codec#0                          
-01-24-06 15:27 pw             File Added: codec#1                          
-01-25-06 11:51 blackr2d       Note Added: 0007777                          
-02-01-06 12:41 pw             Note Added: 0007859                          
+02-01-06 16:33 dragonic_pchan New Issue                                    
+02-01-06 16:33 dragonic_pchan File Added: asound.state                     
+02-01-06 16:33 dragonic_pchan Distribution              => mandriva linux 2006
+02-01-06 16:33 dragonic_pchan Kernel Version            => 2.6.15.2        
 ======================================================================
 
 
