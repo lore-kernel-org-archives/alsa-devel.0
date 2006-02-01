@@ -1,11 +1,14 @@
-From: "Cathal Mullaney" <cathal.mullaney2@mail.dcu.ie>
-Subject: Help Wanted?
-Date: Wed, 1 Feb 2006 22:33:43 +0000
-Message-ID: <4345459A000A66C3@hawk.dcu.ie>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001807]: Sound playback hangs and loops on first buffer
+Date: Thu, 2 Feb 2006 00:15:39 +0100
+Message-ID: <c3edb8da819f0860264c524c3fd58e07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94FED1AF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 00:15:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,36 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hullo All,
-   I am a recent CS graduate and have been developing C++ applications us=
-ing
-alsa for a number of years now and would like, if possible, to give somet=
-hing
-back as it were. As I have been developing apps. with alsa over a variety=
 
-of hardware architectures I have noticed a few bugs and unattractive feat=
-ures
-which I would be willing to attempt to address. This list seems a sortof
-I have a problem with "X" please help me, are there active projects withi=
-n
-ALSA that require developers or should I identify a problem and focus my
-attention on it? I have no experience writing device drivers for Linux bu=
-t
-I have read various faqs concerning kernel module programming etc and am
-willing to learn any necessary skills. I have a reasonable amount of free=
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1807> 
+======================================================================
+Reported By:                hno
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1807
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5 test 2 + relevant updates (kernel,
+alsa)
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             02-02-2006 00:15 CET
+Last Modified:              02-02-2006 00:15 CET
+======================================================================
+Summary:                    Sound playback hangs and loops on first buffer
+Description: 
+Trying to play any sound or music produces a never ending loop of the first
+1/2 second or so.
+======================================================================
 
-time to devote to such a worthy cause and am always willing to learn new
-skills. All I would ask in return is to be credited for anything I contri=
-bute.
-Anyone willing to put me to work please reply to my email address or to t=
-he
-list. 
-
-Yours Sincerely,
-Cathal
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-02-06 00:15 hno            New Issue                                    
+02-02-06 00:15 hno            Distribution              => Fedora Core 5 test 2
++ relevant updates (kernel, alsa)
+02-02-06 00:15 hno            Kernel Version            => 2.6.15          
+======================================================================
 
 
 
