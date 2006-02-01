@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Mon, 9 Jan 2006 22:12:31 +0100
-Message-ID: <66b877e42432b90ae9a27f53685c72c1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
+Date: Wed, 1 Feb 2006 10:32:28 +0100
+Message-ID: <70371f8c2fddf6f9251dac3500419cbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6351F141
-	for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2006 22:12:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0AA219A
+	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2006 10:32:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +22,178 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
 ======================================================================
-Reported By:                gflash
-Assigned To:                jcdutton
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   927
-Category:                   1_OTHERS
+Issue ID:                   1724
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     closed
+Status:                     assigned
 Distribution:               
 Kernel Version:             
-Resolution:                 open
-Fixed in Version:           
 ======================================================================
-Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              01-09-2006 22:12 CET
+Date Submitted:             01-07-2006 05:10 CET
+Last Modified:              02-01-2006 10:32 CET
 ======================================================================
-Summary:                    Support for Creative SB Audigy 2 ZS Notebook
+Summary:                    au88x0 PCM configuration problem - buffer_size
+constraint
 Description: 
-Is this PCMCIA Souncard supported or will it be supported in the next time?
-I haven't heard any positive reports yet...
+/cvs/alsa-lib/test/pcm_min
 
-Thank you!
+ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
+(latency) 500000 for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
+
+sound card is au8830, the au88x0 driver only accept period size in power
+of 2.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001766 jackd : ALSA: cannot set period size to...
 ======================================================================
 
 ----------------------------------------------------------------------
- scoobydu - 01-03-06 14:00 
+ perex - 02-01-06 07:35 
 ----------------------------------------------------------------------
-Great work getting this card going! Thanks :)
-
-I'm testing on a Powerbook 5,6 15" and have the same distortion mentioned,
-but can't test 1.0.11-rc2 due to module errors occuring with snd (will be
-upodating here when I see if I can isolate the problem)
-
-Keep up the good work.
-
-cheers
-scooby
+The error message should be fixed now. Could you enable RULES_DEBUG to see
+what's going wrong?
 
 ----------------------------------------------------------------------
- jcdutton - 01-09-06 22:12 
+ Raymond - 02-01-06 10:32 
 ----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.11-rc2 or above.
+Rule 4 [e1cfb980]: FRAME_BITS = [8 8] -> [8 8]
+Rule 7 [e1cfb980]: RATE = [48000 48000] -> [48000 48000]
+Rule 9 [e1cfb890]: PERIODS = [6 22] -> empty
+ACCESS = 00000000ffffffffffffffff -> 0000000000000009
+FORMAT = 00000000ffffffffffffffff -> 000000000000300006
+SUBFORMAT = 00000000ffffffffffffffff -> 0000000000000001
+SAMPLE_BITS = [0 4294967295] -> [0 4294967295]
+FRAME_BITS = [0 4294967295] -> [0 4294967295]
+CHANNELS = [0 4294967295] -> [1 4]
+RATE = [0 4294967295] -> [5000 48000]
+PERIOD_TIME = [0 4294967295] -> [0 4294967295]
+PERIOD_SIZE = [0 4294967295] -> [0 4294967295]
+PERIOD_BYTES = [0 4294967295] -> [1 4096]
+PERIODS = [0 4294967295] -> [2 32]
+BUFFER_TIME = [0 4294967295] -> [0 4294967295]
+BUFFER_SIZE = [0 4294967295] -> [0 4294967295]
+BUFFER_BYTES = [0 4294967295] -> [1 65536]
+TICK_TIME = [0 4294967295] -> [10000 10000]
+Rule 0 [e1cfba00]: FORMAT = 300006 -> 300006
+Rule 1 [e1cfbb30]: SAMPLE_BITS = [0 4294967295] -> [8 16]
+Rule 2 [e1cfb890]: SAMPLE_BITS = [8 16] -> [8 16]
+Rule 3 [e1cfb820]: FRAME_BITS = [0 4294967295] -> [8 64]
+Rule 4 [e1cfb980]: FRAME_BITS = [8 64] -> [8 64]
+Rule 5 [e1cfb980]: FRAME_BITS = [8 64] -> [8 64]
+Rule 6 [e1cfb890]: CHANNELS = [1 4] -> [1 4]
+Rule 7 [e1cfb980]: RATE = [5000 48000] -> [5000 48000]
+Rule 8 [e1cfb980]: RATE = [5000 48000] -> [5000 48000]
+Rule 9 [e1cfb890]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfb890]: PERIOD_SIZE = [0 4294967295] -> [0 2147483647]
+Rule 11 [e1cfb980]: PERIOD_SIZE = [0 2147483647] -> [1 4096]
+Rule 12 [e1cfb900]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 13 [e1cfb820]: BUFFER_SIZE = [0 4294967295] -> [2 131072]
+Rule 14 [e1cfb980]: BUFFER_SIZE = [2 131072] -> [2 65536]
+Rule 15 [e1cfb900]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 16 [e1cfb900]: PERIOD_BYTES = [1 4096] -> [1 4096]
+Rule 17 [e1cfb900]: BUFFER_BYTES = [1 65536] -> [2 65536]
+Rule 18 [e1cfb980]: PERIOD_TIME = [0 4294967295] -> (20 819200]
+Rule 19 [e1cfb980]: BUFFER_TIME = [0 4294967295] -> (41 13107200]
+Rule 20 [e1d007b0]: PERIOD_BYTES = [1 4096] -> [1 4096]
+Rule 21 [e1cfbc20]: BUFFER_BYTES = [2 65536] -> [2 65536]
+Rule 0 [e1cfba00]: FORMAT = 300006 -> 300006
+Rule 2 [e1cfb890]: SAMPLE_BITS = [8 16] -> [8 16]
+Rule 4 [e1cfb980]: FRAME_BITS = [8 64] -> [8 64]
+Rule 5 [e1cfb980]: FRAME_BITS = [8 64] -> [8 64]
+Rule 7 [e1cfb980]: RATE = [5000 48000] -> [5000 48000]
+Rule 8 [e1cfb980]: RATE = [5000 48000] -> [5000 48000]
+Rule 9 [e1cfb890]: PERIODS = [2 32] -> [2 32]
+Rule 10 [e1cfb890]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 12 [e1cfb900]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 14 [e1cfb980]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 15 [e1cfb900]: BUFFER_SIZE = [2 65536] -> [2 65536]
+RATE = [48000 48000] -> [48000 48000]
+Rule 12 [e1cfb900]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 15 [e1cfb900]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 18 [e1cfb980]: PERIOD_TIME = (20 819200] -> (20 85334)
+Rule 19 [e1cfb980]: BUFFER_TIME = (41 13107200] -> (41 1365334)
+Rule 7 [e1cfb980]: RATE = [48000 48000] -> [48000 48000]
+Rule 8 [e1cfb980]: RATE = [48000 48000] -> [48000 48000]
+Rule 12 [e1cfb900]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 15 [e1cfb900]: BUFFER_SIZE = [2 65536] -> [2 65536]
+CHANNELS = [1 1] -> [1 1]
+Rule 2 [e1cfb890]: SAMPLE_BITS = [8 16] -> [8 16]
+Rule 3 [e1cfb820]: FRAME_BITS = [8 64] -> [8 16]
+Rule 6 [e1cfb890]: CHANNELS = [1 1] -> [1 1]
+Rule 11 [e1cfb980]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 14 [e1cfb980]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 16 [e1cfb900]: PERIOD_BYTES = [1 4096] -> [1 4096]
+Rule 17 [e1cfb900]: BUFFER_BYTES = [2 65536] -> [2 65536]
+Rule 2 [e1cfb890]: SAMPLE_BITS = [8 16] -> [8 16]
+FORMAT = 0000000000000002 -> 0000000000000002
+Rule 1 [e1cfbb30]: SAMPLE_BITS = [8 16] -> [8 8]
+Rule 3 [e1cfb820]: FRAME_BITS = [8 16] -> [8 8]
+Rule 6 [e1cfb890]: CHANNELS = [1 1] -> [1 1]
+Rule 11 [e1cfb980]: PERIOD_SIZE = [1 4096] -> [1 4096]
+Rule 14 [e1cfb980]: BUFFER_SIZE = [2 65536] -> [2 65536]
+Rule 16 [e1cfb900]: PERIOD_BYTES = [1 4096] -> [1 4096]
+Rule 17 [e1cfb900]: BUFFER_BYTES = [2 65536] -> [2 65536]
+Rule 0 [e1cfba00]: FORMAT = 2 -> 2
+Rule 2 [e1cfb890]: SAMPLE_BITS = [8 8] -> [8 8]
+PERIOD_TIME = (42666 42667) -> (42666 42667)
+PERIOD_SIZE = [2048 2048] -> [2048 2048]
+BUFFER_SIZE = [24000 24000] -> [24000 24000]
+Rule 4 [e1cfb980]: FRAME_BITS = [8 8] -> [8 8]
+Rule 5 [e1cfb980]: FRAME_BITS = [8 8] -> [8 8]
+Rule 7 [e1cfb980]: RATE = [48000 48000] -> [48000 48000]
+Rule 8 [e1cfb980]: RATE = [48000 48000] -> [48000 48000]
+Rule 9 [e1cfb890]: PERIODS = [2 32] -> empty
+
+
+alsa-lib/test/pcm_min
+ALSA lib pcm.c:7148:(snd_pcm_set_params) Unable to set period time 125000
+for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-20-05 08:53 gflash         New Issue                                    
-02-20-05 12:32 jcdutton       Note Added: 0003673                          
-02-20-05 14:06 gflash         Note Added: 0003674                          
-02-20-05 14:39 jcdutton       Note Added: 0003675                          
-02-20-05 14:47 jcdutton       Note Edited: 0003675                         
-07-25-05 17:43 dale           Note Added: 0005564                          
-07-31-05 03:52 buckvitulli    Issue Monitored: buckvitulli                    
-08-01-05 01:03 jpeak          Issue Monitored: jpeak                       
-10-30-05 21:08 jcdutton       Note Added: 0006577                          
-10-31-05 00:55 buckvitulli    Note Added: 0006578                          
-10-31-05 12:43 jcdutton       Status                   new => assigned     
-10-31-05 12:43 jcdutton       Assigned To               => jcdutton        
-11-30-05 15:57 bubbleguuum    Note Added: 0006876                          
-11-30-05 15:58 bubbleguuum    Issue Monitored: bubbleguuum                    
-12-06-05 02:55 hades          Issue Monitored: hades                       
-12-06-05 02:56 hades          Note Added: 0006918                          
-12-06-05 13:26 jpeak          Issue End Monitor: jpeak                     
-12-13-05 12:15 jcdutton       Note Added: 0006990                          
-12-21-05 16:07 jcdutton       File Added: audigy2-notebook-sound-fix.diff       
-            
-12-21-05 16:09 jcdutton       Note Added: 0007109                          
-12-21-05 16:31 jcdutton       File Added: audigy-notebook-speakers-enable.diff  
-                 
-12-21-05 16:32 jcdutton       Note Added: 0007110                          
-12-21-05 18:12 bubbleguuum    Note Added: 0007111                          
-12-24-05 19:34 maiku          Issue Monitored: maiku                       
-01-03-06 02:06 xavimetal      Note Added: 0007395                          
-01-03-06 03:37 rlrevell       Note Added: 0007396                          
-01-03-06 14:00 scoobydu       Note Added: 0007402                          
-01-04-06 01:17 scoobydu       Issue Monitored: scoobydu                    
-01-09-06 22:12 jcdutton       Status                   assigned => closed  
-01-09-06 22:12 jcdutton       Note Added: 0007542                          
+01-07-06 05:10 Raymond        New Issue                                    
+01-09-06 15:19 Raymond        Note Added: 0007537                          
+01-19-06 15:04 Raymond        Note Deleted: 0007537                        
+01-19-06 15:36 Raymond        Note Added: 0007721                          
+01-28-06 07:58 Raymond        Note Added: 0007828                          
+01-28-06 07:58 Raymond        Note Deleted: 0007721                        
+01-30-06 18:46 Raymond        Note Added: 0007840                          
+01-31-06 03:15 Raymond        Note Added: 0007844                          
+01-31-06 06:41 Raymond        Note Edited: 0007840                         
+01-31-06 07:03 Raymond        Note Edited: 0007840                         
+01-31-06 07:08 Raymond        Note Edited: 0007840                         
+01-31-06 07:11 Raymond        Note Edited: 0007840                         
+01-31-06 08:31 Raymond        Note Edited: 0007840                         
+01-31-06 09:48 Raymond        Note Edited: 0007844                         
+01-31-06 10:19 perex          Note Added: 0007845                          
+01-31-06 10:26 perex          Note Added: 0007847                          
+01-31-06 10:26 perex          Note Edited: 0007847                         
+01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
+driver
+01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
+01-31-06 10:49 perex          Summary                  simple PCM helper
+function => au88x0 PCM configuration problem - buffer_size constraint
+01-31-06 11:06 Raymond        Note Added: 0007848                          
+01-31-06 13:48 perex          Status                   new => assigned     
+01-31-06 13:48 perex          Assigned To               => mjander         
+01-31-06 13:49 perex          Relationship added       related to 0001766  
+01-31-06 15:59 Raymond        Note Added: 0007852                          
+02-01-06 07:35 perex          Note Added: 0007857                          
+02-01-06 10:32 Raymond        Note Added: 0007858                          
 ======================================================================
 
 
@@ -115,4 +203,4 @@ Date Modified  Username       Field                    Change
 This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://ads.osdn.com/?ad_id=7637&alloc_id=16865&op=click
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
