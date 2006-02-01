@@ -1,18 +1,14 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: 2.6.16-rc1-mm4: ALSA oops at remove_proc_entry
-Date: Wed, 1 Feb 2006 04:47:21 +0300
-Message-ID: <20060201014721.GA7720__37028.6332713023$1138759054$gmane$org@mipter.zuzino.mipt.ru>
-References: <20060129144533.128af741.akpm@osdl.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
+Date: Wed, 1 Feb 2006 07:35:49 +0100
+Message-ID: <959383c1c592a1a03a231202a5a74266@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from uproxy.gmail.com (uproxy.gmail.com [66.249.92.198])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B261C1F8
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2006 02:29:12 +0100 (MET)
-Received: by uproxy.gmail.com with SMTP id m2so88816ugc
-        for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2006 17:29:11 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20060129144533.128af741.akpm@osdl.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9284D1A8
+	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2006 07:35:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +18,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-My bisect script told me that
 
-Sucker is git-alsa.patch
----------------------------------------------
-EIP is at remove_proc_entry
-Process rmmod
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1724
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-07-2006 05:10 CET
+Last Modified:              02-01-2006 07:35 CET
+======================================================================
+Summary:                    au88x0 PCM configuration problem - buffer_size
+constraint
+Description: 
+/cvs/alsa-lib/test/pcm_min
 
-snd_info_unregister		[snd]
-snd_pcm_oss_proc_done		[snd_pcm_oss]
-snd_pcm_oss_unregister_minor	[snd_pcm_oss]
-snd_pcm_notify			[snd_pcm]
-sys_delete_module
-do_munmap
-syscall_call
+ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
+(latency) 500000 for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
 
-.config
--------
-CONFIG_SOUND=m
-CONFIG_SND=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-# CONFIG_SND_SEQUENCER is not set
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=m
-CONFIG_SND_PCM_OSS=m
-# CONFIG_SND_PCM_OSS_PLUGINS is not set
-# CONFIG_SND_RTCTIMER is not set
-# CONFIG_SND_DYNAMIC_MINORS is not set
-# CONFIG_SND_SUPPORT_OLD_API is not set
-# CONFIG_SND_VERBOSE_PROCFS is not set
-# CONFIG_SND_VERBOSE_PRINTK is not set
-# CONFIG_SND_DEBUG is not set
-CONFIG_SND_AC97_CODEC=m
-CONFIG_SND_AC97_BUS=m
-CONFIG_SND_INTEL8X0=m
+sound card is au8830, the au88x0 driver only accept period size in power
+of 2.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001766 jackd : ALSA: cannot set period size to...
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 01-31-06 15:59 
+----------------------------------------------------------------------
+Your workaround to snd_pcm_set_params() in CVS do not work.
+
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/pcm/pcm.c?r1=1.319&r2=1.320
+
+alsa/cvs/alsa-lib/test/pcm_min
+ALSA lib pcm.c:7148:(snd_pcm_set_params) Segmentation fault
+
+----------------------------------------------------------------------
+ perex - 02-01-06 07:35 
+----------------------------------------------------------------------
+The error message should be fixed now. Could you enable RULES_DEBUG to see
+what's going wrong?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-07-06 05:10 Raymond        New Issue                                    
+01-09-06 15:19 Raymond        Note Added: 0007537                          
+01-19-06 15:04 Raymond        Note Deleted: 0007537                        
+01-19-06 15:36 Raymond        Note Added: 0007721                          
+01-28-06 07:58 Raymond        Note Added: 0007828                          
+01-28-06 07:58 Raymond        Note Deleted: 0007721                        
+01-30-06 18:46 Raymond        Note Added: 0007840                          
+01-31-06 03:15 Raymond        Note Added: 0007844                          
+01-31-06 06:41 Raymond        Note Edited: 0007840                         
+01-31-06 07:03 Raymond        Note Edited: 0007840                         
+01-31-06 07:08 Raymond        Note Edited: 0007840                         
+01-31-06 07:11 Raymond        Note Edited: 0007840                         
+01-31-06 08:31 Raymond        Note Edited: 0007840                         
+01-31-06 09:48 Raymond        Note Edited: 0007844                         
+01-31-06 10:19 perex          Note Added: 0007845                          
+01-31-06 10:26 perex          Note Added: 0007847                          
+01-31-06 10:26 perex          Note Edited: 0007847                         
+01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
+driver
+01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
+01-31-06 10:49 perex          Summary                  simple PCM helper
+function => au88x0 PCM configuration problem - buffer_size constraint
+01-31-06 11:06 Raymond        Note Added: 0007848                          
+01-31-06 13:48 perex          Status                   new => assigned     
+01-31-06 13:48 perex          Assigned To               => mjander         
+01-31-06 13:49 perex          Relationship added       related to 0001766  
+01-31-06 15:59 Raymond        Note Added: 0007852                          
+02-01-06 07:35 perex          Note Added: 0007857                          
+======================================================================
+
 
 
 
