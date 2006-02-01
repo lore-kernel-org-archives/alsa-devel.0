@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
-Date: Wed, 1 Feb 2006 23:06:57 +0100
-Message-ID: <6a274f8149f1cbc7ffec628dd9179f5d@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Help Wanted?
+Date: Wed, 01 Feb 2006 17:57:01 -0500
+Message-ID: <1138834622.27434.103.camel@mindpipe>
+References: <4345459A000A66C3@hawk.dcu.ie>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C44B1AE
-	for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2006 23:06:57 +0100 (MET)
+In-Reply-To: <4345459A000A66C3@hawk.dcu.ie>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Cathal Mullaney <cathal.mullaney2@mail.dcu.ie>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-02-01 at 22:33 +0000, Cathal Mullaney wrote:
+> Hullo All,
+>    I am a recent CS graduate and have been developing C++ applications using
+> alsa for a number of years now and would like, if possible, to give something
+> back as it were. As I have been developing apps. with alsa over a variety
+> of hardware architectures I have noticed a few bugs and unattractive features
+> which I would be willing to attempt to address. This list seems a sortof
+> I have a problem with "X" please help me, are there active projects within
+> ALSA that require developers or should I identify a problem and focus my
+> attention on it? I have no experience writing device drivers for Linux but
+> I have read various faqs concerning kernel module programming etc and am
+> willing to learn any necessary skills. I have a reasonable amount of free
+> time to devote to such a worthy cause and am always willing to learn new
+> skills. All I would ask in return is to be credited for anything I contribute.
+> Anyone willing to put me to work please reply to my email address or to the
+> list. 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
-======================================================================
-Reported By:                nostar
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1806
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-01-2006 23:06 CET
-Last Modified:              02-01-2006 23:06 CET
-======================================================================
-Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
-Description: 
-SPDIF output is non existant unless SPDIF In is connected to a valid output
-source.  Then, the signal on SPDIF output is typically just noise.  If I
-toggle between any internal clock setting and SPDIF In using
-envy24control, eventually I will get audible audio.  Using an o-scope on
-the wordclock output, I get flatline unless there is a valid SPDIF Input
-signal.  I can switch to an internal clock setting while there is an SPDIF
-In signal connected, and the Word Clock signal will be present, at the
-frequency of the SPDIF In signal though, and not the frequency of the
-selected internal clock frequency.
+Many, many people would be happy if you could fix the "Skype does not
+work with aoss" bug.  It's tricky as the source code of Skype is not
+available, but some people report that they can reproduce the issue with
+some open source VOIP apps like kiax and wengophone.
 
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1228
 
-======================================================================
+The bug seems to be hardware or system dependent - for some people it
+just works.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-01-06 23:06 nostar         New Issue                                    
-02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
-    
-======================================================================
-
+Lee
 
 
 
