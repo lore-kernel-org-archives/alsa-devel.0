@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001776]: Synchronisation of two m-audio delta 1010 cards
-Date: Thu, 2 Feb 2006 09:21:33 +0100
-Message-ID: <55aaa5798eeecdd6beef1b2923683812@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001803]: hda-intel on my amilo fujitsu laptop dont produces any sound
+Date: Thu, 2 Feb 2006 10:11:16 +0100
+Message-ID: <850c8ff84e0fb984adc567fde9cec26d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C12381E1
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 09:21:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10C211BB
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 10:11:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,79 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1776> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1803> 
 ======================================================================
-Reported By:                Schafwoller
-Assigned To:                perex
+Reported By:                DjCoke
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1776
-Category:                   PCI - ice1712
+Issue ID:                   1803
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.13
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r1
 ======================================================================
-Date Submitted:             01-23-2006 18:32 CET
-Last Modified:              02-02-2006 09:21 CET
+Date Submitted:             01-31-2006 23:30 CET
+Last Modified:              02-02-2006 10:11 CET
 ======================================================================
-Summary:                    Synchronisation of two m-audio delta 1010 cards
+Summary:                    hda-intel on my amilo fujitsu laptop dont produces
+any sound
 Description: 
-Now we´re able to use two ice1712 cards full duplex and without xruns. The
-synchronisation via word-clock (with the "no-signal"-state in
-envy24control) seems to work for audio up to 48kHz (using 75Ohm cable).
-Midi is running on both cards without any problems. We're able to use a tc
-m-one(external multi-effects-processor) over spdif connected to the master
-sound card.
-The problems:
-While using 88,2 kHz we get a lot of noise on the pcm-inputs of the
-slave-card. Also sending and receiving to/from m-one over spdif on the
-slave-card (using 48kHz) is impossible. The sync-signal seems to be broken
-because the m-one is reporting error messages regarding a wrong sync-rate!
+driver don't procuce any sound at all.
+
+
+I have a amilo fujitsu laptop.
 ======================================================================
 
 ----------------------------------------------------------------------
- johnrigg - 01-24-06 01:31 
+ DjCoke - 02-01-06 19:13 
 ----------------------------------------------------------------------
-I don't know about the S/PDIF problem as I don't have any S/PDIF
-equipment,
-but I have experienced noise one one card's pcm inputs. It disappeared
-when I rebooted. I think there's a problem with syncing the Delta 1010s at
-over 48kHz.
-The manual (English version) says the word clock inputs only take up to
-50kHz. I emailed M-Audio about this and they said they go to 96kHz.
-However, I just noticed that one of my cards can sync to 96kHz but the
-other one can only manage 88.2kHz. I've been getting some weird behaviour
-when running two cards at 96kHz, but at 48kHz they are reliable. I suspect
-the manual might be right.
+Fixed ;)
 
-BTW the 'No signal/Locked' indicator is fixed in CVS so it now works the
-right way around.
+I've tried several things now and it just worked...
+
+with option=6stack position_fix=3
+But i dont have other sound ports then the micplug and earplug so i dont
+understand why it works now but it works and very loud ;) forgotten to
+lower the volume hehe
+
+Btw i can get it only work when im root, so thats permission issue i
+suppose
 
 ----------------------------------------------------------------------
- perex - 02-02-06 09:21 
+ ash - 02-02-06 10:11 
 ----------------------------------------------------------------------
-We cannot do much in the driver. There is only one GPIO bit which selects
-the wordclock, so I think that note by johnrigg that you're trying to go
-beyond the hardware capabilities might be right.
+Yup, the permissions thing is nothing to do with ALSA.
+Create a user group and called it 'audio' for example. Assign all the
+users to that group who are to have audio access. Then chgrp your device
+files to group 'audio'.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-23-06 18:32 Schafwoller    New Issue                                    
-01-23-06 18:32 Schafwoller    Kernel Version            => 2.6.13          
-01-23-06 18:34 Schafwoller    Issue Monitored: Schafwoller                    
-01-24-06 01:31 johnrigg       Note Added: 0007768                          
-02-02-06 09:21 perex          Status                   new => resolved     
-02-02-06 09:21 perex          Resolution               open => not an issue
-02-02-06 09:21 perex          Assigned To               => perex           
-02-02-06 09:21 perex          Note Added: 0007872                          
+01-31-06 23:30 DjCoke         New Issue                                    
+01-31-06 23:30 DjCoke         Distribution              => Gentoo          
+01-31-06 23:30 DjCoke         Kernel Version            => 2.6.15-gentoo-r1
+01-31-06 23:32 DjCoke         Issue Monitored: DjCoke                      
+01-31-06 23:34 DjCoke         Note Added: 0007856                          
+02-01-06 18:27 DjCoke         Note Added: 0007862                          
+02-01-06 19:13 DjCoke         Note Added: 0007863                          
+02-02-06 10:11 ash            Note Added: 0007873                          
 ======================================================================
 
 
