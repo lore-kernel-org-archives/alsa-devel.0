@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001728]: Modification of volume control for M-Audio Revolution 5.1
-Date: Thu, 2 Feb 2006 15:15:07 +0100
-Message-ID: <ef51b4fc2826d57ee5001b2adf5efadc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001609]: Sound Blaster 24bit (SB0410) PCI card (in PCI-X slot) not producing any sound
+Date: Thu, 2 Feb 2006 18:26:41 +0100
+Message-ID: <38f7fe6aee087d647433fef93111eb61@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F16831BD
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 15:15:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B22011E6
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 18:26:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,402 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1728> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1609> 
 ======================================================================
-Reported By:                cyan
-Assigned To:                
+Reported By:                esgeraul
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1728
-Category:                   PCI - ice1724
+Issue ID:                   1609
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               gentoo testing
-Kernel Version:             2.6.14-gentoo-r5
+Status:                     assigned
+Distribution:               SuSE 9.2
+Kernel Version:             2.6.14.2
 ======================================================================
-Date Submitted:             01-09-2006 23:35 CET
-Last Modified:              02-02-2006 15:15 CET
+Date Submitted:             11-30-2005 17:55 CET
+Last Modified:              02-02-2006 18:26 CET
 ======================================================================
-Summary:                    Modification of volume control for M-Audio
-Revolution 5.1
+Summary:                    Sound Blaster 24bit (SB0410) PCI card (in PCI-X
+slot) not producing any sound
 Description: 
-In Alsamixer (and KMix) is not possible to change volume of both chanels at
-once. Slides with names "DAC" and "DAC1" corresponds to left and right
-chanel. 
-I would like to make a suggestion to merge them together.
+(see also the alsa-user thread with the same subject.)
+
+The card is recognized, all modules load, mixer settings are ok. But aplay
+playing a wav file hangs while never producing any sound. 
+
+Tested with alsa 1.0.9 and 1.0.10, kernel version 2.6.14.2 (stock,
+non-suse)
+
+
+aadebug output:
+
+ALSA Audio Debug v0.1.0 - Wed Nov 30 17:58:27 CET 2005
+http://alsa.opensrc.org/index.php?page=aadebug
+http://www.gnu.org/licenses/gpl.txt
+ 
+Kernel ----------------------------------------------------
+Linux pipe 2.6.14.2 #4 SMP PREEMPT Wed Nov 30 11:43:20 CET 2005 i686 i686
+i386 GNU/Linux
+ 
+Loaded Modules --------------------------------------------
+snd_pcm_oss            56992  0
+snd_mixer_oss          22912  1 snd_pcm_oss
+snd_ca0106             34596  0
+snd_ac97_codec         94332  1 snd_ca0106
+snd_pcm                97412  3 snd_pcm_oss,snd_ca0106,snd_ac97_codec
+snd_timer              30084  1 snd_pcm
+snd                    59876  6
+snd_pcm_oss,snd_mixer_oss,snd_ca0106,snd_ac97_codec,snd_pcm,snd_timer
+snd_ac97_bus            6400  1 snd_ac97_codec
+snd_page_alloc         14728  2 snd_ca0106,snd_pcm
+ 
+Proc Config -----------------------------------------------
+CONFIG_SOUND=m
+CONFIG_SND=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
+CONFIG_SND_SEQUENCER=m
+# CONFIG_SND_SEQ_DUMMY is not set
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=m
+CONFIG_SND_PCM_OSS=m
+CONFIG_SND_SEQUENCER_OSS=y
+# CONFIG_SND_RTCTIMER is not set
+# CONFIG_SND_VERBOSE_PRINTK is not set
+# CONFIG_SND_DEBUG is not set
+# CONFIG_SND_DUMMY is not set
+# CONFIG_SND_VIRMIDI is not set
+# CONFIG_SND_MTPAV is not set
+# CONFIG_SND_SERIAL_U16550 is not set
+# CONFIG_SND_MPU401 is not set
+# CONFIG_SND_AD1816A is not set
+# CONFIG_SND_AD1848 is not set
+# CONFIG_SND_CS4231 is not set
+# CONFIG_SND_CS4232 is not set
+# CONFIG_SND_CS4236 is not set
+# CONFIG_SND_ES968 is not set
+# CONFIG_SND_ES1688 is not set
+# CONFIG_SND_ES18XX is not set
+# CONFIG_SND_GUSCLASSIC is not set
+# CONFIG_SND_GUSEXTREME is not set
+# CONFIG_SND_GUSMAX is not set
+# CONFIG_SND_INTERWAVE is not set
+# CONFIG_SND_INTERWAVE_STB is not set
+# CONFIG_SND_OPTI92X_AD1848 is not set
+# CONFIG_SND_OPTI92X_CS4231 is not set
+# CONFIG_SND_OPTI93X is not set
+# CONFIG_SND_SB8 is not set
+# CONFIG_SND_SB16 is not set
+# CONFIG_SND_SBAWE is not set
+# CONFIG_SND_WAVEFRONT is not set
+# CONFIG_SND_ALS100 is not set
+# CONFIG_SND_AZT2320 is not set
+# CONFIG_SND_CMI8330 is not set
+# CONFIG_SND_DT019X is not set
+# CONFIG_SND_OPL3SA2 is not set
+# CONFIG_SND_SGALAXY is not set
+# CONFIG_SND_SSCAPE is not set
+CONFIG_SND_AC97_CODEC=m
+CONFIG_SND_AC97_BUS=m
+# CONFIG_SND_ALI5451 is not set
+# CONFIG_SND_ATIIXP is not set
+# CONFIG_SND_ATIIXP_MODEM is not set
+# CONFIG_SND_AU8810 is not set
+# CONFIG_SND_AU8820 is not set
+# CONFIG_SND_AU8830 is not set
+# CONFIG_SND_AZT3328 is not set
+# CONFIG_SND_BT87X is not set
+# CONFIG_SND_CS46XX is not set
+# CONFIG_SND_CS4281 is not set
+# CONFIG_SND_EMU10K1 is not set
+# CONFIG_SND_EMU10K1X is not set
+CONFIG_SND_CA0106=m
+# CONFIG_SND_KORG1212 is not set
+# CONFIG_SND_MIXART is not set
+# CONFIG_SND_NM256 is not set
+# CONFIG_SND_RME32 is not set
+# CONFIG_SND_RME96 is not set
+# CONFIG_SND_RME9652 is not set
+# CONFIG_SND_HDSP is not set
+# CONFIG_SND_HDSPM is not set
+# CONFIG_SND_TRIDENT is not set
+# CONFIG_SND_YMFPCI is not set
+# CONFIG_SND_AD1889 is not set
+# CONFIG_SND_ALS4000 is not set
+# CONFIG_SND_CMIPCI is not set
+# CONFIG_SND_ENS1370 is not set
+# CONFIG_SND_ENS1371 is not set
+# CONFIG_SND_ES1938 is not set
+# CONFIG_SND_ES1968 is not set
+# CONFIG_SND_MAESTRO3 is not set
+# CONFIG_SND_FM801 is not set
+# CONFIG_SND_ICE1712 is not set
+# CONFIG_SND_ICE1724 is not set
+# CONFIG_SND_INTEL8X0 is not set
+# CONFIG_SND_INTEL8X0M is not set
+# CONFIG_SND_SONICVIBES is not set
+# CONFIG_SND_VIA82XX is not set
+# CONFIG_SND_VIA82XX_MODEM is not set
+# CONFIG_SND_VX222 is not set
+# CONFIG_SND_HDA_INTEL is not set
+# CONFIG_SND_USB_AUDIO is not set
+# CONFIG_SND_USB_USX2Y is not set
+# CONFIG_SOUND_PRIME is not set
+ 
+Modprobe Conf ---------------------------------------------
+# remove this if sound is configured
+#alias char-major-116 snd
+#alias snd-card-0 snd-ca0106
+#alias char-major-14 soundcore
+#alias sound-slot-0 snd-card-0
+#alias sound-service-0-0 snd-mixer-oss
+#alias sound-service-0-1 snd-seq-oss
+#alias sound-service-0-3 snd-pcm-oss
+#alias sound-service-0-8 snd-seq-oss
+#alias sound-service-0-12 snd-pcm-oss
+#alias sound-slot-1 nvaudio
+ 
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
+08:13:09 2005 UTC).
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! 7.1 24bit [SB0410] at 0x3000 irq 233
+ 19: [0- 3]: digital audio playback
+ 27: [0- 3]: digital audio capture
+ 18: [0- 2]: digital audio playback
+ 26: [0- 2]: digital audio capture
+ 17: [0- 1]: digital audio playback
+ 25: [0- 1]: digital audio capture
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+cat: /proc/asound/hwdep: No such file or directory
+00-00: ca0106 : CA0106 : playback 1 : capture 1
+00-01: ca0106 : CA0106 : playback 1 : capture 1
+00-02: ca0106 : CA0106 : playback 1 : capture 1
+00-03: ca0106 : CA0106 : playback 1 : capture 1
+cat: /proc/asound/seq/clients: No such file or directory
+ 
+Dev Snd ---------------------------------------------------
+controlC0  hwC5D2    midiC2D4  midiC6D2  pcmC1D0c  pcmC2D7c  pcmC4D6c 
+pcmC6D5c
+controlC1  hwC5D3    midiC2D5  midiC6D3  pcmC1D0p  pcmC2D7p  pcmC4D6p 
+pcmC6D5p
+controlC2  hwC6D0    midiC2D6  midiC6D4  pcmC1D1c  pcmC3D0c  pcmC4D7c 
+pcmC6D6c
+controlC3  hwC6D1    midiC2D7  midiC6D5  pcmC1D1p  pcmC3D0p  pcmC4D7p 
+pcmC6D6p
+controlC4  hwC6D2    midiC3D0  midiC6D6  pcmC1D2c  pcmC3D1c  pcmC5D0c 
+pcmC6D7c
+controlC5  hwC6D3    midiC3D1  midiC6D7  pcmC1D2p  pcmC3D1p  pcmC5D0p 
+pcmC6D7p
+controlC6  hwC7D0    midiC3D2  midiC7D0  pcmC1D3c  pcmC3D2c  pcmC5D1c 
+pcmC7D0c
+controlC7  hwC7D1    midiC3D3  midiC7D1  pcmC1D3p  pcmC3D2p  pcmC5D1p 
+pcmC7D0p
+hwC0D0     hwC7D2    midiC3D4  midiC7D2  pcmC1D4c  pcmC3D3c  pcmC5D2c 
+pcmC7D1c
+hwC0D1     hwC7D3    midiC3D5  midiC7D3  pcmC1D4p  pcmC3D3p  pcmC5D2p 
+pcmC7D1p
+hwC0D2     midiC0D0  midiC3D6  midiC7D4  pcmC1D5c  pcmC3D4c  pcmC5D3c 
+pcmC7D2c
+hwC0D3     midiC0D1  midiC3D7  midiC7D5  pcmC1D5p  pcmC3D4p  pcmC5D3p 
+pcmC7D2p
+hwC1D0     midiC0D2  midiC4D0  midiC7D6  pcmC1D6c  pcmC3D5c  pcmC5D4c 
+pcmC7D3c
+hwC1D1     midiC0D3  midiC4D1  midiC7D7  pcmC1D6p  pcmC3D5p  pcmC5D4p 
+pcmC7D3p
+hwC1D2     midiC0D4  midiC4D2  pcmC0D0c  pcmC1D7c  pcmC3D6c  pcmC5D5c 
+pcmC7D4c
+hwC1D3     midiC0D5  midiC4D3  pcmC0D0p  pcmC1D7p  pcmC3D6p  pcmC5D5p 
+pcmC7D4p
+hwC2D0     midiC0D6  midiC4D4  pcmC0D1c  pcmC2D0c  pcmC3D7c  pcmC5D6c 
+pcmC7D5c
+hwC2D1     midiC0D7  midiC4D5  pcmC0D1p  pcmC2D0p  pcmC3D7p  pcmC5D6p 
+pcmC7D5p
+hwC2D2     midiC1D0  midiC4D6  pcmC0D2c  pcmC2D1c  pcmC4D0c  pcmC5D7c 
+pcmC7D6c
+hwC2D3     midiC1D1  midiC4D7  pcmC0D2p  pcmC2D1p  pcmC4D0p  pcmC5D7p 
+pcmC7D6p
+hwC3D0     midiC1D2  midiC5D0  pcmC0D3c  pcmC2D2c  pcmC4D1c  pcmC6D0c 
+pcmC7D7c
+hwC3D1     midiC1D3  midiC5D1  pcmC0D3p  pcmC2D2p  pcmC4D1p  pcmC6D0p 
+pcmC7D7p
+hwC3D2     midiC1D4  midiC5D2  pcmC0D4c  pcmC2D3c  pcmC4D2c  pcmC6D1c 
+seq
+hwC3D3     midiC1D5  midiC5D3  pcmC0D4p  pcmC2D3p  pcmC4D2p  pcmC6D1p 
+timer
+hwC4D0     midiC1D6  midiC5D4  pcmC0D5c  pcmC2D4c  pcmC4D3c  pcmC6D2c
+hwC4D1     midiC1D7  midiC5D5  pcmC0D5p  pcmC2D4p  pcmC4D3p  pcmC6D2p
+hwC4D2     midiC2D0  midiC5D6  pcmC0D6c  pcmC2D5c  pcmC4D4c  pcmC6D3c
+hwC4D3     midiC2D1  midiC5D7  pcmC0D6p  pcmC2D5p  pcmC4D4p  pcmC6D3p
+hwC5D0     midiC2D2  midiC6D0  pcmC0D7c  pcmC2D6c  pcmC4D5c  pcmC6D4c
+hwC5D1     midiC2D3  midiC6D1  pcmC0D7p  pcmC2D6p  pcmC4D5p  pcmC6D4p
+ 
+CPU -------------------------------------------------------
+model name      : Intel(R) Xeon(TM) CPU 2.80GHz
+cpu MHz         : 2800.781
+model name      : Intel(R) Xeon(TM) CPU 2.80GHz
+cpu MHz         : 2800.781
+model name      : Intel(R) Xeon(TM) CPU 2.80GHz
+cpu MHz         : 2800.781
+model name      : Intel(R) Xeon(TM) CPU 2.80GHz
+cpu MHz         : 2800.781
+ 
+RAM -------------------------------------------------------
+MemTotal:      1033828 kB
+SwapTotal:     1052216 kB
+ 
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: Intel Corp. E7520 Memory Controller Hub (rev
+0c)
+0000:02:03.0 Multimedia audio controller: Creative Labs SB Audigy LS
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-27-06 15:20 
+ robsed - 02-02-06 18:26 
 ----------------------------------------------------------------------
-Yes, the idea looks fine for most ice1724 boards, but not nice for some
-ice1712 boards which have really independent mono jacks.
-So, I'd like to rather allow the driver to select the behavior, whether
-mono or stereo controls.
+Same problem with ALSA 1.0.11rc3. aplay commands hang (with strace showing
+it stopped in poll as above) and OSS play command gets an input/output
+error. Machine is an IBM eServer X-series 346 with a SB Live 24-bit
+installed.
 
-Also, it'd be not difficult to modify the code for driver to pass a static
-array of control names including "Front", "Surround", "CLFE", "Side", so
-that the mixer elements become more intuitive, too.
+It appears the driver is not receiving any interrupts?
 
-----------------------------------------------------------------------
- alinja - 02-02-06 15:15 
-----------------------------------------------------------------------
-Is second this suggestion. I consider the current implementation with
-independent channel volumes broken (especially as there is no master
-volume). I already had decided to make a similar patch, but I'm glad I
-found this.
+cat /proc/interrupts
+           CPU0       CPU1       CPU2       CPU3       
+  0:       1312       1159     220463       1173    IO-APIC-edge  timer
+  1:        355          6          1          2    IO-APIC-edge 
+keyboard
+  2:          0          0          0          0          XT-PIC  cascade
+  8:          1          0          0          0    IO-APIC-edge  rtc
+ 12:          9       1559          3          9    IO-APIC-edge  PS/2
+Mouse
+ 14:          0         27          0          0    IO-APIC-edge  ide0
+ 16:      58704         12         10         10   IO-APIC-level 
+usb-uhci, eth0, eth1
+ 19:          0          0          0          0   IO-APIC-level 
+usb-uhci
+ 20:       8473     110632          0      12082   IO-APIC-level 
+radeon@PCI:1:6:0
+ 23:          0          0          0          0   IO-APIC-level 
+ehci_hcd
+ 38:      12471       6803        797      12527   IO-APIC-level  ips
+ 96:          0          0          0          0   IO-APIC-level 
+snd_ca0106
+NMI:          0          0          0          0 
+LOC:     223914     223911     223911     223911 
+ERR:          0
+MIS:          0
+
+aadebug output:
+
+ALSA Audio Debug v0.1.0 - Thu Feb  2 17:23:26 GMT 2006
+http://alsa.opensrc.org/index.php?page=aadebug
+http://www.gnu.org/licenses/gpl.txt
+
+Kernel ----------------------------------------------------
+Linux gbths1 2.4.22-1.2199.5.legacy.nptlxm2 #3 SMP Thu Aug 11 21:50:55 UTC
+2005 i686 i686 i386 GNU/Linux
+
+Loaded Modules --------------------------------------------
+snd-ca0106             26552   0  (autoclean)
+snd-rawmidi            18232   0  (autoclean) [snd-ca0106]
+snd-seq-device          6268   0  (autoclean) [snd-rawmidi]
+snd-ac97-codec         91040   0  (autoclean) [snd-ca0106]
+snd-pcm                79964   0  (autoclean) [snd-ca0106 snd-ac97-codec]
+snd-timer              20520   0  (autoclean) [snd-pcm]
+snd                    53376   0  (autoclean) [snd-ca0106 snd-rawmidi
+snd-seq-device snd-ac97-codec snd-pcm snd-timer]
+snd-page-alloc          7828   0  (autoclean) [snd-ca0106 snd-rawmidi
+snd-seq-device snd-pcm snd-timer snd]
+
+Modprobe Conf ---------------------------------------------
+alias char-major-116 snd
+alias char-major-14 soundcore
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+alias snd-card-0 snd-ca0106
+alias sound-slot-0 snd-ca0106
+
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.11rc3.
+Compiled on Feb  2 2006 for kernel 2.4.22-1.2199.5.legacy.nptlxm2 (SMP)
+with versioned symbols.
+ 0 [CA0106         ]: CA0106 - CA0106
+                      Live! 7.1 24bit [SB0410] at 0x4000 irq 96
+  0: [ 0]   : control
+  8: [ 0- 0]: raw midi
+ 16: [ 0- 0]: digital audio playback
+ 17: [ 0- 1]: digital audio playback
+ 18: [ 0- 2]: digital audio playback
+ 19: [ 0- 3]: digital audio playback
+ 24: [ 0- 0]: digital audio capture
+ 25: [ 0- 1]: digital audio capture
+ 26: [ 0- 2]: digital audio capture
+ 27: [ 0- 3]: digital audio capture
+ 33:        : timer
+cat: /proc/asound/hwdep: No such file or directory
+00-03: ca0106 : CA0106 : playback 1 : capture 1
+00-02: ca0106 : CA0106 : playback 1 : capture 1
+00-01: ca0106 : CA0106 : playback 1 : capture 1
+00-00: ca0106 : CA0106 : playback 1 : capture 1
+cat: /proc/asound/seq/clients: No such file or directory
+
+Dev Snd ---------------------------------------------------
+controlC0  hwC1D1  hwC3D2    midiC0D7  midiC2D0  midiC3D1  pcmC0D1c 
+pcmC0D5p  pcmC1D2c  pcmC1D6p  pcmC2D3c  pcmC2D7p  pcmC3D4c  timer
+controlC1  hwC1D2  hwC3D3    midiC1D0  midiC2D1  midiC3D2  pcmC0D1p 
+pcmC0D6c  pcmC1D2p  pcmC1D7c  pcmC2D3p  pcmC3D0c  pcmC3D4p
+controlC2  hwC1D3  midiC0D0  midiC1D1  midiC2D2  midiC3D3  pcmC0D2c 
+pcmC0D6p  pcmC1D3c  pcmC1D7p  pcmC2D4c  pcmC3D0p  pcmC3D5c
+controlC3  hwC2D0  midiC0D1  midiC1D2  midiC2D3  midiC3D4  pcmC0D2p 
+pcmC0D7c  pcmC1D3p  pcmC2D0c  pcmC2D4p  pcmC3D1c  pcmC3D5p
+hwC0D0     hwC2D1  midiC0D2  midiC1D3  midiC2D4  midiC3D5  pcmC0D3c 
+pcmC0D7p  pcmC1D4c  pcmC2D0p  pcmC2D5c  pcmC3D1p  pcmC3D6c
+hwC0D1     hwC2D2  midiC0D3  midiC1D4  midiC2D5  midiC3D6  pcmC0D3p 
+pcmC1D0c  pcmC1D4p  pcmC2D1c  pcmC2D5p  pcmC3D2c  pcmC3D6p
+hwC0D2     hwC2D3  midiC0D4  midiC1D5  midiC2D6  midiC3D7  pcmC0D4c 
+pcmC1D0p  pcmC1D5c  pcmC2D1p  pcmC2D6c  pcmC3D2p  pcmC3D7c
+hwC0D3     hwC3D0  midiC0D5  midiC1D6  midiC2D7  pcmC0D0c  pcmC0D4p 
+pcmC1D1c  pcmC1D5p  pcmC2D2c  pcmC2D6p  pcmC3D3c  pcmC3D7p
+hwC1D0     hwC3D1  midiC0D6  midiC1D7  midiC3D0  pcmC0D0p  pcmC0D5c 
+pcmC1D1p  pcmC1D6c  pcmC2D2p  pcmC2D7c  pcmC3D3p  seq
+
+CPU -------------------------------------------------------
+model name      : Intel(R) Xeon(TM) CPU 3.60GHz
+cpu MHz         : 3600.297
+model name      : Intel(R) Xeon(TM) CPU 3.60GHz
+cpu MHz         : 3600.297
+model name      : Intel(R) Xeon(TM) CPU 3.60GHz
+cpu MHz         : 3600.297
+model name      : Intel(R) Xeon(TM) CPU 3.60GHz
+cpu MHz         : 3600.297
+
+RAM -------------------------------------------------------
+MemTotal:      3104516 kB
+SwapTotal:     2097136 kB
+
+Hardware --------------------------------------------------
+00:00.0 Host bridge: Intel Corp.: Unknown device 3590 (rev 0c)
+04:04.0 Multimedia audio controller: Creative Labs: Unknown device 0007
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-09-06 23:35 cyan           New Issue                                    
-01-09-06 23:35 cyan           Distribution              => gentoo testing  
-01-09-06 23:35 cyan           Kernel Version            => 2.6.14-gentoo-r5
-01-14-06 22:31 wollschaf      Note Added: 0007656                          
-01-25-06 00:07 wollschaf      Issue Monitored: wollschaf                    
-01-25-06 00:09 wollschaf      File Added: ak4xxx-adda-stereomixer.patch         
-          
-01-25-06 00:29 wollschaf      Note Added: 0007776                          
-01-27-06 15:20 tiwai          Note Added: 0007804                          
-02-02-06 15:15 alinja         Note Added: 0007877                          
+11-30-05 17:55 esgeraul       New Issue                                    
+11-30-05 17:55 esgeraul       Distribution              => SuSE 9.2        
+11-30-05 17:55 esgeraul       Kernel Version            => 2.6.14.2        
+02-02-06 18:26 robsed         Note Added: 0007878                          
 ======================================================================
 
 
