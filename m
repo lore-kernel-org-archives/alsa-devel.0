@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001809]: recording from microphone very quiet on SIS7012
-Date: Thu, 2 Feb 2006 09:20:52 +0100
-Message-ID: <003bf9db6371d43ddbd2c084d6a527d6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001776]: Synchronisation of two m-audio delta 1010 cards
+Date: Thu, 2 Feb 2006 09:21:33 +0100
+Message-ID: <55aaa5798eeecdd6beef1b2923683812@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A018A1E1
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 09:20:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C12381E1
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 09:21:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1809> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1776> 
 ======================================================================
-Reported By:                piotr_sobolewski
-Assigned To:                
+Reported By:                Schafwoller
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1809
-Category:                   PCI - intel8x0
+Issue ID:                   1776
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.13.4
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.13
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-02-2006 09:20 CET
-Last Modified:              02-02-2006 09:20 CET
+Date Submitted:             01-23-2006 18:32 CET
+Last Modified:              02-02-2006 09:21 CET
 ======================================================================
-Summary:                    recording from microphone very quiet on SIS7012
+Summary:                    Synchronisation of two m-audio delta 1010 cards
 Description: 
-I have an integrated onboard sound card with chipset SIS7012. I us ALSA and
-the driver is intel8x0. When I record from line in, everything seems to be
-ok. However, when I try to record from the microphone, the recorded signal
-is very quiet (low). I used alsamixer to maximize the capturing level and
-turned on the +20dB microfone amplification, but it did not help.
+Now we´re able to use two ice1712 cards full duplex and without xruns. The
+synchronisation via word-clock (with the "no-signal"-state in
+envy24control) seems to work for audio up to 48kHz (using 75Ohm cable).
+Midi is running on both cards without any problems. We're able to use a tc
+m-one(external multi-effects-processor) over spdif connected to the master
+sound card.
+The problems:
+While using 88,2 kHz we get a lot of noise on the pcm-inputs of the
+slave-card. Also sending and receiving to/from m-one over spdif on the
+slave-card (using 48kHz) is impossible. The sync-signal seems to be broken
+because the m-one is reporting error messages regarding a wrong sync-rate!
 ======================================================================
+
+----------------------------------------------------------------------
+ johnrigg - 01-24-06 01:31 
+----------------------------------------------------------------------
+I don't know about the S/PDIF problem as I don't have any S/PDIF
+equipment,
+but I have experienced noise one one card's pcm inputs. It disappeared
+when I rebooted. I think there's a problem with syncing the Delta 1010s at
+over 48kHz.
+The manual (English version) says the word clock inputs only take up to
+50kHz. I emailed M-Audio about this and they said they go to 96kHz.
+However, I just noticed that one of my cards can sync to 96kHz but the
+other one can only manage 88.2kHz. I've been getting some weird behaviour
+when running two cards at 96kHz, but at 48kHz they are reliable. I suspect
+the manual might be right.
+
+BTW the 'No signal/Locked' indicator is fixed in CVS so it now works the
+right way around.
+
+----------------------------------------------------------------------
+ perex - 02-02-06 09:21 
+----------------------------------------------------------------------
+We cannot do much in the driver. There is only one GPIO bit which selects
+the wordclock, so I think that note by johnrigg that you're trying to go
+beyond the hardware capabilities might be right.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-06 09:20 piotr_sobolewskiNew Issue                                    
-02-02-06 09:20 piotr_sobolewskiFile Added: test1.wav.bz2                    
-02-02-06 09:20 piotr_sobolewskiDistribution              => Debian          
-02-02-06 09:20 piotr_sobolewskiKernel Version            => 2.6.13.4        
+01-23-06 18:32 Schafwoller    New Issue                                    
+01-23-06 18:32 Schafwoller    Kernel Version            => 2.6.13          
+01-23-06 18:34 Schafwoller    Issue Monitored: Schafwoller                    
+01-24-06 01:31 johnrigg       Note Added: 0007768                          
+02-02-06 09:21 perex          Status                   new => resolved     
+02-02-06 09:21 perex          Resolution               open => not an issue
+02-02-06 09:21 perex          Assigned To               => perex           
+02-02-06 09:21 perex          Note Added: 0007872                          
 ======================================================================
 
 
