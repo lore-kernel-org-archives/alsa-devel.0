@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
-Date: Thu, 2 Feb 2006 01:31:22 +0100
-Message-ID: <9d526574ebd8438f30bd3948cc0956ab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001807]: Sound playback hangs and loops on first buffer
+Date: Thu, 2 Feb 2006 02:42:29 +0100
+Message-ID: <525278e1ae878cd2df0bbc11fd861bad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFE751AC
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 01:31:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 611C8157
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 02:42:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1807> 
 ======================================================================
-Reported By:                daste
-Assigned To:                
+Reported By:                hno
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1808
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1807
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Fedora Core 5 test 2 + relevant updates (kernel,
+alsa)
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             02-02-2006 00:49 CET
-Last Modified:              02-02-2006 01:31 CET
+Date Submitted:             02-02-2006 00:15 CET
+Last Modified:              02-02-2006 02:42 CET
 ======================================================================
-Summary:                    Line 6 Toneport UX1 driver
+Summary:                    Sound playback hangs and loops on first buffer
 Description: 
-I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
-under Linux, since it's not supported by ALSA.
-So I'd like to ask you what can I do: altough I'm quite capable of
-programming in C, I never developed any kind of driver either for Linux or
-any other OS.
-I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
-6 asking them if they had plans on a Linux driver for such soundcard, or
-otherwise, if they would have sent me infos, so that I could have tried to
-spend some time trying to develop a driver. They haven't answered yet.
-I do want to use that unbelivable sound card under Linux, so I think I'm
-going to code, but I don't know where to start: can you give me any
-suggestions?
-And since I think I have to do some reverse engineering on Microsoft
-Windows drivers, can you give some other advice on such topic too?
-Otherwise, I'd like to ask you whether you're already developing a
-solution for such a problem or not. Thanks in advance.
+Trying to play any sound or music produces a never ending loop of the first
+1/2 second or so.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-02-06 01:31 
+ rlrevell - 02-02-06 00:40 
 ----------------------------------------------------------------------
-Have you tried it yet with the snd-usb-audio driver?  If the device is
-class compliant it will just work...
+Does the interrupt count for your sound device in /proc/interrupts increase
+while the sound is looping?
+
+----------------------------------------------------------------------
+ hno - 02-02-06 02:42 
+----------------------------------------------------------------------
+The interrupts do increase while attempting to play sound.
+
+Stays still when not playing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-06 00:49 daste          New Issue                                    
-02-02-06 01:31 rlrevell       Note Added: 0007866                          
+02-02-06 00:15 hno            New Issue                                    
+02-02-06 00:15 hno            Distribution              => Fedora Core 5 test 2
++ relevant updates (kernel, alsa)
+02-02-06 00:15 hno            Kernel Version            => 2.6.15          
+02-02-06 00:40 rlrevell       Note Added: 0007865                          
+02-02-06 02:42 hno            Note Added: 0007867                          
 ======================================================================
 
 
