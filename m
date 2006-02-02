@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
-Date: Thu, 2 Feb 2006 08:58:03 +0100
-Message-ID: <484e8c3426ac330bba007cf665a7e4e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
+Date: Thu, 2 Feb 2006 09:00:02 +0100
+Message-ID: <4ed3695b4d2fad1438f08ef9ad08639e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 081E31E1
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 08:58:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCB8D1E1
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 09:00:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
 ======================================================================
-Reported By:                daste
+Reported By:                nostar
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1808
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1806
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-02-2006 00:49 CET
-Last Modified:              02-02-2006 08:58 CET
+Date Submitted:             02-01-2006 23:06 CET
+Last Modified:              02-02-2006 09:00 CET
 ======================================================================
-Summary:                    Line 6 Toneport UX1 driver
+Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
 Description: 
-I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
-under Linux, since it's not supported by ALSA.
-So I'd like to ask you what can I do: altough I'm quite capable of
-programming in C, I never developed any kind of driver either for Linux or
-any other OS.
-I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
-6 asking them if they had plans on a Linux driver for such soundcard, or
-otherwise, if they would have sent me infos, so that I could have tried to
-spend some time trying to develop a driver. They haven't answered yet.
-I do want to use that unbelivable sound card under Linux, so I think I'm
-going to code, but I don't know where to start: can you give me any
-suggestions?
-And since I think I have to do some reverse engineering on Microsoft
-Windows drivers, can you give some other advice on such topic too?
-Otherwise, I'd like to ask you whether you're already developing a
-solution for such a problem or not. Thanks in advance.
+SPDIF output is non existant unless SPDIF In is connected to a valid output
+source.  Then, the signal on SPDIF output is typically just noise.  If I
+toggle between any internal clock setting and SPDIF In using
+envy24control, eventually I will get audible audio.  Using an o-scope on
+the wordclock output, I get flatline unless there is a valid SPDIF Input
+signal.  I can switch to an internal clock setting while there is an SPDIF
+In signal connected, and the Word Clock signal will be present, at the
+frequency of the SPDIF In signal though, and not the frequency of the
+selected internal clock frequency.
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-02-06 01:31 
+ perex - 02-02-06 09:00 
 ----------------------------------------------------------------------
-Have you tried it yet with the snd-usb-audio driver?  If the device is
-class compliant it will just work...
-
-----------------------------------------------------------------------
- Clemens Ladisch - 02-02-06 08:58 
-----------------------------------------------------------------------
-Please show the output of "lsusb -v" for this device.
+It might be related to
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1785. Please, try patches
+from there or actual
+ALSA CVS code.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-06 00:49 daste          New Issue                                    
-02-02-06 01:31 rlrevell       Note Added: 0007866                          
-02-02-06 08:58 Clemens LadischNote Added: 0007870                          
+02-01-06 23:06 nostar         New Issue                                    
+02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
+    
+02-02-06 08:59 perex          Relationship added       related to 0001785  
+02-02-06 09:00 perex          Note Added: 0007871                          
 ======================================================================
 
 
