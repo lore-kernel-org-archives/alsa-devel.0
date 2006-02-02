@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
-Date: Thu, 2 Feb 2006 09:00:02 +0100
-Message-ID: <4ed3695b4d2fad1438f08ef9ad08639e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001785]: ice1712 driver -cs8427 SPDIF chip not always set up correctly
+Date: Thu, 2 Feb 2006 08:57:23 +0100
+Message-ID: <2cfde3e5af0134590b7f7116559cf14a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCB8D1E1
-	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 09:00:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 666151E1
+	for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2006 08:57:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1785> 
 ======================================================================
-Reported By:                nostar
-Assigned To:                
+Reported By:                alanmann
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1806
+Issue ID:                   1785
 Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-01-2006 23:06 CET
-Last Modified:              02-02-2006 09:00 CET
+Date Submitted:             01-26-2006 23:27 CET
+Last Modified:              02-02-2006 08:57 CET
 ======================================================================
-Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
+Summary:                    ice1712 driver -cs8427 SPDIF chip not always set up
+correctly
 Description: 
-SPDIF output is non existant unless SPDIF In is connected to a valid output
-source.  Then, the signal on SPDIF output is typically just noise.  If I
-toggle between any internal clock setting and SPDIF In using
-envy24control, eventually I will get audible audio.  Using an o-scope on
-the wordclock output, I get flatline unless there is a valid SPDIF Input
-signal.  I can switch to an internal clock setting while there is an SPDIF
-In signal connected, and the Word Clock signal will be present, at the
-frequency of the SPDIF In signal though, and not the frequency of the
-selected internal clock frequency.
+There are regular occasions when SPDIF IN operates spuriously, on Terratec
+DMX6fire (& presumably others, like delta1010LT?).
 
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
+At start-up or when changing between non-spdif master clock settings,
+Digital Input stream has incorrect signal present, real enough to be
+recorded with audacity.  The cause is errors in writing to the cs8427
+spdif chip.  Will add notes with my findings.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 02-02-06 09:00 
+ alanmann - 02-01-06 23:28 
 ----------------------------------------------------------------------
-It might be related to
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1785. Please, try patches
-from there or actual
-ALSA CVS code.
+Good progress
+
+1. re out.txt -it does the job, but when routine is called at
+initialisation is_spdif_master(ice) does not return the correct value (is
+always 0).  It is OK though as later on in startup it is repeated with the
+correct value.  As an alternative, to avoid ambiguity at startup, consider
+'bug1785-spdif-init-1.0.11rc2.diff, which has an extra parameter in the
+new function, and a different name.  Neither of these patches applies to
+1.0.10 & earlier due to ice1712_t changes (I have an altered patch
+available).
+
+2. Neither of the above makes any difference to the end result without
+changes to cs8427.c snd_cs8427_reset, since in L319 it sets the AES3 bit
+(always) sourcing the clock from AES3 receiver, during internal clock freq
+changes.  The line may be unneccesary altogether, but
+bug1785-cs8427-reset-AES3-changes.diff tests the bit at first and sets it
+back at the end.
+
+The combination of these 2  bug1785 patches resolves this problem AFAICT.
+
+----------------------------------------------------------------------
+ perex - 02-02-06 08:57 
+----------------------------------------------------------------------
+Thanks. Both patches were applied to CVS. Thank you for your work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-06 23:06 nostar         New Issue                                    
-02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
-    
-02-02-06 08:59 perex          Relationship added       related to 0001785  
-02-02-06 09:00 perex          Note Added: 0007871                          
+01-26-06 23:27 alanmann       New Issue                                    
+01-26-06 23:41 alanmann       Note Added: 0007795                          
+01-26-06 23:50 alanmann       Note Edited: 0007795                         
+01-27-06 10:10 alanmann       Note Added: 0007797                          
+01-27-06 14:30 perex          File Added: out.txt                          
+01-27-06 14:44 perex          File Deleted: out.txt                        
+01-27-06 14:44 perex          File Added: out.txt                          
+01-27-06 14:45 perex          Note Added: 0007801                          
+01-27-06 14:46 perex          Note Edited: 0007801                         
+01-27-06 21:48 nostar         Note Added: 0007806                          
+01-27-06 22:00 nostar         Issue Monitored: nostar                      
+01-27-06 22:15 nostar         Note Added: 0007807                          
+02-01-06 23:28 alanmann       Note Added: 0007864                          
+02-01-06 23:29 alanmann       File Added: bug1785-spdif-init-1.0.11rc2.diff     
+              
+02-01-06 23:30 alanmann       File Added: bug1785-cs8427-reset-AES3-changes.diff
+                   
+02-02-06 08:57 perex          Status                   new => resolved     
+02-02-06 08:57 perex          Resolution               open => fixed       
+02-02-06 08:57 perex          Assigned To               => perex           
+02-02-06 08:57 perex          Note Added: 0007869                          
 ======================================================================
 
 
