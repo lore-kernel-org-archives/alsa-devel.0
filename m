@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001609]: Sound Blaster 24bit (SB0410) PCI card (in PCI-X slot) not producing any sound
-Date: Fri, 3 Feb 2006 00:19:30 +0100
-Message-ID: <1b8856978fe2d5708f2097404a1d2ca9@bugtrack.alsa-project.org>
+Date: Fri, 3 Feb 2006 00:28:05 +0100
+Message-ID: <dcd513787a560c26bb13e1dc4a84f734@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C95FB192
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 00:19:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 038B2192
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 00:28:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSE 9.2
 Kernel Version:             2.6.14.2
 ======================================================================
 Date Submitted:             11-30-2005 17:55 CET
-Last Modified:              02-03-2006 00:19 CET
+Last Modified:              02-03-2006 00:28 CET
 ======================================================================
 Summary:                    Sound Blaster 24bit (SB0410) PCI card (in PCI-X
 slot) not producing any sound
@@ -283,13 +283,6 @@ Hardware --------------------------------------------------
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-02-06 19:00 
-----------------------------------------------------------------------
-If the interrupt count does not increase when you try to play a sound it
-means the problem is somewhere in the kernel (ACPI or interrupt routing)
-and not with the ALSA driver.
-
-----------------------------------------------------------------------
  robsed - 02-03-06 00:19 
 ----------------------------------------------------------------------
 I tested a network card in the same slot in that machine and it is able to
@@ -298,6 +291,11 @@ problem with the interrupt routing on the system.
 
 I'd suspect that the driver is somehow not programming the card correctly
 to generate interrupts..
+
+----------------------------------------------------------------------
+ rlrevell - 02-03-06 00:28 
+----------------------------------------------------------------------
+Can you attach dmesg output?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -309,6 +307,7 @@ Date Modified  Username       Field                    Change
 02-02-06 18:28 robsed         Issue Monitored: robsed                      
 02-02-06 19:00 rlrevell       Note Added: 0007880                          
 02-03-06 00:19 robsed         Note Added: 0007883                          
+02-03-06 00:28 rlrevell       Note Added: 0007884                          
 ======================================================================
 
 
