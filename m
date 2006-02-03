@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000692]: Possible ALSA support the EMU 0404 or other EMU card in the future?
-Date: Fri, 3 Feb 2006 09:39:43 +0100
-Message-ID: <bd58cac50e08bcd9b2c3769748977040@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Envy24 -PSDIN(3)
+Date: Fri, 3 Feb 2006 09:28:18 +0000
+Message-ID: <200602030928.18467.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D21D5190
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 09:39:43 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +17,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Re bug1472, Distortion noise:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=692> 
-======================================================================
-Reported By:                comp
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   692
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             11-29-2004 14:03 CET
-Last Modified:              02-03-2006 09:39 CET
-======================================================================
-Summary:                    Possible ALSA support the EMU 0404 or other EMU card
-in the future?
-Description: 
-It is possible that ALSA supports EMU cards in the future?
+Can you explain what this input does, and how/where it is used in ALSA?  
+Perhaps the DMX6fire can use it to determine if a DXR extension is plugged 
+in.
 
-======================================================================
-
-----------------------------------------------------------------------
- comp - 01-31-06 22:35 
-----------------------------------------------------------------------
-I have 0404 and 1212m cards, and some kernel driver writing experience (in
-the past I am worked as SuSE Developer at Hungary, and some other company
-projects which requires kernel driver), but I need deep soundcard
-information from Creative to estimate the possibility of developing the
-emu driver.
-
-----------------------------------------------------------------------
- Henne - 02-03-06 09:39 
-----------------------------------------------------------------------
-I have an EMU 0404 too. It was recognized by an alsaconf (from 1.0.10
-maybe) as an emu10k1, but nothing came out, so somebody must have added
-the PciIDs, and hopefully with a little workaround the emu10k1 will work.
-I found at the emu site some nice specs about that cards.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-29-04 14:03 comp           New Issue                                    
-11-29-04 14:15 pzad           Note Added: 0002632                          
-01-31-06 21:36 paperclip      Note Added: 0007853                          
-01-31-06 22:35 comp           Note Added: 0007855                          
-02-03-06 09:39 Henne          Note Added: 0007893                          
-======================================================================
-
+Alan
 
 
 
