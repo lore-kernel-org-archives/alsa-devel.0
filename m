@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001813]: STAC9750 not recognised by hda-intel
-Date: Fri, 3 Feb 2006 17:09:08 +0100
-Message-ID: <a5a0ad69cd6d9d75ee4cdf824b79572f@bugtrack.alsa-project.org>
+From: Doug McLain <doug@nostar.net>
+Subject: Re: ice1712 -wordclock and SPDIF
+Date: Fri, 03 Feb 2006 11:24:26 -0500
+Message-ID: <43E383BA.1040204@nostar.net>
+References: <200601262301.23064.gineera@aspect135.co.uk> <200601281424.14897.gineera@aspect135.co.uk> <43E12866.4030903@nostar.net> <200602020947.29156.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24F251A9
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 17:09:09 +0100 (MET)
+In-Reply-To: <200602020947.29156.gineera@aspect135.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +17,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1813> 
-======================================================================
-Reported By:                hsheppard
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1813
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.16-rc1
-======================================================================
-Date Submitted:             02-03-2006 17:09 CET
-Last Modified:              02-03-2006 17:09 CET
-======================================================================
-Summary:                    STAC9750 not recognised by hda-intel
-Description: 
-I have a Dell Inspiron 630M (AKA Dell XPS140) that has an ICH6 controller
-and a STAC9750 HDaudio codec. ALSA currently recognises the codec as a
-9200-series, not the 9750.
 
-As such, the internal speakers and mic-in jacks do not work and the mixer
-is looking extremely spartan (see attachment).
-======================================================================
+Alan Horstmann wrote:
+> On Wednesday 01 February 2006 21:30, you wrote:
+> 
+>>CS8427 register dump:
+>>   reg[0x01] = 0x81
+>>   reg[0x02] = 0x00
+>>   reg[0x03] = 0x0c
+>>   reg[0x04] = 0x41
+> 
+> 
+> I have been looking at reg0x04 for bug1785; value 41 means the AES3 bit 
+> (bit'0') is set, which will mess-up SPDIF IN.  Perhaps try the reset patch on 
+> that report.  With DMX6fire it is often re-written correctly anyway, so it 
+> may be a similar but separate problem here.
+> 
+> However, reg0x03 I notice now also looks wrong, and controls the output data 
+> source with bits'1'&'2': value 0c means bits are '1,0' =sourced from AES3 
+> receiver.  Think it should be '0,1' ie reg value 0a?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-06 17:09 hsheppard      New Issue                                    
-02-03-06 17:09 hsheppard      File Added: alsamixer.png                    
-02-03-06 17:09 hsheppard      Distribution              => Gentoo Linux    
-02-03-06 17:09 hsheppard      Kernel Version            => 2.6.16-rc1      
-======================================================================
-
-
+setting it to 0x0a breaks it completely, as in no spdif functionality no 
+way, no how.  Patches didnt help either. Wtih any luck, the status of 
+your registers may tell the story.
+> 
+> Busy few evenings, but will get full info dump fromDMX6fire asap.
+> 
+Thanks
+Doug
+--
+http://nostar.net
 
 
 -------------------------------------------------------
