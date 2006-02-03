@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001814]: EMU10K1 rear, center, LFE channels not work. bug in EMU10K1.conf
-Date: Fri, 3 Feb 2006 18:35:23 +0100
-Message-ID: <c6804955c46604a5e4f5192d2d7868c4@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Problem with USB headset
+Date: Fri, 03 Feb 2006 12:48:03 -0500
+Message-ID: <1138988883.15691.261.camel@mindpipe>
+References: <43E3939A.7060002@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 972FF1A0
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 18:35:23 +0100 (MET)
+In-Reply-To: <43E3939A.7060002@gmx.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Daniel Frey <d.frey@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2006-02-03 at 18:32 +0100, Daniel Frey wrote:
+> Hello,
+> 
+> I have a problem with my USB headset. A short summary:
+> 
+> It doesn't support sample rates of 8000, but it does support 16000. Some
+> applications (e.g. Ekiga) try to access it with 8000, so they fail. The
+> Ekiga developer(s) think, the translation/conversion should be handled
+> by ALSA.
+> 
+> The details can be found here:
+> 
+> <http://bugzilla.gnome.org/show_bug.cgi?id=329609>
+> 
+> Question: Is their claim valid? Should I file a bug report to ALSA?
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1814> 
-======================================================================
-Reported By:                bilek
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1814
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-03-2006 18:35 CET
-Last Modified:              02-03-2006 18:35 CET
-======================================================================
-Summary:                    EMU10K1 rear, center, LFE channels not work. bug in
-EMU10K1.conf
-Description: 
-The problem is similar or the same to already reported problem id=1624
-see link https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1624
+If you are getting "cannot submit datapipe for urb 0, err = -28" then it
+means you MUST have enabled USB bandwidth checking.  Please make sure
+it's really disabled.
 
-After the update to alsa-lib-1.0.10-3.FC4.i386.rpm the rear, center LFE
-and maybe more channels not "sounding" but can be used as output.
+Try:
 
-The "speaker-test -c 6" claims that everything is OK, but no sound.
+$ grep CONFIG_USB_BANDWIDTH /boot/config-`uname -r`
 
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-06 18:35 bilek          New Issue                                    
-======================================================================
+Lee
 
 
 
