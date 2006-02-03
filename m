@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001811]: Can't make a record
-Date: Fri, 3 Feb 2006 11:05:10 +0100
-Message-ID: <3b18559e1fe922c784ba02f5a1e76bc4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001810]: pcm multi problem
+Date: Fri, 3 Feb 2006 11:06:10 +0100
+Message-ID: <030fbc3971c19037114d97e074ef6cfc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F11118A
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 11:05:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2FF6018A
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 11:06:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,37 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1811> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1810> 
 ======================================================================
 Reported By:                danhien_cz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1811
-Category:                   PCI - via82xx
+Issue ID:                   1810
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               gentoo-linux
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             02-03-2006 11:05 CET
-Last Modified:              02-03-2006 11:05 CET
+Date Submitted:             02-03-2006 10:46 CET
+Last Modified:              02-03-2006 11:06 CET
 ======================================================================
-Summary:                    Can't make a record
+Summary:                    pcm multi problem
 Description: 
-Recording from line in is not working. I can make a record, but when I try
-to replay it, I can hear olny one channel and it's too quiet. When I try
-to route line in directly to line out, I can hear sound perfectly.
+I'm using two sound cards - emu10k1 and via82xx.
+I'cant play audio throu both cards togather. 
+I've created pcm multi for this use.
+Last alsa version in wich it vas working is 1.0.8
+
 ======================================================================
+
+----------------------------------------------------------------------
+ danhien_cz - 02-03-06 10:54 
+----------------------------------------------------------------------
+sound card chips
+emu10k1 - Creative Labs SB Audigy (rev 03)
+via82xx - VIA Technologies, Inc. VT8233/A/8235/8237 AC97 Audio Controller
+(rev 60)
+
+----------------------------------------------------------------------
+ danhien_cz - 02-03-06 11:06 
+----------------------------------------------------------------------
+via82xx - realtec ALC655 chip on VIA chipset
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-06 11:05 danhien_cz     New Issue                                    
+02-03-06 10:46 danhien_cz     New Issue                                    
+02-03-06 10:46 danhien_cz     Distribution              => gentoo-linux    
+02-03-06 10:46 danhien_cz     Kernel Version            => 2.6.15          
+02-03-06 10:54 danhien_cz     Note Added: 0007894                          
+02-03-06 11:06 danhien_cz     Note Added: 0007896                          
 ======================================================================
 
 
