@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
-Date: Fri, 3 Feb 2006 10:57:01 +0100
-Message-ID: <cad7c18aff7f4817f58664d8e3a0302e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001811]: Can't make a record
+Date: Fri, 3 Feb 2006 11:05:10 +0100
+Message-ID: <3b18559e1fe922c784ba02f5a1e76bc4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E297B17E
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 10:57:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F11118A
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 11:05:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1811> 
 ======================================================================
-Reported By:                daste
-Assigned To:                Clemens Ladisch
+Reported By:                danhien_cz
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1808
-Category:                   1_OTHERS
+Issue ID:                   1811
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-02-2006 00:49 CET
-Last Modified:              02-03-2006 10:57 CET
+Date Submitted:             02-03-2006 11:05 CET
+Last Modified:              02-03-2006 11:05 CET
 ======================================================================
-Summary:                    Line 6 Toneport UX1 driver
+Summary:                    Can't make a record
 Description: 
-I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
-under Linux, since it's not supported by ALSA.
-So I'd like to ask you what can I do: altough I'm quite capable of
-programming in C, I never developed any kind of driver either for Linux or
-any other OS.
-I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
-6 asking them if they had plans on a Linux driver for such soundcard, or
-otherwise, if they would have sent me infos, so that I could have tried to
-spend some time trying to develop a driver. They haven't answered yet.
-I do want to use that unbelivable sound card under Linux, so I think I'm
-going to code, but I don't know where to start: can you give me any
-suggestions?
-And since I think I have to do some reverse engineering on Microsoft
-Windows drivers, can you give some other advice on such topic too?
-Otherwise, I'd like to ask you whether you're already developing a
-solution for such a problem or not. Thanks in advance.
+Recording from line in is not working. I can make a record, but when I try
+to replay it, I can hear olny one channel and it's too quiet. When I try
+to route line in directly to line out, I can hear sound perfectly.
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 02-03-06 08:37 
-----------------------------------------------------------------------
-It's definitely not class compliant.
-It needs a new driver; this won't happen in the next four weeks.
-
-----------------------------------------------------------------------
- daste - 02-03-06 10:57 
-----------------------------------------------------------------------
-Can I help in some way?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-06 00:49 daste          New Issue                                    
-02-02-06 01:31 rlrevell       Note Added: 0007866                          
-02-02-06 08:58 Clemens LadischNote Added: 0007870                          
-02-02-06 12:47 daste          File Added: lsusb                            
-02-02-06 12:47 daste          Note Added: 0007875                          
-02-02-06 16:29 daste          Issue Monitored: daste                       
-02-03-06 08:37 Clemens LadischNote Added: 0007892                          
-02-03-06 08:37 Clemens LadischAssigned To               => Clemens Ladisch 
-02-03-06 08:37 Clemens LadischReproducibility          N/A => always       
-02-03-06 08:37 Clemens LadischStatus                   new => assigned     
-02-03-06 10:57 daste          Note Added: 0007895                          
+02-03-06 11:05 danhien_cz     New Issue                                    
 ======================================================================
 
 
