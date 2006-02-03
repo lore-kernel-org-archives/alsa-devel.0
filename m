@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001817]: [alsaplayer || jackd] crashs every 5 or 10 minutes
-Date: Sat, 4 Feb 2006 00:09:17 +0100
-Message-ID: <d381e7126063fb3ef0246ae9abd9cfee@bugtrack.alsa-project.org>
+Date: Sat, 4 Feb 2006 00:19:43 +0100
+Message-ID: <4c70393b575c998ac822c45272477d8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE184193
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 00:09:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44098193
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 00:19:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ Kernel Version:             2.6.15.2-archck3 (which is ck3 plus reiser4, and
 other patches)
 ======================================================================
 Date Submitted:             02-03-2006 23:53 CET
-Last Modified:              02-04-2006 00:09 CET
+Last Modified:              02-04-2006 00:19 CET
 ======================================================================
 Summary:                    [alsaplayer || jackd] crashs every 5 or 10 minutes
 Description: 
@@ -94,6 +94,14 @@ acpid is not running. (otherwise alsa crashes immediately).
 Is your device connected through a hub?  If so does it help if you bypass
 it?
 
+----------------------------------------------------------------------
+ speedness - 02-04-06 00:19 
+----------------------------------------------------------------------
+No, I have a Belkin "powered" four-port USB 2.0 hub that's always plugged
+into the wall, but I've never been able to get the US428 to work unless
+it's
+connected directly to the laptop.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -102,6 +110,7 @@ Date Modified  Username       Field                    Change
 02-03-06 23:53 speedness      Kernel Version            => 2.6.15.2-archck3
 (which is ck3 plus reiser4, and other patches)
 02-04-06 00:09 rlrevell       Note Added: 0007905                          
+02-04-06 00:19 speedness      Note Added: 0007906                          
 ======================================================================
 
 
