@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001814]: EMU10K1 rear, center, LFE channels not work. bug in EMU10K1.conf
-Date: Fri, 3 Feb 2006 18:51:54 +0100
-Message-ID: <a19adf6355a1f5da619dc28261d767f0@bugtrack.alsa-project.org>
+From: Daniel Frey <d.frey@gmx.de>
+Subject: Re: Problem with USB headset
+Date: Fri, 03 Feb 2006 19:10:20 +0100
+Message-ID: <43E39C8C.8000409@gmx.de>
+References: <43E3939A.7060002@gmx.de> <1138988883.15691.261.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FA471AA
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 18:51:54 +0100 (MET)
+In-Reply-To: <1138988883.15691.261.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Fri, 2006-02-03 at 18:32 +0100, Daniel Frey wrote:
+> 
+> If you are getting "cannot submit datapipe for urb 0, err = -28" then it
+> means you MUST have enabled USB bandwidth checking.  Please make sure
+> it's really disabled.
+> 
+> Try:
+> 
+> $ grep CONFIG_USB_BANDWIDTH /boot/config-`uname -r`
+> 
+> Lee
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1814> 
-======================================================================
-Reported By:                bilek
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1814
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             02-03-2006 18:35 CET
-Last Modified:              02-03-2006 18:51 CET
-======================================================================
-Summary:                    EMU10K1 rear, center, LFE channels not work. bug in
-EMU10K1.conf
-Description: 
-The problem is similar or the same to already reported problem id=1624
-see link https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1624
+daniel@nemesis:~$ grep CONFIG_USB_BANDWIDTH /boot/config-`uname -r`
+# CONFIG_USB_BANDWIDTH is not set
+daniel@nemesis:~$
 
-After the update to alsa-lib-1.0.10-3.FC4.i386.rpm the rear, center LFE
-and maybe more channels not "sounding" but can be used as output.
-
-The "speaker-test -c 6" claims that everything is OK, but no sound.
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 02-03-06 18:51 
-----------------------------------------------------------------------
-Um, that bug is resolved, did you even try any of the solutions?
-
-- Upgrade your ALSA drivers to 1.0.10 or newer
-- Upgrade to ALSA 1.0.11-rc3
-- Replace your EMU10k1.conf with the one from the other bug report
-
-----------------------------------------------------------------------
- rlrevell - 02-03-06 18:51 
-----------------------------------------------------------------------
-ALready fixed in CVS
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-06 18:35 bilek          New Issue                                    
-02-03-06 18:51 rlrevell       Note Added: 0007902                          
-02-03-06 18:51 rlrevell       Status                   new => resolved     
-02-03-06 18:51 rlrevell       Resolution               open => fixed       
-02-03-06 18:51 rlrevell       Assigned To               => rlrevell        
-02-03-06 18:51 rlrevell       Note Added: 0007903                          
-======================================================================
-
-
+OK?
 
 
 -------------------------------------------------------
