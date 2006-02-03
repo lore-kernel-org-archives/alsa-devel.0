@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001810]: pcm multi problem
-Date: Fri, 3 Feb 2006 20:39:22 +0100
-Message-ID: <a86b12dddb05f49627b84117e62d326a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001815]: bass and treble controls do not work properly with soundblaster extigy
+Date: Fri, 3 Feb 2006 20:57:21 +0100
+Message-ID: <692d086126bf4205ad2599e230937765@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46105179
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 20:39:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A04AA195
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 20:57:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1810> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1815> 
 ======================================================================
-Reported By:                danhien_cz
-Assigned To:                
+Reported By:                ezust
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1810
-Category:                   CORE - pcm
+Issue ID:                   1815
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               gentoo-linux
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               debian unstable
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             02-03-2006 10:46 CET
-Last Modified:              02-03-2006 20:39 CET
+Date Submitted:             02-03-2006 20:57 CET
+Last Modified:              02-03-2006 20:57 CET
 ======================================================================
-Summary:                    pcm multi problem
+Summary:                    bass and treble controls do not work properly with
+soundblaster extigy
 Description: 
-I'm using two sound cards - emu10k1 and via82xx.
-I'cant play audio throu both cards togather. 
-I've created pcm multi for this use.
-Last alsa version in wich it vas working is 1.0.8
+Using kmix or alsamixer, trying to drag the bass and treble controls below
+50% does not work - the slider keeps jumping up to the 80%-100% range, so
+it is impossible to reduce the output bass level below 50%
+
 
 ======================================================================
-
-----------------------------------------------------------------------
- danhien_cz - 02-03-06 11:06 
-----------------------------------------------------------------------
-via82xx - realtec ALC655 chip on VIA chipset
-
-----------------------------------------------------------------------
- johnrigg - 02-03-06 20:39 
-----------------------------------------------------------------------
-Are you using jackd? A change in pcm_multi.c in alsa-lib-1.0.9rc1
-broke duplex operation with jackd and multiple sound cards. If you start
-jackd with just -P (playback) device, 
-eg. 'jackd -d alsa -P multi_device' it should work again if that's the
-problem.
-
-BTW running two cards without synchronized word clocks isn't a great
-idea.
-It might work for a while, but eventually they'll drift out of sync.
-(This is probably worse for capture than playback).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-06 10:46 danhien_cz     New Issue                                    
-02-03-06 10:46 danhien_cz     Distribution              => gentoo-linux    
-02-03-06 10:46 danhien_cz     Kernel Version            => 2.6.15          
-02-03-06 10:54 danhien_cz     Note Added: 0007894                          
-02-03-06 11:06 danhien_cz     Note Added: 0007896                          
-02-03-06 20:39 johnrigg       Note Added: 0007904                          
+02-03-06 20:57 ezust          New Issue                                    
+02-03-06 20:57 ezust          Distribution              => debian unstable 
+02-03-06 20:57 ezust          Kernel Version            => 2.6.14          
 ======================================================================
 
 
