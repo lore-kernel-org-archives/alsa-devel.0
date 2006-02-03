@@ -1,18 +1,14 @@
-From: "Carlito Defilippo" <defiucarl@topica.com>
-Subject: Re: y n
-Date: Fri, 3 Feb 2006 02:36:23 -0500
-Message-ID: <000001c62894$8817a680$61aea8c0@beater>
-Reply-To: "Carlito Defilippo" <defiucarl@topica.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
+Date: Fri, 3 Feb 2006 08:37:05 +0100
+Message-ID: <c1fa50c735216a321ba2537f455560b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6286A.9F419E80"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 569421A8
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 08:36:37 +0100 (MET)
-Received: from s2.ocv.ne.jp (147-125.dsl.scrtc.com [64.130.147.125])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 4E5EF99273
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 08:36:35 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D8141A8
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 08:37:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,173 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ann Clauss <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C6286A.9F419E80
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been ASSIGNED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
+======================================================================
+Reported By:                daste
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1808
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-02-2006 00:49 CET
+Last Modified:              02-03-2006 08:37 CET
+======================================================================
+Summary:                    Line 6 Toneport UX1 driver
+Description: 
+I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
+under Linux, since it's not supported by ALSA.
+So I'd like to ask you what can I do: altough I'm quite capable of
+programming in C, I never developed any kind of driver either for Linux or
+any other OS.
+I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
+6 asking them if they had plans on a Linux driver for such soundcard, or
+otherwise, if they would have sent me infos, so that I could have tried to
+spend some time trying to develop a driver. They haven't answered yet.
+I do want to use that unbelivable sound card under Linux, so I think I'm
+going to code, but I don't know where to start: can you give me any
+suggestions?
+And since I think I have to do some reverse engineering on Microsoft
+Windows drivers, can you give some other advice on such topic too?
+Otherwise, I'd like to ask you whether you're already developing a
+solution for such a problem or not. Thanks in advance.
+======================================================================
 
-Hello,
-=20
-Do you want to OverP A Y for your MED ?
-=20
-I don't think you need it, SAV E up to 50% on your meds with
-http://www.argeofeto.com
-=20
-V=20
-C=20
-V=20
-A=20
-I.=20
-l.=20
-L=20
-A=20
-A=20
-I=20
-L=20
-G=20
-U=20
-I=20
-R=20
-M=20
-S=20
-A=20
- =20
- =20
- =20
-$=20
-$=20
-$=20
-8=20
-6=20
-6=20
-5=20
-7=20
-9=20
-,=20
-,=20
-,=20
-4=20
-5=20
-9=20
-5=20
-9=20
-9=20
+----------------------------------------------------------------------
+ daste - 02-02-06 12:47 
+----------------------------------------------------------------------
+Of course I tried that way, but it just doesn't work.
+However the lsusb -v output is in the file I just uploaded.
 
-------=_NextPart_000_0001_01C6286A.9F419E80
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-03-06 08:37 
+----------------------------------------------------------------------
+It's definitely not class compliant.
+It needs a new driver; this won't happen in the next four weeks.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial>Hello,</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Do you want to OverP
-A Y for your MED ?</FONT></DIV>
-<DIV><FONT face=3DArial></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>I don't think you need it, SAV
-E up
-to 50% on your meds=20
-with=20
-<A =
-href=3D"http://www.argeofeto.com">http://www.argeofeto.com</A></FONT></DI=
-V>
-<DIV>&nbsp;</DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> V </DIV>
-<DIV> C </DIV><DIV> V </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> A </DIV><DIV> I. </DIV><DIV> l. </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> L </DIV>
-<DIV> A </DIV>
-<DIV> A </DIV>
-</DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> I </DIV>
-<DIV> L </DIV>
-<DIV> G </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> U </DIV><DIV> I </DIV>
-<DIV> R </DIV>
-</DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> M </DIV><DIV> S </DIV><DIV> A </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> &nbsp; </DIV>
-<DIV> &nbsp; </DIV>
-<DIV> &nbsp; </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> $ </DIV>
-<DIV> $ </DIV><DIV> $ </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> 8 </DIV>
-<DIV> 6 </DIV>
-<DIV> 6 </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> 5 </DIV><DIV> 7 </DIV>
-<DIV> 9 </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> , </DIV><DIV> , </DIV><DIV> , </DIV>
-</DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> 4 </DIV><DIV> 5 </DIV>
-<DIV> 9 </DIV></DIV>
-<DIV style=3D"
-font-family:
-Arial;
-float:
-left;"><DIV> 5 </DIV><DIV> 9 </DIV><DIV> 9 </DIV>
-</DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6286A.9F419E80--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-02-06 00:49 daste          New Issue                                    
+02-02-06 01:31 rlrevell       Note Added: 0007866                          
+02-02-06 08:58 Clemens LadischNote Added: 0007870                          
+02-02-06 12:47 daste          File Added: lsusb                            
+02-02-06 12:47 daste          Note Added: 0007875                          
+02-02-06 16:29 daste          Issue Monitored: daste                       
+02-03-06 08:37 Clemens LadischNote Added: 0007892                          
+02-03-06 08:37 Clemens LadischAssigned To               => Clemens Ladisch 
+02-03-06 08:37 Clemens LadischReproducibility          N/A => always       
+02-03-06 08:37 Clemens LadischStatus                   new => assigned     
+======================================================================
 
 
 
