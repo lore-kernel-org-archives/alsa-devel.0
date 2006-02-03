@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001817]: [alsaplayer || jackd] crashs every 5 or 10 minutes
-Date: Fri, 3 Feb 2006 23:53:44 +0100
-Message-ID: <b7f7bd3d1583433569a50f441e4f40e2@bugtrack.alsa-project.org>
+Date: Sat, 4 Feb 2006 00:09:17 +0100
+Message-ID: <d381e7126063fb3ef0246ae9abd9cfee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7411D193
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 23:53:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE184193
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 00:09:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1817> 
 ======================================================================
@@ -41,7 +41,7 @@ Kernel Version:             2.6.15.2-archck3 (which is ck3 plus reiser4, and
 other patches)
 ======================================================================
 Date Submitted:             02-03-2006 23:53 CET
-Last Modified:              02-03-2006 23:53 CET
+Last Modified:              02-04-2006 00:09 CET
 ======================================================================
 Summary:                    [alsaplayer || jackd] crashs every 5 or 10 minutes
 Description: 
@@ -88,6 +88,12 @@ immediatly or waited 2 or 3 minutes.
 acpid is not running. (otherwise alsa crashes immediately).  
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 02-04-06 00:09 
+----------------------------------------------------------------------
+Is your device connected through a hub?  If so does it help if you bypass
+it?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -95,6 +101,7 @@ Date Modified  Username       Field                    Change
 02-03-06 23:53 speedness      Distribution              => Gentoo ~x86 gcc 3.4.5
 02-03-06 23:53 speedness      Kernel Version            => 2.6.15.2-archck3
 (which is ck3 plus reiser4, and other patches)
+02-04-06 00:09 rlrevell       Note Added: 0007905                          
 ======================================================================
 
 
