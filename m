@@ -1,13 +1,14 @@
-From: Daniel Frey <d.frey@gmx.de>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Problem with USB headset
-Date: Fri, 03 Feb 2006 19:10:20 +0100
-Message-ID: <43E39C8C.8000409@gmx.de>
+Date: Fri, 03 Feb 2006 13:14:26 -0500
+Message-ID: <1138990466.15691.279.camel@mindpipe>
 References: <43E3939A.7060002@gmx.de> <1138988883.15691.261.camel@mindpipe>
+	 <43E39C8C.8000409@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1138988883.15691.261.camel@mindpipe>
+In-Reply-To: <43E39C8C.8000409@gmx.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,28 +18,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Daniel Frey <d.frey@gmx.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Fri, 2006-02-03 at 18:32 +0100, Daniel Frey wrote:
+On Fri, 2006-02-03 at 19:10 +0100, Daniel Frey wrote:
+> Lee Revell wrote:
+> > On Fri, 2006-02-03 at 18:32 +0100, Daniel Frey wrote:
+> > 
+> > If you are getting "cannot submit datapipe for urb 0, err = -28" then it
+> > means you MUST have enabled USB bandwidth checking.  Please make sure
+> > it's really disabled.
+> > 
+> > Try:
+> > 
+> > $ grep CONFIG_USB_BANDWIDTH /boot/config-`uname -r`
+> > 
+> > Lee
 > 
-> If you are getting "cannot submit datapipe for urb 0, err = -28" then it
-> means you MUST have enabled USB bandwidth checking.  Please make sure
-> it's really disabled.
+> daniel@nemesis:~$ grep CONFIG_USB_BANDWIDTH /boot/config-`uname -r`
+> # CONFIG_USB_BANDWIDTH is not set
+> daniel@nemesis:~$
 > 
-> Try:
+> OK?
 > 
-> $ grep CONFIG_USB_BANDWIDTH /boot/config-`uname -r`
-> 
-> Lee
 
-daniel@nemesis:~$ grep CONFIG_USB_BANDWIDTH /boot/config-`uname -r`
-# CONFIG_USB_BANDWIDTH is not set
-daniel@nemesis:~$
+OK, that's completely bizarre, and I've never seen another case like it.
+Also, plughw should handle all sample rate conversion, it's very strange
+that alsa-lib resampling fails...
 
-OK?
+Lee
+
 
 
 -------------------------------------------------------
