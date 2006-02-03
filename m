@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
-Date: Fri, 3 Feb 2006 08:37:05 +0100
-Message-ID: <c1fa50c735216a321ba2537f455560b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000692]: Possible ALSA support the EMU 0404 or other EMU card in the future?
+Date: Fri, 3 Feb 2006 09:39:43 +0100
+Message-ID: <bd58cac50e08bcd9b2c3769748977040@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D8141A8
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 08:37:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D21D5190
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 09:39:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=692> 
 ======================================================================
-Reported By:                daste
-Assigned To:                Clemens Ladisch
+Reported By:                comp
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1808
+Issue ID:                   692
 Category:                   1_OTHERS
-Reproducibility:            always
+Reproducibility:            N/A
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-02-2006 00:49 CET
-Last Modified:              02-03-2006 08:37 CET
+Date Submitted:             11-29-2004 14:03 CET
+Last Modified:              02-03-2006 09:39 CET
 ======================================================================
-Summary:                    Line 6 Toneport UX1 driver
+Summary:                    Possible ALSA support the EMU 0404 or other EMU card
+in the future?
 Description: 
-I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
-under Linux, since it's not supported by ALSA.
-So I'd like to ask you what can I do: altough I'm quite capable of
-programming in C, I never developed any kind of driver either for Linux or
-any other OS.
-I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
-6 asking them if they had plans on a Linux driver for such soundcard, or
-otherwise, if they would have sent me infos, so that I could have tried to
-spend some time trying to develop a driver. They haven't answered yet.
-I do want to use that unbelivable sound card under Linux, so I think I'm
-going to code, but I don't know where to start: can you give me any
-suggestions?
-And since I think I have to do some reverse engineering on Microsoft
-Windows drivers, can you give some other advice on such topic too?
-Otherwise, I'd like to ask you whether you're already developing a
-solution for such a problem or not. Thanks in advance.
+It is possible that ALSA supports EMU cards in the future?
+
 ======================================================================
 
 ----------------------------------------------------------------------
- daste - 02-02-06 12:47 
+ comp - 01-31-06 22:35 
 ----------------------------------------------------------------------
-Of course I tried that way, but it just doesn't work.
-However the lsusb -v output is in the file I just uploaded.
+I have 0404 and 1212m cards, and some kernel driver writing experience (in
+the past I am worked as SuSE Developer at Hungary, and some other company
+projects which requires kernel driver), but I need deep soundcard
+information from Creative to estimate the possibility of developing the
+emu driver.
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-03-06 08:37 
+ Henne - 02-03-06 09:39 
 ----------------------------------------------------------------------
-It's definitely not class compliant.
-It needs a new driver; this won't happen in the next four weeks.
+I have an EMU 0404 too. It was recognized by an alsaconf (from 1.0.10
+maybe) as an emu10k1, but nothing came out, so somebody must have added
+the PciIDs, and hopefully with a little workaround the emu10k1 will work.
+I found at the emu site some nice specs about that cards.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-06 00:49 daste          New Issue                                    
-02-02-06 01:31 rlrevell       Note Added: 0007866                          
-02-02-06 08:58 Clemens LadischNote Added: 0007870                          
-02-02-06 12:47 daste          File Added: lsusb                            
-02-02-06 12:47 daste          Note Added: 0007875                          
-02-02-06 16:29 daste          Issue Monitored: daste                       
-02-03-06 08:37 Clemens LadischNote Added: 0007892                          
-02-03-06 08:37 Clemens LadischAssigned To               => Clemens Ladisch 
-02-03-06 08:37 Clemens LadischReproducibility          N/A => always       
-02-03-06 08:37 Clemens LadischStatus                   new => assigned     
+11-29-04 14:03 comp           New Issue                                    
+11-29-04 14:15 pzad           Note Added: 0002632                          
+01-31-06 21:36 paperclip      Note Added: 0007853                          
+01-31-06 22:35 comp           Note Added: 0007855                          
+02-03-06 09:39 Henne          Note Added: 0007893                          
 ======================================================================
 
 
