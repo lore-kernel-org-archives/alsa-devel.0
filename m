@@ -1,13 +1,11 @@
-From: Doug McLain <doug@nostar.net>
-Subject: Re: ice1712 -wordclock and SPDIF
-Date: Fri, 03 Feb 2006 11:24:26 -0500
-Message-ID: <43E383BA.1040204@nostar.net>
-References: <200601262301.23064.gineera@aspect135.co.uk> <200601281424.14897.gineera@aspect135.co.uk> <43E12866.4030903@nostar.net> <200602020947.29156.gineera@aspect135.co.uk>
+From: Daniel Frey <d.frey@gmx.de>
+Subject: Problem with USB headset
+Date: Fri, 03 Feb 2006 18:32:10 +0100
+Message-ID: <43E3939A.7060002@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602020947.29156.gineera@aspect135.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,41 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
+I have a problem with my USB headset. A short summary:
 
-Alan Horstmann wrote:
-> On Wednesday 01 February 2006 21:30, you wrote:
-> 
->>CS8427 register dump:
->>   reg[0x01] = 0x81
->>   reg[0x02] = 0x00
->>   reg[0x03] = 0x0c
->>   reg[0x04] = 0x41
-> 
-> 
-> I have been looking at reg0x04 for bug1785; value 41 means the AES3 bit 
-> (bit'0') is set, which will mess-up SPDIF IN.  Perhaps try the reset patch on 
-> that report.  With DMX6fire it is often re-written correctly anyway, so it 
-> may be a similar but separate problem here.
-> 
-> However, reg0x03 I notice now also looks wrong, and controls the output data 
-> source with bits'1'&'2': value 0c means bits are '1,0' =sourced from AES3 
-> receiver.  Think it should be '0,1' ie reg value 0a?
+It doesn't support sample rates of 8000, but it does support 16000. Some
+applications (e.g. Ekiga) try to access it with 8000, so they fail. The
+Ekiga developer(s) think, the translation/conversion should be handled
+by ALSA.
 
-setting it to 0x0a breaks it completely, as in no spdif functionality no 
-way, no how.  Patches didnt help either. Wtih any luck, the status of 
-your registers may tell the story.
-> 
-> Busy few evenings, but will get full info dump fromDMX6fire asap.
-> 
-Thanks
-Doug
---
-http://nostar.net
+The details can be found here:
+
+<http://bugzilla.gnome.org/show_bug.cgi?id=329609>
+
+Question: Is their claim valid? Should I file a bug report to ALSA?
+
+Regards, Daniel
 
 
 -------------------------------------------------------
