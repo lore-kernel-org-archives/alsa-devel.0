@@ -1,11 +1,14 @@
-From: Kawshol sharma <kawshol@gmail.com>
-Subject: Is there a way to support ALSA on ARM9 with Linux 2.6.10?
-Date: Fri, 3 Feb 2006 16:28:58 +0530
-Message-ID: <2fd842840602030258k6813e5a6t2e4ca79caf465630@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
+Date: Fri, 3 Feb 2006 14:26:29 +0100
+Message-ID: <9e48a80f81c38865e8e1e61d6d1218d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_6598_20960905.1138964338239"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9B71198
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 14:26:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,43 +18,115 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_6598_20960905.1138964338239
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-HI
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1724
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-07-2006 05:10 CET
+Last Modified:              02-03-2006 14:26 CET
+======================================================================
+Summary:                    au88x0 PCM configuration problem - buffer_size
+constraint
+Description: 
+/cvs/alsa-lib/test/pcm_min
 
-I hear a lot about ALSA is not supported for the ARM Linux. Is it true
-and why is that?
-I use 2.6.10 or Arm926 and wish to switch over to ALSA. The reason I
-get from the people that the ABI of ARM is not compatible to the ALSA.
-I do not understand what that means?
+ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
+(latency) 500000 for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
 
-Is there a way to support ALSA on ARM9 with Linux 2.6.10?
+sound card is au8830, the au88x0 driver only accept period size in power
+of 2.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001766 jackd : ALSA: cannot set period size to...
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 02-02-06 15:48 
+----------------------------------------------------------------------
+latency required overall latency in us (0 = optimum latency for players)
+
+Do the latency time need to be a multiple of the time to play one sample
+(i.e. depend on the sample rate ) ?
+
+1 sample of 48000Hz is 20833.33333us.
 
 
---
-Kawshol Sharma
 
-------=_Part_6598_20960905.1138964338239
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+----------------------------------------------------------------------
+ Raymond - 02-03-06 14:26 
+----------------------------------------------------------------------
+Is the pcm_min.c used to demonstrate snd_pcm_recover() the underrun
+condition ?
 
-<p>HI <br>
-<p>I hear a lot about ALSA is not supported for the ARM Linux. Is it true <=
-br>and why is that? <br>I use 2.6.10 or Arm926 and wish to switch over to A=
-LSA. The reason I <br>get from the people that the ABI of ARM is not compat=
-ible to the ALSA.=20
-<br>I do not understand what that means? <br>
-<p>Is there a way to support ALSA on ARM9 with Linux 2.6.10? <br></p><br cl=
-ear=3D"all"><br>-- <br>Kawshol Sharma <br></p></p>
+unsigned char buffer[16*1024];				/* some random data */
 
-------=_Part_6598_20960905.1138964338239--
+                frames = snd_pcm_writei(handle, buffer, sizeof(buffer));
+
+
+It do not call snd_pcm_get_params() to obtain period_size and buffer_size
+?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-07-06 05:10 Raymond        New Issue                                    
+01-09-06 15:19 Raymond        Note Added: 0007537                          
+01-19-06 15:04 Raymond        Note Deleted: 0007537                        
+01-19-06 15:36 Raymond        Note Added: 0007721                          
+01-28-06 07:58 Raymond        Note Added: 0007828                          
+01-28-06 07:58 Raymond        Note Deleted: 0007721                        
+01-30-06 18:46 Raymond        Note Added: 0007840                          
+01-31-06 03:15 Raymond        Note Added: 0007844                          
+01-31-06 06:41 Raymond        Note Edited: 0007840                         
+01-31-06 07:03 Raymond        Note Edited: 0007840                         
+01-31-06 07:08 Raymond        Note Edited: 0007840                         
+01-31-06 07:11 Raymond        Note Edited: 0007840                         
+01-31-06 08:31 Raymond        Note Edited: 0007840                         
+01-31-06 09:48 Raymond        Note Edited: 0007844                         
+01-31-06 10:19 perex          Note Added: 0007845                          
+01-31-06 10:26 perex          Note Added: 0007847                          
+01-31-06 10:26 perex          Note Edited: 0007847                         
+01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
+driver
+01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
+01-31-06 10:49 perex          Summary                  simple PCM helper
+function => au88x0 PCM configuration problem - buffer_size constraint
+01-31-06 11:06 Raymond        Note Added: 0007848                          
+01-31-06 13:48 perex          Status                   new => assigned     
+01-31-06 13:48 perex          Assigned To               => mjander         
+01-31-06 13:49 perex          Relationship added       related to 0001766  
+01-31-06 15:59 Raymond        Note Added: 0007852                          
+02-01-06 07:35 perex          Note Added: 0007857                          
+02-01-06 10:32 Raymond        Note Added: 0007858                          
+02-01-06 10:37 Raymond        Note Edited: 0007848                         
+02-01-06 17:15 Raymond        Note Edited: 0007844                         
+02-01-06 17:20 Raymond        Note Added: 0007860                          
+02-02-06 10:23 Raymond        Note Added: 0007874                          
+02-02-06 11:10 Raymond        Note Edited: 0007874                         
+02-02-06 15:48 Raymond        Note Edited: 0007874                         
+02-03-06 14:26 Raymond        Note Added: 0007897                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
