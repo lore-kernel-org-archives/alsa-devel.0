@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Problem with USB headset
-Date: Fri, 03 Feb 2006 14:14:34 -0500
-Message-ID: <1138994075.554.1.camel@mindpipe>
-References: <43E3939A.7060002@gmx.de> <1138988883.15691.261.camel@mindpipe>
-	 <43E39C8C.8000409@gmx.de> <1138990466.15691.279.camel@mindpipe>
-	 <43E3A7A6.8090004@gmx.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001810]: pcm multi problem
+Date: Fri, 3 Feb 2006 20:39:22 +0100
+Message-ID: <a86b12dddb05f49627b84117e62d326a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43E3A7A6.8090004@gmx.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46105179
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 20:39:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,17 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Daniel Frey <d.frey@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-02-03 at 19:57 +0100, Daniel Frey wrote:
-> 
-> Anything else I could do? 
 
-Wait for someone to fix it...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1810> 
+======================================================================
+Reported By:                danhien_cz
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1810
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo-linux
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             02-03-2006 10:46 CET
+Last Modified:              02-03-2006 20:39 CET
+======================================================================
+Summary:                    pcm multi problem
+Description: 
+I'm using two sound cards - emu10k1 and via82xx.
+I'cant play audio throu both cards togather. 
+I've created pcm multi for this use.
+Last alsa version in wich it vas working is 1.0.8
 
-Lee
+======================================================================
+
+----------------------------------------------------------------------
+ danhien_cz - 02-03-06 11:06 
+----------------------------------------------------------------------
+via82xx - realtec ALC655 chip on VIA chipset
+
+----------------------------------------------------------------------
+ johnrigg - 02-03-06 20:39 
+----------------------------------------------------------------------
+Are you using jackd? A change in pcm_multi.c in alsa-lib-1.0.9rc1
+broke duplex operation with jackd and multiple sound cards. If you start
+jackd with just -P (playback) device, 
+eg. 'jackd -d alsa -P multi_device' it should work again if that's the
+problem.
+
+BTW running two cards without synchronized word clocks isn't a great
+idea.
+It might work for a while, but eventually they'll drift out of sync.
+(This is probably worse for capture than playback).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-03-06 10:46 danhien_cz     New Issue                                    
+02-03-06 10:46 danhien_cz     Distribution              => gentoo-linux    
+02-03-06 10:46 danhien_cz     Kernel Version            => 2.6.15          
+02-03-06 10:54 danhien_cz     Note Added: 0007894                          
+02-03-06 11:06 danhien_cz     Note Added: 0007896                          
+02-03-06 20:39 johnrigg       Note Added: 0007904                          
+======================================================================
+
 
 
 
