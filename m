@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001807]: Sound playback hangs and loops on first buffer
-Date: Fri, 3 Feb 2006 04:44:33 +0100
-Message-ID: <0b6aac527fb018700867ff341cc430eb@bugtrack.alsa-project.org>
+Date: Fri, 3 Feb 2006 04:57:27 +0100
+Message-ID: <be046719aa7fe5f414cf0f00ea710e01@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4482198
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 04:44:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D199198
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 04:57:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,19 +41,13 @@ alsa)
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             02-02-2006 00:15 CET
-Last Modified:              02-03-2006 04:44 CET
+Last Modified:              02-03-2006 04:57 CET
 ======================================================================
 Summary:                    Sound playback hangs and loops on first buffer
 Description: 
 Trying to play any sound or music produces a never ending loop of the first
 1/2 second or so.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 02-03-06 04:28 
-----------------------------------------------------------------------
-OK, so please attach the diff from the last working version of codec#3 to
-the latest.
 
 ----------------------------------------------------------------------
  hno - 02-03-06 04:44 
@@ -63,6 +57,11 @@ Here you have
 but I could not see anything interesting in there. Unless the change in
 subsystem ID is important.. (was 0, is now a 0x1462e603). The rest seems
 to be only formatting changes between the different alsa-driver versions.
+
+----------------------------------------------------------------------
+ rlrevell - 02-03-06 04:57 
+----------------------------------------------------------------------
+There's no attachment...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -82,6 +81,7 @@ Date Modified  Username       Field                    Change
 02-03-06 04:03 hno            Note Added: 0007887                          
 02-03-06 04:28 rlrevell       Note Added: 0007888                          
 02-03-06 04:44 hno            Note Added: 0007889                          
+02-03-06 04:57 rlrevell       Note Added: 0007890                          
 ======================================================================
 
 
