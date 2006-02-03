@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Fri, 3 Feb 2006 14:26:29 +0100
-Message-ID: <9e48a80f81c38865e8e1e61d6d1218d2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001812]: Apps that uses alsa-1.0.11rc3 crashes with my asound.conf
+Date: Fri, 3 Feb 2006 15:19:53 +0100
+Message-ID: <ee5a9f2ec82dd0d6b2c3ac8f308e1196@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9B71198
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 14:26:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A1801A3
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 15:19:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,108 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1812> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                AnarSoul
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
+Project:                    ALSA - lib
+Issue ID:                   1812
+Category:                   0_general
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              02-03-2006 14:26 CET
+Date Submitted:             02-03-2006 15:19 CET
+Last Modified:              02-03-2006 15:19 CET
 ======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
+Summary:                    Apps that uses alsa-1.0.11rc3 crashes with my
+asound.conf
 Description: 
-/cvs/alsa-lib/test/pcm_min
+All apps that uses alsa-1.0.11rc3 crashed with my asound.conf with
+message:
 
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
+ conf.c:3144: snd_config_iterator_first: Assertion `node->type ==
+SND_CONFIG_TYPE_COMPOUND' failed.
 
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
+With alsa-1.0.10 everything is OK :)
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001766 jackd : ALSA: cannot set period size to...
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 02-02-06 15:48 
-----------------------------------------------------------------------
-latency required overall latency in us (0 = optimum latency for players)
-
-Do the latency time need to be a multiple of the time to play one sample
-(i.e. depend on the sample rate ) ?
-
-1 sample of 48000Hz is 20833.33333us.
-
-
-
-----------------------------------------------------------------------
- Raymond - 02-03-06 14:26 
-----------------------------------------------------------------------
-Is the pcm_min.c used to demonstrate snd_pcm_recover() the underrun
-condition ?
-
-unsigned char buffer[16*1024];				/* some random data */
-
-                frames = snd_pcm_writei(handle, buffer, sizeof(buffer));
-
-
-It do not call snd_pcm_get_params() to obtain period_size and buffer_size
-?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
-01-31-06 13:48 perex          Status                   new => assigned     
-01-31-06 13:48 perex          Assigned To               => mjander         
-01-31-06 13:49 perex          Relationship added       related to 0001766  
-01-31-06 15:59 Raymond        Note Added: 0007852                          
-02-01-06 07:35 perex          Note Added: 0007857                          
-02-01-06 10:32 Raymond        Note Added: 0007858                          
-02-01-06 10:37 Raymond        Note Edited: 0007848                         
-02-01-06 17:15 Raymond        Note Edited: 0007844                         
-02-01-06 17:20 Raymond        Note Added: 0007860                          
-02-02-06 10:23 Raymond        Note Added: 0007874                          
-02-02-06 11:10 Raymond        Note Edited: 0007874                         
-02-02-06 15:48 Raymond        Note Edited: 0007874                         
-02-03-06 14:26 Raymond        Note Added: 0007897                          
+02-03-06 15:19 AnarSoul       New Issue                                    
+02-03-06 15:19 AnarSoul       File Added: asound.conf                      
 ======================================================================
 
 
