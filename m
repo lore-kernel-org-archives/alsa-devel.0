@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001807]: Sound playback hangs and loops on first buffer
-Date: Fri, 3 Feb 2006 04:03:06 +0100
-Message-ID: <b6bb438a4f9666ad3d51a2f1315073b3@bugtrack.alsa-project.org>
+Date: Fri, 3 Feb 2006 04:28:04 +0100
+Message-ID: <d9d39f705e489c87b5554f70a8ab9163@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53B2F186
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 04:03:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EF3C19A
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 04:28:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ alsa)
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             02-02-2006 00:15 CET
-Last Modified:              02-03-2006 04:03 CET
+Last Modified:              02-03-2006 04:28 CET
 ======================================================================
 Summary:                    Sound playback hangs and loops on first buffer
 Description: 
@@ -50,38 +50,17 @@ Trying to play any sound or music produces a never ending loop of the first
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-03-06 02:57 
-----------------------------------------------------------------------
-OK I created a diff from the silent codec#3 to the working one.  There
-appear to be some important clues.  It looks like the difference is that
-the non working version switches some INs for OUTs:
-
-@@ -89,34 +89,34 @@
-   Pincap 0x083f: IN OUT HP
-   Pin Default 0x01014410: [Jack] Line Out at Ext Rear
-     Conn = 1/8, Color = Green 
--  Pin-ctls: 0x20: IN
-+  Pin-ctls: 0x40: OUT
-   Connection: 1
-      0x0c    
- Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out 
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
--  Amp-Out vals: 0x80 0x80
-+  Amp-Out vals: 0x00 0x00
-   Pincap 0x083f: IN OUT HP
-   Pin Default 0x01016011: [Jack] Line Out at Ext Rear
-     Conn = 1/8, Color = Orange
--  Pin-ctls: 0x20: IN
-+  Pin-ctls: 0x40: OUT
-   Connection: 1
-      0x0d
-
-----------------------------------------------------------------------
  hno - 02-03-06 04:03 
 ----------------------------------------------------------------------
 Personally I am more interested in getting 1.0.11 working than the old
 1.0.9b (have the realtek patch there which works).. and in 1.0.11rc3 these
 switches have already been corrected from what I can tell.
+
+----------------------------------------------------------------------
+ rlrevell - 02-03-06 04:28 
+----------------------------------------------------------------------
+OK, so please attach the diff from the last working version of codec#3 to
+the latest.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -99,6 +78,7 @@ Date Modified  Username       Field                    Change
 02-03-06 02:54 rlrevell       File Added: 1.0.9-diff                       
 02-03-06 02:57 rlrevell       Note Added: 0007886                          
 02-03-06 04:03 hno            Note Added: 0007887                          
+02-03-06 04:28 rlrevell       Note Added: 0007888                          
 ======================================================================
 
 
