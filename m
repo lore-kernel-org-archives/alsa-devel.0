@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001812]: Apps that uses alsa-1.0.11rc3 crashes with my asound.conf
-Date: Fri, 3 Feb 2006 15:19:53 +0100
-Message-ID: <ee5a9f2ec82dd0d6b2c3ac8f308e1196@bugtrack.alsa-project.org>
+From: Nicolas Pitre <nico@cam.org>
+Subject: Re: Is there a way to support ALSA on ARM9 with Linux
+ 2.6.10?
+Date: Fri, 03 Feb 2006 09:51:16 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0602030948140.5397@localhost.localdomain>
+References: <2fd842840602030258k6813e5a6t2e4ca79caf465630@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A1801A3
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 15:19:53 +0100 (MET)
+In-reply-to: <2fd842840602030258k6813e5a6t2e4ca79caf465630@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +18,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Kawshol sharma <kawshol@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 3 Feb 2006, Kawshol sharma wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1812> 
-======================================================================
-Reported By:                AnarSoul
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1812
-Category:                   0_general
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-03-2006 15:19 CET
-Last Modified:              02-03-2006 15:19 CET
-======================================================================
-Summary:                    Apps that uses alsa-1.0.11rc3 crashes with my
-asound.conf
-Description: 
-All apps that uses alsa-1.0.11rc3 crashed with my asound.conf with
-message:
+> HI
+> 
+> I hear a lot about ALSA is not supported for the ARM Linux. Is it true
+> and why is that?
 
- conf.c:3144: snd_config_iterator_first: Assertion `node->type ==
-SND_CONFIG_TYPE_COMPOUND' failed.
+It is not true.
 
-With alsa-1.0.10 everything is OK :)
-======================================================================
+> I use 2.6.10 or Arm926 and wish to switch over to ALSA. The reason I
+> get from the people that the ABI of ARM is not compatible to the ALSA.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-06 15:19 AnarSoul       New Issue                                    
-02-03-06 15:19 AnarSoul       File Added: asound.conf                      
-======================================================================
+That's a totally different problem for which ALSA is not the cause at 
+all.  ALSA works perfectly fine when _both_ the kernel and user space 
+use the same ABI.
+
+> I do not understand what that means?
+
+You probably have a mixed ABI environment.
+
+> Is there a way to support ALSA on ARM9 with Linux 2.6.10?
+
+Depends if you actually have an ALSA driver for your audio device.
 
 
+Nicolas
 
 
 -------------------------------------------------------
