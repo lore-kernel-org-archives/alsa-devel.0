@@ -1,12 +1,14 @@
-From: "Thibault LE MEUR" <Thibault.LeMeur@supelec.fr>
-Subject: Help Troubleshooting  usbaudio.c for bugID 1801
-Date: Fri, 3 Feb 2006 10:35:58 +0100
-Message-ID: <003001c628a5$4066c670$a578e4a0@supelec.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001810]: pcm multi problem
+Date: Fri, 3 Feb 2006 10:54:09 +0100
+Message-ID: <554bfed9e6441b95346c82baaaddf2f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E57F16E
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 10:54:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,49 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I'm trying to troubleshoot bugid 1801 (Audiophile USB analog capture) =
-where
-the snd-usb-audio is not alligned on the "3-byte-words" audio stream =
-while
-reading from the capture interface.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1810> 
+======================================================================
+Reported By:                danhien_cz
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1810
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo-linux
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             02-03-2006 10:46 CET
+Last Modified:              02-03-2006 10:54 CET
+======================================================================
+Summary:                    pcm multi problem
+Description: 
+I'm using two sound cards - emu10k1 and via82xx.
+I'cant play audio throu both cards togather. 
+I've created pcm multi for this use.
+Last alsa version in wich it vas working is 1.0.8
 
-For instance Audio samples (lets call them S1, S2 S3) are 3 bytes long =
-(lets
-call each of them A, B, C).
+======================================================================
 
-Instead of reading:
-S1 =3D S1A S1B S1C
-S2 =3D S2A S2B S2C
-S3 =3D S3A S3B S3C
+----------------------------------------------------------------------
+ danhien_cz - 02-03-06 10:54 
+----------------------------------------------------------------------
+sound card chips
+emu10k1 - Creative Labs SB Audigy (rev 03)
+via82xx - VIA Technologies, Inc. VT8233/A/8235/8237 AC97 Audio Controller
+(rev 60)
 
-Snd-usb-audio skips the first byte and reads:
-S1 =3D S1B S1C S2A
-S2 =3D S2B S2C S3A
-S3 =3D S3B S3C ...
-
-I can try to debug this (and even try to patch) but I have no idea as to
-where begin my investigation:
-* Is this bug due to the way snd-usb-audio reads samples or to a
-synchronization issue while initializing the device?
-  - Indeed, on this device the Analog Capture function can be addressed =
-by
-several Interface/AltSettings which differ only from their =
-synchronization
-SYNC/ASYNC property
-* Is there any debug traces I could add to the usbaudio.c code in order =
-to
-figure out what's wrong?
-  - can you point me to the relevant lines in usbaudio.c ?
-
-Thanks in advance for any tips/idea you could give me in order to help
-identify this issue.
-
-Thibault
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-03-06 10:46 danhien_cz     New Issue                                    
+02-03-06 10:46 danhien_cz     Distribution              => gentoo-linux    
+02-03-06 10:46 danhien_cz     Kernel Version            => 2.6.15          
+02-03-06 10:54 danhien_cz     Note Added: 0007894                          
+======================================================================
 
 
 
