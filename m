@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001609]: Sound Blaster 24bit (SB0410) PCI card (in PCI-X slot) not producing any sound
-Date: Fri, 3 Feb 2006 00:28:05 +0100
-Message-ID: <dcd513787a560c26bb13e1dc4a84f734@bugtrack.alsa-project.org>
+From: "kunjmmh" <kunjmmh@adetel.com>
+Subject: Fw: hey alsa-devel
+Date: Fri, 3 Feb 2006 02:03:35 -0000
+Message-ID: <001101c6285d$a8770600$b2269354@de4d175c>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_000D_01C62866.0A3B6E00"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 038B2192
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 00:28:05 +0100 (MET)
+Received: from p549326B2.dip0.t-ipconnect.de (p549326B2.dip0.t-ipconnect.de [84.147.38.178])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2B64416C
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 02:02:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,300 +22,249 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1609> 
-======================================================================
-Reported By:                esgeraul
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1609
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE 9.2
-Kernel Version:             2.6.14.2
-======================================================================
-Date Submitted:             11-30-2005 17:55 CET
-Last Modified:              02-03-2006 00:28 CET
-======================================================================
-Summary:                    Sound Blaster 24bit (SB0410) PCI card (in PCI-X
-slot) not producing any sound
-Description: 
-(see also the alsa-user thread with the same subject.)
-
-The card is recognized, all modules load, mixer settings are ok. But aplay
-playing a wav file hangs while never producing any sound. 
-
-Tested with alsa 1.0.9 and 1.0.10, kernel version 2.6.14.2 (stock,
-non-suse)
+------=_NextPart_000_000D_01C62866.0A3B6E00
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_000E_01C62866.0A3B6E00"
 
 
-aadebug output:
-
-ALSA Audio Debug v0.1.0 - Wed Nov 30 17:58:27 CET 2005
-http://alsa.opensrc.org/index.php?page=aadebug
-http://www.gnu.org/licenses/gpl.txt
- 
-Kernel ----------------------------------------------------
-Linux pipe 2.6.14.2 #4 SMP PREEMPT Wed Nov 30 11:43:20 CET 2005 i686 i686
-i386 GNU/Linux
- 
-Loaded Modules --------------------------------------------
-snd_pcm_oss            56992  0
-snd_mixer_oss          22912  1 snd_pcm_oss
-snd_ca0106             34596  0
-snd_ac97_codec         94332  1 snd_ca0106
-snd_pcm                97412  3 snd_pcm_oss,snd_ca0106,snd_ac97_codec
-snd_timer              30084  1 snd_pcm
-snd                    59876  6
-snd_pcm_oss,snd_mixer_oss,snd_ca0106,snd_ac97_codec,snd_pcm,snd_timer
-snd_ac97_bus            6400  1 snd_ac97_codec
-snd_page_alloc         14728  2 snd_ca0106,snd_pcm
- 
-Proc Config -----------------------------------------------
-CONFIG_SOUND=m
-CONFIG_SND=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-CONFIG_SND_SEQUENCER=m
-# CONFIG_SND_SEQ_DUMMY is not set
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=m
-CONFIG_SND_PCM_OSS=m
-CONFIG_SND_SEQUENCER_OSS=y
-# CONFIG_SND_RTCTIMER is not set
-# CONFIG_SND_VERBOSE_PRINTK is not set
-# CONFIG_SND_DEBUG is not set
-# CONFIG_SND_DUMMY is not set
-# CONFIG_SND_VIRMIDI is not set
-# CONFIG_SND_MTPAV is not set
-# CONFIG_SND_SERIAL_U16550 is not set
-# CONFIG_SND_MPU401 is not set
-# CONFIG_SND_AD1816A is not set
-# CONFIG_SND_AD1848 is not set
-# CONFIG_SND_CS4231 is not set
-# CONFIG_SND_CS4232 is not set
-# CONFIG_SND_CS4236 is not set
-# CONFIG_SND_ES968 is not set
-# CONFIG_SND_ES1688 is not set
-# CONFIG_SND_ES18XX is not set
-# CONFIG_SND_GUSCLASSIC is not set
-# CONFIG_SND_GUSEXTREME is not set
-# CONFIG_SND_GUSMAX is not set
-# CONFIG_SND_INTERWAVE is not set
-# CONFIG_SND_INTERWAVE_STB is not set
-# CONFIG_SND_OPTI92X_AD1848 is not set
-# CONFIG_SND_OPTI92X_CS4231 is not set
-# CONFIG_SND_OPTI93X is not set
-# CONFIG_SND_SB8 is not set
-# CONFIG_SND_SB16 is not set
-# CONFIG_SND_SBAWE is not set
-# CONFIG_SND_WAVEFRONT is not set
-# CONFIG_SND_ALS100 is not set
-# CONFIG_SND_AZT2320 is not set
-# CONFIG_SND_CMI8330 is not set
-# CONFIG_SND_DT019X is not set
-# CONFIG_SND_OPL3SA2 is not set
-# CONFIG_SND_SGALAXY is not set
-# CONFIG_SND_SSCAPE is not set
-CONFIG_SND_AC97_CODEC=m
-CONFIG_SND_AC97_BUS=m
-# CONFIG_SND_ALI5451 is not set
-# CONFIG_SND_ATIIXP is not set
-# CONFIG_SND_ATIIXP_MODEM is not set
-# CONFIG_SND_AU8810 is not set
-# CONFIG_SND_AU8820 is not set
-# CONFIG_SND_AU8830 is not set
-# CONFIG_SND_AZT3328 is not set
-# CONFIG_SND_BT87X is not set
-# CONFIG_SND_CS46XX is not set
-# CONFIG_SND_CS4281 is not set
-# CONFIG_SND_EMU10K1 is not set
-# CONFIG_SND_EMU10K1X is not set
-CONFIG_SND_CA0106=m
-# CONFIG_SND_KORG1212 is not set
-# CONFIG_SND_MIXART is not set
-# CONFIG_SND_NM256 is not set
-# CONFIG_SND_RME32 is not set
-# CONFIG_SND_RME96 is not set
-# CONFIG_SND_RME9652 is not set
-# CONFIG_SND_HDSP is not set
-# CONFIG_SND_HDSPM is not set
-# CONFIG_SND_TRIDENT is not set
-# CONFIG_SND_YMFPCI is not set
-# CONFIG_SND_AD1889 is not set
-# CONFIG_SND_ALS4000 is not set
-# CONFIG_SND_CMIPCI is not set
-# CONFIG_SND_ENS1370 is not set
-# CONFIG_SND_ENS1371 is not set
-# CONFIG_SND_ES1938 is not set
-# CONFIG_SND_ES1968 is not set
-# CONFIG_SND_MAESTRO3 is not set
-# CONFIG_SND_FM801 is not set
-# CONFIG_SND_ICE1712 is not set
-# CONFIG_SND_ICE1724 is not set
-# CONFIG_SND_INTEL8X0 is not set
-# CONFIG_SND_INTEL8X0M is not set
-# CONFIG_SND_SONICVIBES is not set
-# CONFIG_SND_VIA82XX is not set
-# CONFIG_SND_VIA82XX_MODEM is not set
-# CONFIG_SND_VX222 is not set
-# CONFIG_SND_HDA_INTEL is not set
-# CONFIG_SND_USB_AUDIO is not set
-# CONFIG_SND_USB_USX2Y is not set
-# CONFIG_SOUND_PRIME is not set
- 
-Modprobe Conf ---------------------------------------------
-# remove this if sound is configured
-#alias char-major-116 snd
-#alias snd-card-0 snd-ca0106
-#alias char-major-14 soundcore
-#alias sound-slot-0 snd-card-0
-#alias sound-service-0-0 snd-mixer-oss
-#alias sound-service-0-1 snd-seq-oss
-#alias sound-service-0-3 snd-pcm-oss
-#alias sound-service-0-8 snd-seq-oss
-#alias sound-service-0-12 snd-pcm-oss
-#alias sound-slot-1 nvaudio
- 
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
-08:13:09 2005 UTC).
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0410] at 0x3000 irq 233
- 19: [0- 3]: digital audio playback
- 27: [0- 3]: digital audio capture
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 17: [0- 1]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-cat: /proc/asound/hwdep: No such file or directory
-00-00: ca0106 : CA0106 : playback 1 : capture 1
-00-01: ca0106 : CA0106 : playback 1 : capture 1
-00-02: ca0106 : CA0106 : playback 1 : capture 1
-00-03: ca0106 : CA0106 : playback 1 : capture 1
-cat: /proc/asound/seq/clients: No such file or directory
- 
-Dev Snd ---------------------------------------------------
-controlC0  hwC5D2    midiC2D4  midiC6D2  pcmC1D0c  pcmC2D7c  pcmC4D6c 
-pcmC6D5c
-controlC1  hwC5D3    midiC2D5  midiC6D3  pcmC1D0p  pcmC2D7p  pcmC4D6p 
-pcmC6D5p
-controlC2  hwC6D0    midiC2D6  midiC6D4  pcmC1D1c  pcmC3D0c  pcmC4D7c 
-pcmC6D6c
-controlC3  hwC6D1    midiC2D7  midiC6D5  pcmC1D1p  pcmC3D0p  pcmC4D7p 
-pcmC6D6p
-controlC4  hwC6D2    midiC3D0  midiC6D6  pcmC1D2c  pcmC3D1c  pcmC5D0c 
-pcmC6D7c
-controlC5  hwC6D3    midiC3D1  midiC6D7  pcmC1D2p  pcmC3D1p  pcmC5D0p 
-pcmC6D7p
-controlC6  hwC7D0    midiC3D2  midiC7D0  pcmC1D3c  pcmC3D2c  pcmC5D1c 
-pcmC7D0c
-controlC7  hwC7D1    midiC3D3  midiC7D1  pcmC1D3p  pcmC3D2p  pcmC5D1p 
-pcmC7D0p
-hwC0D0     hwC7D2    midiC3D4  midiC7D2  pcmC1D4c  pcmC3D3c  pcmC5D2c 
-pcmC7D1c
-hwC0D1     hwC7D3    midiC3D5  midiC7D3  pcmC1D4p  pcmC3D3p  pcmC5D2p 
-pcmC7D1p
-hwC0D2     midiC0D0  midiC3D6  midiC7D4  pcmC1D5c  pcmC3D4c  pcmC5D3c 
-pcmC7D2c
-hwC0D3     midiC0D1  midiC3D7  midiC7D5  pcmC1D5p  pcmC3D4p  pcmC5D3p 
-pcmC7D2p
-hwC1D0     midiC0D2  midiC4D0  midiC7D6  pcmC1D6c  pcmC3D5c  pcmC5D4c 
-pcmC7D3c
-hwC1D1     midiC0D3  midiC4D1  midiC7D7  pcmC1D6p  pcmC3D5p  pcmC5D4p 
-pcmC7D3p
-hwC1D2     midiC0D4  midiC4D2  pcmC0D0c  pcmC1D7c  pcmC3D6c  pcmC5D5c 
-pcmC7D4c
-hwC1D3     midiC0D5  midiC4D3  pcmC0D0p  pcmC1D7p  pcmC3D6p  pcmC5D5p 
-pcmC7D4p
-hwC2D0     midiC0D6  midiC4D4  pcmC0D1c  pcmC2D0c  pcmC3D7c  pcmC5D6c 
-pcmC7D5c
-hwC2D1     midiC0D7  midiC4D5  pcmC0D1p  pcmC2D0p  pcmC3D7p  pcmC5D6p 
-pcmC7D5p
-hwC2D2     midiC1D0  midiC4D6  pcmC0D2c  pcmC2D1c  pcmC4D0c  pcmC5D7c 
-pcmC7D6c
-hwC2D3     midiC1D1  midiC4D7  pcmC0D2p  pcmC2D1p  pcmC4D0p  pcmC5D7p 
-pcmC7D6p
-hwC3D0     midiC1D2  midiC5D0  pcmC0D3c  pcmC2D2c  pcmC4D1c  pcmC6D0c 
-pcmC7D7c
-hwC3D1     midiC1D3  midiC5D1  pcmC0D3p  pcmC2D2p  pcmC4D1p  pcmC6D0p 
-pcmC7D7p
-hwC3D2     midiC1D4  midiC5D2  pcmC0D4c  pcmC2D3c  pcmC4D2c  pcmC6D1c 
-seq
-hwC3D3     midiC1D5  midiC5D3  pcmC0D4p  pcmC2D3p  pcmC4D2p  pcmC6D1p 
-timer
-hwC4D0     midiC1D6  midiC5D4  pcmC0D5c  pcmC2D4c  pcmC4D3c  pcmC6D2c
-hwC4D1     midiC1D7  midiC5D5  pcmC0D5p  pcmC2D4p  pcmC4D3p  pcmC6D2p
-hwC4D2     midiC2D0  midiC5D6  pcmC0D6c  pcmC2D5c  pcmC4D4c  pcmC6D3c
-hwC4D3     midiC2D1  midiC5D7  pcmC0D6p  pcmC2D5p  pcmC4D4p  pcmC6D3p
-hwC5D0     midiC2D2  midiC6D0  pcmC0D7c  pcmC2D6c  pcmC4D5c  pcmC6D4c
-hwC5D1     midiC2D3  midiC6D1  pcmC0D7p  pcmC2D6p  pcmC4D5p  pcmC6D4p
- 
-CPU -------------------------------------------------------
-model name      : Intel(R) Xeon(TM) CPU 2.80GHz
-cpu MHz         : 2800.781
-model name      : Intel(R) Xeon(TM) CPU 2.80GHz
-cpu MHz         : 2800.781
-model name      : Intel(R) Xeon(TM) CPU 2.80GHz
-cpu MHz         : 2800.781
-model name      : Intel(R) Xeon(TM) CPU 2.80GHz
-cpu MHz         : 2800.781
- 
-RAM -------------------------------------------------------
-MemTotal:      1033828 kB
-SwapTotal:     1052216 kB
- 
-Hardware --------------------------------------------------
-0000:00:00.0 Host bridge: Intel Corp. E7520 Memory Controller Hub (rev
-0c)
-0000:02:03.0 Multimedia audio controller: Creative Labs SB Audigy LS
+------=_NextPart_001_000E_01C62866.0A3B6E00
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
 
-======================================================================
-
-----------------------------------------------------------------------
- robsed - 02-03-06 00:19 
-----------------------------------------------------------------------
-I tested a network card in the same slot in that machine and it is able to
-receive interrupts and function normally, so I don't think there's a
-problem with the interrupt routing on the system.
-
-I'd suspect that the driver is somehow not programming the card correctly
-to generate interrupts..
-
-----------------------------------------------------------------------
- rlrevell - 02-03-06 00:28 
-----------------------------------------------------------------------
-Can you attach dmesg output?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-30-05 17:55 esgeraul       New Issue                                    
-11-30-05 17:55 esgeraul       Distribution              => SuSE 9.2        
-11-30-05 17:55 esgeraul       Kernel Version            => 2.6.14.2        
-02-02-06 18:26 robsed         Note Added: 0007878                          
-02-02-06 18:28 robsed         Issue Monitored: robsed                      
-02-02-06 19:00 rlrevell       Note Added: 0007880                          
-02-03-06 00:19 robsed         Note Added: 0007883                          
-02-03-06 00:28 rlrevell       Note Added: 0007884                          
-======================================================================
+----- Original Message -----=20
+From: Lovett Noelle=20
+To: ssorpakhhj@p06.dasd.honeywell.com=20
+Sent: Wednesday, February 1, 2006 8:21 AM
+Subject: hey alsa-devel
 
 
 
+------=_NextPart_001_000E_01C62866.0A3B6E00
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3DWindows-1252">
+<META content=3D"MSHTML 6.00.2900.2769" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV style=3D"FONT: 10pt arial">----- Original Message -----=20
+<DIV style=3D"BACKGROUND: #e4e4e4; font-color: black"><B>From:</B> <A=20
+title=3DLovett Noelle =
+href=3D"mailto:xhmzdrc@tcmnet.com ">Lovett Noelle</A>=20
+</DIV>
+<DIV><B>To:</B> <A title=3Dssorpakhhj@p06.dasd.honeywell.com=20
+href=3D"mailto:ssorpakhhj@p06.dasd.honeywell.com">ssorpakhhj@p06.dasd.honeywell.com</A> </DIV>
+<DIV><B>Sent:</B> Wednesday, February 1, 2006 8:21 AM</DIV>
+<DIV><B>Subject:</B> hey alsa-devel</DIV></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT><BR></DIV>
+<DIV align=3Dcenter><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV align=3Dcenter><A href=3D"http://restdemo.info/"><IMG =
+alt=3D"" hspace=3D0=20
+src=3D"cid:000c01c6285d$a8770600$b2269354@de4d175c" =
+align=3Dbaseline=20
+border=3D0></A></DIV></BODY></HTML>
+
+------=_NextPart_001_000E_01C62866.0A3B6E00--
+
+------=_NextPart_000_000D_01C62866.0A3B6E00
+Content-Type: image/gif;
+	name="mbuekunydxkx.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000c01c6285d$a8770600$b2269354@de4d175c>
+
+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
+------=_NextPart_000_000D_01C62866.0A3B6E00--
