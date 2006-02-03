@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001814]: EMU10K1 rear, center, LFE channels not work. bug in EMU10K1.conf
-Date: Fri, 3 Feb 2006 18:51:29 +0100
-Message-ID: <14bdecbabaee537918b0346de0f0bd2a@bugtrack.alsa-project.org>
+From: Ken Arromdee <arromdee@rahul.net>
+Subject: Re: Help with AD1816 driver please...
+Date: Fri, 3 Feb 2006 09:52:54 -0800 (PST)
+Message-ID: <Pine.LNX.4.44.0602030951480.18169-100000@green.rahul.net>
+References: <1138945160.15691.239.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 109621AA
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 18:51:30 +0100 (MET)
+In-Reply-To: <1138945160.15691.239.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +16,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Here's the diff.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1814> 
-======================================================================
-Reported By:                bilek
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1814
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-03-2006 18:35 CET
-Last Modified:              02-03-2006 18:51 CET
-======================================================================
-Summary:                    EMU10K1 rear, center, LFE channels not work. bug in
-EMU10K1.conf
-Description: 
-The problem is similar or the same to already reported problem id=1624
-see link https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1624
+Note that this only fixes half of the problem.  I haven't been able to
+figure out the other half.
 
-After the update to alsa-lib-1.0.10-3.FC4.i386.rpm the rear, center LFE
-and maybe more channels not "sounding" but can be used as output.
-
-The "speaker-test -c 6" claims that everything is OK, but no sound.
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 02-03-06 18:51 
-----------------------------------------------------------------------
-Um, that bug is resolved, did you even try any of the solutions?
-
-- Upgrade your ALSA drivers to 1.0.10 or newer
-- Upgrade to ALSA 1.0.11-rc3
-- Replace your EMU10k1.conf with the one from the other bug report
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-06 18:35 bilek          New Issue                                    
-02-03-06 18:51 rlrevell       Note Added: 0007902                          
-======================================================================
-
+--- ad1816a_lib.c.orig	2006-02-02 23:32:50.000000000 -0500
++++ ad1816a_lib.c	2006-02-02 23:38:54.000000000 -0500
+@@ -174,7 +174,7 @@
+ 
+ 
+ static int snd_ad1816a_trigger(struct snd_ad1816a *chip, unsigned char what,
+-	           int channel, int cmd)
++	           int channel, int cmd, int iscapture)
+ {
+     int error = 0;
+ 
+@@ -183,10 +183,14 @@
+     case SNDRV_PCM_TRIGGER_STOP:
+ 	spin_lock(&chip->lock);
+ 	cmd = (cmd == SNDRV_PCM_TRIGGER_START) ? 0xff: 0x00;
+-	if (what & AD1816A_PLAYBACK_ENABLE)
++	/* if (what & AD1816A_PLAYBACK_ENABLE) */
++	/* That is not valid, because playback and capture enable
++	 * are the same bit pattern, just to different addresses
++	 */
++	if (!iscapture)
+ 	    snd_ad1816a_out_mask(chip, AD1816A_PLAYBACK_CONFIG,
+ 		AD1816A_PLAYBACK_ENABLE, cmd);
+-	if (what & AD1816A_CAPTURE_ENABLE)
++	if (iscapture)
+ 	    snd_ad1816a_out_mask(chip, AD1816A_CAPTURE_CONFIG,
+ 		AD1816A_CAPTURE_ENABLE, cmd);
+ 	spin_unlock(&chip->lock);
+@@ -203,14 +207,14 @@
+ {
+     struct snd_ad1816a *chip = snd_pcm_substream_chip(substream);
+     return snd_ad1816a_trigger(chip, AD1816A_PLAYBACK_ENABLE,
+-	SNDRV_PCM_STREAM_PLAYBACK, cmd);
++	SNDRV_PCM_STREAM_PLAYBACK, cmd, 0);
+ }
+ 
+ static int snd_ad1816a_capture_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+     struct snd_ad1816a *chip = snd_pcm_substream_chip(substream);
+     return snd_ad1816a_trigger(chip, AD1816A_CAPTURE_ENABLE,
+-	SNDRV_PCM_STREAM_CAPTURE, cmd);
++	SNDRV_PCM_STREAM_CAPTURE, cmd, 1);
+ }
+ 
+ static int snd_ad1816a_hw_params(struct snd_pcm_substream *substream,
 
 
 
