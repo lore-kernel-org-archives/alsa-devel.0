@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001609]: Sound Blaster 24bit (SB0410) PCI card (in PCI-X slot) not producing any sound
-Date: Fri, 3 Feb 2006 16:25:17 +0100
-Message-ID: <fa4e4c1e4005a3f833bf75f759c96c3e@bugtrack.alsa-project.org>
+Date: Fri, 3 Feb 2006 16:27:24 +0100
+Message-ID: <38618ae9e2cde299d7f6b712c79fdecf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5BCF3168
-	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 16:25:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E7A5168
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 16:27:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSE 9.2
 Kernel Version:             2.6.14.2
 ======================================================================
 Date Submitted:             11-30-2005 17:55 CET
-Last Modified:              02-03-2006 16:25 CET
+Last Modified:              02-03-2006 16:27 CET
 ======================================================================
 Summary:                    Sound Blaster 24bit (SB0410) PCI card (in PCI-X
 slot) not producing any sound
@@ -283,18 +283,17 @@ Hardware --------------------------------------------------
 ======================================================================
 
 ----------------------------------------------------------------------
- robsed - 02-03-06 16:20 
-----------------------------------------------------------------------
-I've attached the dmesg output from the machine after booting up and
-attempting to play a sound. There is only the one line added by anything
-in ALSA, from the ca0106 driver loading..
-
-----------------------------------------------------------------------
  jcdutton - 02-03-06 16:25 
 ----------------------------------------------------------------------
 The dmesg shows kernel version:
 Linux version 2.4.22-1.2199.5.legacy.nptlxm2
 This is not the 2.6.14 that you say you are running with.
+
+----------------------------------------------------------------------
+ robsed - 02-03-06 16:27 
+----------------------------------------------------------------------
+The 2.6.14.2 was from the original reporter (esgeraul). We are running on
+Red Hat Linux 9 with a Fedora Core 1 kernel (2.4.22 based).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -310,6 +309,7 @@ Date Modified  Username       Field                    Change
 02-03-06 16:18 robsed         File Added: alsa dmesg.txt                    
 02-03-06 16:20 robsed         Note Added: 0007899                          
 02-03-06 16:25 jcdutton       Note Added: 0007900                          
+02-03-06 16:27 robsed         Note Added: 0007901                          
 ======================================================================
 
 
