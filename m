@@ -1,13 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Envy24 -PSDIN(3)
-Date: Fri, 3 Feb 2006 09:28:18 +0000
-Message-ID: <200602030928.18467.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001810]: pcm multi problem
+Date: Fri, 3 Feb 2006 10:46:34 +0100
+Message-ID: <ad9cf36fff241e6ee6f4559a225a7a56@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F06116E
+	for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2006 10:46:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,17 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Re bug1472, Distortion noise:
 
-Can you explain what this input does, and how/where it is used in ALSA?  
-Perhaps the DMX6fire can use it to determine if a DXR extension is plugged 
-in.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1810> 
+======================================================================
+Reported By:                danhien_cz
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1810
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo-linux
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             02-03-2006 10:46 CET
+Last Modified:              02-03-2006 10:46 CET
+======================================================================
+Summary:                    pcm multi problem
+Description: 
+I'm using two sound cards - emu10k1 and via82xx.
+I'cant play audio throu both cards togather. 
+I've created pcm multi for this use.
+Last alsa version in wich it vas working is 1.0.8
 
-Alan
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-03-06 10:46 danhien_cz     New Issue                                    
+02-03-06 10:46 danhien_cz     Distribution              => gentoo-linux    
+02-03-06 10:46 danhien_cz     Kernel Version            => 2.6.15          
+======================================================================
+
 
 
 
