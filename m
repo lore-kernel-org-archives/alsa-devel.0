@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001819]: Monitor capability feature request
-Date: Sat, 4 Feb 2006 20:58:46 +0100
-Message-ID: <b7ac2d1ddeb46d4aaca4da46b4be8690@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Sat, 4 Feb 2006 20:57:08 +0100
+Message-ID: <645aeb37b454bb65f34404328e7531ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99DBE193
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 20:58:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48D4C190
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 20:57:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,114 +24,160 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1819> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                djandruczyk
-Assigned To:                rlrevell
+Reported By:                yafrank
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1819
-Category:                   0_general
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - driver
+Issue ID:                   1023
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
 Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             02-04-2006 19:42 CET
-Last Modified:              02-04-2006 20:58 CET
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              02-04-2006 20:57 CET
 ======================================================================
-Summary:                    Monitor capability feature request
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
- I'd like to suggest a potential feature with the capability of monitoring
-ANY pcm output (or combination of simultaneous outputs).  The aim being to
-be able to do the following via alsa-lib:
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-1. record output from arbritrary applications or combination thereof
-without requiring any application modification and without looping back
-the physical outputs to inputs on the sound hardware (which introduces
-noise and unwanted latency and use of a recording source that might
-otherwise be in use.
-2. perform monitoring of select streams (in the case of multiple pcm
-streams running at once)
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
->From the application's point of view that would want to use this I
-envision something along these lines:
-
-- App registers a callback with ALSA-lib to be notified if a new stream is
-created or destroyed.
-- App then queries alsa lib for a current list of running streams (whether
-to physical devices or streams feeding into dmix)
-- App requests a "monitor connection" to a stream or combination of
-streams and registers a callback function to be called anytime this stream
-is upated from an application (limitation in that all streams requested
-share same SW params for simplicity)  This should be flexible in the case
-of dmix to be able to monitor 1 feed  up to n feeds where n being the max
-number of streams that dmix is handling concurrently. The monitored
-connection will have a total number of channels equal to the sum of
-monitored channels selected.  
-for example: lets say dmix is multiplexing 3 applications to one physical
-hw:0 device.  the monitor requests 2 out of those three (for wahtever
-reason, it doesn't matter) The monitor callback should deliver the data to
-the callback as a 4 channel stream in the format of:
- L (stream 1),R(stream 1), L(Stream 2), R(stram2) (interleaved).  The
-restriction being that the SW params of the streams that are to be
-monitored must all match, otherwise it would become very difficult to
-calculate and handle all the possible permutations of handling mixmatched
-streams.
-
-- App's callback function is called each time the outside application
-issues a write to ALSA lib and is able to monitor the audio stream from
-said app in realtime.  If outside application closes, the notification
-callback will be called and the app monitoring the stream will gracefully
-handle the event, deregister the monitor callbacks, and if wanted,
-re-query also lib for current streams and connect to another.
-
-Potential issues:
-  This would ONLY work for applications using the ALSA lib library and PCM
-plugins plughw, dmix, etc.  It would (probably) NOT function for direct
-access, to hw:0 (thought it may be implementable, I don't know enough of
-ALSA internals to know if it would be possible). It most definitely would
-not work for things that mmap the sound device buffer directly, but I
-would guess that a large portion of applications do not use that method.
-(though I may be wrong and would appreciate a correction if I am so)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 02-04-06 20:22 
+ pearma - 02-04-06 10:43 
 ----------------------------------------------------------------------
-JACK is not exactly what user requests, but the file plugin can be inserted
-into the alsa-lib pcm plugin chain, so that the stream can be grabbed. Of
-course, it's only very simple method without sample organization
-description, rate and other stream parameters, but a more complex file
-plugin can be created.
+It seems that the bug could be closed now.
+I tried again this afternoon with the latest alsa driver, ver
+1.0.11rc3,the speaker began to make noise which shoked me.
+I compiled the driver with debug turned on and make , make
+install-modules,reboot.
+Then I found the command cat 18 8000 > ac97#0_0+regs worked.
+I tried speaker-test,and my speaker blew with lound noise.
+Now everything worked like a charm except the right channel volume was
+much lower than left one.
+I don't know how to fix it.
+The only difference between my last two installation attempts was I issued
+make install command instead of make install-modules. and of course the
+with-debug full option at configure stage. I don't know which matters.
+anyway, i have my sound card back again.
 
 ----------------------------------------------------------------------
- djandruczyk - 02-04-06 20:58 
+ yafrank - 02-04-06 20:57 
 ----------------------------------------------------------------------
-jack isn't necessarily a solution as there are many apps that DO NOT WORK
-with jack, and in some cases the application may not have source
-availablity for modification.
-
-I've looked into the file plugin but it hasn't worked well, and was next
-to impossible to use in an interactive form. (realtime)  My primary
-motivation for this ability is to be able to monitor/analyze audio streams
-in realtime without having to modify any of the apps that may be monitored
-(as in some cases they can't). (jack==not all apps work, esd==ick!,
-arts==uggh!)
+I've tested the latest alsa-1.0.11rc3 driver with official 2.6.15.2 kernel
+in my fc4. It's still not work for me. Dmesg shows following message:
+...
+irq 5: nobody cared (try booting with the "irqpoll" option)
+ [<c012c958>] __report_bad_irq+0x2b/0x69
+ [<c012ca1a>] note_interrupt+0x6b/0x91
+ [<c012c445>] __do_IRQ+0x90/0xcf
+ [<c010420f>] do_IRQ+0x1d/0x28
+ [<c0102d4a>] common_interrupt+0x1a/0x20
+ [<c012c380>] handle_IRQ_event+0x15/0x4a
+ [<c012c42b>] __do_IRQ+0x76/0xcf
+ [<c010420f>] do_IRQ+0x1d/0x28
+ [<c0102d4a>] common_interrupt+0x1a/0x20
+ [<c012c380>] handle_IRQ_event+0x15/0x4a
+ [<c012c42b>] __do_IRQ+0x76/0xcf
+ [<c010f180>] do_page_fault+0x0/0x4a5
+ [<c010420f>] do_IRQ+0x1d/0x28
+ [<c0102d4a>] common_interrupt+0x1a/0x20
+ [<c010f180>] do_page_fault+0x0/0x4a5
+ [<c010f1e2>] do_page_fault+0x62/0x4a5
+ [<c010f180>] do_page_fault+0x0/0x4a5
+ [<c0102da7>] error_code+0x4f/0x54
+handlers:
+[<cc8f1c44>] (snd_audiopci_interrupt+0x0/0xd8 [snd_ens1371])
+Disabling IRQ #5
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-04-06 19:42 djandruczyk    New Issue                                    
-02-04-06 19:53 rlrevell       Status                   new => resolved     
-02-04-06 19:53 rlrevell       Resolution               open => fixed       
-02-04-06 19:53 rlrevell       Assigned To               => rlrevell        
-02-04-06 19:53 rlrevell       Note Added: 0007921                          
-02-04-06 20:22 perex          Note Added: 0007923                          
-02-04-06 20:58 djandruczyk    Status                   resolved => feedback
-02-04-06 20:58 djandruczyk    Resolution               fixed => reopened   
-02-04-06 20:58 djandruczyk    Note Added: 0007926                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
+07-11-05 22:52 gwennou        Note Added: 0005451                          
+09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
+09-01-05 10:51 yafrank        Note Added: 0005995                          
+09-01-05 18:15 tiwai          Note Added: 0005997                          
+09-04-05 02:09 bobcat98       Note Added: 0006034                          
+09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
+10-25-05 13:55 rufusplant     Note Added: 0006539                          
+10-25-05 15:12 tiwai          Note Added: 0006542                          
+11-14-05 10:01 perex          Status                   assigned => feedback
+11-15-05 16:21 yafrank        Note Added: 0006730                          
+11-28-05 05:18 rufusplant     Note Added: 0006853                          
+12-11-05 06:43 yafrank        Note Added: 0006975                          
+02-02-06 12:58 pearma         Note Added: 0007876                          
+02-02-06 17:38 yafrank        Note Deleted: 0006975                        
+02-04-06 10:43 pearma         Note Added: 0007915                          
+02-04-06 19:18 rlrevell       Status                   feedback => resolved
+02-04-06 19:18 rlrevell       Resolution               open => fixed       
+02-04-06 20:57 yafrank        Status                   resolved => feedback
+02-04-06 20:57 yafrank        Resolution               fixed => reopened   
+02-04-06 20:57 yafrank        Note Added: 0007925                          
 ======================================================================
 
 
