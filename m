@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001793]: No sound on ASUS A8N-VM CSM
-Date: Sat, 4 Feb 2006 20:23:27 +0100
-Message-ID: <5a0f9b6511cf8dcac7223060dc21687a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001819]: Monitor capability feature request
+Date: Sat, 4 Feb 2006 20:22:07 +0100
+Message-ID: <b6fcb9788c0aa9c138f4bdb5683aa72b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0CBE190
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 20:23:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8126B190
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 20:22:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,227 +24,104 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1793> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1819> 
 ======================================================================
-Reported By:                labene
-Assigned To:                tiwai
+Reported By:                djandruczyk
+Assigned To:                rlrevell
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1793
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - lib
+Issue ID:                   1819
+Category:                   0_general
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.15 standard
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-29-2006 18:31 CET
-Last Modified:              02-04-2006 20:23 CET
+Date Submitted:             02-04-2006 19:42 CET
+Last Modified:              02-04-2006 20:22 CET
 ======================================================================
-Summary:                    No sound on ASUS A8N-VM CSM
+Summary:                    Monitor capability feature request
 Description: 
-No sound on ASUS A8N-VM CSM, chipset nForce 430 (HDA nvidia) don't have
-sound on the speaker but found by kernel 2.6.15 and exist with alsamixer
-!
-I don't any issue in the line :
-options snd-hda-intel model=???? position_fix=1
+ I'd like to suggest a potential feature with the capability of monitoring
+ANY pcm output (or combination of simultaneous outputs).  The aim being to
+be able to do the following via alsa-lib:
 
-I don't know where is the problem !
+1. record output from arbritrary applications or combination thereof
+without requiring any application modification and without looping back
+the physical outputs to inputs on the sound hardware (which introduces
+noise and unwanted latency and use of a recording source that might
+otherwise be in use.
+2. perform monitoring of select streams (in the case of multiple pcm
+streams running at once)
 
+>From the application's point of view that would want to use this I
+envision something along these lines:
 
-cat /proc/asound/cards :
-0 [NVidia         ]: HDA-Intel - HDA NVidia
-                     HDA NVidia at 0xfebd8000 irq 5
+- App registers a callback with ALSA-lib to be notified if a new stream is
+created or destroyed.
+- App then queries alsa lib for a current list of running streams (whether
+to physical devices or streams feeding into dmix)
+- App requests a "monitor connection" to a stream or combination of
+streams and registers a callback function to be called anytime this stream
+is upated from an application (limitation in that all streams requested
+share same SW params for simplicity)  This should be flexible in the case
+of dmix to be able to monitor 1 feed  up to n feeds where n being the max
+number of streams that dmix is handling concurrently. The monitored
+connection will have a total number of channels equal to the sum of
+monitored channels selected.  
+for example: lets say dmix is multiplexing 3 applications to one physical
+hw:0 device.  the monitor requests 2 out of those three (for wahtever
+reason, it doesn't matter) The monitor callback should deliver the data to
+the callback as a 4 channel stream in the format of:
+ L (stream 1),R(stream 1), L(Stream 2), R(stram2) (interleaved).  The
+restriction being that the SW params of the streams that are to be
+monitored must all match, otherwise it would become very difficult to
+calculate and handle all the possible permutations of handling mixmatched
+streams.
 
-lspci -nv :
+- App's callback function is called each time the outside application
+issues a write to ALSA lib and is able to monitor the audio stream from
+said app in realtime.  If outside application closes, the notification
+callback will be called and the app monitoring the stream will gracefully
+handle the event, deregister the monitor callbacks, and if wanted,
+re-query also lib for current streams and connect to another.
 
-
-0000:00:00.0 0500: 10de:02f0 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        Capabilities: <available only to root>
-
-0000:00:00.1 0500: 10de:02fa (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:00.2 0500: 10de:02fe (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:00.3 0500: 10de:02f8 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:00.4 0500: 10de:02f9 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-
-0000:00:00.5 0500: 10de:02ff (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        Capabilities: <available only to root>
-
-0000:00:00.6 0500: 10de:027f (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:00.7 0500: 10de:027e (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:02.0 0604: 10de:02fc (rev a1)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-        Capabilities: <available only to root>
-
-0000:00:03.0 0604: 10de:02fd (rev a1)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
-        Capabilities: <available only to root>
-
-0000:00:04.0 0604: 10de:02fb (rev a1)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
-        Capabilities: <available only to root>
-
-0000:00:05.0 0300: 10de:0240 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 11
-        Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
-        Memory at d0000000 (64-bit, prefetchable) [size=256M]
-        Memory at fc000000 (64-bit, non-prefetchable) [size=16M]
-        Expansion ROM at febe0000 [disabled] [size=128K]
-        Capabilities: <available only to root>
-
-0000:00:09.0 0500: 10de:0270 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        Capabilities: <available only to root>
-
-0000:00:0a.0 0601: 10de:0260 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-
-0000:00:0a.1 0c05: 10de:0264 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel, IRQ 5
-        I/O ports at 0600 [size=64]
-        I/O ports at 0700 [size=64]
-        Capabilities: <available only to root>
-
-0000:00:0b.0 0c03: 10de:026d (rev a2) (prog-if 10)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        Memory at febde000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: <available only to root>
-
-0000:00:0b.1 0c03: 10de:026e (rev a2) (prog-if 20)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 3
-        Memory at febdfc00 (32-bit, non-prefetchable) [size=256]
-        Capabilities: <available only to root>
-
-0000:00:0d.0 0101: 10de:0265 (rev a1) (prog-if 8a [Master SecP PriP])
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        I/O ports at ffa0 [size=16]
-        Capabilities: <available only to root>
-
-0000:00:0e.0 0101: 10de:0266 (rev a1) (prog-if 85 [Master SecO PriO])
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        I/O ports at e800 [size=8]
-        I/O ports at e480 [size=4]
-        I/O ports at e400 [size=8]
-        I/O ports at e080 [size=4]
-        I/O ports at e000 [size=16]
-        Memory at febdd000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: <available only to root>
-
-0000:00:0f.0 0101: 10de:0267 (rev a1) (prog-if 85 [Master SecO PriO])
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        I/O ports at dc00 [size=8]
-        I/O ports at d880 [size=4]
-        I/O ports at d800 [size=8]
-        I/O ports at d480 [size=4]
-        I/O ports at d400 [size=16]
-        Memory at febdc000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: <available only to root>
-
-0000:00:10.0 0604: 10de:026f (rev a2) (prog-if 01)
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        Bus: primary=00, secondary=04, subordinate=04, sec-latency=128
-        I/O behind bridge: 0000c000-0000cfff
-        Memory behind bridge: faa00000-faafffff
-        Capabilities: <available only to root>
-
-0000:00:10.1 0403: 10de:026c (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        Memory at febd8000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: <available only to root>
-
-0000:00:18.0 0600: 1022:1100
-        Flags: fast devsel
-        Capabilities: <available only to root>
-
-0000:00:18.1 0600: 1022:1101
-        Flags: fast devsel
-
-0000:00:18.2 0600: 1022:1102
-        Flags: fast devsel
-
-0000:00:18.3 0600: 1022:1103
-        Flags: fast devsel
-
-0000:04:05.0 0c00: 1106:3044 (rev 80) (prog-if 10)
-        Subsystem: 1043:808a
-        Flags: bus master, medium devsel, latency 128, IRQ 5
-        Memory at faaff800 (32-bit, non-prefetchable) [size=2K]
-        I/O ports at cc00 [size=128]
-        Capabilities: <available only to root>
-
-0000:04:08.0 0200: 10ec:8139 (rev 10)
-        Subsystem: 10ec:8139
-        Flags: bus master, medium devsel, latency 128, IRQ 5
-        I/O ports at c800 [size=256]
-        Memory at faaff400 (32-bit, non-prefetchable) [size=256]
+Potential issues:
+  This would ONLY work for applications using the ALSA lib library and PCM
+plugins plughw, dmix, etc.  It would (probably) NOT function for direct
+access, to hw:0 (thought it may be implementable, I don't know enough of
+ALSA internals to know if it would be possible). It most definitely would
+not work for things that mmap the sound device buffer directly, but I
+would guess that a large portion of applications do not use that method.
+(though I may be wrong and would appreciate a correction if I am so)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-04-06 19:15 
+ rlrevell - 02-04-06 19:53 
 ----------------------------------------------------------------------
-Argh, WTF?  Why in the hell do people bother making ALSA patches then don't
-submit them?!?  Do they think we are f**king psychic?
+The functionality you want already exists, see JACK.
 
 ----------------------------------------------------------------------
- Arnaud Patard - 02-04-06 20:23 
+ perex - 02-04-06 20:22 
 ----------------------------------------------------------------------
-Lee, there was a similar patch send on alsa-devel@. Look for the thread
-called "AD1986a". iirc Takashi said he'll try to contact AD about this.
-
-[ Side note : afaik this bug is a dup of other open bugs reports ]
+JACK is not exactly what user requests, but the file plugin can be inserted
+into the alsa-lib pcm plugin chain, so that the stream can be grabbed. Of
+course, it's only very simple method without sample organization
+description, rate and other stream parameters, but a more complex file
+plugin can be created.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-29-06 18:31 labene         New Issue                                    
-01-29-06 18:31 labene         Distribution              => Debian          
-01-29-06 18:31 labene         Kernel Version            => 2.6.15 standard 
-01-29-06 18:54 labene         Note Added: 0007833                          
-01-29-06 19:13 labene         Note Added: 0007834                          
-02-01-06 15:38 thorstenl      Issue Monitored: thorstenl                    
-02-04-06 02:20 rbenech        Issue Monitored: rbenech                     
-02-04-06 02:23 rbenech        Note Added: 0007909                          
-02-04-06 02:28 rbenech        Note Edited: 0007909                         
-02-04-06 15:36 labene         Note Added: 0007916                          
-02-04-06 15:44 labene         Note Edited: 0007916                         
-02-04-06 19:15 rlrevell       Note Added: 0007920                          
-02-04-06 20:23 Arnaud Patard  Note Added: 0007924                          
+02-04-06 19:42 djandruczyk    New Issue                                    
+02-04-06 19:53 rlrevell       Status                   new => resolved     
+02-04-06 19:53 rlrevell       Resolution               open => fixed       
+02-04-06 19:53 rlrevell       Assigned To               => rlrevell        
+02-04-06 19:53 rlrevell       Note Added: 0007921                          
+02-04-06 20:22 perex          Note Added: 0007923                          
 ======================================================================
 
 
