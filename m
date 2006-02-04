@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001597]: alsamixer does not work
-Date: Sat, 4 Feb 2006 20:00:16 +0100
-Message-ID: <977f8ca68186b95b4553883148ddc744@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Web forums...
+Date: Sat, 04 Feb 2006 13:59:05 -0500
+Message-ID: <1139079546.2791.42.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7409F16E
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 20:00:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +15,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+It was recently brought to my attention that users are finding and
+fixing (or at least working around) ALSA bugs in various web forums and
+completely leaving the ALSA developers out of the loop.  One user
+basically implied that it was common knowledge that if you have $FOO
+mainboard, then $BAR patch from som random Nvidia forum is needed to get
+sound working.  All news to me.  I guess they assume we follow every web
+forum in existence and know about every ALSA bug ever posted anywhere on
+the Internet.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1597> 
-======================================================================
-Reported By:                lanewhoy
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1597
-Category:                   simple mixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             11-25-2005 04:19 CET
-Last Modified:              02-04-2006 20:00 CET
-======================================================================
-Summary:                    alsamixer does not work
-Description: 
-Any attempt to run a alsamixer or alsactl fails with the error:
+It seems like a valuable resource (users willing to test this stuff on
+bleeding edge hardware) is going to waste because they don't even bother
+to give feedback to the developers.
 
-ALSA lib simple_none.c:1216:(simple_add1) helem (MIXER,'Front Playback
-Volume',0,140733193388032,46909632806912) appears twice or more
+Of course ALSA development isn't moving to some lame web forum, and we
+obviously don't have the bandwidth to follow 1000 hardware-specific
+Linux user forums - can anything be done about this problem, other than
+educating users that web forums are lame?
 
-======================================================================
+Lee
 
-----------------------------------------------------------------------
- lanewhoy - 02-04-06 19:53 
-----------------------------------------------------------------------
-This issue has gone away with 1.0.11_rc3
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-25-05 04:19 lanewhoy       New Issue                                    
-02-04-06 19:53 lanewhoy       Note Added: 0007922                          
-02-04-06 20:00 rlrevell       Status                   new => resolved     
-02-04-06 20:00 rlrevell       Resolution               open => fixed       
-02-04-06 20:00 rlrevell       Assigned To               => rlrevell        
-======================================================================
+
 
 
 
