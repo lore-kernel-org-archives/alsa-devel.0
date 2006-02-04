@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001818]: Support for new nforce4 ALC655-based chipset
-Date: Sat, 4 Feb 2006 05:32:17 +0100
-Message-ID: <a7f911b4635843bcdb4c12d64bd64403@bugtrack.alsa-project.org>
+Date: Sat, 4 Feb 2006 05:34:45 +0100
+Message-ID: <771cd401e70a8c5b1971487c9a47bfef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44B1F144
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 05:32:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6BAA1A7
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 05:34:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1818> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux 2005.1
 Kernel Version:             2.6.14
 ======================================================================
 Date Submitted:             02-04-2006 05:32 CET
-Last Modified:              02-04-2006 05:32 CET
+Last Modified:              02-04-2006 05:34 CET
 ======================================================================
 Summary:                    Support for new nforce4 ALC655-based chipset
 Description: 
@@ -57,6 +57,13 @@ Controller (rev a2)
 
 ======================================================================
 
+----------------------------------------------------------------------
+ templar - 02-04-06 05:34 
+----------------------------------------------------------------------
+Disregard the "04:08.0 Multimedia audio controller: Creative Labs SB Audigy
+LS" line, as it is just an additional sound card which I have temporarily
+put in place.  It has no relevance to the issue at hand.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -65,6 +72,7 @@ Date Modified  Username       Field                    Change
            
 02-04-06 05:32 templar        Distribution              => Gentoo Linux 2005.1
 02-04-06 05:32 templar        Kernel Version            => 2.6.14          
+02-04-06 05:34 templar        Note Added: 0007910                          
 ======================================================================
 
 
