@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Sat, 4 Feb 2006 19:18:24 +0100
-Message-ID: <0522a0752fc661c212e7eb5ada5ad833@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001793]: No sound on ASUS A8N-VM CSM
+Date: Sat, 4 Feb 2006 19:15:45 +0100
+Message-ID: <969486166641f568c9fc23a63bbdf673@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07C28187
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 19:18:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 320B5188
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 19:15:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,141 +22,251 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1793> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                perex
+Reported By:                labene
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
+Issue ID:                   1793
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15 standard
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              02-04-2006 19:18 CET
+Date Submitted:             01-29-2006 18:31 CET
+Last Modified:              02-04-2006 19:15 CET
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    No sound on ASUS A8N-VM CSM
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+No sound on ASUS A8N-VM CSM, chipset nForce 430 (HDA nvidia) don't have
+sound on the speaker but found by kernel 2.6.15 and exist with alsamixer
+!
+I don't any issue in the line :
+options snd-hda-intel model=???? position_fix=1
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+I don't know where is the problem !
 
+
+cat /proc/asound/cards :
+0 [NVidia         ]: HDA-Intel - HDA NVidia
+                     HDA NVidia at 0xfebd8000 irq 5
+
+lspci -nv :
+
+
+0000:00:00.0 0500: 10de:02f0 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Capabilities: <available only to root>
+
+0000:00:00.1 0500: 10de:02fa (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:00.2 0500: 10de:02fe (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:00.3 0500: 10de:02f8 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:00.4 0500: 10de:02f9 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+
+0000:00:00.5 0500: 10de:02ff (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Capabilities: <available only to root>
+
+0000:00:00.6 0500: 10de:027f (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:00.7 0500: 10de:027e (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:02.0 0604: 10de:02fc (rev a1)
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        Capabilities: <available only to root>
+
+0000:00:03.0 0604: 10de:02fd (rev a1)
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
+        Capabilities: <available only to root>
+
+0000:00:04.0 0604: 10de:02fb (rev a1)
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
+        Capabilities: <available only to root>
+
+0000:00:05.0 0300: 10de:0240 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 11
+        Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
+        Memory at d0000000 (64-bit, prefetchable) [size=256M]
+        Memory at fc000000 (64-bit, non-prefetchable) [size=16M]
+        Expansion ROM at febe0000 [disabled] [size=128K]
+        Capabilities: <available only to root>
+
+0000:00:09.0 0500: 10de:0270 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Capabilities: <available only to root>
+
+0000:00:0a.0 0601: 10de:0260 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+
+0000:00:0a.1 0c05: 10de:0264 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel, IRQ 5
+        I/O ports at 0600 [size=64]
+        I/O ports at 0700 [size=64]
+        Capabilities: <available only to root>
+
+0000:00:0b.0 0c03: 10de:026d (rev a2) (prog-if 10)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        Memory at febde000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: <available only to root>
+
+0000:00:0b.1 0c03: 10de:026e (rev a2) (prog-if 20)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 3
+        Memory at febdfc00 (32-bit, non-prefetchable) [size=256]
+        Capabilities: <available only to root>
+
+0000:00:0d.0 0101: 10de:0265 (rev a1) (prog-if 8a [Master SecP PriP])
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        I/O ports at ffa0 [size=16]
+        Capabilities: <available only to root>
+
+0000:00:0e.0 0101: 10de:0266 (rev a1) (prog-if 85 [Master SecO PriO])
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        I/O ports at e800 [size=8]
+        I/O ports at e480 [size=4]
+        I/O ports at e400 [size=8]
+        I/O ports at e080 [size=4]
+        I/O ports at e000 [size=16]
+        Memory at febdd000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: <available only to root>
+
+0000:00:0f.0 0101: 10de:0267 (rev a1) (prog-if 85 [Master SecO PriO])
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        I/O ports at dc00 [size=8]
+        I/O ports at d880 [size=4]
+        I/O ports at d800 [size=8]
+        I/O ports at d480 [size=4]
+        I/O ports at d400 [size=16]
+        Memory at febdc000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: <available only to root>
+
+0000:00:10.0 0604: 10de:026f (rev a2) (prog-if 01)
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Bus: primary=00, secondary=04, subordinate=04, sec-latency=128
+        I/O behind bridge: 0000c000-0000cfff
+        Memory behind bridge: faa00000-faafffff
+        Capabilities: <available only to root>
+
+0000:00:10.1 0403: 10de:026c (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        Memory at febd8000 (32-bit, non-prefetchable) [size=16K]
+        Capabilities: <available only to root>
+
+0000:00:18.0 0600: 1022:1100
+        Flags: fast devsel
+        Capabilities: <available only to root>
+
+0000:00:18.1 0600: 1022:1101
+        Flags: fast devsel
+
+0000:00:18.2 0600: 1022:1102
+        Flags: fast devsel
+
+0000:00:18.3 0600: 1022:1103
+        Flags: fast devsel
+
+0000:04:05.0 0c00: 1106:3044 (rev 80) (prog-if 10)
+        Subsystem: 1043:808a
+        Flags: bus master, medium devsel, latency 128, IRQ 5
+        Memory at faaff800 (32-bit, non-prefetchable) [size=2K]
+        I/O ports at cc00 [size=128]
+        Capabilities: <available only to root>
+
+0000:04:08.0 0200: 10ec:8139 (rev 10)
+        Subsystem: 10ec:8139
+        Flags: bus master, medium devsel, latency 128, IRQ 5
+        I/O ports at c800 [size=256]
+        Memory at faaff400 (32-bit, non-prefetchable) [size=256]
 
 ======================================================================
 
 ----------------------------------------------------------------------
- pearma - 02-02-06 12:58 
+ labene - 02-04-06 15:44 
 ----------------------------------------------------------------------
-when I tried the "echo 18 8000 > ac97#0-0+regs" command, I got "no such
-device" error. I was sure I entered the command as root.
-tiwai, register 18 is for pcm volume control,right?
-how is register 02? It is master volume related according to the AC97
-Codec Document from Intel.
+I resolv the problem with a patch a8nvmsound.patch , see :
+http://quaggaspace.org/a8nvm/a8nvmsound.patch
+
+Extract the kernel 2.6.15.2 in your /usr/src directory 
+
+link or rename the directory linux-2.6.15 to linux.
+
+download the patch for kernel 2.6.15 and patch it :
+------------------------------
+# cp a8nvmsound.patch /usr/src
+# cd /usr/src
+# patch -p0 < a8nvmsound.patch
+
+After downloading the patch, you'll have to patch the kernel with it and
+then compile in ALSA support for the "Intel HDA sound". Then loading and
+unmuting the PCM and Master volume settings. At this point, I have sound
+which works pretty flawlessly in OSS emulation. If you get a "crackle"
+when sounds are playing under ALSA native mode, you'll want to add : 
+"options snd-hda-intel position_fix=1" to your /etc/modules.conf. My hope
+is that future versions of ALSA eliminate the need for this patch at all.
+-------------------------
+
+good luck
+
+Remy
+
+
 
 ----------------------------------------------------------------------
- pearma - 02-04-06 10:43 
+ rlrevell - 02-04-06 19:15 
 ----------------------------------------------------------------------
-It seems that the bug could be closed now.
-I tried again this afternoon with the latest alsa driver, ver
-1.0.11rc3,the speaker began to make noise which shoked me.
-I compiled the driver with debug turned on and make , make
-install-modules,reboot.
-Then I found the command cat 18 8000 > ac97#0_0+regs worked.
-I tried speaker-test,and my speaker blew with lound noise.
-Now everything worked like a charm except the right channel volume was
-much lower than left one.
-I don't know how to fix it.
-The only difference between my last two installation attempts was I issued
-make install command instead of make install-modules. and of course the
-with-debug full option at configure stage. I don't know which matters.
-anyway, i have my sound card back again.
+Argh, WTF?  Why in the hell do people bother making ALSA patches then don't
+submit them?!?  Do they think we are f**king psychic?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-02-02-06 12:58 pearma         Note Added: 0007876                          
-02-02-06 17:38 yafrank        Note Deleted: 0006975                        
-02-04-06 10:43 pearma         Note Added: 0007915                          
-02-04-06 19:18 rlrevell       Status                   feedback => resolved
-02-04-06 19:18 rlrevell       Resolution               open => fixed       
+01-29-06 18:31 labene         New Issue                                    
+01-29-06 18:31 labene         Distribution              => Debian          
+01-29-06 18:31 labene         Kernel Version            => 2.6.15 standard 
+01-29-06 18:54 labene         Note Added: 0007833                          
+01-29-06 19:13 labene         Note Added: 0007834                          
+02-01-06 15:38 thorstenl      Issue Monitored: thorstenl                    
+02-04-06 02:20 rbenech        Issue Monitored: rbenech                     
+02-04-06 02:23 rbenech        Note Added: 0007909                          
+02-04-06 02:28 rbenech        Note Edited: 0007909                         
+02-04-06 15:36 labene         Note Added: 0007916                          
+02-04-06 15:44 labene         Note Edited: 0007916                         
+02-04-06 19:15 rlrevell       Note Added: 0007920                          
 ======================================================================
 
 
