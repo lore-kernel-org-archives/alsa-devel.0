@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Sat, 4 Feb 2006 06:26:45 +0100
-Message-ID: <8ed2f9f6bcc17a0f0ff2d7e2639ebd1b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001754]: M-Audio Revolution 5.1: Headphone jack gets no signal
+Date: Sat, 4 Feb 2006 07:11:37 +0100
+Message-ID: <1f1a4a228a2662e56aef138404f589cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C6161A0
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 06:26:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4BB51A4
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 07:11:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1754> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                wollschaf
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
+Issue ID:                   1754
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              02-04-2006 06:26 CET
+Date Submitted:             01-15-2006 16:02 CET
+Last Modified:              02-04-2006 07:11 CET
 ======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
+Summary:                    M-Audio Revolution 5.1: Headphone jack gets no
+signal
 Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
+Whatever I tried with alsamixer, I could not get the headphone jack to
+output any kind of signal.
 
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
+In my understanding, it should output the line signal, but amplificated.
 
-Playing stereo sound is OK.
+As it does not even output the white noise of the inputs (see Issue
+0001753), I assume the headphone output is completely disabled.
 
-
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
+If photos of the card are needed to find out how it is connected, I will
+upload them...
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-04-06 06:26 
+ cyan - 01-21-06 09:39 
 ----------------------------------------------------------------------
-Would anyone has au8810, au8820 and au8830 sound card test this patch ?
+Yes, I think that internally it is similar to Revolution 7.1, but two
+chanels are conected to amplifier (I found it somewhere, but only in czech
+language).
+
+----------------------------------------------------------------------
+ feens - 02-04-06 07:11 
+----------------------------------------------------------------------
+I posted a few messages back and forth with Takashi a while back regarding
+this, when the driver was first setup in ALSA.
+
+It seems to be that the PCM chip (envy24gt, as opposed to the envy24ht in
+7.1) only supports 6 pcm channels, whereas the ht supports 6.  So where
+the 2 extra DACs get their input from, I'm not sure.  But I imagine that's
+the key to figuring out the issue.
+
+My knowledge of drivers is fairly limited though, but I do have diploma in
+software engineering, so I have no issues fooling with the driver if
+needed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
+01-15-06 16:02 wollschaf      New Issue                                    
+01-15-06 16:02 wollschaf      Kernel Version            => 2.6.15          
+01-15-06 16:02 wollschaf      Issue Monitored: wollschaf                    
+01-16-06 15:47 cyan           Note Added: 0007686                          
+01-16-06 15:47 cyan           Issue Monitored: cyan                        
+01-20-06 21:04 wollschaf      Note Added: 0007727                          
+01-21-06 09:39 cyan           Note Added: 0007738                          
+02-04-06 07:04 feens          Issue Monitored: feens                       
+02-04-06 07:11 feens          Note Added: 0007913                          
 ======================================================================
 
 
