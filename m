@@ -1,16 +1,14 @@
-From: Paulo Matias <syscoder@gmail.com>
-Subject: Re: ALSA: Pin assignment experiment with ALC260
-Date: Sat, 4 Feb 2006 15:06:06 -0200
-Message-ID: <acb0c1690602040906p4cb31b50wb1ec117f6197679f@mail.gmail.com>
-References: <acb0c1690602011152t458941ffqec82e99bca27aa3c@mail.gmail.com>
-	 <200602020022.k120MXhp005529@auster.physics.adelaide.edu.au>
-	 <acb0c1690602040905w623d7649l2214bb5fa41736f6@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001684]: no sound with SI7012
+Date: Sat, 4 Feb 2006 18:19:38 +0100
+Message-ID: <8ce40b83f7099387f8b212c8e208bae0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <acb0c1690602040905w623d7649l2214bb5fa41736f6@mail.gmail.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D080142
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 18:19:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,89 +18,189 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Sorry for the delay, I was crowded with work the last days..
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1684> 
+======================================================================
+Reported By:                avant
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1684
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             kernel 2.6.14-1.1653_FC4
+======================================================================
+Date Submitted:             12-28-2005 08:39 CET
+Last Modified:              02-04-2006 18:19 CET
+======================================================================
+Summary:                    no sound with SI7012
+Description: 
+I do have some problems with sound on my Asus P4S 533 MX which is based on
+the SIS651 chipset with SI7012 (ADI AD1980 Codecs). Once it worked
+perfectly fine with OSS and FC2.
+OS: Fedora Core 4 fully updated with 
+    kernel 2.6.14-1.1653_FC4 and 
+    ALSA alsa-lib-1.0.10-2.FC4
 
-> Obviously the first thing I'd do would be to remove the configution of 0x=
-15
-> and reboot.  Also make completely sure that when you test these changes l=
-oad
-> the hda with the "model=3Dfujitsu" parameter since it is the fujitsu thin=
-gs
-> that you are changing (having said this I note that other changes you mad=
-e
-> to test inputs did have an effect, so I suspect you're already doing this
-> bit correctly).
+The FC systemtool system-config-soundcard identifies the soundcard and
+configures it apropriately, but - without playing any sound.
+I've unmuted all channels ans set the volume to max with alsamixer - no
+luck
+I've played with the option ac97_quirk, but again - no luck.
 
-Ok, so I used in /etc/modules.d/alsa:
+Currently I don't know how to proceed
 
-options snd_hda_intel model=3Dfujitsu
+Currently I'm using the following configuration:
 
-Issued modules-update, then compiled the module with:
+/etc/modprobe.conf
+==========================
+alias eth0 sis900
+alias usb-controller ehci-hcd
+alias usb-controller1 ohci-hcd
 
-static snd_kcontrol_new_t alc260_fujitsu_mixer[] =3D {
-        HDA_CODEC_VOLUME("0x08 Volume", 0x08, 0x0, HDA_OUTPUT),
-        HDA_BIND_MUTE("0x08 Switch", 0x08, 2, HDA_INPUT),
-        HDA_CODEC_VOLUME("0x09 Volume", 0x09, 0x0, HDA_OUTPUT),
-        HDA_BIND_MUTE("0x09 Switch", 0x09, 2, HDA_INPUT),
-        HDA_CODEC_VOLUME_MONO("0x0A Volume", 0x0a, 1, 0x0, HDA_OUTPUT),
-        HDA_BIND_MUTE_MONO("0x0A Switch", 0x0a, 1, 2, HDA_INPUT),
-        {
-                .iface =3D SNDRV_CTL_ELEM_IFACE_MIXER,
-                .name =3D "Capture Source",
-                .info =3D alc_mux_enum_info,
-                .get =3D alc_mux_enum_get,
-                .put =3D alc_mux_enum_put,
-        },
-        { } /* end */
-};
+alias char-major-116 snd
+alias snd-card-0 snd-intel8x0
+options snd-card-0 index=0 ac97_quirk=disable
 
-static struct hda_verb alc260_fujitsu_init_verbs[] =3D {
-  {0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x0F, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-  {0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-  {0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-  {0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-  {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-  {0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-  {0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-  {0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-  {0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-  {0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-  {0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-};
+alias char-major-14 soundcore
+alias sound-slot-0 snd-intel8x0
+
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+==========================
+# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: SI7012 [SiS SI7012], device 0: Intel ICH [SiS SI7012]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+==========================
+# lsmod
+Module                  Size  Used by
+parport_pc             27909  1
+lp                     12937  0
+parport                35593  2 parport_pc,lp
+rfcomm                 38745  0
+l2cap                  25921  5 rfcomm
+bluetooth              48069  4 rfcomm,l2cap
+ipt_REJECT              5953  1
+ipt_state               1985  5
+ip_conntrack           51953  1 ipt_state
+nfnetlink               6617  1 ip_conntrack
+iptable_filter          3137  1
+ip_tables              20033  3 ipt_REJECT,ipt_state,iptable_filter
+dm_mod                 57181  0
+video                  16197  0
+button                  6737  0
+battery                 9541  0
+ac                      4933  0
+nvidia               4088432  12
+ipv6                  249761  12
+ohci_hcd               22497  0
+ehci_hcd               34381  0
+i2c_sis96x              5829  0
+i2c_core               22081  1 i2c_sis96x
+snd_intel8x0           32929  0
+snd_ac97_codec         88637  1 snd_intel8x0
+snd_ac97_bus            2497  1 snd_ac97_codec
+snd_seq_dummy           3781  0
+snd_seq_oss            31809  0
+snd_seq_midi_event      7105  1 snd_seq_oss
+snd_seq                49617  5
+snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
+snd_seq_device          9037  3 snd_seq_dummy,snd_seq_oss,snd_seq
+snd_pcm_oss            50545  0
+snd_mixer_oss          17985  1 snd_pcm_oss
+snd_pcm                87493  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer              25029  2 snd_seq,snd_pcm
+snd                    54437  9
+snd_intel8x0,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9889  1 snd
+snd_page_alloc         10697  2 snd_intel8x0,snd_pcm
+sis900                 21697  0
+mii                     5313  1 sis900
+floppy                 61957  0
+ext3                  129993  3
+jbd                    57813  1 ext3
+==========================
+# cat /proc/asound/pcm
+00-00: Intel ICH : SiS SI7012 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : SiS SI7012 - MIC ADC : capture 1
+==========================
+cat /proc/asound/SI7012/intel8x0
+Intel8x0
+
+Global control        : 0x00000002
+Global status         : 0x00300100
+AC'97 codecs ready    : primary
+==========================
+cat /proc/asound/oss/sndstat
+Sound Driver:3.8.1a-980706 (ALSA v1.0.10rc1 emulation code)
+Kernel: Linux bietigheim 2.6.14-1.1653_FC4 #1 Tue Dec 13 21:32:09 EST 2005
+i686
+Config options: 0
+
+Installed drivers:
+Type 10: ALSA emulation
+
+Card config:
+SiS SI7012 with AD1980 at 0x9400, irq 10
+
+Audio devices:
+0: SiS SI7012 (DUPLEX)
+
+Synth devices: NOT ENABLED IN CONFIG
+
+Midi devices: NOT ENABLED IN CONFIG
+
+Timers:
+7: system timer
+
+Mixers:
+0: Analog Devices AD1980
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 01-24-06 21:39 
+----------------------------------------------------------------------
+Please try to figure out exactly which release broke it.
+
+----------------------------------------------------------------------
+ avant - 02-04-06 18:19 
+----------------------------------------------------------------------
+As FC2 was based on OSS and FC4 on alsa I unfortunatley cannot find out
+which release it actually broke.
+
+I just updated to FC5 test2 with all updates, but unfortunately still no
+sound - the current versions:
+kernel-2.6.15-1.1881_FC5
+alsa-lib-1.0.11-3.rc2
+alsa-utils-1.0.11-1.rc2
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-28-05 08:39 avant          New Issue                                    
+12-28-05 08:39 avant          Distribution              => Fedora Core 4   
+12-28-05 08:39 avant          Kernel Version            => kernel
+2.6.14-1.1653_FC4
+01-24-06 13:54 avant          Note Added: 0007774                          
+01-24-06 21:39 rlrevell       Note Added: 0007775                          
+02-04-06 18:19 avant          Note Added: 0007918                          
+======================================================================
 
 
-make && make modules_install
-
-Restarted the computer. No changes: only line and mic jacks working..
-the only change is that now I got output from the Mic jack, as I had
-set 0x12 to output.
-
-I've found:
-Line In Jack - pin 0x14
-Mic Jack - pin 0x12
-
-Has I got no other results from that, I have added 0x15 to the list:
-  {0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-  {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-
-No effects. I can't imagine what is happening... There is another pin
-beyond the pins I've put in the structure? What can be happening?
-
-Thanks,
-Paulo Matias
 
 
 -------------------------------------------------------
