@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001632]: suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A  listed,.... asus, nothing,....
-Date: Sat, 4 Feb 2006 02:22:14 +0100
-Message-ID: <5f3b9de59a492ba68e140b480a7a48a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001818]: Support for new nforce4 ALC655-based chipset
+Date: Sat, 4 Feb 2006 05:32:17 +0100
+Message-ID: <a7f911b4635843bcdb4c12d64bd64403@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E7D11A3
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 02:22:14 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44B1F144
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 05:32:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1632> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1818> 
 ======================================================================
-Reported By:                rsrtfm
+Reported By:                templar
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1632
-Category:                   1_OTHERS
+Issue ID:                   1818
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               suse 10.0, super, opensuse
-Kernel Version:             2.6.13
+Distribution:               Gentoo Linux 2005.1
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             12-10-2005 04:29 CET
-Last Modified:              02-04-2006 02:22 CET
+Date Submitted:             02-04-2006 05:32 CET
+Last Modified:              02-04-2006 05:32 CET
 ======================================================================
-Summary:                    suse 10.0,  yast, no ad1986a listed,  in your
-soundcard list,  NO AD1986A  listed,.... asus, nothing,....
+Summary:                    Support for new nforce4 ALC655-based chipset
 Description: 
-suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A 
-listed,.... asus, nothing,....
+A new nForce4 ALC655-based chipset is not recognized by the intel8x0 driver
+of the latest alsa-driver, 1.0.11_rc3.
 
-plus,  nic, needs nforce , nvidia driver,  chipset supposed to do sound
-and nic,... but on asus board a8n-vm csm ,  6150, 430,....
+# lspci -v | grep audio
+00:10.2 Multimedia audio controller: nVidia Corporation MCP51 AC97 Audio
+Controller (rev a2)
+04:08.0 Multimedia audio controller: Creative Labs SB Audigy LS
 
-anyway , should , list the ad1986a, and be able to select it.
+# lspci -n | grep 026b
+00:10.2 0401: 10de:026b (rev a2)
 
-so far I have no sound!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! it's been 4 weeks.
-ehm,...what did you say,.. I can't hear anything,....
-where do I donate , my money, and anger?
-thanks, Robert Schultz
 ======================================================================
-
-----------------------------------------------------------------------
- rbenech - 02-04-06 02:19 
-----------------------------------------------------------------------
-I concur that the default installation and upgraded installations
-(alsa-1.0.9-23.i586.rpm) do not support the AD1986A driver.  Kernel
-modules for previous AD18??? series drivers do not work.  I'm available
-for testing.  I'll try the lasted from source, but I havn't found any
-mention of AD1985 chipset.  I'm concerned that AD says that there is linux
-support for this chipset - where?
-
-----------------------------------------------------------------------
- rbenech - 02-04-06 02:22 
-----------------------------------------------------------------------
-Same as assigned bug 0001793
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-05 04:29 rsrtfm         New Issue                                    
-12-10-05 04:29 rsrtfm         Distribution              => suse 10.0, super,
-opensuse
-12-10-05 04:29 rsrtfm         Kernel Version            => 2.6.13          
-12-12-05 04:59 juliancola     Note Added: 0006982                          
-02-04-06 02:15 rbenech        Issue Monitored: rbenech                     
-02-04-06 02:19 rbenech        Note Added: 0007907                          
-02-04-06 02:22 rbenech        Note Added: 0007908                          
+02-04-06 05:32 templar        New Issue                                    
+02-04-06 05:32 templar        File Added: alsa-driver-1.0.10-mcp51.patch        
+           
+02-04-06 05:32 templar        Distribution              => Gentoo Linux 2005.1
+02-04-06 05:32 templar        Kernel Version            => 2.6.14          
 ======================================================================
 
 
