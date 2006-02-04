@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001819]: Monitor capability feature request
-Date: Sat, 4 Feb 2006 20:22:07 +0100
-Message-ID: <b6fcb9788c0aa9c138f4bdb5683aa72b@bugtrack.alsa-project.org>
+Date: Sat, 4 Feb 2006 20:58:46 +0100
+Message-ID: <b7ac2d1ddeb46d4aaca4da46b4be8690@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8126B190
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 20:22:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99DBE193
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 20:58:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1819> 
 ======================================================================
@@ -35,12 +35,10 @@ Category:                   0_general
 Reproducibility:            N/A
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
 ======================================================================
 Date Submitted:             02-04-2006 19:42 CET
-Last Modified:              02-04-2006 20:22 CET
+Last Modified:              02-04-2006 20:58 CET
 ======================================================================
 Summary:                    Monitor capability feature request
 Description: 
@@ -100,11 +98,6 @@ would guess that a large portion of applications do not use that method.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-04-06 19:53 
-----------------------------------------------------------------------
-The functionality you want already exists, see JACK.
-
-----------------------------------------------------------------------
  perex - 02-04-06 20:22 
 ----------------------------------------------------------------------
 JACK is not exactly what user requests, but the file plugin can be inserted
@@ -112,6 +105,20 @@ into the alsa-lib pcm plugin chain, so that the stream can be grabbed. Of
 course, it's only very simple method without sample organization
 description, rate and other stream parameters, but a more complex file
 plugin can be created.
+
+----------------------------------------------------------------------
+ djandruczyk - 02-04-06 20:58 
+----------------------------------------------------------------------
+jack isn't necessarily a solution as there are many apps that DO NOT WORK
+with jack, and in some cases the application may not have source
+availablity for modification.
+
+I've looked into the file plugin but it hasn't worked well, and was next
+to impossible to use in an interactive form. (realtime)  My primary
+motivation for this ability is to be able to monitor/analyze audio streams
+in realtime without having to modify any of the apps that may be monitored
+(as in some cases they can't). (jack==not all apps work, esd==ick!,
+arts==uggh!)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -122,6 +129,9 @@ Date Modified  Username       Field                    Change
 02-04-06 19:53 rlrevell       Assigned To               => rlrevell        
 02-04-06 19:53 rlrevell       Note Added: 0007921                          
 02-04-06 20:22 perex          Note Added: 0007923                          
+02-04-06 20:58 djandruczyk    Status                   resolved => feedback
+02-04-06 20:58 djandruczyk    Resolution               fixed => reopened   
+02-04-06 20:58 djandruczyk    Note Added: 0007926                          
 ======================================================================
 
 
