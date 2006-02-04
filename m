@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001684]: no sound with SI7012
-Date: Sat, 4 Feb 2006 18:19:38 +0100
-Message-ID: <8ce40b83f7099387f8b212c8e208bae0@bugtrack.alsa-project.org>
+Date: Sat, 4 Feb 2006 19:06:40 +0100
+Message-ID: <efe24f1172e005d463dd340d4c749c5a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D080142
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 18:19:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C09E176
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 19:06:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             kernel 2.6.14-1.1653_FC4
 ======================================================================
 Date Submitted:             12-28-2005 08:39 CET
-Last Modified:              02-04-2006 18:19 CET
+Last Modified:              02-04-2006 19:06 CET
 ======================================================================
 Summary:                    no sound with SI7012
 Description: 
@@ -172,11 +172,6 @@ Mixers:
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-24-06 21:39 
-----------------------------------------------------------------------
-Please try to figure out exactly which release broke it.
-
-----------------------------------------------------------------------
  avant - 02-04-06 18:19 
 ----------------------------------------------------------------------
 As FC2 was based on OSS and FC4 on alsa I unfortunatley cannot find out
@@ -188,6 +183,11 @@ kernel-2.6.15-1.1881_FC5
 alsa-lib-1.0.11-3.rc2
 alsa-utils-1.0.11-1.rc2
 
+----------------------------------------------------------------------
+ rlrevell - 02-04-06 19:06 
+----------------------------------------------------------------------
+Any chance you can test FC3?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -198,6 +198,7 @@ Date Modified  Username       Field                    Change
 01-24-06 13:54 avant          Note Added: 0007774                          
 01-24-06 21:39 rlrevell       Note Added: 0007775                          
 02-04-06 18:19 avant          Note Added: 0007918                          
+02-04-06 19:06 rlrevell       Note Added: 0007919                          
 ======================================================================
 
 
