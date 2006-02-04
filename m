@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Sat, 4 Feb 2006 20:57:08 +0100
-Message-ID: <645aeb37b454bb65f34404328e7531ae@bugtrack.alsa-project.org>
+From: Brian Morrison <bdm@fenrir.org.uk>
+Subject: VIA82xx dxs_support=5 success report
+Date: Sat, 4 Feb 2006 20:33:05 +0000
+Message-ID: <20060204203305.4c16ab82@peterson.fenrir.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48D4C190
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 20:57:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,169 +15,149 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I've just updated my Fujitsu-Siemens Amilo L7300 laptop to the latest
+Fedora Core 4 kernel (2.6.15.2 based) 2.6.15-1.1830_FC4 and added
+dxs_support=5 to /etc/modprobe.conf. I can confirm that ALSA audio seems
+fine using 44.1kHz sampling rate mp3 and ogg files from xmms, so I
+thought it would help to report it here. I'm not subscribed to the
+list, so any queries please by email if necessary.
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
-======================================================================
-Reported By:                yafrank
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
-======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              02-04-2006 20:57 CET
-======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
-Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+Appended below is the output from lspci and lspci -nv, I've included all
+of it in case it's needed but I assume that device 00:11.5 is the
+important part of it:
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+00:00.0 Host bridge: VIA Technologies, Inc. CN400/PM880 Host Bridge
+00:00.1 Host bridge: VIA Technologies, Inc. CN400/PM880 Host Bridge
+00:00.2 Host bridge: VIA Technologies, Inc. CN400/PM880 Host Bridge
+00:00.3 Host bridge: VIA Technologies, Inc. CN400/PM880 Host Bridge
+00:00.4 Host bridge: VIA Technologies, Inc. CN400/PM880 Host Bridge
+00:00.7 Host bridge: VIA Technologies, Inc. CN400/PM880 Host Bridge
+00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge
+00:06.0 Network controller: RaLink Ralink RT2500 802.11 Cardbus Reference Card (rev 01)
+00:0c.0 CardBus bridge: ENE Technology Inc CB1410 Cardbus Controller (rev 01)
+00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 Controller (rev 80)
+00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 Controller (rev 80)
+00:10.3 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 82)
+00:11.0 ISA bridge: VIA Technologies, Inc. VT8235 ISA Bridge
+00:11.1 IDE interface: VIA Technologies, Inc. VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
+00:11.6 Communication controller: VIA Technologies, Inc. AC'97 Modem Controller (rev 80)
+00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II] (rev 74)
+01:00.0 VGA compatible controller: VIA Technologies, Inc. S3 Unichrome Pro VGA Adapter (rev 02)
 
 
-======================================================================
+00:00.0 Class 0600: 1106:0259
+	Subsystem: 1106:0259
+	Flags: bus master, 66Mhz, medium devsel, latency 8
+	Memory at d8000000 (32-bit, prefetchable) [size=128M]
+	Capabilities: [80] AGP version 3.5
+	Capabilities: [50] Power Management version 2
 
-----------------------------------------------------------------------
- pearma - 02-04-06 10:43 
-----------------------------------------------------------------------
-It seems that the bug could be closed now.
-I tried again this afternoon with the latest alsa driver, ver
-1.0.11rc3,the speaker began to make noise which shoked me.
-I compiled the driver with debug turned on and make , make
-install-modules,reboot.
-Then I found the command cat 18 8000 > ac97#0_0+regs worked.
-I tried speaker-test,and my speaker blew with lound noise.
-Now everything worked like a charm except the right channel volume was
-much lower than left one.
-I don't know how to fix it.
-The only difference between my last two installation attempts was I issued
-make install command instead of make install-modules. and of course the
-with-debug full option at configure stage. I don't know which matters.
-anyway, i have my sound card back again.
+00:00.1 Class 0600: 1106:1259
+	Flags: bus master, medium devsel, latency 0
 
-----------------------------------------------------------------------
- yafrank - 02-04-06 20:57 
-----------------------------------------------------------------------
-I've tested the latest alsa-1.0.11rc3 driver with official 2.6.15.2 kernel
-in my fc4. It's still not work for me. Dmesg shows following message:
-...
-irq 5: nobody cared (try booting with the "irqpoll" option)
- [<c012c958>] __report_bad_irq+0x2b/0x69
- [<c012ca1a>] note_interrupt+0x6b/0x91
- [<c012c445>] __do_IRQ+0x90/0xcf
- [<c010420f>] do_IRQ+0x1d/0x28
- [<c0102d4a>] common_interrupt+0x1a/0x20
- [<c012c380>] handle_IRQ_event+0x15/0x4a
- [<c012c42b>] __do_IRQ+0x76/0xcf
- [<c010420f>] do_IRQ+0x1d/0x28
- [<c0102d4a>] common_interrupt+0x1a/0x20
- [<c012c380>] handle_IRQ_event+0x15/0x4a
- [<c012c42b>] __do_IRQ+0x76/0xcf
- [<c010f180>] do_page_fault+0x0/0x4a5
- [<c010420f>] do_IRQ+0x1d/0x28
- [<c0102d4a>] common_interrupt+0x1a/0x20
- [<c010f180>] do_page_fault+0x0/0x4a5
- [<c010f1e2>] do_page_fault+0x62/0x4a5
- [<c010f180>] do_page_fault+0x0/0x4a5
- [<c0102da7>] error_code+0x4f/0x54
-handlers:
-[<cc8f1c44>] (snd_audiopci_interrupt+0x0/0xd8 [snd_ens1371])
-Disabling IRQ #5
+00:00.2 Class 0600: 1106:2259
+	Flags: bus master, medium devsel, latency 0
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+00:00.3 Class 0600: 1106:3259
+	Flags: bus master, medium devsel, latency 0
 
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-02-02-06 12:58 pearma         Note Added: 0007876                          
-02-02-06 17:38 yafrank        Note Deleted: 0006975                        
-02-04-06 10:43 pearma         Note Added: 0007915                          
-02-04-06 19:18 rlrevell       Status                   feedback => resolved
-02-04-06 19:18 rlrevell       Resolution               open => fixed       
-02-04-06 20:57 yafrank        Status                   resolved => feedback
-02-04-06 20:57 yafrank        Resolution               fixed => reopened   
-02-04-06 20:57 yafrank        Note Added: 0007925                          
-======================================================================
+00:00.4 Class 0600: 1106:4259
+	Flags: bus master, medium devsel, latency 0
 
+00:00.7 Class 0600: 1106:7259
+	Flags: bus master, medium devsel, latency 0
 
+00:01.0 Class 0604: 1106:b198
+	Flags: bus master, 66Mhz, medium devsel, latency 0
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	Memory behind bridge: d1000000-d1ffffff
+	Prefetchable memory behind bridge: f0000000-f3ffffff
+	Capabilities: [70] Power Management version 2
+
+00:06.0 Class 0280: 1814:0201 (rev 01)
+	Subsystem: 1814:2560
+	Flags: bus master, slow devsel, latency 64, IRQ 11
+	Memory at d0002000 (32-bit, non-prefetchable) [size=8K]
+	Capabilities: [40] Power Management version 2
+
+00:0c.0 Class 0607: 1524:1410 (rev 01)
+	Subsystem: 1734:1078
+	Flags: bus master, medium devsel, latency 168, IRQ 10
+	Memory at 24000000 (32-bit, non-prefetchable) [size=4K]
+	Bus: primary=00, secondary=02, subordinate=05, sec-latency=176
+	Memory window 0: 20000000-21fff000 (prefetchable)
+	Memory window 1: 22000000-23fff000
+	I/O window 0: 00002000-000020ff
+	I/O window 1: 00002400-000024ff
+	16-bit legacy interface ports at 0001
+
+00:10.0 Class 0c03: 1106:3038 (rev 80)
+	Subsystem: 1106:3038
+	Flags: bus master, medium devsel, latency 64, IRQ 7
+	I/O ports at 1020 [size=32]
+	Capabilities: [80] Power Management version 2
+
+00:10.1 Class 0c03: 1106:3038 (rev 80)
+	Subsystem: 1106:3038
+	Flags: bus master, medium devsel, latency 64, IRQ 10
+	I/O ports at 1040 [size=32]
+	Capabilities: [80] Power Management version 2
+
+00:10.3 Class 0c03: 1106:3104 (rev 82) (prog-if 20)
+	Subsystem: 1106:3104
+	Flags: bus master, medium devsel, latency 64, IRQ 11
+	Memory at d0000000 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [80] Power Management version 2
+
+00:11.0 Class 0601: 1106:3177
+	Subsystem: 1106:3177
+	Flags: bus master, stepping, medium devsel, latency 0
+	Capabilities: [c0] Power Management version 2
+
+00:11.1 Class 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
+	Subsystem: 1734:1078
+	Flags: bus master, medium devsel, latency 64, IRQ 7
+	I/O ports at 1000 [size=16]
+	Capabilities: [c0] Power Management version 2
+
+00:11.5 Class 0401: 1106:3059 (rev 50)
+	Subsystem: 1734:1078
+	Flags: medium devsel, IRQ 11
+	I/O ports at 1400 [size=256]
+	Capabilities: [c0] Power Management version 2
+
+00:11.6 Class 0780: 1106:3068 (rev 80)
+	Subsystem: 1734:1078
+	Flags: medium devsel, IRQ 11
+	I/O ports at 1800 [size=256]
+	Capabilities: [d0] Power Management version 2
+
+00:12.0 Class 0200: 1106:3065 (rev 74)
+	Subsystem: 1734:1078
+	Flags: bus master, medium devsel, latency 64, IRQ 7
+	I/O ports at 1c00 [size=256]
+	Memory at d0000400 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [40] Power Management version 2
+
+01:00.0 Class 0300: 1106:3118 (rev 02)
+	Subsystem: 1734:1078
+	Flags: bus master, 66Mhz, medium devsel, latency 64, IRQ 7
+	Memory at f0000000 (32-bit, prefetchable) [size=64M]
+	Memory at d1000000 (32-bit, non-prefetchable) [size=16M]
+	Capabilities: [60] Power Management version 2
+	Capabilities: [70] AGP version 2.0
+
+-- 
+
+Brian Morrison
+
+bdm at fenrir dot org dot uk
+
+GnuPG key ID DE32E5C5 - http://wwwkeys.uk.pgp.net/pgpnet/wwwkeys.html
 
 
 -------------------------------------------------------
