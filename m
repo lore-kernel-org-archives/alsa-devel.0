@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001754]: M-Audio Revolution 5.1: Headphone jack gets no signal
-Date: Sat, 4 Feb 2006 07:11:37 +0100
-Message-ID: <1f1a4a228a2662e56aef138404f589cc@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001812]: Apps that uses alsa-1.0.11rc3 crashes with my asound.conf
+Date: Sat, 4 Feb 2006 10:10:37 +0100
+Message-ID: <b23b4f03ff55455749ee67ca337f5087@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4BB51A4
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 07:11:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B6EA177
+	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 10:10:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1754> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1812> 
 ======================================================================
-Reported By:                wollschaf
+Reported By:                AnarSoul
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1754
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Issue ID:                   1812
+Category:                   0_general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-15-2006 16:02 CET
-Last Modified:              02-04-2006 07:11 CET
+Date Submitted:             02-03-2006 15:19 CET
+Last Modified:              02-04-2006 10:10 CET
 ======================================================================
-Summary:                    M-Audio Revolution 5.1: Headphone jack gets no
-signal
+Summary:                    Apps that uses alsa-1.0.11rc3 crashes with my
+asound.conf
 Description: 
-Whatever I tried with alsamixer, I could not get the headphone jack to
-output any kind of signal.
+All apps that uses alsa-1.0.11rc3 crashed with my asound.conf with
+message:
 
-In my understanding, it should output the line signal, but amplificated.
+ conf.c:3144: snd_config_iterator_first: Assertion `node->type ==
+SND_CONFIG_TYPE_COMPOUND' failed.
 
-As it does not even output the white noise of the inputs (see Issue
-0001753), I assume the headphone output is completely disabled.
-
-If photos of the card are needed to find out how it is connected, I will
-upload them...
-
+With alsa-1.0.10 everything is OK :)
 ======================================================================
 
 ----------------------------------------------------------------------
- cyan - 01-21-06 09:39 
+ theli - 02-04-06 10:10 
 ----------------------------------------------------------------------
-Yes, I think that internally it is similar to Revolution 7.1, but two
-chanels are conected to amplifier (I found it somewhere, but only in czech
-language).
-
-----------------------------------------------------------------------
- feens - 02-04-06 07:11 
-----------------------------------------------------------------------
-I posted a few messages back and forth with Takashi a while back regarding
-this, when the driver was first setup in ALSA.
-
-It seems to be that the PCM chip (envy24gt, as opposed to the envy24ht in
-7.1) only supports 6 pcm channels, whereas the ht supports 6.  So where
-the 2 extra DACs get their input from, I'm not sure.  But I imagine that's
-the key to figuring out the issue.
-
-My knowledge of drivers is fairly limited though, but I do have diploma in
-software engineering, so I have no issues fooling with the driver if
-needed.
+not using dmix in asound.conf "fixes" this ... but that way i don't have
+soft mixing :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-15-06 16:02 wollschaf      New Issue                                    
-01-15-06 16:02 wollschaf      Kernel Version            => 2.6.15          
-01-15-06 16:02 wollschaf      Issue Monitored: wollschaf                    
-01-16-06 15:47 cyan           Note Added: 0007686                          
-01-16-06 15:47 cyan           Issue Monitored: cyan                        
-01-20-06 21:04 wollschaf      Note Added: 0007727                          
-01-21-06 09:39 cyan           Note Added: 0007738                          
-02-04-06 07:04 feens          Issue Monitored: feens                       
-02-04-06 07:11 feens          Note Added: 0007913                          
+02-03-06 15:19 AnarSoul       New Issue                                    
+02-03-06 15:19 AnarSoul       File Added: asound.conf                      
+02-04-06 10:05 theli          Issue Monitored: theli                       
+02-04-06 10:10 theli          Note Added: 0007914                          
 ======================================================================
 
 
