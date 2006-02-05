@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001821]: snd_rawmidi_read is blocking for "virtual" midi, even with SND_RAWMIDI_NONBLOCK flag
-Date: Sun, 5 Feb 2006 15:47:35 +0100
-Message-ID: <a19e1ff32cf9964715b4cde612c1fa0e@bugtrack.alsa-project.org>
+Date: Sun, 5 Feb 2006 15:52:02 +0100
+Message-ID: <5b015ab3d366f21da210b38d1ee8012e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2375D1B4
-	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2006 15:47:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1BAB1B4
+	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2006 15:52:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1821> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-05-2006 15:47 CET
-Last Modified:              02-05-2006 15:47 CET
+Last Modified:              02-05-2006 15:52 CET
 ======================================================================
 Summary:                    snd_rawmidi_read is blocking for "virtual" midi,
 even with SND_RAWMIDI_NONBLOCK flag
@@ -49,11 +49,17 @@ snd_rawmidi_read() is blocking, while according to the documentation it
 should return -EAGAIN.
 ======================================================================
 
+----------------------------------------------------------------------
+ perex - 02-05-06 15:52 
+----------------------------------------------------------------------
+It should be fixed in 1.0.11rc3. Could you retest?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-05-06 15:47 mkp            New Issue                                    
 02-05-06 15:47 mkp            File Added: rawmidi.c                        
+02-05-06 15:52 perex          Note Added: 0007935                          
 ======================================================================
 
 
