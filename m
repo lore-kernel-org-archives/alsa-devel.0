@@ -1,11 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: My involvement in ALSA development effectively terminated.
-Date: Sun, 05 Feb 2006 10:42:16 +0000
-Message-ID: <43E5D688.2020406@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Sun, 5 Feb 2006 13:19:31 +0100
+Message-ID: <a110c83304cd39aa21520e1ef952dbb1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 621A9193
+	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2006 13:19:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,28 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Friday 3rd Feb 2006 my house received a power surge. It destroyed a 
-number of electrical items in my house.
-One was the Central Heating system, and others included all my PCs. Why 
-don't surge protectors work?
-After paying for the fixing of the Central Heating, I will not have 
-enough money free to purchase new PCs.
-So, in effect, I now do not have any Linux PCs at my disposal, so I 
-cannot work on ALSA any more. I am sending this email from a work 
-laptop. I expect it will be about 3-6 months before I can purchase a 
-replacement Linux PC.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
+======================================================================
+Reported By:                darkbrain
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1318
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              02-05-2006 13:19 CET
+======================================================================
+Summary:                    Volume control per PCM
+Description: 
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
 
-So, this is just a heads up to tell you that any bug fixes or new 
-features that I might have been doing to ALSA will be considerably delayed.
+======================================================================
 
-Kind Regards
+----------------------------------------------------------------------
+ Raymond - 02-05-06 05:33 
+----------------------------------------------------------------------
+Are there any program used to test the volume control per pcm subdevice ?
 
-James
+It's rather diffcult to test using openal, how about an ALSA application
+which open multiple pcm streams ? (e.g. a soundfont midi player using
+multiple pcm streams instead of ALSA sequencer)
+
+
+
+----------------------------------------------------------------------
+ darkbrain - 02-05-06 13:19 
+----------------------------------------------------------------------
+For now we can simply add a vomune control per pcm in the mixer, after that
+it should be proposed a new alsa api (just proposed) and than it should be
+usable in a program. My target is to add this feature into openal just to
+speed up a bit the library.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+01-10-06 12:55 darkbrain      Note Added: 0007548                          
+02-05-06 04:55 Raymond        Note Added: 0007929                          
+02-05-06 05:33 Raymond        Note Edited: 0007929                         
+02-05-06 13:19 darkbrain      Note Added: 0007932                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
