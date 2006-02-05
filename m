@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Sun, 5 Feb 2006 16:39:20 +0100
-Message-ID: <ab346b481a52be2995d94d3d970c451f@bugtrack.alsa-project.org>
+Date: Sun, 5 Feb 2006 16:48:13 +0100
+Message-ID: <ff702d06ed41b7977c4a7eb259f7c97d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18A331C1
-	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2006 16:39:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73B921C1
+	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2006 16:48:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              02-05-2006 16:39 CET
+Last Modified:              02-05-2006 16:48 CET
 ======================================================================
 Summary:                    au88x0 PCM configuration problem - buffer_size
 constraint
@@ -58,20 +58,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0001766 jackd : ALSA: cannot set period size to...
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 02-03-06 14:26 
-----------------------------------------------------------------------
-Is the pcm_min.c used to demonstrate snd_pcm_recover() the underrun
-condition ?
-
-unsigned char buffer[16*1024];				/* some random data */
-
-                frames = snd_pcm_writei(handle, buffer, sizeof(buffer));
-
-
-It do not call snd_pcm_get_params() to obtain period_size and buffer_size
-?
 
 ----------------------------------------------------------------------
  Raymond - 02-05-06 16:39 
@@ -97,6 +83,15 @@ diff -u -r1.11 au88x0_pcm.c
  	if (VORTEX_PCM_TYPE(substream->pcm) != VORTEX_PCM_WT) {
  #ifndef CHIP_AU8820
  		if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_A3D) {
+
+----------------------------------------------------------------------
+ Raymond - 02-05-06 16:48 
+----------------------------------------------------------------------
+Would anyone explain why         	
+
+        	period_time = latency / 4;
+
+in snd_pcm_set_params()
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -141,6 +136,7 @@ function => au88x0 PCM configuration problem - buffer_size constraint
 02-04-06 02:52 Raymond        Note Edited: 0007858                         
 02-04-06 02:56 Raymond        Note Edited: 0007858                         
 02-05-06 16:39 Raymond        Note Added: 0007939                          
+02-05-06 16:48 Raymond        Note Added: 0007940                          
 ======================================================================
 
 
