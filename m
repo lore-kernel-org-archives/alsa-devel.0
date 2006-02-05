@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001318]: Volume control per PCM
-Date: Sun, 5 Feb 2006 14:42:03 +0100
-Message-ID: <381579adf69902fa905f71c80c07b42b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001821]: snd_rawmidi_read is blocking for "virtual" midi, even with SND_RAWMIDI_NONBLOCK flag
+Date: Sun, 5 Feb 2006 15:47:35 +0100
+Message-ID: <a19e1ff32cf9964715b4cde612c1fa0e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E312193
-	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2006 14:42:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2375D1B4
+	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2006 15:47:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1821> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                mkp
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1318
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - lib
+Issue ID:                   1821
+Category:                   rawmidi - raw MIDI interface
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             08-07-2005 14:45 CEST
-Last Modified:              02-05-2006 14:42 CET
+Date Submitted:             02-05-2006 15:47 CET
+Last Modified:              02-05-2006 15:47 CET
 ======================================================================
-Summary:                    Volume control per PCM
+Summary:                    snd_rawmidi_read is blocking for "virtual" midi,
+even with SND_RAWMIDI_NONBLOCK flag
 Description: 
-Hi, i'm trying to implement a volume control per PCM streams, i've attached
-a function that does the job. Unfortunally when it change the volume it
-also change the equalizer cutting off low frequencyes. I think 
-there is a problem with the second poke, infact withot that poke, the
-volume works correctly for left case. Any suggestion? Any documentation?
-Thanks,
-   Dino
-
+when opening rawmidi device with 
+snd_rawmidi_open(&handler, NULL, "virtual", SND_RAWMIDI_NONBLOCK);
+snd_rawmidi_read() is blocking, while according to the documentation it
+should return -EAGAIN.
 ======================================================================
-
-----------------------------------------------------------------------
- darkbrain - 02-05-06 13:19 
-----------------------------------------------------------------------
-For now we can simply add a vomune control per pcm in the mixer, after that
-it should be proposed a new alsa api (just proposed) and than it should be
-usable in a program. My target is to add this feature into openal just to
-speed up a bit the library.
-
-----------------------------------------------------------------------
- Raymond - 02-05-06 14:42 
-----------------------------------------------------------------------
-For those soundcard which support hardware mixing (usually device 0 have
-multiple subdevices). 
-
-pcm volume kcontrol with .iface =	SNDRV_CTL_ELEM_IFACE_PCM
-
-snd_pcm_set_hardvol(snd_pcm_t *pcm, float *dB)
-
-Function : to set the volume in deciBel of the different(2/4/....)
-channels of the pcm substream using the hardware mixer of the sound card.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-07-05 14:45 darkbrain      New Issue                                    
-08-07-05 14:45 darkbrain      File Added: volume.c                         
-08-13-05 10:43 darkbrain      Note Added: 0005802                          
-01-10-06 12:55 darkbrain      Note Added: 0007548                          
-02-05-06 04:55 Raymond        Note Added: 0007929                          
-02-05-06 05:33 Raymond        Note Edited: 0007929                         
-02-05-06 13:19 darkbrain      Note Added: 0007932                          
-02-05-06 14:42 Raymond        Note Added: 0007934                          
+02-05-06 15:47 mkp            New Issue                                    
+02-05-06 15:47 mkp            File Added: rawmidi.c                        
 ======================================================================
 
 
