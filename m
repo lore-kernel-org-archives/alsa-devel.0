@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Sat, 4 Feb 2006 23:15:32 +0100
-Message-ID: <6ced14a2758ab42370b44118ae9e1979@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001819]: Monitor capability feature request
+Date: Sun, 5 Feb 2006 04:39:59 +0100
+Message-ID: <a5aa214e481c106ef428147f871f2af3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41F291A0
-	for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2006 23:15:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D852519F
+	for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2006 04:39:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,304 +24,118 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1819> 
 ======================================================================
-Reported By:                jrgns
-Assigned To:                tiwai
+Reported By:                djandruczyk
+Assigned To:                rlrevell
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1596
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - lib
+Issue ID:                   1819
+Category:                   0_general
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
+Status:                     feedback
 ======================================================================
-Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              02-04-2006 23:15 CET
+Date Submitted:             02-04-2006 19:42 CET
+Last Modified:              02-05-2006 04:39 CET
 ======================================================================
-Summary:                    No sound or High pitched noise, dissapears if change
-made on mixer
+Summary:                    Monitor capability feature request
 Description: 
-With the driver compiled as a standalone (1.0.10rc3), there's is sound, but
-accompanied with a very high pitched noise. All sound dissappears the
-moment I change something on the mixer.
+ I'd like to suggest a potential feature with the capability of monitoring
+ANY pcm output (or combination of simultaneous outputs).  The aim being to
+be able to do the following via alsa-lib:
 
-There is no sound at all if the driver is compiled into the kernel or as a
-kernel module (1.0.10rc1 and 2.6.14-rc2).
+1. record output from arbritrary applications or combination thereof
+without requiring any application modification and without looping back
+the physical outputs to inputs on the sound hardware (which introduces
+noise and unwanted latency and use of a recording source that might
+otherwise be in use.
+2. perform monitoring of select streams (in the case of multiple pcm
+streams running at once)
 
-I tried loading the module with various model= and fix_position=
-combinations as well.
+>From the application's point of view that would want to use this I
+envision something along these lines:
 
-Hardware:
-lspci
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
+- App registers a callback with ALSA-lib to be notified if a new stream is
+created or destroyed.
+- App then queries alsa lib for a current list of running streams (whether
+to physical devices or streams feeding into dmix)
+- App requests a "monitor connection" to a stream or combination of
+streams and registers a callback function to be called anytime this stream
+is upated from an application (limitation in that all streams requested
+share same SW params for simplicity)  This should be flexible in the case
+of dmix to be able to monitor 1 feed  up to n feeds where n being the max
+number of streams that dmix is handling concurrently. The monitored
+connection will have a total number of channels equal to the sum of
+monitored channels selected.  
+for example: lets say dmix is multiplexing 3 applications to one physical
+hw:0 device.  the monitor requests 2 out of those three (for wahtever
+reason, it doesn't matter) The monitor callback should deliver the data to
+the callback as a 4 channel stream in the format of:
+ L (stream 1),R(stream 1), L(Stream 2), R(stram2) (interleaved).  The
+restriction being that the SW params of the streams that are to be
+monitored must all match, otherwise it would become very difficult to
+calculate and handle all the possible permutations of handling mixmatched
+streams.
 
-lspci -n -v -v
-0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 17c0:2017
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, cache line size 08
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at b0000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] #10 [0091]
+- App's callback function is called each time the outside application
+issues a write to ALSA lib and is able to monitor the audio stream from
+said app in realtime.  If outside application closes, the notification
+callback will be called and the app monitoring the stream will gracefully
+handle the event, deregister the monitor callbacks, and if wanted,
+re-query also lib for current streams and connect to another.
 
-lspci -v
-0000:00:02.0 VGA compatible controller: Intel Corporation Mobile
-915GM/GMS/910GML Express Graphics Controller (rev 04) (prog-if 00 [VGA])
-        Subsystem: Wistron Corp.: Unknown device 2071
-        Flags: bus master, fast devsel, latency 0, IRQ 10
-        Memory at b0080000 (32-bit, non-prefetchable) [size=512K]
-        I/O ports at 1800 [size=8]
-        Memory at c0000000 (32-bit, prefetchable) [size=256M]
-        Memory at b0040000 (32-bit, non-prefetchable) [size=256K]
-        Capabilities: [d0] Power Management version 2
-
-cat /proc/asound/card0/codec#0
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x0
-Revision Id: 0x100400
-Default PCM: rates 0x07f, bits 0x0e, types 0x1
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
-  PCM: rates 0x060, bits 0x02, types 0x5
-  Connection: 2
-     0x01* 0x06
-Node 0x03 [Audio Output] wcaps 0x445: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-Node 0x06 [Audio Input] wcaps 0x100511: Stereo
-  PCM: rates 0x07f, bits 0x06, types 0x1
-  Connection: 1
-     0x12
-Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 8
-     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x08 [Audio Mixer] wcaps 0x200108: Mono
-  Connection: 1
-     0x07
-Node 0x09 [Audio Mixer] wcaps 0x200106: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80] [0x80]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 2
-     0x04 0x05
-Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x07* 0x04 0x05
-Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x07* 0x04
-Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x04* 0x07
-Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x05* 0x08
-Node 0x0e [Audio Selector] wcaps 0x300100: Mono
-  Connection: 2
-     0x08* 0x11
-Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 8
-     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
-Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x20* 0x1c 0x1f
-Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
-  Connection: 2
-     0x0f* 0x2b
-Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 6
-     0x11* 0x22 0x10 0x07 0x08 0x23
-Node 0x13 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x11
-Node 0x14 [Audio Selector] wcaps 0x300104: Mono Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97]
-  Connection: 1
-     0x23
-Node 0x15 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x22
-Node 0x16 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x21
-Node 0x17 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x10
-Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals:  [0x8f]
-  Connection: 2
-     0x19* 0x24
-Node 0x19 [Beep Generator Widget] wcaps 0x700200: Mono Digital
-Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081f: OUT HP
-  Pin Default 0x01813030: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x0a
-Node 0x1b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081001f: OUT HP
-  Pin Default 0x01014011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-Node 0x1c [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x0837: IN OUT
-  Pin Default 0x9933f170: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x1d [Pin Complex] wcaps 0x40098d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081737: IN OUT
-  Pin Default 0x99f3f115: [Fixed] Other at Int ATAPI
-    Conn = ATAPI, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0d
-Node 0x1e [Pin Complex] wcaps 0x40018c: Mono Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00]
-  Pincap 0x0810: OUT
-  Pin Default 0x901700f0: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN
-  Pin Default 0x02a190f0: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN
-  Pin Default 0x018130f0: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0827: IN
-  Pin Default 0x409700f0: [N/A] Aux at Ext N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x22 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x903300f0: [Fixed] CD at Int N/A
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x23 [Pin Complex] wcaps 0x400080: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x40b700f0: [N/A] Telephony at Ext N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x24 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x50f700f0: [N/A] Other at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x014500f0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x26 [Power Widget] wcaps 0x500500: Mono
-  Connection: 8
-     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x1d
-Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x20
-Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1d 0x20
-Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 3
-     0x1f 0x1d 0x20
-Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x0f
+Potential issues:
+  This would ONLY work for applications using the ALSA lib library and PCM
+plugins plughw, dmix, etc.  It would (probably) NOT function for direct
+access, to hw:0 (thought it may be implementable, I don't know enough of
+ALSA internals to know if it would be possible). It most definitely would
+not work for things that mmap the sound device buffer directly, but I
+would guess that a large portion of applications do not use that method.
+(though I may be wrong and would appreciate a correction if I am so)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jrgns - 11-24-05 12:14 
+ djandruczyk - 02-04-06 20:58 
 ----------------------------------------------------------------------
-Tried again. Get sound without the high pitched noise with passing model
-3stack-digout or 5stack-digout and position_fix=1. The sound still
-dissapears after chaning a volume setting, though.
+jack isn't necessarily a solution as there are many apps that DO NOT WORK
+with jack, and in some cases the application may not have source
+availablity for modification.
+
+I've looked into the file plugin but it hasn't worked well, and was next
+to impossible to use in an interactive form. (realtime)  My primary
+motivation for this ability is to be able to monitor/analyze audio streams
+in realtime without having to modify any of the apps that may be monitored
+(as in some cases they can't). (jack==not all apps work, esd==ick!,
+arts==uggh!)
 
 ----------------------------------------------------------------------
- eIf - 02-04-06 23:15 
+ Raymond - 02-05-06 04:39 
 ----------------------------------------------------------------------
-jrgns, I have the same problem on Fedora Core 4, and I believe I have the
-same PC conf as yours. Can you tell me, please, where did you "passed"
-model 3stack-digout and position_fix=1? I'd like to test it for myself,
-maybe this would solve me from hearing the scramble too.
+Can those sound cards which support hardware mixing use the hardware mixer
+to record all the playback ?
 
-Thank you,
- Paul
+Is it feasible to create a virtual pcm catpure device for those sound card
+to capture the playback ?
+
+The 8/16 bits audio is already resampled to 48000 Hz by the hardware
+sample rate convertor before sending to AC97 codec.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-05 11:26 jrgns          New Issue                                    
-11-24-05 11:26 jrgns          Distribution              => Gentoo          
-11-24-05 11:26 jrgns          Kernel Version            => 2.6.14-rc2      
-11-24-05 12:14 jrgns          Note Added: 0006840                          
-11-24-05 12:14 jrgns          Note Added: 0006841                          
-02-04-06 23:15 eIf            Note Added: 0007927                          
+02-04-06 19:42 djandruczyk    New Issue                                    
+02-04-06 19:53 rlrevell       Status                   new => resolved     
+02-04-06 19:53 rlrevell       Resolution               open => fixed       
+02-04-06 19:53 rlrevell       Assigned To               => rlrevell        
+02-04-06 19:53 rlrevell       Note Added: 0007921                          
+02-04-06 20:22 perex          Note Added: 0007923                          
+02-04-06 20:58 djandruczyk    Status                   resolved => feedback
+02-04-06 20:58 djandruczyk    Resolution               fixed => reopened   
+02-04-06 20:58 djandruczyk    Note Added: 0007926                          
+02-05-06 04:39 Raymond        Note Added: 0007928                          
 ======================================================================
 
 
