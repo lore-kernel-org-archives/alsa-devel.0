@@ -1,7 +1,7 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: My involvement in ALSA development effectively terminated.
-Date: Sun, 05 Feb 2006 10:41:07 +0000
-Message-ID: <43E5D643.9070100@superbug.co.uk>
+Date: Sun, 05 Feb 2006 10:42:16 +0000
+Message-ID: <43E5D688.2020406@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
