@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001414]: Hercules Digifire - ADC control only mutes left channel
-Date: Mon, 6 Feb 2006 23:03:35 +0100
-Message-ID: <96200e3e81110588653163d973baf4c6@bugtrack.alsa-project.org>
+Date: Mon, 6 Feb 2006 23:11:02 +0100
+Message-ID: <9d27aae249d7f2e310b4ab854d9dd12b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 877C81E1
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 23:03:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29CCB1E1
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 23:11:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandrivia
 Kernel Version:             2.6.13
 ======================================================================
 Date Submitted:             09-11-2005 19:12 CEST
-Last Modified:              02-06-2006 23:03 CET
+Last Modified:              02-06-2006 23:11 CET
 ======================================================================
 Summary:                    Hercules Digifire - ADC control only mutes left
 channel
@@ -51,25 +51,6 @@ alsamixer and kmix affect only the left input channel, leaving the right
 channel at full volume. Had this problem with all 2.6 kernel versions so
 far, but did not really care up to now...
 ======================================================================
-
-----------------------------------------------------------------------
- a_r_schulz - 01-19-06 08:48 
-----------------------------------------------------------------------
-Cannot tell - I had a different soundcard before. I'm trying right now with
-a Knoppix 3.4 CD and found my card as 'Cirrus Logic CS 4294' in KMix. KMix
-shows a slider 'IGain' for the card, which appears to work properly, both
-in combined and split-channel mode, together with the recording volume
-slider of Audacity.
-
-The Kernel on this distribution is:
-Linux Knoppix 2.4.23-xfs #1 SMP Mi Dez 10 22:25:03 CET 2003 i686
-GNU/Linux
-but appears to still use OSS drivers (nothing of alsa in dmesg). Dmesg
-says about sound:
-Crystal 4280/46xx + AC97 Audio, version 1.28.32, 22:39:02 Dec 10 2003
-cs46xx: Card found at 0xe3100000 and 0xe3000000, IRQ 9
-cs46xx: Unknown card (1681:A012) at 0xe3100000/0xe3000000, IRQ 9
-ac97_codec: AC97 Modem codec, id: CRY45 (Cirrus Logic CS4294)
 
 ----------------------------------------------------------------------
  a_r_schulz - 02-06-06 23:03 
@@ -88,6 +69,12 @@ severe jitter and occasional distortions, whereas everything is fine when
 using the plain on-board via82xxx chip.
 Any suggestions for another, well-supported PCI soundcard?
 
+----------------------------------------------------------------------
+ a_r_schulz - 02-06-06 23:11 
+----------------------------------------------------------------------
+P.S.: Jitter is the same when playing MP3 with mpg123, sounding like a
+vinyl record getting a short slowdown every ~2sec.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -99,6 +86,7 @@ Date Modified  Username       Field                    Change
 01-18-06 08:48 rlrevell       Note Added: 0007707                          
 01-19-06 08:48 a_r_schulz     Note Added: 0007718                          
 02-06-06 23:03 a_r_schulz     Note Added: 0007952                          
+02-06-06 23:11 a_r_schulz     Note Added: 0007953                          
 ======================================================================
 
 
