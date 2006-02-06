@@ -1,13 +1,13 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Intel HDA and Realtek ALC 260
-Date: Tue, 7 Feb 2006 09:34:56 +1030 (CST)
-Message-ID: <200602062304.k16N4uaS014401@auster.physics.adelaide.edu.au>
-References: <43E6E1B1.3000405@akl.lt>
+Subject: Re: [PATCH] hda: ALC260 test model implementation
+Date: Tue, 7 Feb 2006 09:52:25 +1030 (CST)
+Message-ID: <200602062322.k16NMPda015556@auster.physics.adelaide.edu.au>
+References: <1139266943.2041.4.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43E6E1B1.3000405@akl.lt> from "Rimas Kudelis" at Feb 06, 2006 07:42:09 AM
+In-Reply-To: <1139266943.2041.4.camel@mindpipe> from "Lee Revell" at Feb 06, 2006 06:02:22 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,39 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rimas Kudelis <rq@akl.lt>
+To: Lee Revell <rlrevell@joe-job.com>
 Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rimas
+> > The following patch adds a "test" ALC260 model specification to the
+> > patch_realtek.c driver if CONFIG_SND_DEBUG is set.  This is similar to
+> > the "test" ALC880 model in that it sets up mixer controls for almost
+> > everything to make it easier for people to test their laptop/soundcard
+> > when working out what pin widgets are connected to which real-world
+> > devices.
+> 
+> Man, these Intel HDA codecs are becoming a huge PITA... is there any end
+> in sight, or will users have to resort to trial and error every time any
+> vendor releases a new laptop?
 
-> >>would it be possible to add a "test" model, like in case of ALC880, which
-> >>would have controls for all of the chipset pins available? I guess that
-> >>would simplify things a lot...
-> >>    
-> >>
-> >I think that's possibly worth considering.  I'll have a look into this
-> >tonight ...
+A good question.  It's probaby marginally unfair blaming Intel though; The
+codec chips have their output pins named by the maker (Mic1, Line1 etc). 
+The problem is that it is clear that not all laptop makers use the same
+mapping of pin names to the real world.  The S7020 series from Fujitsu for
+example uses the "Headphone" pin to drive the internal speaker and the
+"Line1" pin to drive the headphone jack (although based on what I found last
+night there is probably a very good technical reason for this choice). 
+In any case Intel really doesn't have a lot of control over that.
 
-I implemented this idea last night; refer to a posting of mine from about
-half an hour ago for the patch.  As noted in that post, this new patch
-assumes my second-pcm patch from a day ago has been previously applied.
+My gut feeling is that things will settle down - there really is only a
+certain number of ways these things can be sensibly connected, and I really
+don't see manufacturers using crazy combinations such as the Line2 pin being
+the mic input for example (then again, craziness hasn't stopped them in the
+past :) ).  Down the track, once the dust has settled I suspect we'll find
+that things will probably be coverable with a small number of well
+thought-out "base" models with the odd tweak here and there.  Another
+possibility is that the auto configuration with pin sense will mature to the
+point of "just working" for most people (although auto-retasking is a pain
+for some applications).
 
-> And the naming of controls - I suppose these should either be named the
-> way Paulo has named them (0x08 Volume, for example), or similar to what
-> they are marked in Realtek datasheet.
+In the meantime, having a "test" model will open up the testing to a larger
+number of people who don't want to get involved with patching from scratch.
 
-I went with names based on the datasheet - that way everyone can work out
-what's being refered to since we've all got the same documentation.  You'll
-need the datasheet to make sense of the chip's routing.
-
-> BTW the notebook i'm having this problem with is an Acer Travelmate 4060
-> series, like Paulo's (but 4061 in my case), so I could help you
-> test/debug the Acer model specifics. Don't hesitate to contact me
-> regarding this.
-
-Another point of reference would be useful.  Feel free to grab the patches
-noted above and have a go.
+I guess this is why Realtek recommend using drivers provided by the
+card/laptop manufacturer rather than the generic drivers - they have no
+control over what gets connected to what.
 
 Regards
   jonathan
