@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Mon, 6 Feb 2006 10:46:54 +0100
-Message-ID: <41d2175e781f7481f5d9a05de55205b0@bugtrack.alsa-project.org>
+Date: Mon, 6 Feb 2006 10:46:50 +0100
+Message-ID: <6f55d584adf7cef14d5e90e6980a16d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3770A1D0
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 10:46:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EC8F1CF
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 10:46:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -51,16 +51,39 @@ the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- darkbrain - 02-06-06 10:46 
+ Raymond - 02-06-06 07:32 
 ----------------------------------------------------------------------
-Well i'm not an alsa driver guru, i think that simply we have 2 channels
-pcm 1 front and 1 rear and surround40 should be only an asound.conf
-"tweak" that merge them together to virtualize 1 surround40 channel. 3
-channels are probably supported by cards that supports 5+1 channels and
-it's not my case.
-Hmm if i'm correct there is a problem only on the rear pcm, i'll test it.
-Any way by user side it works i can see a dvd with 4 channels and i tested
-it very well :)
+How do the driver support Surround40 ?
+
+static struct snd_pcm_hardware snd_cs46xx_playback =
+{
+	.channels_min =		1,
+	.channels_max =		2,
+
+
+It look like three 2 channels pcm devices
+
+	if ((err = snd_cs46xx_pcm(chip, 0, NULL)) < 0) {
+		snd_card_free(card);
+		return err;
+	}
+#ifdef CONFIG_SND_CS46XX_NEW_DSP
+	if ((err = snd_cs46xx_pcm_rear(chip,1, NULL)) < 0) {
+		snd_card_free(card);
+		return err;
+	}
+
+
+#ifdef CONFIG_SND_CS46XX_NEW_DSP
+	if (chip->nr_ac97_codecs ==2) {
+		if ((err = snd_cs46xx_pcm_center_lfe(chip,3,NULL)) < 0) {
+			snd_card_free(card);
+			return err;
+		}
+	}
+#endif
+
+
 
 ----------------------------------------------------------------------
  darkbrain - 02-06-06 10:46 
@@ -83,7 +106,6 @@ Date Modified  Username       Field                    Change
 02-06-06 07:31 Raymond        Note Edited: 0007943                         
 02-06-06 07:32 Raymond        Note Edited: 0007943                         
 02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
 ======================================================================
 
 
