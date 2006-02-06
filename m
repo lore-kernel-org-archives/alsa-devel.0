@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Mon, 6 Feb 2006 06:32:18 +0100
-Message-ID: <5447e22bd08973ffc699ce9a85a853e9@bugtrack.alsa-project.org>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: Intel HDA and Realtek ALC 260
+Date: Mon, 06 Feb 2006 07:42:09 +0200
+Message-ID: <43E6E1B1.3000405@akl.lt>
+References: <200602060229.k162THBb025229@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig8B15599E7ED13B4B742CB7DB"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BFB81CD
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 06:32:19 +0100 (MET)
+In-Reply-To: <200602060229.k162THBb025229@auster.physics.adelaide.edu.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig8B15599E7ED13B4B742CB7DB
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
-======================================================================
-Reported By:                darkbrain
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              02-06-2006 06:32 CET
-======================================================================
-Summary:                    surround40 memory leak
-Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
-======================================================================
+Hello Jonathan,
 
-----------------------------------------------------------------------
- Raymond - 02-06-06 06:32 
-----------------------------------------------------------------------
-How do the driver support Surround40 ?
+>>I'm one of the people affected by
+>>https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618. ... So I have
+>>a question for the maintainer of that module (I guess that's jwoithe)
+>>    
+>>
+>Not to my knowledge - I've just provided the Fujitsu model and some other
+>more general patches to patch-realtek.c because I have a laptop with the
+>ALC260 in it and want it to work. :) Takashi would be the official
+>maintainer of this file AFAIK.
+>  
+>
+Ah, I see.
 
-static struct snd_pcm_hardware snd_cs46xx_playback =
-{
-	.channels_min =		1,
-	.channels_max =		2,
+>>would it be possible to add a "test" model, like in case of ALC880, which
+>>would have controls for all of the chipset pins available? I guess that
+>>would simplify things a lot...
+>>    
+>>
+>I think that's possibly worth considering.  I'll have a look into this
+>tonight and see how much extra code it would add.  Since most of the
+>infrastructure is already present I suspect it won't be too bad.  Such a
+>feature would allow people to test new computers without having to patch
+>anything and as such would probably be quite useful, as you suggest.
+>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-======================================================================
+Thank you. Also, it would be useful for this model to add mixer controls
+for retasking pins, as you did with Fujitsu model. That would hopefully
+allow to quickly test what pins are connected to what jacks/hardware
+(i.e., one could connect external speakers/headphones to all sound jacks
+first). And the naming of controls - I suppose these should either be
+named the way Paulo has named them (0x08 Volume, for example), or
+similar to what they are marked in Realtek datasheet. That would make
+things even easier for you developers to add new models based on user input.
+
+BTW the notebook i'm having this problem with is an Acer Travelmate 4060
+series, like Paulo's (but 4061 in my case), so I could help you
+test/debug the Acer model specifics. Don't hesitate to contact me
+regarding this.
+
+Hope to hear from you soon.
+
+Rimas
 
 
+--------------enig8B15599E7ED13B4B742CB7DB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFD5uG1AlYAh8azrv8RAvBEAJsHReYnmR4giQ/Bw1OStG2slvTCKgCfT3bF
+dMIaNFUW9m2Jvqm5Uklbpd0=
+=+7Dw
+-----END PGP SIGNATURE-----
+
+--------------enig8B15599E7ED13B4B742CB7DB--
 
 
 -------------------------------------------------------
