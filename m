@@ -1,13 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] hda: ALC260 test model implementation
-Date: Mon, 06 Feb 2006 18:02:22 -0500
-Message-ID: <1139266943.2041.4.camel@mindpipe>
-References: <200602062250.k16Mo0XK012879@auster.physics.adelaide.edu.au>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: Intel HDA and Realtek ALC 260
+Date: Tue, 7 Feb 2006 09:34:56 +1030 (CST)
+Message-ID: <200602062304.k16N4uaS014401@auster.physics.adelaide.edu.au>
+References: <43E6E1B1.3000405@akl.lt>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602062250.k16Mo0XK012879@auster.physics.adelaide.edu.au>
+In-Reply-To: <43E6E1B1.3000405@akl.lt> from "Rimas Kudelis" at Feb 06, 2006 07:42:09 AM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,28 +17,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: Rimas Kudelis <rq@akl.lt>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-02-07 at 09:20 +1030, Jonathan Woithe wrote:
-> The following patch adds a "test" ALC260 model specification to the
-> patch_realtek.c driver if CONFIG_SND_DEBUG is set.  This is similar to
-> the "test" ALC880 model in that it sets up mixer controls for almost
-> everything to make it easier for people to test their laptop/soundcard
-> when working out what pin widgets are connected to which real-world
-> devices.
-> 
+Hi Rimas
 
-Man, these Intel HDA codecs are becoming a huge PITA... is there any end
-in sight, or will users have to resort to trial and error every time any
-vendor releases a new laptop?  This is starting to feel like the ACPI
-situation... hmm, Intel designed that too, coincidence?
+> >>would it be possible to add a "test" model, like in case of ALC880, which
+> >>would have controls for all of the chipset pins available? I guess that
+> >>would simplify things a lot...
+> >>    
+> >>
+> >I think that's possibly worth considering.  I'll have a look into this
+> >tonight ...
 
-;-)
+I implemented this idea last night; refer to a posting of mine from about
+half an hour ago for the patch.  As noted in that post, this new patch
+assumes my second-pcm patch from a day ago has been previously applied.
 
-Lee
+> And the naming of controls - I suppose these should either be named the
+> way Paulo has named them (0x08 Volume, for example), or similar to what
+> they are marked in Realtek datasheet.
 
+I went with names based on the datasheet - that way everyone can work out
+what's being refered to since we've all got the same documentation.  You'll
+need the datasheet to make sense of the chip's routing.
+
+> BTW the notebook i'm having this problem with is an Acer Travelmate 4060
+> series, like Paulo's (but 4061 in my case), so I could help you
+> test/debug the Acer model specifics. Don't hesitate to contact me
+> regarding this.
+
+Another point of reference would be useful.  Feel free to grab the patches
+noted above and have a go.
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
