@@ -1,14 +1,14 @@
-From: Doug McLain <doug@nostar.net>
-Subject: Re: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on
- Delta 1010LT
-Date: Mon, 06 Feb 2006 11:23:04 -0500
-Message-ID: <43E777E8.9080506@nostar.net>
-References: <68c7bcdb75e965f940ce3ea34a123fd6@bugtrack.alsa-project.org> <200602061445.16645.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
+Date: Mon, 6 Feb 2006 17:36:11 +0100
+Message-ID: <61ecf6fa3164424d2c244acd76f669ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602061445.16645.gineera@aspect135.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A5FC1D7
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 17:36:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +18,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I didnt look to closely at the patch before I sent it, it was late.  I 
-don't know what up with the mutex stuff actually, looks like I should 
-have updated before I made a patch.  I will make a new patch.  The fix 
-is simply one silly little bit:
 
-static struct snd_kcontrol_new snd_ice1712_delta1010lt_wordclock_select 
-__devinitdata =
-ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Sync", 0, 
-ICE1712_DELTA_1010LT_WORDCLOCK, 0, 0);
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
+======================================================================
+Reported By:                nostar
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1806
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-01-2006 23:06 CET
+Last Modified:              02-06-2006 17:36 CET
+======================================================================
+Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
+Description: 
+SPDIF output is non existant unless SPDIF In is connected to a valid output
+source.  Then, the signal on SPDIF output is typically just noise.  If I
+toggle between any internal clock setting and SPDIF In using
+envy24control, eventually I will get audible audio.  Using an o-scope on
+the wordclock output, I get flatline unless there is a valid SPDIF Input
+signal.  I can switch to an internal clock setting while there is an SPDIF
+In signal connected, and the Word Clock signal will be present, at the
+frequency of the SPDIF In signal though, and not the frequency of the
+selected internal clock frequency.
 
-If the 5th argument is a 1, as it was, it inverts the operand, causeing 
-bit 7 (high bit) of the GPIO register to be 1 when spdif and internal 
-are chosen, and 0 for wordclock, which is the opposite of the way it was 
-behaving in windows via PCIScope.  I tried this a long time ago as well, 
-to no avail, so I think the fix includes you and perex's work as well.
 
-Alan Horstmann wrote:
-> On Monday 06 February 2006 11:05, bugtrack@alsa-project.org wrote:
-> 
->>----------------------------------------------------------------------
->> nostar - 02-06-06 11:41
->>----------------------------------------------------------------------
->>This patch fixes SPDIF I/O, and adds a few very useful lines to the current
->>proc output.
->>
-> 
-> (driver.diff)
-> 
-> I am glad you have made good progress!  What was it that actually solved the 
-> problem?  In driver.diff, which is wanted, mutex_init or init_MUTEX?  Is the 
-> patch hunk the right way round?  Also there are 2 hunks of spurious 
-> white-space changes; I normally edit these out of diff files.
-> 
-> 
->>----------------------------------------------------------------------
->> nostar - 02-06-06 12:05
->>----------------------------------------------------------------------
->>envy.diff fixes the problem of not being able toselect word clock directly
->>from an internal clock source (on all cards, not just the 1010LT).
->>
-> 
-> You're right to point out that internal_clock_set(13) is an anomaly, since it 
-> is an external clock source!  I suppose we have to live with that, as the 
-> driver treats SPDIF in the internal clock routines.
-> 
-> Extra '=' -typo well spotted, although it has compiled for me without 
-> problems.  It was mine, I think.
-> 
-> Alan
-> 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
+======================================================================
+
+----------------------------------------------------------------------
+ nostar - 02-06-06 12:08 
+----------------------------------------------------------------------
+envy.diff fixes the problem of not being able to select word clock directly
+from an internal clock source (on all cards, not just the 1010LT).
+
+
+
+----------------------------------------------------------------------
+ nostar - 02-06-06 17:36 
+----------------------------------------------------------------------
+I just uploaded driver02.diff. Please disregard driver.diff and use this
+instead.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-01-06 23:06 nostar         New Issue                                    
+02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
+    
+02-02-06 08:59 perex          Relationship added       related to 0001785  
+02-02-06 09:00 perex          Note Added: 0007871                          
+02-03-06 16:14 nostar         Note Added: 0007898                          
+02-06-06 11:41 nostar         Note Added: 0007947                          
+02-06-06 11:41 nostar         File Added: driver.diff                      
+02-06-06 12:03 nostar         Issue Monitored: nostar                      
+02-06-06 12:05 nostar         Note Added: 0007948                          
+02-06-06 12:05 nostar         File Added: envy.diff                        
+02-06-06 12:06 nostar         Note Edited: 0007947                         
+02-06-06 12:07 nostar         Note Edited: 0007947                         
+02-06-06 12:08 nostar         Note Edited: 0007948                         
+02-06-06 17:35 nostar         File Added: driver02.diff                    
+02-06-06 17:36 nostar         Note Added: 0007949                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
