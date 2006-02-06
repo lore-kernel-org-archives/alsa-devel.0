@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001825]: Latest Update (alsa-utils, alsa-lib and system-config-soundcard) causes severe distortion of sound output
-Date: Mon, 6 Feb 2006 16:23:44 +0100
-Message-ID: <834953769c2b95fe1b663b02fa1a58bd@bugtrack.alsa-project.org>
+From: Doug McLain <doug@nostar.net>
+Subject: Re: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on
+ Delta 1010LT
+Date: Mon, 06 Feb 2006 11:23:04 -0500
+Message-ID: <43E777E8.9080506@nostar.net>
+References: <68c7bcdb75e965f940ce3ea34a123fd6@bugtrack.alsa-project.org> <200602061445.16645.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 258AA1D6
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 16:23:44 +0100 (MET)
+In-Reply-To: <200602061445.16645.gineera@aspect135.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I didnt look to closely at the patch before I sent it, it was late.  I 
+don't know what up with the mutex stuff actually, looks like I should 
+have updated before I made a patch.  I will make a new patch.  The fix 
+is simply one silly little bit:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1825> 
-======================================================================
-Reported By:                poylywog
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1825
-Category:                   speakertest
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-06-2006 16:23 CET
-Last Modified:              02-06-2006 16:23 CET
-======================================================================
-Summary:                    Latest Update (alsa-utils, alsa-lib and
-system-config-soundcard) causes severe distortion of sound output
-Description: 
-Sound card is Creative SB Audigy
+static struct snd_kcontrol_new snd_ice1712_delta1010lt_wordclock_select 
+__devinitdata =
+ICE1712_GPIO(SNDRV_CTL_ELEM_IFACE_MIXER, "Word Clock Sync", 0, 
+ICE1712_DELTA_1010LT_WORDCLOCK, 0, 0);
 
-Performed YUM update of above and upon performing soundcard detection and
-testing of speakers output was extremely distorted (noise and pops)Music
-Players were inoperable. Tried various settings (3 listed) of emu-10k1
-driver with no effect. 
-======================================================================
+If the 5th argument is a 1, as it was, it inverts the operand, causeing 
+bit 7 (high bit) of the GPIO register to be 1 when spdif and internal 
+are chosen, and 0 for wordclock, which is the opposite of the way it was 
+behaving in windows via PCIScope.  I tried this a long time ago as well, 
+to no avail, so I think the fix includes you and perex's work as well.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-06-06 16:23 poylywog       New Issue                                    
-======================================================================
-
-
+Alan Horstmann wrote:
+> On Monday 06 February 2006 11:05, bugtrack@alsa-project.org wrote:
+> 
+>>----------------------------------------------------------------------
+>> nostar - 02-06-06 11:41
+>>----------------------------------------------------------------------
+>>This patch fixes SPDIF I/O, and adds a few very useful lines to the current
+>>proc output.
+>>
+> 
+> (driver.diff)
+> 
+> I am glad you have made good progress!  What was it that actually solved the 
+> problem?  In driver.diff, which is wanted, mutex_init or init_MUTEX?  Is the 
+> patch hunk the right way round?  Also there are 2 hunks of spurious 
+> white-space changes; I normally edit these out of diff files.
+> 
+> 
+>>----------------------------------------------------------------------
+>> nostar - 02-06-06 12:05
+>>----------------------------------------------------------------------
+>>envy.diff fixes the problem of not being able toselect word clock directly
+>>from an internal clock source (on all cards, not just the 1010LT).
+>>
+> 
+> You're right to point out that internal_clock_set(13) is an anomaly, since it 
+> is an external clock source!  I suppose we have to live with that, as the 
+> driver treats SPDIF in the internal clock routines.
+> 
+> Extra '=' -typo well spotted, although it has compiled for me without 
+> problems.  It was mine, I think.
+> 
+> Alan
+> 
 
 
 -------------------------------------------------------
