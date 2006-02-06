@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
-Date: Mon, 6 Feb 2006 17:36:11 +0100
-Message-ID: <61ecf6fa3164424d2c244acd76f669ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Mon, 6 Feb 2006 18:37:18 +0100
+Message-ID: <a830fc069cbb2c033f24208252301b0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A5FC1D7
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 17:36:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 081CB1E1
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 18:37:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                nostar
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1806
-Category:                   PCI - ice1712
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
@@ -39,61 +39,60 @@ Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-01-2006 23:06 CET
-Last Modified:              02-06-2006 17:36 CET
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              02-06-2006 18:37 CET
 ======================================================================
-Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
+Summary:                    surround40 memory leak
 Description: 
-SPDIF output is non existant unless SPDIF In is connected to a valid output
-source.  Then, the signal on SPDIF output is typically just noise.  If I
-toggle between any internal clock setting and SPDIF In using
-envy24control, eventually I will get audible audio.  Using an o-scope on
-the wordclock output, I get flatline unless there is a valid SPDIF Input
-signal.  I can switch to an internal clock setting while there is an SPDIF
-In signal connected, and the Word Clock signal will be present, at the
-frequency of the SPDIF In signal though, and not the frequency of the
-selected internal clock frequency.
-
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- nostar - 02-06-06 12:08 
+ darkbrain - 02-06-06 10:46 
 ----------------------------------------------------------------------
-envy.diff fixes the problem of not being able to select word clock directly
-from an internal clock source (on all cards, not just the 1010LT).
-
-
+Well i'm not an alsa driver guru, i think that simply we have 2 channels
+pcm 1 front and 1 rear and surround40 should be only an asound.conf
+"tweak" that merge them together to virtualize 1 surround40 channel. 3
+channels are probably supported by cards that supports 5+1 channels and
+it's not my case.
+Hmm if i'm correct there is a problem only on the rear pcm, i'll test it.
+Any way by user side it works i can see a dvd with 4 channels and i tested
+it very well :)
 
 ----------------------------------------------------------------------
- nostar - 02-06-06 17:36 
+ darkbrain - 02-06-06 18:37 
 ----------------------------------------------------------------------
-I just uploaded driver02.diff. Please disregard driver.diff and use this
-instead.
+I'm beginning to think that is not a memory leak problem or similar but a
+syncing one. Infact if i use a ruote device type such as:
+pcm.quad {
+        type route
+        slave.pcm "surround40:0"
+        slave.channels  4
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+}
+ctl.quad { type hw; card 0; }
+
+and i play an mp3 throught quad, it results out of sync. Does pcm type
+multi, used for surround40, trying to sync 2 device?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-06 23:06 nostar         New Issue                                    
-02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
-    
-02-02-06 08:59 perex          Relationship added       related to 0001785  
-02-02-06 09:00 perex          Note Added: 0007871                          
-02-03-06 16:14 nostar         Note Added: 0007898                          
-02-06-06 11:41 nostar         Note Added: 0007947                          
-02-06-06 11:41 nostar         File Added: driver.diff                      
-02-06-06 12:03 nostar         Issue Monitored: nostar                      
-02-06-06 12:05 nostar         Note Added: 0007948                          
-02-06-06 12:05 nostar         File Added: envy.diff                        
-02-06-06 12:06 nostar         Note Edited: 0007947                         
-02-06-06 12:07 nostar         Note Edited: 0007947                         
-02-06-06 12:08 nostar         Note Edited: 0007948                         
-02-06-06 17:35 nostar         File Added: driver02.diff                    
-02-06-06 17:36 nostar         Note Added: 0007949                          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
 ======================================================================
 
 
