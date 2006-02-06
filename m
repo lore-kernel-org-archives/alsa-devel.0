@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Mon, 6 Feb 2006 18:37:18 +0100
-Message-ID: <a830fc069cbb2c033f24208252301b0c@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: list all available devices
+Date: Mon, 06 Feb 2006 13:00:49 -0500
+Message-ID: <1139248850.2791.261.camel@mindpipe>
+References: <43E71617.9090101@gmx.de>
+	 <Pine.LNX.4.58.0602061118060.20834@denise.shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 081CB1E1
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 18:37:18 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0602061118060.20834@denise.shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@denise.shiny.it>
+Cc: Timo Steuerwald <timo.steuerwald@gmx.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-02-06 at 11:19 +0100, Giuliano Pochini wrote:
+> 
+> On Mon, 6 Feb 2006, Timo Steuerwald wrote:
+> 
+> > Hi all,
+> >
+> > can someone point me to the right location where I can find information
+> > about listing all available devices in ALSA?
+> > A code sample will be also very nice :-)
+> 
+> aplay -l
+> arecord -l
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
-======================================================================
-Reported By:                darkbrain
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              02-06-2006 18:37 CET
-======================================================================
-Summary:                    surround40 memory leak
-Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
-======================================================================
+Are you sure that's good enough?  It does not list the PCMs in a format
+useful to the application (like "default", hw:0", "surround51", "dmix"
+etc).  AFAICT "aplay -l" doesn't give an application enough information
+to populate a drop-down list.
 
-----------------------------------------------------------------------
- darkbrain - 02-06-06 10:46 
-----------------------------------------------------------------------
-Well i'm not an alsa driver guru, i think that simply we have 2 channels
-pcm 1 front and 1 rear and surround40 should be only an asound.conf
-"tweak" that merge them together to virtualize 1 surround40 channel. 3
-channels are probably supported by cards that supports 5+1 channels and
-it's not my case.
-Hmm if i'm correct there is a problem only on the rear pcm, i'll test it.
-Any way by user side it works i can see a dvd with 4 channels and i tested
-it very well :)
+This is a problem already for apps like "wengophone" - ALSA does not
+provide a sane API for enumerating all usable PCMs so it only lists
+"hw:x" PCMS and whatever is directly defined in .asoundrc (but NOT the
+PCMs defined under /usr/share/alsa/* - probably it parses .asoundrc
+directly, ugh)
 
-----------------------------------------------------------------------
- darkbrain - 02-06-06 18:37 
-----------------------------------------------------------------------
-I'm beginning to think that is not a memory leak problem or similar but a
-syncing one. Infact if i use a ruote device type such as:
-pcm.quad {
-        type route
-        slave.pcm "surround40:0"
-        slave.channels  4
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-}
-ctl.quad { type hw; card 0; }
-
-and i play an mp3 throught quad, it results out of sync. Does pcm type
-multi, used for surround40, trying to sync 2 device?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-======================================================================
-
+Lee
 
 
 
