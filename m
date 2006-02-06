@@ -1,12 +1,13 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
+From: Timo Steuerwald <timo.steuerwald@gmx.de>
 Subject: Re: list all available devices
-Date: Mon, 6 Feb 2006 11:19:33 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0602061118060.20834@denise.shiny.it>
-References: <43E71617.9090101@gmx.de>
+Date: Mon, 06 Feb 2006 11:32:50 +0100
+Message-ID: <43E725D2.6090308@gmx.de>
+References: <43E71617.9090101@gmx.de> <Pine.LNX.4.58.0602061118060.20834@denise.shiny.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43E71617.9090101@gmx.de>
+In-Reply-To: <Pine.LNX.4.58.0602061118060.20834@denise.shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,26 +17,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Timo Steuerwald <timo.steuerwald@gmx.de>
+To: Giuliano Pochini <pochini@denise.shiny.it>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
+Giuliano Pochini wrote:
 
-On Mon, 6 Feb 2006, Timo Steuerwald wrote:
-
-> Hi all,
+>aplay -l
+>arecord -l
+>  
 >
-> can someone point me to the right location where I can find information
-> about listing all available devices in ALSA?
-> A code sample will be also very nice :-)
+Hi Giuliano,
 
-aplay -l
-arecord -l
+thanks a lot! That's what I was searching for! :-)
 
+Cheers,
 
---
-Giuliano.
+Timo
 
 
 -------------------------------------------------------
