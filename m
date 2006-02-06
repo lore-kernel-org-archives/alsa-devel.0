@@ -1,22 +1,14 @@
-From: Tilman Kranz <tilman.kranz@tk-sls.de>
-Subject: Re: Web forums...
-Date: Mon, 06 Feb 2006 13:13:36 +0100
-Message-ID: <43E73D70.60901@tk-sls.de>
-References: <1139079546.2791.42.camel@mindpipe>
-Reply-To: alsa-devel@alsa-project.org
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: My involvement in ALSA development effectively terminated.
+Date: Mon, 6 Feb 2006 12:35:32 +0000
+Message-ID: <ad2655cb0602060435s59feb049u@mail.gmail.com>
+References: <43E5D688.2020406@superbug.co.uk> <43E7300F.6040406@tk-sls.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.tk-sls.de (linuxfoo.de [83.151.18.109])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F5861C1
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 13:13:44 +0100 (MET)
-Received: from [192.168.1.100] (p54AC6FE3.dip.t-dialin.net [84.172.111.227])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "sls.thelair", Issuer "Tilman Kranz" (verified OK))
-	by mail.tk-sls.de (Postfix) with ESMTP id 436DA301B2
-	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 13:13:38 +0100 (CET)
-In-Reply-To: <1139079546.2791.42.camel@mindpipe>
+In-Reply-To: <43E7300F.6040406@tk-sls.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,45 +18,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Tilman Kranz <tilman.kranz@tk-sls.de>
+Cc: alsa-devel@lists.sourceforge.net, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> [...]
-> Of course ALSA development isn't moving to some lame web forum, and we
-> obviously don't have the bandwidth to follow 1000 hardware-specific
-> Linux user forums - can anything be done about this problem, other than
-> educating users that web forums are lame?
-> 
-> Lee
+On 06/02/06, Tilman Kranz <tilman.kranz@tk-sls.de> wrote:
+> Hello,
+>
+> James Courtier-Dutton wrote:
+> > [...] On Friday 3rd Feb 2006 my house received a power surge.
+>  > It destroyed a number of electrical items in my house. [...]
+>
+> I agree with what has been said.
+>
+> Please ensure that it is not the obligation of the protector
+> manufacturer to compensate for your losses!
+>
+> Otherwise, set up a donation account. I use CA0106, and I need it.
+>
+> Greetings,
+> Tilman Kranz.
+>
 
-Well ... there is the ALSA-Wiki [1] but it is quite different in
-appearance and use from a webforum.
+My paypal account is:
+James@superbug.co.uk
 
-I see two problems:
-
-1. In my estimation it is part of the business model of some
-blacksheep webforums to attract users and keep them unclear about the
-reference sources of information. They finance their operation
-through "hits" / advertisement, and appropriate redirection is thus
-contradicting their intentions. I am far from generalizing this to
-all web forums. Some are good and consistent, some are unaware of the
-negative effect their operation might have[2].
-
-2. Many users prefer webforums because it is their style of
-communication to talk to "alike" users, i.e. users who are in
-similar situations, users who have no problem with discussing
-matters on the base of incomplete or diffuse data. They have the
-feeling that form and content in such forums bring them to results
-faster. Such a demand can not be accomodated easily. They, after
-all, might be correct.
-
-Greetings,
-Tilman
-
-[1] http://alsa.opensrc.org/
-[2] The "negative effect" being, as you described it, the ALSA
-project missing valuable input.
+Donations welcome. :-)
 
 
 -------------------------------------------------------
