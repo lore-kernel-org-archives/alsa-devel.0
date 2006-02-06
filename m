@@ -1,11 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Intel HDA and Realtek ALC 260
-Date: Mon, 6 Feb 2006 12:59:17 +1030 (CST)
-Message-ID: <200602060229.k162THBb025229@auster.physics.adelaide.edu.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Mon, 6 Feb 2006 06:32:18 +0100
+Message-ID: <5447e22bd08973ffc699ce9a85a853e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BFB81CD
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 06:32:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,34 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: rq@akl.lt
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rimas
 
-> I'm one of the people affected by
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618. ... So I have
-> a question for the maintainer of that module (I guess that's jwoithe)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+======================================================================
+Reported By:                darkbrain
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1823
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              02-06-2006 06:32 CET
+======================================================================
+Summary:                    surround40 memory leak
+Description: 
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
+======================================================================
 
-Not to my knowledge - I've just provided the Fujitsu model and some other
-more general patches to patch-realtek.c because I have a laptop with the
-ALC260 in it and want it to work. :) Takashi would be the official
-maintainer of this file AFAIK.
+----------------------------------------------------------------------
+ Raymond - 02-06-06 06:32 
+----------------------------------------------------------------------
+How do the driver support Surround40 ?
 
-> would it be possible to add a "test" model, like in case of ALC880, which
-> would have controls for all of the chipset pins available? I guess that
-> would simplify things a lot...
+static struct snd_pcm_hardware snd_cs46xx_playback =
+{
+	.channels_min =		1,
+	.channels_max =		2,
 
-I think that's possibly worth considering.  I'll have a look into this
-tonight and see how much extra code it would add.  Since most of the
-infrastructure is already present I suspect it won't be too bad.  Such a
-feature would allow people to test new computers without having to patch
-anything and as such would probably be quite useful, as you suggest.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+======================================================================
 
-Regards
-  jonathan
-y
+
 
 
 -------------------------------------------------------
