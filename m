@@ -1,13 +1,14 @@
-From: Doug McLain <doug@nostar.net>
-Subject: Re: Multi Delta 1010 sync
-Date: Mon, 06 Feb 2006 06:04:02 -0500
-Message-ID: <43E72D22.5050405@nostar.net>
-References: <20060205161525.GA2691@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
+Date: Mon, 6 Feb 2006 12:05:16 +0100
+Message-ID: <68c7bcdb75e965f940ce3ea34a123fd6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060205161525.GA2691@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 840EF1D2
+	for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2006 12:05:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +18,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: John Rigg <ad@sound-man.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The only similarity between the 1010 and the 1010lt is the ice1712 chip 
-itself.  The 1010LT doesnt use the 74HC4046, nor does it use the 
-8404/8413 combo for spdif.  Until tonight, thats about as far as I would 
-have been able to go with this conversation, but I finally hit paydirt 
-with the spdif problems on the 1010lt. I posted a patch to bug 1806 
-thats fixes spdif functionality, so that we 1010lt users can finally run 
-2 cards together.  Now we can get some real world reports on 1010lt's 
-running in tandem.  If the 96Khz issue exists for the 1010lt as well, it 
-wont be a concern for me at all, since I consider anything over 48Khz a 
-waste of space.  I did some testing tonight, and things are looking great!
 
-John Rigg wrote:
-> After some reverse engineering I've found out why I was having trouble
-> syncing my two Delta 1010s at high sample rates using the word clock inputs.
-> 
-> The Delta 1010 uses a 74HC4046 phase-locked loop (PLL) to lock onto the word
-> clock input signal. This is used in a feedback loop with a /256 counter to
-> produce a frequency that's multiplied by 256x at the output of the PLL
-> oscillator. With a 48kHz input this gives a PLL frequency of 12.288MHz.
-> 
-> According to the 74HC4046 data sheet, the maximum frequency it can
-> work at is 13MHz. In other words, even a 48kHz clock is close to the
-> specified limit, so forget about higher frequencies. (I didn't discover
-> this until after I'd built a 96kHz word clock :-(. )
-> 
-> The S/PDIF receiver OTOH uses its own internal PLL which works with 96kHz
-> sample rate. However,I couldn't sync reliably using the S/PDIF in/outs with
-> one card as master and the other as slave. At 96kHz jackd would die at random
-> times with a floating point exception, so often it was unusable.
-> At 48kHz this would still happen, but not often (every couple of hours).
-> I'm guessing that this is due to a phase difference between master and
-> slave clocks.
-> 
-> My conclusion is that the only way to sync these cards reliably
-> at all frequencies is to clock them both from an external S/PDIF device,
-> and to make sure both cards are receiving the clock signal directly from the
-> master device (ie. not going through the S/PDIF circuitry of the first card on
-> the way to the second card).
-> 
-> John
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
+======================================================================
+Reported By:                nostar
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1806
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-01-2006 23:06 CET
+Last Modified:              02-06-2006 12:05 CET
+======================================================================
+Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
+Description: 
+SPDIF output is non existant unless SPDIF In is connected to a valid output
+source.  Then, the signal on SPDIF output is typically just noise.  If I
+toggle between any internal clock setting and SPDIF In using
+envy24control, eventually I will get audible audio.  Using an o-scope on
+the wordclock output, I get flatline unless there is a valid SPDIF Input
+signal.  I can switch to an internal clock setting while there is an SPDIF
+In signal connected, and the Word Clock signal will be present, at the
+frequency of the SPDIF In signal though, and not the frequency of the
+selected internal clock frequency.
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
+======================================================================
+
+----------------------------------------------------------------------
+ nostar - 02-06-06 11:41 
+----------------------------------------------------------------------
+This patch fixes SPDIF I/O, and adds a few very useful lines to the current
+proc output. 
+
+TODO:  Wordclock output was fixed by this as well, but still no syncing to
+a wordclock input. Also, bit 4 (mask 0x10) of the error register (0x10)
+can be used to add a new control for the 1010lt to check input status for
+the locked/unlocked label. Coming soon.
+
+----------------------------------------------------------------------
+ nostar - 02-06-06 12:05 
+----------------------------------------------------------------------
+envy.diff fixes the problem of not being able toselect word clock directly
+from an internal clock source (on all cards, not just the 1010LT).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-01-06 23:06 nostar         New Issue                                    
+02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
+    
+02-02-06 08:59 perex          Relationship added       related to 0001785  
+02-02-06 09:00 perex          Note Added: 0007871                          
+02-03-06 16:14 nostar         Note Added: 0007898                          
+02-06-06 11:41 nostar         Note Added: 0007947                          
+02-06-06 11:41 nostar         File Added: driver.diff                      
+02-06-06 12:03 nostar         Issue Monitored: nostar                      
+02-06-06 12:05 nostar         Note Added: 0007948                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
