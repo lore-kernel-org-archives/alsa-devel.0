@@ -1,7 +1,7 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: [PATCH] hda: minor correction to fujitsu ALC260 initverbs
-Date: Mon, 6 Feb 2006 12:52:15 +1030 (CST)
-Message-ID: <200602060222.k162MFsk024873@auster.physics.adelaide.edu.au>
+Subject: Re: Intel HDA and Realtek ALC 260
+Date: Mon, 6 Feb 2006 12:59:17 +1030 (CST)
+Message-ID: <200602060229.k162THBb025229@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -15,49 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: rq@akl.lt
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hi Rimas
 
-The following patch changes the initverbs associated with the output sum
-widgets 0x08, 0x09 and 0x0a used with the fujitsu model in patch_realtek.c.
-It is against alsa 1.0.11rc3.
+> I'm one of the people affected by
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618. ... So I have
+> a question for the maintainer of that module (I guess that's jwoithe)
 
-Currently these widgets have their output muted, but a close reading of the
-datasheet suggests that they don't actually have an output mute.  They have
-an *input* mute for each of their two inputs and a single output gain. This
-patch therefore activates the input mutes and zeros the output gain.  It has
-not yet been tested but the above interpretation of the ALC260 datasheet
-seems correct.
+Not to my knowledge - I've just provided the Fujitsu model and some other
+more general patches to patch-realtek.c because I have a laptop with the
+ALC260 in it and want it to work. :) Takashi would be the official
+maintainer of this file AFAIK.
+
+> would it be possible to add a "test" model, like in case of ALC880, which
+> would have controls for all of the chipset pins available? I guess that
+> would simplify things a lot...
+
+I think that's possibly worth considering.  I'll have a look into this
+tonight and see how much extra code it would add.  Since most of the
+infrastructure is already present I suspect it won't be too bad.  Such a
+feature would allow people to test new computers without having to patch
+anything and as such would probably be quite useful, as you suggest.
 
 Regards
   jonathan
-
---- patch_realtek.c-orig	2006-01-27 22:35:02.000000000 +1030
-+++ patch_realtek.c	2006-02-06 12:44:19.000000000 +1030
-@@ -2645,10 +2645,16 @@
-         {0x03, AC_VERB_SET_DIGI_CONVERT_1, 0},
-         {0x06, AC_VERB_SET_DIGI_CONVERT_1, 0},
- 
--        /* Start with mixer outputs muted */
--        {0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
--        {0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
--        {0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-+        /* Start with output sum widgets muted and their output gains at min */
-+	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-+	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-+	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
- 
-         /* Unmute HP pin widget amp left and right (no equiv mixer ctrl) */
-         {0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+y
 
 
 -------------------------------------------------------
