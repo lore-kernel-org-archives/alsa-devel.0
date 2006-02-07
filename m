@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001819]: Monitor capability feature request
-Date: Tue, 7 Feb 2006 16:24:14 +0100
-Message-ID: <ad68f080c4ec2e83ca412b6e6056da8f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001822]: Can't record with Hercules Fortissimo II
+Date: Tue, 7 Feb 2006 16:30:41 +0100
+Message-ID: <0c6b2eb87bbad10fde2e56dacecfd6ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 990831C8
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2006 16:24:14 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46CA91CE
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2006 16:30:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,118 +24,363 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1819> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822> 
 ======================================================================
-Reported By:                djandruczyk
-Assigned To:                rlrevell
+Reported By:                atler
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1819
-Category:                   0_general
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - driver
+Issue ID:                   1822
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     new
+Distribution:               PLD
+Kernel Version:             2.6.14.7
 ======================================================================
-Date Submitted:             02-04-2006 19:42 CET
-Last Modified:              02-07-2006 16:24 CET
+Date Submitted:             02-05-2006 16:16 CET
+Last Modified:              02-07-2006 16:30 CET
 ======================================================================
-Summary:                    Monitor capability feature request
+Summary:                    Can't record with Hercules Fortissimo II
 Description: 
- I'd like to suggest a potential feature with the capability of monitoring
-ANY pcm output (or combination of simultaneous outputs).  The aim being to
-be able to do the following via alsa-lib:
-
-1. record output from arbritrary applications or combination thereof
-without requiring any application modification and without looping back
-the physical outputs to inputs on the sound hardware (which introduces
-noise and unwanted latency and use of a recording source that might
-otherwise be in use.
-2. perform monitoring of select streams (in the case of multiple pcm
-streams running at once)
-
->From the application's point of view that would want to use this I
-envision something along these lines:
-
-- App registers a callback with ALSA-lib to be notified if a new stream is
-created or destroyed.
-- App then queries alsa lib for a current list of running streams (whether
-to physical devices or streams feeding into dmix)
-- App requests a "monitor connection" to a stream or combination of
-streams and registers a callback function to be called anytime this stream
-is upated from an application (limitation in that all streams requested
-share same SW params for simplicity)  This should be flexible in the case
-of dmix to be able to monitor 1 feed  up to n feeds where n being the max
-number of streams that dmix is handling concurrently. The monitored
-connection will have a total number of channels equal to the sum of
-monitored channels selected.  
-for example: lets say dmix is multiplexing 3 applications to one physical
-hw:0 device.  the monitor requests 2 out of those three (for wahtever
-reason, it doesn't matter) The monitor callback should deliver the data to
-the callback as a 4 channel stream in the format of:
- L (stream 1),R(stream 1), L(Stream 2), R(stram2) (interleaved).  The
-restriction being that the SW params of the streams that are to be
-monitored must all match, otherwise it would become very difficult to
-calculate and handle all the possible permutations of handling mixmatched
-streams.
-
-- App's callback function is called each time the outside application
-issues a write to ALSA lib and is able to monitor the audio stream from
-said app in realtime.  If outside application closes, the notification
-callback will be called and the app monitoring the stream will gracefully
-handle the event, deregister the monitor callbacks, and if wanted,
-re-query also lib for current streams and connect to another.
-
-Potential issues:
-  This would ONLY work for applications using the ALSA lib library and PCM
-plugins plughw, dmix, etc.  It would (probably) NOT function for direct
-access, to hw:0 (thought it may be implementable, I don't know enough of
-ALSA internals to know if it would be possible). It most definitely would
-not work for things that mmap the sound device buffer directly, but I
-would guess that a large portion of applications do not use that method.
-(though I may be wrong and would appreciate a correction if I am so)
-
+I can hear my voice from speakers but "arecord -f cd -t wav out.wav" always
+produces 19K-32K file with no sound. What is weird is that I can record
+through alsa oss emulation in programs that use /dev/dsp.
+Similar problems already appeard here, but none of the solutions worked
+for me.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-05-06 04:39 
+ atler - 02-05-06 16:19 
 ----------------------------------------------------------------------
-Can those sound cards which support hardware mixing use the hardware mixer
-to record all the playback ?
-
-Is it feasible to create a virtual pcm catpure device for those sound card
-to capture the playback ?
-
-The 8/16 bits audio is already resampled to 48000 Hz by the hardware
-sample rate convertor before sending to AC97 codec.
+state.CS46xx {
+        control.1 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Master Playback Switch'
+                value true
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 63'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 51
+                value.1 51
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Headphone Playback Switch'
+                value true
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 63'
+                iface MIXER
+                name 'Headphone Playback Volume'
+                value.0 51
+                value.1 51
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Playback Switch'
+                value false
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Mic Playback Volume'
+                value 0
+        }
+        control.7 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Boost (+20dB)'
+                value true
+        }
+        control.8 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Line Playback Switch'
+                value false
+        }
+        control.9 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Line Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.10 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'CD Playback Switch'
+                value false
+        }
+        control.11 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'CD Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.12 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Aux Playback Switch'
+                value true
+        }
+        control.13 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Aux Playback Volume'
+                value.0 26
+                value.1 26
+        }
+        control.14 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'PCM Playback Switch'
+                value true
+        }
+        control.15 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 25
+                value.1 25
+        }
+        control.16 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 2
+                comment.item.0 Mic
+                comment.item.1 CD
+                comment.item.2 Video
+                comment.item.3 Aux
+                comment.item.4 Line
+                comment.item.5 Mix
+                comment.item.6 'Mix Mono'
+                comment.item.7 Phone
+                iface MIXER
+                name 'Capture Source'
+                value.0 Mic
+                value.1 Mic
+        }
+        control.17 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Capture Switch'
+                value true
+        }
+        control.18 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 13
+                value.1 13
+        }
+        control.19 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 'pre 3D'
+                comment.item.1 'post 3D'
+                iface MIXER
+                name 'PCM Out Path & Mute'
+                value 'pre 3D'
+        }
+        control.20 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name '3D Control - Switch'
+                value false
+        }
+        control.21 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name '3D Control - Center'
+                value 0
+        }
+        control.22 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name '3D Control - Depth'
+                value 0
+        }
+        control.23 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Off-hook Switch'
+                value false
+        }
+        control.24 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Caller ID Switch'
+                value false
+        }
+        control.25 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 32767'
+                iface MIXER
+                name 'DAC Volume'
+                value.0 32768
+                value.1 32768
+        }
+        control.26 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 32767'
+                iface MIXER
+                name 'ADC Volume'
+                value.0 32767
+                value.1 32767
+        }
+        control.27 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'ADC Capture Switch'
+                value true
+        }
+        control.28 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'DAC Capture Switch'
+                value false
+        }
+        control.29 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'IEC958 Output Switch'
+                value false
+        }
+        control.30 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'IEC958 Input Switch'
+                value false
+        }
+        control.31 {
+                comment.access 'read write'
+                comment.type IEC958
+                comment.count 1
+                iface PCM
+                device 2
+                name 'IEC958 Playback Default'
+                value
+'0000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+        }
+        control.32 {
+                comment.access read
+                comment.type IEC958
+                comment.count 1
+                iface PCM
+                device 2
+                name 'IEC958 Playback Mask'
+                value
+ffff00ff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        }
+        control.33 {
+                comment.access 'read write'
+                comment.type IEC958
+                comment.count 1
+                iface PCM
+                device 2
+                name 'IEC958 Playback PCM Stream'
+                value
+'0082000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+        }
+        control.34 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Duplicate Front'
+                value true
+        }
+}
 
 ----------------------------------------------------------------------
- perex - 02-07-06 16:24 
+ perex - 02-07-06 16:30 
 ----------------------------------------------------------------------
-Note that the file plugin is the elementary way, how you can do similar
-functionality as "tee". Of course, more complex plugin might be created
-with additional buffering and "registration" to a daemon which will do the
-enumeration of registered streams etc.
-
-If the file plugin cannot be used in realtime, find the culprit. The file
-plugin does nothing than a copy of stream samples to a file descriptor.
-Even with an arbiter (loopback daemon), the things will be much more
-complex.
+Could you try to set various buffer sizes and period sizes in arecord?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-04-06 19:42 djandruczyk    New Issue                                    
-02-04-06 19:53 rlrevell       Status                   new => resolved     
-02-04-06 19:53 rlrevell       Resolution               open => fixed       
-02-04-06 19:53 rlrevell       Assigned To               => rlrevell        
-02-04-06 19:53 rlrevell       Note Added: 0007921                          
-02-04-06 20:22 perex          Note Added: 0007923                          
-02-04-06 20:58 djandruczyk    Status                   resolved => feedback
-02-04-06 20:58 djandruczyk    Resolution               fixed => reopened   
-02-04-06 20:58 djandruczyk    Note Added: 0007926                          
-02-05-06 04:39 Raymond        Note Added: 0007928                          
-02-07-06 16:24 perex          Note Added: 0007958                          
+02-05-06 16:16 atler          New Issue                                    
+02-05-06 16:16 atler          File Added: asound.state                     
+02-05-06 16:16 atler          Distribution              => PLD             
+02-05-06 16:16 atler          Kernel Version            => 2.6.14.7        
+02-05-06 16:19 atler          Note Added: 0007937                          
+02-07-06 16:30 perex          Note Added: 0007959                          
 ======================================================================
 
 
