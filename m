@@ -1,13 +1,17 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: [PATCH] hda: ALC260 test model implementation
-Date: Wed, 8 Feb 2006 10:18:25 +1030 (CST)
-Message-ID: <200602072348.k17NmPNu022011@auster.physics.adelaide.edu.au>
-References: <s5h4q3ayii2.wl%tiwai@suse.de>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Building my driver
+Date: Tue, 07 Feb 2006 23:48:54 +0000
+Message-ID: <1139356135.9199.21.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4q3ayii2.wl%tiwai@suse.de> from "Takashi Iwai" at Feb 07, 2006 10:19:17 PM
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E85301C8
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2006 00:48:58 +0100 (MET)
+Received: from bossclass (bossclass [192.168.62.105])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k17Nmth8001525
+	for <alsa-devel@alsa-project.org>; Tue, 7 Feb 2006 23:48:55 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +21,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi
+I have got alsa-lib and the alsa-utils built and installed on my
+Dreamcast and want to test my driver code (at
+http://newgolddream.dyndns.info/repos) (I know it won't work but I want
+to see that it is calling the right code and so on).
 
-> Jonathan Woithe wrote:
-> > > > I guess this is why Realtek recommend using drivers provided by the
-> > > > card/laptop manufacturer rather than the generic drivers - they have
-> > > > no control over what gets connected to what.
-> > > 
-> > > IIRC the spec requires that this info be available from the BIOS, but
-> > > the problem is many vendors don't set it up correctly, as they can fall
-> > > back to vendor supplied drivers.
-> > 
-> > True, and the info in /proc/asound/card0/codec#0 is reasonably complete on
-> > our laptop at least - so there is hope.  However, there are still some
-> > oddities: for example, some pins with input capability aren't flagged as
-> > such and jacks are reported as present (right down to having a location) and
-> > yet they are nowhere to be seen.  I think part of this latter point is that
-> > allowance is made for the docking station, but in reality just blindly using
-> > all these "jacks" will just fill the mixer with controls which most users
-> > could never use.  Hopefully things like this info will stabilise in time
-> > and help us keep the number of distinct models low.
-> 
-> Yes.  Also we can implement a large part of the current "patch" codes
-> on user-space, e.g. as a firmware data.  I've had ideas, but little
-> time to really implement it.
+I have no .asoundrc or alsa.conf so I use this:
 
-That's an interesting idea.
 
-> Feel free to write the stuff if anyone has interest in it.
+ aplay -D hw:0,0 /etc/fstab
 
-As time allows I'll see if I can look into it (which won't be real soon)
-unless someone else jumps in earlier.  In the meantime, I think the ALC260
-test model is useful to have merged.
+Just to test - but I get this output
 
-Note also that the test model patch improves the pin mode mixer control to
-make it more robust against pins which for some reason don't accept VREF
-requests. I discovered that the "HP-OUT" and "LINE-OUT" on the Fujitsu S7020
-don't while developing the test model patch, and I suspect this might be a
-chip-level thing.  More data will be needed to confirm this.
+aplay: pcm.c: 2119: snd_pcm_open: Assertion `pcmp && name' failed.
+Aborted
 
-Regards
-  jonathan
+I am just not sure why this assertion is likely to fail
+
+
+>From the files:
+http://newgolddream.dyndns.info/lxr/source/alsa_lib/src/pcm/pcm.c#2115
+
+
+2108  * \brief Opens a PCM
+2109  * \param pcmp Returned PCM handle
+2110  * \param name ASCII identifier of the PCM handle
+2111  * \param stream Wanted stream
+2112  * \param mode Open mode (see #SND_PCM_NONBLOCK, #SND_PCM_ASYNC)
+2113  * \return 0 on success otherwise a negative error code
+2114  */
+2115 int snd_pcm_open(snd_pcm_t **pcmp, const char *name, 
+2116                  snd_pcm_stream_t stream, int mode)
+2117 {
+2118         int err;
+2119         assert(pcmp && name);
+2120         err = snd_config_update();
+2121         if (err < 0)
+2122                 return err;
+2123         return snd_pcm_open_noupdate(pcmp, snd_config, name, stream, mode);
+2124 }
+
 
 
 -------------------------------------------------------
