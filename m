@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001472]: Constant distortion noise on digital mixer
-Date: Tue, 7 Feb 2006 12:56:21 +0100
-Message-ID: <68093456d73f878f504d33eea0018134@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001819]: Monitor capability feature request
+Date: Tue, 7 Feb 2006 16:24:14 +0100
+Message-ID: <ad68f080c4ec2e83ca412b6e6056da8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EFBF1BA
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2006 12:56:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 990831C8
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2006 16:24:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,118 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1472> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1819> 
 ======================================================================
-Reported By:                Atraides
-Assigned To:                
+Reported By:                djandruczyk
+Assigned To:                rlrevell
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1472
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - lib
+Issue ID:                   1819
+Category:                   0_general
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Suse
-Kernel Version:             2.6.11.4-21.9
+Status:                     feedback
 ======================================================================
-Date Submitted:             10-12-2005 02:02 CEST
-Last Modified:              02-07-2006 12:56 CET
+Date Submitted:             02-04-2006 19:42 CET
+Last Modified:              02-07-2006 16:24 CET
 ======================================================================
-Summary:                    Constant distortion noise on digital mixer
+Summary:                    Monitor capability feature request
 Description: 
-The hardware in question is a Terratec DMX 6Fire 24/96. I have a constant
-crackling (like an old UKW radio between to stations) on the digital
-mixer. The noise disappears for a few seconds if I switch the Phono Input,
-the Breakout LED or Line In Selector. It changes the noise character when
-switching the S/PDIF Input from coaxial to optical. Even if all ins and
-outs are muted or tracked down its still there (I can see it in the
-Monitor Mixer).
+ I'd like to suggest a potential feature with the capability of monitoring
+ANY pcm output (or combination of simultaneous outputs).  The aim being to
+be able to do the following via alsa-lib:
+
+1. record output from arbritrary applications or combination thereof
+without requiring any application modification and without looping back
+the physical outputs to inputs on the sound hardware (which introduces
+noise and unwanted latency and use of a recording source that might
+otherwise be in use.
+2. perform monitoring of select streams (in the case of multiple pcm
+streams running at once)
+
+>From the application's point of view that would want to use this I
+envision something along these lines:
+
+- App registers a callback with ALSA-lib to be notified if a new stream is
+created or destroyed.
+- App then queries alsa lib for a current list of running streams (whether
+to physical devices or streams feeding into dmix)
+- App requests a "monitor connection" to a stream or combination of
+streams and registers a callback function to be called anytime this stream
+is upated from an application (limitation in that all streams requested
+share same SW params for simplicity)  This should be flexible in the case
+of dmix to be able to monitor 1 feed  up to n feeds where n being the max
+number of streams that dmix is handling concurrently. The monitored
+connection will have a total number of channels equal to the sum of
+monitored channels selected.  
+for example: lets say dmix is multiplexing 3 applications to one physical
+hw:0 device.  the monitor requests 2 out of those three (for wahtever
+reason, it doesn't matter) The monitor callback should deliver the data to
+the callback as a 4 channel stream in the format of:
+ L (stream 1),R(stream 1), L(Stream 2), R(stram2) (interleaved).  The
+restriction being that the SW params of the streams that are to be
+monitored must all match, otherwise it would become very difficult to
+calculate and handle all the possible permutations of handling mixmatched
+streams.
+
+- App's callback function is called each time the outside application
+issues a write to ALSA lib and is able to monitor the audio stream from
+said app in realtime.  If outside application closes, the notification
+callback will be called and the app monitoring the stream will gracefully
+handle the event, deregister the monitor callbacks, and if wanted,
+re-query also lib for current streams and connect to another.
+
+Potential issues:
+  This would ONLY work for applications using the ALSA lib library and PCM
+plugins plughw, dmix, etc.  It would (probably) NOT function for direct
+access, to hw:0 (thought it may be implementable, I don't know enough of
+ALSA internals to know if it would be possible). It most definitely would
+not work for things that mmap the sound device buffer directly, but I
+would guess that a large portion of applications do not use that method.
+(though I may be wrong and would appreciate a correction if I am so)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- alanmann - 02-05-06 22:21 
+ Raymond - 02-05-06 04:39 
 ----------------------------------------------------------------------
-I have been able to fix this 'touch-noise'.  The unused envy24 input
-digital lines need to be disabled, so it is only expecting 6 ADCs & DACs. 
-The patch bug1472-dmx6fire-limit-to-6ADCs.patch sorts this out.
+Can those sound cards which support hardware mixing use the hardware mixer
+to record all the playback ?
 
-In conjunction with earlier fixes, I now have a well-behaved sound card
-system with all I/O working.  Please report your results.
+Is it feasible to create a virtual pcm catpure device for those sound card
+to capture the playback ?
+
+The 8/16 bits audio is already resampled to 48000 Hz by the hardware
+sample rate convertor before sending to AC97 codec.
 
 ----------------------------------------------------------------------
- alanmann - 02-07-06 12:56 
+ perex - 02-07-06 16:24 
 ----------------------------------------------------------------------
-Slight typo in uploaded file '=' not '==' (compiled OK anyway). Amended
-file uploaded; original can be deleted.
+Note that the file plugin is the elementary way, how you can do similar
+functionality as "tee". Of course, more complex plugin might be created
+with additional buffering and "registration" to a daemon which will do the
+enumeration of registered streams etc.
+
+If the file plugin cannot be used in realtime, find the culprit. The file
+plugin does nothing than a copy of stream samples to a file descriptor.
+Even with an arbiter (loopback daemon), the things will be much more
+complex.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-12-05 02:02 Atraides       New Issue                                    
-10-12-05 02:02 Atraides       Distribution              => Suse            
-10-12-05 02:02 Atraides       Kernel Version            => 2.6.11.4-21.9   
-10-12-05 13:50 tiwai          Note Added: 0006465                          
-10-12-05 15:19 Atraides       Note Added: 0006467                          
-10-13-05 10:19 alanmann       Note Added: 0006475                          
-10-13-05 13:39 Atraides       Note Added: 0006477                          
-10-14-05 11:48 Atraides       Note Edited: 0006477                         
-10-14-05 12:55 alanmann       Note Added: 0006478                          
-10-17-05 20:41 Atraides       Note Added: 0006488                          
-02-02-06 22:03 alanmann       Note Added: 0007882                          
-02-05-06 22:21 alanmann       Note Added: 0007942                          
-02-05-06 22:22 alanmann       File Added: bug1472-dmx6fire-limit-to-6ADCs.patch 
-                  
-02-07-06 12:54 alanmann       File Added:
-bug1472-dmx6fire-limit-to-6ADCs-v2.patch                    
-02-07-06 12:56 alanmann       Note Added: 0007957                          
+02-04-06 19:42 djandruczyk    New Issue                                    
+02-04-06 19:53 rlrevell       Status                   new => resolved     
+02-04-06 19:53 rlrevell       Resolution               open => fixed       
+02-04-06 19:53 rlrevell       Assigned To               => rlrevell        
+02-04-06 19:53 rlrevell       Note Added: 0007921                          
+02-04-06 20:22 perex          Note Added: 0007923                          
+02-04-06 20:58 djandruczyk    Status                   resolved => feedback
+02-04-06 20:58 djandruczyk    Resolution               fixed => reopened   
+02-04-06 20:58 djandruczyk    Note Added: 0007926                          
+02-05-06 04:39 Raymond        Note Added: 0007928                          
+02-07-06 16:24 perex          Note Added: 0007958                          
 ======================================================================
 
 
