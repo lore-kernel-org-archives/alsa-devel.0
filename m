@@ -1,13 +1,14 @@
-From: Doug McLain <doug@nostar.net>
-Subject: Re: Multi Delta 1010 sync
-Date: Tue, 07 Feb 2006 15:27:26 -0500
-Message-ID: <43E902AE.1000804@nostar.net>
-References: <20060205161525.GA2691@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001800]: Input signal from analog input in snd-ca0106 with audigy SE distorted!
+Date: Tue, 7 Feb 2006 21:55:41 +0100
+Message-ID: <883288c53d12e8d0fd522d6f552b76e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060205161525.GA2691@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB130178
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2006 21:55:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: John Rigg <ad@sound-man.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yesterday I set the master 1010LT to 96000 Internal, and the slave card 
-to SPDIF In (with an rca cable connecting SPDIF Out to SPDIF In), ran 
-jack at 96Khz, and fired up xmms and ran an mp3 in repeat mode for the 
-last 24 hours, with its outputs connected to all 16 outputs, and all 16 
-inputs connected to my mixer, with no xruns.
 
-Doug
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1800> 
+======================================================================
+Reported By:                AnarSoul
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1800
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             01-31-2006 15:56 CET
+Last Modified:              02-07-2006 21:55 CET
+======================================================================
+Summary:                    Input signal from analog input in snd-ca0106 with
+audigy SE distorted!
+Description: 
+Recorded signal from my audigy SE from analog MIC input badly distorted! =(
+======================================================================
 
-John Rigg wrote:
-> After some reverse engineering I've found out why I was having trouble
-> syncing my two Delta 1010s at high sample rates using the word clock inputs.
-> 
-> The Delta 1010 uses a 74HC4046 phase-locked loop (PLL) to lock onto the word
-> clock input signal. This is used in a feedback loop with a /256 counter to
-> produce a frequency that's multiplied by 256x at the output of the PLL
-> oscillator. With a 48kHz input this gives a PLL frequency of 12.288MHz.
-> 
-> According to the 74HC4046 data sheet, the maximum frequency it can
-> work at is 13MHz. In other words, even a 48kHz clock is close to the
-> specified limit, so forget about higher frequencies. (I didn't discover
-> this until after I'd built a 96kHz word clock :-(. )
-> 
-> The S/PDIF receiver OTOH uses its own internal PLL which works with 96kHz
-> sample rate. However,I couldn't sync reliably using the S/PDIF in/outs with
-> one card as master and the other as slave. At 96kHz jackd would die at random
-> times with a floating point exception, so often it was unusable.
-> At 48kHz this would still happen, but not often (every couple of hours).
-> I'm guessing that this is due to a phase difference between master and
-> slave clocks.
-> 
-> My conclusion is that the only way to sync these cards reliably
-> at all frequencies is to clock them both from an external S/PDIF device,
-> and to make sure both cards are receiving the clock signal directly from the
-> master device (ie. not going through the S/PDIF circuitry of the first card on
-> the way to the second card).
-> 
-> John
+----------------------------------------------------------------------
+ AnarSoul - 02-07-06 21:55 
+----------------------------------------------------------------------
+Recorded signal distorted only if number of channels set to 2.
+If number of capture channels set to 1 there's no distortion :)
+
+Probably bug with setting up number of capture channels in driver?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-31-06 15:56 AnarSoul       New Issue                                    
+01-31-06 15:56 AnarSoul       Distribution              => Slackware       
+01-31-06 15:56 AnarSoul       Kernel Version            => 2.6.15          
+02-05-06 17:38 AnarSoul       Issue Monitored: AnarSoul                    
+02-07-06 21:55 AnarSoul       Note Added: 0007961                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
