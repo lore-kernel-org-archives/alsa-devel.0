@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001828]: Patch to get Miditech Play'n Roll Keyboard to work with ALSA
-Date: Tue, 7 Feb 2006 11:15:30 +0100
-Message-ID: <a1ec968bcfa065d901bb103422b84d70@bugtrack.alsa-project.org>
+From: Sergey Kolosov <freeserj@gmail.com>
+Subject: questions about simple alsa driver
+Date: Tue, 7 Feb 2006 13:54:34 +0300
+Message-ID: <d39e2e70602070254r5ee83e37l279049ffd5abe5f4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_1259_1339372.1139309674190"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A8041C3
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2006 11:15:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +15,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_1259_1339372.1139309674190
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1828> 
-======================================================================
-Reported By:                skupin
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1828
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-07-2006 11:15 CET
-Last Modified:              02-07-2006 11:15 CET
-======================================================================
-Summary:                    Patch to get Miditech Play'n Roll Keyboard to work
-with ALSA
-Description: 
-With the following patch the Miditech Play'n Roll Keyboard works with
-ALSA:
+Hello.
+I write alsa driver for device when not support dma which does not support
+dma.  But I write through emulation dma that worked mmap. I.e. on
+interruption data from dma buffers are read out, writind in device and set
+hw_ptr for callback pointer.
+1) As is filled ring dma the buffer? I.e. whence I can read through a head
+of the buffer?
+2) Filling of the buffer goes continuously or the separate periods are
+completely filled only? And in general for what the periods are necessary?
 
---- usbquirks.h.org     2005-08-29 01:41:01.000000000 +0200
-+++ usbquirks.h 2006-02-06 10:34:05.000000000 +0100
-@@ -1396,6 +1396,15 @@
-                .type = QUIRK_MIDI_MIDITECH
-        }
- },
-+{
-+       USB_DEVICE(0x0ccd, 0x0035),
-+       .driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
-+               .vendor_name = "Miditech",
-+               .product_name = "Play'n Roll",
-+               .ifnum = 0,
-+               .type = QUIRK_MIDI_MIDITECH
-+       }
-+},
+------=_Part_1259_1339372.1139309674190
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
- {
-        /*
+Hello.<br>
+I write alsa driver for device when not support dma <span id=3D"r_text" nam=
+e=3D"r_text">which does not support dma.&nbsp; </span><span id=3D"r_text" n=
+ame=3D"r_text">But I write through emulation dma that
+worked mmap. I.e. on interruption data from dma buffers are read out,
+writind in device and set hw_ptr for callback pointer.<br>
+</span><span id=3D"r_text" name=3D"r_text">1) As is filled ring dma the buf=
+fer?
+I.e. whence I can read through a head of the buffer? <br>
+2) Filling of the
+buffer goes continuously or the separate periods are completely filled
+only? And in general for what the periods are necessary?</span><br>
 
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-07-06 11:15 skupin         New Issue                                    
-======================================================================
-
-
+------=_Part_1259_1339372.1139309674190--
 
 
 -------------------------------------------------------
