@@ -1,8 +1,8 @@
 From: Dave <inssomniak@mountaincable.net>
-Subject: iec958 controls dissapeared from alsamixer/amixer and spdif no longer
- works
-Date: Mon, 06 Feb 2006 23:07:07 -0500
-Message-ID: <43E81CEB.40707@mountaincable.net>
+Subject: [Fwd: iec958 controls dissapeared from alsamixer/amixer and spdif
+ no longer works]
+Date: Mon, 06 Feb 2006 23:09:02 -0500
+Message-ID: <43E81D5E.4010501@mountaincable.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -52,11 +52,13 @@ trying with ac3dec.
 I changed nothing originally, but updated to -rc3 to try to fix it.
 It all worked perfectly before some unknown force caused it to cease.
 
- 
+
 
 
 
 Thanks!
+
+
 
 
 
