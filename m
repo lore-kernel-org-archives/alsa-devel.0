@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001827]: cannot set rate to 44100 Hz with full duplex
-Date: Tue, 7 Feb 2006 11:12:46 +0100
-Message-ID: <c3d18bc9d84c0d87fc5efad0e18e8cfc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001828]: Patch to get Miditech Play'n Roll Keyboard to work with ALSA
+Date: Tue, 7 Feb 2006 11:15:30 +0100
+Message-ID: <a1ec968bcfa065d901bb103422b84d70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 561811C0
-	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2006 11:12:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A8041C3
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2006 11:15:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1827> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1828> 
 ======================================================================
-Reported By:                mdeboer
-Assigned To:                
+Reported By:                skupin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1827
-Category:                   PCI - ens1371
+Issue ID:                   1828
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-07-2006 11:12 CET
-Last Modified:              02-07-2006 11:12 CET
+Date Submitted:             02-07-2006 11:15 CET
+Last Modified:              02-07-2006 11:15 CET
 ======================================================================
-Summary:                    cannot set rate to 44100 Hz with full duplex
+Summary:                    Patch to get Miditech Play'n Roll Keyboard to work
+with ALSA
 Description: 
-I try to run the alsa-lib/test/latency.c test, and it exits with
+With the following patch the Miditech Play'n Roll Keyboard works with
+ALSA:
 
-  Rate doesn't match (requested 44100Hz, get 0Hz)
-  Unable to set parameters for playback stream: Invalid argument
+--- usbquirks.h.org     2005-08-29 01:41:01.000000000 +0200
++++ usbquirks.h 2006-02-06 10:34:05.000000000 +0100
+@@ -1396,6 +1396,15 @@
+                .type = QUIRK_MIDI_MIDITECH
+        }
+ },
++{
++       USB_DEVICE(0x0ccd, 0x0035),
++       .driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
++               .vendor_name = "Miditech",
++               .product_name = "Play'n Roll",
++               .ifnum = 0,
++               .type = QUIRK_MIDI_MIDITECH
++       }
++},
 
-If I force the application to continue at this point (commenting the
-return -EINVAL; line), it seems to work ok. But what I find strange is
-that the exact rates for I/O are not identical:
-
-  Hardware PCM card 0 'Ensoniq AudioPCI' device 0 subdevice 0
-  Its setup is:
-    stream       : PLAYBACK
-    ...
-    exact rate   : 44101 (1445100000/32768)
-    ...
-  Hardware PCM card 0 'Ensoniq AudioPCI' device 0 subdevice 0
-  Its setup is:
-    stream       : CAPTURE
-    ...
-    exact rate   : 44099.8 (1572864000/35666)
-    ...
+ {
+        /*
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-07-06 11:12 mdeboer        New Issue                                    
+02-07-06 11:15 skupin         New Issue                                    
 ======================================================================
 
 
