@@ -1,13 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Envy24 -PSDIN(3) -bug1472 fix
-Date: Wed, 8 Feb 2006 15:33:31 +0000
-Message-ID: <200602081532.17040.gineera@aspect135.co.uk>
-References: <200602030928.18467.gineera@aspect135.co.uk> <200602052115.52601.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001812]: Apps that uses alsa-1.0.11rc3 crashes with my asound.conf
+Date: Wed, 8 Feb 2006 18:14:53 +0100
+Message-ID: <dde38a7d4391d86315f6bc9ebcf29e3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_L9g6Dt2lCvom61P"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602052115.52601.gineera@aspect135.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA2451D6
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2006 18:14:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,63 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_L9g6Dt2lCvom61P
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1812> 
+======================================================================
+Reported By:                AnarSoul
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1812
+Category:                   0_general
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-03-2006 15:19 CET
+Last Modified:              02-08-2006 18:14 CET
+======================================================================
+Summary:                    Apps that uses alsa-1.0.11rc3 crashes with my
+asound.conf
+Description: 
+All apps that uses alsa-1.0.11rc3 crashed with my asound.conf with
+message:
 
-On Sunday 05 February 2006 21:15, I wrote:
-> > Re bug1472, Distortion noise:
+ conf.c:3144: snd_config_iterator_first: Assertion `node->type ==
+SND_CONFIG_TYPE_COMPOUND' failed.
 
-> The attached patch does this in ice1712.c;  will this fix be able to make
-> it into 1.0.11 final?  This is the last of my list of '6fire bugs/funnies so
-> it would be good if they were all together in one release.
->
-> bug1472-dmx6fire-limit-to-6ADCs.patch
->
-> Summary: Disable unused ADCs & DACs on DMX6fire
->
-> Change the value written to hardware configuration register of envy24 chip
-> in the case of Terratec DMX6fire to restrict the active ADCs & DACs to 6.
->
-> Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
+With alsa-1.0.10 everything is OK :)
+======================================================================
 
-As noted on bug-track, slight typo in patch; corrected version 3 attached here 
-also.
+----------------------------------------------------------------------
+ AnarSoul - 02-04-06 17:35 
+----------------------------------------------------------------------
+2 theli:
+without /etc/asound.conf at all I have soft mixing :) but I have no
+special device "guitar" (dmix+dsnoop with small buffer size) that I need
+:)
 
+----------------------------------------------------------------------
+ kareltejnora - 02-08-06 18:14 
+----------------------------------------------------------------------
+Quick fix is replace row:
+pcm "hw:0,0"
+with:
+pcm {
+type hw
+card 0
+device 0
+}
 
+The string not work for dsnoop too.
+The problem is that in conf.c:3144 assert checks node->type and waits 1024
+SND_CONFIG_TYPE_COMPOUND but node->type==3 (String) with node value hw:0,0
+comes.
+it means that PCM session is expected to be COMPOUND
 
---Boundary-00=_L9g6Dt2lCvom61P
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="bug1472-dmx6fire-limit-to-6ADCs-v3.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="bug1472-dmx6fire-limit-to-6ADCs-v3.patch"
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-03-06 15:19 AnarSoul       New Issue                                    
+02-03-06 15:19 AnarSoul       File Added: asound.conf                      
+02-04-06 10:05 theli          Issue Monitored: theli                       
+02-04-06 10:10 theli          Note Added: 0007914                          
+02-04-06 17:35 AnarSoul       Note Added: 0007917                          
+02-04-06 23:54 AnarSoul       Issue Monitored: AnarSoul                    
+02-08-06 18:08 kareltejnora   Issue Monitored: kareltejnora                    
+02-08-06 18:14 kareltejnora   Note Added: 0007967                          
+======================================================================
 
---- alsa-driver-1.0.11rc2/alsa-kernel/pci/ice1712/ice1712-orig.c	2006-02-01 22:56:53.000000000 +0000
-+++ alsa-driver-1.0.11rc2/alsa-kernel/pci/ice1712/ice1712.c	2006-02-05 20:53:30.000000000 +0000
-@@ -2388,7 +2390,11 @@
- 	udelay(200);
- 	outb(ICE1712_NATIVE, ICEREG(ice, CONTROL));
- 	udelay(200);
--	pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
-+	if (ice->eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE) { /* Limit active ADCs and DACs to 6;  */
-+		pci_write_config_byte(ice->pci, 0x60, 0x0a);       /* Note: DXR extension not supported */
-+	} else {
-+		pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
-+	}
- 	pci_write_config_byte(ice->pci, 0x61, ice->eeprom.data[ICE_EEP1_ACLINK]);
- 	pci_write_config_byte(ice->pci, 0x62, ice->eeprom.data[ICE_EEP1_I2SID]);
- 	pci_write_config_byte(ice->pci, 0x63, ice->eeprom.data[ICE_EEP1_SPDIF]);
-
---Boundary-00=_L9g6Dt2lCvom61P--
 
 
 
