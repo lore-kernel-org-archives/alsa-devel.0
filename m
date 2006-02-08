@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Wed, 8 Feb 2006 14:46:04 +0100
-Message-ID: <560777a0b3b881a51ed8e066da6fb6ee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001472]: Constant distortion noise on digital mixer
+Date: Wed, 8 Feb 2006 16:26:37 +0100
+Message-ID: <ab04f7e3c8973b60f1623446990be371@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84AA11AD
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2006 14:46:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84EDD1DB
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2006 16:26:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,150 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1472> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                Atraides
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
+Issue ID:                   1472
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Status:                     new
+Distribution:               Suse
+Kernel Version:             2.6.11.4-21.9
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-08-2006 14:46 CET
+Date Submitted:             10-12-2005 02:02 CEST
+Last Modified:              02-08-2006 16:26 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    Constant distortion noise on digital mixer
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+The hardware in question is a Terratec DMX 6Fire 24/96. I have a constant
+crackling (like an old UKW radio between to stations) on the digital
+mixer. The noise disappears for a few seconds if I switch the Phono Input,
+the Breakout LED or Line In Selector. It changes the noise character when
+switching the S/PDIF Input from coaxial to optical. Even if all ins and
+outs are muted or tracked down its still there (I can see it in the
+Monitor Mixer).
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-======================================================================
 
 ----------------------------------------------------------------------
- jwoithe - 01-16-06 00:32 
+ alanmann - 02-07-06 12:56 
 ----------------------------------------------------------------------
-In response to eudoxos' request, here's a *really brief* outline of how I
-went about deducing the connection layout on the S7020.  Note that there
-may well be a better, more streamlined way of going about this.  However,
-this worked for me and was quick.
-
-Firstly you really must get hold of the ALC260 datasheet from Realtek. 
-This is available for download on the realtek website.  The datasheet
-details the internal arrangement of the ALC260, the IDs of the various
-widgets, and what command verbs each widget accepts.  Of particular
-interest are the widget IDs of the the I/O widgets which connect to
-physical input/output pins on the chip.  It is these which are in turn
-connected to jacks, internal speakers etc.
-
-It is also quite helpful to understand the basic details about the HDA
-system structure and how it all fits together.  This can be acquireed by
-reading the source code or the HDA docs from Intel (downloadable from
-their website).
-
-Armed with the widget IDs of interest, I hacked the patch-realtek.c
-module.  In particular I concentrated on the mixer and initialisation verb
-structures.  Since I did my tests the structure of patch-realtek has
-changed slightly, but for the purposes of this exercise changing
-alc260_base_output_mixer and alc260_init_verbs in the most recent versions
-of alsa-driver (1.0.11rc1 and later) should be fine.
-
-To discover the output routings, add mixer controls for all the output
-widgets of the ALC260 chip to the mixer definition -
-alc260_base_output_mixer in this case.  Then add initialisation verbs for
-each of these widgets to the alc260_init_verbs list, making each of them
-an output.  Recompile and insert the new hda-* modules.
-
-Use aplay (or anything really) to send output to the chip.  Then play with
-the controls in alsamixer until you discover which control sends output to
-what.
-
-The technique for input jacks is pretty much the same, but this time
-you're configuring widgets for input and using a capture program instead
-of a player.  It's most convenient to use one which has input level meters
-of some kind so you can monitor what the chip ADC is seeing as you change
-the capture source in alsamixer.
-
-At the end of all this you should end up with a list of widgets and which
-jacks/devices each is connected to.  This can then be used to construct a
-new ALC260 model in patch-realtek.c in a similar way as for the existing
-HP and Fujitsu models.
-
-If you require more details, please contact me via the alsa-devel mailing
-list and we'll pick this up off-list.
+Slight typo in uploaded file '=' not '==' (compiled OK anyway). Amended
+file uploaded; original can be deleted.
 
 ----------------------------------------------------------------------
- svilen - 02-08-06 14:46 
+ alanmann - 02-08-06 16:26 
 ----------------------------------------------------------------------
-Hi,
-jwoithe, can you post your patch_realtek.c somewhere.
-I have Fujitsu-Siemens S-7020 too. I hope your changes will work for me
-too.
-Actually I have sound, but the mic doesn't work.
-
-Thanks,
-Svilen
+Added to patch:' ' to align comments following v2 change (might as well get
+it right!); please use v3 of the file and delete the rest.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
-01-04-06 22:00 robertw        Note Added: 0007453                          
-01-04-06 22:16 robertw        Note Edited: 0007453                         
-01-11-06 23:38 lobstaj        Note Added: 0007572                          
-01-11-06 23:48 rlrevell       Note Added: 0007573                          
-01-12-06 00:20 lobstaj        Note Added: 0007575                          
-01-12-06 00:26 rlrevell       Note Added: 0007576                          
-01-12-06 01:16 mytux          Note Added: 0007577                          
-01-12-06 01:20 mytux          Note Edited: 0007577                         
-01-12-06 14:13 robertw        Note Added: 0007586                          
-01-12-06 14:43 lobstaj        Note Added: 0007587                          
-01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
-01-12-06 21:04 rlrevell       Note Added: 0007591                          
-01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
-01-13-06 08:03 eudoxos        Note Added: 0007631                          
-01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
-01-16-06 00:32 jwoithe        Note Added: 0007682                          
-01-17-06 23:32 ilovetronik    Issue Monitored: ilovetronik                    
-01-19-06 23:36 ajmitch        Issue Monitored: ajmitch                     
-02-08-06 14:46 svilen         Note Added: 0007965                          
+10-12-05 02:02 Atraides       New Issue                                    
+10-12-05 02:02 Atraides       Distribution              => Suse            
+10-12-05 02:02 Atraides       Kernel Version            => 2.6.11.4-21.9   
+10-12-05 13:50 tiwai          Note Added: 0006465                          
+10-12-05 15:19 Atraides       Note Added: 0006467                          
+10-13-05 10:19 alanmann       Note Added: 0006475                          
+10-13-05 13:39 Atraides       Note Added: 0006477                          
+10-14-05 11:48 Atraides       Note Edited: 0006477                         
+10-14-05 12:55 alanmann       Note Added: 0006478                          
+10-17-05 20:41 Atraides       Note Added: 0006488                          
+02-02-06 22:03 alanmann       Note Added: 0007882                          
+02-05-06 22:21 alanmann       Note Added: 0007942                          
+02-05-06 22:22 alanmann       File Added: bug1472-dmx6fire-limit-to-6ADCs.patch 
+                  
+02-07-06 12:54 alanmann       File Added:
+bug1472-dmx6fire-limit-to-6ADCs-v2.patch                    
+02-07-06 12:56 alanmann       Note Added: 0007957                          
+02-08-06 16:26 alanmann       Note Added: 0007966                          
 ======================================================================
 
 
