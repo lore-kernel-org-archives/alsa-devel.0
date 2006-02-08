@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001830]: Does pcm_multi allow a virtual Surround51 with a 4 channels analog and 2 channels digital ?
-Date: Wed, 8 Feb 2006 13:37:46 +0100
-Message-ID: <733aab44ab396cddb3d6546b38c86a35@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Wed, 8 Feb 2006 14:46:04 +0100
+Message-ID: <560777a0b3b881a51ed8e066da6fb6ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DED71AB
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2006 13:37:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84AA11AD
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2006 14:46:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,36 +22,152 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1830> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                
+Reported By:                robertw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1830
-Category:                   CORE - pcm
+Issue ID:                   1618
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             02-08-2006 13:37 CET
-Last Modified:              02-08-2006 13:37 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              02-08-2006 14:46 CET
 ======================================================================
-Summary:                    Does pcm_multi allow a virtual Surround51 with a 4
-channels analog and 2 channels digital ?
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-Do pcm_multi limit to bind stereo channels only ?
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
+======================================================================
+
+----------------------------------------------------------------------
+ jwoithe - 01-16-06 00:32 
+----------------------------------------------------------------------
+In response to eudoxos' request, here's a *really brief* outline of how I
+went about deducing the connection layout on the S7020.  Note that there
+may well be a better, more streamlined way of going about this.  However,
+this worked for me and was quick.
+
+Firstly you really must get hold of the ALC260 datasheet from Realtek. 
+This is available for download on the realtek website.  The datasheet
+details the internal arrangement of the ALC260, the IDs of the various
+widgets, and what command verbs each widget accepts.  Of particular
+interest are the widget IDs of the the I/O widgets which connect to
+physical input/output pins on the chip.  It is these which are in turn
+connected to jacks, internal speakers etc.
+
+It is also quite helpful to understand the basic details about the HDA
+system structure and how it all fits together.  This can be acquireed by
+reading the source code or the HDA docs from Intel (downloadable from
+their website).
+
+Armed with the widget IDs of interest, I hacked the patch-realtek.c
+module.  In particular I concentrated on the mixer and initialisation verb
+structures.  Since I did my tests the structure of patch-realtek has
+changed slightly, but for the purposes of this exercise changing
+alc260_base_output_mixer and alc260_init_verbs in the most recent versions
+of alsa-driver (1.0.11rc1 and later) should be fine.
+
+To discover the output routings, add mixer controls for all the output
+widgets of the ALC260 chip to the mixer definition -
+alc260_base_output_mixer in this case.  Then add initialisation verbs for
+each of these widgets to the alc260_init_verbs list, making each of them
+an output.  Recompile and insert the new hda-* modules.
+
+Use aplay (or anything really) to send output to the chip.  Then play with
+the controls in alsamixer until you discover which control sends output to
+what.
+
+The technique for input jacks is pretty much the same, but this time
+you're configuring widgets for input and using a capture program instead
+of a player.  It's most convenient to use one which has input level meters
+of some kind so you can monitor what the chip ADC is seeing as you change
+the capture source in alsamixer.
+
+At the end of all this you should end up with a list of widgets and which
+jacks/devices each is connected to.  This can then be used to construct a
+new ALC260 model in patch-realtek.c in a similar way as for the existing
+HP and Fujitsu models.
+
+If you require more details, please contact me via the alsa-devel mailing
+list and we'll pick this up off-list.
+
+----------------------------------------------------------------------
+ svilen - 02-08-06 14:46 
+----------------------------------------------------------------------
+Hi,
+jwoithe, can you post your patch_realtek.c somewhere.
+I have Fujitsu-Siemens S-7020 too. I hope your changes will work for me
+too.
+Actually I have sound, but the mic doesn't work.
+
+Thanks,
+Svilen
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-06 13:37 Raymond        New Issue                                    
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+01-12-06 00:26 rlrevell       Note Added: 0007576                          
+01-12-06 01:16 mytux          Note Added: 0007577                          
+01-12-06 01:20 mytux          Note Edited: 0007577                         
+01-12-06 14:13 robertw        Note Added: 0007586                          
+01-12-06 14:43 lobstaj        Note Added: 0007587                          
+01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
+01-12-06 21:04 rlrevell       Note Added: 0007591                          
+01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
+01-13-06 08:03 eudoxos        Note Added: 0007631                          
+01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
+01-16-06 00:32 jwoithe        Note Added: 0007682                          
+01-17-06 23:32 ilovetronik    Issue Monitored: ilovetronik                    
+01-19-06 23:36 ajmitch        Issue Monitored: ajmitch                     
+02-08-06 14:46 svilen         Note Added: 0007965                          
 ======================================================================
 
 
