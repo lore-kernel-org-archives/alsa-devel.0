@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: Envy24 -PSDIN(3) -bug1472 fix
-Date: Wed, 8 Feb 2006 20:02:18 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0602082000220.9386@tm8103.perex-int.cz>
-References: <200602030928.18467.gineera@aspect135.co.uk>
- <200602052115.52601.gineera@aspect135.co.uk> <200602081532.17040.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0001831]: envy24control does not work with Hercules Fortissimo IV
+Date: Wed, 8 Feb 2006 20:03:33 +0100
+Message-ID: <7958d88d6753ea48afe6e29b81866a48@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602081532.17040.gineera@aspect135.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 274B919A
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2006 20:03:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,46 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 8 Feb 2006, Alan Horstmann wrote:
 
-> On Sunday 05 February 2006 21:15, I wrote:
-> > > Re bug1472, Distortion noise:
-> 
-> > The attached patch does this in ice1712.c;  will this fix be able to make
-> > it into 1.0.11 final?  This is the last of my list of '6fire bugs/funnies so
-> > it would be good if they were all together in one release.
-> >
-> > bug1472-dmx6fire-limit-to-6ADCs.patch
-> >
-> > Summary: Disable unused ADCs & DACs on DMX6fire
-> >
-> > Change the value written to hardware configuration register of envy24 chip
-> > in the case of Terratec DMX6fire to restrict the active ADCs & DACs to 6.
-> >
-> > Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
-> 
-> As noted on bug-track, slight typo in patch; corrected version 3 attached here 
-> also.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831> 
+======================================================================
+Reported By:                liiwi
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   1831
+Category:                   envy24control
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-08-2006 20:03 CET
+Last Modified:              02-08-2006 20:03 CET
+======================================================================
+Summary:                    envy24control does not work with Hercules Fortissimo
+IV
+Description: 
+Previously I did not have any pressing need to try envy24control. However
+recently
+for some odd reason left channel got just about muted. So, I tried
+envy24control:
 
-Already in CVS in slightly modified form:
+>No ICE1712 cards found
 
-ice1712.c:
-revision 1.78
-date: 2006/02/08 07:40:33;  author: perex;  state: Exp;  lines: +14 -2
-Summary: ice1712 - disable unused ADCs & DACs on DMX6fire
+So, now I'm without left channel.
 
-You can enable DXR via module parameter 'dxr_enable'.
+>From dmesg:
 
-						Jaroslav
+ice1724: No matching model found for ID 0x81160100
+ice1724: Invalid EEPROM version 1
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Hrm, this might be an driver issue if envy24control asks from driver about
+the card and it does not know what model... 
+
+This happens with all the way to 1.0.11-rc3.
+
+lspci says about the card:
+
+>Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI >Multi-Channel Audio Controller (rev 01)
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-08-06 20:03 liiwi          New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
