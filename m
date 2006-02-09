@@ -1,18 +1,14 @@
-From: okada <mailer_fr@mweb2.mailyes.net>
-Subject: RE:
-Date: Thu, 9 Feb 2006 21:07:21 +0000 (UTC)
-Message-ID: <20060209203307.1157.qmail@m01.mailyes.net>
-Reply-To: delivery_rt <mailer_rt@mweb2.mailyes.net>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: pm, hello ??
+Date: Thu, 9 Feb 2006 23:12:26 +0100
+Message-ID: <20060209231226.4c33f598.pochini@shiny.it>
+References: <20060130225511.5958e72c.pochini@shiny.it>
+	<s5hslr4a3v8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset= ISO-2022-JP
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from m01.mailyes.net (m01.mailyes.net [125.187.32.136])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E93EF1A9
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 22:06:31 +0100 (MET)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <s5hslr4a3v8.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: 2006-02-10 04:10:01
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-勝たせてみせます！ 
- 
-打ち子募集で騙された方、パチンコ、パチスロで負け
-ている方必見です。
+On Tue, 31 Jan 2006 15:06:35 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
- 
-私共は、都内を拠点に事前に全国のパチンコ店を徹底
-調査し、その日設定がいい台(優秀台)を提供しており
-ます。その他某メーカーからの情報を取り扱っていて
-上々の成果を上げております。これならばお客様に情
-報を提供しても恥ずかしくなく、納得して頂けるとこ
-ろまで成果があがったと思っております。
+> At Mon, 30 Jan 2006 22:55:11 +0100,
+> Giuliano Pochini wrote:
+> >
+> > I'm trying to add suspend/resume capability to the echoaudio driver. I wrote
+> > susp/res functions, I attached them to struct pci_driver, I added
+> > SNDRV_PCM_INFO_RESUME in struct snd_pcm_hardware.info, I added the two
+> > cases in the trigger callback and the kernel has CONFIG_PM enabled. None of
+> > the new code is called when I write in
+> > /sys/devices/pci0001:10/0001:10:15.0/power/state . What am I missing ?
+>
+> No idea.  I bet something wrong in your kernel configuration or a
+> simple mistake like wrongly installed kernel image, etc.
 
-http://agk-777.net
+Finally I found some time to debug it.
 
-パチンコ店の設定のいい台(優秀台)を当てる事その他
-のギャンブルと違って非にならないくらい簡単な事で
-す。事前にそのパチンコ店の出方(いい設定台を入れる
-場所)を日々、徹底的に調査し、その店その店の癖さえ
-掴めば自ずと優秀台は見つけられます。
+It happens that "echo 3 > file" actually writes "3\n" into the file.
+lib/vsprintf.c:simple_strtoul() returns the first non-digit character in the
+second argument. Then driver/base/power/sysfs.c:state_store() does:
+	if (*rest)
+		return -EINVAL;
+*rest is always '\n', so it exits here.
 
-http://agk-777.net
 
-正直、優秀台を見つけられるのは１０台程度です。で
-すので、各都道府県に人数制限を設けさせて頂いてま
-す。枠が埋まり次第め切りとさせていただきます。
-情報提供地域は全国です。１８歳以上の方であれば誰
-でも出来ます。
+> BTW, SNDRV_PCM_INFO_RESUME should be added only if your driver really
+> supports the "full resume" mode.  i.e. the stream restarts at the very
+> same position where suspended.  Otherwise, dont' set that flag.  Still
+> the driver works as "partial resume".  Then the prepare is called
+> after resume to reset to a sane state.
 
-本当の情報を提供致します。
-詳しくは下記のアドレスへ
+Nice to know. I can't resume the card exactly as it was before, indeed,
+because the internal state of the DSP is unknown to the driver. I can only
+restore all gains, monitors, etc., and restart transport from the last
+period(s).
 
-http://agk-777.net
 
-１月の情報提供パチンコ、スロット機種
- 
-　　　　　　　パチンコ
-★ ＣＲ ぱちんこ 水戸黄門 Ｍ６７ ＴＦ１
-★ ＣＲ 明日があるさ よしもとワールド ＳＦ-Ｔ 
-★ ＣＲ 大海物語 Ｍ５６
- 
-メインはＣＲ大海物語になります。
- 
-　　　　　　　 スロット
-★ 押忍！番長
-★ アラジンエボリュ-ション
-★ デビルマン３
-★ 北斗の拳
-★ ジャグラーＴＭ
-
-http://agk-777.net
- 
- 
-情報欲しい方、パチンコ、スロットで生活したい方、
-完全無料でご協力いたします。是非、お申し込み下
-さい。只今お申し込み頂いた方、先着５０名様に年
-始キャンペーンにつきお年玉１０万円提供させて頂
-きます。お申し込みの際、攻略希望機種の欄に合い
-言葉『仕事』とお入れ下さい。
-
-http://agk-777.net
+--
+Giuliano.
 
 
 -------------------------------------------------------
