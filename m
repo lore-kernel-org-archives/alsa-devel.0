@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Thu, 9 Feb 2006 12:32:05 +0100
-Message-ID: <f0a58abc3fe90501f006b287f4a8ebbf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001385]: sound is low with SIS7012 alc655
+Date: Thu, 9 Feb 2006 13:33:36 +0100
+Message-ID: <a1d8ca7879cb48aaf6766381f4c7d94b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 878DD1DB
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 12:32:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93C651DD
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 13:33:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,126 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1385> 
 ======================================================================
-Reported By:                ponchick
+Reported By:                brainstorm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1833
-Category:                   GENERIC - mpu401
+Issue ID:                   1385
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo
-Kernel Version:             gentoo-sources-2.6.15-r4
+Distribution:               
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              02-09-2006 12:32 CET
+Date Submitted:             08-31-2005 20:42 CEST
+Last Modified:              02-09-2006 13:33 CET
 ======================================================================
-Summary:                    oops in snd_mpu401_uart
+Summary:                    sound is low with SIS7012 alc655
 Description: 
-I don't know what exactly happend but when I run wine or winecfg it
-segfaulted. dmesg shows following:
-Unable to handle kernel paging request at 0000000010228800 RIP:
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-PGD 6e57067 PUD 0
-Oops: 0002 [1] PREEMPT SMP
-CPU 1
-Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
-snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
-snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
-snd_seq_device snd soundcore nvidia sky2
-Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
-RIP: 0010:[<ffffffff884ca00c>]
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
-RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
-RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
-RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
-R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
-FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
-knlGS:00000000556cb920
-CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
-CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
-Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
-ffff810002178440)
-Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
-ff00000000000286
-       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
-ffff81003eb606c0
-       0000000000000000 ffff81003d7c3bd0
-Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
-       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
-       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
-       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
-       <ffffffff80397b49>{_spin_lock+27}
-<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
-       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
-       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
-       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
-       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
-       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
-       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
-       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
-       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
-<ffffffff8018075f>{__link_path_walk+3332}
-       <ffffffff80397b0c>{__lock_text_start+20}
-<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
-       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
-<ffffffff8017ab11>{chrdev_open+454}
-       <ffffffff8017a94b>{chrdev_open+0}
-<ffffffff80171031>{__dentry_open+310}
-       <ffffffff8017118d>{nameidata_to_filp+34}
-<ffffffff801711d6>{filp_open+58}
-       <ffffffff801713d4>{get_unused_fd+234}
-<ffffffff80171533>{do_sys_open+81}
-       <ffffffff8011e57f>{sysenter_do_call+27}
+hello
+I m french and I ve a problem with my notebook (medion 42469). It s
+impossible to have sound in speaker (only a very low sound in headphones-
+same problem with Mandrake 10 - 10.1 mandiva 2005 and now mandriva 2006
+beta 3 with alsa 9)) I saw in the form men with the same problem and one
+have a solution for his computer but it s not good for mine 
 
-Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
-RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
-<ffff81003564f8f0>
-CR2: 0000000010228800
- <6>note: wine-preloader[11110] exited with preempt_count 1
+( ID 0001274 ....  
+temporarily solution:
+I hop this will help
 
-I use standalone alsa-driver (kernel one is out of date and doesn't
-support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
-gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
+cat > /proc/asound/IXP/codec97#0/ac97#0-0+regs <<EOF
+00 0000
+02 0a0a
+...... )
+
+Where is the solution ?
+FRED
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ponchick - 02-09-06 11:57 
+ rlrevell - 12-30-05 23:12 
 ----------------------------------------------------------------------
-First question - I have only mono headphones. When I run "speaker-test -c4
--D hw:0,0" I hear only noise and "3 - Rear Right" is louder than other.
-With "speaker-test -c2 -D hw:0,0" "1 - Front Right" is louder.
-How can I test mpu401?
+Any improvement with later releases?
 
 ----------------------------------------------------------------------
- Raymond - 02-09-06 12:32 
+ mulvila - 02-09-06 13:33 
 ----------------------------------------------------------------------
-speaker-test -t wav -D hw:0,0 -c 4
+I have the same card and the same chip - and the same problem. 
 
-You will hear a female voice
+Recently installed Ubuntu Dapper with Alsa Driver Version 1.0.10rc3 (Mon
+Nov 07 13:30:21 2005 UTC). Kernel is 2.6.15-14. Situation remains: no
+sound from speakers, low form the headphones.
 
-The channels will be correct only at the first time after the driver is
-load, it will swap afterward.
+It seems Tiwai found a solution to an identical problem on an ATI card,
+see
+http://sourceforge.net/mailarchive/forum.php?thread_id=8072079&forum_id=1752
 
-Please continue the discussion at 1726
+Anyone working on fixing this for the intel8x0?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-06 08:33 ponchick       New Issue                                    
-02-09-06 08:33 ponchick       Distribution              => gentoo          
-02-09-06 08:33 ponchick       Kernel Version            =>
-gentoo-sources-2.6.15-r4
-02-09-06 09:12 Raymond        Note Added: 0007971                          
-02-09-06 09:32 Raymond        Note Added: 0007973                          
-02-09-06 11:57 ponchick       Note Added: 0007975                          
-02-09-06 12:32 Raymond        Note Added: 0007976                          
+08-31-05 20:42 brainstorm     New Issue                                    
+08-31-05 20:42 brainstorm     Kernel Version            => 2.6.12          
+12-30-05 23:12 rlrevell       Note Added: 0007279                          
+02-09-06 13:33 mulvila        Note Added: 0007977                          
 ======================================================================
 
 
