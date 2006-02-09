@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001805]: sound in headphones, but not in speakers with SIS 7012 ALC 655 rev 0
-Date: Thu, 9 Feb 2006 13:53:30 +0100
-Message-ID: <54668de050ecec706ee83431b6a70ab0@bugtrack.alsa-project.org>
+From: =?shift-jis?B?bWluX2FiZQ==?= <min_abe_e4@infoseek.jp>
+Subject: =?shift-jis?B?j4mC34LcgrWCxIFCjoSBQYiilZSU/JRUgsaQXIK1gtyCtw==?=
+Date: Thu, 09 Feb 2006 21:13:25 +0800
+Message-ID: <2006020917702.00304@niv02.vicp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="shift-jis"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1690B178
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 13:53:30 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAD921A9
+	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Thu,  9 Feb 2006 14:13:26 +0100 (MET)
+Received: from niv02.vicp.net (unknown [222.171.72.169])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id D754399280
+	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Thu,  9 Feb 2006 14:13:03 +0100 (MET)
+Received: from vmk5 (unknown [69.231.77.180])
+	by smtp48 (Coremail) with SMTP id zX5ZtYWKAScpN6AS.1
+	for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2006 21:13:25 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,73 +28,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1805> 
-======================================================================
-Reported By:                dragonic_pchan
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1805
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               mandriva linux 2006
-Kernel Version:             2.6.15.2
-======================================================================
-Date Submitted:             02-01-2006 16:33 CET
-Last Modified:              02-09-2006 13:53 CET
-======================================================================
-Summary:                    sound in headphones, but not in speakers with SIS
-7012 ALC 655 rev 0
-Description: 
-I dont have sounds through the speakers of my laptop (MSI megabook S250),
-but i can hear sound through headphones. I tried to mute/unmute things in
-alsamixer while headphones are plugged and mplayer is playing music. Here
-are the results :
-
-master button : mutes sounds
-pcm button : mutes sound
-phones button : doesn't mute sound !!!
-other buttons do nothing when muting
-
-Under windows sounds works fine. Nothing changes wether i use in-kernel
-alsa or the latest alsa 1.0.11rc3.
-
-Note : I have to pass option "nolapic" to the kernel for the sound card to
-work, as well as the ethenet card.
-
-
-======================================================================
-
-----------------------------------------------------------------------
- mulvila - 02-09-06 13:53 
-----------------------------------------------------------------------
-I just added a similar note one the issue 1385 that seems to me very
-similar.
-
-Takashi Iwai seems to have found a solution to an identical problem with
-alc655 on an ATI card
-http://sourceforge.net/mailarchive/forum.php?thread_id=8072079&forum_id=1752
-
-I also have MSI S250 and am sure that there would be very many happy linux
-users around if this bug was fixed in the future ALSA releases.
-
-Marko
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-01-06 16:33 dragonic_pchan New Issue                                    
-02-01-06 16:33 dragonic_pchan File Added: asound.state                     
-02-01-06 16:33 dragonic_pchan Distribution              => mandriva linux 2006
-02-01-06 16:33 dragonic_pchan Kernel Version            => 2.6.15.2        
-02-09-06 13:53 mulvila        Note Added: 0007978                          
-======================================================================
+k8uRUoLMg4GBW4OLgsmC4IrWgu2C54K4gUGDgYFbg4uC8IypgsSSuIKrgtyCtYLEgqCC6IKqgsaC
+pIKygrSCooLcgreBQg0KjoSBQYiilZSCzYNYg3yDk4NUgVuXbILMgqiXzYLwgqiO2ILogrWCxI/Q
+ie6TmYLwklOTloKzgrmCxJK4gqKCxIKoguiC3IK3gUINCg0KgaaBQIKyiMCQU4Ktgr6Cs4KigUCB
+pg0KDQqTlo/Qie6DWoOTg16BW4LFgs2DWIN8g5ODVIFbg1SDQ4NngsWPb4nvgqaCxIKigsiCoo+X
+kKuC8JJqkKuCyYzClcqCyY/Qie6CtYLEgqKC3IK3gsyCxYqukVOCyZazl7+CxYLMgrKP0InugsWC
+t4FCDQoNCo/Qie6Cs4K5gsSSuIKigsSC6Y+XkKuCzZFTgsSLTZX7l2yCxpOvgraSbojmgsWCzIKy
+j9CJ7oLGgsiCwYLEgqiC6ILcgreCzILFgUGTlpP6gsyCqJbxkamC4InClFyCvoLGjnaCooLcgreC
+5oFCDQoNCg0Kj5eQq4LMlfuCyYLNkryQ2oKymEGXjYKqj2+XiILpguaCpILJgsiCwYLEgqiC6ILc
+greCzILFgrKIwJBTgq2CvoKzgqKBQg0KDQpodHRwOi8vbWlubWluMDEubmV0L3AvYi8NCoKxgr+C
+54LMg0GDaIOMg1iC5oLoj5eQq4LMlfuCxphBl42C8I7mgumCsYLGgqqCxYKrgtyCtw0KDQqMZ5HR
+gUWDcINcg1KDk4LHgr+C54LFguCSvJDamEGXjYLwgreC6Y6WgqqJwpRcgsaCyILBgsSCooLcgreC
+zILFgUEzlryCzI+XkKuCzIKpgr2RU4LEgsyV+4LJiOqTeIKymEGXjZK4gq2OloLgicKUXILFgreB
+Qg0KDQqP0InukOaCzI+XkKuCzZBejJWCyYKokYqO6ILwklSCtYLEgqKC6ZBsgs6CqYLogsWCt4FC
+gqiRio7ogqqMiILcguiOn5HmSFCCqYLngqKCyIKtgsiCwYLEgrWC3IKigtyCt4LMgsWCqJbak5aC
+xILMj5eQq4LJgs2RgYLfgsyYQZeNgvCNt4K1j+OCsILEibqCs4KigsuBQg0KDQqWs5e/gsWCzIKy
+j9CJ7oLFgreCzILFiMCQU4K1gsSCsphBl42CrYK+grOCooFCDQoNCoLHgqSCvItYgrWCrYKoiuiC
+ooK1gtyCt4FC
 
 
 
