@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001828]: Patch to get Miditech Play'n Roll Keyboard to work with ALSA
-Date: Thu, 9 Feb 2006 09:26:00 +0100
-Message-ID: <31e3384cd8badade9ef52ed6c45d4321@bugtrack.alsa-project.org>
+Date: Thu, 9 Feb 2006 09:26:43 +0100
+Message-ID: <5b1f26f67123c533f6bd07bc647da43e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A0791A1
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:26:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF7B01C8
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:26:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1828> 
 ======================================================================
@@ -35,7 +35,7 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Distribution:               
 Kernel Version:             
 Resolution:                 fixed
@@ -83,6 +83,7 @@ Date Modified  Username       Field                    Change
 02-09-06 09:26 Clemens LadischStatus                   assigned => resolved
 02-09-06 09:26 Clemens LadischResolution               open => fixed       
 02-09-06 09:26 Clemens LadischNote Added: 0007972                          
+02-09-06 09:26 Clemens LadischStatus                   resolved => closed  
 ======================================================================
 
 
