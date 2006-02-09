@@ -1,18 +1,18 @@
-From: "Kat Rank" <katran@icimsi.ch>
-Subject: Re: n T news 833
-Date: Thu, 9 Feb 2006 03:45:18 -0500
-Message-ID: <000001c62d55$27b85620$964ea8c0@secretary>
-Reply-To: "Kat Rank" <katran@icimsi.ch>
+From: okada <mailer_fr@mweb2.mailyes.net>
+Subject: RE:
+Date: Thu, 9 Feb 2006 09:19:17 +0000 (UTC)
+Message-ID: <20060209090017.23287.qmail@m02.mailyes.net>
+Reply-To: delivery_rt <mailer_rt@mweb2.mailyes.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C62D2B.3EE24E20"
+Content-Type: text/plain; charset= ISO-2022-JP
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 217041C8
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:47:19 +0100 (MET)
-Received: from incube8.com (unknown [203.162.235.18])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 3CE889923D
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:47:11 +0100 (MET)
+Received: from m02.mailyes.net (m02.mailyes.net [125.187.32.139])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B182198
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 10:18:30 +0100 (MET)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,156 +22,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jeana Ecker <alsa-devel@alsa-project.org>
+Date: 2006-02-09 17:15:01
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+勝たせてみせます！ 
+ 
+打ち子募集で騙された方、パチンコ、パチスロで負け
+ている方必見です。
 
-------=_NextPart_000_0001_01C62D2B.3EE24E20
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 
+私共は、都内を拠点に事前に全国のパチンコ店を徹底
+調査し、その日設定がいい台(優秀台)を提供しており
+ます。その他某メーカーからの情報を取り扱っていて
+上々の成果を上げております。これならばお客様に情
+報を提供しても恥ずかしくなく、納得して頂けるとこ
+ろまで成果があがったと思っております。
 
-Hi,
-http://www.ottislan.com
-=20
-V o I v A p G p R v A n   n $ e 3 i , x 7 a 5 m=20
-V h A p L y l x U w M j   k $ b 1 o , b 2 l 1 k=20
-C g I n A f L d I u S f   j $ d 3 e , g 3 g 3 q=20
+http://agk-777.net
 
-------=_NextPart_000_0001_01C62D2B.3EE24E20
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+パチンコ店の設定のいい台(優秀台)を当てる事その他
+のギャンブルと違って非にならないくらい簡単な事で
+す。事前にそのパチンコ店の出方(いい設定台を入れる
+場所)を日々、徹底的に調査し、その店その店の癖さえ
+掴めば自ずと優秀台は見つけられます。
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV>
-<DIV><A =
-href=3D"http://www.ottislan.com">http://www.ottislan.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>V<span=20
-style=3D"float:=20
-right"
-> o </span>I<span=20
-style=3D"float:=20
-right"
-> v </span>A<span=20
-style=3D"float:=20
-right"
-> p </span>G<span=20
-style=3D"float:=20
-right"
-> p </span>R<span=20
-style=3D"float:=20
-right"
-> v </span>A<span=20
-style=3D"float:=20
-right"
-> n </span>&nbsp;<span=20
-style=3D"float:=20
-right"
-> n </span>$<span=20
-style=3D"float:=20
-right"
-> e </span>3<span=20
-style=3D"float:=20
-right"
-> i </span>,<span=20
-style=3D"float:=20
-right"
-> x </span>7<span=20
-style=3D"float:=20
-right"
-> a </span>5<span=20
-style=3D"float:=20
-right"
-> m </span></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>V<span=20
-style=3D"float:=20
-right"
-> h </span>A<span=20
-style=3D"float:=20
-right"
-> p </span>L<span=20
-style=3D"float:=20
-right"
-> y </span>l<span=20
-style=3D"float:=20
-right"
-> x </span>U<span=20
-style=3D"float:=20
-right"
-> w </span>M<span=20
-style=3D"float:=20
-right"
-> j </span>&nbsp;<span=20
-style=3D"float:=20
-right"
-> k </span>$<span=20
-style=3D"float:=20
-right"
-> b </span>1<span=20
-style=3D"float:=20
-right"
-> o </span>,<span=20
-style=3D"float:=20
-right"
-> b </span>2<span=20
-style=3D"float:=20
-right"
-> l </span>1<span=20
-style=3D"float:=20
-right"
-> k </span></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>C<span=20
-style=3D"float:=20
-right"
-> g </span>I<span=20
-style=3D"float:=20
-right"
-> n </span>A<span=20
-style=3D"float:=20
-right"
-> f </span>L<span=20
-style=3D"float:=20
-right"
-> d </span>I<span=20
-style=3D"float:=20
-right"
-> u </span>S<span=20
-style=3D"float:=20
-right"
-> f </span>&nbsp;<span=20
-style=3D"float:=20
-right"
-> j </span>$<span=20
-style=3D"float:=20
-right"
-> d </span>3<span=20
-style=3D"float:=20
-right"
-> e </span>,<span=20
-style=3D"float:=20
-right"
-> g </span>3<span=20
-style=3D"float:=20
-right"
-> g </span>3<span=20
-style=3D"float:=20
-right"
-> q </span></FONT></DIV>
-</BODY></HTML>
-------=_NextPart_000_0001_01C62D2B.3EE24E20--
+http://agk-777.net
 
+正直、優秀台を見つけられるのは１０台程度です。で
+すので、各都道府県に人数制限を設けさせて頂いてま
+す。枠が埋まり次第め切りとさせていただきます。
+情報提供地域は全国です。１８歳以上の方であれば誰
+でも出来ます。
 
+本当の情報を提供致します。
+詳しくは下記のアドレスへ
 
+http://agk-777.net
+
+１月の情報提供パチンコ、スロット機種
+ 
+　　　　　　　パチンコ
+★ ＣＲ ぱちんこ 水戸黄門 Ｍ６７ ＴＦ１
+★ ＣＲ 明日があるさ よしもとワールド ＳＦ-Ｔ 
+★ ＣＲ 大海物語 Ｍ５６
+ 
+メインはＣＲ大海物語になります。
+ 
+　　　　　　　 スロット
+★ 押忍！番長
+★ アラジンエボリュ-ション
+★ デビルマン３
+★ 北斗の拳
+★ ジャグラーＴＭ
+
+http://agk-777.net
+ 
+ 
+情報欲しい方、パチンコ、スロットで生活したい方、
+完全無料でご協力いたします。是非、お申し込み下
+さい。只今お申し込み頂いた方、先着５０名様に年
+始キャンペーンにつきお年玉１０万円提供させて頂
+きます。お申し込みの際、攻略希望機種の欄に合い
+言葉『仕事』とお入れ下さい。
+
+http://agk-777.net
 
 
 -------------------------------------------------------
