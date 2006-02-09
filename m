@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001817]: [alsaplayer || jackd] crashs every 5 or 10 minutes
-Date: Thu, 9 Feb 2006 23:31:15 +0100
-Message-ID: <2416d28a892a54de9317fe9e034ad118@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: pm, hello ??
+Date: Thu, 09 Feb 2006 17:56:14 -0500
+Message-ID: <1139525775.30058.123.camel@mindpipe>
+References: <20060130225511.5958e72c.pochini@shiny.it>
+	 <s5hslr4a3v8.wl%tiwai@suse.de>  <20060209231226.4c33f598.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 768F719D
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 23:31:15 +0100 (MET)
+In-Reply-To: <20060209231226.4c33f598.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,109 +18,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2006-02-09 at 23:12 +0100, Giuliano Pochini wrote:
+> Finally I found some time to debug it.
+> 
+> It happens that "echo 3 > file" actually writes "3\n" into the file.
+> lib/vsprintf.c:simple_strtoul() returns the first non-digit character
+> in the
+> second argument. Then driver/base/power/sysfs.c:state_store() does:
+>         if (*rest)
+>                 return -EINVAL;
+> *rest is always '\n', so it exits here. 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1817> 
-======================================================================
-Reported By:                speedness
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1817
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo ~x86 gcc 3.4.5
-Kernel Version:             2.6.15.2-archck3 (which is ck3 plus reiser4, and
-other patches)
-======================================================================
-Date Submitted:             02-03-2006 23:53 CET
-Last Modified:              02-09-2006 23:31 CET
-======================================================================
-Summary:                    [alsaplayer || jackd] crashs every 5 or 10 minutes
-Description: 
-If I try alsaplayer -d hw:1 song.mp3 after a fresh reboot (and before
-starting X) it will run for a while and then crash.
-Feb  3 12:10:43 [kernel] ALSA
-/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-
-driver-1.0.11rc3/usb/usx2y/usx2yhwdeppcm.c:87: activ frame status -70.
-Most prop
-ably some hardware problem.
-Then I'ld restart it, and it would crash again:
-Feb  3 12:20:10 [kernel] ALSA
-/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-
-driver-1.0.11rc3/usb/usx2y/usbusx2yaudio.c:140: should not be here with
-counts=0
-And again:
-Feb  3 12:30:45 [kernel] ALSA
-/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-
-driver-1.0.11rc3/usb/usx2y/usbusx2yaudio.c:305: Sequence
-Error!(hcd_frame=5770 e
-p=8in;wait=5768,frame=5769).
-Feb  3 12:30:45 [kernel] Most propably some urb of usb-frame 5768 is still
-missi
-ng.
-Feb  3 12:30:45 [kernel] Cause could be too long delays in usb-hcd
-interrupt han
-dling.
-As this was happening each time less then a minute after run-crons
-executed, I stopped the vixie-cron service.  The crashes kept happening,
-often at 5 minute intervals:
-Feb  3 15:17:26 [kernel] ALSA
-/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-driver-1.0.11rc3/usb/usx2y/usx2yhwdeppcm.c:87:
-activ frame status -70. Most propably some hardware problem.
-Feb  3 15:22:28 [kernel] ALSA
-/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-driver-1.0.11rc3/usb/usx2y/usx2yhwdeppcm.c:87:
-activ frame status -70. Most propably some hardware problem.
-Feb  3 15:27:32 [kernel] ALSA
-/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-driver-1.0.11rc3/usb/usx2y/usx2yhwdeppcm.c:87:
-activ frame status -70. Most propably some hardware problem.
+There was a discussion not long ago on LKML about whether sysfs should
+strip the trailing newline.  The consensus was that this is bloat, and
+echo -n should be used.  I'm not sure I agree...
 
-occationally going 10 minutes.  This is irrespective of how long
-alsaplayer or jackd had been running, whether I had restarted it
-immediatly or waited 2 or 3 minutes.  
-acpid is not running. (otherwise alsa crashes immediately).  
-======================================================================
-
-----------------------------------------------------------------------
- speedness - 02-04-06 00:19 
-----------------------------------------------------------------------
-No, I have a Belkin "powered" four-port USB 2.0 hub that's always plugged
-into the wall, but I've never been able to get the US428 to work unless
-it's
-connected directly to the laptop.
-
-----------------------------------------------------------------------
- speedness - 02-09-06 23:31 
-----------------------------------------------------------------------
-Well, the 5 or 10 minute problem turned out to be related somehow to my
-PCMCIA b/g  Atheros ethernet card ("Proxim Orinoco").  Without it, I'm
-back to the problem I had before, namely the ACPI touchiness.  Besides
-crashing on 
-"cat /proc/acpi/{stuff}" (see original report) jackd crashes within one or
-two minutes when the battery is either charging or discharging!
-And an immediate jackd crash results from changing the LCD backlight
-strength using the "FN"+F7 (down) or "FN"+F8 (up) or from plugging or
-un-plugging the AC adapter.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-06 23:53 speedness      New Issue                                    
-02-03-06 23:53 speedness      Distribution              => Gentoo ~x86 gcc 3.4.5
-02-03-06 23:53 speedness      Kernel Version            => 2.6.15.2-archck3
-(which is ck3 plus reiser4, and other patches)
-02-04-06 00:09 rlrevell       Note Added: 0007905                          
-02-04-06 00:19 speedness      Note Added: 0007906                          
-02-09-06 23:31 speedness      Note Added: 0007979                          
-======================================================================
-
+Lee
 
 
 
