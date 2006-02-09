@@ -1,16 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA Soundcard Matrix
-Date: Thu, 09 Feb 2006 11:58:24 +0100
-Message-ID: <20060209115824.s5ym7e21f2804cg4@www3.webhosting.cx>
-References: <20060206120402.E0FD38402C@ws1-5.us4.outblaze.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Thu, 9 Feb 2006 12:32:05 +0100
+Message-ID: <f0a58abc3fe90501f006b287f4a8ebbf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060206120402.E0FD38402C@ws1-5.us4.outblaze.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 878DD1DB
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 12:32:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,103 +18,134 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Ash,
 
-The system I set up a couple of years back for the matrix and docs originally
-allowed users to post comments/updates but the server stopped allowing php to
-send email so I haven't recieved any posts for quite some time.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+======================================================================
+Reported By:                ponchick
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
+======================================================================
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              02-09-2006 12:32 CET
+======================================================================
+Summary:                    oops in snd_mpu401_uart
+Description: 
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-At the moment I don't have direct access to the net but that will change next
-month so I will try to spend some time on upgrading the system if it is deemed
-a good idea.
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-That's a call for Jaroslav to make though as the servers are hosted by his
-employer so there might be a reason the mail stopped being sent other than a
-bug.
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
+======================================================================
 
-Cheers.
+----------------------------------------------------------------------
+ ponchick - 02-09-06 11:57 
+----------------------------------------------------------------------
+First question - I have only mono headphones. When I run "speaker-test -c4
+-D hw:0,0" I hear only noise and "3 - Rear Right" is louder than other.
+With "speaker-test -c2 -D hw:0,0" "1 - Front Right" is louder.
+How can I test mpu401?
 
+----------------------------------------------------------------------
+ Raymond - 02-09-06 12:32 
+----------------------------------------------------------------------
+speaker-test -t wav -D hw:0,0 -c 4
 
-Quoting Ash Willis <ashwillis@programmer.net>:
+You will hear a female voice
 
-> Hey everyone,
-> i've been interested in the ALSA project for a long time and just 
-> recently got around to writing a driver for it. I'm not particularly 
-> experienced in this field of development but i was thinking of ways i 
-> could contribute to the project.
-> I intended to try and find unsupported hardware that no-one really 
-> cared that much about but it would be 'nice' to have fuller soundcard 
-> support. It was my intention to support these devices just so i could 
-> learn and get myself into a position where i could contribute better 
-> to the project.
-> I found that i couldn't really get accurate information on which 
-> devices where supported. The matrix seems to contain quite a few 
-> incorrect entries and there are a lot of devices missing completely.
->
-> I had the idea of opening up the matrix to the ALSA users. An 
-> interactive system where users fill out a simple form about support 
-> for their device. Stirring up involvement in the soundcard matrix 
-> could, i think, lead to a much more accurate representation of ALSA's 
-> current support. Users would be able to gauge how useful ALSA will be 
-> to them and developers would be aware of unsupported hardware.
->
-> Users don't care about chipsets and they shouldn't have to. To hear 
-> that X chipset is supported doesn't always mean a lot to them but to 
-> hear that Y soundcard has support is much more meaningful. Some 
-> chipsets are widespread and listed on the matrix but if a user 
-> doesn't see their card there, as far as they're concerned, they can't 
-> determined if it's supported or not, and neither can we really.
->
-> ALSA developement is fast and everyone's doing a great job, i mean 
-> that. There's no time for developers to update the matrix and they 
-> can't always tell exactly which models are supported due to chipsets 
-> appearing in loads of devices. Likewise, users don't really care  or 
-> even know how to patch the matrix.
->
-> The system would group all the reports to individual devices and so 
-> popularity of hardware could be gauged to some degree giving an 
-> indication of which jobs will target more users.
->
-> Anyway, what are your thoughts? I know no-one has time to do this but 
-> if it's something that makes sense then i can do it.
->
-> Ash Willis
->
-> --
-> ___________________________________________________
-> Play 100s of games for FREE! http://games.mail.com/
->
->
->
-> -------------------------------------------------------
-> This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-> for problems?  Stop!  Download the new AJAX search engine that makes
-> searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid3432&bid#0486&dat1642
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+The channels will be correct only at the first time after the driver is
+load, it will swap afterward.
 
+Please continue the discussion at 1726
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+======================================================================
 
---
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs - Gigs Guide Korea
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No!
-We want normal music!", I think that was more like acting than anything
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
 
 
 
