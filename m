@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Thu, 9 Feb 2006 09:32:35 +0100
-Message-ID: <27ce26fa047ecd49b15dc910841c3502@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001416]: Spinlock conflict causes kernel panic with Vortex2 and Wine
+Date: Thu, 9 Feb 2006 09:43:32 +0100
+Message-ID: <85e5ef301d3fe45b61e91b5e2862779f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 192961C8
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:32:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1F871C8
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:43:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,116 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1416> 
 ======================================================================
-Reported By:                ponchick
-Assigned To:                
+Reported By:                mortrek
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1833
-Category:                   GENERIC - mpu401
+Issue ID:                   1416
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             gentoo-sources-2.6.15-r4
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1447
 ======================================================================
-Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              02-09-2006 09:32 CET
+Date Submitted:             09-14-2005 06:05 CEST
+Last Modified:              02-09-2006 09:43 CET
 ======================================================================
-Summary:                    oops in snd_mpu401_uart
+Summary:                    Spinlock conflict causes kernel panic with Vortex2
+and Wine
 Description: 
-I don't know what exactly happend but when I run wine or winecfg it
-segfaulted. dmesg shows following:
-Unable to handle kernel paging request at 0000000010228800 RIP:
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-PGD 6e57067 PUD 0
-Oops: 0002 [1] PREEMPT SMP
-CPU 1
-Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
-snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
-snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
-snd_seq_device snd soundcore nvidia sky2
-Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
-RIP: 0010:[<ffffffff884ca00c>]
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
-RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
-RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
-RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
-R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
-FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
-knlGS:00000000556cb920
-CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
-CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
-Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
-ffff810002178440)
-Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
-ff00000000000286
-       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
-ffff81003eb606c0
-       0000000000000000 ffff81003d7c3bd0
-Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
-       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
-       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
-       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
-       <ffffffff80397b49>{_spin_lock+27}
-<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
-       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
-       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
-       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
-       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
-       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
-       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
-       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
-       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
-<ffffffff8018075f>{__link_path_walk+3332}
-       <ffffffff80397b0c>{__lock_text_start+20}
-<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
-       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
-<ffffffff8017ab11>{chrdev_open+454}
-       <ffffffff8017a94b>{chrdev_open+0}
-<ffffffff80171031>{__dentry_open+310}
-       <ffffffff8017118d>{nameidata_to_filp+34}
-<ffffffff801711d6>{filp_open+58}
-       <ffffffff801713d4>{get_unused_fd+234}
-<ffffffff80171533>{do_sys_open+81}
-       <ffffffff8011e57f>{sysenter_do_call+27}
+When attempting to run Wine (binary or self-compiled) the system freezes.
+Dmesg gives the following:
+[<c0103a61>] syscall_call+0x7/0xb
+[<c0193cde>] sys_ioctl+0x5d/0x6b
+[<c0193b27>] vfs_ioctl+0x50/0x1aa
+[<c01939f9>] do_ioctl+0x19/0x55
+[<f89bbe49>] snd_pcm_oss_ioctl+0x0/0x477 [snd_pcm_oss]
+[<f89bc19b>] snd_pcm_oss_ioctl+0x352/0x477 [snd_pcm_oss]
+[<f89bac1d>] snd_pcm_oss_get_channels+0xa/0x1e [snd_pcm_oss]
+[<f89b9d90>] snd_pcm_oss_get_active_substream+0x43/0x4c [snd_pcm_oss]
+[<f89b99bc>] snd_pcm_oss_change_params+0x365/0x6f6 [snd_pcm_oss]
+[<f89a6c31>] snd_pcm_kernel_capture_ioctl+0x18/0x1e [snd_pcm]
+[<f89a6a25>] snd_pcm_capture_ioctl1+0x2c/0x1cc [snd_pcm]
+[<f89a1665>] snd_pcm_hw_params_user+0x50/0x6d [snd_pcm]
+[<f89a9963>] _snd_pcm_hw_param_first+0x109/0x12a [snd_pcm]
+[<f89a9cdc>] _snd_pcm_hw_param_min+0x152/0x15e [snd_pcm]
+[<f89a1543>] snd_pcm_hw_params+0x331/0x403 [snd_pcm]
+[<f8a09889>] snd_vortex_pcm_hw_free+0x132/0x1f1 [snd_au8830]
+[<c0120d38>] panic+0x45/0x1e2
+<010>
+Kernel panic - not syncing: sound/pci/au88x0/au88x0_pcm.c:257:
+spin_lock(sound/pci/au88x0/au88x0_core.c:f6437b98) already locked by
+sound/pci/au88x0/au88x0_pcm.c/209. (Tainted: P     )
 
-Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
-RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
-<ffff81003564f8f0>
-CR2: 0000000010228800
- <6>note: wine-preloader[11110] exited with preempt_count 1
-
-I use standalone alsa-driver (kernel one is out of date and doesn't
-support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
-gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-09-06 09:12 
+ rlrevell - 09-14-05 22:23 
 ----------------------------------------------------------------------
-Do your au8830 has the swap of front and rear channels problem ?
+(Tainted: P )
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
+Looks like you loaded a proprietary module.  Just FYI, most kernel
+developers ignore bug reports from tainted kernels.
 
 ----------------------------------------------------------------------
- Raymond - 02-09-06 09:32 
+ Raymond - 02-09-06 09:43 
 ----------------------------------------------------------------------
-You have to test with the "real" mpu401 instead of wine
+May be the panic caused by the wrong number of capture channels reported by
+the driver ?
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-06 08:33 ponchick       New Issue                                    
-02-09-06 08:33 ponchick       Distribution              => gentoo          
-02-09-06 08:33 ponchick       Kernel Version            =>
-gentoo-sources-2.6.15-r4
-02-09-06 09:12 Raymond        Note Added: 0007971                          
-02-09-06 09:32 Raymond        Note Added: 0007973                          
+09-14-05 06:05 mortrek        New Issue                                    
+09-14-05 06:05 mortrek        Distribution              => Fedora Core 4   
+09-14-05 06:05 mortrek        Kernel Version            => 2.6.12-1.1447   
+09-14-05 13:33 Raymond        Note Added: 0006157                          
+09-14-05 22:23 rlrevell       Note Added: 0006187                          
+01-05-06 20:28 shurick        Issue Monitored: shurick                     
+02-09-06 09:43 Raymond        Note Added: 0007974                          
 ======================================================================
 
 
