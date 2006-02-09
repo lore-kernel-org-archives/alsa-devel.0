@@ -1,14 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: pm, hello ??
-Date: Thu, 9 Feb 2006 23:12:26 +0100
-Message-ID: <20060209231226.4c33f598.pochini@shiny.it>
-References: <20060130225511.5958e72c.pochini@shiny.it>
-	<s5hslr4a3v8.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001817]: [alsaplayer || jackd] crashs every 5 or 10 minutes
+Date: Thu, 9 Feb 2006 23:31:15 +0100
+Message-ID: <2416d28a892a54de9317fe9e034ad118@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hslr4a3v8.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 768F719D
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 23:31:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +18,110 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 31 Jan 2006 15:06:35 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Mon, 30 Jan 2006 22:55:11 +0100,
-> Giuliano Pochini wrote:
-> >
-> > I'm trying to add suspend/resume capability to the echoaudio driver. I wrote
-> > susp/res functions, I attached them to struct pci_driver, I added
-> > SNDRV_PCM_INFO_RESUME in struct snd_pcm_hardware.info, I added the two
-> > cases in the trigger callback and the kernel has CONFIG_PM enabled. None of
-> > the new code is called when I write in
-> > /sys/devices/pci0001:10/0001:10:15.0/power/state . What am I missing ?
->
-> No idea.  I bet something wrong in your kernel configuration or a
-> simple mistake like wrongly installed kernel image, etc.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1817> 
+======================================================================
+Reported By:                speedness
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1817
+Category:                   USB - usb-usx2y
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo ~x86 gcc 3.4.5
+Kernel Version:             2.6.15.2-archck3 (which is ck3 plus reiser4, and
+other patches)
+======================================================================
+Date Submitted:             02-03-2006 23:53 CET
+Last Modified:              02-09-2006 23:31 CET
+======================================================================
+Summary:                    [alsaplayer || jackd] crashs every 5 or 10 minutes
+Description: 
+If I try alsaplayer -d hw:1 song.mp3 after a fresh reboot (and before
+starting X) it will run for a while and then crash.
+Feb  3 12:10:43 [kernel] ALSA
+/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-
+driver-1.0.11rc3/usb/usx2y/usx2yhwdeppcm.c:87: activ frame status -70.
+Most prop
+ably some hardware problem.
+Then I'ld restart it, and it would crash again:
+Feb  3 12:20:10 [kernel] ALSA
+/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-
+driver-1.0.11rc3/usb/usx2y/usbusx2yaudio.c:140: should not be here with
+counts=0
+And again:
+Feb  3 12:30:45 [kernel] ALSA
+/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-
+driver-1.0.11rc3/usb/usx2y/usbusx2yaudio.c:305: Sequence
+Error!(hcd_frame=5770 e
+p=8in;wait=5768,frame=5769).
+Feb  3 12:30:45 [kernel] Most propably some urb of usb-frame 5768 is still
+missi
+ng.
+Feb  3 12:30:45 [kernel] Cause could be too long delays in usb-hcd
+interrupt han
+dling.
+As this was happening each time less then a minute after run-crons
+executed, I stopped the vixie-cron service.  The crashes kept happening,
+often at 5 minute intervals:
+Feb  3 15:17:26 [kernel] ALSA
+/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-driver-1.0.11rc3/usb/usx2y/usx2yhwdeppcm.c:87:
+activ frame status -70. Most propably some hardware problem.
+Feb  3 15:22:28 [kernel] ALSA
+/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-driver-1.0.11rc3/usb/usx2y/usx2yhwdeppcm.c:87:
+activ frame status -70. Most propably some hardware problem.
+Feb  3 15:27:32 [kernel] ALSA
+/var/tmp/portage/alsa-driver-1.0.11_rc3/work/alsa-driver-1.0.11rc3/usb/usx2y/usx2yhwdeppcm.c:87:
+activ frame status -70. Most propably some hardware problem.
 
-Finally I found some time to debug it.
+occationally going 10 minutes.  This is irrespective of how long
+alsaplayer or jackd had been running, whether I had restarted it
+immediatly or waited 2 or 3 minutes.  
+acpid is not running. (otherwise alsa crashes immediately).  
+======================================================================
 
-It happens that "echo 3 > file" actually writes "3\n" into the file.
-lib/vsprintf.c:simple_strtoul() returns the first non-digit character in the
-second argument. Then driver/base/power/sysfs.c:state_store() does:
-	if (*rest)
-		return -EINVAL;
-*rest is always '\n', so it exits here.
+----------------------------------------------------------------------
+ speedness - 02-04-06 00:19 
+----------------------------------------------------------------------
+No, I have a Belkin "powered" four-port USB 2.0 hub that's always plugged
+into the wall, but I've never been able to get the US428 to work unless
+it's
+connected directly to the laptop.
+
+----------------------------------------------------------------------
+ speedness - 02-09-06 23:31 
+----------------------------------------------------------------------
+Well, the 5 or 10 minute problem turned out to be related somehow to my
+PCMCIA b/g  Atheros ethernet card ("Proxim Orinoco").  Without it, I'm
+back to the problem I had before, namely the ACPI touchiness.  Besides
+crashing on 
+"cat /proc/acpi/{stuff}" (see original report) jackd crashes within one or
+two minutes when the battery is either charging or discharging!
+And an immediate jackd crash results from changing the LCD backlight
+strength using the "FN"+F7 (down) or "FN"+F8 (up) or from plugging or
+un-plugging the AC adapter.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-03-06 23:53 speedness      New Issue                                    
+02-03-06 23:53 speedness      Distribution              => Gentoo ~x86 gcc 3.4.5
+02-03-06 23:53 speedness      Kernel Version            => 2.6.15.2-archck3
+(which is ck3 plus reiser4, and other patches)
+02-04-06 00:09 rlrevell       Note Added: 0007905                          
+02-04-06 00:19 speedness      Note Added: 0007906                          
+02-09-06 23:31 speedness      Note Added: 0007979                          
+======================================================================
 
 
-> BTW, SNDRV_PCM_INFO_RESUME should be added only if your driver really
-> supports the "full resume" mode.  i.e. the stream restarts at the very
-> same position where suspended.  Otherwise, dont' set that flag.  Still
-> the driver works as "partial resume".  Then the prepare is called
-> after resume to reset to a sane state.
-
-Nice to know. I can't resume the card exactly as it was before, indeed,
-because the internal state of the DSP is unknown to the driver. I can only
-restore all gains, monitors, etc., and restart transport from the last
-period(s).
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
