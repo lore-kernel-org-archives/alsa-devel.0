@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Thu, 9 Feb 2006 08:33:13 +0100
-Message-ID: <f12b9b2b37d17726885e573194d08f8a@bugtrack.alsa-project.org>
+Date: Thu, 9 Feb 2006 09:12:42 +0100
+Message-ID: <878a8382d1144b7ac9ae53478430cd7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 750A21CC
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 08:33:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56C611C8
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:12:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              02-09-2006 08:33 CET
+Last Modified:              02-09-2006 09:12 CET
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -113,6 +113,13 @@ support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
 gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
 
+----------------------------------------------------------------------
+ Raymond - 02-09-06 09:12 
+----------------------------------------------------------------------
+Do your au8830 has the swap of front and rear channels problem ?
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -120,6 +127,7 @@ Date Modified  Username       Field                    Change
 02-09-06 08:33 ponchick       Distribution              => gentoo          
 02-09-06 08:33 ponchick       Kernel Version            =>
 gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
 ======================================================================
 
 
