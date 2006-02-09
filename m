@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001834]: When using two cards with MIDI, MIDI port names should be differentiated
-Date: Thu, 9 Feb 2006 20:07:57 +0100
-Message-ID: <8fa72dde77a46b3c84398e50ae77422b@bugtrack.alsa-project.org>
+From: okada <mailer_fr@mweb2.mailyes.net>
+Subject: RE:
+Date: Thu, 9 Feb 2006 21:07:21 +0000 (UTC)
+Message-ID: <20060209203307.1157.qmail@m01.mailyes.net>
+Reply-To: delivery_rt <mailer_rt@mweb2.mailyes.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset= ISO-2022-JP
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D6EDF1A4
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 20:07:57 +0100 (MET)
+Received: from m01.mailyes.net (m01.mailyes.net [125.187.32.136])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E93EF1A9
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 22:06:31 +0100 (MET)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +22,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Date: 2006-02-10 04:10:01
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+勝たせてみせます！ 
+ 
+打ち子募集で騙された方、パチンコ、パチスロで負け
+ている方必見です。
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1834> 
-======================================================================
-Reported By:                peppo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1834
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-09-2006 20:07 CET
-Last Modified:              02-09-2006 20:07 CET
-======================================================================
-Summary:                    When using two cards with MIDI, MIDI port names
-should be differentiated
-Description: 
-I use two 1010LT cards synced. 
-The ALSA MIDI names are the same for both cards, which makes it a bit hard
-to distinguish them. Both are "M Audio Delta 1010LT MIDI".
+ 
+私共は、都内を拠点に事前に全国のパチンコ店を徹底
+調査し、その日設定がいい台(優秀台)を提供しており
+ます。その他某メーカーからの情報を取り扱っていて
+上々の成果を上げております。これならばお客様に情
+報を提供しても恥ずかしくなく、納得して頂けるとこ
+ろまで成果があがったと思っております。
 
-Could this be fixed, perhaps, by checking which is card0 and which is
-card1, and adding that to the name?
-======================================================================
+http://agk-777.net
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-09-06 20:07 peppo          New Issue                                    
-======================================================================
+パチンコ店の設定のいい台(優秀台)を当てる事その他
+のギャンブルと違って非にならないくらい簡単な事で
+す。事前にそのパチンコ店の出方(いい設定台を入れる
+場所)を日々、徹底的に調査し、その店その店の癖さえ
+掴めば自ずと優秀台は見つけられます。
 
+http://agk-777.net
 
+正直、優秀台を見つけられるのは１０台程度です。で
+すので、各都道府県に人数制限を設けさせて頂いてま
+す。枠が埋まり次第め切りとさせていただきます。
+情報提供地域は全国です。１８歳以上の方であれば誰
+でも出来ます。
+
+本当の情報を提供致します。
+詳しくは下記のアドレスへ
+
+http://agk-777.net
+
+１月の情報提供パチンコ、スロット機種
+ 
+　　　　　　　パチンコ
+★ ＣＲ ぱちんこ 水戸黄門 Ｍ６７ ＴＦ１
+★ ＣＲ 明日があるさ よしもとワールド ＳＦ-Ｔ 
+★ ＣＲ 大海物語 Ｍ５６
+ 
+メインはＣＲ大海物語になります。
+ 
+　　　　　　　 スロット
+★ 押忍！番長
+★ アラジンエボリュ-ション
+★ デビルマン３
+★ 北斗の拳
+★ ジャグラーＴＭ
+
+http://agk-777.net
+ 
+ 
+情報欲しい方、パチンコ、スロットで生活したい方、
+完全無料でご協力いたします。是非、お申し込み下
+さい。只今お申し込み頂いた方、先着５０名様に年
+始キャンペーンにつきお年玉１０万円提供させて頂
+きます。お申し込みの際、攻略希望機種の欄に合い
+言葉『仕事』とお入れ下さい。
+
+http://agk-777.net
 
 
 -------------------------------------------------------
