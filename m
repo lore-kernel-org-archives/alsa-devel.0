@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001385]: sound is low with SIS7012 alc655
-Date: Thu, 9 Feb 2006 13:33:36 +0100
-Message-ID: <a1d8ca7879cb48aaf6766381f4c7d94b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001805]: sound in headphones, but not in speakers with SIS 7012 ALC 655 rev 0
+Date: Thu, 9 Feb 2006 13:53:30 +0100
+Message-ID: <54668de050ecec706ee83431b6a70ab0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93C651DD
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 13:33:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1690B178
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 13:53:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1385> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1805> 
 ======================================================================
-Reported By:                brainstorm
+Reported By:                dragonic_pchan
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1385
+Issue ID:                   1805
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.12
+Distribution:               mandriva linux 2006
+Kernel Version:             2.6.15.2
 ======================================================================
-Date Submitted:             08-31-2005 20:42 CEST
-Last Modified:              02-09-2006 13:33 CET
+Date Submitted:             02-01-2006 16:33 CET
+Last Modified:              02-09-2006 13:53 CET
 ======================================================================
-Summary:                    sound is low with SIS7012 alc655
+Summary:                    sound in headphones, but not in speakers with SIS
+7012 ALC 655 rev 0
 Description: 
-hello
-I m french and I ve a problem with my notebook (medion 42469). It s
-impossible to have sound in speaker (only a very low sound in headphones-
-same problem with Mandrake 10 - 10.1 mandiva 2005 and now mandriva 2006
-beta 3 with alsa 9)) I saw in the form men with the same problem and one
-have a solution for his computer but it s not good for mine 
+I dont have sounds through the speakers of my laptop (MSI megabook S250),
+but i can hear sound through headphones. I tried to mute/unmute things in
+alsamixer while headphones are plugged and mplayer is playing music. Here
+are the results :
 
-( ID 0001274 ....  
-temporarily solution:
-I hop this will help
+master button : mutes sounds
+pcm button : mutes sound
+phones button : doesn't mute sound !!!
+other buttons do nothing when muting
 
-cat > /proc/asound/IXP/codec97#0/ac97#0-0+regs <<EOF
-00 0000
-02 0a0a
-...... )
+Under windows sounds works fine. Nothing changes wether i use in-kernel
+alsa or the latest alsa 1.0.11rc3.
 
-Where is the solution ?
-FRED
+Note : I have to pass option "nolapic" to the kernel for the sound card to
+work, as well as the ethenet card.
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:12 
+ mulvila - 02-09-06 13:53 
 ----------------------------------------------------------------------
-Any improvement with later releases?
+I just added a similar note one the issue 1385 that seems to me very
+similar.
 
-----------------------------------------------------------------------
- mulvila - 02-09-06 13:33 
-----------------------------------------------------------------------
-I have the same card and the same chip - and the same problem. 
-
-Recently installed Ubuntu Dapper with Alsa Driver Version 1.0.10rc3 (Mon
-Nov 07 13:30:21 2005 UTC). Kernel is 2.6.15-14. Situation remains: no
-sound from speakers, low form the headphones.
-
-It seems Tiwai found a solution to an identical problem on an ATI card,
-see
+Takashi Iwai seems to have found a solution to an identical problem with
+alc655 on an ATI card
 http://sourceforge.net/mailarchive/forum.php?thread_id=8072079&forum_id=1752
 
-Anyone working on fixing this for the intel8x0?
+I also have MSI S250 and am sure that there would be very many happy linux
+users around if this bug was fixed in the future ALSA releases.
+
+Marko
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-31-05 20:42 brainstorm     New Issue                                    
-08-31-05 20:42 brainstorm     Kernel Version            => 2.6.12          
-12-30-05 23:12 rlrevell       Note Added: 0007279                          
-02-09-06 13:33 mulvila        Note Added: 0007977                          
+02-01-06 16:33 dragonic_pchan New Issue                                    
+02-01-06 16:33 dragonic_pchan File Added: asound.state                     
+02-01-06 16:33 dragonic_pchan Distribution              => mandriva linux 2006
+02-01-06 16:33 dragonic_pchan Kernel Version            => 2.6.15.2        
+02-09-06 13:53 mulvila        Note Added: 0007978                          
 ======================================================================
 
 
