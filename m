@@ -1,17 +1,13 @@
-From: "Desolately U. Sheba" <kees_de_bruin@globalpaint.com>
-Subject: Software
-Date: Wed, 08 Feb 2006 19:51:45 -0500
-Message-ID: <9817005279.20060208195145@globalpaint.com>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: [PATCH] hda: ALC260 test model implementation
+Date: Thu, 09 Feb 2006 07:59:21 +0200
+Message-ID: <43EADA39.8070900@akl.lt>
+References: <200602062250.k16Mo0XK012879@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -1221659848 (h193.249.29.71.ip.alltel.net [71.29.249.193])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 038AB192
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 03:04:32 +0100 (MET)
-Received: from globalpaint.com (-1222227224 [-1216346872])
-	by h193.249.29.71.ip.alltel.net (Qmailv1) with ESMTP id FB20A70D51
-	for <alsa-devel@alsa-project.org>; Wed, 08 Feb 2006 19:51:45 -0500
+In-Reply-To: <200602062250.k16Mo0XK012879@auster.physics.adelaide.edu.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,32 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-soft at incredibly low prices 
-Photoshop, Windows, Office. CHEAP. 
+Jonathan Woithe wrote:
+> Hi
+> 
+> The following patch adds a "test" ALC260 model specification to the
+> patch_realtek.c driver if CONFIG_SND_DEBUG is set.  This is similar to the
+> "test" ALC880 model in that it sets up mixer controls for almost everything
+> to make it easier for people to test their laptop/soundcard when working out
+> what pin widgets are connected to which real-world devices.
 
-New software on our site:
+<...>
+> +#ifdef CONFIG_SND_DEBUG
+<...>
 
-Extensis Portfolio 7.0 - $59.95
-Photoshop 7 - $69.95 
-Photoshop 7 - $69.95 
-WordPerfect Office 10 - $69.95
-Office 2000 Premium Edition PE (2CD) - $59.95
-Windows Millenium - $59.95
-Director MX 2004 - $69.95
-Premiere 6.5 - $89.95
-Office 97 SR2 - $49.95
-PageMaker 7 (2CD) - $69.95
-Director MX 2004 - $69.95
-LiveMotion 2.0 - $69.95
-Illustrator CS CE - $69.95
-Plus! XP - $59.95
+Just a thought - wouldn't it be better to always compile this model 
+in, regardless of whether CONFIG_SND_DEBUG is enabled or not? I can't 
+think of any problem that just the presence of this model in the 
+driver could cause. Also, I doubt that popular distros would compile 
+their alsa drivers *with* CONFIG_SND_DEBUG enabled, so again, this 
+would only prevent people from testing their hardware and submitting 
+the results to the developers. For example, I know how to 
+compile/install ALSA, but i don't know how to compile it with 
+CONFIG_SND_DEBUG enabled. :)
 
-Our site:
-http://inviteal.com
+I think that all "test" models should be compiled into the drivers by 
+default. They don't add much weight to the drivers, but can be found 
+very useful in cases where standard models don't work at all (like in 
+case of Acer laptops currently). If I had to choose between an 
+overbloated mixer, and silence, guess what i would've chosen. ;)
 
+
+
+Another idea which someone might want to implement: do you think an 
+app for automatic "test" model testing would be useful? I'm thinking 
+of a GUI, that would play with mixer controls on its own, and ask the 
+user simple questions like "has anything changed now?", or similar, 
+letting them provide the answers. After everything has been answered, 
+the user could review their answers and/or submit them automatically 
+from an app. This would probably simplify the testing. Don't you think so?
+
+Regards,
+
+RQ
 
 
 -------------------------------------------------------
