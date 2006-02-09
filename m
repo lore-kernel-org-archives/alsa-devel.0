@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001416]: Spinlock conflict causes kernel panic with Vortex2 and Wine
-Date: Thu, 9 Feb 2006 09:43:32 +0100
-Message-ID: <85e5ef301d3fe45b61e91b5e2862779f@bugtrack.alsa-project.org>
+From: "Kat Rank" <katran@icimsi.ch>
+Subject: Re: n T news 833
+Date: Thu, 9 Feb 2006 03:45:18 -0500
+Message-ID: <000001c62d55$27b85620$964ea8c0@secretary>
+Reply-To: "Kat Rank" <katran@icimsi.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C62D2B.3EE24E20"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1F871C8
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:43:32 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 217041C8
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:47:19 +0100 (MET)
+Received: from incube8.com (unknown [203.162.235.18])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 3CE889923D
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2006 09:47:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +22,154 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jeana Ecker <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1416> 
-======================================================================
-Reported By:                mortrek
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1416
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1447
-======================================================================
-Date Submitted:             09-14-2005 06:05 CEST
-Last Modified:              02-09-2006 09:43 CET
-======================================================================
-Summary:                    Spinlock conflict causes kernel panic with Vortex2
-and Wine
-Description: 
-When attempting to run Wine (binary or self-compiled) the system freezes.
-Dmesg gives the following:
-[<c0103a61>] syscall_call+0x7/0xb
-[<c0193cde>] sys_ioctl+0x5d/0x6b
-[<c0193b27>] vfs_ioctl+0x50/0x1aa
-[<c01939f9>] do_ioctl+0x19/0x55
-[<f89bbe49>] snd_pcm_oss_ioctl+0x0/0x477 [snd_pcm_oss]
-[<f89bc19b>] snd_pcm_oss_ioctl+0x352/0x477 [snd_pcm_oss]
-[<f89bac1d>] snd_pcm_oss_get_channels+0xa/0x1e [snd_pcm_oss]
-[<f89b9d90>] snd_pcm_oss_get_active_substream+0x43/0x4c [snd_pcm_oss]
-[<f89b99bc>] snd_pcm_oss_change_params+0x365/0x6f6 [snd_pcm_oss]
-[<f89a6c31>] snd_pcm_kernel_capture_ioctl+0x18/0x1e [snd_pcm]
-[<f89a6a25>] snd_pcm_capture_ioctl1+0x2c/0x1cc [snd_pcm]
-[<f89a1665>] snd_pcm_hw_params_user+0x50/0x6d [snd_pcm]
-[<f89a9963>] _snd_pcm_hw_param_first+0x109/0x12a [snd_pcm]
-[<f89a9cdc>] _snd_pcm_hw_param_min+0x152/0x15e [snd_pcm]
-[<f89a1543>] snd_pcm_hw_params+0x331/0x403 [snd_pcm]
-[<f8a09889>] snd_vortex_pcm_hw_free+0x132/0x1f1 [snd_au8830]
-[<c0120d38>] panic+0x45/0x1e2
-<010>
-Kernel panic - not syncing: sound/pci/au88x0/au88x0_pcm.c:257:
-spin_lock(sound/pci/au88x0/au88x0_core.c:f6437b98) already locked by
-sound/pci/au88x0/au88x0_pcm.c/209. (Tainted: P     )
+------=_NextPart_000_0001_01C62D2B.3EE24E20
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-======================================================================
+Hi,
+http://www.ottislan.com
+=20
+V o I v A p G p R v A n   n $ e 3 i , x 7 a 5 m=20
+V h A p L y l x U w M j   k $ b 1 o , b 2 l 1 k=20
+C g I n A f L d I u S f   j $ d 3 e , g 3 g 3 q=20
 
-----------------------------------------------------------------------
- rlrevell - 09-14-05 22:23 
-----------------------------------------------------------------------
-(Tainted: P )
+------=_NextPart_000_0001_01C62D2B.3EE24E20
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Looks like you loaded a proprietary module.  Just FYI, most kernel
-developers ignore bug reports from tainted kernels.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi,</DIV>
+<DIV><A =
+href=3D"http://www.ottislan.com">http://www.ottislan.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>V<span=20
+style=3D"float:=20
+right"
+> o </span>I<span=20
+style=3D"float:=20
+right"
+> v </span>A<span=20
+style=3D"float:=20
+right"
+> p </span>G<span=20
+style=3D"float:=20
+right"
+> p </span>R<span=20
+style=3D"float:=20
+right"
+> v </span>A<span=20
+style=3D"float:=20
+right"
+> n </span>&nbsp;<span=20
+style=3D"float:=20
+right"
+> n </span>$<span=20
+style=3D"float:=20
+right"
+> e </span>3<span=20
+style=3D"float:=20
+right"
+> i </span>,<span=20
+style=3D"float:=20
+right"
+> x </span>7<span=20
+style=3D"float:=20
+right"
+> a </span>5<span=20
+style=3D"float:=20
+right"
+> m </span></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>V<span=20
+style=3D"float:=20
+right"
+> h </span>A<span=20
+style=3D"float:=20
+right"
+> p </span>L<span=20
+style=3D"float:=20
+right"
+> y </span>l<span=20
+style=3D"float:=20
+right"
+> x </span>U<span=20
+style=3D"float:=20
+right"
+> w </span>M<span=20
+style=3D"float:=20
+right"
+> j </span>&nbsp;<span=20
+style=3D"float:=20
+right"
+> k </span>$<span=20
+style=3D"float:=20
+right"
+> b </span>1<span=20
+style=3D"float:=20
+right"
+> o </span>,<span=20
+style=3D"float:=20
+right"
+> b </span>2<span=20
+style=3D"float:=20
+right"
+> l </span>1<span=20
+style=3D"float:=20
+right"
+> k </span></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>C<span=20
+style=3D"float:=20
+right"
+> g </span>I<span=20
+style=3D"float:=20
+right"
+> n </span>A<span=20
+style=3D"float:=20
+right"
+> f </span>L<span=20
+style=3D"float:=20
+right"
+> d </span>I<span=20
+style=3D"float:=20
+right"
+> u </span>S<span=20
+style=3D"float:=20
+right"
+> f </span>&nbsp;<span=20
+style=3D"float:=20
+right"
+> j </span>$<span=20
+style=3D"float:=20
+right"
+> d </span>3<span=20
+style=3D"float:=20
+right"
+> e </span>,<span=20
+style=3D"float:=20
+right"
+> g </span>3<span=20
+style=3D"float:=20
+right"
+> g </span>3<span=20
+style=3D"float:=20
+right"
+> q </span></FONT></DIV>
+</BODY></HTML>
+------=_NextPart_000_0001_01C62D2B.3EE24E20--
 
-----------------------------------------------------------------------
- Raymond - 02-09-06 09:43 
-----------------------------------------------------------------------
-May be the panic caused by the wrong number of capture channels reported by
-the driver ?
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-14-05 06:05 mortrek        New Issue                                    
-09-14-05 06:05 mortrek        Distribution              => Fedora Core 4   
-09-14-05 06:05 mortrek        Kernel Version            => 2.6.12-1.1447   
-09-14-05 13:33 Raymond        Note Added: 0006157                          
-09-14-05 22:23 rlrevell       Note Added: 0006187                          
-01-05-06 20:28 shurick        Issue Monitored: shurick                     
-02-09-06 09:43 Raymond        Note Added: 0007974                          
-======================================================================
 
 
 
