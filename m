@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Fri, 10 Feb 2006 10:09:43 +0100
-Message-ID: <34127a35a253d2d818d6200146a1ff98@bugtrack.alsa-project.org>
+From: "Mojgan Tennyson" <tenny@kigroup.com>
+Subject: Re: B1 G news
+Date: Fri, 10 Feb 2006 04:15:45 -0500
+Message-ID: <000001c62e22$92a9b8c0$a3c0a8c0@misadventure>
+Reply-To: "Mojgan Tennyson" <tenny@kigroup.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C62DF8.A9D3B0C0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0337148
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 10:09:43 +0100 (MET)
+Received: from kraszlan.com (210-86-67-237.jetstream.xtra.co.nz [210.86.67.237])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6E4DE185
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 10:15:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,172 +19,191 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Ping Bearse <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
-======================================================================
-Reported By:                ponchick
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1833
-Category:                   GENERIC - mpu401
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             gentoo-sources-2.6.15-r4
-======================================================================
-Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              02-10-2006 10:09 CET
-======================================================================
-Summary:                    oops in snd_mpu401_uart
-Description: 
-I don't know what exactly happend but when I run wine or winecfg it
-segfaulted. dmesg shows following:
-Unable to handle kernel paging request at 0000000010228800 RIP:
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-PGD 6e57067 PUD 0
-Oops: 0002 [1] PREEMPT SMP
-CPU 1
-Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
-snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
-snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
-snd_seq_device snd soundcore nvidia sky2
-Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
-RIP: 0010:[<ffffffff884ca00c>]
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
-RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
-RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
-RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
-R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
-FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
-knlGS:00000000556cb920
-CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
-CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
-Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
-ffff810002178440)
-Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
-ff00000000000286
-       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
-ffff81003eb606c0
-       0000000000000000 ffff81003d7c3bd0
-Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
-       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
-       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
-       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
-       <ffffffff80397b49>{_spin_lock+27}
-<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
-       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
-       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
-       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
-       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
-       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
-       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
-       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
-       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
-<ffffffff8018075f>{__link_path_walk+3332}
-       <ffffffff80397b0c>{__lock_text_start+20}
-<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
-       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
-<ffffffff8017ab11>{chrdev_open+454}
-       <ffffffff8017a94b>{chrdev_open+0}
-<ffffffff80171031>{__dentry_open+310}
-       <ffffffff8017118d>{nameidata_to_filp+34}
-<ffffffff801711d6>{filp_open+58}
-       <ffffffff801713d4>{get_unused_fd+234}
-<ffffffff80171533>{do_sys_open+81}
-       <ffffffff8011e57f>{sysenter_do_call+27}
+------=_NextPart_000_0001_01C62DF8.A9D3B0C0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
-RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
-<ffff81003564f8f0>
-CR2: 0000000010228800
- <6>note: wine-preloader[11110] exited with preempt_count 1
+Hi,
+http://www.ventuedino.com
+=20
+VkAkLgldUhMe x$z1s,u2z1q
+CtIkAeLeItSj o$n3k,d3c3y
+VrIcAqGrRfAx m$q3l,t7v5a
 
-I use standalone alsa-driver (kernel one is out of date and doesn't
-support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
-gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
-======================================================================
 
-----------------------------------------------------------------------
- Raymond - 02-10-06 06:03 
-----------------------------------------------------------------------
-Does it mean that snd_seq_oss is not compatible with snd_mpu401_uart (mmio)
-or bug in au88x0_mpu401.c on 64-bits ?
+------=_NextPart_000_0001_01C62DF8.A9D3B0C0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- ponchick - 02-10-06 10:09 
-----------------------------------------------------------------------
-Seems like it doesn't have spdif. I don't know how it looks like but found
-there only AUX, TAD, CD_IN and wavetable connectors. I take pictures (not
-very good) of this card here - http://www6.krasu.ru/au88x0/ . Hope they
-help identify this card.
-Also I have soundmax onboard soundcard (ICH7) but it disabled for now (no
-hw mixing so I just don't compile it's modules). I can try use it for
-testing of snd_mpu401_uart if it possible.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi,</DIV>
+<DIV><A =
+href=3D"http://www.ventuedino.com">http://www.ventuedino.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>V<span=20
+style=3D"
+float:=20
+right"
+>k</span>A<span=20
+style=3D"
+float:=20
+right"
+>k</span>L<span=20
+style=3D"
+float:=20
+right"
+>g</span>l<span=20
+style=3D"
+float:=20
+right"
+>d</span>U<span=20
+style=3D"
+float:=20
+right"
+>h</span>M<span=20
+style=3D"
+float:=20
+right"
+>e</span>&nbsp;<span=20
+style=3D"
+float:=20
+right"
+>x</span>$<span=20
+style=3D"
+float:=20
+right"
+>z</span>1<span=20
+style=3D"
+float:=20
+right"
+>s</span>,<span=20
+style=3D"
+float:=20
+right"
+>u</span>2<span=20
+style=3D"
+float:=20
+right"
+>z</span>1<span=20
+style=3D"
+float:=20
+right"
+>q</span><BR>
+C<span=20
+style=3D"
+float:=20
+right"
+>t</span>I<span=20
+style=3D"
+float:=20
+right"
+>k</span>A<span=20
+style=3D"
+float:=20
+right"
+>e</span>L<span=20
+style=3D"
+float:=20
+right"
+>e</span>I<span=20
+style=3D"
+float:=20
+right"
+>t</span>S<span=20
+style=3D"
+float:=20
+right"
+>j</span>&nbsp;<span=20
+style=3D"
+float:=20
+right"
+>o</span>$<span=20
+style=3D"
+float:=20
+right"
+>n</span>3<span=20
+style=3D"
+float:=20
+right"
+>k</span>,<span=20
+style=3D"
+float:=20
+right"
+>d</span>3<span=20
+style=3D"
+float:=20
+right"
+>c</span>3<span=20
+style=3D"
+float:=20
+right"
+>y</span><BR>
+V<span=20
+style=3D"
+float:=20
+right"
+>r</span>I<span=20
+style=3D"
+float:=20
+right"
+>c</span>A<span=20
+style=3D"
+float:=20
+right"
+>q</span>G<span=20
+style=3D"
+float:=20
+right"
+>r</span>R<span=20
+style=3D"
+float:=20
+right"
+>f</span>A<span=20
+style=3D"
+float:=20
+right"
+>x</span>&nbsp;<span=20
+style=3D"
+float:=20
+right"
+>m</span>$<span=20
+style=3D"
+float:=20
+right"
+>q</span>3<span=20
+style=3D"
+float:=20
+right"
+>l</span>,<span=20
+style=3D"
+float:=20
+right"
+>t</span>7<span=20
+style=3D"
+float:=20
+right"
+>v</span>5<span=20
+style=3D"
+float:=20
+right"
+>a</span><BR>
+</DIV></BODY></HTML>
+------=_NextPart_000_0001_01C62DF8.A9D3B0C0--
 
-# lspci -vvns 00:1b.0
-00:1b.0 0403: 8086:27d8 (rev 01)
-        Subsystem: 1458:a102
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 08
-        Interrupt: pin A routed to IRQ 12
-        Region 0: Memory at e5100000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-09-06 08:33 ponchick       New Issue                                    
-02-09-06 08:33 ponchick       Distribution              => gentoo          
-02-09-06 08:33 ponchick       Kernel Version            =>
-gentoo-sources-2.6.15-r4
-02-09-06 09:12 Raymond        Note Added: 0007971                          
-02-09-06 09:32 Raymond        Note Added: 0007973                          
-02-09-06 11:57 ponchick       Note Added: 0007975                          
-02-09-06 12:32 Raymond        Note Added: 0007976                          
-02-09-06 12:35 Raymond        Note Edited: 0007976                         
-02-10-06 03:06 Raymond        Note Added: 0007982                          
-02-10-06 03:11 rlrevell       Note Added: 0007983                          
-02-10-06 03:49 Raymond        Note Added: 0007984                          
-02-10-06 05:08 ponchick       Note Added: 0007986                          
-02-10-06 05:36 Raymond        Note Added: 0007988                          
-02-10-06 06:03 Raymond        Note Added: 0007990                          
-02-10-06 10:09 ponchick       Note Added: 0007997                          
-======================================================================
 
 
 
