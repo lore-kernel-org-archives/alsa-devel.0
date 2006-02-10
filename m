@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001318]: Volume control per PCM
-Date: Fri, 10 Feb 2006 12:59:16 +0100
-Message-ID: <5bd5b25b91a6f26eeb0b672e6317ca83@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Fri, 10 Feb 2006 13:49:58 +0100
+Message-ID: <69763cb1e921848ff08ad793f92cd7ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA15A18B
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 12:59:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50834157
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 13:49:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,112 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1318
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1726
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             08-07-2005 14:45 CEST
-Last Modified:              02-10-2006 12:59 CET
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              02-10-2006 13:49 CET
 ======================================================================
-Summary:                    Volume control per PCM
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
 Description: 
-Hi, i'm trying to implement a volume control per PCM streams, i've attached
-a function that does the job. Unfortunally when it change the volume it
-also change the equalizer cutting off low frequencyes. I think 
-there is a problem with the second poke, infact withot that poke, the
-volume works correctly for left case. Any suggestion? Any documentation?
-Thanks,
-   Dino
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
+
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
+
+Playing stereo sound is OK.
+
+
+ speaker-test -c4 -D hw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
 
 ======================================================================
 
 ----------------------------------------------------------------------
- darkbrain - 02-08-06 10:41 
+ Raymond - 02-10-06 11:25 
 ----------------------------------------------------------------------
-It's not that the point. This patch want to use a mixer slider to change
-the volume for the first only subdevice, it's only a test. The volume
-changes but incorrectlly, i've got an hardware problem, without
-documentation of the chip i can't fix it, and without any help we'll never
-have this feature. 
-But is there any mantainer? It was past 7 months and no one drop me a line
-of documentation, hardware registry or similar, is this driver dead?
+Refer to your photo, your au8830 has only 1 green jack and WM970x stereo
+codec. 
+
+http://www.dearhoney.idv.tw/museum/soundcard-07.php
+
+Please try au88x0_pcm_channels.patch which fix the playback channels in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766 
+
+May need to patch the driver to disable SPDIF (device 1) by checking the
+PCI subsystem id for your au8830
 
 ----------------------------------------------------------------------
- Raymond - 02-10-06 12:59 
+ Raymond - 02-10-06 13:49 
 ----------------------------------------------------------------------
-Have you try cs46xx_dsp_scb_set_volume (struct snd_cs46xx * chip,
-					      struct dsp_scb_descriptor * scb,
-					      u16 left, u16 right)
+Just use the cvs version without au88x0_surround40.patch to test whether
+the swapping of front/rear occur in some or all au8830 chips as your
+au8830 chip is B0AAAA.
+			
+#ifdef CHIP_AU8830
+    .channels_max = 4,
+#else
+
+speaker-test -t wav -D hw:0,0 -c 4
+
+Do your hear the female voice "front left" and "front right" after the
+driver is loaded ?
+
+You will need to quit the speaker-test and run it again.
+
+Do you hear the the female voice "rear left" and "rear right" ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-07-05 14:45 darkbrain      New Issue                                    
-08-07-05 14:45 darkbrain      File Added: volume.c                         
-08-13-05 10:43 darkbrain      Note Added: 0005802                          
-01-10-06 12:55 darkbrain      Note Added: 0007548                          
-02-05-06 04:55 Raymond        Note Added: 0007929                          
-02-05-06 05:33 Raymond        Note Edited: 0007929                         
-02-05-06 13:19 darkbrain      Note Added: 0007932                          
-02-05-06 14:42 Raymond        Note Added: 0007934                          
-02-06-06 03:43 Raymond        Note Edited: 0007934                         
-02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
-02-07-06 21:05 darkbrain      Note Added: 0007960                          
-02-08-06 02:39 Raymond        Note Edited: 0007934                         
-02-08-06 03:24 Raymond        Note Added: 0007962                          
-02-08-06 03:31 Raymond        Note Edited: 0007962                         
-02-08-06 09:54 Raymond        Note Edited: 0007934                         
-02-08-06 10:41 darkbrain      Note Added: 0007964                          
-02-09-06 08:06 Raymond        Note Added: 0007970                          
-02-09-06 08:11 Raymond        Note Edited: 0007970                         
-02-09-06 10:37 Raymond        Note Deleted: 0007970                        
-02-10-06 12:59 Raymond        Note Added: 0008002                          
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+02-10-06 06:32 Raymond        Note Added: 0007991                          
+02-10-06 10:50 ponchick       Note Added: 0007998                          
+02-10-06 11:25 Raymond        Note Added: 0008000                          
+02-10-06 13:49 Raymond        Note Added: 0008003                          
 ======================================================================
 
 
