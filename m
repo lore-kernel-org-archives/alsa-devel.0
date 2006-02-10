@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001763]: How to provide patch for the soundcard matrix ?
-Date: Fri, 10 Feb 2006 17:31:38 +0100
-Message-ID: <fea3ec71495cd22a6a887c361e25155f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001246]: Sound card loops and doesn't play any more
+Date: Fri, 10 Feb 2006 15:58:22 +0100
+Message-ID: <deae5181ecccb5acba514fe0477e5d4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF5EB1A0
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 17:31:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7BD9191
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 15:58:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,127 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1763> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1246> 
 ======================================================================
-Reported By:                Raymond
+Reported By:                syberdave
 Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1763
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Issue ID:                   1246
+Category:                   ISA - es18xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian Testing
+Kernel Version:             2.6.7-grsec
 ======================================================================
-Date Submitted:             01-20-2006 09:10 CET
-Last Modified:              02-10-2006 17:31 CET
+Date Submitted:             07-09-2005 17:04 CEST
+Last Modified:              02-10-2006 15:58 CET
 ======================================================================
-Summary:                    How to provide patch for the soundcard matrix ?
+Summary:                    Sound card loops and doesn't play any more
 Description: 
-How to provide patch for the soundcard matrix ?
+I installed a second sound card (ESS 1868 F/ISA) and when I send data to
+it, it plays the first second or so and starts repeating it and it doesn't
+move on. I notice that when I make the sound mono and bring the bitrate
+down, the data that it repeats becomes longer: mpg321 --wav - music.mp3
+|sox -t wav - -t ossdsp -c 1 -r 4096 /dev/dsp1
 
-http://www.alsa-project.org/alsa-doc/index.php?vendor=All#matrix
+And when I try to play it with ALSA, this command works for my first sound
+card:
+mpg321 --wav - music.mp3 |aplay -D hw:0,0
+But this command doesn't - it does that loop thing again:
+mpg321 --wav - music.mp3 |aplay -D hw:1,0
 
-(e.g. Is there any description of the xml file submitted in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938 ? )
+This is my results for lsmod:
+Module                  Size  Used by
+snd_es18xx             29100  0 
+snd_cs4231_lib         21280  0 
+snd_sb16_dsp            8064  0 
+snd_sb_common          13152  1 snd_sb16_dsp
+snd_ymfpci             54084  1 
+snd_ac97_codec         60356  1 snd_ymfpci
+snd_opl3_lib            8320  2 snd_es18xx,snd_ymfpci
+snd_hwdep               7136  1 snd_opl3_lib
+snd_mpu401_uart         5824  2 snd_es18xx,snd_ymfpci
+snd_rawmidi            19872  1 snd_mpu401_uart
 
-1) Is mpu401 uart regarded as [MIDIio] ?
-
-2) Is coaxial SPDIF in/out regarded as [RCAio] ?
-
-3) Is optical SPDIF out classified as [TOSo] ?
-
-4) Add "modem not support" to Note
-
-
+Any help would be appreciated.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-03-06 18:48 
+ rlrevell - 12-30-05 23:50 
 ----------------------------------------------------------------------
-Those Vortex chip on the motherboards are label as au8808 instead of au8820
-(e.g. IWill LE370)
-
-http://members.optusnet.com.au/kirben/soundcards.html
-
-
+Any improvement in later releases?
 
 ----------------------------------------------------------------------
- Raymond - 02-10-06 17:31 
+ twhitehead - 02-10-06 15:58 
 ----------------------------------------------------------------------
-The following sound cards use the Aureal chipset: Vortex 1 chipset cards:
-Aureal Vortex 1 PCI (OEM)
-Aztech PCI 338 A3D
-DCS S805
-Diamond Sonic Impact S90
-Gallant Audiostorm A3D
-Genius Soundmaker 64
-Hi-Val A3D PCI 338
-Intresource TeraSound A3D PCI
-I/O Magic MagicWave PCI A3D
-Mediatek Sound Image Symphonic PCI-1
-Multiwave AudioWave PCI DigitalSound
-Orchid NuSound PCI
-Samtek Rock'n98 A3D
-Shark Predator PCI
-Skywell Magic Sound
-Techworks Power Vortex 1
-Terratec Xlerate PCI
-Turtle Beach Montego A3Dxstream
-Xitel Storm VX
+I should add that the driver is still broken (endless looping of the first
+second or so of sound on playback) unless I apply the prior mentioned
+patch on my machine (last kernel tried was of 2.6.14).
 
-Vortex 2 chipset cards:
-Aureal Vortex2 PCI (OEM)
-Aureal Vortex2 SQ2500
-Aureal Vortex2 SQ3500 Turbo
-Aureal Vortex2 SuperQuad Digital PCI (OEM)
-Absolute Multimedia Outrageous 3D Sound
-Diamond Monster Sound MX300
-Digital Research Thunderstorm Vortex2
-Hi-Val PCI 576 A3D
-I/O Magic MagicWaveV2
-Techworks Power Vortex 2
-Terratec XLerate Pro
-Turtle Beach Montego II
-Turtle Beach Montego II Home Studio
-Turtle Beach Montego II Plus
-Turtle Beach Montego II Quadzilla
-Videologic SonicVortex2
-Xitel Storm Platinum
-
-Vortex Advantage chipset based sound cards:
-Aureal Vortex SQ1500
-Absolute Multimedia Outrageous 3D Sound Lite
-Digital Research Thunderstorm Vortex Advantage
-I/O Magic MagicWaveV1
-
-These motherboards shipped with a Vortex Advantage chipset integrated on
-them:
-Abit WX6
-Gigabyte GA-6CX
-Gigabyte GA-6CXC
-Soyo 6IWM
-Soyo 6IWM/L
-Soyo 7IWA
-Soyo 7IWA-F
+So while it didn't fix his problems, it would still be nice to get it
+included upstream to fix mine.  Perhaps I should open a second bug report
+about this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-20-06 09:10 Raymond        New Issue                                    
-01-22-06 17:34 pochini        Note Added: 0007749                          
-01-23-06 05:19 Raymond        Note Added: 0007759                          
-01-23-06 09:44 Raymond        Note Added: 0007760                          
-01-24-06 08:58 Raymond        File Added: soundcardmatrix_au88x0.patch          
-         
-01-27-06 13:26 Raymond        Note Added: 0007799                          
-01-27-06 13:34 lmike          Note Added: 0007800                          
-01-30-06 06:11 Raymond        File Added: soundcardmatrix_aureal.patch          
-         
-02-01-06 17:29 Raymond        Note Added: 0007861                          
-02-03-06 18:48 Raymond        Note Edited: 0007861                         
-02-10-06 17:31 Raymond        Note Added: 0008007                          
+07-09-05 17:04 syberdave      New Issue                                    
+07-09-05 17:04 syberdave      Distribution              => Debian Testing  
+07-09-05 17:04 syberdave      Kernel Version            => 2.6.7-grsec     
+07-09-05 17:04 syberdave      Issue Monitored: syberdave                    
+07-10-05 06:49 syberdave      Note Added: 0005441                          
+07-23-05 13:38 twhitehead     Note Added: 0005552                          
+07-23-05 13:42 twhitehead     File Added: alpha-alsa.patch                    
+08-04-05 09:25 perex          Note Added: 0005643                          
+08-10-05 04:13 syberdave      Note Added: 0005745                          
+12-30-05 23:50 rlrevell       Note Added: 0007299                          
+02-10-06 15:58 twhitehead     Note Added: 0008006                          
 ======================================================================
 
 
