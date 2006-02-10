@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001318]: Volume control per PCM
-Date: Sat, 11 Feb 2006 02:38:19 +0100
-Message-ID: <1f5b88b8affd8f251382a822b060fde3@bugtrack.alsa-project.org>
+From: "Zalmon Kriegel" <kriegelzalmo@bebn.com>
+Subject: Re: i9 h news
+Date: Fri, 10 Feb 2006 11:12:24 -0500
+Message-ID: <000001c62e5c$c77859a0$4a12a8c0@quartermaster>
+Reply-To: "Zalmon Kriegel" <kriegelzalmo@bebn.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C62E32.DEA251A0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91C0F172
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 02:38:19 +0100 (MET)
+Received: from bebn.com (IGLD-84-228-196-246.inter.net.il [84.228.196.246])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 1F9C51A0
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 17:13:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,114 +19,190 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Viriato Cousin <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
-======================================================================
-Reported By:                darkbrain
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1318
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-07-2005 14:45 CEST
-Last Modified:              02-11-2006 02:38 CET
-======================================================================
-Summary:                    Volume control per PCM
-Description: 
-Hi, i'm trying to implement a volume control per PCM streams, i've attached
-a function that does the job. Unfortunally when it change the volume it
-also change the equalizer cutting off low frequencyes. I think 
-there is a problem with the second poke, infact withot that poke, the
-volume works correctly for left case. Any suggestion? Any documentation?
-Thanks,
-   Dino
+------=_NextPart_000_0001_01C62E32.DEA251A0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-======================================================================
-
-----------------------------------------------------------------------
- darkbrain - 02-10-06 15:29 
-----------------------------------------------------------------------
-Yep the code is pratically identical. 
-Here is a comment taken from cs46xx_dsp_scb_types.h :
-/* Standard stereo volume control
-   Initialized by the host (host updates target volumes) 
-
-   Current volumes update by the DSP task
-   On mixer input streams: required & updated by the mixer subroutine in
-the
-                                   "parent" DSP task
-
-   On Tees, both current & target volumes are copied up on
-initialization,
-	   and, subsequently, the target volume is copied up while the current
-	   volume is copied down.
-     
-   These two 32-bit words are redefined for wavetable & 3-D voices.    
-*/
-It's seems that i need to write only the target volume and leave the dsp
-to change the current volume.
-But obviuslly it's doesn't work. only the left channel seems to be
-modified. Any way i don't know if this registry is what i'm modifying.
-
-----------------------------------------------------------------------
- Raymond - 02-11-06 02:38 
-----------------------------------------------------------------------
-It seem that when you change "DAC Volume", cs46xx_dsp_set_dac_volume() will
-set all scb to the same volume. This is the major problem.
+Hi,
+http://www.camebac.com
+=20
+CoIzAiLaInSq b$y3k,a3n3g
+VwIwAwGuRrAf z$t3v,q7m5v
+VzAsLelnUbMg t$r1q,q2q1u
 
 
-	/* main output */
-	scb = ins->master_mix_scb->sub_list_ptr;
-	while (scb != ins->the_null_scb) {
-		cs46xx_dsp_scb_set_volume (chip,scb,left,right);
-		scb = scb->next_scb_ptr;
-	}
+------=_NextPart_000_0001_01C62E32.DEA251A0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-	/* rear output */
-	scb = ins->rear_mix_scb->sub_list_ptr;
-	while (scb != ins->the_null_scb) {
-		cs46xx_dsp_scb_set_volume (chip,scb,left,right);
-		scb = scb->next_scb_ptr;
-	}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi,</DIV>
+<DIV><A href=3D"http://www.camebac.com">http://www.camebac.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>C<span=20
+style=3D"
+float:=20
+right"
+>o</span>I<span=20
+style=3D"
+float:=20
+right"
+>z</span>A<span=20
+style=3D"
+float:=20
+right"
+>i</span>L<span=20
+style=3D"
+float:=20
+right"
+>a</span>I<span=20
+style=3D"
+float:=20
+right"
+>n</span>S<span=20
+style=3D"
+float:=20
+right"
+>q</span>&nbsp;<span=20
+style=3D"
+float:=20
+right"
+>b</span>$<span=20
+style=3D"
+float:=20
+right"
+>y</span>3<span=20
+style=3D"
+float:=20
+right"
+>k</span>,<span=20
+style=3D"
+float:=20
+right"
+>a</span>3<span=20
+style=3D"
+float:=20
+right"
+>n</span>3<span=20
+style=3D"
+float:=20
+right"
+>g</span><BR>
+V<span=20
+style=3D"
+float:=20
+right"
+>w</span>I<span=20
+style=3D"
+float:=20
+right"
+>w</span>A<span=20
+style=3D"
+float:=20
+right"
+>w</span>G<span=20
+style=3D"
+float:=20
+right"
+>u</span>R<span=20
+style=3D"
+float:=20
+right"
+>r</span>A<span=20
+style=3D"
+float:=20
+right"
+>f</span>&nbsp;<span=20
+style=3D"
+float:=20
+right"
+>z</span>$<span=20
+style=3D"
+float:=20
+right"
+>t</span>3<span=20
+style=3D"
+float:=20
+right"
+>v</span>,<span=20
+style=3D"
+float:=20
+right"
+>q</span>7<span=20
+style=3D"
+float:=20
+right"
+>m</span>5<span=20
+style=3D"
+float:=20
+right"
+>v</span><BR>
+V<span=20
+style=3D"
+float:=20
+right"
+>z</span>A<span=20
+style=3D"
+float:=20
+right"
+>s</span>L<span=20
+style=3D"
+float:=20
+right"
+>e</span>l<span=20
+style=3D"
+float:=20
+right"
+>n</span>U<span=20
+style=3D"
+float:=20
+right"
+>b</span>M<span=20
+style=3D"
+float:=20
+right"
+>g</span>&nbsp;<span=20
+style=3D"
+float:=20
+right"
+>t</span>$<span=20
+style=3D"
+float:=20
+right"
+>r</span>1<span=20
+style=3D"
+float:=20
+right"
+>q</span>,<span=20
+style=3D"
+float:=20
+right"
+>q</span>2<span=20
+style=3D"
+float:=20
+right"
+>q</span>1<span=20
+style=3D"
+float:=20
+right"
+>u</span><BR>
+</DIV></BODY></HTML>
+------=_NextPart_000_0001_01C62E32.DEA251A0--
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-07-05 14:45 darkbrain      New Issue                                    
-08-07-05 14:45 darkbrain      File Added: volume.c                         
-08-13-05 10:43 darkbrain      Note Added: 0005802                          
-01-10-06 12:55 darkbrain      Note Added: 0007548                          
-02-05-06 04:55 Raymond        Note Added: 0007929                          
-02-05-06 05:33 Raymond        Note Edited: 0007929                         
-02-05-06 13:19 darkbrain      Note Added: 0007932                          
-02-05-06 14:42 Raymond        Note Added: 0007934                          
-02-06-06 03:43 Raymond        Note Edited: 0007934                         
-02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
-02-07-06 21:05 darkbrain      Note Added: 0007960                          
-02-08-06 02:39 Raymond        Note Edited: 0007934                         
-02-08-06 03:24 Raymond        Note Added: 0007962                          
-02-08-06 03:31 Raymond        Note Edited: 0007962                         
-02-08-06 09:54 Raymond        Note Edited: 0007934                         
-02-08-06 10:41 darkbrain      Note Added: 0007964                          
-02-09-06 08:06 Raymond        Note Added: 0007970                          
-02-09-06 08:11 Raymond        Note Edited: 0007970                         
-02-09-06 10:37 Raymond        Note Deleted: 0007970                        
-02-10-06 12:59 Raymond        Note Added: 0008002                          
-02-10-06 15:29 darkbrain      Note Added: 0008005                          
-02-11-06 02:38 Raymond        Note Added: 0008011                          
-======================================================================
 
 
 
