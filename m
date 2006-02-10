@@ -1,16 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Can anyone help?
-Date: Thu, 09 Feb 2006 18:42:31 -0500
-Message-ID: <1139528552.30058.135.camel@mindpipe>
-References: <1139526455.9296.5.camel@localhost.localdomain>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Sampling PCM data inside driver for DC offset correction
+Date: Fri, 10 Feb 2006 10:33:50 +1030 (CST)
+Message-ID: <200602100003.k1A03o7Q002863@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 79DE919A
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 00:42:33 +0100 (MET)
-In-Reply-To: <1139526455.9296.5.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,30 +15,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-02-09 at 23:07 +0000, Adrian McMenamin wrote:
-> / # cat /bin/busybox > /dev/snd/pcmC0D0p
-> ALSA /home/adrian/aica/aica/snd_card_aica.c:151: In
-> snd_aicapcm_pcm_open
-> cat: Write Error: File descriptor in bad state
-> / # Feb 10 00:01:02 dreamy user.warn kernel:
-> ALSA /home/adrian/aica/aica/snd_card_aica.c:151: In
-> snd_aicapcm_pcm_open
-> 
-> But as the above fragment shows this opens the device file but not
-> much
-> else (as I assume it has no automagic way of accessing the alsa
-> subsystem)
-> 
+Hi all
 
-Yes, "cat file > /dev/snd/pcmX" makes no sense, that's now how ALSA
-works.  The only supported interface to these is via alsa-lib.
+I am pondering the possibility of adding a DC level correction to ALSA (or
+at least the hda/ALC260 driver).  The ALC260 (among other Realtek codecs)
+suffers from an appreciable DC offset which makes metering somewhat
+confusing.  The problem is that the actual value of the DC offset depends on
+the chip, so a static value programmed into the driver isn't going to work.
 
-Lee
+What I was thinking of was to grab a short sample of PCM data during driver
+setup and using this to deduce the nominal DC offset.  This would then be
+applied to outgoing capture data, probably as it's copied to userspace.
 
+So the questions are:
+
+ 1) does this kind of thing belong in the ALSA driver, or is it something
+    for ALSA lib?  Using the plug layer isn't an option since I want the DC
+    correction to be active for jack, which uses hw for (AFAIK) performance
+    reasons.
+
+ 2) if a kernel solution is appropriate, how does one go about capturing
+    a single short buffer of samples within the kernel driver itself?
+
+ 3) any other suggestions as to how best to effect such a correction?
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
