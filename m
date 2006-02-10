@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Fri, 10 Feb 2006 03:06:31 +0100
-Message-ID: <92e7ef56f0e10bba97827802c3d6134c@bugtrack.alsa-project.org>
+Date: Fri, 10 Feb 2006 03:11:46 +0100
+Message-ID: <fbfad9015236ef89b0ea4baf798cc7e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 774FB191
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 03:06:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2356191
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 03:11:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              02-10-2006 03:06 CET
+Last Modified:              02-10-2006 03:11 CET
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,22 +114,6 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-09-06 12:35 
-----------------------------------------------------------------------
-Make sure your au8830 have a quad AC97 codec.
-
-speaker-test -t wav -D hw:0,0 -c 4
-
-You will hear a female voice
-
-The channels will be correct only at the first time after the driver is
-load, it will swap afterward.
-
-Please continue the discussion at 1726
-
-
-
-----------------------------------------------------------------------
  Raymond - 02-10-06 03:06 
 ----------------------------------------------------------------------
 aplaymidi -l
@@ -137,6 +121,13 @@ aplaymidi -l
  16:0    MPU-401 MIDI 0-0                 MPU-401 MIDI 0-0
 
 Which au8830 sound card ? lspci -vvn
+
+----------------------------------------------------------------------
+ rlrevell - 02-10-06 03:11 
+----------------------------------------------------------------------
+Tainted: P      2.6.15-gentoo-r4 #1
+
+Please try to reproduce with untainted kernel
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -151,6 +142,7 @@ gentoo-sources-2.6.15-r4
 02-09-06 12:32 Raymond        Note Added: 0007976                          
 02-09-06 12:35 Raymond        Note Edited: 0007976                         
 02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
 ======================================================================
 
 
