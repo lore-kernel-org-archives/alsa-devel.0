@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001807]: Sound playback hangs and loops on first buffer
-Date: Fri, 10 Feb 2006 02:38:52 +0100
-Message-ID: <7ccaffca452784310f6b59d2b659d2d6@bugtrack.alsa-project.org>
+Date: Fri, 10 Feb 2006 02:51:35 +0100
+Message-ID: <4986ab31fff813d1527a983a110192e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BDEC11B
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 02:38:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A2EC172
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 02:51:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ alsa)
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             02-02-2006 00:15 CET
-Last Modified:              02-10-2006 02:38 CET
+Last Modified:              02-10-2006 02:51 CET
 ======================================================================
 Summary:                    Sound playback hangs and loops on first buffer
 Description: 
@@ -50,15 +50,18 @@ Trying to play any sound or music produces a never ending loop of the first
 ======================================================================
 
 ----------------------------------------------------------------------
- hno - 02-03-06 05:02 
-----------------------------------------------------------------------
-my error. Not yet used to this bugtracker. Attached the file and wrote the
-comment in the same operation, and only the comment got saved..
-
-----------------------------------------------------------------------
  hno - 02-10-06 02:38 
 ----------------------------------------------------------------------
 Any ideas where to look?
+
+----------------------------------------------------------------------
+ rlrevell - 02-10-06 02:51 
+----------------------------------------------------------------------
+Sorry, I'm out of ideas.  Have you been able to figure out whether anyone
+else with this board has it working?
+
+I guess you could revert to the working version from Realtek until this is
+resolved...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +86,7 @@ Date Modified  Username       Field                    Change
 codec#3-working-to-latestnotworking.diff                    
 02-03-06 05:02 hno            Note Added: 0007891                          
 02-10-06 02:38 hno            Note Added: 0007980                          
+02-10-06 02:51 rlrevell       Note Added: 0007981                          
 ======================================================================
 
 
