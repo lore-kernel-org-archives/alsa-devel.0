@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
-Date: Fri, 10 Feb 2006 05:00:48 +0100
-Message-ID: <2a8a21991d439143d07b0d193d949041@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Fri, 10 Feb 2006 05:08:55 +0100
+Message-ID: <37039819f53763fd883234fd449d3483@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF798149
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 05:00:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4D48125
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 05:08:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,91 +24,150 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
 ======================================================================
-Reported By:                nostar
+Reported By:                ponchick
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1806
-Category:                   PCI - ice1712
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
-Date Submitted:             02-01-2006 23:06 CET
-Last Modified:              02-10-2006 05:00 CET
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              02-10-2006 05:08 CET
 ======================================================================
-Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
+Summary:                    oops in snd_mpu401_uart
 Description: 
-SPDIF output is non existant unless SPDIF In is connected to a valid output
-source.  Then, the signal on SPDIF output is typically just noise.  If I
-toggle between any internal clock setting and SPDIF In using
-envy24control, eventually I will get audible audio.  Using an o-scope on
-the wordclock output, I get flatline unless there is a valid SPDIF Input
-signal.  I can switch to an internal clock setting while there is an SPDIF
-In signal connected, and the Word Clock signal will be present, at the
-frequency of the SPDIF In signal though, and not the frequency of the
-selected internal clock frequency.
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
-======================================================================
 
 ----------------------------------------------------------------------
- perex - 02-08-06 09:24 
+ Raymond - 02-10-06 03:49 
 ----------------------------------------------------------------------
-nostar: I applied envy.diff to CVS. But for driver - I just like to confirm
-that only change in the driver is that the Word Clock GPIO bit is inverted
-for 1010LT. Ok? Is this tested? From your previous comments I guess that
-you have still problems with Word Clock syncing.
+I don't have any MPU401 device.
+
+May be you can try VORTEX_MPU401_LEGACY which switch back to use io port
+instead of mmio if wine is probing the mpu401 port 0x330, 300h, 310h, 320h
 
 ----------------------------------------------------------------------
- nostar - 02-10-06 05:00 
+ ponchick - 02-10-06 05:08 
 ----------------------------------------------------------------------
-1010lt_spdif_fixes.diff is a final patch for the driver.  This patch
-includes everything, so once again, disregard the others.  I added a
-control "Word Clock Status" for the 1010LT.  With this control, it now
-correctly updates between 'Locked' and 'No Signal' when
-connecting/disconnecting a valid spdif signal to SPDIF In.
+$ aplaymidi -l
+ Port    Client name                      Port name
+ 16:0    MPU-401 MIDI 0-0                 MPU-401 MIDI 0-0
 
-perex:  To answer your question, yes; the specific fix for spdif
-functionality on the 1010LT is the invert bit.   This completely fixes
-both SPDIF In and Out, and also Word Clock out. Still no Word Clock Input
-though.  I hope that you will add the GPIO register outputs to the proc
-call too, as it is invaluable in helping others on irc, etc get dual
-1010LT's set up correctly and other troubleshooting.  I will continue to
-investigate word clock input, but this fix gives me the long awaited
-ability to use dual 1010lt's for 16 track recording, so I'm going to to do
-some serious recording for a while first.
+# lspci -vvns 04:01.0
+04:01.0 0401: 12eb:0002 (rev fa)
+        Subsystem: 12eb:0001
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (1000ns min, 3000ns max), Cache Line Size 08
+        Interrupt: pin A routed to IRQ 225
+        Region 0: Memory at e5000000 (32-bit, non-prefetchable)
+[size=256K]
+        Region 1: I/O ports at a000 [size=8]
+        Region 2: I/O ports at a400 [size=8]
+        Capabilities: [dc] Power Management version 1
+                Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+
+Untainted kernel produce the same.
+
+Thanks a lot, VORTEX_MPU401_LEGACY really helps. Now wine works fine so I
+think category should be changed to au88x0.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-06 23:06 nostar         New Issue                                    
-02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
-    
-02-02-06 08:59 perex          Relationship added       related to 0001785  
-02-02-06 09:00 perex          Note Added: 0007871                          
-02-03-06 16:14 nostar         Note Added: 0007898                          
-02-06-06 11:41 nostar         Note Added: 0007947                          
-02-06-06 11:41 nostar         File Added: driver.diff                      
-02-06-06 12:03 nostar         Issue Monitored: nostar                      
-02-06-06 12:05 nostar         Note Added: 0007948                          
-02-06-06 12:05 nostar         File Added: envy.diff                        
-02-06-06 12:06 nostar         Note Edited: 0007947                         
-02-06-06 12:07 nostar         Note Edited: 0007947                         
-02-06-06 12:08 nostar         Note Edited: 0007948                         
-02-06-06 17:35 nostar         File Added: driver02.diff                    
-02-06-06 17:36 nostar         Note Added: 0007949                          
-02-08-06 09:24 perex          Note Added: 0007963                          
-02-10-06 05:00 nostar         Note Added: 0007985                          
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
 ======================================================================
 
 
