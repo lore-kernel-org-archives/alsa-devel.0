@@ -1,13 +1,14 @@
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: ALSA on ARM
-Date: Fri, 10 Feb 2006 09:29:21 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0602100926520.5397@localhost.localdomain>
-References: <2fd842840602092010t31458ecdt1119e30578277565@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Fri, 10 Feb 2006 15:29:54 +0100
+Message-ID: <b7861b9046aaa163b2e84d6254b4817a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <2fd842840602092010t31458ecdt1119e30578277565@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3B1A174
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 15:29:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,26 +18,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kawshol sharma <kawshol@gmail.com>
-Cc: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Feb 2006, Kawshol sharma wrote:
 
-> Hi All,
-> 
-> I need to use the ALSA on arm Linux (Mobilinix4), I understand that there
-> are some problems using this as the ABI for the Mobilinix is not compatible
-> to ALSA ( at least that is what MV says), but they also say that it is
-> possible to correct this. Can some one give me in-sight to this. what is the
-> problem and are there any hacks for this?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
+======================================================================
+Reported By:                darkbrain
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1318
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              02-10-2006 15:29 CET
+======================================================================
+Summary:                    Volume control per PCM
+Description: 
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
 
-Please contact MV for all Mobilinux issues and fixes.
+======================================================================
 
-This list is for ALSA with the mainline kernel.
+----------------------------------------------------------------------
+ Raymond - 02-10-06 12:59 
+----------------------------------------------------------------------
+Have you try cs46xx_dsp_scb_set_volume (struct snd_cs46xx * chip,
+					      struct dsp_scb_descriptor * scb,
+					      u16 left, u16 right)
+
+----------------------------------------------------------------------
+ darkbrain - 02-10-06 15:29 
+----------------------------------------------------------------------
+Yep the code is pratically identical. 
+Here is a comment taken from cs46xx_dsp_scb_types.h :
+/* Standard stereo volume control
+   Initialized by the host (host updates target volumes) 
+
+   Current volumes update by the DSP task
+   On mixer input streams: required & updated by the mixer subroutine in
+the
+                                   "parent" DSP task
+
+   On Tees, both current & target volumes are copied up on
+initialization,
+	   and, subsequently, the target volume is copied up while the current
+	   volume is copied down.
+     
+   These two 32-bit words are redefined for wavetable & 3-D voices.    
+*/
+It's seems that i need to write only the target volume and leave the dsp
+to change the current volume.
+But obviuslly it's doesn't work. only the left channel seems to be
+modified. Any way i don't know if this registry is what i'm modifying.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+01-10-06 12:55 darkbrain      Note Added: 0007548                          
+02-05-06 04:55 Raymond        Note Added: 0007929                          
+02-05-06 05:33 Raymond        Note Edited: 0007929                         
+02-05-06 13:19 darkbrain      Note Added: 0007932                          
+02-05-06 14:42 Raymond        Note Added: 0007934                          
+02-06-06 03:43 Raymond        Note Edited: 0007934                         
+02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
+02-07-06 21:05 darkbrain      Note Added: 0007960                          
+02-08-06 02:39 Raymond        Note Edited: 0007934                         
+02-08-06 03:24 Raymond        Note Added: 0007962                          
+02-08-06 03:31 Raymond        Note Edited: 0007962                         
+02-08-06 09:54 Raymond        Note Edited: 0007934                         
+02-08-06 10:41 darkbrain      Note Added: 0007964                          
+02-09-06 08:06 Raymond        Note Added: 0007970                          
+02-09-06 08:11 Raymond        Note Edited: 0007970                         
+02-09-06 10:37 Raymond        Note Deleted: 0007970                        
+02-10-06 12:59 Raymond        Note Added: 0008002                          
+02-10-06 15:29 darkbrain      Note Added: 0008005                          
+======================================================================
 
 
-Nicolas
 
 
 -------------------------------------------------------
