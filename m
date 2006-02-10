@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001836]: Cannot capture sound on Shark Predator ISA (AD1816a based)
-Date: Fri, 10 Feb 2006 07:50:42 +0100
-Message-ID: <39e28101ab3e59ef61afed7b18831f87@bugtrack.alsa-project.org>
+Date: Fri, 10 Feb 2006 08:04:11 +0100
+Message-ID: <604981a9e2f32090c11a19ded8ecaf76@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDB7B194
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 07:50:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A556914F
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 08:04:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandrake Linux
 Kernel Version:             2.6.8.1-12mdk
 ======================================================================
 Date Submitted:             02-10-2006 07:28 CET
-Last Modified:              02-10-2006 07:50 CET
+Last Modified:              02-10-2006 08:04 CET
 ======================================================================
 Summary:                    Cannot capture sound on Shark Predator ISA (AD1816a
 based)
@@ -113,6 +113,77 @@ e800-e81f : 0000:00:07.3
 The above statement about nobody else using the driver seems to be wrong,
 since other people have reported ad1816a bugs.
 
+----------------------------------------------------------------------
+ arromdee - 02-10-06 08:04 
+----------------------------------------------------------------------
+In /proc/asound:
+
+cards:
+0 [AD1816A        ]: AD1816A - ADI SoundPort AD1816A
+                     ADI SoundPort AD1816A, SS at 0x500, irq 5, dma 1&3
+devices:
+  0: [0- 0]: ctl
+  4: [0- 0]: hardware dependent
+  8: [0- 0]: raw midi
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  1:       : sequencer
+ 33:       : timer
+
+hwdep:
+00-00: OPL3 FM
+
+modules:
+0 snd-ad1816a
+
+pcm:
+00-00: AD1816A : AD1816A : playback 1 : capture 1
+
+timers:
+G0: system timer : 1000.000us (10000000 ticks)
+C0-1: AdLib timer #1 : 80.000us (256 ticks)
+C0-2: AdLib timer #2 : 320.000us (256 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+
+version:
+Advanced Linux Sound Architecture Driver Version 1.0.6.
+Compiled on Oct  1 2004 for kernel 2.6.8.1-12mdk.
+
+/proc/asound/card0/id:
+AD1816A
+
+/proc/asound/card0/pcm0c/info:
+card: 0
+device: 0
+subdevice: 0
+stream: CAPTURE
+id: AD1816A
+name: AD1816A
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+prealloc is 64, and head, status, and sw_params are closed.
+
+/proc/asound/card0/pcm0p/info:
+
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: AD1816A
+name: AD1816A
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+prealloc is 64, and head, status, and sw_params are closed.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -120,6 +191,7 @@ Date Modified  Username       Field                    Change
 02-10-06 07:28 arromdee       Distribution              => Mandrake Linux  
 02-10-06 07:28 arromdee       Kernel Version            => 2.6.8.1-12mdk   
 02-10-06 07:50 arromdee       Note Added: 0007994                          
+02-10-06 08:04 arromdee       Note Added: 0007995                          
 ======================================================================
 
 
