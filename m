@@ -1,11 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Sampling PCM data inside driver for DC offset correction
-Date: Fri, 10 Feb 2006 10:33:50 +1030 (CST)
-Message-ID: <200602100003.k1A03o7Q002863@auster.physics.adelaide.edu.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001807]: Sound playback hangs and loops on first buffer
+Date: Fri, 10 Feb 2006 02:38:52 +0100
+Message-ID: <7ccaffca452784310f6b59d2b659d2d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BDEC11B
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 02:38:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,36 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all
 
-I am pondering the possibility of adding a DC level correction to ALSA (or
-at least the hda/ALC260 driver).  The ALC260 (among other Realtek codecs)
-suffers from an appreciable DC offset which makes metering somewhat
-confusing.  The problem is that the actual value of the DC offset depends on
-the chip, so a static value programmed into the driver isn't going to work.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1807> 
+======================================================================
+Reported By:                hno
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1807
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5 test 2 + relevant updates (kernel,
+alsa)
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             02-02-2006 00:15 CET
+Last Modified:              02-10-2006 02:38 CET
+======================================================================
+Summary:                    Sound playback hangs and loops on first buffer
+Description: 
+Trying to play any sound or music produces a never ending loop of the first
+1/2 second or so.
+======================================================================
 
-What I was thinking of was to grab a short sample of PCM data during driver
-setup and using this to deduce the nominal DC offset.  This would then be
-applied to outgoing capture data, probably as it's copied to userspace.
+----------------------------------------------------------------------
+ hno - 02-03-06 05:02 
+----------------------------------------------------------------------
+my error. Not yet used to this bugtracker. Attached the file and wrote the
+comment in the same operation, and only the comment got saved..
 
-So the questions are:
+----------------------------------------------------------------------
+ hno - 02-10-06 02:38 
+----------------------------------------------------------------------
+Any ideas where to look?
 
- 1) does this kind of thing belong in the ALSA driver, or is it something
-    for ALSA lib?  Using the plug layer isn't an option since I want the DC
-    correction to be active for jack, which uses hw for (AFAIK) performance
-    reasons.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-02-06 00:15 hno            New Issue                                    
+02-02-06 00:15 hno            Distribution              => Fedora Core 5 test 2
++ relevant updates (kernel, alsa)
+02-02-06 00:15 hno            Kernel Version            => 2.6.15          
+02-02-06 00:40 rlrevell       Note Added: 0007865                          
+02-02-06 02:42 hno            Note Added: 0007867                          
+02-02-06 03:46 hno            Note Added: 0007868                          
+02-02-06 18:41 hno            Note Added: 0007879                          
+02-02-06 19:07 rlrevell       Note Added: 0007881                          
+02-03-06 02:43 hno            Note Added: 0007885                          
+02-03-06 02:54 rlrevell       File Added: 1.0.9-diff                       
+02-03-06 02:57 rlrevell       Note Added: 0007886                          
+02-03-06 04:03 hno            Note Added: 0007887                          
+02-03-06 04:28 rlrevell       Note Added: 0007888                          
+02-03-06 04:44 hno            Note Added: 0007889                          
+02-03-06 04:57 rlrevell       Note Added: 0007890                          
+02-03-06 04:58 hno            File Added:
+codec#3-working-to-latestnotworking.diff                    
+02-03-06 05:02 hno            Note Added: 0007891                          
+02-10-06 02:38 hno            Note Added: 0007980                          
+======================================================================
 
- 2) if a kernel solution is appropriate, how does one go about capturing
-    a single short buffer of samples within the kernel driver itself?
 
- 3) any other suggestions as to how best to effect such a correction?
-
-Regards
-  jonathan
 
 
 -------------------------------------------------------
