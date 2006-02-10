@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001302]: Clicking noise when using kphone with the ALSA AD1816A sound driver
-Date: Fri, 10 Feb 2006 07:35:20 +0100
-Message-ID: <ac933d2516405d09621bf6369aba6e31@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001836]: Cannot capture sound on Shark Predator ISA (AD1816a based)
+Date: Fri, 10 Feb 2006 07:50:42 +0100
+Message-ID: <39e28101ab3e59ef61afed7b18831f87@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A782194
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 07:35:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDB7B194
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 07:50:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,102 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1302> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1836> 
 ======================================================================
-Reported By:                tek01
+Reported By:                arromdee
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1302
+Issue ID:                   1836
 Category:                   ISA - ad1816a
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             vanilla 2.6.11.12, vanilla 2.6.10, Debians 2.6.8-2
+Distribution:               Mandrake Linux
+Kernel Version:             2.6.8.1-12mdk
 ======================================================================
-Date Submitted:             08-02-2005 17:29 CEST
-Last Modified:              02-10-2006 07:35 CET
+Date Submitted:             02-10-2006 07:28 CET
+Last Modified:              02-10-2006 07:50 CET
 ======================================================================
-Summary:                    Clicking noise when using kphone with the ALSA
-AD1816A sound driver
+Summary:                    Cannot capture sound on Shark Predator ISA (AD1816a
+based)
 Description: 
-Using kphone (VoIP softphone) with the ALSA native API and the AD1816A
-sound driver a continuous clicking noise is heard approximately 3 times
-per second. Using the OSS AD1816 with kphone(OSS API) sound driver on the
-same system and kernel audio is crystal clear. Also audio latency is much
-higher (0.3-0.5s guessed) compared to the OSS AD1816 (<0.1s, also guessed)
-sound driver.
+Attempting to capture sound using arecord produces the following error:
+
+arecord: pcm_read:1196: read error: Input/output error
+
+The resulting capture file is always 44 bytes long (basically empty).
+
+Capturing sound works fine under Windows 98.
+
+I've never tried to capture sound before this and my guess is that nobody
+other than me uses this driver.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001300 modprobe goes into D-state when inserti...
-======================================================================
 
 ----------------------------------------------------------------------
- tek01 - 11-07-05 13:17 
+ arromdee - 02-10-06 07:50 
 ----------------------------------------------------------------------
-I did some tests last weekend using Linux 2.6.14 and the in kernel ALSA,
-ALSA 1.0.10rc2 and CVS from last Friday.
-The ALSA version does not matter, however enabling preemption seems to
-make the problem worse, whereas putting some load on the CPU (f.e.
-compiling a kernel) with preemption disabled seems to almost cure the
-problem.
+The card is PNP.  I have no /etc/modules.conf or conf.modules.  The driver
+for the card is loaded by having several lines in /etc/rc.d/rc.local:
 
-I removed the sound card from my main test box, an AMD K7@800MHz and
-plugged it into an old Pentium 133 box running a Debian 2.6.8 kernel. The
-card is working fine in this box, however audio latency is still somewhat
-higher than with the OSS driver, but within acceptable limits.
+modprobe snd
+modprobe snd-ad1816a
+modprobe snd-pcm-oss
+modprobe snd-seq-oss
+modprobe snd-mixer-oss
 
-----------------------------------------------------------------------
- arromdee - 02-10-06 07:35 
-----------------------------------------------------------------------
-This sounds like my recent patch could have fixed this.  A function was
-checking the bit pattern of its inputs to determine whether it was doing
-capture or playback, but unfortunately capture and playback share the same
-bit pattern, so turning on capture always turned on playback and produced
-a continuous noise several times a second.  The noise depended on what
-sound had been last played and thus could be louder or softer depending on
-circumstances.
+/proc% cat dma
+ 1: AD1816A - 1
+ 3: AD1816A - 2
+ 4: cascade
+/proc% cat ioports
+0000-001f : dma1
+0020-0021 : pic1
+0040-005f : timer
+0060-006f : keyboard
+0080-008f : dma page reg
+00a0-00a1 : pic2
+00c0-00df : dma2
+00f0-00ff : fpu
+0170-0177 : ide1
+01f0-01f7 : ide0
+0200-0207 : ns558-pnp
+0213-0213 : ISAPnP
+02f8-02ff : serial
+0300-0301 : MPU401 UART
+0376-0376 : ide1
+0388-0389 : OPL2/3 (left)
+038a-038b : OPL2/3 (right)
+03c0-03df : vga+
+03f6-03f6 : ide0
+03f8-03ff : serial
+0500-050f : AD1816A
+0a79-0a79 : isapnp write
+0cf8-0cff : PCI conf1
+5000-500f : 0000:00:07.4
+6000-607f : 0000:00:07.4
+  6000-607f : via686a-sensor
+d000-dfff : PCI Bus #01
+  d000-d0ff : 0000:01:00.0
+e000-e00f : 0000:00:07.1
+  e000-e007 : ide0
+  e008-e00f : ide1
+e400-e41f : 0000:00:07.2
+  e400-e41f : uhci_hcd
+e800-e81f : 0000:00:07.3
+  e800-e81f : uhci_hcd
+
+The above statement about nobody else using the driver seems to be wrong,
+since other people have reported ad1816a bugs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-02-05 17:29 tek01          New Issue                                    
-08-02-05 17:29 tek01          Distribution              => Debian Sarge    
-08-02-05 17:29 tek01          Kernel Version            => vanilla 2.6.11.12,
-vanilla 2.6.10, Debians 2.6.8-2
-08-02-05 18:27 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-08-03-05 10:11 perex          Relationship added       related to 0001300  
-08-03-05 10:20 perex          Note Added: 0005613                          
-08-03-05 12:09 tiwai          Note Added: 0005618                          
-08-03-05 12:10 tiwai          Note Added: 0005619                          
-10-31-05 17:48 rlrevell       Note Added: 0006588                          
-11-07-05 13:17 tek01          Note Added: 0006614                          
-01-12-06 03:43 Adrian Bunk    Issue End Monitor: Adrian Bunk                    
-02-10-06 07:35 arromdee       Note Added: 0007993                          
+02-10-06 07:28 arromdee       New Issue                                    
+02-10-06 07:28 arromdee       Distribution              => Mandrake Linux  
+02-10-06 07:28 arromdee       Kernel Version            => 2.6.8.1-12mdk   
+02-10-06 07:50 arromdee       Note Added: 0007994                          
 ======================================================================
 
 
