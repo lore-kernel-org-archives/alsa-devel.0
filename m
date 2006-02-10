@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Fri, 10 Feb 2006 11:30:28 +0100
-Message-ID: <7874cd031d436952f828c80eb9875fdd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Fri, 10 Feb 2006 12:59:16 +0100
+Message-ID: <5bd5b25b91a6f26eeb0b672e6317ca83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D8B318B
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 11:30:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA15A18B
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 12:59:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,167 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
 ======================================================================
-Reported By:                ponchick
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1833
-Category:                   GENERIC - mpu401
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1318
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo
-Kernel Version:             gentoo-sources-2.6.15-r4
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              02-10-2006 11:30 CET
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              02-10-2006 12:59 CET
 ======================================================================
-Summary:                    oops in snd_mpu401_uart
+Summary:                    Volume control per PCM
 Description: 
-I don't know what exactly happend but when I run wine or winecfg it
-segfaulted. dmesg shows following:
-Unable to handle kernel paging request at 0000000010228800 RIP:
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-PGD 6e57067 PUD 0
-Oops: 0002 [1] PREEMPT SMP
-CPU 1
-Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
-snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
-snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
-snd_seq_device snd soundcore nvidia sky2
-Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
-RIP: 0010:[<ffffffff884ca00c>]
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
-RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
-RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
-RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
-R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
-FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
-knlGS:00000000556cb920
-CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
-CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
-Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
-ffff810002178440)
-Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
-ff00000000000286
-       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
-ffff81003eb606c0
-       0000000000000000 ffff81003d7c3bd0
-Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
-       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
-       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
-       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
-       <ffffffff80397b49>{_spin_lock+27}
-<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
-       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
-       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
-       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
-       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
-       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
-       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
-       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
-       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
-<ffffffff8018075f>{__link_path_walk+3332}
-       <ffffffff80397b0c>{__lock_text_start+20}
-<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
-       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
-<ffffffff8017ab11>{chrdev_open+454}
-       <ffffffff8017a94b>{chrdev_open+0}
-<ffffffff80171031>{__dentry_open+310}
-       <ffffffff8017118d>{nameidata_to_filp+34}
-<ffffffff801711d6>{filp_open+58}
-       <ffffffff801713d4>{get_unused_fd+234}
-<ffffffff80171533>{do_sys_open+81}
-       <ffffffff8011e57f>{sysenter_do_call+27}
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
 
-Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
-RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
-<ffff81003564f8f0>
-CR2: 0000000010228800
- <6>note: wine-preloader[11110] exited with preempt_count 1
-
-I use standalone alsa-driver (kernel one is out of date and doesn't
-support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
-gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
 
 ----------------------------------------------------------------------
- ponchick - 02-10-06 10:09 
+ darkbrain - 02-08-06 10:41 
 ----------------------------------------------------------------------
-Seems like it doesn't have spdif. I don't know how it looks like but found
-there only AUX, TAD, CD_IN and wavetable connectors. I take pictures (not
-very good) of this card here - http://www6.krasu.ru/au88x0/ . Hope they
-help identify this card.
-Also I have soundmax onboard soundcard (ICH7) but it disabled for now (no
-hw mixing so I just don't compile it's modules). I can try use it for
-testing of snd_mpu401_uart if it possible.
-
-# lspci -vvns 00:1b.0
-00:1b.0 0403: 8086:27d8 (rev 01)
-        Subsystem: 1458:a102
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 08
-        Interrupt: pin A routed to IRQ 12
-        Region 0: Memory at e5100000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+It's not that the point. This patch want to use a mixer slider to change
+the volume for the first only subdevice, it's only a test. The volume
+changes but incorrectlly, i've got an hardware problem, without
+documentation of the chip i can't fix it, and without any help we'll never
+have this feature. 
+But is there any mantainer? It was past 7 months and no one drop me a line
+of documentation, hardware registry or similar, is this driver dead?
 
 ----------------------------------------------------------------------
- Raymond - 02-10-06 11:30 
+ Raymond - 02-10-06 12:59 
 ----------------------------------------------------------------------
-Do wine probe the joystick port 0x200, 0x201, 0x202, 0x203, ..., 0x207 
-
-or gameport (mmio) can be used by wine on 64-bits platform ?
+Have you try cs46xx_dsp_scb_set_volume (struct snd_cs46xx * chip,
+					      struct dsp_scb_descriptor * scb,
+					      u16 left, u16 right)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-06 08:33 ponchick       New Issue                                    
-02-09-06 08:33 ponchick       Distribution              => gentoo          
-02-09-06 08:33 ponchick       Kernel Version            =>
-gentoo-sources-2.6.15-r4
-02-09-06 09:12 Raymond        Note Added: 0007971                          
-02-09-06 09:32 Raymond        Note Added: 0007973                          
-02-09-06 11:57 ponchick       Note Added: 0007975                          
-02-09-06 12:32 Raymond        Note Added: 0007976                          
-02-09-06 12:35 Raymond        Note Edited: 0007976                         
-02-10-06 03:06 Raymond        Note Added: 0007982                          
-02-10-06 03:11 rlrevell       Note Added: 0007983                          
-02-10-06 03:49 Raymond        Note Added: 0007984                          
-02-10-06 05:08 ponchick       Note Added: 0007986                          
-02-10-06 05:36 Raymond        Note Added: 0007988                          
-02-10-06 06:03 Raymond        Note Added: 0007990                          
-02-10-06 10:09 ponchick       Note Added: 0007997                          
-02-10-06 11:30 Raymond        Note Added: 0008001                          
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+01-10-06 12:55 darkbrain      Note Added: 0007548                          
+02-05-06 04:55 Raymond        Note Added: 0007929                          
+02-05-06 05:33 Raymond        Note Edited: 0007929                         
+02-05-06 13:19 darkbrain      Note Added: 0007932                          
+02-05-06 14:42 Raymond        Note Added: 0007934                          
+02-06-06 03:43 Raymond        Note Edited: 0007934                         
+02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
+02-07-06 21:05 darkbrain      Note Added: 0007960                          
+02-08-06 02:39 Raymond        Note Edited: 0007934                         
+02-08-06 03:24 Raymond        Note Added: 0007962                          
+02-08-06 03:31 Raymond        Note Edited: 0007962                         
+02-08-06 09:54 Raymond        Note Edited: 0007934                         
+02-08-06 10:41 darkbrain      Note Added: 0007964                          
+02-09-06 08:06 Raymond        Note Added: 0007970                          
+02-09-06 08:11 Raymond        Note Edited: 0007970                         
+02-09-06 10:37 Raymond        Note Deleted: 0007970                        
+02-10-06 12:59 Raymond        Note Added: 0008002                          
 ======================================================================
 
 
