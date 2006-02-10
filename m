@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
-Date: Fri, 10 Feb 2006 23:27:52 +0100
-Message-ID: <8a6f920c77a5c9668f8370fbce04b4d0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001824]: Always mixed into one channel when recording stereo
+Date: Fri, 10 Feb 2006 23:38:19 +0100
+Message-ID: <b0b0e8bf3d89e53b9a4a6138f2227bde@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0CF2185
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 23:27:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C22D185
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 23:38:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1824> 
 ======================================================================
-Reported By:                graabein
-Assigned To:                tiwai
+Reported By:                Electro
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1838
-Category:                   PCI - hda-intel
+Issue ID:                   1824
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15-1.1831_FC4smp
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-gentoo-r4
 ======================================================================
-Date Submitted:             02-10-2006 23:27 CET
-Last Modified:              02-10-2006 23:27 CET
+Date Submitted:             02-06-2006 06:56 CET
+Last Modified:              02-10-2006 23:38 CET
 ======================================================================
-Summary:                    Unknown model for ALC880 again, First International
-Computer p4m-915gd1 no sound
+Summary:                    Always mixed into one channel when recording stereo
 Description: 
-I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
-sound. There are no error messages and I can play content all I want, I
-just don't get any sound.
-
-The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
-Channel, Realtek ALC880":
-http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
-
-I've found other, similar reports here in the bug tracker (#1460, #1563,
-#1589), including reports that this problem was resolved as of 1.0.11rc1.
-
-Accordingly, I tried compiling alsa from cvs sources as of today, but this
-made no difference. I still have no sound.
-
+When recording stereo audio (2 channels), the sound seems to mix to one
+channel and then saved in the left track. I do not have anything in
+asound.conf or ~/.asoundrc that will affect the recordings. I even cleared
+them out to make sure that my code is not screwing up the recordings. It
+has done this since I upgraded to 1.0.10 from 1.0.9. I thought 1.0.11rc3
+will fix the problem but it still does it.
 ======================================================================
+
+----------------------------------------------------------------------
+ tartif - 02-10-06 23:38 
+----------------------------------------------------------------------
+This sounds identical to bug 1527. It looks like an alsa-lib problem that
+doesn't correctly set the recording source for the right channel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-10-06 23:27 graabein       New Issue                                    
-02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
-02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
+02-06-06 06:56 Electro        New Issue                                    
+02-06-06 06:56 Electro        Distribution              => Gentoo          
+02-06-06 06:56 Electro        Kernel Version            => 2.6.14-gentoo-r4
+02-10-06 23:38 tartif         Note Added: 0008009                          
 ======================================================================
 
 
