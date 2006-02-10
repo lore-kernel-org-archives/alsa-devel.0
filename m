@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001318]: Volume control per PCM
-Date: Fri, 10 Feb 2006 15:29:54 +0100
-Message-ID: <b7861b9046aaa163b2e84d6254b4817a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001837]: No PCM, no Volume
+Date: Fri, 10 Feb 2006 18:14:11 +0100
+Message-ID: <1a90585d3f130aad6a6279a4b183e6e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3B1A174
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 15:29:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB08D178
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 18:14:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,94 +22,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1837> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                corrosion
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1318
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1837
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-07-2005 14:45 CEST
-Last Modified:              02-10-2006 15:29 CET
+Date Submitted:             02-10-2006 18:14 CET
+Last Modified:              02-10-2006 18:14 CET
 ======================================================================
-Summary:                    Volume control per PCM
+Summary:                    No PCM, no Volume
 Description: 
-Hi, i'm trying to implement a volume control per PCM streams, i've attached
-a function that does the job. Unfortunally when it change the volume it
-also change the equalizer cutting off low frequencyes. I think 
-there is a problem with the second poke, infact withot that poke, the
-volume works correctly for left case. Any suggestion? Any documentation?
-Thanks,
-   Dino
-
+I use KDE and in KMix and alsamixer, doesn't appear a Volume slider and a
+PCM slider. Skype and TeamSpeak don't work with this card.
+Soundcard model is: SB0570
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 02-10-06 12:59 
-----------------------------------------------------------------------
-Have you try cs46xx_dsp_scb_set_volume (struct snd_cs46xx * chip,
-					      struct dsp_scb_descriptor * scb,
-					      u16 left, u16 right)
-
-----------------------------------------------------------------------
- darkbrain - 02-10-06 15:29 
-----------------------------------------------------------------------
-Yep the code is pratically identical. 
-Here is a comment taken from cs46xx_dsp_scb_types.h :
-/* Standard stereo volume control
-   Initialized by the host (host updates target volumes) 
-
-   Current volumes update by the DSP task
-   On mixer input streams: required & updated by the mixer subroutine in
-the
-                                   "parent" DSP task
-
-   On Tees, both current & target volumes are copied up on
-initialization,
-	   and, subsequently, the target volume is copied up while the current
-	   volume is copied down.
-     
-   These two 32-bit words are redefined for wavetable & 3-D voices.    
-*/
-It's seems that i need to write only the target volume and leave the dsp
-to change the current volume.
-But obviuslly it's doesn't work. only the left channel seems to be
-modified. Any way i don't know if this registry is what i'm modifying.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-07-05 14:45 darkbrain      New Issue                                    
-08-07-05 14:45 darkbrain      File Added: volume.c                         
-08-13-05 10:43 darkbrain      Note Added: 0005802                          
-01-10-06 12:55 darkbrain      Note Added: 0007548                          
-02-05-06 04:55 Raymond        Note Added: 0007929                          
-02-05-06 05:33 Raymond        Note Edited: 0007929                         
-02-05-06 13:19 darkbrain      Note Added: 0007932                          
-02-05-06 14:42 Raymond        Note Added: 0007934                          
-02-06-06 03:43 Raymond        Note Edited: 0007934                         
-02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
-02-07-06 21:05 darkbrain      Note Added: 0007960                          
-02-08-06 02:39 Raymond        Note Edited: 0007934                         
-02-08-06 03:24 Raymond        Note Added: 0007962                          
-02-08-06 03:31 Raymond        Note Edited: 0007962                         
-02-08-06 09:54 Raymond        Note Edited: 0007934                         
-02-08-06 10:41 darkbrain      Note Added: 0007964                          
-02-09-06 08:06 Raymond        Note Added: 0007970                          
-02-09-06 08:11 Raymond        Note Edited: 0007970                         
-02-09-06 10:37 Raymond        Note Deleted: 0007970                        
-02-10-06 12:59 Raymond        Note Added: 0008002                          
-02-10-06 15:29 darkbrain      Note Added: 0008005                          
+02-10-06 18:14 corrosion      New Issue                                    
 ======================================================================
 
 
