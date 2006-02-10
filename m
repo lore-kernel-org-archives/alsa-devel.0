@@ -1,11 +1,14 @@
-From: Kawshol sharma <kawshol@gmail.com>
-Subject: ALSA on ARM
-Date: Fri, 10 Feb 2006 09:40:24 +0530
-Message-ID: <2fd842840602092010t31458ecdt1119e30578277565@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Fri, 10 Feb 2006 05:36:55 +0100
+Message-ID: <588d4764ac010448aae9267fc4a9ae62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_5223_5090714.1139544624582"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F6B1191
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 05:36:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,54 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_5223_5090714.1139544624582
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Hi All,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1726
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
+======================================================================
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              02-10-2006 05:36 CET
+======================================================================
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
+Description: 
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
 
-I need to use the ALSA on arm Linux (Mobilinix4), I understand that there
-are some problems using this as the ABI for the Mobilinix is not compatible
-to ALSA ( at least that is what MV says), but they also say that it is
-possible to correct this. Can some one give me in-sight to this. what is th=
-e
-problem and are there any hacks for this?
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
 
-It is something to do with the ARM cache and memory ( that is what I read
-form the net), can some one describe me so that I can put a hack around
-that.
+Playing stereo sound is OK.
 
-Thanks for the help in advance.
 
---
-Kawshol Sharma
+ speaker-test -c4 -D hw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
 
-------=_Part_5223_5090714.1139544624582
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+======================================================================
 
-<div>Hi All,</div>
-<div>&nbsp;</div>
-<div>I need to use the ALSA on arm Linux (Mobilinix4), I understand that th=
-ere are some problems using this as the ABI for the Mobilinix is not compat=
-ible to ALSA ( at least that is what MV says), but they also say that it is=
- possible to correct this. Can some one give me in-sight to this. what is t=
-he problem and are there any hacks for this?
-</div>
-<div>&nbsp;</div>
-<div>It is something to do with the ARM cache and memory ( that is what I r=
-ead form the net), can some one describe me so that I can put a hack around=
- that.</div>
-<div>&nbsp;</div>
-<div>Thanks for the help in advance.<br clear=3D"all"><br>-- <br>Kawshol Sh=
-arma <br>&nbsp;</div>
+----------------------------------------------------------------------
+ Raymond - 02-04-06 06:26 
+----------------------------------------------------------------------
+Would anyone has au8810, au8820 and au8830 sound card test this patch ?
 
-------=_Part_5223_5090714.1139544624582--
+----------------------------------------------------------------------
+ ponchick - 02-10-06 05:36 
+----------------------------------------------------------------------
+Very hard to check this with mono headphone but seems thats right. Tonight
+I test it at home and if so I try this patch.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
