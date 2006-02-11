@@ -1,128 +1,42 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001318]: Volume control per PCM
-Date: Sat, 11 Feb 2006 14:30:27 +0100
-Message-ID: <35bb254cab0eb8cb88039b23a7d4ac01@bugtrack.alsa-project.org>
+From: Nick <nick@linicks.net>
+Subject: Re: [Alsa-devel] Re: ALSA - pnp OS bios option
+Date: Sat, 11 Feb 2006 13:56:07 +0000
+Message-ID: <7c3341450602110556u75c4bfffq@mail.gmail.com>
+References: <200601092022.56244.nick@linicks.net>
+	 <200601101759.20707.nick@linicks.net> <s5hek3geyup.wl%tiwai@suse.de>
+	 <200602111054.50947.nick@linicks.net>
+Reply-To: Nick <nick@linicks.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0D3D1A8
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 14:30:27 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932289AbWBKN4K@vger.kernel.org>
+In-Reply-To: <200602111054.50947.nick@linicks.net>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> Ummm.  At the command line, same errors also.  So I deleted /etc/asound.state
+> and reconfigured alsamixer from scratch.  Then following 'alsactl store',
+> 'alsactl restore' completes without issue (i.e. works clean).
+>
+> If I then reboot, the same damn control #47 errors happen again.  It's as if
+> something changes my asound.state file at boot time time?
+>
+> Ideas?  This is driving me potty.
+>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
-======================================================================
-Reported By:                darkbrain
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1318
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-07-2005 14:45 CEST
-Last Modified:              02-11-2006 14:30 CET
-======================================================================
-Summary:                    Volume control per PCM
-Description: 
-Hi, i'm trying to implement a volume control per PCM streams, i've attached
-a function that does the job. Unfortunally when it change the volume it
-also change the equalizer cutting off low frequencyes. I think 
-there is a problem with the second poke, infact withot that poke, the
-volume works correctly for left case. Any suggestion? Any documentation?
-Thanks,
-   Dino
+OK, talking to myself (testing, testing, 1-2-3) - I have resolved this
+issue after spending 2 hours trying to get my Mic to work again in
+Teamspeak (why is there _so_ many frigging mixers
+(alsamixer/amixer/aumix/kmix/arts) that all seem to do different
+things...
 
-======================================================================
+I updated alsa-lib and alsa-utils to1.0.11rc3/rc2   This fixed my issues.
 
-----------------------------------------------------------------------
- Raymond - 02-11-06 03:00 
-----------------------------------------------------------------------
-It seem that when you change "DAC Volume", cs46xx_dsp_set_dac_volume() will
-set all scb to the same volume. This is the major problem which you have
-to solve
+Now the question - there have been a lot of alsa changes (since my
+alsa-tools was built Slack 10) - do we need to keep the alsa tools and
+stuff current too?
 
-
-	/* main output */
-	scb = ins->master_mix_scb->sub_list_ptr;
-	while (scb != ins->the_null_scb) {
-		cs46xx_dsp_scb_set_volume (chip,scb,left,right);
-		scb = scb->next_scb_ptr;
-	}
-
-	/* rear output */
-	scb = ins->rear_mix_scb->sub_list_ptr;
-	while (scb != ins->the_null_scb) {
-		cs46xx_dsp_scb_set_volume (chip,scb,left,right);
-		scb = scb->next_scb_ptr;
-	}
-
-
-
-----------------------------------------------------------------------
- darkbrain - 02-11-06 14:30 
-----------------------------------------------------------------------
-No it's not a problem. Infact  "DAC Volume" changes master_mix_scb and my
-patch wants to modify pcm_reader_scb. I've tested it.
-Btw stopping and restarting playback, the pcm volume goes right, so i
-suspect that there is a way to set the initial volume and a different one
-to change it, but i have no documentation.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-07-05 14:45 darkbrain      New Issue                                    
-08-07-05 14:45 darkbrain      File Added: volume.c                         
-08-13-05 10:43 darkbrain      Note Added: 0005802                          
-01-10-06 12:55 darkbrain      Note Added: 0007548                          
-02-05-06 04:55 Raymond        Note Added: 0007929                          
-02-05-06 05:33 Raymond        Note Edited: 0007929                         
-02-05-06 13:19 darkbrain      Note Added: 0007932                          
-02-05-06 14:42 Raymond        Note Added: 0007934                          
-02-06-06 03:43 Raymond        Note Edited: 0007934                         
-02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
-02-07-06 21:05 darkbrain      Note Added: 0007960                          
-02-08-06 02:39 Raymond        Note Edited: 0007934                         
-02-08-06 03:24 Raymond        Note Added: 0007962                          
-02-08-06 03:31 Raymond        Note Edited: 0007962                         
-02-08-06 09:54 Raymond        Note Edited: 0007934                         
-02-08-06 10:41 darkbrain      Note Added: 0007964                          
-02-09-06 08:06 Raymond        Note Added: 0007970                          
-02-09-06 08:11 Raymond        Note Edited: 0007970                         
-02-09-06 10:37 Raymond        Note Deleted: 0007970                        
-02-10-06 12:59 Raymond        Note Added: 0008002                          
-02-10-06 15:29 darkbrain      Note Added: 0008005                          
-02-11-06 02:38 Raymond        Note Added: 0008011                          
-02-11-06 02:51 Raymond        Note Edited: 0007962                         
-02-11-06 02:53 Raymond        Note Edited: 0008011                         
-02-11-06 03:00 Raymond        Note Edited: 0008011                         
-02-11-06 14:30 darkbrain      Note Added: 0008017                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
-for problems?  Stop!  Download the new AJAX search engine that makes
-searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+Nick
