@@ -1,42 +1,102 @@
-From: Nick <nick@linicks.net>
-Subject: Re: [Alsa-devel] Re: ALSA - pnp OS bios option
-Date: Sat, 11 Feb 2006 13:56:07 +0000
-Message-ID: <7c3341450602110556u75c4bfffq@mail.gmail.com>
-References: <200601092022.56244.nick@linicks.net>
-	 <200601101759.20707.nick@linicks.net> <s5hek3geyup.wl%tiwai@suse.de>
-	 <200602111054.50947.nick@linicks.net>
-Reply-To: Nick <nick@linicks.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Sat, 11 Feb 2006 15:01:18 +0100
+Message-ID: <13e7b61b3d1fa086a9121e81f0d6a9e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932289AbWBKN4K@vger.kernel.org>
-In-Reply-To: <200602111054.50947.nick@linicks.net>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D780F1A8
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 15:01:18 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Ummm.  At the command line, same errors also.  So I deleted /etc/asound.state
-> and reconfigured alsamixer from scratch.  Then following 'alsactl store',
-> 'alsactl restore' completes without issue (i.e. works clean).
->
-> If I then reboot, the same damn control #47 errors happen again.  It's as if
-> something changes my asound.state file at boot time time?
->
-> Ideas?  This is driving me potty.
->
 
-OK, talking to myself (testing, testing, 1-2-3) - I have resolved this
-issue after spending 2 hours trying to get my Mic to work again in
-Teamspeak (why is there _so_ many frigging mixers
-(alsamixer/amixer/aumix/kmix/arts) that all seem to do different
-things...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+======================================================================
+Reported By:                darkbrain
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1823
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              02-11-2006 15:01 CET
+======================================================================
+Summary:                    surround40 memory leak
+Description: 
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
+======================================================================
 
-I updated alsa-lib and alsa-utils to1.0.11rc3/rc2   This fixed my issues.
+----------------------------------------------------------------------
+ darkbrain - 02-06-06 18:37 
+----------------------------------------------------------------------
+I'm beginning to think that is not a memory leak problem or similar but a
+syncing one. Infact if i use a ruote device type such as:
+pcm.quad {
+        type route
+        slave.pcm "surround40:0"
+        slave.channels  4
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+}
+ctl.quad { type hw; card 0; }
 
-Now the question - there have been a lot of alsa changes (since my
-alsa-tools was built Slack 10) - do we need to keep the alsa tools and
-stuff current too?
+and i play an mp3 throught quad, it results out of sync. Does pcm type
+multi, used for surround40, trying to sync 2 device?
 
-Nick
+----------------------------------------------------------------------
+ darkbrain - 02-11-06 15:01 
+----------------------------------------------------------------------
+The problem is the same of the issue: "Front / rear out of sync" witch is
+closed. Anyway that issue wanted to duplicate front to rear channels and
+it works correctly. This is a bit different i want a real surround40 but
+front and rear channels are out of sync (i suspect) so it's unusable.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+for problems?  Stop!  Download the new AJAX search engine that makes
+searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
