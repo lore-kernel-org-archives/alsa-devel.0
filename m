@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001318]: Volume control per PCM
-Date: Sat, 11 Feb 2006 15:16:21 +0100
-Message-ID: <0373bace4318d0585d06437d453fa25d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
+Date: Sat, 11 Feb 2006 16:55:48 +0100
+Message-ID: <bc0a3cf5f8dae9bbcc22401221e5f667@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEAC21A8
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 15:16:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15F831A9
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 16:55:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                nostar
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1318
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1806
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-07-2005 14:45 CEST
-Last Modified:              02-11-2006 15:16 CET
+Date Submitted:             02-01-2006 23:06 CET
+Last Modified:              02-11-2006 16:55 CET
 ======================================================================
-Summary:                    Volume control per PCM
+Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
 Description: 
-Hi, i'm trying to implement a volume control per PCM streams, i've attached
-a function that does the job. Unfortunally when it change the volume it
-also change the equalizer cutting off low frequencyes. I think 
-there is a problem with the second poke, infact withot that poke, the
-volume works correctly for left case. Any suggestion? Any documentation?
-Thanks,
-   Dino
+SPDIF output is non existant unless SPDIF In is connected to a valid output
+source.  Then, the signal on SPDIF output is typically just noise.  If I
+toggle between any internal clock setting and SPDIF In using
+envy24control, eventually I will get audible audio.  Using an o-scope on
+the wordclock output, I get flatline unless there is a valid SPDIF Input
+signal.  I can switch to an internal clock setting while there is an SPDIF
+In signal connected, and the Word Clock signal will be present, at the
+frequency of the SPDIF In signal though, and not the frequency of the
+selected internal clock frequency.
 
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
 ======================================================================
 
 ----------------------------------------------------------------------
- darkbrain - 02-11-06 14:30 
+ nostar - 02-10-06 22:31 
 ----------------------------------------------------------------------
-No it's not a problem. Infact  "DAC Volume" changes master_mix_scb and my
-patch wants to modify pcm_reader_scb. I've tested it.
-Btw stopping and restarting playback, the pcm volume goes right, so i
-suspect that there is a way to set the initial volume and a different one
-to change it, but i have no documentation.
+I've been using older cvs of envy24control, so that I can use the modified
+UI that Grant Wier (ze) did.  I updated to current cvs, and realized I
+didn't apply the reverse patch for Locked / No Signal from J.Rigg.  I
+attatched a one liner to correct this for current cvs of envy24control
 
 ----------------------------------------------------------------------
- Raymond - 02-11-06 15:16 
+ peppo - 02-11-06 16:55 
 ----------------------------------------------------------------------
-I have uploaded the patch for au88x0 and a workaround tool in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835 to
-test those SNDRV_CTL_ELEM_IFACE_PCM control.
-
-We need an new API to make the iface_pcm control usable.
-
-http://article.gmane.org/gmane.linux.alsa.devel/24808
+It seems on my system that the reported status values for Master Clock are
+inverted. When I disconnect the cable, I get "Locked", when I reconnect it
+I get "No signal".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-07-05 14:45 darkbrain      New Issue                                    
-08-07-05 14:45 darkbrain      File Added: volume.c                         
-08-13-05 10:43 darkbrain      Note Added: 0005802                          
-01-10-06 12:55 darkbrain      Note Added: 0007548                          
-02-05-06 04:55 Raymond        Note Added: 0007929                          
-02-05-06 05:33 Raymond        Note Edited: 0007929                         
-02-05-06 13:19 darkbrain      Note Added: 0007932                          
-02-05-06 14:42 Raymond        Note Added: 0007934                          
-02-06-06 03:43 Raymond        Note Edited: 0007934                         
-02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
-02-07-06 21:05 darkbrain      Note Added: 0007960                          
-02-08-06 02:39 Raymond        Note Edited: 0007934                         
-02-08-06 03:24 Raymond        Note Added: 0007962                          
-02-08-06 03:31 Raymond        Note Edited: 0007962                         
-02-08-06 09:54 Raymond        Note Edited: 0007934                         
-02-08-06 10:41 darkbrain      Note Added: 0007964                          
-02-09-06 08:06 Raymond        Note Added: 0007970                          
-02-09-06 08:11 Raymond        Note Edited: 0007970                         
-02-09-06 10:37 Raymond        Note Deleted: 0007970                        
-02-10-06 12:59 Raymond        Note Added: 0008002                          
-02-10-06 15:29 darkbrain      Note Added: 0008005                          
-02-11-06 02:38 Raymond        Note Added: 0008011                          
-02-11-06 02:51 Raymond        Note Edited: 0007962                         
-02-11-06 02:53 Raymond        Note Edited: 0008011                         
-02-11-06 03:00 Raymond        Note Edited: 0008011                         
-02-11-06 14:30 darkbrain      Note Added: 0008017                          
-02-11-06 15:16 Raymond        Note Added: 0008019                          
+02-01-06 23:06 nostar         New Issue                                    
+02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
+    
+02-02-06 08:59 perex          Relationship added       related to 0001785  
+02-02-06 09:00 perex          Note Added: 0007871                          
+02-03-06 16:14 nostar         Note Added: 0007898                          
+02-06-06 11:41 nostar         Note Added: 0007947                          
+02-06-06 11:41 nostar         File Added: driver.diff                      
+02-06-06 12:03 nostar         Issue Monitored: nostar                      
+02-06-06 12:05 nostar         Note Added: 0007948                          
+02-06-06 12:05 nostar         File Added: envy.diff                        
+02-06-06 12:06 nostar         Note Edited: 0007947                         
+02-06-06 12:07 nostar         Note Edited: 0007947                         
+02-06-06 12:08 nostar         Note Edited: 0007948                         
+02-06-06 17:35 nostar         File Added: driver02.diff                    
+02-06-06 17:36 nostar         Note Added: 0007949                          
+02-08-06 09:24 perex          Note Added: 0007963                          
+02-10-06 05:00 nostar         Note Added: 0007985                          
+02-10-06 05:01 nostar         File Added: 1010lt_spdif_fixes.diff               
+    
+02-10-06 05:20 nostar         Note Edited: 0007985                         
+02-10-06 07:17 nostar         File Added: 1010lt_envy_spdif_status.diff         
+          
+02-10-06 07:18 nostar         Note Added: 0007992                          
+02-10-06 09:44 perex          Note Added: 0007996                          
+02-10-06 22:31 nostar         Note Added: 0008008                          
+02-10-06 22:31 nostar         File Added:
+1010lt_wordclock_status_correction.diff                    
+02-11-06 16:55 peppo          Note Added: 0008020                          
 ======================================================================
 
 
