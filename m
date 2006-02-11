@@ -1,14 +1,15 @@
-From: Andreas Schwab <schwab@suse.de>
-Subject: [PPC,SOUND] Fix audio gpio state detection
-Date: Sat, 11 Feb 2006 17:10:29 +0100
-Message-ID: <jehd7527wq.fsf@sykes.suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: ALSA - pnp OS bios option
+Date: Sat, 11 Feb 2006 14:44:06 -0500
+Message-ID: <1139687047.19342.91.camel@mindpipe>
+References: <200601092022.56244.nick@linicks.net>
+	 <200601101759.20707.nick@linicks.net> <s5hek3geyup.wl%tiwai@suse.de>
+	 <200602111054.50947.nick@linicks.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D2A31A9
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 17:10:31 +0100 (MET)
+In-Reply-To: <200602111054.50947.nick@linicks.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +19,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@ozlabs.org
+To: Nick Warne <nick@linicks.net>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-When booting with line out or headphone plugged, you won't hear anything.
-The problem is that after reset all channels are muted, but the actual
-value of the gpio port doesn't exactly match the active_val settings as
-expected by check_audio_gpio.  For example, the line_mute port is set to
-7, but check_audio_gpio would expect 0xd or 0xf, thus its return value
-indicates that it is not active, even though it is.  AFAICS only looking
-at the low bit is enough to determine whether the port is active.
+On Sat, 2006-02-11 at 10:54 +0000, Nick Warne wrote:
+> Sorting SB Live! sound (alsactl restore)...
+> alsactl: set_control:894: warning: name mismatch (Sigmatel Surround
+> Playback 
+> Volume/Sigmatel Surround Playback Switch) for control #47
+> alsactl: set_control:896: warning: index mismatch (0/0) for control
+> #47
+> alsactl: set_control:1008: bad control.47.value index
+> 
+> 
 
-Signed-off-by: Andreas Schwab <schwab@suse.de>
+Harmless
 
-Index: linux-2.6.16-rc2/sound/ppc/tumbler.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.6.16-rc2.orig/sound/ppc/tumbler.c	2006-02-03 19:43:50.0000000=
-00 +0100
-+++ linux-2.6.16-rc2/sound/ppc/tumbler.c	2006-02-11 03:46:30.000000000 +0=
-100
-@@ -207,7 +207,7 @@ static int check_audio_gpio(struct pmac_
-=20
- 	ret =3D do_gpio_read(gp);
-=20
--	return (ret & 0xd) =3D=3D (gp->active_val & 0xd);
-+	return (ret & 0x1) =3D=3D (gp->active_val & 0x1);
- }
-=20
- static int read_audio_gpio(struct pmac_gpio *gp)
+> Ummm.  At the command line, same errors also.  So I
+> deleted /etc/asound.state 
+> and reconfigured alsamixer from scratch.  Then following 'alsactl
+> store', 
+> 'alsactl restore' completes without issue (i.e. works clean).
+> 
+> If I then reboot, the same damn control #47 errors happen again.  It's
+> as if 
+> something changes my asound.state file at boot time time?
+> 
 
-Andreas.
+Probably you have two different alsactl's installed, one that's
+hardcoded to save the state in /etc/asound.state, and a distro version
+that wants to save it in /var/lib/whatever.  It sounds like one is being
+run at boot and a different one at shutdown.
 
---=20
-Andreas Schwab, SuSE Labs, schwab@suse.de
-SuSE Linux Products GmbH, Maxfeldstra=DFe 5, 90409 N=FCrnberg, Germany
-PGP key fingerprint =3D 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED=
-5
-"And now for something completely different."
 
 
 -------------------------------------------------------
