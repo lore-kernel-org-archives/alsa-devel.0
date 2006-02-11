@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Sat, 11 Feb 2006 15:01:18 +0100
-Message-ID: <13e7b61b3d1fa086a9121e81f0d6a9e3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Sat, 11 Feb 2006 15:16:21 +0100
+Message-ID: <0373bace4318d0585d06437d453fa25d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D780F1A8
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 15:01:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EEAC21A8
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 15:16:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,86 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
 ======================================================================
 Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1823
+Issue ID:                   1318
 Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              02-11-2006 15:01 CET
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              02-11-2006 15:16 CET
 ======================================================================
-Summary:                    surround40 memory leak
+Summary:                    Volume control per PCM
 Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
+
 ======================================================================
 
 ----------------------------------------------------------------------
- darkbrain - 02-06-06 18:37 
+ darkbrain - 02-11-06 14:30 
 ----------------------------------------------------------------------
-I'm beginning to think that is not a memory leak problem or similar but a
-syncing one. Infact if i use a ruote device type such as:
-pcm.quad {
-        type route
-        slave.pcm "surround40:0"
-        slave.channels  4
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-}
-ctl.quad { type hw; card 0; }
-
-and i play an mp3 throught quad, it results out of sync. Does pcm type
-multi, used for surround40, trying to sync 2 device?
+No it's not a problem. Infact  "DAC Volume" changes master_mix_scb and my
+patch wants to modify pcm_reader_scb. I've tested it.
+Btw stopping and restarting playback, the pcm volume goes right, so i
+suspect that there is a way to set the initial volume and a different one
+to change it, but i have no documentation.
 
 ----------------------------------------------------------------------
- darkbrain - 02-11-06 15:01 
+ Raymond - 02-11-06 15:16 
 ----------------------------------------------------------------------
-The problem is the same of the issue: "Front / rear out of sync" witch is
-closed. Anyway that issue wanted to duplicate front to rear channels and
-it works correctly. This is a bit different i want a real surround40 but
-front and rear channels are out of sync (i suspect) so it's unusable.
+I have uploaded the patch for au88x0 and a workaround tool in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835 to
+test those SNDRV_CTL_ELEM_IFACE_PCM control.
+
+We need an new API to make the iface_pcm control usable.
+
+http://article.gmane.org/gmane.linux.alsa.devel/24808
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+01-10-06 12:55 darkbrain      Note Added: 0007548                          
+02-05-06 04:55 Raymond        Note Added: 0007929                          
+02-05-06 05:33 Raymond        Note Edited: 0007929                         
+02-05-06 13:19 darkbrain      Note Added: 0007932                          
+02-05-06 14:42 Raymond        Note Added: 0007934                          
+02-06-06 03:43 Raymond        Note Edited: 0007934                         
+02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
+02-07-06 21:05 darkbrain      Note Added: 0007960                          
+02-08-06 02:39 Raymond        Note Edited: 0007934                         
+02-08-06 03:24 Raymond        Note Added: 0007962                          
+02-08-06 03:31 Raymond        Note Edited: 0007962                         
+02-08-06 09:54 Raymond        Note Edited: 0007934                         
+02-08-06 10:41 darkbrain      Note Added: 0007964                          
+02-09-06 08:06 Raymond        Note Added: 0007970                          
+02-09-06 08:11 Raymond        Note Edited: 0007970                         
+02-09-06 10:37 Raymond        Note Deleted: 0007970                        
+02-10-06 12:59 Raymond        Note Added: 0008002                          
+02-10-06 15:29 darkbrain      Note Added: 0008005                          
+02-11-06 02:38 Raymond        Note Added: 0008011                          
+02-11-06 02:51 Raymond        Note Edited: 0007962                         
+02-11-06 02:53 Raymond        Note Edited: 0008011                         
+02-11-06 03:00 Raymond        Note Edited: 0008011                         
+02-11-06 14:30 darkbrain      Note Added: 0008017                          
+02-11-06 15:16 Raymond        Note Added: 0008019                          
 ======================================================================
 
 
