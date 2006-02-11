@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001831]: envy24control does not work with Hercules Fortissimo IV
-Date: Sat, 11 Feb 2006 13:48:41 +0100
-Message-ID: <d248d6bf673fb45b28f0a26293ed253e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
+Date: Sat, 11 Feb 2006 14:13:20 +0100
+Message-ID: <225a8c2777b035c699c009290c50d016@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02B351A1
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 13:48:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E92B142
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 14:13:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1831> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
 ======================================================================
-Reported By:                liiwi
-Assigned To:                
+Reported By:                fchevalier
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1831
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   1841
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-08-2006 20:03 CET
-Last Modified:              02-11-2006 13:48 CET
+Date Submitted:             02-11-2006 14:13 CET
+Last Modified:              02-11-2006 14:13 CET
 ======================================================================
-Summary:                    envy24control does not work with Hercules Fortissimo
-IV
+Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
+intel & AD1986A
 Description: 
-Previously I did not have any pressing need to try envy24control. However
-recently
-for some odd reason left channel got just about muted. So, I tried
-envy24control:
+Hi all,
 
->No ICE1712 cards found
+I am unable to use mixer settings on my laptop.
+Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
+settings are there but changing volume, muting/unmuting does not make any
+difference. Playing  mp3 file with xmms sometimes i can hear some sound,
+but not loud enough.
+I tried with the latest ALSA version available, still not luck :-(
 
-So, now I'm without left channel.
+Can anyone help ?
 
->From dmesg:
-
-ice1724: No matching model found for ID 0x81160100
-ice1724: Invalid EEPROM version 1
-
-Hrm, this might be an driver issue if envy24control asks from driver about
-the card and it does not know what model... 
-
-This happens with all the way to 1.0.11-rc3.
-
-lspci says about the card:
-
->Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI >Multi-Channel Audio Controller (rev 01)
-
-
+Fabien
 ======================================================================
-
-----------------------------------------------------------------------
- liiwi - 02-11-06 13:17 
-----------------------------------------------------------------------
-Hrm, after playing with envy24control sources, mainly replacing "ICE1712"
-with "ICE1724", it looks like reading from card eeprom does not give
-what's expected.
-Just a guess, though. So, this might be driver issue.
-
-As ICE1712 requirement is hardcoded into envy24control, are there any
-plans to add  real ICE1724 support?
-
-----------------------------------------------------------------------
- liiwi - 02-11-06 13:48 
-----------------------------------------------------------------------
-Ok, one problem solved: left channel was missing, because I had screwed up
-bindings in .asoundrc.Color of face today is RED.
-
-However, the thing about envy24control still is there. I'd also like to
-record something, but so far I've only been able to get silence from
-capture channels.
-I'm just guessing that either the driver is not supporting this card
-properly
-or I just need to adjust levels with envy24control.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-06 20:03 liiwi          New Issue                                    
-02-11-06 13:17 liiwi          Note Added: 0008015                          
-02-11-06 13:48 liiwi          Note Added: 0008016                          
+02-11-06 14:13 fchevalier     New Issue                                    
 ======================================================================
 
 
