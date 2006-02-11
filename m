@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001839]: make error (create_workqueue(name,0)??)
-Date: Sat, 11 Feb 2006 05:54:05 +0100
-Message-ID: <76c5b036f95f25e3ecff23f1474ea302@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001840]: vortex: IRQ fifo error - au8830
+Date: Sat, 11 Feb 2006 09:29:41 +0100
+Message-ID: <03f0a91fefe0f673146a7333e6837a9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9898917C
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 05:54:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A2A9170
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 09:29:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1839> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1840> 
 ======================================================================
-Reported By:                czy32
-Assigned To:                perex
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1839
-Category:                   0_compilation problem_!!!
+Issue ID:                   1840
+Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -39,42 +39,23 @@ Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-11-2006 05:54 CET
-Last Modified:              02-11-2006 05:54 CET
+Date Submitted:             02-11-2006 09:29 CET
+Last Modified:              02-11-2006 09:29 CET
 ======================================================================
-Summary:                    make error (create_workqueue(name,0)??)
+Summary:                    vortex: IRQ fifo error - au8830
 Description: 
-  CC [M]  /home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.o
-In file included from
-/home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.c:77:
-/home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.inc:494:32: macro
-"create_workqueue" passed 2 arguments, but takes just 1
-In file included from
-/home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.c:77:
-/home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.inc: In function
-`snd_compat_create_workqueue2':
-/home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.inc:494: error:
-`create_workqueue' undeclared (first use in this function)
-/home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.inc:494: error: (Each
-undeclared identifier is reported only once
-/home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.inc:494: error: for each
-function it appears in.)
-make[4]: *** [/home/czy/tmp/alsa/alsa-driver-1.0.10/acore/misc.o]
-&#38169;&#35823; 1
-make[3]: *** [/home/czy/tmp/alsa/alsa-driver-1.0.10/acore]
-&#38169;&#35823; 2
-make[2]: *** [_module_/home/czy/tmp/alsa/alsa-driver-1.0.10]
-&#38169;&#35823; 2
-make[1]: *** [modules] &#38169;&#35823; 2
-make[1]: Leaving directory `/usr/src/linux-2.6.9'
-make: *** [compile] &#38169;&#35823; 2
+The message "vortex: IRQ fifo error" was logged in system log after au88x0
+migrated from alsa-driver to alsa-kernel on au8830.
+
+Does au8810 and au8820 has this error ?
+
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-06 05:54 czy32          New Issue                                    
+02-11-06 09:29 Raymond        New Issue                                    
 ======================================================================
 
 
