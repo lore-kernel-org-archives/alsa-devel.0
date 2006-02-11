@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: ALSA - pnp OS bios option
-Date: Sat, 11 Feb 2006 14:47:23 -0500
-Message-ID: <1139687243.19342.95.camel@mindpipe>
-References: <200601092022.56244.nick@linicks.net>
-	 <200601101759.20707.nick@linicks.net> <s5hek3geyup.wl%tiwai@suse.de>
-	 <200602111054.50947.nick@linicks.net>
-	 <7c3341450602110556u75c4bfffq@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001822]: Can't record with Hercules Fortissimo II
+Date: Sat, 11 Feb 2006 20:47:47 +0100
+Message-ID: <6b06711d59373938eb661eead8833cba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <7c3341450602110556u75c4bfffq@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A49F19D
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 20:47:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,32 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nick <nick@linicks.net>
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-02-11 at 13:56 +0000, Nick wrote:
-> > Ummm.  At the command line, same errors also.  So I deleted /etc/asound.state
-> > and reconfigured alsamixer from scratch.  Then following 'alsactl store',
-> > 'alsactl restore' completes without issue (i.e. works clean).
-> >
-> > If I then reboot, the same damn control #47 errors happen again.  It's as if
-> > something changes my asound.state file at boot time time?
-> >
-> > Ideas?  This is driving me potty.
-> >
-> 
-> OK, talking to myself (testing, testing, 1-2-3) - I have resolved this
-> issue after spending 2 hours trying to get my Mic to work again in
-> Teamspeak (why is there _so_ many frigging mixers
-> (alsamixer/amixer/aumix/kmix/arts) that all seem to do different
-> things...
 
-Because people keep writing half-assed mixers, rather than fixing the
-existing ones, and distros inexplicably include 5 of them.  Half the
-mixers out there only speak OSS, and distros ship them anyway.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822> 
+======================================================================
+Reported By:                atler
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1822
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               PLD
+Kernel Version:             2.6.14.7
+======================================================================
+Date Submitted:             02-05-2006 16:16 CET
+Last Modified:              02-11-2006 20:47 CET
+======================================================================
+Summary:                    Can't record with Hercules Fortissimo II
+Description: 
+I can hear my voice from speakers but "arecord -f cd -t wav out.wav" always
+produces 19K-32K file with no sound. What is weird is that I can record
+through alsa oss emulation in programs that use /dev/dsp.
+Similar problems already appeard here, but none of the solutions worked
+for me.
+======================================================================
 
-Lee
+----------------------------------------------------------------------
+ perex - 02-07-06 16:30 
+----------------------------------------------------------------------
+Could you try to set various buffer sizes and period sizes in arecord?
+
+----------------------------------------------------------------------
+ atler - 02-11-06 20:47 
+----------------------------------------------------------------------
+Do you mean any particular values? I tried with some random both from range
+0-250ms and nothing changed.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-05-06 16:16 atler          New Issue                                    
+02-05-06 16:16 atler          File Added: asound.state                     
+02-05-06 16:16 atler          Distribution              => PLD             
+02-05-06 16:16 atler          Kernel Version            => 2.6.14.7        
+02-05-06 16:19 atler          Note Added: 0007937                          
+02-07-06 16:30 perex          Note Added: 0007959                          
+02-11-06 20:47 atler          Note Added: 0008021                          
+======================================================================
+
 
 
 
