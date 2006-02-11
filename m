@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001246]: Sound card loops and doesn't play any more
-Date: Fri, 10 Feb 2006 15:58:22 +0100
-Message-ID: <deae5181ecccb5acba514fe0477e5d4f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Sat, 11 Feb 2006 02:38:19 +0100
+Message-ID: <1f5b88b8affd8f251382a822b060fde3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7BD9191
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2006 15:58:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91C0F172
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 02:38:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,107 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1246> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
 ======================================================================
-Reported By:                syberdave
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1246
-Category:                   ISA - es18xx
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1318
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Testing
-Kernel Version:             2.6.7-grsec
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-09-2005 17:04 CEST
-Last Modified:              02-10-2006 15:58 CET
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              02-11-2006 02:38 CET
 ======================================================================
-Summary:                    Sound card loops and doesn't play any more
+Summary:                    Volume control per PCM
 Description: 
-I installed a second sound card (ESS 1868 F/ISA) and when I send data to
-it, it plays the first second or so and starts repeating it and it doesn't
-move on. I notice that when I make the sound mono and bring the bitrate
-down, the data that it repeats becomes longer: mpg321 --wav - music.mp3
-|sox -t wav - -t ossdsp -c 1 -r 4096 /dev/dsp1
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
 
-And when I try to play it with ALSA, this command works for my first sound
-card:
-mpg321 --wav - music.mp3 |aplay -D hw:0,0
-But this command doesn't - it does that loop thing again:
-mpg321 --wav - music.mp3 |aplay -D hw:1,0
-
-This is my results for lsmod:
-Module                  Size  Used by
-snd_es18xx             29100  0 
-snd_cs4231_lib         21280  0 
-snd_sb16_dsp            8064  0 
-snd_sb_common          13152  1 snd_sb16_dsp
-snd_ymfpci             54084  1 
-snd_ac97_codec         60356  1 snd_ymfpci
-snd_opl3_lib            8320  2 snd_es18xx,snd_ymfpci
-snd_hwdep               7136  1 snd_opl3_lib
-snd_mpu401_uart         5824  2 snd_es18xx,snd_ymfpci
-snd_rawmidi            19872  1 snd_mpu401_uart
-
-Any help would be appreciated.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:50 
+ darkbrain - 02-10-06 15:29 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Yep the code is pratically identical. 
+Here is a comment taken from cs46xx_dsp_scb_types.h :
+/* Standard stereo volume control
+   Initialized by the host (host updates target volumes) 
+
+   Current volumes update by the DSP task
+   On mixer input streams: required & updated by the mixer subroutine in
+the
+                                   "parent" DSP task
+
+   On Tees, both current & target volumes are copied up on
+initialization,
+	   and, subsequently, the target volume is copied up while the current
+	   volume is copied down.
+     
+   These two 32-bit words are redefined for wavetable & 3-D voices.    
+*/
+It's seems that i need to write only the target volume and leave the dsp
+to change the current volume.
+But obviuslly it's doesn't work. only the left channel seems to be
+modified. Any way i don't know if this registry is what i'm modifying.
 
 ----------------------------------------------------------------------
- twhitehead - 02-10-06 15:58 
+ Raymond - 02-11-06 02:38 
 ----------------------------------------------------------------------
-I should add that the driver is still broken (endless looping of the first
-second or so of sound on playback) unless I apply the prior mentioned
-patch on my machine (last kernel tried was of 2.6.14).
+It seem that when you change "DAC Volume", cs46xx_dsp_set_dac_volume() will
+set all scb to the same volume. This is the major problem.
 
-So while it didn't fix his problems, it would still be nice to get it
-included upstream to fix mine.  Perhaps I should open a second bug report
-about this?
+
+	/* main output */
+	scb = ins->master_mix_scb->sub_list_ptr;
+	while (scb != ins->the_null_scb) {
+		cs46xx_dsp_scb_set_volume (chip,scb,left,right);
+		scb = scb->next_scb_ptr;
+	}
+
+	/* rear output */
+	scb = ins->rear_mix_scb->sub_list_ptr;
+	while (scb != ins->the_null_scb) {
+		cs46xx_dsp_scb_set_volume (chip,scb,left,right);
+		scb = scb->next_scb_ptr;
+	}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-05 17:04 syberdave      New Issue                                    
-07-09-05 17:04 syberdave      Distribution              => Debian Testing  
-07-09-05 17:04 syberdave      Kernel Version            => 2.6.7-grsec     
-07-09-05 17:04 syberdave      Issue Monitored: syberdave                    
-07-10-05 06:49 syberdave      Note Added: 0005441                          
-07-23-05 13:38 twhitehead     Note Added: 0005552                          
-07-23-05 13:42 twhitehead     File Added: alpha-alsa.patch                    
-08-04-05 09:25 perex          Note Added: 0005643                          
-08-10-05 04:13 syberdave      Note Added: 0005745                          
-12-30-05 23:50 rlrevell       Note Added: 0007299                          
-02-10-06 15:58 twhitehead     Note Added: 0008006                          
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+01-10-06 12:55 darkbrain      Note Added: 0007548                          
+02-05-06 04:55 Raymond        Note Added: 0007929                          
+02-05-06 05:33 Raymond        Note Edited: 0007929                         
+02-05-06 13:19 darkbrain      Note Added: 0007932                          
+02-05-06 14:42 Raymond        Note Added: 0007934                          
+02-06-06 03:43 Raymond        Note Edited: 0007934                         
+02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
+02-07-06 21:05 darkbrain      Note Added: 0007960                          
+02-08-06 02:39 Raymond        Note Edited: 0007934                         
+02-08-06 03:24 Raymond        Note Added: 0007962                          
+02-08-06 03:31 Raymond        Note Edited: 0007962                         
+02-08-06 09:54 Raymond        Note Edited: 0007934                         
+02-08-06 10:41 darkbrain      Note Added: 0007964                          
+02-09-06 08:06 Raymond        Note Added: 0007970                          
+02-09-06 08:11 Raymond        Note Edited: 0007970                         
+02-09-06 10:37 Raymond        Note Deleted: 0007970                        
+02-10-06 12:59 Raymond        Note Added: 0008002                          
+02-10-06 15:29 darkbrain      Note Added: 0008005                          
+02-11-06 02:38 Raymond        Note Added: 0008011                          
 ======================================================================
 
 
