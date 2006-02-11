@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001840]: vortex: IRQ fifo error - au8830
-Date: Sat, 11 Feb 2006 10:24:39 +0100
-Message-ID: <2a4f81e44b607b5a2f0f1ba312db581a@bugtrack.alsa-project.org>
+Date: Sat, 11 Feb 2006 10:25:29 +0100
+Message-ID: <162fb54d923e14ad31e1ec896168cbc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7DCB318C
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 10:24:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61E9E18C
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2006 10:25:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1840> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-11-2006 09:29 CET
-Last Modified:              02-11-2006 10:24 CET
+Last Modified:              02-11-2006 10:25 CET
 ======================================================================
 Summary:                    vortex: IRQ fifo error - au8830
 Description: 
@@ -64,11 +66,18 @@ agreements".
 
 Best Regards,
 
+----------------------------------------------------------------------
+ mjander - 02-11-06 10:25 
+----------------------------------------------------------------------
+See the note above.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-11-06 09:29 Raymond        New Issue                                    
 02-11-06 10:24 mjander        Note Added: 0008012                          
+02-11-06 10:25 mjander        Status                   assigned => closed  
+02-11-06 10:25 mjander        Note Added: 0008013                          
 ======================================================================
 
 
