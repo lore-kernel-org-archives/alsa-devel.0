@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Sun, 12 Feb 2006 05:09:09 +0100
-Message-ID: <e6b65521ae13b7285606cc89016ab11b@bugtrack.alsa-project.org>
+From: "Sepulchral V. Paste" <ishii@gocesar.com>
+Subject: Software
+Date: Sun, 12 Feb 2006 00:44:49 -0600
+Message-ID: <8156190049.20060212004449@gocesar.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B0E217B
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 05:09:09 +0100 (MET)
+Received: from -1212976968 (pool-71-111-80-191.ptldor.dsl-w.verizon.net [71.111.80.191])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EA385194
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 07:51:19 +0100 (MET)
+Received: from gocesar.com (-1211552512 [-1213116864])
+	by pool-71-111-80-191.ptldor.dsl-w.verizon.net (Qmailv1) with ESMTP id 10F1316072
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 00:44:49 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +21,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Looking for cheap high-quality software? 
+soft at incredibly low prices 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
-======================================================================
-Reported By:                darkbrain
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              02-12-2006 05:09 CET
-======================================================================
-Summary:                    surround40 memory leak
-Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
-======================================================================
+New software on our site:
 
-----------------------------------------------------------------------
- darkbrain - 02-11-06 15:01 
-----------------------------------------------------------------------
-The problem is the same of the issue: "Front / rear out of sync" witch is
-closed. Anyway that issue wanted to duplicate front to rear channels and
-it works correctly. This is a bit different i want a real surround40 but
-front and rear channels are out of sync (i suspect) so it's unusable.
+Office XP Professional - $79.95
+Norton System Works 2003 - $59.95
+Dreamweaver MX 2004 $69.95
+PageMaker 7 (2CD) - $69.95
+Windows XP Professional With SP2 Full Version - $79.95
+Flash MX 2004 - $69.95
+Windows XP Professional - $69.95
+Office 2000 Premium Edition PE (2CD) - $59.95
+LiveMotion 2.0 - $69.95
+Windows XP Professional With SP2 Full Version - $79.95
+Painter 8 - $59.95
+Project 2003 Professional - $69.95
+Creative Suite Standard (3 CD) - $129.95
+Fireworks MX 2004 - $69.95
 
-----------------------------------------------------------------------
- Raymond - 02-12-06 05:09 
-----------------------------------------------------------------------
-How about two or more instances of
- 
-speaker-test -t wav -D surround40 -c 4 
-
-or 
-
-aplay -D surround40 4channels.wav ?
-
-
-What is the value return by snd_pcm_info_get_subdevices_count() after 
-snd_pcm_open(&pcm, "surround40", SND_PCM_STREAM_PLAYBACK,
-SND_PCM_NONBLOCK) ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-======================================================================
-
+Our site:
+http://paulinusag.com
 
 
 
