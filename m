@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Sun, 12 Feb 2006 03:32:59 +0100
-Message-ID: <3600f0e059c9dd91162bc13be7c61893@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Sun, 12 Feb 2006 05:09:09 +0100
+Message-ID: <e6b65521ae13b7285606cc89016ab11b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F3F417E
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 03:32:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6B0E217B
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 05:09:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,145 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                ponchick
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1833
-Category:                   GENERIC - mpu401
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo
-Kernel Version:             gentoo-sources-2.6.15-r4
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              02-12-2006 03:32 CET
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              02-12-2006 05:09 CET
 ======================================================================
-Summary:                    oops in snd_mpu401_uart
+Summary:                    surround40 memory leak
 Description: 
-I don't know what exactly happend but when I run wine or winecfg it
-segfaulted. dmesg shows following:
-Unable to handle kernel paging request at 0000000010228800 RIP:
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-PGD 6e57067 PUD 0
-Oops: 0002 [1] PREEMPT SMP
-CPU 1
-Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
-snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
-snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
-snd_seq_device snd soundcore nvidia sky2
-Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
-RIP: 0010:[<ffffffff884ca00c>]
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
-RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
-RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
-RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
-R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
-FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
-knlGS:00000000556cb920
-CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
-CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
-Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
-ffff810002178440)
-Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
-ff00000000000286
-       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
-ffff81003eb606c0
-       0000000000000000 ffff81003d7c3bd0
-Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
-       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
-       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
-       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
-       <ffffffff80397b49>{_spin_lock+27}
-<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
-       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
-       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
-       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
-       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
-       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
-       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
-       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
-       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
-<ffffffff8018075f>{__link_path_walk+3332}
-       <ffffffff80397b0c>{__lock_text_start+20}
-<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
-       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
-<ffffffff8017ab11>{chrdev_open+454}
-       <ffffffff8017a94b>{chrdev_open+0}
-<ffffffff80171031>{__dentry_open+310}
-       <ffffffff8017118d>{nameidata_to_filp+34}
-<ffffffff801711d6>{filp_open+58}
-       <ffffffff801713d4>{get_unused_fd+234}
-<ffffffff80171533>{do_sys_open+81}
-       <ffffffff8011e57f>{sysenter_do_call+27}
-
-Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
-RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
-<ffff81003564f8f0>
-CR2: 0000000010228800
- <6>note: wine-preloader[11110] exited with preempt_count 1
-
-I use standalone alsa-driver (kernel one is out of date and doesn't
-support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
-gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-10-06 11:30 
+ darkbrain - 02-11-06 15:01 
 ----------------------------------------------------------------------
-Do wine probe the joystick port 0x200, 0x201, 0x202, 0x203, ..., 0x207 
-
-or gameport (mmio) can be used by wine on 64-bits platform ?
+The problem is the same of the issue: "Front / rear out of sync" witch is
+closed. Anyway that issue wanted to duplicate front to rear channels and
+it works correctly. This is a bit different i want a real surround40 but
+front and rear channels are out of sync (i suspect) so it's unusable.
 
 ----------------------------------------------------------------------
- Raymond - 02-12-06 03:32 
+ Raymond - 02-12-06 05:09 
 ----------------------------------------------------------------------
-The fault occur in mpu->write, either MPU401D(mpu) or MPU401C(mpu) when
-using mmio.
+How about two or more instances of
+ 
+speaker-test -t wav -D surround40 -c 4 
 
-The address space of PCI BAR0 on your au8830 is different from alien's
-au8810 (64-bits)
+or 
 
-http://article.gmane.org/gmane.linux.alsa.devel/22109
-
-00:0c.0 Class 0401: 12eb:0003 (rev 02)
-	Subsystem: 12eb:0003
-	Region 0: Memory at 00000000fdc00000 (32-bit, non-prefetchable)
-[size=256K]
+aplay -D surround40 4channels.wav ?
 
 
-04:01.0 0401: 12eb:0002 (rev fa)
-        Subsystem: 12eb:0001
-        Region 0: Memory at e5000000 (32-bit, non-prefetchable)
-[size=256K]
+What is the value return by snd_pcm_info_get_subdevices_count() after 
+snd_pcm_open(&pcm, "surround40", SND_PCM_STREAM_PLAYBACK,
+SND_PCM_NONBLOCK) ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-06 08:33 ponchick       New Issue                                    
-02-09-06 08:33 ponchick       Distribution              => gentoo          
-02-09-06 08:33 ponchick       Kernel Version            =>
-gentoo-sources-2.6.15-r4
-02-09-06 09:12 Raymond        Note Added: 0007971                          
-02-09-06 09:32 Raymond        Note Added: 0007973                          
-02-09-06 11:57 ponchick       Note Added: 0007975                          
-02-09-06 12:32 Raymond        Note Added: 0007976                          
-02-09-06 12:35 Raymond        Note Edited: 0007976                         
-02-10-06 03:06 Raymond        Note Added: 0007982                          
-02-10-06 03:11 rlrevell       Note Added: 0007983                          
-02-10-06 03:49 Raymond        Note Added: 0007984                          
-02-10-06 05:08 ponchick       Note Added: 0007986                          
-02-10-06 05:36 Raymond        Note Added: 0007988                          
-02-10-06 06:03 Raymond        Note Added: 0007990                          
-02-10-06 10:09 ponchick       Note Added: 0007997                          
-02-10-06 11:30 Raymond        Note Added: 0008001                          
-02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
 ======================================================================
 
 
