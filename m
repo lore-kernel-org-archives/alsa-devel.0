@@ -1,15 +1,14 @@
-From: Nick Warne <nick@linicks.net>
-Subject: Re: Re: ALSA - pnp OS bios option
-Date: Sun, 12 Feb 2006 07:56:38 +0000
-Message-ID: <200602120756.38975.nick@linicks.net>
-References: <200601092022.56244.nick@linicks.net> <200602111054.50947.nick@linicks.net> <1139687047.19342.91.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001830]: Does pcm_multi allow a virtual Surround51 with a 4 channels analog and 2 channels digital ?
+Date: Sun, 12 Feb 2006 13:04:45 +0100
+Message-ID: <ecac2eb2f3e01af354319fd5c4c907f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1139687047.19342.91.camel@mindpipe>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DBAB17B
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 13:04:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,46 +18,139 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 11 February 2006 19:44, Lee Revell wrote:
-> > If I then reboot, the same damn control #47 errors happen again.  It's
-> > as if
-> > something changes my asound.state file at boot time time?
->
-> Probably you have two different alsactl's installed, one that's
-> hardcoded to save the state in /etc/asound.state, and a distro version
-> that wants to save it in /var/lib/whatever.  It sounds like one is being
-> run at boot and a different one at shutdown.
 
-First thing I thought of - Slackware is a 'clean, straight' distro though, and 
-the only asound.state file I had was in /etc/ and only one alsactl in 
-default /usr/sbin
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1830> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1830
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-08-2006 13:37 CET
+Last Modified:              02-12-2006 13:04 CET
+======================================================================
+Summary:                    Does pcm_multi allow a virtual Surround51 with a 4
+channels analog and 2 channels digital ?
+Description: 
+Do pcm_multi limit to bind stereo channels only ?
+======================================================================
 
-On Saturday 11 February 2006 22:07, Lee Revell wrote:
-> > do we need to keep the alsa tools and
-> > stuff current too?
->
-> Yes - kernel upgrades should depend on alsa-lib upgrades (many distros
-> seem to get this wrong).  This should be fixed in the future, but it's
-> been this way for some time.
+----------------------------------------------------------------------
+ Raymond - 02-12-06 13:04 
+----------------------------------------------------------------------
+It seem that the option -t of speaker-test behave different for multi type
 
-Well, it appears to have fixed the issues I had.  Several reboots since and no 
-problems now.
+AU8830.pcm.surround51.0 {
+        @args [ CARD ]
+        @args.CARD {
+                type string
+        }
+        type multi
+        slaves [
+                {
+                        pcm {
+                                @func concat
+                                strings [
+                                        "cards.AU8830.pcm.front.0:CARD="
+$CARD
+                                ]
+                        }
+                        channels 4
+                }
+                {
+                        pcm {
+                                @func concat
+                                strings [
+                                        "cards.AU8830.pcm.front.0:CARD="
+$CARD
+                                ]
+                        }
+                        channels 2
+                }
+        ]
+        bindings [
+                { slave 0 channel 0 }
+                { slave 0 channel 1 }
+                { slave 0 channel 2 }
+                { slave 0 channel 3 }
+                { slave 1 channel 0 }
+                { slave 1 channel 1 }
+        ]
 
-Looking back, originally I had a 2.4.x kernel - I have since upgraded to 2.6.x 
-series, plus built a lot of new tools and such from source - all except alsa 
-stuff, of course - so it does make sense and I kick myself for not thinking 
-about this in the beginning.  One to remember.
 
-Thanks,
 
-Nick
--- 
-"Person who say it cannot be done should not interrupt person doing it."
--Chinese Proverb
+speaker-test -D surround51 -c 6
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 4 - Center
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+ 5 - LFE
+Time per period = 17.831381
+ 0 - Front Left
+ 4 - Center
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+ 5 - LFE
+Time per period = 17.981657
+ 0 - Front Left
+
+
+speaker-test -D surround51 -t wav -c 6
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+Cannot open WAV file /usr/share/sounds/alsa/Center.wavLFE.wav
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-08-06 13:37 Raymond        New Issue                                    
+02-12-06 13:04 Raymond        Note Added: 0008026                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
