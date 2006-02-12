@@ -1,18 +1,14 @@
-From: "Delia" <vjovvemde72@yahoo.dk>
-Subject: Re:
-Date: Sun, 12 Feb 2006 09:45:45 +0900
-Message-ID: <42220D06.BB25034@yahoo.dk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Sun, 12 Feb 2006 03:32:59 +0100
+Message-ID: <3600f0e059c9dd91162bc13be7c61893@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A3EF17E
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 01:24:44 +0100 (MET)
-Received: from yahoo.dk (unknown [220.167.197.184])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 9D33E991F1
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 01:24:40 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F3F417E
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 03:32:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,122 +22,148 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Hello,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+======================================================================
+Reported By:                ponchick
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
+======================================================================
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              02-12-2006 03:32 CET
+======================================================================
+Summary:                    oops in snd_mpu401_uart
+Description: 
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-Buy your Press Kription     THRRr uuGzz
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-We truly hope our we b s ite will be a one-stop Sy ber    eFA. ARM Sy
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
+======================================================================
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+----------------------------------------------------------------------
+ Raymond - 02-10-06 11:30 
+----------------------------------------------------------------------
+Do wine probe the joystick port 0x200, 0x201, 0x202, 0x203, ..., 0x207 
 
-eCOPY the A ddre,ss bel ow and  iPASte  in your iWebb bro,wser:
+or gameport (mmio) can be used by wine on 64-bits platform ?
 
-ssy.maintaininar.com/?zz=3Dlowcost
+----------------------------------------------------------------------
+ Raymond - 02-12-06 03:32 
+----------------------------------------------------------------------
+The fault occur in mpu->write, either MPU401D(mpu) or MPU401C(mpu) when
+using mmio.
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+The address space of PCI BAR0 on your au8830 is different from alien's
+au8810 (64-bits)
 
+http://article.gmane.org/gmane.linux.alsa.devel/22109
 
-
-THE PARENT arrived back on the scene. She gave me a tape by Dr. Laura
-Meyers from UCLA. I listened to that tape eight times. I listened over an=
-d
-over and heard the same thing again and again. Ms. Meyers said, 'These ki=
-ds
-may need to hear a word many times (perhaps 72 times) before they ever sa=
-y a
-word. A computer can be patient and say it the same way every time.' Now =
-I
-understood. I was not patient enough. I did not allow the student to hear
-the words over and over. I was interrupting their learning by interjectin=
-g,
-when they were totally engrossed in what they were doing. I was asking
-questions they were not ready to answer. They were just learning language=
-.
-They didn't have the answers yet.=20
->From that day on there were new rules in my classroom. Each student was t=
-o
-have an adult 'communication partner' at the computer. This adult was to =
-sit
-with the child, not saying a word until the student stopped and looked at
-the adult or in some other way indicated that communication was desired.
-Then the adult was only to encourage the student by saying the word, nodd=
-ing
-the headand smiling. The student was allowed to continue his or her
-learning. When the student imitated a word, the adult was to respond
-appropriately. NO QUESTIONS WERE ALLOWED during this beginning phase. The
-students were just learning to talk.=20
-Another rule implemented was that the student was allowed to spend as muc=
-h
-or as little time at the computer as he/she wished. There would be no mor=
-e,
-'We aren't finished, yet.' The student would to be in charge of his own
-learning at the computer.=20
-And what were the results? Let me tell you some stories:=20
-Mark at 27 months looked ?normal?. He came from a good family who provide=
-d
-lots of stimulation. Mark had one word--'ba' as in 'Ball.' Everything was
-'ba.' After a few days of orientation in the classroom, I presented the
-computer. The first day he sat at the computer for 20 minutes and pressed
-the ball, bus, bee on the IntelliKeys keyboard over and over again. He th=
-en
-looked at me and pointed to the ball and said ?Ba? Then he pointed to the
-bee and said 'Be' and the Bus and said 'Bu.' I was astonished and his mot=
-her
-started to cry.=20
-Until that day, he could not hear the language differences. He asked for
-the computer every day by pointing to it. He was allowed to spend time ea=
-ch
-day on the noun program. One year later he was talking in full sentences =
-and
-was staffed into normal preschool.=20
-Brian was a boy with Down's Syndrome. He was taking several medications.
-Brian came from a nurturing family and extended family who provided him w=
-ith
-every opportunity. His mother was a teacher and wanted what was best for
-him. He exhibited no language and was considerably behind his other frien=
-ds
-with Down?s Syndrome. We set up a noun program at school. At first he see=
-med
-disinterested. He looked at the pictures and sucked his thumb. The more w=
-e
-encouraged him to engage the keyboard, the more he sucked his thumb. We t=
-hen
-paired him with a child who was very interested in the noun program.
-Suddenly the two were fighting over who was next to pick a picture. He
-worked several times a week at the computer. At his 3-year IEP, the team
-shook their heads. They didn't understand. Despite the track record of ma=
-ny
-students with Down?s Syndrome, Brian's language was his best skill. I smi=
-led
-and his mother winked at me.=20
-Toren came to me at age 32 months. He had 2 words: Ma Ma and Bye Bye. He
-could not focus, but ran around the room. His mother was convinced I was
-going to have him cured by his third birthday. I told her I was no miracl=
-e
-worker, but we'd do what we could during the next 4 months. Immediately w=
-e
-started structuring Toren's day. I went home and worked up a program call=
-ed
-'Toren's Nouns'. The first day I showed Toren the program, he looked at i=
-t
-for 10-15 seconds and then left the computer. The next day he stayed abou=
-t
-30 seconds. Each day he built up more time at the computer. By the second
-week, he would sit on my lap for 10 minutes pressing whichever word he
-wanted to hear. But he spoke no sounds, no words. Three weeks passed. I
-began berating myself. 'See, Jo, you thought this noun program was so gre=
-at.
-Look at Toren, he's not learning anything.' The fourth week Toren walked
-over to the computer, picked up the overlay from the IntelliKeys keyboard=
-,
-pointed to 10 different words and approximated each word. That day, I cri=
-ed.
+00:0c.0 Class 0401: 12eb:0003 (rev 02)
+	Subsystem: 12eb:0003
+	Region 0: Memory at 00000000fdc00000 (32-bit, non-prefetchable)
+[size=256K]
 
 
+04:01.0 0401: 12eb:0002 (rev fa)
+        Subsystem: 12eb:0001
+        Region 0: Memory at e5000000 (32-bit, non-prefetchable)
+[size=256K]
 
-Get back to you later,=20
-Nona   Black
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+======================================================================
 
 
 
