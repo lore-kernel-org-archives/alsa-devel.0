@@ -1,18 +1,17 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PPC,SOUND] Fix audio gpio state detection
-Date: Mon, 13 Feb 2006 10:27:29 +1100
-Message-ID: <1139786849.27829.0.camel@localhost.localdomain>
-References: <jehd7527wq.fsf@sykes.suse.de>
-	 <1139783738.5247.54.camel@localhost.localdomain>
-	 <1139784411.25288.11.camel@grayson>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Building alsa-lib with a cross compiler (SH4)
+Date: Sun, 12 Feb 2006 23:37:26 +0000
+Message-ID: <1139787446.10187.10.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 30BA81C9
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 00:28:39 +0100 (MET)
-In-Reply-To: <1139784411.25288.11.camel@grayson>
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 257D91C9
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 00:37:41 +0100 (MET)
+Received: from bossclass (bossclass [192.168.62.105])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k1CNbQlV003215
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 23:37:33 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +21,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ben Collins <bcollins@ubuntu.com>
-Cc: Andreas Schwab <schwab@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Ben Collins <ben.collins@ubuntu.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-02-12 at 17:46 -0500, Ben Collins wrote:
-> On Mon, 2006-02-13 at 09:35 +1100, Benjamin Herrenschmidt wrote:
-> > Can you sync with the patches Ben Collins is doing on this as well ?
-> > 
-> > Ben, what is your status ? Are you feeding those through upstream the
-> > alsa folks ? Or waiting for me to do something ? :)
-> > 
-> > The above, if it appear to works well enough might be worth merging
-> > now ...
-> 
-> I haven't synced because I've been waiting for some kind of go ahead
-> from you. I can rediff against 2.6.16-git and send them to alsa, CC ppc
-> list.
+I am guessing that I should be configuring the cross build with:
 
-Please, do so !
 
-Thanks,
-Ben.
+CC=/home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-gcc ./configure --host=sh4-linux --with-debug=yes --prefix=/tftpboot/192.168.61.55/usr
 
+
+Does this look right to folks? Does alsa-lib install configuration files
+also? Will they go in the NFS root directory (/tftpboot/192.168.61.55)
+with just that --prefix or do I need to add anything else? (I don't want
+to over right my existing ALSA config on the i686 box I am building on)
+
+Adrian
 
 
 
