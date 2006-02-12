@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Sun, 12 Feb 2006 22:11:38 +0100
-Message-ID: <8a02131bbfc301600875fa614d0608a7@bugtrack.alsa-project.org>
+Date: Sun, 12 Feb 2006 22:14:39 +0100
+Message-ID: <3d634bbd4ed2b2e5e35f65b106289e61@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6660117A
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 22:11:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0997D17A
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 22:14:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-12-2006 22:11 CET
+Last Modified:              02-12-2006 22:14 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -56,18 +56,17 @@ duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- AndyP - 02-12-06 21:42 
-----------------------------------------------------------------------
-I have just installed Debian with kernel 2.6.15-5 and ALSA 1.0.10 on an
-Acer Aspire 1642. Same issue, no sound, Intel HDA with Realtek ALC260.
-Haven´t tried cvs yet, but will.
-
-----------------------------------------------------------------------
  wattazoum - 02-12-06 22:11 
 ----------------------------------------------------------------------
 well, I got an acer 1640WLMI with the same problem with my ALC260, but it's
 worked just as mytux said with the cvs version. so don't worry, apply it
 and be happy :o) .
+
+----------------------------------------------------------------------
+ rlrevell - 02-12-06 22:14 
+----------------------------------------------------------------------
+Well, you can't assume that a 1640WLMI has the same sound hardware as an
+Aspire 1642.  But please try CVS...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +122,7 @@ Date Modified  Username       Field                    Change
 02-10-06 11:02 svilen         Note Added: 0007999                          
 02-12-06 21:42 AndyP          Note Added: 0008031                          
 02-12-06 22:11 wattazoum      Note Added: 0008032                          
+02-12-06 22:14 rlrevell       Note Added: 0008033                          
 ======================================================================
 
 
