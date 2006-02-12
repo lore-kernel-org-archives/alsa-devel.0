@@ -1,17 +1,15 @@
-From: "Sepulchral V. Paste" <ishii@gocesar.com>
-Subject: Software
-Date: Sun, 12 Feb 2006 00:44:49 -0600
-Message-ID: <8156190049.20060212004449@gocesar.com>
+From: Nick Warne <nick@linicks.net>
+Subject: Re: Re: ALSA - pnp OS bios option
+Date: Sun, 12 Feb 2006 07:56:38 +0000
+Message-ID: <200602120756.38975.nick@linicks.net>
+References: <200601092022.56244.nick@linicks.net> <200602111054.50947.nick@linicks.net> <1139687047.19342.91.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -1212976968 (pool-71-111-80-191.ptldor.dsl-w.verizon.net [71.111.80.191])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EA385194
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 07:51:19 +0100 (MET)
-Received: from gocesar.com (-1211552512 [-1213116864])
-	by pool-71-111-80-191.ptldor.dsl-w.verizon.net (Qmailv1) with ESMTP id 10F1316072
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 00:44:49 -0600
+In-Reply-To: <1139687047.19342.91.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,32 +19,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Looking for cheap high-quality software? 
-soft at incredibly low prices 
+On Saturday 11 February 2006 19:44, Lee Revell wrote:
+> > If I then reboot, the same damn control #47 errors happen again.  It's
+> > as if
+> > something changes my asound.state file at boot time time?
+>
+> Probably you have two different alsactl's installed, one that's
+> hardcoded to save the state in /etc/asound.state, and a distro version
+> that wants to save it in /var/lib/whatever.  It sounds like one is being
+> run at boot and a different one at shutdown.
 
-New software on our site:
+First thing I thought of - Slackware is a 'clean, straight' distro though, and 
+the only asound.state file I had was in /etc/ and only one alsactl in 
+default /usr/sbin
 
-Office XP Professional - $79.95
-Norton System Works 2003 - $59.95
-Dreamweaver MX 2004 $69.95
-PageMaker 7 (2CD) - $69.95
-Windows XP Professional With SP2 Full Version - $79.95
-Flash MX 2004 - $69.95
-Windows XP Professional - $69.95
-Office 2000 Premium Edition PE (2CD) - $59.95
-LiveMotion 2.0 - $69.95
-Windows XP Professional With SP2 Full Version - $79.95
-Painter 8 - $59.95
-Project 2003 Professional - $69.95
-Creative Suite Standard (3 CD) - $129.95
-Fireworks MX 2004 - $69.95
+On Saturday 11 February 2006 22:07, Lee Revell wrote:
+> > do we need to keep the alsa tools and
+> > stuff current too?
+>
+> Yes - kernel upgrades should depend on alsa-lib upgrades (many distros
+> seem to get this wrong).  This should be fixed in the future, but it's
+> been this way for some time.
 
-Our site:
-http://paulinusag.com
+Well, it appears to have fixed the issues I had.  Several reboots since and no 
+problems now.
 
+Looking back, originally I had a 2.4.x kernel - I have since upgraded to 2.6.x 
+series, plus built a lot of new tools and such from source - all except alsa 
+stuff, of course - so it does make sense and I kick myself for not thinking 
+about this in the beginning.  One to remember.
+
+Thanks,
+
+Nick
+-- 
+"Person who say it cannot be done should not interrupt person doing it."
+-Chinese Proverb
 
 
 -------------------------------------------------------
