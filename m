@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001842]: high frequency whisteling in one channel
-Date: Sun, 12 Feb 2006 14:17:15 +0100
-Message-ID: <61972f02469c6960cfd3d45b235a488d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001472]: Constant distortion noise on digital mixer
+Date: Sun, 12 Feb 2006 14:55:30 +0100
+Message-ID: <1e4b4bac2fe763cf2ed55aa8069d85d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A5901AF
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 14:17:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D3BD110
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 14:55:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1842> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1472> 
 ======================================================================
-Reported By:                Tolot
-Assigned To:                tiwai
+Reported By:                Atraides
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1842
-Category:                   PCI - hda-intel
+Issue ID:                   1472
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.15.4
+Status:                     new
+Distribution:               Suse
+Kernel Version:             2.6.11.4-21.9
 ======================================================================
-Date Submitted:             02-11-2006 23:17 CET
-Last Modified:              02-12-2006 14:17 CET
+Date Submitted:             10-12-2005 02:02 CEST
+Last Modified:              02-12-2006 14:55 CET
 ======================================================================
-Summary:                    high frequency whisteling in one channel
+Summary:                    Constant distortion noise on digital mixer
 Description: 
-compilation and loading of module snd-intel-hda works without problem. Also
-alsaconf. But when I start xmms or mplayer I can hear something but one
-channel has a very high frequency whisteling. I tried it with Windows too
-to be sure that there is no hardware error.
-lspci gives the information: 
-Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
-Audio Controller (rev 03)
-tried it with differnet kernels and also with alsa 1.0.9
-also tried the kernel modul
+The hardware in question is a Terratec DMX 6Fire 24/96. I have a constant
+crackling (like an old UKW radio between to stations) on the digital
+mixer. The noise disappears for a few seconds if I switch the Phono Input,
+the Breakout LED or Line In Selector. It changes the noise character when
+switching the S/PDIF Input from coaxial to optical. Even if all ins and
+outs are muted or tracked down its still there (I can see it in the
+Monitor Mixer).
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
 ======================================================================
 
 ----------------------------------------------------------------------
- Tolot - 02-12-06 14:17 
+ alanmann - 02-08-06 16:26 
 ----------------------------------------------------------------------
-additional information to the problem:
-when I start kde i hear the starting sound together with the very high
-frequency whisteling on one channel. The music stops, but whisteling goes
-on. when i then change the pcm volume the whisteling stops. I then can use
-for example xmms. but i cannot hear anything even when i use alsaconf or
-alsamixer and reload the module.
+Added to patch:' ' to align comments following v2 change (might as well get
+it right!); please use v3 of the file and delete the rest.
 
-Maybe it has something to do with the pci-express ?
+----------------------------------------------------------------------
+ Atraides - 02-12-06 14:55 
+----------------------------------------------------------------------
+Sorry for my late reply. I didn't use the patch but tested rc3 on Suse 10.
+Is the patch already part of it? It looks so to me because this version
+works fine. No noise except when I pull up the SPDIF channels to maximum
+and switch to coax or CD-in. This might be definately due to some
+crosstalk. It think the problem is solved. Great job!
+
+mfg
+
+     M.Baehr
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-06 23:17 Tolot          New Issue                                    
-02-11-06 23:17 Tolot          Kernel Version            => 2.6.15.4        
-02-12-06 14:17 Tolot          Note Added: 0008027                          
+10-12-05 02:02 Atraides       New Issue                                    
+10-12-05 02:02 Atraides       Distribution              => Suse            
+10-12-05 02:02 Atraides       Kernel Version            => 2.6.11.4-21.9   
+10-12-05 13:50 tiwai          Note Added: 0006465                          
+10-12-05 15:19 Atraides       Note Added: 0006467                          
+10-13-05 10:19 alanmann       Note Added: 0006475                          
+10-13-05 13:39 Atraides       Note Added: 0006477                          
+10-14-05 11:48 Atraides       Note Edited: 0006477                         
+10-14-05 12:55 alanmann       Note Added: 0006478                          
+10-17-05 20:41 Atraides       Note Added: 0006488                          
+02-02-06 22:03 alanmann       Note Added: 0007882                          
+02-05-06 22:21 alanmann       Note Added: 0007942                          
+02-05-06 22:22 alanmann       File Added: bug1472-dmx6fire-limit-to-6ADCs.patch 
+                  
+02-07-06 12:54 alanmann       File Added:
+bug1472-dmx6fire-limit-to-6ADCs-v2.patch                    
+02-07-06 12:56 alanmann       Note Added: 0007957                          
+02-08-06 16:26 alanmann       Note Added: 0007966                          
+02-08-06 16:27 alanmann       File Added:
+bug1472-dmx6fire-limit-to-6ADCs-v3.patch                    
+02-08-06 19:58 perex          Relationship added       related to 0001785  
+02-12-06 14:55 Atraides       Note Added: 0008028                          
 ======================================================================
 
 
