@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001751]: I can't "make" it
-Date: Sun, 12 Feb 2006 00:20:23 +0100
-Message-ID: <ef570a35e49dda19c80c1e6314e1e903@bugtrack.alsa-project.org>
+Date: Sun, 12 Feb 2006 01:00:58 +0100
+Message-ID: <72de979ac3a1b0adab34b6cf440adbfd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B6FE1AE
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 00:20:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1DE5E16A
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 01:00:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1751> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-15-2006 15:37 CET
-Last Modified:              02-12-2006 00:20 CET
+Last Modified:              02-12-2006 01:00 CET
 ======================================================================
 Summary:                    I can't "make" it
 Description: 
@@ -432,17 +434,16 @@ make: *** [compile] Error 1
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-15-06 15:40 
-----------------------------------------------------------------------
-1.0.9-rc4 is not the latest version, and 0.9.4 is ancient.  Try 1.0.10 or
-1.0.11-rc2.
-
-----------------------------------------------------------------------
  Adrian Bunk - 02-12-06 00:20 
 ----------------------------------------------------------------------
 --with-kernel=/usr/ is obviously wrong.
 
 The error messages give you clear advice what to do.
+
+----------------------------------------------------------------------
+ rlrevell - 02-12-06 01:00 
+----------------------------------------------------------------------
+Local problem (trying to build kernel modules against userspace headers)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -450,6 +451,9 @@ Date Modified  Username       Field                    Change
 01-15-06 15:37 DavidJ         New Issue                                    
 01-15-06 15:40 rlrevell       Note Added: 0007665                          
 02-12-06 00:20 Adrian Bunk    Note Added: 0008022                          
+02-12-06 00:20 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+02-12-06 01:00 rlrevell       Status                   assigned => closed  
+02-12-06 01:00 rlrevell       Note Added: 0008023                          
 ======================================================================
 
 
