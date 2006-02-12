@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Sun, 12 Feb 2006 22:14:39 +0100
-Message-ID: <3d634bbd4ed2b2e5e35f65b106289e61@bugtrack.alsa-project.org>
+Date: Sun, 12 Feb 2006 23:05:32 +0100
+Message-ID: <5fb735c861165a0226089ef3a0dda070@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0997D17A
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 22:14:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37CB21C4
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 23:05:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-12-2006 22:14 CET
+Last Modified:              02-12-2006 23:05 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -56,17 +56,21 @@ duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- wattazoum - 02-12-06 22:11 
-----------------------------------------------------------------------
-well, I got an acer 1640WLMI with the same problem with my ALC260, but it's
-worked just as mytux said with the cvs version. so don't worry, apply it
-and be happy :o) .
-
-----------------------------------------------------------------------
  rlrevell - 02-12-06 22:14 
 ----------------------------------------------------------------------
 Well, you can't assume that a 1640WLMI has the same sound hardware as an
 Aspire 1642.  But please try CVS...
+
+----------------------------------------------------------------------
+ er-ku - 02-12-06 23:05 
+----------------------------------------------------------------------
+I'm gonna have a look at my mothers Acer Travelmate 4061NLMi this week.
+This should hopefully help ALSA have a new model setting - "acer". ;) And
+I somehow suspect it would work with more than just Travelmates.
+
+P.S. Those who are going to try CVS, should also try a "test" model. It
+would clutter your mixer heavily, but should theoretically allow you to
+get sound from the speakers.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +127,7 @@ Date Modified  Username       Field                    Change
 02-12-06 21:42 AndyP          Note Added: 0008031                          
 02-12-06 22:11 wattazoum      Note Added: 0008032                          
 02-12-06 22:14 rlrevell       Note Added: 0008033                          
+02-12-06 23:05 er-ku          Note Added: 0008034                          
 ======================================================================
 
 
