@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001383]: ac3 passthrough lost in 2.6.12 and later
-Date: Sun, 12 Feb 2006 17:13:20 +0100
-Message-ID: <b95edd0ad1ff8081527ef536c991611e@bugtrack.alsa-project.org>
+Date: Sun, 12 Feb 2006 17:13:40 +0100
+Message-ID: <144071bdf2b77eb4d9aaef6ac7908c65@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2FA991AE
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 17:13:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A49F1AE
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 17:13:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ASSIGNED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1383> 
 ======================================================================
 Reported By:                Antonio
-Assigned To:                fmoraes
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1383
@@ -75,6 +75,7 @@ Date Modified  Username       Field                    Change
 08-31-05 11:52 Antonio        Distribution              => Fedora Core 3   
 08-31-05 11:52 Antonio        Kernel Version            => 2.6.12-1.1376_FC3
 02-12-06 17:13 fmoraes        Note Added: 0008030                          
+02-12-06 17:13 fmoraes        Assigned To              fmoraes => jcdutton 
 ======================================================================
 
 
