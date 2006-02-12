@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001830]: Does pcm_multi allow a virtual Surround51 with a 4 channels analog and 2 channels digital ?
-Date: Sun, 12 Feb 2006 13:04:45 +0100
-Message-ID: <ecac2eb2f3e01af354319fd5c4c907f2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001842]: high frequency whisteling in one channel
+Date: Sun, 12 Feb 2006 14:17:15 +0100
+Message-ID: <61972f02469c6960cfd3d45b235a488d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DBAB17B
-	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 13:04:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A5901AF
+	for <alsa-devel@alsa-project.org>; Sun, 12 Feb 2006 14:17:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,130 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1830> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1842> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                
+Reported By:                Tolot
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1830
-Category:                   CORE - pcm
+Issue ID:                   1842
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.15.4
 ======================================================================
-Date Submitted:             02-08-2006 13:37 CET
-Last Modified:              02-12-2006 13:04 CET
+Date Submitted:             02-11-2006 23:17 CET
+Last Modified:              02-12-2006 14:17 CET
 ======================================================================
-Summary:                    Does pcm_multi allow a virtual Surround51 with a 4
-channels analog and 2 channels digital ?
+Summary:                    high frequency whisteling in one channel
 Description: 
-Do pcm_multi limit to bind stereo channels only ?
+compilation and loading of module snd-intel-hda works without problem. Also
+alsaconf. But when I start xmms or mplayer I can hear something but one
+channel has a very high frequency whisteling. I tried it with Windows too
+to be sure that there is no hardware error.
+lspci gives the information: 
+Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
+Audio Controller (rev 03)
+tried it with differnet kernels and also with alsa 1.0.9
+also tried the kernel modul
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-12-06 13:04 
+ Tolot - 02-12-06 14:17 
 ----------------------------------------------------------------------
-It seem that the option -t of speaker-test behave different for multi type
+additional information to the problem:
+when I start kde i hear the starting sound together with the very high
+frequency whisteling on one channel. The music stops, but whisteling goes
+on. when i then change the pcm volume the whisteling stops. I then can use
+for example xmms. but i cannot hear anything even when i use alsaconf or
+alsamixer and reload the module.
 
-AU8830.pcm.surround51.0 {
-        @args [ CARD ]
-        @args.CARD {
-                type string
-        }
-        type multi
-        slaves [
-                {
-                        pcm {
-                                @func concat
-                                strings [
-                                        "cards.AU8830.pcm.front.0:CARD="
-$CARD
-                                ]
-                        }
-                        channels 4
-                }
-                {
-                        pcm {
-                                @func concat
-                                strings [
-                                        "cards.AU8830.pcm.front.0:CARD="
-$CARD
-                                ]
-                        }
-                        channels 2
-                }
-        ]
-        bindings [
-                { slave 0 channel 0 }
-                { slave 0 channel 1 }
-                { slave 0 channel 2 }
-                { slave 0 channel 3 }
-                { slave 1 channel 0 }
-                { slave 1 channel 1 }
-        ]
-
-
-
-speaker-test -D surround51 -c 6
- 
-speaker-test 1.0.11rc2
- 
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 4 - Center
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
- 5 - LFE
-Time per period = 17.831381
- 0 - Front Left
- 4 - Center
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
- 5 - LFE
-Time per period = 17.981657
- 0 - Front Left
-
-
-speaker-test -D surround51 -t wav -c 6
- 
-speaker-test 1.0.11rc2
- 
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-WAV file(s)
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
-Cannot open WAV file /usr/share/sounds/alsa/Center.wavLFE.wav
+Maybe it has something to do with the pci-express ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-06 13:37 Raymond        New Issue                                    
-02-12-06 13:04 Raymond        Note Added: 0008026                          
+02-11-06 23:17 Tolot          New Issue                                    
+02-11-06 23:17 Tolot          Kernel Version            => 2.6.15.4        
+02-12-06 14:17 Tolot          Note Added: 0008027                          
 ======================================================================
 
 
