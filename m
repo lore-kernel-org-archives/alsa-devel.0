@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001318]: Volume control per PCM
-Date: Mon, 13 Feb 2006 17:24:27 +0100
-Message-ID: <e3aaebb865d2fa8fe40a7f83e950cb51@bugtrack.alsa-project.org>
+Date: Mon, 13 Feb 2006 17:30:26 +0100
+Message-ID: <f6d96e3d6f208d4f538dd04ec643f26b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 588061CB
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 17:24:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E43DF1CB
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 17:30:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-07-2005 14:45 CEST
-Last Modified:              02-13-2006 17:24 CET
+Last Modified:              02-13-2006 17:30 CET
 ======================================================================
 Summary:                    Volume control per PCM
 Description: 
@@ -53,17 +53,6 @@ Thanks,
    Dino
 
 ======================================================================
-
-----------------------------------------------------------------------
- darkbrain - 02-13-06 17:04 
-----------------------------------------------------------------------
-It's only a test! Unfortunaly the problem is elsewhere: How to change pcm
-volume? Witch are the values? Am i modifying the right register? Are there
-hardware delays to respect? Is it right to modify current volume and
-target volume at the same time? Am I modifying current and target volumes?
-Does the card supports this feature? In witch mode is setted? ...
-
-
 
 ----------------------------------------------------------------------
  Raymond - 02-13-06 17:24 
@@ -85,6 +74,82 @@ struct dsp_spos_instance {
 };
 
 mixer_scb is more likely than pcm_reader_scb
+
+----------------------------------------------------------------------
+ Raymond - 02-13-06 17:30 
+----------------------------------------------------------------------
+It is possible to find out the iface_pcm control of pcm SND_PCM_TYPE_HW.
+
+int find_iface_pcm_elem(snd_pcm_t *pcm)
+{
+	snd_ctl_card_info_t *hw_info;
+	snd_hctl_t *hctl;
+	snd_hctl_elem_t *elem;
+	snd_pcm_info_t *pcm_info;	
+	char card[8];
+	int card_number,no_of_elem,err;
+	if ( pcm == NULL )
+		return -EINVAL;
+	no_of_elem=0;
+	if ( snd_pcm_type(pcm) == SND_PCM_TYPE_HW ) {
+	        snd_pcm_info_alloca(&pcm_info);
+	        err = snd_pcm_info(pcm, pcm_info);
+	        if ( err < 0 ) {
+			return -ENOMEM;
+	        };	
+		card_number=snd_pcm_info_get_card(pcm_info);
+		if ( card_number < 0 ) {
+			return -EINVAL;
+	    	};
+	    	sprintf(card,"hw:%d",card_number);
+	    	if ((err = snd_ctl_open(&ctl, card, 0)) < 0) {
+			return -EINVAL;
+ 		};
+		snd_ctl_card_info_alloca(&hw_info);
+		if ((err = snd_ctl_card_info(ctl, hw_info)) < 0) {
+			return -ENOMEM;
+		}
+		if ((err = snd_hctl_open(&hctl, card, 0)) < 0) {
+			return err;
+		}
+		if ((err = snd_hctl_load(hctl)) < 0) {
+			return err;
+		}	
+		snd_ctl_elem_info_alloca(&info);
+		snd_ctl_elem_value_alloca(&val);
+ 		snd_ctl_elem_id_alloca(&id);
+		for (elem = snd_hctl_first_elem(hctl); elem; elem =
+snd_hctl_elem_next(elem)) {
+        	    	if ( (err = snd_hctl_elem_info(elem, info)) < 0) 
+				return err;
+		    	else {
+				if ( snd_ctl_elem_info_get_interface(info) == SND_CTL_ELEM_IFACE_PCM )
+{
+				        if ( snd_pcm_info_get_device(pcm_info) ==
+snd_ctl_elem_info_get_device(info) ) {
+				        	if ( snd_pcm_info_get_subdevice(pcm_info) ==
+snd_ctl_elem_info_get_subdevice(info) ) {
+					    		if ((err = snd_hctl_elem_read(elem, val)) < 0) 								
+								return err;
+							else {
+							        snd_hctl_elem_get_id(elem, id);
+								printf("%s device=%d subdevice=%d
+%s\n",snd_pcm_info_get_name(pcm_info),
+snd_ctl_elem_info_get_device(info),
+snd_ctl_elem_info_get_subdevice(info),
+snd_ctl_elem_id_get_name(id));
+								no_of_elem++;
+						    	};
+                        			};
+                    			};
+                		};
+            		};
+        	};
+		snd_hctl_close(hctl);
+		snd_ctl_close(ctl);
+	};
+	return no_of_elem;
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -122,6 +187,7 @@ Date Modified  Username       Field                    Change
 02-13-06 17:03 darkbrain      Note Added: 0008056                          
 02-13-06 17:04 darkbrain      Note Edited: 0008056                         
 02-13-06 17:24 Raymond        Note Added: 0008058                          
+02-13-06 17:30 Raymond        Note Added: 0008059                          
 ======================================================================
 
 
