@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001188]: quake3 crashes, capture not working
-Date: Mon, 13 Feb 2006 19:58:29 +0100
-Message-ID: <196dc7f4e7b1b8f35068ba141c46de3a@bugtrack.alsa-project.org>
+From: Ron Cococcia <ron.cococcia@request.com>
+Subject: Re: prealloc/buffer time limit?
+Date: Mon, 13 Feb 2006 14:08:36 -0500
+Message-ID: <43F0D934.8090809@request.com>
+References: <43ED016D.9030301@request.com> <20060213080655.GA8896@ifiu25.informatik.uni-halle.de> <43F0A0AB.3050102@request.com> <20060213155244.GF9177@ifiu25.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F964196
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 19:58:29 +0100 (MET)
+In-Reply-To: <20060213155244.GF9177@ifiu25.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
+> 
+> Change appropriate fields in snd_intel8x0_stream, too.
 
-The issue 0001725 has been set as DUPLICATE OF the following issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1188> 
-======================================================================
-Reported By:                gnarlie
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1188
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.8.1 with the voluntary preempt patch
-======================================================================
-Date Submitted:             06-13-2005 19:41 CEST
-Last Modified:              02-13-2006 19:48 CET
-======================================================================
-Summary:                    quake3 crashes, capture not working
-Description: 
-The card is a sb live 24bit pci.
-quake3 crashes me after a map has loaded, oddly one map works but crashes
-everytime when I finish the map. The sounds in the menus work. Tried my
-mic
-with the mic-in and all possible mixer settings, no dice.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001725 SB Audigy SE Not Working with Quake 4, ...
-related to          0000373 Sound in Quake 3 does not work
-======================================================================
+That's exactly what I was looking for :)  As James mentioned, it might 
+not work correctly, but I'm experimenting to see what I can make it do.
 
-----------------------------------------------------------------------
- jcdutton - 09-10-05 13:09 
-----------------------------------------------------------------------
-The ca0106 based sound card is currently unsuitable for any linux based
-games.
-The card cannot do 44100 Hz sound, and all games like Doom3 and Quake3 use
-44100 Hz sound. I would suggest using a different sound card for now, or
-wait until the alsa-lib resamplers have improved in order to support
-this.
-The improvements needed to the alsa-lib resamplers are rather complicated,
-so don't expect it to happen any time soon.
+Thanks again!
 
-----------------------------------------------------------------------
- avuton - 02-13-06 19:48 
-----------------------------------------------------------------------
-Is this and 0001725 related?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-13-05 19:41 gnarlie        New Issue                                    
-06-13-05 19:41 gnarlie        Distribution              => gentoo          
-06-13-05 19:41 gnarlie        Kernel Version            => 2.6.8.1 with the
-voluntary preempt patch
-09-10-05 13:09 jcdutton       Note Added: 0006117                          
-01-03-06 12:41 perex          Relationship added       related to 0000373  
-02-13-06 19:48 avuton         Note Added: 0008061                          
-02-13-06 19:49 avuton         Issue Monitored: avuton                      
-02-13-06 19:58 rlrevell       Relationship added       has duplicate 0001725
-======================================================================
-
-
+-Ron
 
 
 -------------------------------------------------------
