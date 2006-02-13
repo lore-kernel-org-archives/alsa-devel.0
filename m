@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: using more than 8 boards of the same kind, at once,
- on a single system
-Date: Mon, 13 Feb 2006 09:32:40 +0100
-Message-ID: <20060213083240.GC8896@ifiu25.informatik.uni-halle.de>
-References: <1139755387.25868.1.camel@lnx.rgptech.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001807]: Sound playback hangs and loops on first buffer
+Date: Mon, 13 Feb 2006 11:24:19 +0100
+Message-ID: <227d7d1a2cba797fe6e6cd1f3ba3da37@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1139755387.25868.1.camel@lnx.rgptech.com>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 976471C2
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 11:24:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,27 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: hurricane <hurricane@barmusic.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hurricane wrote:
-> I have designed a video/audio USB2.0 board (WISIWYG 1.0), that I use
-> on 2.6.11-1.27_FC3smp that uses the WIS GO7007 chip, and have run into
-> a limit of 8 boards that can be recognized for audio by the WIS device
-> driver.
 
-ALSA's latest development relase (1.0.11rc3) supports up to 32 cards
-when it is configured with --enable-dynamic-minors.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1807> 
+======================================================================
+Reported By:                hno
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1807
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5 test 2 + relevant updates (kernel,
+alsa)
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             02-02-2006 00:15 CET
+Last Modified:              02-13-2006 11:24 CET
+======================================================================
+Summary:                    Sound playback hangs and loops on first buffer
+Description: 
+Trying to play any sound or music produces a never ending loop of the first
+1/2 second or so.
+======================================================================
 
-> I need to use up to 48 boards on one system.
+----------------------------------------------------------------------
+ rlrevell - 02-10-06 02:51 
+----------------------------------------------------------------------
+Sorry, I'm out of ideas.  Have you been able to figure out whether anyone
+else with this board has it working?
 
-This would require a trivial change in alsa-lib and an unknown amount of
-changes in the ALSA kernel code.
+I guess you could revert to the working version from Realtek until this is
+resolved...
+
+----------------------------------------------------------------------
+ hno - 02-13-06 11:24 
+----------------------------------------------------------------------
+I guess I could stick with the Realtek driver, if it wasn't for the small
+detail that Alsa-driver 1.0.9b doesn't compile with current kernels.. not
+sure which would be most work, making 1.0.9b compile, or figuring out why
+1.0.10 and later hangs..
+
+Don't know many others using this board, it's fairly new, AMD, and
+integrated graphics (i.e. probably not a typical board for the Linux
+enthusiast). but I'll look around a little to see who I may find..
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-02-06 00:15 hno            New Issue                                    
+02-02-06 00:15 hno            Distribution              => Fedora Core 5 test 2
++ relevant updates (kernel, alsa)
+02-02-06 00:15 hno            Kernel Version            => 2.6.15          
+02-02-06 00:40 rlrevell       Note Added: 0007865                          
+02-02-06 02:42 hno            Note Added: 0007867                          
+02-02-06 03:46 hno            Note Added: 0007868                          
+02-02-06 18:41 hno            Note Added: 0007879                          
+02-02-06 19:07 rlrevell       Note Added: 0007881                          
+02-03-06 02:43 hno            Note Added: 0007885                          
+02-03-06 02:54 rlrevell       File Added: 1.0.9-diff                       
+02-03-06 02:57 rlrevell       Note Added: 0007886                          
+02-03-06 04:03 hno            Note Added: 0007887                          
+02-03-06 04:28 rlrevell       Note Added: 0007888                          
+02-03-06 04:44 hno            Note Added: 0007889                          
+02-03-06 04:57 rlrevell       Note Added: 0007890                          
+02-03-06 04:58 hno            File Added:
+codec#3-working-to-latestnotworking.diff                    
+02-03-06 05:02 hno            Note Added: 0007891                          
+02-10-06 02:38 hno            Note Added: 0007980                          
+02-10-06 02:51 rlrevell       Note Added: 0007981                          
+02-13-06 11:24 hno            Note Added: 0008044                          
+======================================================================
 
 
-HTH
-Clemens
 
 
 -------------------------------------------------------
