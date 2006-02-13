@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001807]: Sound playback hangs and loops on first buffer
-Date: Mon, 13 Feb 2006 13:15:41 +0100
-Message-ID: <e5183cd39a96b56bdf6af77b8a4c21bf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Mon, 13 Feb 2006 13:34:16 +0100
+Message-ID: <c96e8d4c5cc7135e7a2e5b21cb6d69cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41F521C4
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 13:15:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3E2A1C4
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 13:34:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1807> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
 ======================================================================
-Reported By:                hno
-Assigned To:                tiwai
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1807
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1318
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5 test 2 + relevant updates (kernel,
-alsa)
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-02-2006 00:15 CET
-Last Modified:              02-13-2006 13:15 CET
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              02-13-2006 13:34 CET
 ======================================================================
-Summary:                    Sound playback hangs and loops on first buffer
+Summary:                    Volume control per PCM
 Description: 
-Trying to play any sound or music produces a never ending loop of the first
-1/2 second or so.
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
+
 ======================================================================
 
 ----------------------------------------------------------------------
- hno - 02-13-06 12:54 
+ Raymond - 02-13-06 13:30 
 ----------------------------------------------------------------------
-Getting closer. There was something between 1.0.10 and 1.0.11rc1 which
-broke this.
+I have uploaded the patch for au88x0 and a workaround tool in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835 to
+test those SNDRV_CTL_ELEM_IFACE_PCM control.
 
-1.0.10 + the small patch from Bug #1563 works.
 
-1.0.11rc1 fails with the "hanging looping on first buffer" syndrome.
-
-Is there a CVS or similar where I can get the incremental changes between
-1.0.10 and 1.0.11rc1? The full diff is a bit too large for me to try to
-pinpoint this without knowing the design better...
 
 ----------------------------------------------------------------------
- hno - 02-13-06 13:15 
+ Raymond - 02-13-06 13:34 
 ----------------------------------------------------------------------
-Found the CVS tree. Digging.
+You should not use spdif_input_volume_left and spdif_input_volume_right to
+compare with ucontrol->value.integer.value[0] and
+ucontrol->value.integer.value[1]
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-06 00:15 hno            New Issue                                    
-02-02-06 00:15 hno            Distribution              => Fedora Core 5 test 2
-+ relevant updates (kernel, alsa)
-02-02-06 00:15 hno            Kernel Version            => 2.6.15          
-02-02-06 00:40 rlrevell       Note Added: 0007865                          
-02-02-06 02:42 hno            Note Added: 0007867                          
-02-02-06 03:46 hno            Note Added: 0007868                          
-02-02-06 18:41 hno            Note Added: 0007879                          
-02-02-06 19:07 rlrevell       Note Added: 0007881                          
-02-03-06 02:43 hno            Note Added: 0007885                          
-02-03-06 02:54 rlrevell       File Added: 1.0.9-diff                       
-02-03-06 02:57 rlrevell       Note Added: 0007886                          
-02-03-06 04:03 hno            Note Added: 0007887                          
-02-03-06 04:28 rlrevell       Note Added: 0007888                          
-02-03-06 04:44 hno            Note Added: 0007889                          
-02-03-06 04:57 rlrevell       Note Added: 0007890                          
-02-03-06 04:58 hno            File Added:
-codec#3-working-to-latestnotworking.diff                    
-02-03-06 05:02 hno            Note Added: 0007891                          
-02-10-06 02:38 hno            Note Added: 0007980                          
-02-10-06 02:51 rlrevell       Note Added: 0007981                          
-02-13-06 11:24 hno            Note Added: 0008044                          
-02-13-06 12:54 hno            Note Added: 0008045                          
-02-13-06 13:15 hno            Note Added: 0008046                          
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+01-10-06 12:55 darkbrain      Note Added: 0007548                          
+02-05-06 04:55 Raymond        Note Added: 0007929                          
+02-05-06 05:33 Raymond        Note Edited: 0007929                         
+02-05-06 13:19 darkbrain      Note Added: 0007932                          
+02-05-06 14:42 Raymond        Note Added: 0007934                          
+02-06-06 03:43 Raymond        Note Edited: 0007934                         
+02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
+02-07-06 21:05 darkbrain      Note Added: 0007960                          
+02-08-06 02:39 Raymond        Note Edited: 0007934                         
+02-08-06 03:24 Raymond        Note Added: 0007962                          
+02-08-06 03:31 Raymond        Note Edited: 0007962                         
+02-08-06 09:54 Raymond        Note Edited: 0007934                         
+02-08-06 10:41 darkbrain      Note Added: 0007964                          
+02-09-06 08:06 Raymond        Note Added: 0007970                          
+02-09-06 08:11 Raymond        Note Edited: 0007970                         
+02-09-06 10:37 Raymond        Note Deleted: 0007970                        
+02-10-06 12:59 Raymond        Note Added: 0008002                          
+02-10-06 15:29 darkbrain      Note Added: 0008005                          
+02-11-06 02:38 Raymond        Note Added: 0008011                          
+02-11-06 02:51 Raymond        Note Edited: 0007962                         
+02-11-06 02:53 Raymond        Note Edited: 0008011                         
+02-11-06 03:00 Raymond        Note Edited: 0008011                         
+02-11-06 14:30 darkbrain      Note Added: 0008017                          
+02-11-06 15:16 Raymond        Note Added: 0008019                          
+02-13-06 08:32 Raymond        Note Edited: 0008019                         
+02-13-06 13:30 Raymond        Note Edited: 0008019                         
+02-13-06 13:34 Raymond        Note Added: 0008047                          
 ======================================================================
 
 
