@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001763]: How to provide patch for the soundcard matrix ?
-Date: Mon, 13 Feb 2006 08:37:39 +0100
-Message-ID: <07348777b7f3f4a0d2722054b36d8d06@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
+Date: Mon, 13 Feb 2006 08:52:34 +0100
+Message-ID: <1085494523475ba9e8a5e1e940b77c22@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E4AA1B4
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 08:37:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DF991BF
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 08:52:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,123 +24,166 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1763> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
 ======================================================================
 Reported By:                Raymond
-Assigned To:                
+Assigned To:                mjander
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1763
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Issue ID:                   1724
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-20-2006 09:10 CET
-Last Modified:              02-13-2006 08:37 CET
+Date Submitted:             01-07-2006 05:10 CET
+Last Modified:              02-13-2006 08:52 CET
 ======================================================================
-Summary:                    How to provide patch for the soundcard matrix ?
+Summary:                    au88x0 PCM configuration problem - buffer_size
+constraint
 Description: 
-How to provide patch for the soundcard matrix ?
+/cvs/alsa-lib/test/pcm_min
 
-http://www.alsa-project.org/alsa-doc/index.php?vendor=All#matrix
+ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
+(latency) 500000 for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
 
-(e.g. Is there any description of the xml file submitted in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938 ? )
-
-1) Is mpu401 uart regarded as [MIDIio] ?
-
-2) Is coaxial SPDIF in/out regarded as [RCAio] ?
-
-3) Is optical SPDIF out classified as [TOSo] ?
-
-4) Add "modem not support" to Note
-
-
+sound card is au8830, the au88x0 driver only accept period size in power
+of 2.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001766 jackd : ALSA: cannot set period size to...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-10-06 17:31 
+ Raymond - 02-13-06 03:11 
 ----------------------------------------------------------------------
-The following sound cards use the Aureal chipset: Vortex 1 chipset cards:
-Aureal Vortex 1 PCI (OEM)
-Aztech PCI 338 A3D
-DCS S805
-Diamond Sonic Impact S90
-Gallant Audiostorm A3D
-Genius Soundmaker 64
-Hi-Val A3D PCI 338
-Intresource TeraSound A3D PCI
-I/O Magic MagicWave PCI A3D
-Mediatek Sound Image Symphonic PCI-1
-Multiwave AudioWave PCI DigitalSound
-Orchid NuSound PCI
-Samtek Rock'n98 A3D
-Shark Predator PCI
-Skywell Magic Sound
-Techworks Power Vortex 1
-Terratec Xlerate PCI
-Turtle Beach Montego A3Dxstream
-Xitel Storm VX
+aplay -D hw:0,0 can find a safe value of period_size for all .wav files in
+the vortex driver CD without underrun. The period_size varies between
+different rate and format
 
-Vortex 2 chipset cards:
-Aureal Vortex2 PCI (OEM)
-Aureal Vortex2 SQ2500
-Aureal Vortex2 SQ3500 Turbo
-Aureal Vortex2 SuperQuad Digital PCI (OEM)
-Absolute Multimedia Outrageous 3D Sound
-Diamond Monster Sound MX300
-Digital Research Thunderstorm Vortex2
-Hi-Val PCI 576 A3D
-I/O Magic MagicWaveV2
-Techworks Power Vortex 2
-Terratec XLerate Pro
-Turtle Beach Montego II
-Turtle Beach Montego II Home Studio
-Turtle Beach Montego II Plus
-Turtle Beach Montego II Quadzilla
-Videologic SonicVortex2
-Xitel Storm Platinum
+However if I specified aplay to use any period-size less than 32, the
+message will appear in the system log
 
-Vortex Advantage chipset based sound cards:
-Aureal Vortex SQ1500
-Absolute Multimedia Outrageous 3D Sound Lite
-Digital Research Thunderstorm Vortex Advantage
-I/O Magic MagicWaveV1
+aplay -D hw:0,0 --period-size=16 *.wav
 
-These motherboards shipped with a Vortex Advantage chipset integrated on
-them:
-Abit WX6
-Gigabyte GA-6CX
-Gigabyte GA-6CXC
-Soyo 6IWM
-Soyo 6IWM/L
-Soyo 7IWA
-Soyo 7IWA-F
+dmesg
+
+vortex: 0 virt=2, real=2, delta=2
+vortex: 0 virt=11, real=3, delta=2
+vortex: 0 virt=20, real=0, delta=2
+vortex: 0 virt=29, real=1, delta=2
+vortex: 0 virt=6, real=2, delta=2
+vortex: 0 virt=15, real=3, delta=2
+vortex: 0 virt=24, real=0, delta=2
+vortex: 0 virt=1, real=1, delta=2
+vortex: 0 virt=10, real=2, delta=2
+vortex: 0 virt=19, real=3, delta=2
+vortex: 0 virt=28, real=0, delta=2
+vortex: 0 virt=5, real=1, delta=2
+vortex: 0 virt=14, real=2, delta=2
+vortex: 0 virt=23, real=3, delta=2
+vortex: 0 virt=0, real=0, delta=2
+vortex: 0 virt=9, real=1, delta=2
+vortex: 0 virt=18, real=2, delta=2
+vortex: 0 virt=27, real=3, delta=2
+vortex: 0 virt=4, real=0, delta=2
+vortex: 0 virt=13, real=1, delta=2
+vortex: 0 virt=22, real=2, delta=2
+vortex: 0 virt=31, real=3, delta=2
+vortex: 0 virt=8, real=0, delta=2
+vortex: 0 virt=17, real=1, delta=2
+vortex: 0 virt=26, real=2, delta=2
+vortex: 0 virt=3, real=3, delta=2
+vortex: 0 virt=12, real=0, delta=2
+vortex: 0 virt=21, real=1, delta=2
+vortex: 0 virt=30, real=2, delta=2
+vortex: 0 virt=7, real=3, delta=2
+vortex: 0 virt=16, real=0, delta=2
+vortex: 0 virt=25, real=1, delta=2
+vortex: 0 virt=2, real=2, delta=2
+vortex: 0 virt=11, real=3, delta=2
+vortex: 0 virt=20, real=0, delta=2
+vortex: 0 virt=29, real=1, delta=2
+vortex: 0 virt=6, real=2, delta=2
+vortex: 0 virt=15, real=3, delta=2
+vortex: 0 virt=24, real=0, delta=2
+
+
+What is the relationship between period_size and period_byte ?
 
 ----------------------------------------------------------------------
- Raymond - 02-13-06 08:37 
+ mjander - 02-13-06 08:52 
 ----------------------------------------------------------------------
-It is wrong to classify AzTech PCI 368-DSP VT21702 to use au8820 driver
+Hi,
+
+The messages of the kind:
+
+vortex: 0 virt=2, real=2, delta=2
+vortex: 0 virt=11, real=3, delta=2
+
+appear when your system is lossing interrupts because of overload. You are
+asking your computer to do something it is not capable of. Thats it.
+
+period size is measured in frames and period_bytes in bytes. AFAIK any
+size is meant to be in frames.
+
+Best Regards
+Manuel Jander
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-20-06 09:10 Raymond        New Issue                                    
-01-22-06 17:34 pochini        Note Added: 0007749                          
-01-23-06 05:19 Raymond        Note Added: 0007759                          
-01-23-06 09:44 Raymond        Note Added: 0007760                          
-01-24-06 08:58 Raymond        File Added: soundcardmatrix_au88x0.patch          
-         
-01-27-06 13:26 Raymond        Note Added: 0007799                          
-01-27-06 13:34 lmike          Note Added: 0007800                          
-01-30-06 06:11 Raymond        File Added: soundcardmatrix_aureal.patch          
-         
-02-01-06 17:29 Raymond        Note Added: 0007861                          
-02-03-06 18:48 Raymond        Note Edited: 0007861                         
-02-10-06 17:31 Raymond        Note Added: 0008007                          
-02-13-06 08:37 Raymond        Note Added: 0008038                          
+01-07-06 05:10 Raymond        New Issue                                    
+01-09-06 15:19 Raymond        Note Added: 0007537                          
+01-19-06 15:04 Raymond        Note Deleted: 0007537                        
+01-19-06 15:36 Raymond        Note Added: 0007721                          
+01-28-06 07:58 Raymond        Note Added: 0007828                          
+01-28-06 07:58 Raymond        Note Deleted: 0007721                        
+01-30-06 18:46 Raymond        Note Added: 0007840                          
+01-31-06 03:15 Raymond        Note Added: 0007844                          
+01-31-06 06:41 Raymond        Note Edited: 0007840                         
+01-31-06 07:03 Raymond        Note Edited: 0007840                         
+01-31-06 07:08 Raymond        Note Edited: 0007840                         
+01-31-06 07:11 Raymond        Note Edited: 0007840                         
+01-31-06 08:31 Raymond        Note Edited: 0007840                         
+01-31-06 09:48 Raymond        Note Edited: 0007844                         
+01-31-06 10:19 perex          Note Added: 0007845                          
+01-31-06 10:26 perex          Note Added: 0007847                          
+01-31-06 10:26 perex          Note Edited: 0007847                         
+01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
+driver
+01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
+01-31-06 10:49 perex          Summary                  simple PCM helper
+function => au88x0 PCM configuration problem - buffer_size constraint
+01-31-06 11:06 Raymond        Note Added: 0007848                          
+01-31-06 13:48 perex          Status                   new => assigned     
+01-31-06 13:48 perex          Assigned To               => mjander         
+01-31-06 13:49 perex          Relationship added       related to 0001766  
+01-31-06 15:59 Raymond        Note Added: 0007852                          
+02-01-06 07:35 perex          Note Added: 0007857                          
+02-01-06 10:32 Raymond        Note Added: 0007858                          
+02-01-06 10:37 Raymond        Note Edited: 0007848                         
+02-01-06 17:15 Raymond        Note Edited: 0007844                         
+02-01-06 17:20 Raymond        Note Added: 0007860                          
+02-02-06 10:23 Raymond        Note Added: 0007874                          
+02-02-06 11:10 Raymond        Note Edited: 0007874                         
+02-02-06 15:48 Raymond        Note Edited: 0007874                         
+02-03-06 14:26 Raymond        Note Added: 0007897                          
+02-04-06 02:46 Raymond        Note Edited: 0007874                         
+02-04-06 02:52 Raymond        Note Edited: 0007858                         
+02-04-06 02:56 Raymond        Note Edited: 0007858                         
+02-05-06 16:39 Raymond        Note Added: 0007939                          
+02-05-06 16:48 Raymond        Note Added: 0007940                          
+02-06-06 04:40 Raymond        Note Deleted: 0007939                        
+02-06-06 06:15 Raymond        Note Edited: 0007940                         
+02-07-06 07:35 Raymond        Note Added: 0007954                          
+02-13-06 03:11 Raymond        Note Added: 0008036                          
+02-13-06 08:52 mjander        Note Added: 0008039                          
 ======================================================================
 
 
