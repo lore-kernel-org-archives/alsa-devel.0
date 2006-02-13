@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Mon, 13 Feb 2006 16:57:15 +0100
-Message-ID: <aa121db63e87ea6fff23e8539df3697c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Mon, 13 Feb 2006 17:03:04 +0100
+Message-ID: <1f0489409c91bd52dc99aac787f13a27@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C7F31C2
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 16:57:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 679F01C2
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 17:03:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,163 +24,86 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   block
+Issue ID:                   1318
+Category:                   PCI - cs46xx
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              02-13-2006 16:57 CET
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              02-13-2006 17:03 CET
 ======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
+Summary:                    Volume control per PCM
 Description: 
-/cvs/alsa-lib/test/pcm_min
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
 
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
-
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001766 jackd : ALSA: cannot set period size to...
 ======================================================================
 
 ----------------------------------------------------------------------
- mjander - 02-13-06 08:52 
+ Raymond - 02-13-06 13:34 
 ----------------------------------------------------------------------
-Hi,
-
-The messages of the kind:
-
-vortex: 0 virt=2, real=2, delta=2
-vortex: 0 virt=11, real=3, delta=2
-
-appear when your system is lossing interrupts because of overload. You are
-asking your computer to do something it is not capable of. Thats it.
-
-period size is measured in frames and period_bytes in bytes. AFAIK any
-size is meant to be in frames.
-
-Best Regards
-Manuel Jander
+You should not use spdif_input_volume_left and spdif_input_volume_right to
+compare with ucontrol->value.integer.value[0] and
+ucontrol->value.integer.value[1]
 
 ----------------------------------------------------------------------
- Raymond - 02-13-06 16:57 
+ darkbrain - 02-13-06 17:03 
 ----------------------------------------------------------------------
-Is it possible for au8830 to support surround51 by panning the center to
-front speakers and bass to 4 speakers ?
-
-<confdir:pcm/surround51.conf>
-
-AU8830.pcm.surround51.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type multi
-	slaves [
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.front.0:CARD=" $CARD
-				]
-			}
-			channels 4
-		}
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.front.0:CARD=" $CARD
-				]
-			}
-			channels 1
-		}
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.front.0:CARD=" $CARD
-				]
-			}
-			channels 1
-		}
-	]
-	bindings [
-		{ slave 0 channel 0 }
-		{ slave 0 channel 1 }
-		{ slave 0 channel 2 }
-		{ slave 0 channel 3 }
-		{ slave 1 channel 0 }
-		{ slave 2 channel 0 }
-	]
-}
+It's only a test! Unfortunaly the problem is elsewhere: How to change pcm
+volume? Witch are the values? Am i modifying the right register? Are there
+hardware delays to respect? Is it right to modify current volume and
+target volume at the same time? I'm modifying current and target volume?
+Does the card supports this feature? In witch mode is setted? ...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
-01-31-06 13:48 perex          Status                   new => assigned     
-01-31-06 13:48 perex          Assigned To               => mjander         
-01-31-06 13:49 perex          Relationship added       related to 0001766  
-01-31-06 15:59 Raymond        Note Added: 0007852                          
-02-01-06 07:35 perex          Note Added: 0007857                          
-02-01-06 10:32 Raymond        Note Added: 0007858                          
-02-01-06 10:37 Raymond        Note Edited: 0007848                         
-02-01-06 17:15 Raymond        Note Edited: 0007844                         
-02-01-06 17:20 Raymond        Note Added: 0007860                          
-02-02-06 10:23 Raymond        Note Added: 0007874                          
-02-02-06 11:10 Raymond        Note Edited: 0007874                         
-02-02-06 15:48 Raymond        Note Edited: 0007874                         
-02-03-06 14:26 Raymond        Note Added: 0007897                          
-02-04-06 02:46 Raymond        Note Edited: 0007874                         
-02-04-06 02:52 Raymond        Note Edited: 0007858                         
-02-04-06 02:56 Raymond        Note Edited: 0007858                         
-02-05-06 16:39 Raymond        Note Added: 0007939                          
-02-05-06 16:48 Raymond        Note Added: 0007940                          
-02-06-06 04:40 Raymond        Note Deleted: 0007939                        
-02-06-06 06:15 Raymond        Note Edited: 0007940                         
-02-07-06 07:35 Raymond        Note Added: 0007954                          
-02-13-06 03:11 Raymond        Note Added: 0008036                          
-02-13-06 08:52 mjander        Note Added: 0008039                          
-02-13-06 16:57 Raymond        Note Added: 0008055                          
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+01-10-06 12:55 darkbrain      Note Added: 0007548                          
+02-05-06 04:55 Raymond        Note Added: 0007929                          
+02-05-06 05:33 Raymond        Note Edited: 0007929                         
+02-05-06 13:19 darkbrain      Note Added: 0007932                          
+02-05-06 14:42 Raymond        Note Added: 0007934                          
+02-06-06 03:43 Raymond        Note Edited: 0007934                         
+02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
+02-07-06 21:05 darkbrain      Note Added: 0007960                          
+02-08-06 02:39 Raymond        Note Edited: 0007934                         
+02-08-06 03:24 Raymond        Note Added: 0007962                          
+02-08-06 03:31 Raymond        Note Edited: 0007962                         
+02-08-06 09:54 Raymond        Note Edited: 0007934                         
+02-08-06 10:41 darkbrain      Note Added: 0007964                          
+02-09-06 08:06 Raymond        Note Added: 0007970                          
+02-09-06 08:11 Raymond        Note Edited: 0007970                         
+02-09-06 10:37 Raymond        Note Deleted: 0007970                        
+02-10-06 12:59 Raymond        Note Added: 0008002                          
+02-10-06 15:29 darkbrain      Note Added: 0008005                          
+02-11-06 02:38 Raymond        Note Added: 0008011                          
+02-11-06 02:51 Raymond        Note Edited: 0007962                         
+02-11-06 02:53 Raymond        Note Edited: 0008011                         
+02-11-06 03:00 Raymond        Note Edited: 0008011                         
+02-11-06 14:30 darkbrain      Note Added: 0008017                          
+02-11-06 15:16 Raymond        Note Added: 0008019                          
+02-13-06 08:32 Raymond        Note Edited: 0008019                         
+02-13-06 13:30 Raymond        Note Edited: 0008019                         
+02-13-06 13:34 Raymond        Note Added: 0008047                          
+02-13-06 17:03 darkbrain      Note Added: 0008056                          
 ======================================================================
 
 
