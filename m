@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001632]: suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A  listed,.... asus, nothing,....
-Date: Mon, 13 Feb 2006 14:13:44 +0100
-Message-ID: <b7cdb86da075fac77415d5df5f6c9b72@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000851]: Ali M1535 controller, AC'97 0 does not respond
+Date: Mon, 13 Feb 2006 14:23:45 +0100
+Message-ID: <3c031c94d4582b05e06cd63ece69d5ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4B911AC
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 14:13:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8ACAA1A6
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 14:23:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1632> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=851> 
 ======================================================================
-Reported By:                rsrtfm
+Reported By:                omargosh
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1632
-Category:                   1_OTHERS
+Issue ID:                   851
+Category:                   PCI - ali5451
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               suse 10.0, super, opensuse
-Kernel Version:             2.6.13
+Distribution:               Fedora FC3
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-10-2005 04:29 CET
-Last Modified:              02-13-2006 14:13 CET
+Date Submitted:             01-27-2005 21:46 CET
+Last Modified:              02-13-2006 14:23 CET
 ======================================================================
-Summary:                    suse 10.0,  yast, no ad1986a listed,  in your
-soundcard list,  NO AD1986A  listed,.... asus, nothing,....
+Summary:                    Ali M1535 controller, AC'97 0 does not respond
 Description: 
-suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A 
-listed,.... asus, nothing,....
+My Ali5451 rev 1 based card (embedded in an Ali M1535 controller) is not
+detected.
 
-plus,  nic, needs nforce , nvidia driver,  chipset supposed to do sound
-and nic,... but on asus board a8n-vm csm ,  6150, 430,....
+dmesg shows:
 
-anyway , should , list the ad1986a, and be able to select it.
-
-so far I have no sound!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! it's been 4 weeks.
-ehm,...what did you say,.. I can't hear anything,....
-where do I donate , my money, and anger?
-thanks, Robert Schultz
+PCI: Found IRQ 9 for device 0000:00:04.0
+AC'97 0 does not respond - RESET
+AC'97 0 access is not valid [0x0], removing mixer.
+ali mixer creating error.
+ALI 5451: probe of 0000:00:04.0 failed with error -5
 ======================================================================
 
 ----------------------------------------------------------------------
- rbenech - 02-04-06 02:22 
+ omargosh - 05-10-05 22:09 
 ----------------------------------------------------------------------
-Same as assigned bug 0001793
+No I dont, I was never able to get ALSA working with the M1535 chipset,
+currently using OSS Trident support.
 
 ----------------------------------------------------------------------
- ukrcald - 02-13-06 14:13 
+ dvalin - 02-13-06 14:23 
 ----------------------------------------------------------------------
-i've the same mobo as you and you need to use the intel hda sound module,
-it comvers the AD chip on the mother board.
-the nvidia ones only work for OSS!!!! not alsa :-/
-hope this helps, R
+same happens here:
+Linux blade100-1.mandriva.no 2.6.16-rc2.8mdk #1 Sun Feb 12 20:28:15 EST
+2006 sparc64 TI UltraSparc IIe (Hummingbird) unknown GNU/Linux
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-05 04:29 rsrtfm         New Issue                                    
-12-10-05 04:29 rsrtfm         Distribution              => suse 10.0, super,
-opensuse
-12-10-05 04:29 rsrtfm         Kernel Version            => 2.6.13          
-12-12-05 04:59 juliancola     Note Added: 0006982                          
-02-04-06 02:15 rbenech        Issue Monitored: rbenech                     
-02-04-06 02:19 rbenech        Note Added: 0007907                          
-02-04-06 02:22 rbenech        Note Added: 0007908                          
-02-07-06 00:47 gerick         Issue Monitored: gerick                      
-02-08-06 13:12 simonckenyon   Issue Monitored: simonckenyon                    
-02-13-06 14:13 ukrcald        Note Added: 0008049                          
+01-27-05 21:46 omargosh       New Issue                                    
+01-27-05 21:46 omargosh       Distribution              => Fedora FC3      
+01-27-05 21:46 omargosh       Kernel Version            => 2.6.10          
+01-28-05 22:40 omargosh       Note Added: 0003437                          
+04-13-05 22:10 jdthood        Note Added: 0004483                          
+05-10-05 22:09 omargosh       Note Added: 0004635                          
+02-13-06 14:23 dvalin         Note Added: 0008050                          
 ======================================================================
 
 
