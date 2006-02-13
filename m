@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001530]: Fix for ali5451 driver taking 10 seconds to load
-Date: Mon, 13 Feb 2006 21:37:20 +0100
-Message-ID: <f91132f432035eed01b947df6ad8a71d@bugtrack.alsa-project.org>
+Date: Mon, 13 Feb 2006 22:08:36 +0100
+Message-ID: <377b8c3af44e98bc217b6ed5a4d764a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 30251183
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 21:37:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FAAF1AC
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 22:08:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1530> 
 ======================================================================
 Reported By:                Vince
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1530
@@ -35,12 +35,14 @@ Category:                   PCI - ali5451
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Ubuntu 5.10 & Fedora Core 4
 Kernel Version:             2.6.12-9-k7 & 2.6.13-1.1526_FC4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-05-2005 20:29 CET
-Last Modified:              02-13-2006 21:37 CET
+Last Modified:              02-13-2006 22:08 CET
 ======================================================================
 Summary:                    Fix for ali5451 driver taking 10 seconds to load
 Description: 
@@ -50,16 +52,15 @@ this dramatically.
 ======================================================================
 
 ----------------------------------------------------------------------
- avuton - 02-13-06 19:56 
-----------------------------------------------------------------------
-Does this problem still exist? I've never had this problem and have to
-wonder the downside to this patch.
-
-----------------------------------------------------------------------
  Vince - 02-13-06 21:37 
 ----------------------------------------------------------------------
 Actually, a better version of this patch is already in the latest kernel,
 so this should be closed.
+
+----------------------------------------------------------------------
+ rlrevell - 02-13-06 22:08 
+----------------------------------------------------------------------
+Thanks for the feedback.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -72,6 +73,10 @@ Core 4
 2.6.13-1.1526_FC4
 02-13-06 19:56 avuton         Note Added: 0008062                          
 02-13-06 21:37 Vince          Note Added: 0008063                          
+02-13-06 22:08 rlrevell       Status                   new => resolved     
+02-13-06 22:08 rlrevell       Resolution               open => fixed       
+02-13-06 22:08 rlrevell       Assigned To               => rlrevell        
+02-13-06 22:08 rlrevell       Note Added: 0008064                          
 ======================================================================
 
 
