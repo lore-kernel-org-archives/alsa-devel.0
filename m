@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001622]: ASUS A8V-MX onboard sound does not work
-Date: Mon, 13 Feb 2006 23:56:15 +0100
-Message-ID: <3da9be1c8e60dec4347cb53dc9a32f15@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: using /dev/dsp to test a driver
+Date: Mon, 13 Feb 2006 23:05:16 +0000
+Message-ID: <1139871916.9759.26.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 742E0155
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 23:56:15 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EB0B11AC
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 00:05:18 +0100 (MET)
+Received: from bossclass (bossclass [192.168.62.105])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k1DN5GKc016763
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 23:05:17 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,118 +24,61 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I have been unable to get the alsa-utils to work on my Dreamcast and so
+I am using snd-pcm-oss and /dev/dsp to test the driver eg
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622> 
-======================================================================
-Reported By:                m_yates
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1622
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12 (also reproduced using 2.6.15-rc2)
-======================================================================
-Date Submitted:             12-05-2005 18:59 CET
-Last Modified:              02-13-2006 23:56 CET
-======================================================================
-Summary:                    ASUS A8V-MX onboard sound does not work
-Description: 
-Onboard sound plays for a second, then freezes on Asus A8V-MX mainboard. 
-Here is sound output from lspci:
+cat somefile > /dev/dsp
 
-matt@duster:~$ lspci | grep Multimedia
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
+It seems to work -- at least several of the callbacks are being
+triggered (see the end of the email). Is there anything in particular I
+should be aware of?
 
-Here is alsa version (version that came with Ubuntu 5.10):
+And what is the flow of execution in the driver?
 
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  alsa-base      1.0.9b-4       ALSA driver configuration files
+If hw_params is used to allocate the DMA buffer, which call back should
+I use to actually start the DMA transfer?
 
-Here are the sound modules:
+Thanks
 
-root@duster:/home/matt# lsmod | grep snd
-snd_seq_dummy 4484 0
-snd_seq_oss 32128 0
-snd_seq_midi 9920 0
-snd_seq_midi_event 8064 2 snd_seq_oss,snd_seq_midi
-snd_seq 52032 6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_via82xx 29472 1
-gameport 16392 1 snd_via82xx
-snd_ac97_codec 87000 1 snd_via82xx
-snd_pcm_oss 51232 0
-snd_mixer_oss 17664 1 snd_pcm_oss
-snd_pcm 91020 3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer 24200 2 snd_seq,snd_pcm
-snd_page_alloc 11408 2 snd_via82xx,snd_pcm
-snd_mpu401_uart 7936 1 snd_via82xx
-snd_rawmidi 27040 2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device 9488 5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
-snd 55784 13
-snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu40
-1_uart,snd_rawmidi,snd_seq_device
-soundcore 10912 1 snd
+Adrian
 
-Asus lists the audio chip as "Realtek ALC653", alsamixer shows "Realtek
-ALC655 rev 1". 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001557 Sounds play only for a very short time ...
-======================================================================
+Fragment below shows open and hw_params callbacks both being called -
+not sure where to go next though!
 
-----------------------------------------------------------------------
- Tuba - 02-10-06 14:09 
-----------------------------------------------------------------------
-I have attached mplayer8251.strace, which is from a custom 2.6.15 kernel on
-Debian. The problem exists on other 2.6.15-kernels tested, as well as on a
-box running Mandriva 2006.
+/ # cat dialog.tar.gz > /dev/dsp
+ALSA /home/adrian/aica/aica/snd_card_aica.c:151: In snd_aicapcm_pcm_open
+ALSA /home/adrian/aica/aica/snd_card_aica.c:176:
+snd_aicapcm_pcm_hw_params
+ALSA /home/adrian/aica/aica/snd_card_aica.c:179: returned
+Unable to handle kernel paging request at virtual address 00007fe9
+pc = 8c0fac6c
+*pde = 00000000
+Oops: 0001 [#1]
 
-Other media players fail in similar ways, either crashing or going into an
-endless loop.
+Pid : 1174, Comm:                  cat
+PC is at memset+0x18/0x4c
+PC  : 8c0fac6c SP  : 8cd33e8c SR  : 40008100 TEA : c011eb24    Not
+tainted
+R0  : 00000001 R1  : 00000001 R2  : 00000001 R3  : 00000008
+R4  : 00007fea R5  : 00000080 R6  : 00007ffe R7  : c015b8e5
+R8  : 00008000 R9  : ffffffea R10 : c015b8f4 R11 : 0000023c
+R12 : 8ca42400 R13 : 8c3a30c0 R14 : 00000003
+MACH: 0000024a MACL: 00040000 GBR : 00000000 PR  : c0154892
 
-----------------------------------------------------------------------
- gobo - 02-13-06 23:56 
-----------------------------------------------------------------------
-Seeing the same problems as above. Have tried with several 2.6.14 and
-2.6.15 kernel variants and alsa-drivers standalone on my gentoo system. 
-Fails with xmms, mplayer, cat /dev/urandom > /dev/dsp, etc.
-I can't really add more than what is already said, but if there is any
-experimental code you wish to have tested I can try it.
+Call trace:
+[<c015e27e>] snd_pcm_oss_change_params+0xe1e/0x1060 [snd_pcm_oss]
+[<c015e686>] snd_pcm_oss_make_ready+0x66/0x80 [snd_pcm_oss]
+[<c01618e6>] snd_pcm_oss_write+0xc6/0x2e0 [snd_pcm_oss]
+[<8c063f08>] vfs_write+0x128/0x180
+[<8c064034>] sys_write+0x34/0xa0
+[<8c0051bc>] syscall_call+0xc/0xe
+[<8c064000>] sys_write+0x0/0xa0
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-05-05 18:59 m_yates        New Issue                                    
-12-05-05 18:59 m_yates        Distribution              => Ubuntu 5.10     
-12-05-05 18:59 m_yates        Kernel Version            => 2.6.12 (also
-reproduced using 2.6.15-rc2)
-12-06-05 15:53 tiwai          Note Added: 0006926                          
-12-06-05 18:21 m_yates        Note Added: 0006931                          
-12-06-05 20:16 m_yates        Note Added: 0006937                          
-12-07-05 01:09 Dakkus         Issue Monitored: Dakkus                      
-12-07-05 11:24 perex          Relationship added       has duplicate 0001557
-12-07-05 16:16 thijser        Issue Monitored: thijser                     
-01-02-06 23:53 AlexCline      Issue Monitored: AlexCline                    
-01-03-06 20:41 AlexCline      Note Added: 0007406                          
-01-29-06 02:14 adaviel        Note Added: 0007830                          
-01-29-06 02:15 adaviel        Issue Monitored: adaviel                     
-01-30-06 19:36 millallo       Issue Monitored: millallo                    
-02-10-06 14:07 Tuba           File Added: mplayer8251.strace                    
-02-10-06 14:09 Tuba           Note Added: 0008004                          
-02-10-06 14:09 Tuba           Issue Monitored: Tuba                        
-02-13-06 23:39 gobo           Issue Monitored: gobo                        
-02-13-06 23:56 gobo           Note Added: 0008065                          
-======================================================================
+Segmentation fauALSA /home/adrian/aica/aica/snd_card_aica.c:187:
+snd_aicapcm_pcm_prepare
+lt
+ALSA /home/adrian/aica/aica/snd_card_aica.c:161: In
+snd_aicapcm_pcm_close
 
 
 
