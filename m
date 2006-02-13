@@ -1,14 +1,13 @@
-From: Pierre Ossman <ossman@cendio.se>
-Subject: [RFC][PATCH] Transparent network support through polypaudio
-Date: Mon, 13 Feb 2006 15:53:42 +0100
-Message-ID: <43F09D76.9060004@cendio.se>
+From: Luca Piccioni <luca.piccioni@gmail.com>
+Subject: Re: IEC958 plugin and Rate plugin programming
+Date: Mon, 13 Feb 2006 16:13:58 +0100
+Message-ID: <43F0A236.8050604@gmail.com>
+References: <43EDAE9C.7060808@gmail.com> <20060213081740.GB8896@ifiu25.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D65411C2
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 15:53:44 +0100 (MET)
+In-Reply-To: <20060213081740.GB8896@ifiu25.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +17,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org, mzcbylcnhqvb@0pointer.de
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-(Repost with attachment as link to avoid size restriction.)
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Hi!
+Clemens Ladisch wrote:
 
-I've implemented an ALSA plugin that allows any well-behaved ALSA 
-application transparently use the Polypaudio network protocol.
+> What is the actual problem?
 
-It is my desire to have this included in ALSA (-lib preferably) so that 
-it will be included in most dists. So I'm posting this first version for 
-review. :)
+Well... no sound! I've used "aplay" to test the S/PDIF output. The
+soundcard seems to
+work well, because the ampli recognize PCM / Digital, so I suppose the
+connection between
+PC and ampli is correct.
 
-It only supports playback at the moment. Polypaudio will undergo some 
-changes to allow a capture implementation, but that's not ready yet. 
-I'll do a mixer plugin in the coming days.
+So first I tried "aplay -Dhw:0,4" test.wav", but no sound. Then I've
+tried also "iec958" and "spdif",
+but nothing is outputted!
+Application work without reporting any error (only a warning if I'm
+not using a 48 kHz PCM, eliminable
+using "plug:iec958" as device).
 
-Some comments on the design. Polypaudio's lib requires a decent mainloop 
-abstraction. But ALSA does not force, or even allow, applications to 
-provide one (nothing wrong with that, it keeps the API simple). It meant 
-a creative solution was required to get this plugin running.
+For the moment I haven't tried to use "iec958:0" as device because I
+don't have the amplifier to test
+audio. Any suggestion to know if any PCM data is outputted to a
+particoular device?
 
-The solution is a design borrowed from the Avahi project. A second 
-thread is started that does the poll() call. Communication with the main 
-thread is done through a socket pair, and that file descriptor is fed to 
-the application to poll. Since some applications do not use these in a 
-sane manner (I'm looking at you mplayer) the mainloop abstraction is 
-also run on most of the ALSA plugin callbacks.
+My soundcard is a Realtek ALC850 (reported by alsamixer), and I'm
+using the intel8x0 ALSA module. I'm
+also programming a multimedia application, so I've tried to use the
+snd_pcm_iec958_open... I thought this
+was the solution! :-/ As I've understood, this plug (iec958) it's used
+automatically when I setup i linear
+PCM to the spdif device? While I have to create this plug
+(programming) whenever the soundcard can't
+do this task?
 
+About mixers (sorry for the stupid question, but for me it's quite
+new!): what mixers I should enable
+to output to digital?
 
-Code:
+Thanks for all your help!
 
-http://www.cendio.se/~ossman/alsa-polyp-1.0.10.tar.bz2
+Luca
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
+iD8DBQFD8KI2KK3BAIBUkxERAuPzAKCu2d6+IeR04Nvl3hLeux9ukMWaqACg6vdD
+ymBaYb01GB1kCtLhX8BtFpo=
+=+bvZ
+-----END PGP SIGNATURE-----
 
-This is also not a patch per se, but I needed some tag to get people to 
-notice that code is included. :)
-
-You will need to check out polypaudio from svn to compile and use this. 
-Also, the repository path on polypaudio's web page is out of date. This 
-is the current uri:
-
-svn://svn.0pointer.de/polypaudio/trunk
-
--- 
-Pierre Ossman                Telephone: +46-13-21 46 00
-Cendio AB                    Web: http://www.cendio.com
 
 
 -------------------------------------------------------
