@@ -1,13 +1,10 @@
-From: Ron Cococcia <ron.cococcia@request.com>
-Subject: Re: prealloc/buffer time limit?
-Date: Mon, 13 Feb 2006 10:07:23 -0500
-Message-ID: <43F0A0AB.3050102@request.com>
-References: <43ED016D.9030301@request.com> <20060213080655.GA8896@ifiu25.informatik.uni-halle.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+From: =?GB2312?B?sK7H6UJCUw==?= <aiqingbbss@glmail.com>
+Subject: =?GB2312?B?sK7H6UJCU7vh1LHNqNaq?=
+Date: Mon, 13 Feb 2006 23:30:01 +0800
+Message-ID: <E1F8fdi-0003dg-EB@mail.sourceforge.net>
+Reply-To: aiqingbbss@glmail.com
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060213080655.GA8896@ifiu25.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +14,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-My apologies :)  I've been flipping between 2 different tasks, and 
-flipped the symbol name.  I am referring to "prealloc_max_size", part of 
-the ich_pcm_table struct for intel8x0.
-
-Thanks and best regards,
-Ron
+亲爱的爱情BBS会员： 
 
 
-Clemens Ladisch wrote:
-> Ron Cococcia wrote:
-> 
->>I went into the driver for the sound device (intel8x0), and noticed
->>the buffer_max being set to 128.  I modified the max values to 512k
-> 
-> 
-> There is no buffer_max symbol.  What exactly did you change?
-> 
-> 
-> Regards,
-> Clemens
+    您好！ 
+
+
+    您好久没有光顾“爱情BBS”了， 
+
+
+    您最近是不是很忙，千万注意保重身体。
+
+
+    爱情BBS 新开设： 
+
+
+    *免费性教育电影片* 观看 
+
+
+    *两性健康* 性交技巧* 等栏目 
+
+
+    地址： 
+  
+    http://www.aiqingbbs.com 
+
+
+    感谢您继续支持我们！ 
+
+
+此为系统发送，请勿直接回复！ 
+
+
+爱情BBS 2006.2.13
+
 
 
 
