@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001756]: Detects soundcard, alsamixer is ok, fiddled with switches, but no audio output
-Date: Tue, 14 Feb 2006 22:22:13 +0100
-Message-ID: <4e25d12d09dcd74869cb6b3d6b6f73c4@bugtrack.alsa-project.org>
+Date: Tue, 14 Feb 2006 22:35:15 +0100
+Message-ID: <16d5f4c2578431651792fac031833c62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A53571A6
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 22:22:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10E651A6
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 22:35:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Breezy Badger
 Kernel Version:             2.6.12-i686
 ======================================================================
 Date Submitted:             01-16-2006 18:51 CET
-Last Modified:              02-14-2006 22:22 CET
+Last Modified:              02-14-2006 22:35 CET
 ======================================================================
 Summary:                    Detects soundcard, alsamixer is ok, fiddled with
 switches, but no audio output
@@ -228,180 +228,33 @@ MIS:          0
 ======================================================================
 
 ----------------------------------------------------------------------
- anhi1968 - 01-18-06 16:06 
-----------------------------------------------------------------------
-I have the same problem on a IBM Thinkpad R52.
-Tried with alsa 1.0.10 and 1.0.11-rc2 with kernel alsa code and without
-kernel
-alsa code but the alsa-driver. Nothing...
-The OSS kernel code works but it seems that some programs do not work with
-it
-properly. Since OSS is deprecated in the new kernel 2.6.x series I'd like
-to have alsa working here.
-As the reported said there are no problems loading the kernel modules or
-running the alsadriver. Even other programs do so as if the sound works,
-but I can't hear anything. All channels are unmuted and set to proper
-volumes.
-
-Distribution: Gentoo
-Here is the output of aadebug:
-
-ALSA Audio Debug v0.1.0 - Wed Jan 18 16:02:41 CET 2006
-http://alsa.opensrc.org/index.php?page=aadebug
-http://www.gnu.org/licenses/gpl.txt
-
-Kernel ----------------------------------------------------
-Linux merlin 2.6.15.1 #6 SMP PREEMPT Tue Jan 17 16:45:52 CET 2006 i686
-Intel(R) Pentium(R) M processor 1.86GHz GenuineIntel GNU/Linux
-
-Loaded Modules --------------------------------------------
-snd_pcm_oss            55264  0
-snd_mixer_oss          18112  1 snd_pcm_oss
-snd_seq_oss            32768  0
-snd_seq_midi_event      7296  1 snd_seq_oss
-snd_seq                53264  4 snd_seq_oss,snd_seq_midi_event
-snd_seq_device          8844  2 snd_seq_oss,snd_seq
-snd_intel8x0           31388  4
-snd_ac97_codec         84256  1 snd_intel8x0
-snd_ac97_bus            2624  1 snd_ac97_codec
-snd_pcm                90692  5 snd_pcm_oss,snd_intel8x0,snd_ac97_codec
-snd_timer              25348  4 snd_seq,snd_pcm
-snd                    55780  13
-snd_pcm_oss,snd_mixer_oss,snd_seq_oss,snd_seq,snd_seq_device,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-snd_page_alloc         10888  2 snd_intel8x0,snd_pcm
-
-Proc Config -----------------------------------------------
-CONFIG_SOUND=m
-CONFIG_SND=m
-CONFIG_SND_AC97_CODEC=m
-CONFIG_SND_AC97_BUS=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-CONFIG_SND_SEQUENCER=m
-# CONFIG_SND_SEQ_DUMMY is not set
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=m
-CONFIG_SND_PCM_OSS=m
-CONFIG_SND_SEQUENCER_OSS=y
-CONFIG_SND_RTCTIMER=m
-CONFIG_SND_SEQ_RTCTIMER_DEFAULT=y
-CONFIG_SND_VERBOSE_PRINTK=y
-CONFIG_SND_DEBUG=y
-CONFIG_SND_DEBUG_DETECT=y
-# CONFIG_SND_DUMMY is not set
-# CONFIG_SND_VIRMIDI is not set
-# CONFIG_SND_MTPAV is not set
-# CONFIG_SND_SERIAL_U16550 is not set
-# CONFIG_SND_MPU401 is not set
-# CONFIG_SND_ALI5451 is not set
-# CONFIG_SND_ATIIXP is not set
-# CONFIG_SND_ATIIXP_MODEM is not set
-# CONFIG_SND_AU8810 is not set
-# CONFIG_SND_AU8820 is not set
-# CONFIG_SND_AU8830 is not set
-# CONFIG_SND_AZT3328 is not set
-# CONFIG_SND_BT87X is not set
-# CONFIG_SND_CS46XX is not set
-# CONFIG_SND_CS4281 is not set
-# CONFIG_SND_EMU10K1 is not set
-# CONFIG_SND_EMU10K1X is not set
-# CONFIG_SND_CA0106 is not set
-# CONFIG_SND_KORG1212 is not set
-# CONFIG_SND_MIXART is not set
-# CONFIG_SND_NM256 is not set
-# CONFIG_SND_RME32 is not set
-# CONFIG_SND_RME96 is not set
-# CONFIG_SND_RME9652 is not set
-# CONFIG_SND_HDSP is not set
-# CONFIG_SND_HDSPM is not set
-# CONFIG_SND_TRIDENT is not set
-# CONFIG_SND_YMFPCI is not set
-# CONFIG_SND_AD1889 is not set
-# CONFIG_SND_ALS4000 is not set
-# CONFIG_SND_CMIPCI is not set
-# CONFIG_SND_ENS1370 is not set
-# CONFIG_SND_ENS1371 is not set
-# CONFIG_SND_ES1938 is not set
-# CONFIG_SND_ES1968 is not set
-# CONFIG_SND_MAESTRO3 is not set
-# CONFIG_SND_FM801 is not set
-# CONFIG_SND_ICE1712 is not set
-# CONFIG_SND_ICE1724 is not set
-CONFIG_SND_INTEL8X0=m
-# CONFIG_SND_INTEL8X0M is not set
-# CONFIG_SND_SONICVIBES is not set
-# CONFIG_SND_VIA82XX is not set
-# CONFIG_SND_VIA82XX_MODEM is not set
-# CONFIG_SND_VX222 is not set
-# CONFIG_SND_HDA_INTEL is not set
-# CONFIG_SND_USB_AUDIO is not set
-# CONFIG_SND_USB_USX2Y is not set
-# CONFIG_SOUND_PRIME is not set
-
-Modprobe Conf ---------------------------------------------
-alias char-major-10-116 snd
-alias char-major-14-* soundcore
-alias /dev/mixer snd-mixer-oss
-alias /dev/dsp snd-pcm-oss
-alias /dev/midi snd-seq-oss
-alias snd-card-0 snd-intel8x0
-alias sound-slot-0 snd-intel8x0
-
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-0 [ICH6           ]: ICH4 - Intel ICH6
-                     Intel ICH6 with AD1981B at 0xa8000800, irq 18
- 20: [0- 4]: digital audio playback
- 27: [0- 3]: digital audio capture
- 26: [0- 2]: digital audio capture
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
-  1:       : sequencer
- 33:       : timer
-cat: /proc/asound/hwdep: No such file or directory
-00-00: Intel ICH : Intel ICH6 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel ICH6 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel ICH6 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel ICH6 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel ICH6 - IEC958 : playback 1
-Client info
-  cur  clients : 2
-  peak clients : 2
-  max  clients : 192
-
-Client   0 : "System" [Kernel]
-  Port   0 : "Timer" (Rwe-)
-  Port   1 : "Announce" (R-e-)
-    Connecting To: 63:0
-Client  63 : "OSS sequencer" [Kernel]
-  Port   0 : "Receiver" (-we-)
-    Connected From: 0:1
-
-Dev Snd ---------------------------------------------------
-controlC0  pcmC0D0c  pcmC0D0p  pcmC0D1c  pcmC0D2c  pcmC0D3c  pcmC0D4p  seq
- timer
-
-CPU -------------------------------------------------------
-model name      : Intel(R) Pentium(R) M processor 1.86GHz
-cpu MHz         : 1862.301
-
-RAM -------------------------------------------------------
-MemTotal:      1033420 kB
-SwapTotal:     1958000 kB
-
-Hardware --------------------------------------------------
-00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML Express
-Processor to DRAM Controller (rev 03)
-00:1e.2 Multimedia audio controller: Intel Corporation
-82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 03)
-
-----------------------------------------------------------------------
  anhi1968 - 02-14-06 22:22 
 ----------------------------------------------------------------------
 same with 1.0.11-rc3
+
+----------------------------------------------------------------------
+ anhi1968 - 02-14-06 22:35 
+----------------------------------------------------------------------
+#lspci -v -v
+00:1e.2 Multimedia audio controller: Intel Corporation
+82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 03)
+        Subsystem: IBM Unknown device 0567
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Interrupt: pin A routed to IRQ 18
+        Region 0: I/O ports at 1c00 [size=256]
+        Region 1: I/O ports at 1880 [size=64]
+        Region 2: Memory at a8000800 (32-bit, non-prefetchable)
+[size=512]
+        Region 3: Memory at a8000400 (32-bit, non-prefetchable)
+[size=256]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -413,6 +266,7 @@ Date Modified  Username       Field                    Change
 01-18-06 16:06 anhi1968       Note Added: 0007711                          
 02-14-06 22:17 anhi1968       Issue Monitored: anhi1968                    
 02-14-06 22:22 anhi1968       Note Added: 0008071                          
+02-14-06 22:35 anhi1968       Note Added: 0008072                          
 ======================================================================
 
 
