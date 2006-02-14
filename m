@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001845]: No reported errors, just no sound
-Date: Wed, 15 Feb 2006 00:47:35 +0100
-Message-ID: <800b17548820ee19bfd839a7a152a90a@bugtrack.alsa-project.org>
+Date: Wed, 15 Feb 2006 00:57:39 +0100
+Message-ID: <b44516caa141e5545235d95c7f47aefe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F437174
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 00:47:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EB21174
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 00:57:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1845> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian Etch/Testing
 Kernel Version:             2.6.12 compiled for k7
 ======================================================================
 Date Submitted:             02-15-2006 00:47 CET
-Last Modified:              02-15-2006 00:47 CET
+Last Modified:              02-15-2006 00:57 CET
 ======================================================================
 Summary:                    No reported errors, just no sound
 Description: 
@@ -62,6 +62,11 @@ alsaconf util)
 Any suggestions would be GREATLY appreciated...
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 02-15-06 00:57 
+----------------------------------------------------------------------
+Does it work with the latest ALSA version. 1.0.11-rc3?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -69,6 +74,7 @@ Date Modified  Username       Field                    Change
 02-15-06 00:47 TWX            Distribution              => Debian Etch/Testing
 02-15-06 00:47 TWX            Kernel Version            => 2.6.12 compiled for
 k7
+02-15-06 00:57 rlrevell       Note Added: 0008073                          
 ======================================================================
 
 
