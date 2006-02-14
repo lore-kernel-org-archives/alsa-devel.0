@@ -1,13 +1,17 @@
-From: Luca Piccioni <luca.piccioni@gmail.com>
-Subject: Re: IEC958 plugin and Rate plugin programming
-Date: Tue, 14 Feb 2006 11:22:51 +0100
-Message-ID: <43F1AF7B.1020909@gmail.com>
-References: <43EDAE9C.7060808@gmail.com> <20060213081740.GB8896@ifiu25.informatik.uni-halle.de> <43F0A236.8050604@gmail.com> <20060213160231.GG9177@ifiu25.informatik.uni-halle.de>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: Re: [RFC][PATCH] Transparent network support through
+ polypaudio
+Date: Tue, 14 Feb 2006 11:35:26 +0100
+Message-ID: <43F1B26E.5@cendio.se>
+References: <43F09D76.9060004@cendio.se> <20060214094741.GA8943@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060213160231.GG9177@ifiu25.informatik.uni-halle.de>
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A9EB189
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 11:35:29 +0100 (MET)
+In-Reply-To: <20060214094741.GA8943@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +22,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org, mzcbylcnhqvb@0pointer.de
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-- -----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
 Clemens Ladisch wrote:
+> Pierre Ossman wrote:
+> 
+>>I've implemented an ALSA plugin that allows any well-behaved ALSA 
+>>application transparently use the Polypaudio network protocol.
+>>
+>>It is my desire to have this included in ALSA (-lib preferably) so that 
+>>it will be included in most dists.
+> 
+> 
+> It's dependent on polypaudio, so it should better go into the
+> alsa-plugins package.
+> 
 
-> What is the output of "iecset"?
+I suppose. Then it's just the matter of getting that packaged into the 
+dists (fedora doesn't).
 
-$iecset
-Mode: consumer
-Data: audio
-Rate: 48000 Hz
-Copyright: permitted
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
+> 
+>>Since some applications do not use these in a sane manner
+> 
+> 
+> Nothing in the ALSA API requires applications to use poll() (or to use
+> blocking writes).
+> 
+> 
+>>(I'm looking at you mplayer)
+> 
+> 
+> And you're speaking with mplayer's ALSA driver maintainer.
+> Is there anything wrong with mplayer?  ;-)
+> 
 
-$iecset -x
-AES0=0x04,AES1=0x82,AES2=0x00,AES3=0x02
+Technically no. It's just that it does things in way that makes my life 
+more difficult. :)
 
+Btw, mplayer seems to call snd_pcm_prepare() twice. Not sure if that's 
+valid behaviour.
 
-I don't understand many thing... first "professional" and "consumer"
-modes: how they influence my applications?
-What are that parameters AES*? I've seen some sources setting to some
-constant, but I have no pointers
-to a good documentation (even using developers point of view) :-(
+> 
+>>the mainloop abstraction is also run on most of the ALSA plugin
+>>callbacks.
+> 
+> 
+> When an applicatioh disables the stop_threshold, the device is supposed
+> to continue playing with the current buffer contents (which _is_ a
+> rather extreme case).
+> 
 
-I don't believe in a ALSA driver/library bug, but in a my
-mis-configuration. I don't know what's wrong!!! However
-I must say that ALSA it's very powerfull and configurable...
-impressioning!
+The ring buffer design is very difficult to emulate when you have a 
+simple queue. Since few (if any) application will rely on this 
+behaviour, I've decided to ignore it for now.
 
+> I think you may be required to use a timer for the mainloop.  What does
+> polypaudio actually do in this callback?  How often must it be called?
+> 
 
-- -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+Primarily updates to available buffer space on the server. As for how 
+often, I don't really know. Once every period would be a safe guess.
 
-iD8DBQFD8NsIKK3BAIBUkxERAgpHAJwLkRnXq44GVdBYReqw8W9uOXfWnQCfaG+I
-m1hEp0q1PEODWQkzBHXRXtU=
-=PdAv
-- -----END PGP SIGNATURE-----
+A timer wouldn't be that easy to implement. I want to avoid putting more 
+stuff in another thread since the current solution allows me to avoid locks.
 
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFD8a97KK3BAIBUkxERAhxxAKCaNd3i0QJ4PIevfZ/eM31Hdh5PPACgk+Xu
-NpnijVxIAe1TrtGWDeF0eTM=
-=74yt
------END PGP SIGNATURE-----
+Rgds
+-- 
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
 
 
 -------------------------------------------------------
