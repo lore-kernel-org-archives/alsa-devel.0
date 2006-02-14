@@ -1,16 +1,16 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: snd_pcm_lib_preallocate_pages_for_all etc
-Date: Tue, 14 Feb 2006 00:10:06 +0000
-Message-ID: <1139875806.9759.32.camel__9652.02773591063$1139875883$gmane$org@localhost.localdomain>
-References: <1139875452.9759.29.camel@localhost.localdomain>
+From: boku <boku0712@gmail.com>
+Subject: How to compile kernel with adding new alsa driver?
+Date: Tue, 14 Feb 2006 09:40:16 +0800
+Message-ID: <715d90900602131740v4e98723ak26c1fbe793322829@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_12630_828264.1139881216009"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0B4DF1B1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 01:10:09 +0100 (MET)
-In-Reply-To: <1139875452.9759.29.camel@localhost.localdomain>
+Received: from zproxy.gmail.com (zproxy.gmail.com [64.233.162.198])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61980140
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 02:40:17 +0100 (MET)
+Received: by zproxy.gmail.com with SMTP id z3so1182548nzf
+        for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2006 17:40:16 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,25 +21,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
-Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-02-14 at 00:04 +0000, Adrian McMenamin wrote:
-> To what extent, if any, can I rely on this function allocating real DMA
-> buffers on my architecture (SH4)?
-> 
-I suppose I should rephrase this as:
+------=_Part_12630_828264.1139881216009
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-(For ALSA developers) - am I right in thinking that
-snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV, 0,
-0x40*0x400, 0x40*0x400);
+Dear all,
+     How to compile linux kernel with adding my driver into alsa? If my
+platform is ARM's Integrator, do I need to set any configs before compiling
+for my new alsa driver? Or where I can find such information? Thank you ver=
+y
+much~
 
-will get dma_alloc_coherent to do the heavy lifing?
+Best Regards,
+Boku
 
-And 
+------=_Part_12630_828264.1139881216009
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-(For SH) - is dma_alloc_coherent fully working for the Dreamcast?
+<div>Dear all,</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;How to compile <font style=3D"BACKGROUND=
+-COLOR: #ffffff">linux<font color=3D"#000000"> <span class=3D"st0" id=3D"st=
+" name=3D"st">kernel</span> with adding my driver into <span class=3D"st0" =
+id=3D"st" name=3D"st">alsa</span>? If&nbsp;my platform is&nbsp;ARM's Integr=
+ator, do I need to set any configs before compiling for&nbsp;my new=20
+<span class=3D"st0" id=3D"st" name=3D"st">alsa</span> driver? Or where I ca=
+n find such information? Thank you very much~ </font></font></div>
+<div><font color=3D"#000000">&nbsp;</font></div>
+<div>Best Regards,</div>
+<div>Boku<span class=3D"sg"></span></div>
 
+------=_Part_12630_828264.1139881216009--
 
 
 -------------------------------------------------------
