@@ -1,17 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: IEC958 plugin and Rate plugin programming
-Date: Tue, 14 Feb 2006 15:30:17 +0100
-Message-ID: <20060214143017.GA11753@turing.informatik.uni-halle.de>
-References: <43EDAE9C.7060808@gmail.com>
- <20060213081740.GB8896@ifiu25.informatik.uni-halle.de>
- <43F0A236.8050604@gmail.com>
- <20060213160231.GG9177@ifiu25.informatik.uni-halle.de>
- <43F1AF7B.1020909@gmail.com>
+Subject: Re: [RFC][PATCH] Transparent network support through
+ polypaudio
+Date: Tue, 14 Feb 2006 15:35:40 +0100
+Message-ID: <20060214143540.GB11753@turing.informatik.uni-halle.de>
+References: <43F09D76.9060004@cendio.se>
+ <20060214094741.GA8943@turing.informatik.uni-halle.de> <43F1B26E.5@cendio.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <43F1AF7B.1020909@gmail.com>
+Received: from mailgate2.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7AC7192
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 15:36:07 +0100 (MET)
+In-reply-to: <43F1B26E.5@cendio.se>
 Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -22,46 +23,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Luca Piccioni <luca.piccioni@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Pierre Ossman <ossman@cendio.se>
+Cc: alsa-devel@alsa-project.org, mzcbylcnhqvb@0pointer.de
 List-Id: alsa-devel@alsa-project.org
 
-Luca Piccioni wrote:
-> 
+Pierre Ossman wrote:
 > Clemens Ladisch wrote:
+> >Pierre Ossman wrote:
+> Btw, mplayer seems to call snd_pcm_prepare() twice.
+
+Not anymore.
+
+> Not sure if that's valid behaviour.
+
+It is.
+
+> >When an applicatioh disables the stop_threshold, the device is supposed
+> >to continue playing with the current buffer contents (which _is_ a
+> >rather extreme case).
 > 
-> > What is the output of "iecset"?
+> The ring buffer design is very difficult to emulate when you have a 
+> simple queue. Since few (if any) application will rely on this 
+> behaviour, I've decided to ignore it for now.
+
+I don't know of any application that actually relies on this.
+
+> >I think you may be required to use a timer for the mainloop.  What does
+> >polypaudio actually do in this callback?  How often must it be called?
 > 
-> $iecset
-> Mode: consumer
-> Data: audio
-> Rate: 48000 Hz
-> Copyright: permitted
-> Emphasis: none
-> Category: PCM coder
-> Original: original
-> Clock: 1000 ppm
-> 
-> $iecset -x
-> AES0=0x04,AES1=0x82,AES2=0x00,AES3=0x02
+> Primarily updates to available buffer space on the server.
 
-Try playing to the device
-"plug:iec958:AES0=0x04,AES1=0x82,AES2=0x00,AES3=0x02".
-
-> I don't understand many thing... first "professional" and "consumer"
-> modes: how they influence my applications?
-
-It's a different setting of the status bits in the SPDIF frames.
-Professional mode is for people that don't want to be bothered by the
-simple copy protection scheme (disallow copying when the copyright bit
-is set), but most consumer devices don't support it.
-
-The default should work just fine.
-
-> What are that parameters AES*?
-
-The same parameters, only in a format that the computer can understand
-them.
+Shouldn't the data be sent as early as possible, i.e., directly after
+the snd_pcm_write() or snd_mmap_commit()?
 
 
 Regards,
