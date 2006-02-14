@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001806]: SPDIF and Wordclock I/O is broken on Delta 1010LT
-Date: Tue, 14 Feb 2006 00:14:09 +0100
-Message-ID: <d7eedc3b5ea09bf6d24a05980f7b47ac@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: snd_pcm_lib_preallocate_pages_for_all etc
+Date: Tue, 14 Feb 2006 00:04:12 +0000
+Message-ID: <1139875452.9759.29.camel__15374.3567447693$1139875518$gmane$org@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F73B1AC
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 00:14:09 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EA6571B1
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2006 01:04:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,96 +19,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+To what extent, if any, can I rely on this function allocating real DMA
+buffers on my architecture (SH4)?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1806> 
-======================================================================
-Reported By:                nostar
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1806
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-01-2006 23:06 CET
-Last Modified:              02-14-2006 00:14 CET
-======================================================================
-Summary:                    SPDIF and Wordclock I/O is broken on Delta 1010LT
-Description: 
-SPDIF output is non existant unless SPDIF In is connected to a valid output
-source.  Then, the signal on SPDIF output is typically just noise.  If I
-toggle between any internal clock setting and SPDIF In using
-envy24control, eventually I will get audible audio.  Using an o-scope on
-the wordclock output, I get flatline unless there is a valid SPDIF Input
-signal.  I can switch to an internal clock setting while there is an SPDIF
-In signal connected, and the Word Clock signal will be present, at the
-frequency of the SPDIF In signal though, and not the frequency of the
-selected internal clock frequency.
+Thanks
 
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001785 ice1712 driver -cs8427 SPDIF chip not a...
-======================================================================
-
-----------------------------------------------------------------------
- peppo - 02-11-06 16:55 
-----------------------------------------------------------------------
-It seems on my system that the reported status values for Master Clock are
-inverted. When I disconnect the cable, I get "Locked", when I reconnect it
-I get "No signal".
-
-----------------------------------------------------------------------
- nostar - 02-14-06 00:14 
-----------------------------------------------------------------------
-perex: that note peppo added is what that last patch I uploaded is for. 
-Could you apply that?  It's currently backwards.  Thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-01-06 23:06 nostar         New Issue                                    
-02-01-06 23:06 nostar         File Added: snd_ice1712_proc_read.c               
-    
-02-02-06 08:59 perex          Relationship added       related to 0001785  
-02-02-06 09:00 perex          Note Added: 0007871                          
-02-03-06 16:14 nostar         Note Added: 0007898                          
-02-06-06 11:41 nostar         Note Added: 0007947                          
-02-06-06 11:41 nostar         File Added: driver.diff                      
-02-06-06 12:03 nostar         Issue Monitored: nostar                      
-02-06-06 12:05 nostar         Note Added: 0007948                          
-02-06-06 12:05 nostar         File Added: envy.diff                        
-02-06-06 12:06 nostar         Note Edited: 0007947                         
-02-06-06 12:07 nostar         Note Edited: 0007947                         
-02-06-06 12:08 nostar         Note Edited: 0007948                         
-02-06-06 17:35 nostar         File Added: driver02.diff                    
-02-06-06 17:36 nostar         Note Added: 0007949                          
-02-08-06 09:24 perex          Note Added: 0007963                          
-02-10-06 05:00 nostar         Note Added: 0007985                          
-02-10-06 05:01 nostar         File Added: 1010lt_spdif_fixes.diff               
-    
-02-10-06 05:20 nostar         Note Edited: 0007985                         
-02-10-06 07:17 nostar         File Added: 1010lt_envy_spdif_status.diff         
-          
-02-10-06 07:18 nostar         Note Added: 0007992                          
-02-10-06 09:44 perex          Note Added: 0007996                          
-02-10-06 22:31 nostar         Note Added: 0008008                          
-02-10-06 22:31 nostar         File Added:
-1010lt_wordclock_status_correction.diff                    
-02-11-06 16:55 peppo          Note Added: 0008020                          
-02-14-06 00:14 nostar         Note Added: 0008067                          
-======================================================================
-
+Adrian
 
 
 
