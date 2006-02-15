@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001385]: sound is low with SIS7012 alc655
-Date: Wed, 15 Feb 2006 12:43:01 +0100
-Message-ID: <27e7eb4b22514c52bd6be7edce85d66d@bugtrack.alsa-project.org>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: "test" models in Intel HDA (and probably some other drivers)
+Date: Wed, 15 Feb 2006 14:27:38 +0200
+Message-ID: <43F31E3A.5050302@akl.lt>
+References: <43F2DA9F.8000709@akl.lt> <s5hk6bwao9u.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DA8E1B6
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 12:43:01 +0100 (MET)
+In-Reply-To: <s5hk6bwao9u.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,87 +17,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi again,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1385> 
-======================================================================
-Reported By:                brainstorm
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1385
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             08-31-2005 20:42 CEST
-Last Modified:              02-15-2006 12:43 CET
-======================================================================
-Summary:                    sound is low with SIS7012 alc655
-Description: 
-hello
-I m french and I ve a problem with my notebook (medion 42469). It s
-impossible to have sound in speaker (only a very low sound in headphones-
-same problem with Mandrake 10 - 10.1 mandiva 2005 and now mandriva 2006
-beta 3 with alsa 9)) I saw in the form men with the same problem and one
-have a solution for his computer but it s not good for mine 
+>> The problem I see here is that those "test" models are only available as
+>> a debug feature, which is compiled into the driver only when 
+>> CONFIG_SND_DEBUG is defined. I think it would be much more useful to
+>> always enable them. On one hand, this wouldn't get in anybody's way, if
+>> you don't want it (i.e. you would simply never autodetect this model),
+>> while on the other hand, you could just as easily make this model the
+>> default for laptops (everything is up to your policy). And in case you
+>> wouldn't want to clutter the mixer interface by default, this "test"
+>> model would still silently be available for people like me, having
+>> absolute silence with all the other configs. This is what is currently
+>> happening with many Acer laptop users around the world.
+>>
+>> Jonathan Woithe said he supports my idea. Takashi, what's your opinion
+>> about it? Would you commit a patch fixing this problem to the CVS?
+>>     
+>
+> The test model exists clearly for the debugging purpose.  If only this
+> model can bring your device sounds, it means that you need debug
+> anyway.  In other words, the test model is not a solution but a method
+> to find a solution.
+>   
 
-( ID 0001274 ....  
-temporarily solution:
-I hop this will help
+That's right, but there's a problem - you cannot find all solutions
+yourself in this case. You need more people for that. IMHO, the more
+people will have access to the method to find a solution, the more
+solutions you'll get. Isn't that a right thing? Especially when, as I
+said, the presence and availability of the "test" model wouldn't really
+get in anyones way. It would not even clutter kernel logs.
 
-cat > /proc/asound/IXP/codec97#0/ac97#0-0+regs <<EOF
-00 0000
-02 0a0a
-...... )
+OTOH, what is the default model now? HP? Fujitsu? Their subset? IMHO, a
+reasonable superset should be the default for unknown models, not the
+other way round. And "reasonable" means "based on many different brands
+and models" in this case. Just "HP, IBM and Fujitsu" is not enough, as
+you can see.
 
-Where is the solution ?
-FRED
+Don't forget that there are many people around who aren't Linux geeks,
+and they don't know how to (or simply are afraid/don't want to) compile
+kernel drivers. If we want more Linux on desktops, we should make sure
+Linux is friendly enough for people like them.
+> So, basically I disagree with changing it.
+>   
 
+Please consider it once more... It *won't* get in anyones way.
 
-======================================================================
-
-----------------------------------------------------------------------
- mulvila - 02-09-06 13:33 
-----------------------------------------------------------------------
-I have the same card and the same chip - and the same problem. 
-
-Recently installed Ubuntu Dapper with Alsa Driver Version 1.0.10rc3 (Mon
-Nov 07 13:30:21 2005 UTC). Kernel is 2.6.15-14. Situation remains: no
-sound from speakers, low form the headphones.
-
-It seems Tiwai found a solution to an identical problem on an ATI card,
-see
-http://sourceforge.net/mailarchive/forum.php?thread_id=8072079&forum_id=1752
-
-Anyone working on fixing this for the intel8x0?
-
-----------------------------------------------------------------------
- brainstorm - 02-15-06 12:43 
-----------------------------------------------------------------------
-When you compile your kernel with alsa 1.10.0 you must to notch the box
-click on alsadebug (excuse for my english).
-FRED
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-31-05 20:42 brainstorm     New Issue                                    
-08-31-05 20:42 brainstorm     Kernel Version            => 2.6.12          
-12-30-05 23:12 rlrevell       Note Added: 0007279                          
-02-09-06 13:33 mulvila        Note Added: 0007977                          
-02-15-06 12:43 brainstorm     Note Added: 0008079                          
-======================================================================
-
-
+regards,
+Rimas
 
 
 -------------------------------------------------------
