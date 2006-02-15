@@ -1,11 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: powermac driver doesn't compile
-Date: Tue, 14 Feb 2006 22:38:23 +0100
-Message-ID: <20060214223823.4d43c843.pochini@shiny.it>
+From: Geoff Beasley <songshop@bizmedia.com.au>
+Subject: Hoontech C-Port ice1712 midi in
+Date: Wed, 15 Feb 2006 10:09:43 +0000
+Message-ID: <200602151009.43605.songshop@bizmedia.com.au>
+References: <20060214212401.D519412502@sc8-sf-spam2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-6"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20060214212401.D519412502@sc8-sf-spam2.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,24 +19,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Is there anything that can be done to get the midi-in on these devices 
+funtional ? I would be happy to allow access to one of my machines via ssh to 
+one of the devs for testing etc if that would help.
 
-2.6.16rc3 + latest CVS alsa-driver.
+best,
 
-  CC [M]  /home/giu/ttttttttttt/alsa-driver/ppc/pmac.o
-In file included from /home/giu/ttttttttttt/alsa-driver/ppc/pmac.c:6:
-/home/giu/ttttttttttt/alsa-driver/ppc/pmac_old.c: In function `snd_pmac_free':
-/home/giu/ttttttttttt/alsa-driver/ppc/pmac_old.c:827: error: structure has no member named `of_requested'
-/home/giu/ttttttttttt/alsa-driver/ppc/pmac_old.c: In function `snd_pmac_new':
-/home/giu/ttttttttttt/alsa-driver/ppc/pmac_old.c:1207: error: structure has no member named `of_requested'
-/home/giu/ttttttttttt/alsa-driver/ppc/pmac_old.c:1228: error: structure has no member named `of_requested'
-make[3]: *** [/home/giu/ttttttttttt/alsa-driver/ppc/pmac.o] Error 1
-
-
---
-Giuliano.
+g.
 
 
 -------------------------------------------------------
