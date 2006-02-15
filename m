@@ -1,11 +1,14 @@
-From: Jim Gleason <jgleason@helius.com>
-Subject: Prodigy 7.1 LT - Can't enable digital
-Date: Wed, 15 Feb 2006 09:09:03 -0700
-Message-ID: <1140019743.23666.8.camel@jmg.helius.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: "test" models in Intel HDA (and probably some
+	other drivers)
+Date: Wed, 15 Feb 2006 14:14:01 -0500
+Message-ID: <1140030841.2733.46.camel@mindpipe>
+References: <43F2DA9F.8000709@akl.lt>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <43F2DA9F.8000709@akl.lt>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,24 +18,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Rimas Kudelis <rq@akl.lt>
+Cc: ALSA devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-<Newby to alsa-devel alert>
+On Wed, 2006-02-15 at 09:39 +0200, Rimas Kudelis wrote:
+> And in case you
+> wouldn't want to clutter the mixer interface by default, this "test"
+> model would still silently be available for people like me, having
+> absolute silence with all the other configs. This is what is currently
+> happening with many Acer laptop users around the world. 
 
-All,
-I am an experienced Linux developer, but am a relative newby to the
-intricies of the ALSA environment.  I have been trying to get the
-Prodigy 7.1 LT card to work and have run into a few problems.  The
-analog works just fine, but I have not been able to get the digital
-(coaxial or optical) to work at all.  Everything points to the digital
-not even being enabled.
+Please provide the bug ID# of a case where a user could only get sound
+with the "test" model.
 
-Has anyone else gotten the digital to work on the Prodigy 7.1 LT card?
-
-Jim Gleason
-Helius, Inc.
-
+Lee
 
 
 
