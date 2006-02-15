@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001840]: vortex: IRQ fifo error - au8830
-Date: Wed, 15 Feb 2006 09:47:01 +0100
-Message-ID: <486fe2a3f7164288ae5359e40d441917@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Hoontech C-Port ice1712 midi in
+Date: Wed, 15 Feb 2006 10:23:31 +0100
+Message-ID: <20060215092331.GC10387@ifiu25.informatik.uni-halle.de>
+References: <20060214212401.D519412502@sc8-sf-spam2.sourceforge.net>
+ <200602151009.43605.songshop@bizmedia.com.au>
+ <1139959588.11659.163.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 910A61B6
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 09:47:01 +0100 (MET)
+In-reply-to: <1139959588.11659.163.camel@mindpipe>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Geoff Beasley <songshop@bizmedia.com.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Wed, 2006-02-15 at 10:09 +0000, Geoff Beasley wrote:
+> > Is there anything that can be done to get the midi-in on these devices 
+> > funtional ?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1840> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1840
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-11-2006 09:29 CET
-Last Modified:              02-15-2006 09:47 CET
-======================================================================
-Summary:                    vortex: IRQ fifo error - au8830
-Description: 
-The message "vortex: IRQ fifo error" was logged in system log after au88x0
-migrated from alsa-driver to alsa-kernel on au8830.
+It seems neither Hoontech nor the guy who wrote the Windows driver
+remember how this card is wired.  I got the source code of the box
+configuration program two years ago and changed the driver accordingly,
+but it didn't help.  I'm not sure if the complete driver source does
+exist anymore.
 
-Does au8810 and au8820 has this error ?
+I guess the whole Windows driver would have to be reverse engineered.
+
+> This is the first I've heard of it not working.  Where's the bug report?
+
+Bugs 55 and 1161.
 
 
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 02-15-06 07:38 
-----------------------------------------------------------------------
-Using au88x0_surround40.patch
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726 which fix the swap
-of front/rear
-channels problem by using vortex_adbdma_stopfifo(chip, dma) instead of
-vortex_adbdma_pausefifo(chip, dma) for case SNDRV_PCM_TRIGGER_STOP.
-
-It seem that the fifo error do not occur in system log when 
-
-aplay -D hw:0,0 first.wav 
-aplay -D hw:0,0 second.wav 
-aplay -D hw:0,0 third.wav 
-
-but the fifo error occur whenever 
-
-aplay -D hw:0,0 *.wav 
-
-for each .wav played by aplay.
-
-----------------------------------------------------------------------
- Raymond - 02-15-06 09:47 
-----------------------------------------------------------------------
-To be more accurate, fifo error does not occur when playing mono .wav
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-11-06 09:29 Raymond        New Issue                                    
-02-11-06 10:24 mjander        Note Added: 0008012                          
-02-11-06 10:25 mjander        Status                   assigned => closed  
-02-11-06 10:25 mjander        Note Added: 0008013                          
-02-15-06 07:38 Raymond        Status                   closed => feedback  
-02-15-06 07:38 Raymond        Resolution               open => reopened    
-02-15-06 07:38 Raymond        Note Added: 0008077                          
-02-15-06 09:47 Raymond        Note Added: 0008078                          
-======================================================================
-
-
+Regards,
+Clemens
 
 
 -------------------------------------------------------
