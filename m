@@ -1,12 +1,29 @@
-From: "Calum Soule" <calum@grey.hu>
-Subject: Re: news
-Date: Wed, 15 Feb 2006 06:12:21 -0500
-Message-ID: <000001c63220$b0c153c0$87f8a8c0@fetish>
-Reply-To: "Calum Soule" <calum@grey.hu>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: Re: How to compile kernel with adding new alsa driver?
+Date: Wed, 15 Feb 2006 11:37:34 +0000
+Message-ID: <20060215113734.GA6465@palantir8>
+References: <715d90900602131740v4e98723ak26c1fbe793322829@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C631F6.C7EB4BC0"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mra04.ch.as12513.net (mra04.ch.as12513.net [82.153.252.44])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8B961AC
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 12:37:38 +0100 (MET)
+Received: from localhost (localhost [127.0.0.1])
+	by mra04.ch.as12513.net (Postfix) with ESMTP id EA167C026B
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 11:37:39 +0000 (GMT)
+Received: from mra04.ch.as12513.net ([127.0.0.1])
+ by localhost (mra04.ch.as12513.net [127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id 28237-01-72 for <alsa-devel@alsa-project.org>;
+ Wed, 15 Feb 2006 11:37:39 +0000 (GMT)
+Received: from palantir8.mph.eclipse.net (unknown [81.168.73.77])
+	by mra04.ch.as12513.net (Postfix) with ESMTP id 55E0CC08A1
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 11:37:39 +0000 (GMT)
+Received: from mhabets by palantir8.mph.eclipse.net with local (Exim 3.36 #1 (Debian))
+	id 1F9KyU-0001iQ-00
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 11:37:34 +0000
+Content-Disposition: inline
+In-Reply-To: <715d90900602131740v4e98723ak26c1fbe793322829@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,122 +33,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Tue, Feb 14, 2006 at 09:40:16AM +0800, boku wrote:
+> Dear all,
+>      How to compile linux kernel with adding my driver into alsa?
 
-------=_NextPart_000_0001_01C631F6.C7EB4BC0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Do you build alsa inside or outside the kernel structure? If it's a
+part of the normal kernel build, you only need entries in Kconfig
+and Makefile in the 'arm' subdirectory.
+If you're building alsa outside the kernel, more may be needed. See below.
 
-Hi
-=20
-VkAdLplmUwMy  c $ s 1r, i 2v1t
-V i I t AgGhRiAf  r $e3l,f7i5x
-CtIxA r L e IbSo  w $w3v,b3g3 b=20
-=20
-http://www.externasite.com <http://www.externasite.com>=20
+> If my
+> platform is ARM's Integrator, do I need to set any configs before compiling
+> for my new alsa driver? Or where I can find such information? Thank you very
+> much~
 
-------=_NextPart_000_0001_01C631F6.C7EB4BC0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Sorry, I am not familiar with the ARM Integrator platform. What cpu does
+it use?
+If is's not supported yet the configure script would need some changes.
+No problem if you know you're autoconf stuff. I didn't, so the experts
+did this part for me.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>V<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">k</span>A<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">d</span>L<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">p</span>l<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">m</span>U<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">w</span>M<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">y</span>&nbsp;<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> c </span>$<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> s </span>1<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">r</span>,<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> i </span>2<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">v</span>1<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">t</span></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>V<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> i </span>I<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> t </span>A<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">g</span>G<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">h</span>R<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">i</span>A<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">f</span>&nbsp;<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> r </span>$<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">e</span>3<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">l</span>,<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">f</span>7<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">i</span>5<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">x</span></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>C<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">t</span>I<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">x</span>A<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> r </span>L<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> e </span>I<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">b</span>S<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">o</span>&nbsp;<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> w </span>$<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">w</span>3<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">v</span>,<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">b</span>3<span style=3D"MARGIN-LEFT: 0px;
-float
-:right">g</span>3<span style=3D"MARGIN-LEFT: 0px;
-float
-:right"> b </span></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><A =
-href=3D"http://www.externasite.com"><FONT face=3DArial =
-size=3D2>http://www.externasite.com</FONT></A></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C631F6.C7EB4BC0--
+I do not recall any documentation on alsa's platform support, but then I
+would not expect anything. It's standard autoconf stuff.
+There is the excellent "Writing an alsa driver" and more at
+http://www.alsa-project.org/documentation.php
+See chapter 15 especially.
 
-
-
+-- 
+Martin
 
 
 -------------------------------------------------------
