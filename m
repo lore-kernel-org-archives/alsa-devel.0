@@ -1,15 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Hoontech C-Port ice1712 midi in
-Date: Wed, 15 Feb 2006 10:23:31 +0100
-Message-ID: <20060215092331.GC10387@ifiu25.informatik.uni-halle.de>
-References: <20060214212401.D519412502@sc8-sf-spam2.sourceforge.net>
- <200602151009.43605.songshop@bizmedia.com.au>
- <1139959588.11659.163.camel@mindpipe>
+Subject: Re: latency issue with mplayer ALSA plugin
+Date: Wed, 15 Feb 2006 10:30:36 +0100
+Message-ID: <20060215093036.GD10387@ifiu25.informatik.uni-halle.de>
+References: <43F09D76.9060004@cendio.se>
+ <20060214094741.GA8943@turing.informatik.uni-halle.de>
+ <m2ek25ofhi.fsf_-_@vador.mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1139959588.11659.163.camel@mindpipe>
+Received: from mailgate2.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA05E1B6
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 10:30:48 +0100 (MET)
+In-reply-to: <m2ek25ofhi.fsf_-_@vador.mandriva.com>
 Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -20,29 +23,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Geoff Beasley <songshop@bizmedia.com.au>, alsa-devel@lists.sourceforge.net
+To: Thierry Vignaud <tvignaud@mandriva.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Wed, 2006-02-15 at 10:09 +0000, Geoff Beasley wrote:
-> > Is there anything that can be done to get the midi-in on these devices 
-> > funtional ?
+Thierry Vignaud wrote:
+> since we switched from pre7 to cvs (currently 20051220), i find
+> mplayer's ALSA plugin has latency issues (underrun, ...) that he
+> didn't have before on the same hw (athlon 2000+ with 256Mo ram).
 
-It seems neither Hoontech nor the guy who wrote the Windows driver
-remember how this card is wired.  I got the source code of the box
-configuration program two years ago and changed the driver accordingly,
-but it didn't help.  I'm not sure if the complete driver source does
-exist anymore.
+There haven't been any changes in the ALSA plugin between pre7 and that
+date that could affect latency.
 
-I guess the whole Windows driver would have to be reverse engineered.
-
-> This is the first I've heard of it not working.  Where's the bug report?
-
-Bugs 55 and 1161.
+Anyway, there have quite a few changes two days ago.
 
 
-Regards,
+HTH
 Clemens
 
 
