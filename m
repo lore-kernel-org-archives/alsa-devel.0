@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001823]: surround40 memory leak
-Date: Wed, 15 Feb 2006 06:21:30 +0100
-Message-ID: <6633afc7159683394f19cd989ec97f15@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001840]: vortex: IRQ fifo error - au8830
+Date: Wed, 15 Feb 2006 07:38:45 +0100
+Message-ID: <c4f44ff569f23cdc98a7a3a0b9101691@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1822118D
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 06:21:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3632DFA
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 07:38:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1840> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1823
-Category:                   PCI - cs46xx
+Issue ID:                   1840
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     feedback
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-05-2006 22:59 CET
-Last Modified:              02-15-2006 06:21 CET
+Date Submitted:             02-11-2006 09:29 CET
+Last Modified:              02-15-2006 07:38 CET
 ======================================================================
-Summary:                    surround40 memory leak
+Summary:                    vortex: IRQ fifo error - au8830
 Description: 
-It seems that surround40 has a memory leak or somthing similar, playing a
-game in surround40 mode the game result unplayable after some minutes. 
-And there is a problem in CS46xx.conf file, i need to remove the hook on
-the rear pcm to permit multiple surround40 subdevices to be opened.
+The message "vortex: IRQ fifo error" was logged in system log after au88x0
+migrated from alsa-driver to alsa-kernel on au8830.
+
+Does au8810 and au8820 has this error ?
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-12-06 05:09 
+ mjander - 02-11-06 10:25 
 ----------------------------------------------------------------------
-How about two or more instances of
- 
-speaker-test -t wav -D surround40 -c 4 
-
-or 
-
-aplay -D surround40 4channels.wav ?
-
-
-What is the value return by snd_pcm_info_get_subdevices_count() after 
-snd_pcm_open(&pcm, "surround40", SND_PCM_STREAM_PLAYBACK,
-SND_PCM_NONBLOCK) ?
+See the note above.
 
 ----------------------------------------------------------------------
- Raymond - 02-15-06 06:21 
+ Raymond - 02-15-06 07:38 
 ----------------------------------------------------------------------
-snd_pcm_info_get_subdevices_count() seem to return the number of slave pcm
-for a SND_PCM_TYPE_MULTI pcm instead of the number of subdevices for a
-SND_PCM_TYPE_HW pcm
+Using au88x0_surround40.patch
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726 which fix the swap
+of front/rear
+channels problem by using vortex_adbdma_stopfifo(chip, dma) instead of
+vortex_adbdma_pausefifo(chip, dma) for case SNDRV_PCM_TRIGGER_STOP.
+
+It seem that the fifo error do not occur in system log when 
+
+aplay -D hw:0,0 first.wav 
+aplay -D hw:0,0 second.wav 
+aplay -D hw:0,0 third.wav 
+
+but the fifo error occur whenever 
+
+aplay -D hw:0,0 *.wav 
+
+for each .wav played by aplay.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-05-06 22:59 darkbrain      New Issue                                    
-02-06-06 06:32 Raymond        Note Added: 0007943                          
-02-06-06 07:10 Raymond        Note Edited: 0007943                         
-02-06-06 07:31 Raymond        Note Edited: 0007943                         
-02-06-06 07:32 Raymond        Note Edited: 0007943                         
-02-06-06 10:46 darkbrain      Note Added: 0007945                          
-02-06-06 10:46 darkbrain      Note Added: 0007946                          
-02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
-02-06-06 18:37 darkbrain      Note Added: 0007950                          
-02-11-06 15:01 darkbrain      Note Added: 0008018                          
-02-12-06 05:09 Raymond        Note Added: 0008025                          
-02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-11-06 09:29 Raymond        New Issue                                    
+02-11-06 10:24 mjander        Note Added: 0008012                          
+02-11-06 10:25 mjander        Status                   assigned => closed  
+02-11-06 10:25 mjander        Note Added: 0008013                          
+02-15-06 07:38 Raymond        Status                   closed => feedback  
+02-15-06 07:38 Raymond        Resolution               open => reopened    
+02-15-06 07:38 Raymond        Note Added: 0008077                          
 ======================================================================
 
 
