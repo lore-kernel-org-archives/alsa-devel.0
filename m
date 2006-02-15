@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001847]: hda-intel on acer laptop (travelmate 3002) - no recording
-Date: Wed, 15 Feb 2006 14:18:42 +0100
-Message-ID: <167872f5dae8f81bebe4816ee3dfbd95@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Mike Gorchak" <lestat@i.com.ua>
+Subject: ALSA i8x0 driver - potential problem
+Date: Wed, 15 Feb 2006 15:10:35 +0200
+Message-ID: <dsv98j$rq2$1@sea.gmane.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1946712A
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 14:18:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +12,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello, All!
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1847> 
-======================================================================
-Reported By:                lrupn
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1847
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             02-15-2006 14:18 CET
-Last Modified:              02-15-2006 14:18 CET
-======================================================================
-Summary:                    hda-intel on acer laptop (travelmate 3002) - no
-recording
-Description: 
-I have an Acer laptop with sound card that claim to be Intel Corporation
-82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller (rev
-04)
-that is recognized as a SigmaTel STAC9200. 
-With 1.0.11rc2 there is some noise when I unmute line-in (external
-microphone) and try to record something. The amplitude response is ok and
-actualy i am able to hear my voice but there is a lot of noise. I thing
-that the problem is the mixer... The internal micorphone is not working at
-all.\
-With 1.0.11rc3 some new controls apear in the alsamixer but neither
-speakers nor microphone is working....
-I have found a similr bug report:
-http://sourceforge.net/tracker/index.php?func=detail&aid=1389026&group_id=27464&atid=390601
+I'm writting Intel ICH audio driver for QNX 6.3 and using sometimes latest
+ALSA source code as reference and have found the following problem while
+using my driver under QNX:
 
+After DMA registers reset, they are still not ready for few nanoseconds but
+code in ALSA writes data to the rest of DMA registers directly after reset,
+and that is not right, because registers not accepting data during this
+moment.
 
-======================================================================
+I've found in the module intel8x0.c, function: snd_intel8x0_chip_init()
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-15-06 14:18 lrupn          New Issue                                    
-02-15-06 14:18 lrupn          Distribution              => Slackware 10.1  
-02-15-06 14:18 lrupn          Kernel Version            => 2.6.12          
-======================================================================
+ /* reset channels */
+ for (i = 0; i < chip->bdbars_count; i++)
+  iputbyte(chip, ICH_REG_OFF_CR + chip->ichd[i].reg_offset, ICH_RESETREGS);
+
+>>>>>
+
+ /* initialize Buffer Descriptor Lists */
+ for (i = 0; i < chip->bdbars_count; i++)
+  iputdword(chip, ICH_REG_OFF_BDBAR + chip->ichd[i].reg_offset,
+     chip->ichd[i].bdbar_addr);
+
+So in place, marked >>>>> we need to wait while ICH_RESETREGS bit will be
+cleared. And only after that write other DMA registers. In my case I've got
+NULL BDBAR register content after writing correct value.
+
+And what's interesting I've found this problem only on one machine (fast
+enough), thousand others doesn't have such problem.
+
+With best regards, Mike Gorchak.  E-mail: lestat@i.com.ua
+
 
 
 
