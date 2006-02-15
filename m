@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001845]: No reported errors, just no sound
-Date: Wed, 15 Feb 2006 00:57:39 +0100
-Message-ID: <b44516caa141e5545235d95c7f47aefe@bugtrack.alsa-project.org>
+Date: Wed, 15 Feb 2006 01:26:11 +0100
+Message-ID: <082ca0451bb2b3177534143c21b961e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EB21174
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 00:57:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E933C18E
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 01:26:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Etch/Testing
 Kernel Version:             2.6.12 compiled for k7
 ======================================================================
 Date Submitted:             02-15-2006 00:47 CET
-Last Modified:              02-15-2006 00:57 CET
+Last Modified:              02-15-2006 01:26 CET
 ======================================================================
 Summary:                    No reported errors, just no sound
 Description: 
@@ -67,6 +67,19 @@ Any suggestions would be GREATLY appreciated...
 ----------------------------------------------------------------------
 Does it work with the latest ALSA version. 1.0.11-rc3?
 
+----------------------------------------------------------------------
+ TWX - 02-15-06 01:26 
+----------------------------------------------------------------------
+Haven't tried yet.  I've been trying to stick with Debian stock packages. 
+Whenever I've used a distro that has some kind of enhanced packaging
+system I've found that adding by hand ultimately breaks the package tool's
+functionality.
+
+I may have to resort to it if this doesn't work.  I've also been knocking
+around switching up to Sid/Unstable for a multitude of reasons, but until
+2.6.16 comes out and supports the integrated ethernet controller, I have
+enough reservations about making the change to hold off for now.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -75,6 +88,7 @@ Date Modified  Username       Field                    Change
 02-15-06 00:47 TWX            Kernel Version            => 2.6.12 compiled for
 k7
 02-15-06 00:57 rlrevell       Note Added: 0008073                          
+02-15-06 01:26 TWX            Note Added: 0008074                          
 ======================================================================
 
 
