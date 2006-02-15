@@ -1,13 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: "test" models in Intel HDA (and probably some other drivers)
-Date: Thu, 16 Feb 2006 00:43:41 +0200
-Message-ID: <20060215224340.GA11143@soften.ktu.lt>
-References: <43F2DA9F.8000709@akl.lt> <1140030841.2733.46.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
+Date: Wed, 15 Feb 2006 23:46:21 +0100
+Message-ID: <99697634c6a41d1a00a84cdd38338237@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1140030841.2733.46.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF7E3166
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2006 23:46:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,24 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Rimas Kudelis <rq@akl.lt>, ALSA devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 15, 2006 at 02:14:01PM -0500, Lee Revell wrote:
-> On Wed, 2006-02-15 at 09:39 +0200, Rimas Kudelis wrote:
-> > And in case you
-> > wouldn't want to clutter the mixer interface by default, this "test"
-> > model would still silently be available for people like me, having
-> > absolute silence with all the other configs. This is what is currently
-> > happening with many Acer laptop users around the world. 
-> 
-> Please provide the bug ID# of a case where a user could only get sound
-> with the "test" model.
 
-It's a bug 1618, which affects me too..
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
+======================================================================
+Reported By:                graabein
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1838
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15-1.1831_FC4smp
+======================================================================
+Date Submitted:             02-10-2006 23:27 CET
+Last Modified:              02-15-2006 23:46 CET
+======================================================================
+Summary:                    Unknown model for ALC880 again, First International
+Computer p4m-915gd1 no sound
+Description: 
+I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
+sound. There are no error messages and I can play content all I want, I
+just don't get any sound.
 
-Rimas
+The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
+Channel, Realtek ALC880":
+http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
+
+I've found other, similar reports here in the bug tracker (#1460, #1563,
+#1589), including reports that this problem was resolved as of 1.0.11rc1.
+
+Accordingly, I tried compiling alsa from cvs sources as of today, but this
+made no difference. I still have no sound.
+
+======================================================================
+
+----------------------------------------------------------------------
+ graabein - 02-10-06 23:38 
+----------------------------------------------------------------------
+Forgot to mention I first tried the stock FC4 kernel, then 1.0.10 from
+atrpms, then the 1.0.11rc3 tarballs and finally CVS. Exact same results
+with all.
+
+----------------------------------------------------------------------
+ Eugene Seppel - 02-15-06 23:46 
+----------------------------------------------------------------------
+Same problems with ALC880 chip (hda-intel) on ATI Xpress 200 Motherboard
+integrated sound.
+
+Sometimes sound is looping or ragged.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-10-06 23:27 graabein       New Issue                                    
+02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
+02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
+02-10-06 23:38 graabein       Note Added: 0008010                          
+02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
+02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
+======================================================================
+
 
 
 
