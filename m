@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001849]: sound hangs after quarter of a second
-Date: Thu, 16 Feb 2006 12:04:12 +0100
-Message-ID: <6d7b866edc2370db8975154b6ab61660@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001847]: hda-intel on acer laptop (travelmate 3002) - no recording
+Date: Thu, 16 Feb 2006 12:13:10 +0100
+Message-ID: <50c1b5289d5f099f0392755f301dbb3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA9C81C8
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 12:04:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98FDC1C8
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 12:13:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1849> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1847> 
 ======================================================================
-Reported By:                Marijn Schouten
+Reported By:                lrupn
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1849
+Issue ID:                   1847
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.15
+Distribution:               Slackware 10.1
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             02-16-2006 12:01 CET
-Last Modified:              02-16-2006 12:04 CET
+Date Submitted:             02-15-2006 14:18 CET
+Last Modified:              02-16-2006 12:13 CET
 ======================================================================
-Summary:                    sound hangs after quarter of a second
+Summary:                    hda-intel on acer laptop (travelmate 3002) - no
+recording
 Description: 
-everything seems to work normally, until I actually try to get some sound.
-Then it works for a very short time, then the driver hangs the program and
-I get a repetition of the first sound produced ad infinitum. For example
-speaker-test doesn't get to any "Time per period = 2.662410". Output stops
-right before. 
+I have an Acer laptop with sound card that claim to be Intel Corporation
+82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller (rev
+04)
+that is recognized as a SigmaTel STAC9200. 
+With 1.0.11rc2 there is some noise when I unmute line-in (external
+microphone) and try to record something. The amplitude response is ok and
+actualy i am able to hear my voice but there is a lot of noise. I thing
+that the problem is the mixer... The internal micorphone is not working at
+all.\
+With 1.0.11rc3 some new controls apear in the alsamixer but neither
+speakers nor microphone is working....
+I have found a similr bug report:
+http://sourceforge.net/tracker/index.php?func=detail&aid=1389026&group_id=27464&atid=390601
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Marijn Schouten - 02-16-06 12:04 
+ MACHINE - 02-16-06 12:13 
 ----------------------------------------------------------------------
-oops, this is a duplicate of bug 1807
-(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1807)
+The problem is also described here:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1643
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-06 12:01 Marijn SchoutenNew Issue                                    
-02-16-06 12:01 Marijn SchoutenDistribution              => gentoo          
-02-16-06 12:01 Marijn SchoutenKernel Version            => 2.6.15          
-02-16-06 12:04 Marijn SchoutenNote Added: 0008094                          
+02-15-06 14:18 lrupn          New Issue                                    
+02-15-06 14:18 lrupn          Distribution              => Slackware 10.1  
+02-15-06 14:18 lrupn          Kernel Version            => 2.6.12          
+02-16-06 12:13 MACHINE        Note Added: 0008095                          
 ======================================================================
 
 
