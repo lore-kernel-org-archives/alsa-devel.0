@@ -1,13 +1,13 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 Subject: Re: "test" models in Intel HDA (and probably some other drivers)
-Date: Thu, 16 Feb 2006 11:07:43 +1030 (CST)
-Message-ID: <200602160037.k1G0bhPu023340@auster.physics.adelaide.edu.au>
-References: <20060215122901.810A489506@sc8-sf-spam1.sourceforge.net>
+Date: Thu, 16 Feb 2006 11:30:47 +1030 (CST)
+Message-ID: <200602160100.k1G10lb9023977@auster.physics.adelaide.edu.au>
+References: <20060215232101.593131345E@sc8-sf-spam2.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060215122901.810A489506@sc8-sf-spam1.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Feb 15, 2006 04:28:12 AM
+In-Reply-To: <20060215232101.593131345E@sc8-sf-spam2.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Feb 15, 2006 03:20:03 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +18,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: rq@akl.lt, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, rq@akl.lt, rlrevell@joe-job.com, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Rimas wrote:
-> > The problem I see here is that those "test" models are only available as
-> > a debug feature, which is compiled into the driver only when 
-> > CONFIG_SND_DEBUG is defined. I think it would be much more useful to
-> > always enable them. ...
-> > 
-> > Jonathan Woithe said he supports my idea. Takashi, what's your opinion
-> > about it? Would you commit a patch fixing this problem to the CVS?
-
-Well, what I said was that I could understand and be happy if the
-maintainers wanted to make this change but I wouldn't do it myself - 
-there was obviously a reason behind the decision to have things the way
-they are and I wasn't fully aware of the issues.
-
 Takashi wrote:
-> The test model exists clearly for the debugging purpose.  If only this
-> model can bring your device sounds, it means that you need debug
-> anyway.  In other words, the test model is not a solution but a method
-> to find a solution.
+> The first thing you need to debug is to use the latest ALSA version.
+> That is, if you cannot compile drivers, there is no way to debug
+> further in the current situation -- even if you can use test model.
 
-I'm actually not personally fussed either way.  I understand Takashi's
-reason for keeping things as they are, but at the same time I can see how
-having the test models "in by default" would broaden the potential test base
-for these codecs.  If the test models were always available users could
-submit useful information to ALSA for their laptop without having to
-recompile or patch ALSA - and many people with these laptops have no idea
-how to recompile a kernel, nor do they want to.  If the test model was
-always available we could simply get them to load that model (which is much
-easier than getting source, compiling, installing etc), play with the mixer
-and report the findings.  This would be far more useful to ALSA than what
-we'd get from these people now (something limited to the likes of "sound
-doesn't work").
+This is true of course if there's a lowlevel issue - a problem talking to
+the codec and getting it to generate analog output.  In this case I agree
+completely with the above comments.
 
-It is true that the test model is *not* a solution and is rather a tool, as
-Takashi said.  One danger of having it "always in" is that some users would
-treat it as the solution and we wouldn't get bug reports.
+However, in fairness there are a large number of laptops out there utilising
+the HDA hardware with the realtek codecs.  In these cases the basic codec
+functionality is mostly working fine and has been ever since I started
+playing with ALSA on my S7020 (around 1.0.9 or there abouts, from memory). 
+The *only* problem on such laptops is the issue of which chip pins the
+laptop manufacturers have connected to which jacks/speakers etc.  In these
+situations you do not necessarily need the latest CVS (unless of course that
+particular model has been recently added) - all you need is a mixer with all
+the pin controls enabled so one can discover what controls what.
 
-Rimas said:
-> That's right, but there's a problem - you cannot find all solutions
-> yourself in this case. You need more people for that. IMHO, the more
-> people will have access to the method to find a solution, the more
-> solutions you'll get. Isn't that a right thing? ...
-> :
-> Don't forget that there are many people around who aren't Linux geeks,
-> and they don't know how to (or simply are afraid/don't want to) compile
-> kernel drivers. If we want more Linux on desktops, we should make sure
-> Linux is friendly enough for people like them.
+To consider the situation I'm most familiar with, if you purchase a laptop
+today using the ALC260 codec chip, the intel-hda driver will basically work
+- the DAC will produce audio quite nicely.  The issue will be one of ensuring
+that ALSA's idea of the pin connections reflects reality for that laptop;
+if it doesn't ALSA may not present controls which relate to pins in use on
+that laptop (resulting in "no sound") or controls which are presented might
+not control what ALSA thinks they control.  It is this situation where having
+access to the test models would be helpful for users and where the ability
+to compile is not necessarily required IMHO.
 
-This is pretty much along the lines of what I said above.  I guess I can see
-both sides to the issue, and there's no real "killer argument" for either
-side.
+Lee wrote:
+> Please provide the bug ID# of a case where a user could only get sound
+> with the "test" model.
 
-Takashi wrote:
-> > So, basically I disagree with changing it.
+I didn't file a bug at the time since I ended up diving in and providing a
+patch.  However, the situation I had with the Fujitsu S7020 is one where the
+test model, had it existed at the time (Aug/Sept 2005), would have allowed
+me to get sound out of all the jacks and the internal speaker, and work out
+the routing required without having to resort to hacking mixer controls to
+do the tests.  The default HDA model at the time could only manage the
+internal speaker (and labelled it "headphones").
 
-On balance, if it were up to me I would probably err on the side of always
-including the test driver at this stage, for no other reason than to make it
-easier for more people to contribute useful information to ALSA.  Down the
-track, when the number of untested hardware configurations has decreased
-somewhat (resulting in most laptops working out the box under Linux), the
-"testing" drivers might well revert to "debug only" status.  However, at the
-end of the day Takashi is the maintainer of this driver and I'm happy to go
-with whatever he considers is best for the future of ALSA.
+The situation being considered is one where the lowlevel hardware is
+operating fine and the only problem is the analog routing chosen by the
+respective laptop makers.
+
+Of course, whether the presence of the test model in the non-debug
+configuration would translate to more bug reports in reality I don't know. 
+I guess evidence thus far suggests it wouldn't.
+
+Anyway, I've said enough, the decision has been made and I respect that.
 
 Regards
   jonathan
