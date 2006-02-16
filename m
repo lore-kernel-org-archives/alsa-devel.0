@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001848]: settings: volume is extremely low
-Date: Thu, 16 Feb 2006 17:22:11 +0100
-Message-ID: <ab891b2f1ecf0685b61430aa017cf459@bugtrack.alsa-project.org>
+Date: Thu, 16 Feb 2006 17:28:20 +0100
+Message-ID: <ab34903de170fd20dda4de226ebdb604@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C17B418C
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 17:22:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54D2818C
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 17:28:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandriva Linux 2006 Community x86-64
 Kernel Version:             vanilla 2.6.15.4
 ======================================================================
 Date Submitted:             02-16-2006 11:38 CET
-Last Modified:              02-16-2006 17:22 CET
+Last Modified:              02-16-2006 17:28 CET
 ======================================================================
 Summary:                    settings: volume is extremely low
 Description: 
@@ -59,6 +59,21 @@ Has there been any improvement? Maybe in CVS?
 ----------------------------------------------------------------------
 did you try a to adjust your volume, for example with alsamixer?
 
+----------------------------------------------------------------------
+ Mitch 74 - 02-16-06 17:28 
+----------------------------------------------------------------------
+Strange, I was sure I had mentioned that 'Main' and 'Front' had been maxed
+out, using either alsamixer, amixer or kmix...
+I tried fiddling with all available settings, to no avail. 'Main' and
+'Front' at max, I get at best a fourth of Maximum volume in, say,
+Windows.
+Being able to disable front jack would help, and maybe being able to
+define 2- or 4-way sound system (instead of default 8-way) would, too.
+
+As a side note, the main balance ruler in kmix seems ineffective (while it
+does work in XMMS - maybe main balance doesn't work and 'Front's does,
+maybe not... Should I post another bug on that one?)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -67,6 +82,7 @@ Date Modified  Username       Field                    Change
 Community x86-64
 02-16-06 11:38 Mitch 74       Kernel Version            => vanilla 2.6.15.4
 02-16-06 17:22 Marijn SchoutenNote Added: 0008099                          
+02-16-06 17:28 Mitch 74       Note Added: 0008100                          
 ======================================================================
 
 
