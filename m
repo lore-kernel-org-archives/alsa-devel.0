@@ -1,13 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: "test" models in Intel HDA (and probably some other drivers)
-Date: Thu, 16 Feb 2006 11:30:47 +1030 (CST)
-Message-ID: <200602160100.k1G10lb9023977@auster.physics.adelaide.edu.au>
-References: <20060215232101.593131345E@sc8-sf-spam2.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
+Date: Thu, 16 Feb 2006 04:01:51 +0100
+Message-ID: <52210c6f3ed8cd7d84e89f8d864679e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060215232101.593131345E@sc8-sf-spam2.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Feb 15, 2006 03:20:03 PM
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3301219A
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 04:01:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,63 +18,174 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, rq@akl.lt, rlrevell@joe-job.com, tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi wrote:
-> The first thing you need to debug is to use the latest ALSA version.
-> That is, if you cannot compile drivers, there is no way to debug
-> further in the current situation -- even if you can use test model.
 
-This is true of course if there's a lowlevel issue - a problem talking to
-the codec and getting it to generate analog output.  In this case I agree
-completely with the above comments.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1724
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-07-2006 05:10 CET
+Last Modified:              02-16-2006 04:01 CET
+======================================================================
+Summary:                    au88x0 PCM configuration problem - buffer_size
+constraint
+Description: 
+/cvs/alsa-lib/test/pcm_min
 
-However, in fairness there are a large number of laptops out there utilising
-the HDA hardware with the realtek codecs.  In these cases the basic codec
-functionality is mostly working fine and has been ever since I started
-playing with ALSA on my S7020 (around 1.0.9 or there abouts, from memory). 
-The *only* problem on such laptops is the issue of which chip pins the
-laptop manufacturers have connected to which jacks/speakers etc.  In these
-situations you do not necessarily need the latest CVS (unless of course that
-particular model has been recently added) - all you need is a mixer with all
-the pin controls enabled so one can discover what controls what.
+ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
+(latency) 500000 for PLAYBACK: Invalid argument
+Playback open error: Invalid argument
 
-To consider the situation I'm most familiar with, if you purchase a laptop
-today using the ALC260 codec chip, the intel-hda driver will basically work
-- the DAC will produce audio quite nicely.  The issue will be one of ensuring
-that ALSA's idea of the pin connections reflects reality for that laptop;
-if it doesn't ALSA may not present controls which relate to pins in use on
-that laptop (resulting in "no sound") or controls which are presented might
-not control what ALSA thinks they control.  It is this situation where having
-access to the test models would be helpful for users and where the ability
-to compile is not necessarily required IMHO.
+sound card is au8830, the au88x0 driver only accept period size in power
+of 2.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001766 jackd : ALSA: cannot set period size to...
+======================================================================
 
-Lee wrote:
-> Please provide the bug ID# of a case where a user could only get sound
-> with the "test" model.
+----------------------------------------------------------------------
+ Raymond - 02-13-06 17:02 
+----------------------------------------------------------------------
+Is it possible for au8830 to support surround51 by panning the center to
+front speakers and bass to 4 speakers ?
 
-I didn't file a bug at the time since I ended up diving in and providing a
-patch.  However, the situation I had with the Fujitsu S7020 is one where the
-test model, had it existed at the time (Aug/Sept 2005), would have allowed
-me to get sound out of all the jacks and the internal speaker, and work out
-the routing required without having to resort to hacking mixer controls to
-do the tests.  The default HDA model at the time could only manage the
-internal speaker (and labelled it "headphones").
+<confdir:pcm/surround51.conf>
 
-The situation being considered is one where the lowlevel hardware is
-operating fine and the only problem is the analog routing chosen by the
-respective laptop makers.
+AU8830.pcm.surround51.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type multi
+	slaves [
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
+				]
+			}
+			channels 4
+		}
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.AU8830.pcm.front.0:CARD=" $CARD
+				]
+			}
+			channels 1
+		}
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
+				]
+			}
+			channels 1
+		}
+	]
+	bindings [
+		{ slave 0 channel 0 }
+		{ slave 0 channel 1 }
+		{ slave 0 channel 2 }
+		{ slave 0 channel 3 }
+		{ slave 1 channel 0 }
+		{ slave 2 channel 0 }
+	]
+}
 
-Of course, whether the presence of the test model in the non-debug
-configuration would translate to more bug reports in reality I don't know. 
-I guess evidence thus far suggests it wouldn't.
 
-Anyway, I've said enough, the decision has been made and I respect that.
 
-Regards
-  jonathan
+----------------------------------------------------------------------
+ Raymond - 02-16-06 04:01 
+----------------------------------------------------------------------
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x639.htm#PCM-INTERFACE-OPERATORS-PREPARE-CALLBACK
+
+Can those parameters runtime->rate, runtime->format, runtime->channels
+pass to prepare callback different from those accepted by hw_params
+callback ?
+
+As mixer, src are dynamically allocated, the current au88x0 driver do not
+support any change in runtime->channels after hw_params callback.
+
+snd_pcm_recover() will call snd_pcm_prepare() when underrun occur.
+
+Which runtime parameters will be changed when underrun occur ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-07-06 05:10 Raymond        New Issue                                    
+01-09-06 15:19 Raymond        Note Added: 0007537                          
+01-19-06 15:04 Raymond        Note Deleted: 0007537                        
+01-19-06 15:36 Raymond        Note Added: 0007721                          
+01-28-06 07:58 Raymond        Note Added: 0007828                          
+01-28-06 07:58 Raymond        Note Deleted: 0007721                        
+01-30-06 18:46 Raymond        Note Added: 0007840                          
+01-31-06 03:15 Raymond        Note Added: 0007844                          
+01-31-06 06:41 Raymond        Note Edited: 0007840                         
+01-31-06 07:03 Raymond        Note Edited: 0007840                         
+01-31-06 07:08 Raymond        Note Edited: 0007840                         
+01-31-06 07:11 Raymond        Note Edited: 0007840                         
+01-31-06 08:31 Raymond        Note Edited: 0007840                         
+01-31-06 09:48 Raymond        Note Edited: 0007844                         
+01-31-06 10:19 perex          Note Added: 0007845                          
+01-31-06 10:26 perex          Note Added: 0007847                          
+01-31-06 10:26 perex          Note Edited: 0007847                         
+01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
+driver
+01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
+01-31-06 10:49 perex          Summary                  simple PCM helper
+function => au88x0 PCM configuration problem - buffer_size constraint
+01-31-06 11:06 Raymond        Note Added: 0007848                          
+01-31-06 13:48 perex          Status                   new => assigned     
+01-31-06 13:48 perex          Assigned To               => mjander         
+01-31-06 13:49 perex          Relationship added       related to 0001766  
+01-31-06 15:59 Raymond        Note Added: 0007852                          
+02-01-06 07:35 perex          Note Added: 0007857                          
+02-01-06 10:32 Raymond        Note Added: 0007858                          
+02-01-06 10:37 Raymond        Note Edited: 0007848                         
+02-01-06 17:15 Raymond        Note Edited: 0007844                         
+02-01-06 17:20 Raymond        Note Added: 0007860                          
+02-02-06 10:23 Raymond        Note Added: 0007874                          
+02-02-06 11:10 Raymond        Note Edited: 0007874                         
+02-02-06 15:48 Raymond        Note Edited: 0007874                         
+02-03-06 14:26 Raymond        Note Added: 0007897                          
+02-04-06 02:46 Raymond        Note Edited: 0007874                         
+02-04-06 02:52 Raymond        Note Edited: 0007858                         
+02-04-06 02:56 Raymond        Note Edited: 0007858                         
+02-05-06 16:39 Raymond        Note Added: 0007939                          
+02-05-06 16:48 Raymond        Note Added: 0007940                          
+02-06-06 04:40 Raymond        Note Deleted: 0007939                        
+02-06-06 06:15 Raymond        Note Edited: 0007940                         
+02-07-06 07:35 Raymond        Note Added: 0007954                          
+02-13-06 03:11 Raymond        Note Added: 0008036                          
+02-13-06 08:52 mjander        Note Added: 0008039                          
+02-13-06 16:57 Raymond        Note Added: 0008055                          
+02-13-06 17:02 Raymond        Note Edited: 0008055                         
+02-13-06 17:02 Raymond        Note Edited: 0008055                         
+02-16-06 04:01 Raymond        Note Added: 0008083                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
