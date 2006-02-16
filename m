@@ -1,13 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: Test model
-Date: Thu, 16 Feb 2006 11:29:27 +0200
-Message-ID: <20060216092927.GA32525@soften.ktu.lt>
-References: <20060215224941.GB11143@soften.ktu.lt> <200602152348.k1FNm4nq021338@auster.physics.adelaide.edu.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Thu, 16 Feb 2006 10:38:54 +0100
+Message-ID: <611737189e181cc571d49f54a62ec6bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200602152348.k1FNm4nq021338@auster.physics.adelaide.edu.au>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 799AA1D1
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 10:38:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,77 +18,148 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: Rimas Kudelis <rq@akl.lt>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Good morning,
 
-On Thu, Feb 16, 2006 at 10:18:04AM +1030, Jonathan Woithe wrote:
-> I'm now trying out the test model for ALC260. I've already managed to
-> > get sound from the Line In jack and Microphone jack. I've also managed
-> > to get the internal Mic working.
-> 
-> Excellent.  Out of interest, which control appears to be connected to
-> the internal mic?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+======================================================================
+Reported By:                ponchick
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
+======================================================================
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              02-16-2006 10:38 CET
+======================================================================
+Summary:                    oops in snd_mpu401_uart
+Description: 
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-Well it's not too surprising. The internal microphone is connected to
-the "MIC1" control. And the external too. Whenever I plug something into
-the external microphone jack, the internal one gets automatically muted.
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-The Line In jack is connected to LINE1 control.
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
+======================================================================
 
-Master volume seems to be controlled by LOUT1 control. By muting this, i
-get absolute silence.
+----------------------------------------------------------------------
+ ponchick - 02-16-06 10:16 
+----------------------------------------------------------------------
+Seems the bug is resolved. I don't think that someone else can test this -
+vortex is very old and unsupported card. 
+Message "vortex: FATAL: ResManager: resource type 0 exhausted" appears
+with and without surround patch. I thought it's related to this problem so
+I post it here. If not just forget about it - wine works fine anyway.
 
-And the last thing i've found so far is that PCM channel is the one that
-Totem media player uses to play its sound. Also, it's used by Sound
-Juicer to play the CD. I wonder though - why isn't a Mute control
-available for it?
+----------------------------------------------------------------------
+ Raymond - 02-16-06 10:38 
+----------------------------------------------------------------------
+If "vortex: FATAL: ResManager: resource type 0 exhausted" appear with
+alsa-1.0.11rc3 on 32-bits machine, you should file another bug report.
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-12-06 14:14 Raymond        Note Deleted: 0007990                        
+02-13-06 07:08 Raymond        Note Edited: 0008024                         
+02-13-06 16:44 Raymond        Note Edited: 0008001                         
+02-14-06 10:41 Raymond        Note Edited: 0008024                         
+02-16-06 04:40 Raymond        Note Added: 0008084                          
+02-16-06 06:33 ponchick       Note Added: 0008086                          
+02-16-06 09:57 Raymond        Note Added: 0008089                          
+02-16-06 10:16 ponchick       Note Added: 0008091                          
+02-16-06 10:38 Raymond        Note Added: 0008092                          
+======================================================================
 
-> > However, I haven't heard any sound from either integrated speakers nor the
-> > headphones jack. Even after switching a lot of controls in mixer.
-> 
-> Interesting.  Perhaps the easiest way forward in that case is to switch
-> every jack control to "line out" or "headphone out", unmute everything and
-> turn up every control to maximum. Then see if you get sound out in any form
-> from the internal speaker.  If we get sound at least we know it's possible
-> and you can then work backwards to find the controls which affect it.  If we
-> don't then there's some head-scratching to do.
-
-That's what I tried yesterday. Switched all controls to Line Out. That's
-how I found out what Mic and Line In jacks are connected to. Now these
-two are set to Mic and Line In types, respectively. And everything else
-is Line Out. Nothing... Same happens when everything else is set to
-Headphones.
-
-Btw, when I redirect the output to Line In, and make everything else
-(HP-OUT, LINE-OUT, LINE2 and MIC2) be "Headphone" pins, I get a lot of noise 
-from the speakers connected to the Line In jack. These seem to catch
-some interference even from the video card (just noticed). That
-electronic noise differs depending on what I see in the screen atm. Weird...
-
-> It is available, yes.  It's pin widget 0x15, referred to as "LINE2" in
-> the mixer controls.  Including it in the test model didn't appear to cause
-> any trouble on my laptop during development so I left it in.  I'm yet to
-> revisit the reasons as to why I had trouble with this NID during the
-> initial S7020 development - currently I suspect a typo which I failed to
-> notice at the time.
-> 
-> Note also that the problem I had was that sending an initverb to this pin
-> caused *all* sound to stop.  Since you get sound out of other jacks when
-> using the test model I don't think your lack of sound from the headphone
-> jack is due to this problem.
-
-Maybe. I just though that maybe it doesn't really mute all the sound,
-but just some pins?
-
-I'm almost out of any ideas. :/ Could it be that the notebook uses
-digital i/o for its internal speakers/heaphone jack or something like
-this?
-
-Rimas
 
 
 
