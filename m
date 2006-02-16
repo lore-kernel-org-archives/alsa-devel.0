@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001848]: settings: volume is extremely low
-Date: Thu, 16 Feb 2006 17:28:20 +0100
-Message-ID: <ab34903de170fd20dda4de226ebdb604@bugtrack.alsa-project.org>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: Re: Test model
+Date: Thu, 16 Feb 2006 18:52:53 +0200
+Message-ID: <43F4ADE5.6000002@akl.lt>
+References: <20060215224941.GB11143@soften.ktu.lt>	 <200602152348.k1FNm4nq021338@auster.physics.adelaide.edu.au>	 <20060216092927.GA32525@soften.ktu.lt> <acb0c1690602160208w1eb86af2uc38cb7592ba355ff@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54D2818C
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 17:28:20 +0100 (MET)
+In-Reply-To: <acb0c1690602160208w1eb86af2uc38cb7592ba355ff@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +17,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paulo Matias <syscoder@gmail.com>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1848> 
-======================================================================
-Reported By:                Mitch 74
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1848
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva Linux 2006 Community x86-64
-Kernel Version:             vanilla 2.6.15.4
-======================================================================
-Date Submitted:             02-16-2006 11:38 CET
-Last Modified:              02-16-2006 17:28 CET
-======================================================================
-Summary:                    settings: volume is extremely low
-Description: 
-After compiling my kernel, installing it and booting it, I installed
-alsa-drivers 1.0.11rc3 (./configure, make, make install). The driver loads
-and works (I have sound coming out of my loudspeakers) but volume is very
-low. (this lets all parasites reach my amp thus the sound is very
-scratchy).
-No complait about stability, however it would be nice to set output at
-something different than 8 channels (default).
-Has there been any improvement? Maybe in CVS?
-======================================================================
-
-----------------------------------------------------------------------
- Marijn Schouten - 02-16-06 17:22 
-----------------------------------------------------------------------
-did you try a to adjust your volume, for example with alsamixer?
-
-----------------------------------------------------------------------
- Mitch 74 - 02-16-06 17:28 
-----------------------------------------------------------------------
-Strange, I was sure I had mentioned that 'Main' and 'Front' had been maxed
-out, using either alsamixer, amixer or kmix...
-I tried fiddling with all available settings, to no avail. 'Main' and
-'Front' at max, I get at best a fourth of Maximum volume in, say,
-Windows.
-Being able to disable front jack would help, and maybe being able to
-define 2- or 4-way sound system (instead of default 8-way) would, too.
-
-As a side note, the main balance ruler in kmix seems ineffective (while it
-does work in XMMS - maybe main balance doesn't work and 'Front's does,
-maybe not... Should I post another bug on that one?)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-16-06 11:38 Mitch 74       New Issue                                    
-02-16-06 11:38 Mitch 74       Distribution              => Mandriva Linux 2006
-Community x86-64
-02-16-06 11:38 Mitch 74       Kernel Version            => vanilla 2.6.15.4
-02-16-06 17:22 Marijn SchoutenNote Added: 0008099                          
-02-16-06 17:28 Mitch 74       Note Added: 0008100                          
-======================================================================
+Hi,
 
 
+> By the description of Rimas, I think we have the same Acer notebook,
+> or, at least, we've the same connections (mine is a TravelMate
+> 4062WLMi, but I seriously suspect all TravelMate 4060 series has the
+> same hardware and connections, only varying in LCD size, RAM and HD
+> size, and presence of internal BlueTooth adapter). I had the same
+> problems he had and got sound from the same pins he got.
+
+Mine is TM4061 NLMi. But i think (i hope) you're right. I even think 
+Acer Aspire (or whatever is the other series name, that is written on 
+the cd/manual - i don't clearly remember) is similar enough to the 
+TravelMate.
+
+
+> Jonathan, by your last email, I was thinking in a possibility. You
+> asked me about a external volume control. There are two keys at the
+> keyboard for increasing and decreasing the volume. They are Fn+Up
+> Arrow and Fn+Down Arrow. I was thinking in the possibility it
+> controls, via software, a volume control plugged in the out of the
+> codec. Is it possible?
+
+I don't really get what you mean, but I guess you're wrong. I used 
+them. They seem to be software keys, and Gnome treats them as such. As 
+opposed to the brightness control keys (hardware), these are detected 
+by `showkey`.
+
+> Someone who has windows in this laptop could help, using this keyboard
+> controls and checking if it controls the mixer volume, or something
+> else. Rimas, do you have windows in your laptop? Can you please make
+> this check?
+
+I don't. But of course these keys would control the volume. That's a 
+software, not hardware feature, though.
+
+
+> I've also taked a look at the windows drivers cd Acer provided. The
+> Realtek drivers installer has a directory called WDM that contains
+> .inf files that seems to contain the internal routings for varied
+> models. I haven't analysed it so much yet to confirm, but I can
+> provide the files on request.
+
+Do they? I doubt that. but if they do, that would make our enigma much 
+easier to solve.
+
+> Another thing I've perceived is that the drivers cd contains BlueTooth
+> drivers, and my model hasn't BlueTooth. This is an indication that the
+> same driver cd would be distributed for all TravelMate 4060 series, so
+> it would have the same hardware and same connections, and an ALSA
+> model for this notebook would work in all 4060 series.
+
+My notebook does have bluetooth. :)
+
+RQ
 
 
 -------------------------------------------------------
