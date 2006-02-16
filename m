@@ -1,13 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: Re: Test model
-Date: Thu, 16 Feb 2006 18:52:53 +0200
-Message-ID: <43F4ADE5.6000002@akl.lt>
-References: <20060215224941.GB11143@soften.ktu.lt>	 <200602152348.k1FNm4nq021338@auster.physics.adelaide.edu.au>	 <20060216092927.GA32525@soften.ktu.lt> <acb0c1690602160208w1eb86af2uc38cb7592ba355ff@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
+Date: Thu, 16 Feb 2006 18:36:58 +0100
+Message-ID: <bc0128306a122a4ae84e8b12e25278b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <acb0c1690602160208w1eb86af2uc38cb7592ba355ff@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 601751DA
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 18:36:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,65 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paulo Matias <syscoder@gmail.com>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
+======================================================================
+Reported By:                graabein
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1838
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15-1.1831_FC4smp
+======================================================================
+Date Submitted:             02-10-2006 23:27 CET
+Last Modified:              02-16-2006 18:36 CET
+======================================================================
+Summary:                    Unknown model for ALC880 again, First International
+Computer p4m-915gd1 no sound
+Description: 
+I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
+sound. There are no error messages and I can play content all I want, I
+just don't get any sound.
+
+The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
+Channel, Realtek ALC880":
+http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
+
+I've found other, similar reports here in the bug tracker (#1460, #1563,
+#1589), including reports that this problem was resolved as of 1.0.11rc1.
+
+Accordingly, I tried compiling alsa from cvs sources as of today, but this
+made no difference. I still have no sound.
+
+======================================================================
+
+----------------------------------------------------------------------
+ Marijn Schouten - 02-16-06 17:10 
+----------------------------------------------------------------------
+There are two things you can do:
+check out bug 1563 and apply the patch for 1.0.10-rc3  or
+check out bug 1807 for 1.0.11-rc3 "Yes, position_fix=1 (or 3) fixes the
+problem."
+ 
+ /etc/modprobe.conf:
+ options snd-hda-intel position_fix=1
+
+If one of these works, then this bug is a duplicate of those bugs.
 
 
-> By the description of Rimas, I think we have the same Acer notebook,
-> or, at least, we've the same connections (mine is a TravelMate
-> 4062WLMi, but I seriously suspect all TravelMate 4060 series has the
-> same hardware and connections, only varying in LCD size, RAM and HD
-> size, and presence of internal BlueTooth adapter). I had the same
-> problems he had and got sound from the same pins he got.
 
-Mine is TM4061 NLMi. But i think (i hope) you're right. I even think 
-Acer Aspire (or whatever is the other series name, that is written on 
-the cd/manual - i don't clearly remember) is similar enough to the 
-TravelMate.
+----------------------------------------------------------------------
+ er-ku - 02-16-06 18:36 
+----------------------------------------------------------------------
+you may also try a "model=test" argument if position_fix fails. With this
+argument, you get all the possible controls in the mixer. After finding
+out, which control is actually influencing which I/O jack, you could
+provide that info to alsa developers for inclusion into the driver.
 
-
-> Jonathan, by your last email, I was thinking in a possibility. You
-> asked me about a external volume control. There are two keys at the
-> keyboard for increasing and decreasing the volume. They are Fn+Up
-> Arrow and Fn+Down Arrow. I was thinking in the possibility it
-> controls, via software, a volume control plugged in the out of the
-> codec. Is it possible?
-
-I don't really get what you mean, but I guess you're wrong. I used 
-them. They seem to be software keys, and Gnome treats them as such. As 
-opposed to the brightness control keys (hardware), these are detected 
-by `showkey`.
-
-> Someone who has windows in this laptop could help, using this keyboard
-> controls and checking if it controls the mixer volume, or something
-> else. Rimas, do you have windows in your laptop? Can you please make
-> this check?
-
-I don't. But of course these keys would control the volume. That's a 
-software, not hardware feature, though.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-10-06 23:27 graabein       New Issue                                    
+02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
+02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
+02-10-06 23:38 graabein       Note Added: 0008010                          
+02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
+02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
+02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
+02-16-06 17:10 Marijn SchoutenNote Edited: 0008098                         
+02-16-06 18:36 er-ku          Note Added: 0008101                          
+======================================================================
 
 
-> I've also taked a look at the windows drivers cd Acer provided. The
-> Realtek drivers installer has a directory called WDM that contains
-> .inf files that seems to contain the internal routings for varied
-> models. I haven't analysed it so much yet to confirm, but I can
-> provide the files on request.
-
-Do they? I doubt that. but if they do, that would make our enigma much 
-easier to solve.
-
-> Another thing I've perceived is that the drivers cd contains BlueTooth
-> drivers, and my model hasn't BlueTooth. This is an indication that the
-> same driver cd would be distributed for all TravelMate 4060 series, so
-> it would have the same hardware and same connections, and an ALSA
-> model for this notebook would work in all 4060 series.
-
-My notebook does have bluetooth. :)
-
-RQ
 
 
 -------------------------------------------------------
