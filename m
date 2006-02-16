@@ -1,13 +1,13 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Test model
-Date: Thu, 16 Feb 2006 10:18:04 +1030 (CST)
-Message-ID: <200602152348.k1FNm4nq021338@auster.physics.adelaide.edu.au>
-References: <20060215224941.GB11143@soften.ktu.lt>
+Subject: Re: "test" models in Intel HDA (and probably some other drivers)
+Date: Thu, 16 Feb 2006 11:07:43 +1030 (CST)
+Message-ID: <200602160037.k1G0bhPu023340@auster.physics.adelaide.edu.au>
+References: <20060215122901.810A489506@sc8-sf-spam1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060215224941.GB11143@soften.ktu.lt> from "Rimas Kudelis" at Feb 16, 2006 12:49:41 AM
+In-Reply-To: <20060215122901.810A489506@sc8-sf-spam1.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Feb 15, 2006 04:28:12 AM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +17,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rimas Kudelis <rq@akl.lt>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: rq@akl.lt, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rimas
+Rimas wrote:
+> > The problem I see here is that those "test" models are only available as
+> > a debug feature, which is compiled into the driver only when 
+> > CONFIG_SND_DEBUG is defined. I think it would be much more useful to
+> > always enable them. ...
+> > 
+> > Jonathan Woithe said he supports my idea. Takashi, what's your opinion
+> > about it? Would you commit a patch fixing this problem to the CVS?
 
-> I'm now trying out the test model for ALC260. I've already managed to
-> get sound from the Line In jack and Microphone jack. I've also managed
-> to get the internal Mic working.
+Well, what I said was that I could understand and be happy if the
+maintainers wanted to make this change but I wouldn't do it myself - 
+there was obviously a reason behind the decision to have things the way
+they are and I wasn't fully aware of the issues.
 
-Excellent.  Out of interest, which control appears to be connected to
-the internal mic?
+Takashi wrote:
+> The test model exists clearly for the debugging purpose.  If only this
+> model can bring your device sounds, it means that you need debug
+> anyway.  In other words, the test model is not a solution but a method
+> to find a solution.
 
-> However, I haven't heard any sound from either integrated speakers nor the
-> headphones jack. Even after switching a lot of controls in mixer.
+I'm actually not personally fussed either way.  I understand Takashi's
+reason for keeping things as they are, but at the same time I can see how
+having the test models "in by default" would broaden the potential test base
+for these codecs.  If the test models were always available users could
+submit useful information to ALSA for their laptop without having to
+recompile or patch ALSA - and many people with these laptops have no idea
+how to recompile a kernel, nor do they want to.  If the test model was
+always available we could simply get them to load that model (which is much
+easier than getting source, compiling, installing etc), play with the mixer
+and report the findings.  This would be far more useful to ALSA than what
+we'd get from these people now (something limited to the likes of "sound
+doesn't work").
 
-Interesting.  Perhaps the easiest way forward in that case is to switch
-every jack control to "line out" or "headphone out", unmute everything and
-turn up every control to maximum. Then see if you get sound out in any form
-from the internal speaker.  If we get sound at least we know it's possible
-and you can then work backwards to find the controls which affect it.  If we
-don't then there's some head-scratching to do.
+It is true that the test model is *not* a solution and is rather a tool, as
+Takashi said.  One danger of having it "always in" is that some users would
+treat it as the solution and we wouldn't get bug reports.
 
-> I remembered you mentioning some nasty pin that "should be better not be
-> touched", and wanted to ask you if this pin is available for control, if I
-> choose the text model?
+Rimas said:
+> That's right, but there's a problem - you cannot find all solutions
+> yourself in this case. You need more people for that. IMHO, the more
+> people will have access to the method to find a solution, the more
+> solutions you'll get. Isn't that a right thing? ...
+> :
+> Don't forget that there are many people around who aren't Linux geeks,
+> and they don't know how to (or simply are afraid/don't want to) compile
+> kernel drivers. If we want more Linux on desktops, we should make sure
+> Linux is friendly enough for people like them.
 
-It is available, yes.  It's pin widget 0x15, referred to as "LINE2" in
-the mixer controls.  Including it in the test model didn't appear to cause
-any trouble on my laptop during development so I left it in.  I'm yet to
-revisit the reasons as to why I had trouble with this NID during the
-initial S7020 development - currently I suspect a typo which I failed to
-notice at the time.
+This is pretty much along the lines of what I said above.  I guess I can see
+both sides to the issue, and there's no real "killer argument" for either
+side.
 
-Note also that the problem I had was that sending an initverb to this pin
-caused *all* sound to stop.  Since you get sound out of other jacks when
-using the test model I don't think your lack of sound from the headphone
-jack is due to this problem.
+Takashi wrote:
+> > So, basically I disagree with changing it.
+
+On balance, if it were up to me I would probably err on the side of always
+including the test driver at this stage, for no other reason than to make it
+easier for more people to contribute useful information to ALSA.  Down the
+track, when the number of untested hardware configurations has decreased
+somewhat (resulting in most laptops working out the box under Linux), the
+"testing" drivers might well revert to "debug only" status.  However, at the
+end of the day Takashi is the maintainer of this driver and I'm happy to go
+with whatever he considers is best for the future of ALSA.
 
 Regards
   jonathan
