@@ -1,18 +1,14 @@
-From: =?iso-2022-jp?B?bWlob19xdF9rb2tvcm9AZXhjaXRlLmNvLmpw?= <miho_qt_kokoro@excite.co.jp>
-Subject: =?iso-2022-jp?B?GyRCJF4kPyQqMnEkJCQ5JGs7diRPPVBNaCReJDkkKyEpGyhC?=
-Date: Thu, 16 Feb 2006 13:22:48 +0100 (MET)
-Message-ID: <20060216122248.CD65B99314@mail.perex.cz>
-Reply-To: <miho_qt_kokoro@excite.co.jp>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Thu, 16 Feb 2006 16:07:38 +0100
+Message-ID: <74731a791ecb9fe7cac8d5ef8e3681a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0ED48162
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 13:22:54 +0100 (MET)
-Received: from alsa-project.org (unknown [222.171.73.15])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id CD65B99314
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 13:22:48 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A4CC1E1
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 16:07:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,17 +21,123 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-元気ですか？本当はお手紙にしようと思ってたんですけど、どうしても早く連絡したくてメールにしました。ocnからのメールじゃないから気付いて貰えないかな
-今、凄く悩みがあって、、精神的に参っちゃってたんです。先週まで病院に通院してたんですけど、ようやく約気持ちにふんぎりがつきました。
-今日時間ありませんか？、近くで食事でも行きませんか？
-やっとメールも出来るようになったし、男性もいとおしいと思えるようになってきたんです。。去年までは本当に男性恐怖症になってたから、、どんなに親しい人でも逢えなかったけど、今は会いたいと思えるようになったから！
 
-最近はね、何か趣味でもみつけようと思ってブログとか掲示板とかみつけてイロイロ試したりしてるんです。
-http://mazimax.net/hdk/lego/na1
-ここ私がレンタルで借りて作ったHPだから、メール貰えますか？
-やっと異性と触れ合おうって思えるようになったから、逢えたらHしたいなって思ってる！こんなコト前は（普通の時）は言えなかったけど、何か自分の中で何かが変わったみたいで、今はぜんぜん抵抗なく言えるんです。
-私のHPは全て無料で使える所ですので、すべてって言ってもメールとチャットとフォトの掲載とかしか出来ないですけど、、メールください。
-このメールをキッカケに思ってくれるなら、私とこれから会ってくれませんか
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1726
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
+======================================================================
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              02-16-2006 16:07 CET
+======================================================================
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
+Description: 
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
+
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
+
+Playing stereo sound is OK.
+
+
+ speaker-test -c4 -D hw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 02-16-06 10:28 
+----------------------------------------------------------------------
+There are only 16 SRC on au88x0, this means you can only play 4 instances
+of surround40,  8 instances of stereo or 16 instances of mono.
+
+vortex: FATAL: ResManager: resource type x exhausted
+
+0 - dma
+1 - src
+2 - mixin
+3 - mixout
+
+It is quite strange that you get "vortex: FATAL: ResManager: resource type
+3 exhausted" since mixout are pre allocated
+
+The driver only dynamically enable the volume control between 32 mixin and
+16 mixout on au8830. https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835
+
+
+
+----------------------------------------------------------------------
+ Raymond - 02-16-06 16:07 
+----------------------------------------------------------------------
+When some of the critical component cannot be created by the driver.
+
+vortex: FATAL: ResManager: resource type 3 exhausted will appear since
+snd_vortex_dev_free() assume all component have been created.
+
+http://lists.nongnu.org/archive/html/openvortex-dev/2005-09/msg00015.html
+
+You need to post all the message in the system log
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+02-10-06 06:32 Raymond        Note Added: 0007991                          
+02-10-06 10:50 ponchick       Note Added: 0007998                          
+02-10-06 11:25 Raymond        Note Added: 0008000                          
+02-10-06 13:49 Raymond        Note Added: 0008003                          
+02-10-06 13:56 Raymond        Note Edited: 0008003                         
+02-12-06 07:48 Raymond        Note Edited: 0008003                         
+02-12-06 10:12 Raymond        Note Edited: 0008000                         
+02-16-06 05:37 ponchick       Note Added: 0008085                          
+02-16-06 08:12 Raymond        Note Added: 0008088                          
+02-16-06 10:12 Raymond        Note Added: 0008090                          
+02-16-06 10:28 Raymond        Note Edited: 0008090                         
+02-16-06 16:07 Raymond        Note Added: 0008097                          
+======================================================================
 
 
 
