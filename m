@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Thu, 16 Feb 2006 04:01:51 +0100
-Message-ID: <52210c6f3ed8cd7d84e89f8d864679e4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Thu, 16 Feb 2006 04:40:47 +0100
+Message-ID: <f7658bf8272a8984b33833021642ed2e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3301219A
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 04:01:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 995E819A
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 04:40:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,165 +24,224 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                ponchick
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              02-16-2006 04:01 CET
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              02-16-2006 04:40 CET
 ======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
+Summary:                    oops in snd_mpu401_uart
 Description: 
-/cvs/alsa-lib/test/pcm_min
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001766 jackd : ALSA: cannot set period size to...
-======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-13-06 17:02 
+ Raymond - 02-14-06 10:41 
 ----------------------------------------------------------------------
-Is it possible for au8830 to support surround51 by panning the center to
-front speakers and bass to 4 speakers ?
+The fault occur in mpu->write, either MPU401D(mpu) or MPU401C(mpu) when
+using mmio.
 
-<confdir:pcm/surround51.conf>
+#define VORTEX_MIDI_DATA 0x28800
+#define VORTEX_MIDI_CMD 0x28804 /* Write command / Read status */
 
-AU8830.pcm.surround51.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type multi
-	slaves [
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
-				]
-			}
-			channels 4
-		}
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.front.0:CARD=" $CARD
-				]
-			}
-			channels 1
-		}
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
-				]
-			}
-			channels 1
-		}
-	]
-	bindings [
-		{ slave 0 channel 0 }
-		{ slave 0 channel 1 }
-		{ slave 0 channel 2 }
-		{ slave 0 channel 3 }
-		{ slave 1 channel 0 }
-		{ slave 2 channel 0 }
-	]
-}
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/au88x0/au88x0_mpu401.c?r1=1.3&r2=1.4
+
+The address space of PCI BAR0 on your au8830 is different from alien's
+au8810 (64-bits)
+
+http://article.gmane.org/gmane.linux.alsa.devel/22109
+
+00:0c.0 Class 0401: 12eb:0003 (rev 02)
+	Subsystem: 12eb:0003
+	Region 0: Memory at 00000000fdc00000 (32-bit, non-prefetchable)
+[size=256K]
+
+
+04:01.0 0401: 12eb:0002 (rev fa)
+        Subsystem: 12eb:0001
+        Region 0: Memory at e5000000 (32-bit, non-prefetchable)
+[size=256K]
 
 
 
 ----------------------------------------------------------------------
- Raymond - 02-16-06 04:01 
+ Raymond - 02-16-06 04:40 
 ----------------------------------------------------------------------
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x639.htm#PCM-INTERFACE-OPERATORS-PREPARE-CALLBACK
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
 
-Can those parameters runtime->rate, runtime->format, runtime->channels
-pass to prepare callback different from those accepted by hw_params
-callback ?
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/drivers/mpu401/mpu401_uart.c?r1=1.31&r2=1.32
 
-As mixer, src are dynamically allocated, the current au88x0 driver do not
-support any change in runtime->channels after hw_params callback.
+mpu401_write_mmio and mpu401_read_mmio are only used by au88x0 driver.
 
-snd_pcm_recover() will call snd_pcm_prepare() when underrun occur.
+This may mean that the casting of (void _iomem *) from/to unsigned long is
+not correct.
 
-Which runtime parameters will be changed when underrun occur ?
+Can you try this to see if it works ? ( without VORTEX_MPU401_LEGACY )
+
+aplaymidi --port=16:0 any.mid
+
+Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_mpu401.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_mpu401.c,v
+retrieving revision 1.4
+diff -u -r1.4 au88x0_mpu401.c
+--- alsa-driver/alsa-kernel/pci/au88x0/au88x0_mpu401.c	13 Jan 2006
+17:16:29 -0000	1.4
++++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_mpu401.c	15 Feb 2006
+12:32:00 -0000
+@@ -95,9 +95,8 @@
+ 		return temp;
+ 	}
+ #else
+-	port = (unsigned long)(vortex->mmio + VORTEX_MIDI_DATA);
+ 	if ((temp =
+-	     snd_mpu401_uart_new(vortex->card, 0, MPU401_HW_AUREAL, port,
++	     snd_mpu401_uart_new(vortex->card, 0, MPU401_HW_AUREAL,
+VORTEX_MIDI_DATA,
+ 				 1, 0, 0, &rmidi)) != 0) {
+ 		hwwrite(vortex->mmio, VORTEX_CTRL,
+ 			(hwread(vortex->mmio, VORTEX_CTRL) &
+@@ -105,7 +104,8 @@
+ 		return temp;
+ 	}
+ 	mpu = rmidi->private_data;
+-	mpu->cport = (unsigned long)(vortex->mmio + VORTEX_MIDI_CMD);
++       mpu->private_data = vortex->mmio;
++	mpu->cport = VORTEX_MIDI_CMD;
+ #endif
+ 	vortex->rmidi = rmidi;
+ 	return 0;
+Index: alsa-driver/alsa-kernel/drivers/mpu401/mpu401_uart.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/drivers/mpu401/mpu401_uart.c,v
+retrieving revision 1.41
+diff -u -r1.41 mpu401_uart.c
+--- alsa-driver/alsa-kernel/drivers/mpu401/mpu401_uart.c	18 Nov 2005
+18:52:14 -0000	1.41
++++ alsa-driver/alsa-kernel/drivers/mpu401/mpu401_uart.c	15 Feb 2006
+12:32:59 -0000
+@@ -70,12 +70,12 @@
+ 
+ static void mpu401_write_mmio(struct snd_mpu401 *mpu, unsigned char data,
+unsigned long addr)
+ {
+-	writeb(data, (void __iomem *)addr);
++	writeb(data, (void __iomem *)(mpu->private_data+addr));
+ }
+ 
+ static unsigned char mpu401_read_mmio(struct snd_mpu401 *mpu, unsigned
+long addr)
+ {
+-	return readb((void __iomem *)addr);
++	return readb((void __iomem *)(mpu->private_data+addr));
+ }
+ /*  */
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
-01-31-06 13:48 perex          Status                   new => assigned     
-01-31-06 13:48 perex          Assigned To               => mjander         
-01-31-06 13:49 perex          Relationship added       related to 0001766  
-01-31-06 15:59 Raymond        Note Added: 0007852                          
-02-01-06 07:35 perex          Note Added: 0007857                          
-02-01-06 10:32 Raymond        Note Added: 0007858                          
-02-01-06 10:37 Raymond        Note Edited: 0007848                         
-02-01-06 17:15 Raymond        Note Edited: 0007844                         
-02-01-06 17:20 Raymond        Note Added: 0007860                          
-02-02-06 10:23 Raymond        Note Added: 0007874                          
-02-02-06 11:10 Raymond        Note Edited: 0007874                         
-02-02-06 15:48 Raymond        Note Edited: 0007874                         
-02-03-06 14:26 Raymond        Note Added: 0007897                          
-02-04-06 02:46 Raymond        Note Edited: 0007874                         
-02-04-06 02:52 Raymond        Note Edited: 0007858                         
-02-04-06 02:56 Raymond        Note Edited: 0007858                         
-02-05-06 16:39 Raymond        Note Added: 0007939                          
-02-05-06 16:48 Raymond        Note Added: 0007940                          
-02-06-06 04:40 Raymond        Note Deleted: 0007939                        
-02-06-06 06:15 Raymond        Note Edited: 0007940                         
-02-07-06 07:35 Raymond        Note Added: 0007954                          
-02-13-06 03:11 Raymond        Note Added: 0008036                          
-02-13-06 08:52 mjander        Note Added: 0008039                          
-02-13-06 16:57 Raymond        Note Added: 0008055                          
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-16-06 04:01 Raymond        Note Added: 0008083                          
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-12-06 14:14 Raymond        Note Deleted: 0007990                        
+02-13-06 07:08 Raymond        Note Edited: 0008024                         
+02-13-06 16:44 Raymond        Note Edited: 0008001                         
+02-14-06 10:41 Raymond        Note Edited: 0008024                         
+02-16-06 04:40 Raymond        Note Added: 0008084                          
 ======================================================================
 
 
