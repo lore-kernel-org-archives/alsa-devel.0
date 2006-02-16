@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Thu, 16 Feb 2006 16:07:38 +0100
-Message-ID: <74731a791ecb9fe7cac8d5ef8e3681a0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
+Date: Thu, 16 Feb 2006 17:08:51 +0100
+Message-ID: <28b8fceb89a96e368193797982edd572@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A4CC1E1
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 16:07:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C52F718A
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2006 17:08:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,119 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                graabein
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
+Issue ID:                   1838
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15-1.1831_FC4smp
 ======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              02-16-2006 16:07 CET
+Date Submitted:             02-10-2006 23:27 CET
+Last Modified:              02-16-2006 17:08 CET
 ======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
+Summary:                    Unknown model for ALC880 again, First International
+Computer p4m-915gd1 no sound
 Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
+I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
+sound. There are no error messages and I can play content all I want, I
+just don't get any sound.
 
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
+The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
+Channel, Realtek ALC880":
+http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
 
-Playing stereo sound is OK.
+I've found other, similar reports here in the bug tracker (#1460, #1563,
+#1589), including reports that this problem was resolved as of 1.0.11rc1.
 
-
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
+Accordingly, I tried compiling alsa from cvs sources as of today, but this
+made no difference. I still have no sound.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-16-06 10:28 
+ Eugene Seppel - 02-15-06 23:46 
 ----------------------------------------------------------------------
-There are only 16 SRC on au88x0, this means you can only play 4 instances
-of surround40,  8 instances of stereo or 16 instances of mono.
+Same problems with ALC880 chip (hda-intel) on ATI Xpress 200 Motherboard
+integrated sound.
 
-vortex: FATAL: ResManager: resource type x exhausted
-
-0 - dma
-1 - src
-2 - mixin
-3 - mixout
-
-It is quite strange that you get "vortex: FATAL: ResManager: resource type
-3 exhausted" since mixout are pre allocated
-
-The driver only dynamically enable the volume control between 32 mixin and
-16 mixout on au8830. https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835
-
-
+Sometimes sound is looping or ragged.
 
 ----------------------------------------------------------------------
- Raymond - 02-16-06 16:07 
+ Marijn Schouten - 02-16-06 17:08 
 ----------------------------------------------------------------------
-When some of the critical component cannot be created by the driver.
+There are two things you can do:
+check out bug 1563 and apply the patch for 1.0.10-rc3
+check out bug 1807 "Yes, position_fix=1 (or 3) fixes the problem."
+ 
+ /etc/modprobe.conf:
+ options snd-hda-intel position_fix=1
 
-vortex: FATAL: ResManager: resource type 3 exhausted will appear since
-snd_vortex_dev_free() assume all component have been created.
-
-http://lists.nongnu.org/archive/html/openvortex-dev/2005-09/msg00015.html
-
-You need to post all the message in the system log
+If one of these works, then this bug is a duplicate of those bugs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
-02-10-06 05:36 ponchick       Note Added: 0007987                          
-02-10-06 06:32 Raymond        Note Added: 0007991                          
-02-10-06 10:50 ponchick       Note Added: 0007998                          
-02-10-06 11:25 Raymond        Note Added: 0008000                          
-02-10-06 13:49 Raymond        Note Added: 0008003                          
-02-10-06 13:56 Raymond        Note Edited: 0008003                         
-02-12-06 07:48 Raymond        Note Edited: 0008003                         
-02-12-06 10:12 Raymond        Note Edited: 0008000                         
-02-16-06 05:37 ponchick       Note Added: 0008085                          
-02-16-06 08:12 Raymond        Note Added: 0008088                          
-02-16-06 10:12 Raymond        Note Added: 0008090                          
-02-16-06 10:28 Raymond        Note Edited: 0008090                         
-02-16-06 16:07 Raymond        Note Added: 0008097                          
+02-10-06 23:27 graabein       New Issue                                    
+02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
+02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
+02-10-06 23:38 graabein       Note Added: 0008010                          
+02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
+02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
+02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
 ======================================================================
 
 
