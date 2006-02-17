@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
-Date: Fri, 17 Feb 2006 09:21:40 +0100
-Message-ID: <866467ba85ab5c8b182e653a4b7dfe6f@bugtrack.alsa-project.org>
+From: boku <boku0712@gmail.com>
+Subject: Re: How to compile kernel with adding new alsa driver?
+Date: Fri, 17 Feb 2006 16:35:50 +0800
+Message-ID: <715d90900602170035i137aa468k918c72592906b7c2@mail.gmail.com>
+References: <715d90900602131740v4e98723ak26c1fbe793322829@mail.gmail.com>
+	 <20060215113734.GA6465@palantir8>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_10160_25690128.1140165350282"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D06461CC
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2006 09:21:40 +0100 (MET)
+Received: from zproxy.gmail.com (zproxy.gmail.com [64.233.162.205])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 885EA1CC
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2006 09:35:51 +0100 (MET)
+Received: by zproxy.gmail.com with SMTP id i28so349664nzi
+        for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2006 00:35:50 -0800 (PST)
+In-Reply-To: <20060215113734.GA6465@palantir8>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,123 +26,126 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_10160_25690128.1140165350282
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
-======================================================================
-Reported By:                kernel_bug
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   59
-Category:                   PCI - au88x0
-Reproducibility:            random
-Severity:                   major
-Priority:                   normal
-Status:                     confirmed
-Distribution:               
-Kernel Version:             2.6.2
-======================================================================
-Date Submitted:             02-13-2004 11:40 CET
-Last Modified:              02-17-2006 09:21 CET
-======================================================================
-Summary:                    On au8820 left and right channels are swapped
-Description: 
-In most cases, left and right channels are swapped. But in approx. 5% cases
-all OK. Looks like the matter is somewhere in byte alignment...
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000949 Randomly, left and right tracks are swaped
-======================================================================
+Thanks, Martin,
+    Could I ask you another Q? I studied pcm's functions and found
+xxx_pcm_trigger()?
+What kind of fuction it provides in general? Thanks a lot!~
 
-----------------------------------------------------------------------
- Raymond - 01-09-06 17:02 
-----------------------------------------------------------------------
-Please try to add the vortex_dump_route routine at the end of following
-routines:-
-1) vortex_connect_default()
-2) snd_vortex_pcm_hw_params()
-3) snd_vortex_pcm_hw_free() 
-
-and post the system log when the channels are swapped/normal.
-
-void vortex_dump_route(vortex_t * vortex)
-{
-     u32 addr,value;
-     u8  src,dest;
-     int i;
-     for (i=0; i<VORTEX_ADB_CHNBASE_COUNT; i++) {
-         addr=VORTEX_ADB_CHNBASE+i*4;
-         value=hwread(vortex->mmio,addr);
-         if ( ( value & ROUTE_MASK ) != ROUTE_MASK ) {
-  	     src=(value >>ADB_SHIFT)& ADB_MASK;
-	     dest=value & ADB_MASK;
-	     printk(KERN_INFO "%.8x adb_chnbase(%.2x) %.8x src=%.2x
-dest=%.2x\n",
-        		addr,i,value,src,dest);
-         };
-     };
-     for (addr=VORTEX_ADB_RTBASE; addr<VORTEX_ADB_CHNBASE; addr+=4) {
-         value=hwread(vortex->mmio,addr);
-         if ( ( value & ROUTE_MASK ) != ROUTE_MASK ) {
-  	     src=(value >>ADB_SHIFT)& ADB_MASK;
-	     dest=value & ADB_MASK;
-	     printk(KERN_INFO "%.8x adb_rtbase(%.2x)  %.8x src=%.2x
-dest=%.2x\n",
-        		addr,(addr-VORTEX_ADB_RTBASE)>>2,value,src,dest);
-         };
-     };
-     printk(KERN_INFO "---------------------------------\n");
-}
+Best Regards,
 
 
+On 2/15/06, Martin Habets <errandir_news@mph.eclipse.co.uk> wrote:
+>
+> On Tue, Feb 14, 2006 at 09:40:16AM +0800, boku wrote:
+> > Dear all,
+> >      How to compile linux kernel with adding my driver into alsa?
+>
+> Do you build alsa inside or outside the kernel structure? If it's a
+> part of the normal kernel build, you only need entries in Kconfig
+> and Makefile in the 'arm' subdirectory.
+> If you're building alsa outside the kernel, more may be needed. See below=
+.
+>
+>
+> > If my
+> > platform is ARM's Integrator, do I need to set any configs before
+> compiling
+> > for my new alsa driver? Or where I can find such information? Thank you
+> very
+> > much~
+>
+> Sorry, I am not familiar with the ARM Integrator platform. What cpu does
+> it use?
+> If is's not supported yet the configure script would need some changes.
+> No problem if you know you're autoconf stuff. I didn't, so the experts
+> did this part for me.
+>
+> I do not recall any documentation on alsa's platform support, but then I
+> would not expect anything. It's standard autoconf stuff.
+> There is the excellent "Writing an alsa driver" and more at
+> http://www.alsa-project.org/documentation.php
+> See chapter 15 especially.
+>
+> --
+> Martin
+>
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: Splunk Inc. Do you grep through log
+> files
+> for problems?  Stop!  Download the new AJAX search engine that makes
+> searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
+> http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D103432&bid=3D230486&dat=
+=3D121642
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
 
-----------------------------------------------------------------------
- Raymond - 02-17-06 09:21 
-----------------------------------------------------------------------
-Using outls.wav and outrs.wav from Vortex driver CD
+------=_Part_10160_25690128.1140165350282
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-aplay -D hw:0,0 outls.wav
-aplay -D hw:0,0 outrs.wav
+<div>Thanks, Martin,</div>
+<div>&nbsp;&nbsp;&nbsp; Could I ask you another Q? I studied pcm's function=
+s and found <font color=3D"#000000">xxx_pcm_trigger()? What kind of fuction=
+ it provides in general? Thanks a lot!~</font></div>
+<div>&nbsp;</div>
+<div>Best Regards,</div>
+<div><br>&nbsp;</div>
+<div><span class=3D"gmail_quote">On 2/15/06, <b class=3D"gmail_sendername">=
+Martin Habets</b> &lt;<a onclick=3D"return top.js.OpenExtLink(window,event,=
+this)" href=3D"mailto:errandir_news@mph.eclipse.co.uk" target=3D"_blank">er=
+randir_news@mph.eclipse.co.uk
+</a>&gt; wrote:</span>=20
+<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
+px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">On Tue, Feb 14, 2006 at 09:40:16=
+AM +0800, boku wrote:<br>&gt; Dear all,<br>&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;How to compile linux kernel with adding my driver into alsa?=20
+<br><br>Do you build alsa inside or outside the kernel structure? If it's a=
+<br>part of the normal kernel build, you only need entries in Kconfig<br>an=
+d Makefile in the 'arm' subdirectory.<br>If you're building alsa outside th=
+e kernel, more may be needed. See below.=20
+<br><br>&gt; If my<br>&gt; platform is ARM's Integrator, do I need to set a=
+ny configs before compiling<br>&gt; for my new alsa driver? Or where I can =
+find such information? Thank you very<br>&gt; much~<br><br>Sorry, I am not =
+familiar with the ARM Integrator platform. What cpu does=20
+<br>it use?<br>If is's not supported yet the configure script would need so=
+me changes.<br>No problem if you know you're autoconf stuff. I didn't, so t=
+he experts<br>did this part for me.<br><br>I do not recall any documentatio=
+n on alsa's platform support, but then I=20
+<br>would not expect anything. It's standard autoconf stuff.<br>There is th=
+e excellent &quot;Writing an alsa driver&quot; and more at<br><a onclick=3D=
+"return top.js.OpenExtLink(window,event,this)" href=3D"http://www.alsa-proj=
+ect.org/documentation.php" target=3D"_blank">
+http://www.alsa-project.org/documentation.php </a><br>See chapter 15 especi=
+ally.<br><br>--<br>Martin<br><br><br>--------------------------------------=
+-----------------<br>This SF.net email is sponsored by: Splunk Inc. Do you =
+grep through log files
+<br>for problems?&nbsp;&nbsp;Stop!&nbsp;&nbsp;Download the new AJAX search =
+engine that makes <br>searching your log files as easy as surfing the&nbsp;=
+&nbsp;web.&nbsp;&nbsp;DOWNLOAD SPLUNK!<br><a onclick=3D"return top.js.OpenE=
+xtLink(window,event,this)" href=3D"http://sel.as-us.falkag.net/sel?cmd=3Dln=
+k&amp;kid=3D103432&amp;bid=3D230486&amp;dat=3D121642" target=3D"_blank">
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&amp;kid=3D103432&amp;bid=3D230486=
+&amp;dat=3D121642 </a><br>_______________________________________________<b=
+r>Alsa-devel mailing list<br><a onclick=3D"return top.js.OpenExtLink(window=
+,event,this)" href=3D"mailto:Alsa-devel@lists.sourceforge.net" target=3D"_b=
+lank">
+Alsa-devel@lists.sourceforge.net</a><br><a onclick=3D"return top.js.OpenExt=
+Link(window,event,this)" href=3D"https://lists.sourceforge.net/lists/listin=
+fo/alsa-devel" target=3D"_blank">https://lists.sourceforge.net/lists/listin=
+fo/alsa-devel
+</a><br></blockquote></div><br>
 
-Can you try alsa-1.0.11rc3 with/without au88x0_surround40.patch from
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726 ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-13-04 11:40 kernel_bug     New Issue                                    
-02-21-04 15:40 kernel_bug     Note Added: 0000280                          
-03-02-04 02:56 Tim            Note Added: 0000429                          
-04-09-04 11:54 kernel_bug     Note Added: 0000774                          
-04-09-04 18:35 mjander        Note Added: 0000777                          
-04-17-04 18:59 mjander        Status                   assigned => closed  
-04-17-04 18:59 mjander        Note Added: 0000849                          
-04-26-04 17:04 kernel_bug     Status                   closed => feedback  
-04-26-04 17:04 kernel_bug     Resolution               open => reopened    
-04-26-04 17:04 kernel_bug     Note Added: 0000953                          
-04-26-04 23:27 mjander        Note Added: 0000956                          
-03-10-05 15:31 jdthood        Note Added: 0003866                          
-03-10-05 16:44 mjander        Note Added: 0003867                          
-03-10-05 21:25 kernel_bug     Note Added: 0003873                          
-03-22-05 22:33 jdthood        Relationship added       related to 0000949  
-03-28-05 04:27 jdthood        Note Added: 0004235                          
-03-28-05 04:27 jdthood        Status                   feedback => assigned
-03-28-05 04:29 jdthood        Status                   assigned => confirmed
-08-26-05 14:50 Raymond        Note Added: 0005951                          
-08-26-05 15:12 kernel_bug     Note Added: 0005955                          
-08-26-05 16:07 Raymond        Note Added: 0005956                          
-08-26-05 17:38 kernel_bug     File Added: asound.state                     
-08-26-05 17:41 kernel_bug     Note Added: 0005957                          
-08-27-05 04:43 Raymond        Note Added: 0005959                          
-01-06-06 18:15 Raymond        Note Added: 0007491                          
-01-09-06 17:02 Raymond        Note Edited: 0007491                         
-02-17-06 09:21 Raymond        Note Added: 0008106                          
-======================================================================
-
-
+------=_Part_10160_25690128.1140165350282--
 
 
 -------------------------------------------------------
