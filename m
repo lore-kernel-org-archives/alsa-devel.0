@@ -1,15 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: probe_mpu401 question
-Date: Fri, 17 Feb 2006 13:57:40 +0100
-Message-ID: <20060217125740.GA11415@ifiu25.informatik.uni-halle.de>
-References: <20060215122901.97C6412A21@sc8-sf-spam2.sourceforge.net>
- <000c01c6334a$6a916db0$6401a8c0@XP1>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: Re: Test model
+Date: Fri, 17 Feb 2006 15:17:53 +0200
+Message-ID: <43F5CD01.2070900@akl.lt>
+References: <200602170159.k1H1xYkI018018@auster.physics.adelaide.edu.au>	 <43F5BC71.6040404@akl.lt> <acb0c1690602170457l5335e137vf3db87bdc7f3857e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <000c01c6334a$6a916db0$6401a8c0@XP1>
-Content-disposition: inline
+In-Reply-To: <acb0c1690602170457l5335e137vf3db87bdc7f3857e@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,32 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hank Ivy <hankivy@hot.rr.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Paulo Matias <syscoder@gmail.com>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hank Ivy wrote:
-> The following is definitely a sound related question.  But the code is
-> in an oss directory.
+Paulo Matias wrote:
+> (Copy only of the body of the email I sent to Jonathan with the files)
 
-OSS is deprecated.
+Could you send a copy for me now? :) Well, OTOH, I can look them up on 
+the Acer's website.
 
-> Should I address this question to a Linux kernel mailing list?
-
-There is a linux-sound mailing list, but it's dead.
-
-> In the Linux source distribution, the file sound/oss/mpu401.c defines a
-> function called probe_mpu401.  The prototype is 
-> int probe_mpu401(struct address_info *hw_config, struct resource *ports)
+> But, hey, I've looked better at the driver files and found an
+> AzMixerSel.ini. This file has clsids associated with mixer controls,
+> like this:
 > 
-> The second parameter, ports, is not used in the function.  Have I
-> misread the code?
+> [008F1025&Dev0_{0A8C1AA2-42B0-11D2-95D2-00C04FB925D3}]
+> Name=Master Volume
+> DeviceName=Realtek HD Audio output
+> Volume=32845
+> Mute=0
+> SelectMode=0
+> 
+> I've installed the driver in my Wine and then looked for these clsids
+> in the drive_c directory of Wine, and found only one binary file that
+> references all these clsids: windows/system32/drivers/RtkHDAud.Sys.
+> 
+> I suspect all the manufacturers use the same driver provided by
+> Realtek and then change the AzMixerSel.ini for adjusting the internal
+> routings.
 
-No.
+IMO, that would make a lot of sense, indeed.
 
+> Now, how can we know what clsid refers to what?
+> 
+> 1. by comparision with models we already know the routings, like Fujitsu
+> 2. by contacting Realtek
+> 3. maybe by reverse engineering?
 
-HTH&HAND
-Clemens
+1 and 2 should be easiest (if effective), probably. It should be 
+relatively easy to find the manufacturer's drivers for other ALC260 
+laptops on the Internet. Then we could at least try to compare Acer's 
+ini with Fujitsu's with HP's. Hopefully, that would help us. I'll try 
+to dig into this right now. :)
+
+Rimas
 
 
 -------------------------------------------------------
