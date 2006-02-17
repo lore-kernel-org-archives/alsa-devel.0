@@ -1,13 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: Re: Test model
-Date: Fri, 17 Feb 2006 15:17:53 +0200
-Message-ID: <43F5CD01.2070900@akl.lt>
-References: <200602170159.k1H1xYkI018018@auster.physics.adelaide.edu.au>	 <43F5BC71.6040404@akl.lt> <acb0c1690602170457l5335e137vf3db87bdc7f3857e@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
+Date: Fri, 17 Feb 2006 16:31:30 +0100
+Message-ID: <c9b8bbb139286acb1799a279c303fde9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <acb0c1690602170457l5335e137vf3db87bdc7f3857e@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC3F61A7
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2006 16:31:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +18,88 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paulo Matias <syscoder@gmail.com>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paulo Matias wrote:
-> (Copy only of the body of the email I sent to Jonathan with the files)
 
-Could you send a copy for me now? :) Well, OTOH, I can look them up on 
-the Acer's website.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
+======================================================================
+Reported By:                graabein
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1838
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15-1.1831_FC4smp
+======================================================================
+Date Submitted:             02-10-2006 23:27 CET
+Last Modified:              02-17-2006 16:31 CET
+======================================================================
+Summary:                    Unknown model for ALC880 again, First International
+Computer p4m-915gd1 no sound
+Description: 
+I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
+sound. There are no error messages and I can play content all I want, I
+just don't get any sound.
 
-> But, hey, I've looked better at the driver files and found an
-> AzMixerSel.ini. This file has clsids associated with mixer controls,
-> like this:
-> 
-> [008F1025&Dev0_{0A8C1AA2-42B0-11D2-95D2-00C04FB925D3}]
-> Name=Master Volume
-> DeviceName=Realtek HD Audio output
-> Volume=32845
-> Mute=0
-> SelectMode=0
-> 
-> I've installed the driver in my Wine and then looked for these clsids
-> in the drive_c directory of Wine, and found only one binary file that
-> references all these clsids: windows/system32/drivers/RtkHDAud.Sys.
-> 
-> I suspect all the manufacturers use the same driver provided by
-> Realtek and then change the AzMixerSel.ini for adjusting the internal
-> routings.
+The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
+Channel, Realtek ALC880":
+http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
 
-IMO, that would make a lot of sense, indeed.
+I've found other, similar reports here in the bug tracker (#1460, #1563,
+#1589), including reports that this problem was resolved as of 1.0.11rc1.
 
-> Now, how can we know what clsid refers to what?
-> 
-> 1. by comparision with models we already know the routings, like Fujitsu
-> 2. by contacting Realtek
-> 3. maybe by reverse engineering?
+Accordingly, I tried compiling alsa from cvs sources as of today, but this
+made no difference. I still have no sound.
 
-1 and 2 should be easiest (if effective), probably. It should be 
-relatively easy to find the manufacturer's drivers for other ALC260 
-laptops on the Internet. Then we could at least try to compare Acer's 
-ini with Fujitsu's with HP's. Hopefully, that would help us. I'll try 
-to dig into this right now. :)
+======================================================================
 
-Rimas
+----------------------------------------------------------------------
+ Marijn Schouten - 02-17-06 10:47 
+----------------------------------------------------------------------
+the patch for bug 1563 has been incorporated into 1.0.11-rc3 and later, but
+other things were changed in 1.0.11-rc3 and later (new bugs), so that
+neither of them will work out of the box. Please try the old 1.0.10-rc3
+which comes with the kernel and apply the patch.
+
+----------------------------------------------------------------------
+ Eugene Seppel - 02-17-06 16:31 
+----------------------------------------------------------------------
+With 
+ALSA 1.0.11rc and 
+options snd-hda-intel position_fix=1
+
+my soundcard works.
+(ALC880 chipset on MS482M4 (ATI Xpress 200) Linux 2.6.16-rc3)
+
+PS
+It would be better if this option be by default for this chipset.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-10-06 23:27 graabein       New Issue                                    
+02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
+02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
+02-10-06 23:38 graabein       Note Added: 0008010                          
+02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
+02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
+02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
+02-16-06 17:10 Marijn SchoutenNote Edited: 0008098                         
+02-16-06 18:36 er-ku          Note Added: 0008101                          
+02-16-06 23:06 graabein       Note Added: 0008103                          
+02-17-06 10:47 Marijn SchoutenNote Added: 0008107                          
+02-17-06 16:31 Eugene Seppel  Note Added: 0008108                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
