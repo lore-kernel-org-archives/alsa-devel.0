@@ -1,13 +1,15 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: Test model
-Date: Fri, 17 Feb 2006 14:07:13 +0200
-Message-ID: <43F5BC71.6040404@akl.lt>
+From: Paulo Matias <syscoder@gmail.com>
+Subject: Re: Re: Test model
+Date: Fri, 17 Feb 2006 10:57:00 -0200
+Message-ID: <acb0c1690602170457l5335e137vf3db87bdc7f3857e@mail.gmail.com>
 References: <200602170159.k1H1xYkI018018@auster.physics.adelaide.edu.au>
+	 <43F5BC71.6040404@akl.lt>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602170159.k1H1xYkI018018@auster.physics.adelaide.edu.au>
+In-Reply-To: <43F5BC71.6040404@akl.lt>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,79 +19,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: Rimas Kudelis <rq@akl.lt>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+(Copy only of the body of the email I sent to Jonathan with the files)
 
+Hi Jonathan,
 
->> The internal microphone is connected to the "MIC1" control. And the external too.
->> The Line In jack is connected to LINE1 control.
->> Master volume seems to be controlled by LOUT1 control. By muting this, i
->> get absolute silence.
+These are the files of which I've said. I've diffed the .inf files at
+the WDM directory and their differences are not in the part that
+describes the codec pins, so I think I was wrong.
 
-<...>
+But, hey, I've looked better at the driver files and found an
+AzMixerSel.ini. This file has clsids associated with mixer controls,
+like this:
 
-> Very interesting.  The only difference between the "line out" and "headphone"
-> setting is that the latter enables an onboard amplifier which allows it
-> to drive headphones to a louder volume.  On the headphones I've tried 
-> you still get adequate output when the pin is "lineout" - it's just slightly
-> louder when "headphone" mode is selected.
+[008F1025&Dev0_{0A8C1AA2-42B0-11D2-95D2-00C04FB925D3}]
+Name=3DMaster Volume
+DeviceName=3DRealtek HD Audio output
+Volume=3D32845
+Mute=3D0
+SelectMode=3D0
 
-OK, then I hope it doesn't apply here, as I'm testing things with an 
-external amplifier connected to big speakers.
+I've installed the driver in my Wine and then looked for these clsids
+in the drive_c directory of Wine, and found only one binary file that
+references all these clsids: windows/system32/drivers/RtkHDAud.Sys.
 
+I suspect all the manufacturers use the same driver provided by
+Realtek and then change the AzMixerSel.ini for adjusting the internal
+routings.
 
->> Btw, when I redirect the output to Line In, and make everything else
->> (HP-OUT, LINE-OUT, LINE2 and MIC2) be "Headphone" pins, I get a lot of
->> noise from the speakers connected to the Line In jack. These seem to catch
->> some interference even from the video card (just noticed). That electronic
->> noise differs depending on what I see in the screen atm. Weird...
-> 
-> Which output - the headphone jack?  What kind of noise - squeals or hiss?
+Now, how can we know what clsid refers to what?
 
-Hard to tell (English is not my native), but I think it's more like 
-hiss. Actually, it sounds a bit similar to a TV with bad reception, 
-except that in my case the noise is quiet enough.
+1. by comparision with models we already know the routings, like Fujitsu
+2. by contacting Realtek
+3. maybe by reverse engineering?
 
-
-> Not sure at this stage.  Feel free to comment out the things which touch
-> node ID 0x15 and try again (after recompiling/reboot), but based on
-> experience to date I don't think it will change things.  In the face of no
-> other suggestions however it might be worth trying.
-
-I don't actually understand a single line in the driver code. :)) But 
-I'll try to find possible gotchas in it.
-
-
->> I'm almost out of any ideas. :/ Could it be that the notebook uses
->> digital i/o for its internal speakers/heaphone jack or something like
->> this?
-> 
-> That would be extremely strange - as a system designer, why require the use
-> of an external DAC when you have a perfectly servieable one already in the
-> laptop?
-> 
-> A couple of other random thoughts:
-> 
->   1) You're not using a docking station, are you?
-
-Of course I'm not. :) This laptop doesn't even have a docking station 
-interface port.
-
->   2) Does the laptop have an external volume control?  If so, is it turned
->      up to maximum?
-
-No, it doesn't. Just the keyboard controls that Paolo has mentioned.
-
-BTW, could I catch you on IRC or MSN or some other real-time media? I 
-hope that could make this discussion progress a little bit faster.
-
-best regards,
-
-Rimas
-
+Regards,
+Paulo Matias
 
 
 -------------------------------------------------------
