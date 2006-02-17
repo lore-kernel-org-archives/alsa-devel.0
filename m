@@ -1,15 +1,15 @@
-From: Paulo Matias <syscoder@gmail.com>
-Subject: Re: Re: Test model
-Date: Fri, 17 Feb 2006 10:57:00 -0200
-Message-ID: <acb0c1690602170457l5335e137vf3db87bdc7f3857e@mail.gmail.com>
-References: <200602170159.k1H1xYkI018018@auster.physics.adelaide.edu.au>
-	 <43F5BC71.6040404@akl.lt>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: probe_mpu401 question
+Date: Fri, 17 Feb 2006 13:57:40 +0100
+Message-ID: <20060217125740.GA11415@ifiu25.informatik.uni-halle.de>
+References: <20060215122901.97C6412A21@sc8-sf-spam2.sourceforge.net>
+ <000c01c6334a$6a916db0$6401a8c0@XP1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43F5BC71.6040404@akl.lt>
-Content-Disposition: inline
+In-reply-to: <000c01c6334a$6a916db0$6401a8c0@XP1>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,45 +19,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rimas Kudelis <rq@akl.lt>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: Hank Ivy <hankivy@hot.rr.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-(Copy only of the body of the email I sent to Jonathan with the files)
+Hank Ivy wrote:
+> The following is definitely a sound related question.  But the code is
+> in an oss directory.
 
-Hi Jonathan,
+OSS is deprecated.
 
-These are the files of which I've said. I've diffed the .inf files at
-the WDM directory and their differences are not in the part that
-describes the codec pins, so I think I was wrong.
+> Should I address this question to a Linux kernel mailing list?
 
-But, hey, I've looked better at the driver files and found an
-AzMixerSel.ini. This file has clsids associated with mixer controls,
-like this:
+There is a linux-sound mailing list, but it's dead.
 
-[008F1025&Dev0_{0A8C1AA2-42B0-11D2-95D2-00C04FB925D3}]
-Name=3DMaster Volume
-DeviceName=3DRealtek HD Audio output
-Volume=3D32845
-Mute=3D0
-SelectMode=3D0
+> In the Linux source distribution, the file sound/oss/mpu401.c defines a
+> function called probe_mpu401.  The prototype is 
+> int probe_mpu401(struct address_info *hw_config, struct resource *ports)
+> 
+> The second parameter, ports, is not used in the function.  Have I
+> misread the code?
 
-I've installed the driver in my Wine and then looked for these clsids
-in the drive_c directory of Wine, and found only one binary file that
-references all these clsids: windows/system32/drivers/RtkHDAud.Sys.
+No.
 
-I suspect all the manufacturers use the same driver provided by
-Realtek and then change the AzMixerSel.ini for adjusting the internal
-routings.
 
-Now, how can we know what clsid refers to what?
-
-1. by comparision with models we already know the routings, like Fujitsu
-2. by contacting Realtek
-3. maybe by reverse engineering?
-
-Regards,
-Paulo Matias
+HTH&HAND
+Clemens
 
 
 -------------------------------------------------------
