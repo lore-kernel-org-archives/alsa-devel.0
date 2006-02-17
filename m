@@ -1,15 +1,17 @@
-From: Paulo Matias <syscoder@gmail.com>
-Subject: Re: Re: Test model
-Date: Fri, 17 Feb 2006 16:40:56 -0200
-Message-ID: <acb0c1690602171040q382964a8k5818d8e5cdd3c93e@mail.gmail.com>
-References: <200602170159.k1H1xYkI018018@auster.physics.adelaide.edu.au>
-	 <43F5BC71.6040404@akl.lt>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: Re: [RFC][PATCH] Transparent network support through
+ polypaudio
+Date: Fri, 17 Feb 2006 20:05:17 +0100
+Message-ID: <43F61E6D.5020206@cendio.se>
+References: <43F09D76.9060004@cendio.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43F5BC71.6040404@akl.lt>
-Content-Disposition: inline
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 833B51BD
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2006 20:05:44 +0100 (MET)
+In-Reply-To: <43F09D76.9060004@cendio.se>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,20 +21,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rimas Kudelis <rq@akl.lt>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: Pierre Ossman <ossman@cendio.se>
+Cc: alsa-devel@alsa-project.org, mzcbylcnhqvb@0pointer.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+New version again. This time updated to the polypaudio HEAD. This also 
+means that there is record support in this version.
 
-> BTW, could I catch you on IRC or MSN or some other real-time media? I
-> hope that could make this discussion progress a little bit faster.
+http://www.cendio.se/~ossman/alsa-polyp-1.0.10-3.tar.bz2
 
-Yeah, I know it was not for me, but if you like, you can find me at
-irc.freenode.net or irc.openbrasil.org, nick thotypous :)
-
-Regards,
-Paulo Matias
+-- 
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
 
 
 -------------------------------------------------------
