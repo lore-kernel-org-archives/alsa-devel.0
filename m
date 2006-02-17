@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
-Date: Fri, 17 Feb 2006 10:47:08 +0100
-Message-ID: <6faf0ad8fbd51372388a076326b9fc67@bugtrack.alsa-project.org>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: Test model
+Date: Fri, 17 Feb 2006 14:07:13 +0200
+Message-ID: <43F5BC71.6040404@akl.lt>
+References: <200602170159.k1H1xYkI018018@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11D5E1C1
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2006 10:47:08 +0100 (MET)
+In-Reply-To: <200602170159.k1H1xYkI018018@auster.physics.adelaide.edu.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,102 +17,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
-======================================================================
-Reported By:                graabein
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1838
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15-1.1831_FC4smp
-======================================================================
-Date Submitted:             02-10-2006 23:27 CET
-Last Modified:              02-17-2006 10:47 CET
-======================================================================
-Summary:                    Unknown model for ALC880 again, First International
-Computer p4m-915gd1 no sound
-Description: 
-I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
-sound. There are no error messages and I can play content all I want, I
-just don't get any sound.
-
-The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
-Channel, Realtek ALC880":
-http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
-
-I've found other, similar reports here in the bug tracker (#1460, #1563,
-#1589), including reports that this problem was resolved as of 1.0.11rc1.
-
-Accordingly, I tried compiling alsa from cvs sources as of today, but this
-made no difference. I still have no sound.
-
-======================================================================
-
-----------------------------------------------------------------------
- graabein - 02-16-06 23:06 
-----------------------------------------------------------------------
-Marijn Schouten wrote:
-> check out bug 1563 and apply the patch for 1.0.10-rc3
-
-As the note in bug 1563 says, the patch is already in CVS. I checked my
-copy and it is indeed in there. So that doesn't help.
-
-> check out bug 1807 for 1.0.11-rc3 "Yes, position_fix=1 (or 3) fixes the
-problem."
-
-Neither position_fix=1 nor 3 made any difference on my system.
+Hi,
 
 
-er-ku wrote:
-> you may also try a "model=test" argument if position_fix fails
+>> The internal microphone is connected to the "MIC1" control. And the external too.
+>> The Line In jack is connected to LINE1 control.
+>> Master volume seems to be controlled by LOUT1 control. By muting this, i
+>> get absolute silence.
 
-I must already have had all possible controls in the mixer, because this
-parameter made no difference to the number controls I already had. All
-controls are turned up to 75-90% and mute is of course turned off, but I
-still have no sound.
+<...>
 
-In alsamixer, from left to right:
+> Very interesting.  The only difference between the "line out" and "headphone"
+> setting is that the latter enables an onboard amplifier which allows it
+> to drive headphones to a louder volume.  On the headphones I've tried 
+> you still get adequate output when the pin is "lineout" - it's just slightly
+> louder when "headphone" mode is selected.
 
-Headphone, PCM, Front, Front Mic, Surround, Center, LFE, Line, CD, Mic, PC
-Speaker, Capture, Capture 1, Capture 2, Channel Mode, Input Source, Input
-Source 1, Input Source 2
+OK, then I hope it doesn't apply here, as I'm testing things with an 
+external amplifier connected to big speakers.
 
-----------------------------------------------------------------------
- Marijn Schouten - 02-17-06 10:47 
-----------------------------------------------------------------------
-the patch for bug 1563 has been incorporated into 1.0.11-rc3 and later, but
-other things were changed in 1.0.11-rc3 and later (new bugs), so that
-neither of them will work out of the box. Please try the old 1.0.10-rc3
-which comes with the kernel and apply the patch.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-10-06 23:27 graabein       New Issue                                    
-02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
-02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
-02-10-06 23:38 graabein       Note Added: 0008010                          
-02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
-02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
-02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
-02-16-06 17:10 Marijn SchoutenNote Edited: 0008098                         
-02-16-06 18:36 er-ku          Note Added: 0008101                          
-02-16-06 23:06 graabein       Note Added: 0008103                          
-02-17-06 10:47 Marijn SchoutenNote Added: 0008107                          
-======================================================================
+>> Btw, when I redirect the output to Line In, and make everything else
+>> (HP-OUT, LINE-OUT, LINE2 and MIC2) be "Headphone" pins, I get a lot of
+>> noise from the speakers connected to the Line In jack. These seem to catch
+>> some interference even from the video card (just noticed). That electronic
+>> noise differs depending on what I see in the screen atm. Weird...
+> 
+> Which output - the headphone jack?  What kind of noise - squeals or hiss?
 
+Hard to tell (English is not my native), but I think it's more like 
+hiss. Actually, it sounds a bit similar to a TV with bad reception, 
+except that in my case the noise is quiet enough.
+
+
+> Not sure at this stage.  Feel free to comment out the things which touch
+> node ID 0x15 and try again (after recompiling/reboot), but based on
+> experience to date I don't think it will change things.  In the face of no
+> other suggestions however it might be worth trying.
+
+I don't actually understand a single line in the driver code. :)) But 
+I'll try to find possible gotchas in it.
+
+
+>> I'm almost out of any ideas. :/ Could it be that the notebook uses
+>> digital i/o for its internal speakers/heaphone jack or something like
+>> this?
+> 
+> That would be extremely strange - as a system designer, why require the use
+> of an external DAC when you have a perfectly servieable one already in the
+> laptop?
+> 
+> A couple of other random thoughts:
+> 
+>   1) You're not using a docking station, are you?
+
+Of course I'm not. :) This laptop doesn't even have a docking station 
+interface port.
+
+>   2) Does the laptop have an external volume control?  If so, is it turned
+>      up to maximum?
+
+No, it doesn't. Just the keyboard controls that Paolo has mentioned.
+
+BTW, could I catch you on IRC or MSN or some other real-time media? I 
+hope that could make this discussion progress a little bit faster.
+
+best regards,
+
+Rimas
 
 
 
