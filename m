@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
-Date: Fri, 17 Feb 2006 16:31:30 +0100
-Message-ID: <c9b8bbb139286acb1799a279c303fde9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000959]: After S3 resume: ali_stimer_read: stimer is not ready
+Date: Fri, 17 Feb 2006 18:09:12 +0100
+Message-ID: <639be60a34bafa4db3a0eba7d4209b3b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC3F61A7
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2006 16:31:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEE891B0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2006 18:09:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=959> 
 ======================================================================
-Reported By:                graabein
-Assigned To:                tiwai
+Reported By:                avuton
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1838
-Category:                   PCI - hda-intel
+Issue ID:                   959
+Category:                   PCI - ali5451
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15-1.1831_FC4smp
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             02-10-2006 23:27 CET
-Last Modified:              02-17-2006 16:31 CET
+Date Submitted:             03-03-2005 18:41 CET
+Last Modified:              02-17-2006 18:09 CET
 ======================================================================
-Summary:                    Unknown model for ALC880 again, First International
-Computer p4m-915gd1 no sound
+Summary:                    After S3 resume: ali_stimer_read: stimer is not
+ready
 Description: 
-I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
-sound. There are no error messages and I can play content all I want, I
-just don't get any sound.
+After S3 resume, 'ali_stimer_read: stimer is not ready.' repeats until I
+reset/power down the computer.
 
-The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
-Channel, Realtek ALC880":
-http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
+Workaround is to stop all audio activity and unload the driver, which
+works fine.
 
-I've found other, similar reports here in the bug tracker (#1460, #1563,
-#1589), including reports that this problem was resolved as of 1.0.11rc1.
-
-Accordingly, I tried compiling alsa from cvs sources as of today, but this
-made no difference. I still have no sound.
-
+This happens on my Libretto L5.
 ======================================================================
 
 ----------------------------------------------------------------------
- Marijn Schouten - 02-17-06 10:47 
+ sluskyb - 12-14-05 17:38 
 ----------------------------------------------------------------------
-the patch for bug 1563 has been incorporated into 1.0.11-rc3 and later, but
-other things were changed in 1.0.11-rc3 and later (new bugs), so that
-neither of them will work out of the box. Please try the old 1.0.10-rc3
-which comes with the kernel and apply the patch.
+Looks like the "stimer is not ready" messages repeat for only about two and
+a half minutes, and then I get my laptop back. (Tested on my Libretto L5
+w/2.6.15-rc5.) Sound doesn't work after that until I unload and reload the
+module.
+
+The hangcheck timer throws out a few backtraces -- see dmesg output in
+attached ali5451-S3.txt.
+
+Using a CVS tree from November 18th, the "stimer is not ready" messages
+come faster, and the total delay is only a few seconds, but still sound
+doesn't work as described above. I'll try 1.0.11-rc1 tonight...
 
 ----------------------------------------------------------------------
- Eugene Seppel - 02-17-06 16:31 
+ sluskyb - 02-17-06 18:09 
 ----------------------------------------------------------------------
-With 
-ALSA 1.0.11rc and 
-options snd-hda-intel position_fix=1
-
-my soundcard works.
-(ALC880 chipset on MS482M4 (ATI Xpress 200) Linux 2.6.16-rc3)
-
-PS
-It would be better if this option be by default for this chipset.
+No news is bad news... still broken as of driver 1.0.11rc2 or kernel
+2.6.16-rc3.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-10-06 23:27 graabein       New Issue                                    
-02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
-02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
-02-10-06 23:38 graabein       Note Added: 0008010                          
-02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
-02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
-02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
-02-16-06 17:10 Marijn SchoutenNote Edited: 0008098                         
-02-16-06 18:36 er-ku          Note Added: 0008101                          
-02-16-06 23:06 graabein       Note Added: 0008103                          
-02-17-06 10:47 Marijn SchoutenNote Added: 0008107                          
-02-17-06 16:31 Eugene Seppel  Note Added: 0008108                          
+03-03-05 18:41 avuton         New Issue                                    
+03-03-05 18:41 avuton         Distribution              => Gentoo          
+03-03-05 18:41 avuton         Kernel Version            => 2.6.11          
+05-02-05 02:22 avuton         Note Added: 0004583                          
+06-27-05 03:52 avuton         Note Added: 0005270                          
+07-08-05 14:59 tiwai          Note Added: 0005431                          
+07-08-05 22:48 avuton         Note Added: 0005436                          
+12-14-05 17:28 sluskyb        File Added: ali5451-S3.txt                    
+12-14-05 17:38 sluskyb        Note Added: 0007038                          
+12-14-05 18:13 sluskyb        Issue Monitored: sluskyb                     
+02-17-06 18:09 sluskyb        Note Added: 0008109                          
 ======================================================================
 
 
