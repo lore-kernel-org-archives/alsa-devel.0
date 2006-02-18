@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001853]: Why not make @args.CHANNELS in pcm/dmix.conf ???
-Date: Sat, 18 Feb 2006 18:06:38 +0100
-Message-ID: <6daa7e6eec73018f2ee711a3441a71e1@bugtrack.alsa-project.org>
+Date: Sat, 18 Feb 2006 18:16:54 +0100
+Message-ID: <b49b96cfd32f1288c1a3eb3ec225298f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DB981C4
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 18:06:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DE001C7
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 18:16:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1853> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-18-2006 18:06 CET
-Last Modified:              02-18-2006 18:06 CET
+Last Modified:              02-18-2006 18:16 CET
 ======================================================================
 Summary:                    Why not make @args.CHANNELS in pcm/dmix.conf ???
 Description: 
@@ -80,11 +80,23 @@ I included a working example of asound.conf which uses only one dmix pcm -
 "dmixed" as the slave pcm for many different channel count pcms.
 ======================================================================
 
+----------------------------------------------------------------------
+ slammer - 02-18-06 18:16 
+----------------------------------------------------------------------
+Errata: (sorry :)
+Above the two URLs:
+"as it is done in the alsa provided dmix pcm (instead of plugin)"
+
+In the second last sentence ignore the:
+"and adding plug it."
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-18-06 18:06 slammer        New Issue                                    
 02-18-06 18:06 slammer        File Added: asound.conf                      
+02-18-06 18:11 slammer        Issue Monitored: slammer                     
+02-18-06 18:16 slammer        Note Added: 0008121                          
 ======================================================================
 
 
