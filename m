@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001527]: amixer fails to set right 'Capture Source' channel
-Date: Sat, 18 Feb 2006 01:32:51 +0100
-Message-ID: <d727763a513e79d7ab07977e73ffccbe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001824]: Always mixed into one channel when recording stereo
+Date: Sat, 18 Feb 2006 01:32:49 +0100
+Message-ID: <8a7bbdad6a61f35e5a03cde16f230675@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54BFB1AB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 01:32:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1219C1A7
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 01:32:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001824 has been set as DUPLICATE OF the following issue.
+The following issue has been set as DUPLICATE OF issue 0001527.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1527> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1824> 
 ======================================================================
-Reported By:                tartif
+Reported By:                Electro
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1527
-Category:                   amixer
+Project:                    ALSA - driver
+Issue ID:                   1824
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-gentoo-r4
 ======================================================================
-Date Submitted:             11-04-2005 16:11 CET
-Last Modified:              11-04-2005 16:11 CET
+Date Submitted:             02-06-2006 06:56 CET
+Last Modified:              02-18-2006 01:32 CET
 ======================================================================
-Summary:                    amixer fails to set right 'Capture Source' channel
+Summary:                    Always mixed into one channel when recording stereo
 Description: 
-I use the ice1724 driver (Prodigy 7.1 card), ALSA 1.0.10_rc2 (also happens
-with 1.0.9).
-
-amixer fails to set the 'capture source' for the right channel (left is
-OK). Left channel is set to that requested, right channel always set to
-0.
-
+When recording stereo audio (2 channels), the sound seems to mix to one
+channel and then saved in the left track. I do not have anything in
+asound.conf or ~/.asoundrc that will affect the recordings. I even cleared
+them out to make sure that my code is not screwing up the recordings. It
+has done this since I upgraded to 1.0.10 from 1.0.9. I thought 1.0.11rc3
+will fix the problem but it still does it.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001824 Always mixed into one channel when reco...
+duplicate of        0001527 amixer fails to set right 'Capture Sour...
 ======================================================================
+
+----------------------------------------------------------------------
+ tartif - 02-10-06 23:38 
+----------------------------------------------------------------------
+This sounds identical to bug 1527. It looks like an alsa-lib problem that
+doesn't correctly set the recording source for the right channel.
+
+----------------------------------------------------------------------
+ Electro - 02-16-06 07:26 
+----------------------------------------------------------------------
+Why it has not been fixed yet?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-04-05 16:11 tartif         New Issue                                    
-02-11-06 03:49 ikari_01       Issue Monitored: ikari_01                    
-02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001824
+02-06-06 06:56 Electro        New Issue                                    
+02-06-06 06:56 Electro        Distribution              => Gentoo          
+02-06-06 06:56 Electro        Kernel Version            => 2.6.14-gentoo-r4
+02-10-06 23:38 tartif         Note Added: 0008009                          
+02-16-06 07:26 Electro        Note Added: 0008087                          
+02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001527
 ======================================================================
 
 
