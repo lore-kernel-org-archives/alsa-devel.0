@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001850]: source available
-Date: Sat, 18 Feb 2006 13:34:58 +0100
-Message-ID: <36b491d63bf7aa968dffcfb05ca83d47@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Cards and PCM instances
+Date: Sat, 18 Feb 2006 14:09:28 +0100
+Message-ID: <20060218140928.62793ef7.pochini@shiny.it>
+References: <20060216114804.698A289A8A@sc8-sf-spam1.sourceforge.net>
+	<BAY111-DAV13EC412102C661A02696E1C2F80@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 144E81A2
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 13:34:58 +0100 (MET)
+In-Reply-To: <BAY111-DAV13EC412102C661A02696E1C2F80@phx.gbl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +18,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Nikhil Rao <nikhil_p_rao@hotmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 16 Feb 2006 21:15:06 -0800
+"Nikhil Rao" <nikhil_p_rao@hotmail.com> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
-======================================================================
-Reported By:                coz
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1850
-Category:                   PCI - echoaudio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               ubuntu/breezy/Debian
-Kernel Version:             2.6.12.10.386
-======================================================================
-Date Submitted:             02-16-2006 13:05 CET
-Last Modified:              02-18-2006 13:34 CET
-======================================================================
-Summary:                    source available
-Description: 
-can't start layla24
-======================================================================
+> In "Writing an ALSA driver", the author has mentioned that each card can
+> have upto 4 PCM instances.
+>
+> Does a PCM instance correspond to an independent audio output ?
 
-----------------------------------------------------------------------
- pochini - 02-18-06 13:34 
-----------------------------------------------------------------------
-A driver for all the PCI and CARDBUS cards by Echoaudio is in alsa-drive
-since 1.0.8rc1 .
-If you can't make it work, please say the version and what is the problem.
-Does it compile ? Can you load the module ? Is there some error message in
-the logs ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-16-06 13:05 coz            New Issue                                    
-02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
-02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
-02-18-06 13:34 pochini        Note Added: 0008119                          
-======================================================================
+Mostly, yes, it does, but they can also be related in some ways (eg. if the
+card has only one clock generator, all channels share the same clock
+frequency).
 
 
+> For e.g, in the project I am working the hardware  has 2 audio outputs that
+> would be used to render 2 separate PCM streams at the same time, would this
+> configuration correspond to 2 different PCMs or to 2 different cards ?
+
+2 PCMs is the most obvious config, IMO, expecially if the control interface
+is one. With 2 card instances you also need 2 control interfaces.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
