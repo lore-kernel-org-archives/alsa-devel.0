@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001824]: Always mixed into one channel when recording stereo
-Date: Sat, 18 Feb 2006 01:32:49 +0100
-Message-ID: <8a7bbdad6a61f35e5a03cde16f230675@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001848]: settings: volume is extremely low
+Date: Sat, 18 Feb 2006 01:35:01 +0100
+Message-ID: <076cb07e872d42cd0f2b46c3abd2317d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1219C1A7
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 01:32:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 269861A7
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 01:35:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001527.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1824> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1848> 
 ======================================================================
-Reported By:                Electro
-Assigned To:                
+Reported By:                Mitch 74
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1824
-Category:                   PCI - ice1724
+Issue ID:                   1848
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r4
+Status:                     assigned
+Distribution:               Mandriva Linux 2006 Community x86-64
+Kernel Version:             vanilla 2.6.15.4
 ======================================================================
-Date Submitted:             02-06-2006 06:56 CET
-Last Modified:              02-18-2006 01:32 CET
+Date Submitted:             02-16-2006 11:38 CET
+Last Modified:              02-18-2006 01:35 CET
 ======================================================================
-Summary:                    Always mixed into one channel when recording stereo
+Summary:                    settings: volume is extremely low
 Description: 
-When recording stereo audio (2 channels), the sound seems to mix to one
-channel and then saved in the left track. I do not have anything in
-asound.conf or ~/.asoundrc that will affect the recordings. I even cleared
-them out to make sure that my code is not screwing up the recordings. It
-has done this since I upgraded to 1.0.10 from 1.0.9. I thought 1.0.11rc3
-will fix the problem but it still does it.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001527 amixer fails to set right 'Capture Sour...
+After compiling my kernel, installing it and booting it, I installed
+alsa-drivers 1.0.11rc3 (./configure, make, make install). The driver loads
+and works (I have sound coming out of my loudspeakers) but volume is very
+low. (this lets all parasites reach my amp thus the sound is very
+scratchy).
+No complait about stability, however it would be nice to set output at
+something different than 8 channels (default).
+Has there been any improvement? Maybe in CVS?
 ======================================================================
 
 ----------------------------------------------------------------------
- tartif - 02-10-06 23:38 
+ Mitch 74 - 02-16-06 17:28 
 ----------------------------------------------------------------------
-This sounds identical to bug 1527. It looks like an alsa-lib problem that
-doesn't correctly set the recording source for the right channel.
+Strange, I was sure I had mentioned that 'Main' and 'Front' had been maxed
+out, using either alsamixer, amixer or kmix...
+I tried fiddling with all available settings, to no avail. 'Main' and
+'Front' at max, I get at best a fourth of Maximum volume in, say,
+Windows.
+Being able to disable front jack would help, and maybe being able to
+define 2- or 4-way sound system (instead of default 8-way) would, too.
+
+As a side note, the main balance ruler in kmix seems ineffective (while it
+does work in XMMS - maybe main balance doesn't work and 'Front's does,
+maybe not... Should I post another bug on that one?)
 
 ----------------------------------------------------------------------
- Electro - 02-16-06 07:26 
+ rlrevell - 02-18-06 01:35 
 ----------------------------------------------------------------------
-Why it has not been fixed yet?
+"As a side note, the main balance ruler in kmix seems ineffective (while it
+does work in XMMS - maybe main balance doesn't work and 'Front's does,
+maybe not... Should I post another bug on that one?)"
+
+No, please don't spam this list with kmix bugs, unless you can reproduce
+the problem with alsamixer.  kmix is quite buggy.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-06 06:56 Electro        New Issue                                    
-02-06-06 06:56 Electro        Distribution              => Gentoo          
-02-06-06 06:56 Electro        Kernel Version            => 2.6.14-gentoo-r4
-02-10-06 23:38 tartif         Note Added: 0008009                          
-02-16-06 07:26 Electro        Note Added: 0008087                          
-02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001527
+02-16-06 11:38 Mitch 74       New Issue                                    
+02-16-06 11:38 Mitch 74       Distribution              => Mandriva Linux 2006
+Community x86-64
+02-16-06 11:38 Mitch 74       Kernel Version            => vanilla 2.6.15.4
+02-16-06 17:22 Marijn SchoutenNote Added: 0008099                          
+02-16-06 17:28 Mitch 74       Note Added: 0008100                          
+02-18-06 01:35 rlrevell       Note Added: 0008111                          
 ======================================================================
 
 
