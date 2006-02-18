@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001847]: hda-intel on acer laptop (travelmate 3002) - no recording
-Date: Sat, 18 Feb 2006 01:32:38 +0100
-Message-ID: <8f04fc74c73e0cd853aabd01579eecd9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001643]: Microphone is muted and no mic option available
+Date: Sat, 18 Feb 2006 01:32:41 +0100
+Message-ID: <5e01c2d8e31cbbf6a6b53271f8476513@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CCD31A7
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 01:32:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0DFB1AF
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 01:32:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001643.
+The issue 0001847 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1847> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1643> 
 ======================================================================
-Reported By:                lrupn
+Reported By:                MACHINE
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1847
+Issue ID:                   1643
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.12
+Distribution:               Gentoo
+Kernel Version:             2.6.14.3
 ======================================================================
-Date Submitted:             02-15-2006 14:18 CET
-Last Modified:              02-18-2006 01:32 CET
+Date Submitted:             12-12-2005 04:12 CET
+Last Modified:              02-16-2006 21:45 CET
 ======================================================================
-Summary:                    hda-intel on acer laptop (travelmate 3002) - no
-recording
+Summary:                    Microphone is muted and no mic option available
 Description: 
-I have an Acer laptop with sound card that claim to be Intel Corporation
-82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller (rev
-04)
-that is recognized as a SigmaTel STAC9200. 
-With 1.0.11rc2 there is some noise when I unmute line-in (external
-microphone) and try to record something. The amplitude response is ok and
-actualy i am able to hear my voice but there is a lot of noise. I thing
-that the problem is the mixer... The internal micorphone is not working at
-all.\
-With 1.0.11rc3 some new controls apear in the alsamixer but neither
-speakers nor microphone is working....
-I have found a similr bug report:
-http://sourceforge.net/tracker/index.php?func=detail&aid=1389026&group_id=27464&atid=390601
+This issue exists since I bought this notebook, and it was never solved
+since ALSA 1.0.9, no matter what kernel I use.
 
+The only mixer option related to microphone is "Input Source", and there
+is a "Front Mic", but useless.
 
+in 'alsamixer -V capture', the only three columns are IEC958, Capture, and
+Capture (not a typo!)
+
+I unmuted everything and push every volumes to 100%. Everything works
+fine, except microphone.
+
+Hardware has no problem (checked by Windows2000).
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001643 Microphone is muted and no mic option a...
+has duplicate       0001847 hda-intel on acer laptop (travelmate 30...
 ======================================================================
 
 ----------------------------------------------------------------------
- MACHINE - 02-16-06 12:13 
+ lrupn - 02-16-06 21:45 
 ----------------------------------------------------------------------
-The problem is also described here:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1643
+Do You have a "PCM" control in alsamixer?
+When I start my Slackware in console mode (without kde) i do not have PCM
+control and there is no sound from the speakers, however if i start a kde
+sesion it magicaly aperas and everything is working.... (except
+microphone)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-15-06 14:18 lrupn          New Issue                                    
-02-15-06 14:18 lrupn          Distribution              => Slackware 10.1  
-02-15-06 14:18 lrupn          Kernel Version            => 2.6.12          
-02-16-06 12:13 MACHINE        Note Added: 0008095                          
-02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001643
+12-12-05 04:12 MACHINE        New Issue                                    
+12-12-05 04:12 MACHINE        File Added: alsa                             
+12-12-05 04:12 MACHINE        Distribution              => Gentoo          
+12-12-05 04:12 MACHINE        Kernel Version            => 2.6.14.3        
+02-16-06 17:56 lrupn          Issue Monitored: lrupn                       
+02-16-06 21:45 lrupn          Note Added: 0008102                          
+02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001847
 ======================================================================
 
 
