@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
-Date: Sat, 18 Feb 2006 08:34:13 +0100
-Message-ID: <2fd34d97fb72bc0ac2173c097d4ea229@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001848]: settings: volume is extremely low
+Date: Sat, 18 Feb 2006 09:58:53 +0100
+Message-ID: <0ecb6994b39cc47a0e761cd0f7ed7b2a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C74511AB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 08:34:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BBCC1A2
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 09:58:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,186 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1848> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                Mitch 74
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1766
-Category:                   PCI - au88x0
+Issue ID:                   1848
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Mandriva Linux 2006 Community x86-64
+Kernel Version:             vanilla 2.6.15.4
 ======================================================================
-Date Submitted:             01-21-2006 05:02 CET
-Last Modified:              02-18-2006 08:34 CET
+Date Submitted:             02-16-2006 11:38 CET
+Last Modified:              02-18-2006 09:58 CET
 ======================================================================
-Summary:                    jackd : ALSA: cannot set period size to 1024 frames
-for capture
+Summary:                    settings: volume is extremely low
 Description: 
-snd_pcm_hw_params_get_channels_max() return 4 for capture stream
-
-static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
-	.info =
-	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
-	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-	     SNDRV_PCM_INFO_MMAP_VALID),
-	.formats =
-	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
-	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
-	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-	.rate_min = 5000,
-	.rate_max = 48000,
-	.channels_min = 1,
-#ifdef CHIP_AU8830
-	.channels_max = 4,
-#else
-	.channels_max = 2,
-#endif
-	.buffer_bytes_max = 0x10000,
-	.period_bytes_min = 0x1,
-	.period_bytes_max = 0x1000,
-	.periods_min = 2,
-	.periods_max = 32,
-};
-
-static int
-vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
-type)
-{
-	stream_t *stream;
-	int i, en;
-	
-	if ((nr_ch == 3)
-	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
-		return -EBUSY;
-
-therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
-capture"
-
-jackd -d alsa hw:0 -S
-jackd 0.100.9
-
-...
- 
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
-ALSA: cannot set period size to 1024 frames for capture
-ALSA: cannot configure capture channel
-cannot load driver module alsa
-no message buffer overruns
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001724 au88x0 PCM configuration problem - buff...
+After compiling my kernel, installing it and booting it, I installed
+alsa-drivers 1.0.11rc3 (./configure, make, make install). The driver loads
+and works (I have sound coming out of my loudspeakers) but volume is very
+low. (this lets all parasites reach my amp thus the sound is very
+scratchy).
+No complait about stability, however it would be nice to set output at
+something different than 8 channels (default).
+Has there been any improvement? Maybe in CVS?
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-04-06 06:14 
+ rlrevell - 02-18-06 01:35 
 ----------------------------------------------------------------------
-The patch fix the channels_max of adb device 
-- capture should be 2
-- playback depends on the codec is quad or stereo
+"As a side note, the main balance ruler in kmix seems ineffective (while it
+does work in XMMS - maybe main balance doesn't work and 'Front's does,
+maybe not... Should I post another bug on that one?)"
+
+No, please don't spam this list with kmix bugs, unless you can reproduce
+the problem with alsamixer.  kmix is quite buggy.
 
 ----------------------------------------------------------------------
- Raymond - 02-18-06 08:34 
+ Mitch 74 - 02-18-06 09:58 
 ----------------------------------------------------------------------
-- channels_max of capture stream = 2
-- channels_max of playback stream depends on the codec is quad or stereo 
-- channels constraint is 1, 2, 4 
+I was sure I had mentioned my audio hardware was Nforce-embedded Realtek
+ALC880 on a Gigabyte K8N51GMF-9...
 
-Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_pcm.c,v
-retrieving revision 1.11
-diff -u -r1.11 au88x0_pcm.c
---- alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c	17 Nov 2005 14:55:19
--0000	1.11
-+++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c	18 Feb 2006 07:30:35
--0000
-@@ -43,10 +43,10 @@
- 	.rate_min = 5000,
- 	.rate_max = 48000,
- 	.channels_min = 1,
--#ifdef CHIP_AU8830
--	.channels_max = 4,
--#else
-+#ifndef CHIP_AU8820
- 	.channels_max = 2,
-+#else
-+	.channels_max = 4,
- #endif
- 	.buffer_bytes_max = 0x10000,
- 	.period_bytes_min = 0x1,
-@@ -116,6 +116,17 @@
- 	.periods_max = 64,
- };
- #endif
-+
-+static unsigned int channels4[3] = {
-+	1, 2, 4
-+};
-+
-+static struct snd_pcm_hw_constraint_list hw_constraints_channels4 = {
-+	.count = ARRAY_SIZE(channels4),
-+	.list = channels4,
-+	.mask = 0,
-+};
-+
- /* open callback */
- static int snd_vortex_pcm_open(struct snd_pcm_substream *substream)
- {
-@@ -154,9 +165,21 @@
- 				break;
- 			}
- 		}
--		if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB
--		    || VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_I2S)
-+		if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB) {
- 			runtime->hw = snd_vortex_playback_hw_adb;
-+			if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+				if (VORTEX_IS_QUAD(vortex)) {
-+	        	        	runtime->hw.channels_max = 4;
-+					snd_pcm_hw_constraint_list(runtime, 0,
-+						SNDRV_PCM_HW_PARAM_CHANNELS,
-+						&hw_constraints_channels4);
-+				}
-+				else
-+	        	        	runtime->hw.channels_max = 2;
-+			}
-+			else
-+                             runtime->hw.channels_max = 2;			
-+		};
- 		substream->runtime->private_data = NULL;
- 	}
- #ifndef CHIP_AU8810
+No prompting on kmix, ok. I will try reproducing it on alsamix.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-21-06 05:02 Raymond        New Issue                                    
-01-21-06 05:25 rlrevell       Note Added: 0007735                          
-01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
-01-21-06 07:36 Raymond        Note Added: 0007736                          
-01-21-06 07:41 Raymond        Note Edited: 0007736                         
-01-21-06 07:59 rlrevell       Note Added: 0007737                          
-01-23-06 10:36 Raymond        Note Added: 0007761                          
-01-23-06 10:42 Raymond        Note Edited: 0007761                         
-01-24-06 11:25 Raymond        Note Added: 0007773                          
-01-28-06 02:23 Raymond        Note Added: 0007816                          
-01-31-06 13:49 perex          Relationship added       related to 0001724  
-02-04-06 05:49 Raymond        File Added: au88x0_pcm_channels.patch             
-      
-02-04-06 06:14 Raymond        Note Added: 0007911                          
-02-18-06 08:34 Raymond        Note Added: 0008117                          
+02-16-06 11:38 Mitch 74       New Issue                                    
+02-16-06 11:38 Mitch 74       Distribution              => Mandriva Linux 2006
+Community x86-64
+02-16-06 11:38 Mitch 74       Kernel Version            => vanilla 2.6.15.4
+02-16-06 17:22 Marijn SchoutenNote Added: 0008099                          
+02-16-06 17:28 Mitch 74       Note Added: 0008100                          
+02-18-06 01:35 rlrevell       Note Added: 0008111                          
+02-18-06 09:58 Mitch 74       Note Added: 0008118                          
 ======================================================================
 
 
