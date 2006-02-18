@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001643]: Microphone is muted and no mic option available
-Date: Sat, 18 Feb 2006 01:32:41 +0100
-Message-ID: <5e01c2d8e31cbbf6a6b53271f8476513@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001527]: amixer fails to set right 'Capture Source' channel
+Date: Sat, 18 Feb 2006 01:32:51 +0100
+Message-ID: <d727763a513e79d7ab07977e73ffccbe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0DFB1AF
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 01:32:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54BFB1AB
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 01:32:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001847 has been set as DUPLICATE OF the following issue.
+The issue 0001824 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1643> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1527> 
 ======================================================================
-Reported By:                MACHINE
-Assigned To:                tiwai
+Reported By:                tartif
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1643
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   1527
+Category:                   amixer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.14.3
+Status:                     new
 ======================================================================
-Date Submitted:             12-12-2005 04:12 CET
-Last Modified:              02-16-2006 21:45 CET
+Date Submitted:             11-04-2005 16:11 CET
+Last Modified:              11-04-2005 16:11 CET
 ======================================================================
-Summary:                    Microphone is muted and no mic option available
+Summary:                    amixer fails to set right 'Capture Source' channel
 Description: 
-This issue exists since I bought this notebook, and it was never solved
-since ALSA 1.0.9, no matter what kernel I use.
+I use the ice1724 driver (Prodigy 7.1 card), ALSA 1.0.10_rc2 (also happens
+with 1.0.9).
 
-The only mixer option related to microphone is "Input Source", and there
-is a "Front Mic", but useless.
+amixer fails to set the 'capture source' for the right channel (left is
+OK). Left channel is set to that requested, right channel always set to
+0.
 
-in 'alsamixer -V capture', the only three columns are IEC958, Capture, and
-Capture (not a typo!)
-
-I unmuted everything and push every volumes to 100%. Everything works
-fine, except microphone.
-
-Hardware has no problem (checked by Windows2000).
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001847 hda-intel on acer laptop (travelmate 30...
+has duplicate       0001824 Always mixed into one channel when reco...
 ======================================================================
-
-----------------------------------------------------------------------
- lrupn - 02-16-06 21:45 
-----------------------------------------------------------------------
-Do You have a "PCM" control in alsamixer?
-When I start my Slackware in console mode (without kde) i do not have PCM
-control and there is no sound from the speakers, however if i start a kde
-sesion it magicaly aperas and everything is working.... (except
-microphone)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-12-05 04:12 MACHINE        New Issue                                    
-12-12-05 04:12 MACHINE        File Added: alsa                             
-12-12-05 04:12 MACHINE        Distribution              => Gentoo          
-12-12-05 04:12 MACHINE        Kernel Version            => 2.6.14.3        
-02-16-06 17:56 lrupn          Issue Monitored: lrupn                       
-02-16-06 21:45 lrupn          Note Added: 0008102                          
-02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001847
+11-04-05 16:11 tartif         New Issue                                    
+02-11-06 03:49 ikari_01       Issue Monitored: ikari_01                    
+02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001824
 ======================================================================
 
 
