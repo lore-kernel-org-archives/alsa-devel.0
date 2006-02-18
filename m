@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Sat, 18 Feb 2006 08:13:47 +0100
-Message-ID: <41206e4443635600bbcedc7dde06e95b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
+Date: Sat, 18 Feb 2006 08:34:13 +0100
+Message-ID: <2fd34d97fb72bc0ac2173c097d4ea229@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB5621A7
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 08:13:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C74511AB
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 08:34:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,186 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
 ======================================================================
-Reported By:                liangalei
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1766
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              02-18-2006 08:13 CET
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              02-18-2006 08:34 CET
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
+jackd -d alsa hw:0 -S
+jackd 0.100.9
 
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
 
-thanks
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001724 au88x0 PCM configuration problem - buff...
 ======================================================================
 
 ----------------------------------------------------------------------
- gandhi - 02-18-06 02:05 
+ Raymond - 02-04-06 06:14 
 ----------------------------------------------------------------------
-this bug is assigned..but to nobody..isn't this a problem?
+The patch fix the channels_max of adb device 
+- capture should be 2
+- playback depends on the codec is quad or stereo
 
 ----------------------------------------------------------------------
- liangalei - 02-18-06 08:13 
+ Raymond - 02-18-06 08:34 
 ----------------------------------------------------------------------
-Many people inqure me, if I have solution.
-My answer is NO, my S52 has been silent until now. 
-I have used to its silent (no music, no movie), and used to alsa's silent
-(without any response).
+- channels_max of capture stream = 2
+- channels_max of playback stream depends on the codec is quad or stereo 
+- channels constraint is 1, 2, 4 
+
+Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_pcm.c,v
+retrieving revision 1.11
+diff -u -r1.11 au88x0_pcm.c
+--- alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c	17 Nov 2005 14:55:19
+-0000	1.11
++++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c	18 Feb 2006 07:30:35
+-0000
+@@ -43,10 +43,10 @@
+ 	.rate_min = 5000,
+ 	.rate_max = 48000,
+ 	.channels_min = 1,
+-#ifdef CHIP_AU8830
+-	.channels_max = 4,
+-#else
++#ifndef CHIP_AU8820
+ 	.channels_max = 2,
++#else
++	.channels_max = 4,
+ #endif
+ 	.buffer_bytes_max = 0x10000,
+ 	.period_bytes_min = 0x1,
+@@ -116,6 +116,17 @@
+ 	.periods_max = 64,
+ };
+ #endif
++
++static unsigned int channels4[3] = {
++	1, 2, 4
++};
++
++static struct snd_pcm_hw_constraint_list hw_constraints_channels4 = {
++	.count = ARRAY_SIZE(channels4),
++	.list = channels4,
++	.mask = 0,
++};
++
+ /* open callback */
+ static int snd_vortex_pcm_open(struct snd_pcm_substream *substream)
+ {
+@@ -154,9 +165,21 @@
+ 				break;
+ 			}
+ 		}
+-		if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB
+-		    || VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_I2S)
++		if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB) {
+ 			runtime->hw = snd_vortex_playback_hw_adb;
++			if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++				if (VORTEX_IS_QUAD(vortex)) {
++	        	        	runtime->hw.channels_max = 4;
++					snd_pcm_hw_constraint_list(runtime, 0,
++						SNDRV_PCM_HW_PARAM_CHANNELS,
++						&hw_constraints_channels4);
++				}
++				else
++	        	        	runtime->hw.channels_max = 2;
++			}
++			else
++                             runtime->hw.channels_max = 2;			
++		};
+ 		substream->runtime->private_data = NULL;
+ 	}
+ #ifndef CHIP_AU8810
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
+01-21-06 05:02 Raymond        New Issue                                    
+01-21-06 05:25 rlrevell       Note Added: 0007735                          
+01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
+01-21-06 07:36 Raymond        Note Added: 0007736                          
+01-21-06 07:41 Raymond        Note Edited: 0007736                         
+01-21-06 07:59 rlrevell       Note Added: 0007737                          
+01-23-06 10:36 Raymond        Note Added: 0007761                          
+01-23-06 10:42 Raymond        Note Edited: 0007761                         
+01-24-06 11:25 Raymond        Note Added: 0007773                          
+01-28-06 02:23 Raymond        Note Added: 0007816                          
+01-31-06 13:49 perex          Relationship added       related to 0001724  
+02-04-06 05:49 Raymond        File Added: au88x0_pcm_channels.patch             
+      
+02-04-06 06:14 Raymond        Note Added: 0007911                          
+02-18-06 08:34 Raymond        Note Added: 0008117                          
 ======================================================================
 
 
