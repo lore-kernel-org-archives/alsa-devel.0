@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001854]: alsa-lib obfuscates terminal or something segfaults
-Date: Sat, 18 Feb 2006 19:59:26 +0100
-Message-ID: <dd0ed1a4d45c5e79ca714642bfcda08a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001855]: no sound with openal
+Date: Sat, 18 Feb 2006 20:24:41 +0100
+Message-ID: <9905f332feb3f52a855edc6d6c03abdb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 040A11BB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 19:59:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40A0018B
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 20:24:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1854> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1855> 
 ======================================================================
-Reported By:                hesabo
+Reported By:                eiz
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1854
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1855
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15.3
 ======================================================================
-Date Submitted:             02-18-2006 19:59 CET
-Last Modified:              02-18-2006 19:59 CET
+Date Submitted:             02-18-2006 20:24 CET
+Last Modified:              02-18-2006 20:24 CET
 ======================================================================
-Summary:                    alsa-lib obfuscates terminal or something segfaults
+Summary:                    no sound with openal
 Description: 
-alsa-lib produces bad error messages like
-"""
-ALSA lib pcm_direct.c:222:(make_local_socket) connect failed:
-I&#65535;&#65535;&#65535;&#65535;: No such file or directory
-ALSA lib pcm_dmix.c:851:(snd_pcm_dmix_open) unable to connect client
-aplay: main:544: audio open error: No such file or directory
-"""
-or
-"""
-ALSA lib pcm_direct.c:222:(make_local_socket) connect failed: : N&#9146;
-&#9149;&#9508;&#9228;&#9252; °&#9227;&#9484;&#9226; &#9146;&#9148;
-&#9229;&#9227;&#9148;&#9226;&#9228;&#9500;&#9146;&#9148;&#8804;
-ALSA &#9484;&#9227;&#9225;
-&#9147;&#9228;&#9492;_&#9229;&#9492;&#9227;&#9474;.&#9228;:851:(&#9149;&#9532;&#9229;_&#9147;&#9228;&#9492;_&#9229;&#9492;&#9227;&#9474;_&#9146;&#9147;&#9226;&#9532;)
-&#9508;&#9532;&#9618;&#9225;&#9484;&#9226; &#9500;&#9146;
-&#9228;&#9146;&#9532;&#9532;&#9226;&#9228;&#9500;
-&#9228;&#9484;&#9227;&#9226;&#9532;&#9500;
-&#9618;&#9147;&#9484;&#9618;&#8804;: &#9492;&#9618;&#9227;&#9532;:544:
-&#9618;&#9508;&#9229;&#9227;&#9146; &#9146;&#9147;&#9226;&#9532;
-&#9226;&#9148;&#9148;&#9146;&#9148;: N&#9146; &#9149;&#9508;&#9228;&#9252;
-°&#9227;&#9484;&#9226; &#9146;&#9148;
-&#9229;&#9227;&#9148;&#9226;&#9228;&#9500;&#9146;&#9148;&#8804;
-"""
-or
-"""
-Segmentation fault
-"""
+when forcing ( define devices '(alsa native) ) in .openalrc
+no sound at all and no error 
+tested with openal own demo and ut2004
 
-The segmentation fault is not reproducible nor is the string in the error
-message.
+openal 0.2005080600-2.1 or openal-alsa-emu10k1-1.2
+kernel 2.6.15.3
+
+cat ~/.asoundrc
+pcm.emu10k1 {
+           type hw
+           card 0
+}
+ctl.emu10k1 {
+           type hw
+           card 0
+}
+
+NOTES : 
+- maybe useful tip : I noticed mmap call seems broken on amd64
+- my surround51 device through spdiff is working very well with 
+  aplay -c 6 -D surround51
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-18-06 19:59 hesabo         New Issue                                    
+02-18-06 20:24 eiz            New Issue                                    
+02-18-06 20:24 eiz            File Added: openal-demo-strace.txt.gz             
+      
+02-18-06 20:24 eiz            Distribution              => Debian          
+02-18-06 20:24 eiz            Kernel Version            => 2.6.15.3        
 ======================================================================
 
 
