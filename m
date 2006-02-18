@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001855]: no sound with openal
-Date: Sat, 18 Feb 2006 20:24:41 +0100
-Message-ID: <9905f332feb3f52a855edc6d6c03abdb@bugtrack.alsa-project.org>
+Date: Sat, 18 Feb 2006 20:30:19 +0100
+Message-ID: <1fe9b875d2187b8381d5cd2ac6563809@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40A0018B
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 20:24:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 188411C0
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 20:30:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1855> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15.3
 ======================================================================
 Date Submitted:             02-18-2006 20:24 CET
-Last Modified:              02-18-2006 20:24 CET
+Last Modified:              02-18-2006 20:30 CET
 ======================================================================
 Summary:                    no sound with openal
 Description: 
@@ -68,6 +68,11 @@ NOTES :
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 02-18-06 20:30 
+----------------------------------------------------------------------
+should be fixed in 2.6.15.4
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -76,6 +81,7 @@ Date Modified  Username       Field                    Change
       
 02-18-06 20:24 eiz            Distribution              => Debian          
 02-18-06 20:24 eiz            Kernel Version            => 2.6.15.3        
+02-18-06 20:30 rlrevell       Note Added: 0008123                          
 ======================================================================
 
 
