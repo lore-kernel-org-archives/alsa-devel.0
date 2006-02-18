@@ -1,14 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Cards and PCM instances
-Date: Sat, 18 Feb 2006 14:09:28 +0100
-Message-ID: <20060218140928.62793ef7.pochini@shiny.it>
-References: <20060216114804.698A289A8A@sc8-sf-spam1.sourceforge.net>
-	<BAY111-DAV13EC412102C661A02696E1C2F80@phx.gbl>
+From: "James Courtier-Dutton" <james.dutton@gmail.com>
+Subject: Re: EMU 1212m support - offer of assistance
+Date: Sat, 18 Feb 2006 14:23:25 +0000
+Message-ID: <ad2655cb0602180623l1715f05cq@mail.gmail.com>
+References: <1140037298.c7bdf55cstefan.vassall@myrealbox.com>
+	 <1140222070.2733.132.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <BAY111-DAV13EC412102C661A02696E1C2F80@phx.gbl>
+In-Reply-To: <1140222070.2733.132.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,33 +19,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nikhil Rao <nikhil_p_rao@hotmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Stefan Vassall <stefan.vassall@myrealbox.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 16 Feb 2006 21:15:06 -0800
-"Nikhil Rao" <nikhil_p_rao@hotmail.com> wrote:
-
-> In "Writing an ALSA driver", the author has mentioned that each card can
-> have upto 4 PCM instances.
+On 18/02/06, Lee Revell <rlrevell@joe-job.com> wrote:
+> On Wed, 2006-02-15 at 21:01 +0000, Stefan Vassall wrote:
+> > Is there any progress regarding the support of the EMU1212m and associa=
+ted cards (0404/1820m)? There is a page on Alsa wiki (http://alsa.opensrc.o=
+rg/EMU+1212m), and a text file from Dec 2005 that describes some significan=
+t progress however there hasn't been any recent update.
+> >
+> > I have an Emu1212m and need to get it working under Linux - I am offeri=
+ng any assistance to help.
 >
-> Does a PCM instance correspond to an independent audio output ?
+> Please email James Courtier-Dutton (ask me off list if you need his
+> address), he was working on this, but it's not going to be easy.  Do you
+> have any previous experience writing Linux/ALSA drivers and/or reverse
+> engineering Windows drivers?
+>
+> Lee
+>
 
-Mostly, yes, it does, but they can also be related in some ways (eg. if the
-card has only one clock generator, all channels share the same clock
-frequency).
+This card is a tough cookey to crack.
+I have tried the simple approach of just reproducing all the IO port
+calls made by the driver in windows, but this does not seem to be
+enough.
 
+The next step will have to be full disassembly and commenting of the
+windows drivers.
+Can you help with that task. I have not had time to start it, due to
+hardware problems here. (no linux PC due to power surge)
 
-> For e.g, in the project I am working the hardware  has 2 audio outputs that
-> would be used to render 2 separate PCM streams at the same time, would this
-> configuration correspond to 2 different PCMs or to 2 different cards ?
-
-2 PCMs is the most obvious config, IMO, expecially if the control interface
-is one. With 2 card instances you also need 2 control interfaces.
-
-
---
-Giuliano.
+James
 
 
 -------------------------------------------------------
