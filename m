@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: probe_mpu401 question
-Date: Fri, 17 Feb 2006 19:37:04 -0500
-Message-ID: <1140223025.2733.134.camel@mindpipe>
-References: <20060215122901.97C6412A21@sc8-sf-spam2.sourceforge.net>
-	 <000c01c6334a$6a916db0$6401a8c0@XP1>
-	 <20060217125740.GA11415@ifiu25.informatik.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Sat, 18 Feb 2006 02:05:17 +0100
+Message-ID: <b42d5bc16172cfa274d58c51f60cb77c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060217125740.GA11415@ifiu25.informatik.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C565F1AB
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 02:05:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,19 +18,110 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Hank Ivy <hankivy@hot.rr.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-02-17 at 13:57 +0100, Clemens Ladisch wrote:
-> There is a linux-sound mailing list, but it's dead.
-> 
 
-Actually I was recently surprised to find it's not - I found a patch for
-a recent ALSA bug on there.  But there's so much spam it's like digging
-through the garbage.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+======================================================================
+Reported By:                liangalei
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1134
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
+======================================================================
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              02-18-2006 02:05 CET
+======================================================================
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
+Description: 
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-Lee
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
+
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
+
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
+
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
+
+thanks
+======================================================================
+
+----------------------------------------------------------------------
+ gandhi - 02-17-06 23:43 
+----------------------------------------------------------------------
+same Laptop..same Problem...
+
+are further infos needed?
+
+problem still exist with alsa-driver 1.0.11_rc3
+
+
+when i unmute IEC958 with alsamixer a red light goes on and off in the
+headphone jack (light is on under windows)
+
+when i turn mixer up und unmute microphone i hear every time i change a
+value in alsamixer a cracking sound
+
+
+
+----------------------------------------------------------------------
+ gandhi - 02-18-06 02:05 
+----------------------------------------------------------------------
+this bug is assigned..but to nobody..isn't this a problem?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+11-29-05 05:59 derek          Issue Monitored: derek                       
+11-29-05 06:00 derek          Issue End Monitor: derek                     
+11-29-05 06:03 derek          Note Added: 0006870                          
+02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
+02-17-06 22:22 gandhi         Note Added: 0008110                          
+02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
+02-17-06 23:28 gandhi         Note Edited: 0008110                         
+02-17-06 23:43 gandhi         Note Edited: 0008110                         
+02-18-06 02:05 gandhi         Note Added: 0008112                          
+======================================================================
+
 
 
 
