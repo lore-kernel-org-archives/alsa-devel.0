@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001856]: VIA8237 records only left channel
-Date: Sat, 18 Feb 2006 22:41:09 +0100
-Message-ID: <2e9d0b8cbe1e9d70ce3e680cd68c33b8@bugtrack.alsa-project.org>
+Date: Sat, 18 Feb 2006 23:05:16 +0100
+Message-ID: <9923b564bc8b2c48c08c9bf6a9cd7e3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27D461B7
-	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 22:41:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C5BF1B7
+	for <alsa-devel@alsa-project.org>; Sat, 18 Feb 2006 23:05:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1856> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15-1-k7
 ======================================================================
 Date Submitted:             02-18-2006 22:41 CET
-Last Modified:              02-18-2006 22:41 CET
+Last Modified:              02-18-2006 23:05 CET
 ======================================================================
 Summary:                    VIA8237 records only left channel
 Description: 
@@ -70,12 +70,18 @@ be because I've remembered to adjust my mixer capture settings.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 02-18-06 23:05 
+----------------------------------------------------------------------
+Was alsa-lib alsa upgraded to 1.0.l0?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-18-06 22:41 ovek           New Issue                                    
 02-18-06 22:41 ovek           Distribution              => Debian          
 02-18-06 22:41 ovek           Kernel Version            => 2.6.15-1-k7     
+02-18-06 23:05 rlrevell       Note Added: 0008124                          
 ======================================================================
 
 
