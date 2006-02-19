@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
-Date: Sun, 19 Feb 2006 05:55:52 +0100
-Message-ID: <95a9ef2bc4d4d1e2e983d9863fbff236@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001857]: regression in snd-cs4281 in recent 2.6.16-rcX kernels
+Date: Sun, 19 Feb 2006 06:11:55 +0100
+Message-ID: <f4f1f6b6c719f5c7048ae1e34730e3b3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3E9D1B4
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 05:55:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59ECA1B4
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 06:11:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1857> 
 ======================================================================
-Reported By:                graabein
-Assigned To:                tiwai
+Reported By:                hoffmajs
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1838
-Category:                   PCI - hda-intel
+Issue ID:                   1857
+Category:                   PCI - cs4281
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15-1.1831_FC4smp
+Status:                     new
+Distribution:               Ubuntu (Dapper)
+Kernel Version:             2.6.16-rc4
 ======================================================================
-Date Submitted:             02-10-2006 23:27 CET
-Last Modified:              02-19-2006 05:55 CET
+Date Submitted:             02-19-2006 06:11 CET
+Last Modified:              02-19-2006 06:11 CET
 ======================================================================
-Summary:                    Unknown model for ALC880 again, First International
-Computer p4m-915gd1 no sound
+Summary:                    regression in snd-cs4281 in recent 2.6.16-rcX
+kernels
 Description: 
-I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
-sound. There are no error messages and I can play content all I want, I
-just don't get any sound.
+In the recent 2.6.16-rc kernels snd-cs4281 broke for me.
+(I think since 2.6.16-rc2, but Im not sure atm. In 2.6.15 the card works
+fine.)
 
-The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
-Channel, Realtek ALC880":
-http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
+# > modprobe snd-cs4281
+ACPI: PCI Interrupt 0000:00:08.0[A] -> Link [LNKC] -> GSI 5 (level, low)
+-> IRQ 5
+never read ISV3 and ISV4 from AC'97
+ACPI: PCI interrupt for device 0000:00:08.0 disabled
+CS4281: probe of 0000:00:08.0 failed with error -5
 
-I've found other, similar reports here in the bug tracker (#1460, #1563,
-#1589), including reports that this problem was resolved as of 1.0.11rc1.
+and no soundcard is found.
 
-Accordingly, I tried compiling alsa from cvs sources as of today, but this
-made no difference. I still have no sound.
+If you need more info or want me to test something, please say so.
+
+
+kind regards,
+Jens
 
 ======================================================================
-
-----------------------------------------------------------------------
- graabein - 02-19-06 05:47 
-----------------------------------------------------------------------
-OK, I'm fiddling around with patch_realtek.c here and making some progress,
-I think. Does anyone have any documentation for this stuff?
-
-I currently have sound from analog stereo out, but nothing at all from
-S/PDIF.
-
-Nothing very fancy, I just made sure the chip was recognized. See attached
-patch. How do I go from here to getting a working S/PDIF?
-
-PS, an oddity: There is no dmesg output from the driver when it loads
-anymore. All I find in dmesg is this:
-
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 185
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-
-It still loads successfully of course, as witnessed by lsmod and by my now
-working analog audio.
-
-----------------------------------------------------------------------
- rlrevell - 02-19-06 05:55 
-----------------------------------------------------------------------
-I believe the ALC880 data sheet is available on the web and the workings of
-ALSA drivers are explained by the "writing an alsa driver" document
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-10-06 23:27 graabein       New Issue                                    
-02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
-02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
-02-10-06 23:38 graabein       Note Added: 0008010                          
-02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
-02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
-02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
-02-16-06 17:10 Marijn SchoutenNote Edited: 0008098                         
-02-16-06 18:36 er-ku          Note Added: 0008101                          
-02-16-06 23:06 graabein       Note Added: 0008103                          
-02-17-06 10:47 Marijn SchoutenNote Added: 0008107                          
-02-17-06 16:31 Eugene Seppel  Note Added: 0008108                          
-02-19-06 02:03 graabein       Note Added: 0008127                          
-02-19-06 05:47 graabein       Note Added: 0008128                          
-02-19-06 05:50 graabein       File Added: ficpatch.diff                    
-02-19-06 05:55 rlrevell       Note Added: 0008129                          
+02-19-06 06:11 hoffmajs       New Issue                                    
+02-19-06 06:11 hoffmajs       Distribution              => Ubuntu (Dapper) 
+02-19-06 06:11 hoffmajs       Kernel Version            => 2.6.16-rc4      
 ======================================================================
 
 
