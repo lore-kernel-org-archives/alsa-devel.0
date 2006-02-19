@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
-Date: Sun, 19 Feb 2006 02:03:12 +0100
-Message-ID: <31071c398a45ff5c72830e83646ac873@bugtrack.alsa-project.org>
+Date: Sun, 19 Feb 2006 05:47:44 +0100
+Message-ID: <1cbc86ff2461a971e9611f9268ab1c98@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A48A190
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 02:03:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F1CE1B4
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 05:47:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15-1.1831_FC4smp
 ======================================================================
 Date Submitted:             02-10-2006 23:27 CET
-Last Modified:              02-19-2006 02:03 CET
+Last Modified:              02-19-2006 05:47 CET
 ======================================================================
 Summary:                    Unknown model for ALC880 again, First International
 Computer p4m-915gd1 no sound
@@ -62,19 +62,6 @@ made no difference. I still have no sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- Eugene Seppel - 02-17-06 16:31 
-----------------------------------------------------------------------
-With 
-ALSA 1.0.11rc and 
-options snd-hda-intel position_fix=1
-
-my soundcard works.
-(ALC880 chipset on MS482M4 (ATI Xpress 200) Linux 2.6.16-rc3)
-
-PS
-It would be better if this option be by default for this chipset.
-
-----------------------------------------------------------------------
  graabein - 02-19-06 02:03 
 ----------------------------------------------------------------------
 Marijn Schouten wrote:
@@ -88,6 +75,27 @@ difference to either the lack of sound nor to the dmesg "Unknown model for
 ALC880" messages.
 
 Now what?
+
+----------------------------------------------------------------------
+ graabein - 02-19-06 05:47 
+----------------------------------------------------------------------
+OK, I'm fiddling around with patch_realtek.c here and making some progress,
+I think. Does anyone have any documentation for this stuff?
+
+I currently have sound from analog stereo out, but nothing at all from
+S/PDIF.
+
+Nothing very fancy, I just made sure the chip was recognized. See attached
+patch. How do I go from here to getting a working S/PDIF?
+
+PS, an oddity: There is no dmesg output from the driver when it loads
+anymore. All I find in dmesg is this:
+
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 185
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+
+It still loads successfully of course, as witnessed by lsmod and by my now
+working analog audio.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +113,7 @@ Date Modified  Username       Field                    Change
 02-17-06 10:47 Marijn SchoutenNote Added: 0008107                          
 02-17-06 16:31 Eugene Seppel  Note Added: 0008108                          
 02-19-06 02:03 graabein       Note Added: 0008127                          
+02-19-06 05:47 graabein       Note Added: 0008128                          
 ======================================================================
 
 
