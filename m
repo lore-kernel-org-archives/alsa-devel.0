@@ -1,13 +1,13 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: Re: [patch] Fix snd-usb-audio in 32-bit compat environemt
-Date: Sun, 19 Feb 2006 20:56:46 +0300
-Message-ID: <20060219175646.GB7797@mipter.zuzino.mipt.ru>
-References: <878xs85wn6.fsf@blackdown.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Setup when compiled in 2.6 kernel
+Date: Sun, 19 Feb 2006 14:00:58 -0500
+Message-ID: <1140375659.2733.338.camel@mindpipe>
+References: <43F8A917.8010008@dpets.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <878xs85wn6.fsf@blackdown.de>
+In-Reply-To: <43F8A917.8010008@dpets.demon.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,67 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Juergen Kreileder <jk@blackdown.de>
-Cc: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: John Talbut <john@dpets.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 18, 2006 at 07:50:37PM +0100, Juergen Kreileder wrote:
-> I'm getting oopses with snd-usb-audio in 32-bit compat environments:
-> control_compat.c:get_ctl_type() doesn't initialize 'info', so
-> 'itemlist[uinfo->value.enumerated.item]' in
-> usbmixer.c:mixer_ctl_selector_info() might access random memory
-> (The 'if ((int)uinfo->value.enumerated.item >= cval->max)' doesn't fix
-> all problems because of the unsigned -> signed conversion.)
+On Sun, 2006-02-19 at 17:21 +0000, John Talbut wrote:
+> Am I correct in believing that the kernel will set up and communicate 
+> with device files?  If so, how can I test them?  I have tried on
+> various 
+> devices, e.g.
+> 
+> >  sox -V -b -c 1 -r 448000 -t alsa /dev/snd/pcmC2D0p -t .wav test.wav
+> and I get
+> > ALSA lib pcm.c:2099:(snd_pcm_open_noupdate) Unknown
+> PCM /dev/snd/pcmC2D0p sox: Failed reading /dev/snd/pcmC2D0p: cannot
+> open audio device
+> and
+>  > cat /dos/Workspace/Music/originaldedodedo.wav > /dev/snd/pcmC2D0pD
+> and I get nothing. 
 
-IMO, what you did is an overkill. Does this patch fixes your problem?
+This is not how ALSA works, you can't just cat things to the device
+file.  The interface to ALSA is through alsa-lib.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+What happens if you start SIMPLE:
 
---- a/sound/core/control_compat.c
-+++ b/sound/core/control_compat.c
-@@ -176,6 +176,7 @@ static int get_ctl_type(struct snd_card
- 		up_read(&card->controls_rwsem);
- 		return -ENXIO;
- 	}
-+	memset(info, 0, sizeof(struct snd_ctl_elem_info));
- 	info.id = *id;
- 	err = kctl->info(kctl, &info);
- 	up_read(&card->controls_rwsem);
+aplay file.wav
 
-> --- linux-mm-vanilla/sound/core/control_compat.c
-> +++ linux-mm/sound/core/control_compat.c
-> @@ -167,7 +167,7 @@ static int get_ctl_type(struct snd_card
->  			int *countp)
->  {
->  	struct snd_kcontrol *kctl;
-> -	struct snd_ctl_elem_info info;
-> +	struct snd_ctl_elem_info *info;
->  	int err;
->
->  	down_read(&card->controls_rwsem);
-> @@ -176,13 +176,19 @@ static int get_ctl_type(struct snd_card
->  		up_read(&card->controls_rwsem);
->  		return -ENXIO;
->  	}
-> -	info.id = *id;
-> -	err = kctl->info(kctl, &info);
-> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +	if (info == NULL) {
-> +		up_read(&card->controls_rwsem);
-> +		return -ENOMEM;
-> +	}
-> +	info->id = *id;
-> +	err = kctl->info(kctl, info);
->  	up_read(&card->controls_rwsem);
->  	if (err >= 0) {
-> -		err = info.type;
-> -		*countp = info.count;
-> +		err = info->type;
-> +		*countp = info->count;
->  	}
-> +	kfree(info);
->  	return err;
->  }
+?
 
 
 
