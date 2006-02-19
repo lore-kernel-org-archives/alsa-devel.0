@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Sun, 19 Feb 2006 21:49:27 +0100
-Message-ID: <922b0f45fb30954914a092d66c6e4493@bugtrack.alsa-project.org>
+Date: Sun, 19 Feb 2006 21:57:55 +0100
+Message-ID: <75f51cf4437271e56c108bc4551d8e08@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04DF21BC
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 21:49:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9C371B8
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 21:57:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              02-19-2006 21:49 CET
+Last Modified:              02-19-2006 21:57 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,24 +296,18 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- fluor - 02-18-06 19:16 
-----------------------------------------------------------------------
-This same problem at Fujitsu-Siemens Amilo Pro V2060
-
-lspci output:
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-
-Gentoo @ 2.6.15-ck3-r1
-alsa-driver-1.0.11_rc3
-
-----------------------------------------------------------------------
  jrgns - 02-19-06 21:49 
 ----------------------------------------------------------------------
 eIf, the model 3stack-digout and position_fix=1 was passed as parameters to
 the module. You can either do it on the commandline (modprobe
 snd_hda_intel model 3stack-digout position_fix=1) or specify them in
 modules.conf, or your distro's version of modules.conf
+
+----------------------------------------------------------------------
+ eIf - 02-19-06 21:57 
+----------------------------------------------------------------------
+jrgns, thanks for the tip, unfortunately, I've switched to XP, due the lack
+of options. Have the best of the day.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -330,6 +324,7 @@ Date Modified  Username       Field                    Change
 02-18-06 19:16 fluor          Note Added: 0008122                          
 02-18-06 19:48 chalvorson     Issue Monitored: chalvorson                    
 02-19-06 21:49 jrgns          Note Added: 0008137                          
+02-19-06 21:57 eIf            Note Added: 0008138                          
 ======================================================================
 
 
