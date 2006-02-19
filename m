@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001860]: Writing MIDI messages to the MIDI output of an M-Audio Audiophile 2496 causes a hard lockup of the system
-Date: Sun, 19 Feb 2006 23:29:15 +0100
-Message-ID: <a742b07d8d6b100f2e8462629a52049e@bugtrack.alsa-project.org>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: Test model
+Date: Mon, 20 Feb 2006 10:03:12 +1030 (CST)
+Message-ID: <200602192333.k1JNXCKp018481@auster.physics.adelaide.edu.au>
+References: <43F8A548.5060109@akl.lt>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4300152
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 23:29:15 +0100 (MET)
+In-Reply-To: <43F8A548.5060109@akl.lt> from "Rimas Kudelis" at Feb 19, 2006 07:05:12 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Rimas Kudelis <rq@akl.lt>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Rimas
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1860> 
-======================================================================
-Reported By:                Vesuri
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1860
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               DIY
-Kernel Version:             2.6.15.3
-======================================================================
-Date Submitted:             02-19-2006 21:14 CET
-Last Modified:              02-19-2006 23:29 CET
-======================================================================
-Summary:                    Writing MIDI messages to the MIDI output of an
-M-Audio Audiophile 2496 causes a hard lockup of the system
-Description: 
-When MIDI messages are sent through the MIDI output port of an M-Audio
-Audiophile 2496 for a while the entire system locks up completely. Even
-the magic SysRq key won't do anything. I have no way to debug through the
-serial port so I don't know if anything is written to the system log - at
-least nothing is written so that it would get shown on the screen. This
-occurs after playing a MIDI song (for example) for a while - sometimes
-after a few seconds, sometimes after a few minutes. Usually it takes 1-2
-minutes to reproduce the lockup.
+> i've been looking at the hda driver on my acer for the past few days. 
+> I got almost no results, except one note. According to the datasheel, 
+> NID 0x05 accepts one more item as capture source, and values 0x05 and 
+> 0x06 have different meanings from those for NID 0x04.
 
-This is a major annoyance since it is not possible to compose anything on
-the system due to the lockups.
-======================================================================
+This is true, and it is true that the test model doesn't account for this.
+The reason is simple enough: the differences didn't affect the Fujitsu since
+LINE-OUT and HP-OUT aren't actually used for anything you'd want to record. 
+When I came to do the test model I therefore never gave the differences a
+moment's thought.
 
-----------------------------------------------------------------------
- Vesuri - 02-19-06 21:16 
-----------------------------------------------------------------------
-I tried reducing the amount of loaded kernel modules to the minimum and not
-running X (to make sure the ATI kernel module does not affect this) but
-the results were the same.
+> However, it looks like fixing this would require a little more 
+> knowledge than i've got.
 
-----------------------------------------------------------------------
- Vesuri - 02-19-06 23:29 
-----------------------------------------------------------------------
-I also tried disabling HyperThreading and the pre-emptible kernel features
-with no luck. Downgrading back to Linux 2.6.11.12 solved the problem (ALSA
-1.0.8). I haven't yet tried the versions in between.
+I think it's fairly simple to address this issue.  I'll see if I can do up a
+patch sometime today to address this issue.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-19-06 21:14 Vesuri         New Issue                                    
-02-19-06 21:14 Vesuri         Distribution              => DIY             
-02-19-06 21:14 Vesuri         Kernel Version            => 2.6.15.3        
-02-19-06 21:16 Vesuri         Note Added: 0008136                          
-02-19-06 23:29 Vesuri         Note Added: 0008139                          
-======================================================================
+Note that this has nothing to do with the inability to make the internal
+speaker play ball on your laptop - it affects only the ability to record
+from certain widgets via the second ADC (0x05) since the existing capture list
+is for NID 0x04.
 
-
+Regards
+  jonathan
 
 
 -------------------------------------------------------
