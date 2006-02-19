@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001858]: surround40 could be opened only 15 times
-Date: Sun, 19 Feb 2006 20:40:25 +0100
-Message-ID: <4c41c7c11197496f1a763eae3f6d0f0b@bugtrack.alsa-project.org>
+From: John Talbut <john@dpets.demon.co.uk>
+Subject: Re: Setup when compiled in 2.6 kernel
+Date: Sun, 19 Feb 2006 19:46:42 +0000
+Message-ID: <43F8CB22.4060202@dpets.demon.co.uk>
+References: <43F8A917.8010008@dpets.demon.co.uk> <1140375659.2733.338.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 354C515A
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 20:40:26 +0100 (MET)
+In-Reply-To: <1140375659.2733.338.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thanks, Lee
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1858> 
-======================================================================
-Reported By:                darkbrain
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1858
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-19-2006 20:40 CET
-Last Modified:              02-19-2006 20:40 CET
-======================================================================
-Summary:                    surround40 could be opened only 15 times
-Description: 
-The device surround40 could be opened only 15 times even if we have 32 pcm
-front channel and 32 rear channel.
-======================================================================
+Lee Revell wrote:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-19-06 20:40 darkbrain      New Issue                                    
-======================================================================
+> This is not how ALSA works, you can't just cat things to the device
+> file.  The interface to ALSA is through alsa-lib.
 
+Can you or anyone explain this, or point to an explanation?
+> 
+> What happens if you start SIMPLE:
+> 
+> aplay file.wav
 
+# aplay /dos/Workspace/Music/originaldedodedo.wav
+ALSA lib pcm.c:2099:(snd_pcm_open_noupdate) Unknown PCM default
+aplay: main:544: audio open error: No such file or directory
 
 
 -------------------------------------------------------
