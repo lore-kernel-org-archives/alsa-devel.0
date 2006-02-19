@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001860]: Writing MIDI messages to the MIDI output of an M-Audio Audiophile 2496 causes a hard lockup of the system
-Date: Sun, 19 Feb 2006 21:14:45 +0100
-Message-ID: <d33cd90d253dffdcd7e2e32bad7bdb19@bugtrack.alsa-project.org>
+Date: Sun, 19 Feb 2006 21:16:18 +0100
+Message-ID: <56f76611b9cbec58719da03f5c990829@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 030BF1A2
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 21:14:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D08401A2
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 21:16:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1860> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               DIY
 Kernel Version:             2.6.15.3
 ======================================================================
 Date Submitted:             02-19-2006 21:14 CET
-Last Modified:              02-19-2006 21:14 CET
+Last Modified:              02-19-2006 21:16 CET
 ======================================================================
 Summary:                    Writing MIDI messages to the MIDI output of an
 M-Audio Audiophile 2496 causes a hard lockup of the system
@@ -58,12 +58,20 @@ This is a major annoyance since it is not possible to compose anything on
 the system due to the lockups.
 ======================================================================
 
+----------------------------------------------------------------------
+ Vesuri - 02-19-06 21:16 
+----------------------------------------------------------------------
+I tried reducing the amount of loaded kernel modules to the minimum and not
+running X (to make sure the ATI kernel module does not affect this) but
+the results were the same.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-19-06 21:14 Vesuri         New Issue                                    
 02-19-06 21:14 Vesuri         Distribution              => DIY             
 02-19-06 21:14 Vesuri         Kernel Version            => 2.6.15.3        
+02-19-06 21:16 Vesuri         Note Added: 0008136                          
 ======================================================================
 
 
