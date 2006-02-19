@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
-Date: Sun, 19 Feb 2006 05:47:44 +0100
-Message-ID: <1cbc86ff2461a971e9611f9268ab1c98@bugtrack.alsa-project.org>
+Date: Sun, 19 Feb 2006 05:55:52 +0100
+Message-ID: <95a9ef2bc4d4d1e2e983d9863fbff236@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F1CE1B4
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 05:47:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3E9D1B4
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 05:55:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15-1.1831_FC4smp
 ======================================================================
 Date Submitted:             02-10-2006 23:27 CET
-Last Modified:              02-19-2006 05:47 CET
+Last Modified:              02-19-2006 05:55 CET
 ======================================================================
 Summary:                    Unknown model for ALC880 again, First International
 Computer p4m-915gd1 no sound
@@ -60,21 +60,6 @@ Accordingly, I tried compiling alsa from cvs sources as of today, but this
 made no difference. I still have no sound.
 
 ======================================================================
-
-----------------------------------------------------------------------
- graabein - 02-19-06 02:03 
-----------------------------------------------------------------------
-Marijn Schouten wrote:
-> Please try the old 1.0.10-rc3 which comes with the kernel and apply the
-patch.
-
-1.0.10rc3 wouldn't compile, so I tried 1.0.10 instead (which the patch was
-for, anyway). This compiled cleanly with the patch, but made no difference
-to my lack of sound. I again tried position_fix=1 and 3, but this made no
-difference to either the lack of sound nor to the dmesg "Unknown model for
-ALC880" messages.
-
-Now what?
 
 ----------------------------------------------------------------------
  graabein - 02-19-06 05:47 
@@ -97,6 +82,12 @@ PCI: Setting latency timer of device 0000:00:1b.0 to 64
 It still loads successfully of course, as witnessed by lsmod and by my now
 working analog audio.
 
+----------------------------------------------------------------------
+ rlrevell - 02-19-06 05:55 
+----------------------------------------------------------------------
+I believe the ALC880 data sheet is available on the web and the workings of
+ALSA drivers are explained by the "writing an alsa driver" document
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -114,6 +105,8 @@ Date Modified  Username       Field                    Change
 02-17-06 16:31 Eugene Seppel  Note Added: 0008108                          
 02-19-06 02:03 graabein       Note Added: 0008127                          
 02-19-06 05:47 graabein       Note Added: 0008128                          
+02-19-06 05:50 graabein       File Added: ficpatch.diff                    
+02-19-06 05:55 rlrevell       Note Added: 0008129                          
 ======================================================================
 
 
