@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001855]: no sound with openal
-Date: Sun, 19 Feb 2006 12:25:41 +0100
-Message-ID: <a76fc5e0b7061e367c131b2caade7beb@bugtrack.alsa-project.org>
+Date: Sun, 19 Feb 2006 12:34:59 +0100
+Message-ID: <50a11538e6d848b8481cc13f2079cefb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A665176
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 12:25:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5627B19D
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 12:34:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15.3
 ======================================================================
 Date Submitted:             02-18-2006 20:24 CET
-Last Modified:              02-19-2006 12:25 CET
+Last Modified:              02-19-2006 12:34 CET
 ======================================================================
 Summary:                    no sound with openal
 Description: 
@@ -69,11 +69,6 @@ NOTES :
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-18-06 20:30 
-----------------------------------------------------------------------
-should be fixed in 2.6.15.4
-
-----------------------------------------------------------------------
  eiz - 02-19-06 12:25 
 ----------------------------------------------------------------------
 Tested with kernel 2.6.15.4 : this is not fixed yet.
@@ -81,6 +76,13 @@ Tested with kernel 2.6.15.4 : this is not fixed yet.
 tested with :
  openal 0.2005080600-2.1
  openal 0.0.8
+
+----------------------------------------------------------------------
+ pzad - 02-19-06 12:34 
+----------------------------------------------------------------------
+Don't use .asoundrc. Your card doesn't need it and it can cause problems.
+I think openal-alsa-emu10k1-1.2 will not work with newer alsa (needs one
+simple change).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -92,6 +94,7 @@ Date Modified  Username       Field                    Change
 02-18-06 20:24 eiz            Kernel Version            => 2.6.15.3        
 02-18-06 20:30 rlrevell       Note Added: 0008123                          
 02-19-06 12:25 eiz            Note Added: 0008132                          
+02-19-06 12:34 pzad           Note Added: 0008133                          
 ======================================================================
 
 
