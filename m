@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Sun, 19 Feb 2006 06:31:33 +0100
-Message-ID: <047968b635966a88ee2d07704eeeea7a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Sun, 19 Feb 2006 10:41:45 +0100
+Message-ID: <b41500fa474338fc8c3942df8ebfcb81@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EC201AE
-	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 06:31:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F33141B8
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 10:41:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,123 +24,176 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                robertw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
+Issue ID:                   1618
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              02-19-2006 06:31 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              02-19-2006 10:41 CET
 ======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-/cvs/alsa-lib/test/pcm_min
-
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
-
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001766 jackd : ALSA: cannot set period size to...
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-16-06 04:01 
+ AndyP - 02-18-06 23:48 
 ----------------------------------------------------------------------
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x639.htm#PCM-INTERFACE-OPERATORS-PREPARE-CALLBACK
+I have just downloaded the cvs version of alsa drivers, alsa lib, alsa
+utils and built the drivers with debug enabled. When using the model=test
+option I can now get sound from the line-out socket on the front of the
+notebook as well as input from the micophone. Still can't get anything
+from the headphone socket or from the builtin speakers. My notebook (Acer
+Aspire 1642WLMi) is identified as subsystem id 1025-160d by the Realtek
+ALC260 codec. 
+The following was noticed from running the test option.
 
-Can those parameters runtime->rate, runtime->format, runtime->channels
-pass to prepare callback different from those accepted by hw_params
-callback ?
+ALC260 Mixer Setup --Test
+PCM			No Effect
+CD			No Effect
+Mono			No Effect
+Beep			No Effect
+HP-Out loopback		No Effect
+HP-Out pin mode 	No Effect
+Input Source 		No Effect
+Input Source 1 		No Effect
+LINE-OUT loopback 	No Effect
+LINE-OUT pin mode 	No Effect
+LINE1			No Effect
+LINE1 pin mode		Line out Output through Line out. 
+                        Headphone Output through Headphone output is
+tinny
+LINE2			No Effect
+LINE2 pin mode		Headphone Cuts Treble through Line out, others no effect
+LOUT1			Controls Volume on Line Out
+LOUT2			No Effect
+MIC1			Internal/Ext MIC Volume
+MIC1 pin		Mic 80pc bias or Mic 50pc bias both allow mic input
+MIC2			No Effect
+MIC2 pin		No Effect
+Is there anything else I can try in order to get output through the
+speakers or the headphone socket ? Also, I can't hear anything when
+playing CD's.
 
-As mixer, src are dynamically allocated, the current au88x0 driver do not
-support any change in runtime->channels after hw_params callback.
+I also get the following error message when using Alsaplayer ? Is this
+part of the problem in not getting output ? Any suggestios welcome.
 
-snd_pcm_recover() will call snd_pcm_prepare() when underrun occur.
 
-Which runtime parameters will be changed when underrun occur ?
+/usr/lib/alsaplayer/output/libalsa_out.so: symbol
+snd_pcm_hw_params_set_periods_near, version ALSA_0.9.0rc4 not defined in
+file libasound.so.2 with link time reference
+
+
+I could not find a suitable output module on your
+system. Make sure they're in "/usr/lib/alsaplayer/output/".
+Use the -o parameter to select one.
+
+Failed to load output plugin "alsa". Trying defaults.
+/usr/lib/alsaplayer/output/libalsa_out.so: symbol
+snd_pcm_hw_params_set_periods_near, version ALSA_0.9.0rc4 not defined in
+file libasound.so.2 with link time reference
+
+
+Thanks
+  AndyP
 
 ----------------------------------------------------------------------
- Raymond - 02-19-06 06:31 
+ er-ku - 02-19-06 10:41 
 ----------------------------------------------------------------------
-What is the difference between "default" and "hw:0" pcm of au88x0 in
-alsa-1.0.11rc3 ?
+AndyP: no, you're a little wrong.
 
-1) Do "default" pcm support more format than "hw:0" ? 
-
-(e.g. SNDRV_PCM_FMTBIT_S16_BE, SNDRV_PCM_FMTBIT_S8, 24 bits format)
-
-2) Do "default" pcm allow resample ? (e.g. 96000Hz )
+PCM is a software control, it affects the volume of mp3 files you play,
+for example.
+LINE1 has effect only when Line1 pin mode is set as Line in or Mic.
+Otherwise it's ignored.
+LOUT1 controls master output volume. No matter which jack you redirect
+your output to.
+MIC1 pin mode allows you to have output on microphone jack, when set as
+Line out or headphone. When it's set as such, MIC1 slider has no effect
+too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
-01-31-06 13:48 perex          Status                   new => assigned     
-01-31-06 13:48 perex          Assigned To               => mjander         
-01-31-06 13:49 perex          Relationship added       related to 0001766  
-01-31-06 15:59 Raymond        Note Added: 0007852                          
-02-01-06 07:35 perex          Note Added: 0007857                          
-02-01-06 10:32 Raymond        Note Added: 0007858                          
-02-01-06 10:37 Raymond        Note Edited: 0007848                         
-02-01-06 17:15 Raymond        Note Edited: 0007844                         
-02-01-06 17:20 Raymond        Note Added: 0007860                          
-02-02-06 10:23 Raymond        Note Added: 0007874                          
-02-02-06 11:10 Raymond        Note Edited: 0007874                         
-02-02-06 15:48 Raymond        Note Edited: 0007874                         
-02-03-06 14:26 Raymond        Note Added: 0007897                          
-02-04-06 02:46 Raymond        Note Edited: 0007874                         
-02-04-06 02:52 Raymond        Note Edited: 0007858                         
-02-04-06 02:56 Raymond        Note Edited: 0007858                         
-02-05-06 16:39 Raymond        Note Added: 0007939                          
-02-05-06 16:48 Raymond        Note Added: 0007940                          
-02-06-06 04:40 Raymond        Note Deleted: 0007939                        
-02-06-06 06:15 Raymond        Note Edited: 0007940                         
-02-07-06 07:35 Raymond        Note Added: 0007954                          
-02-13-06 03:11 Raymond        Note Added: 0008036                          
-02-13-06 08:52 mjander        Note Added: 0008039                          
-02-13-06 16:57 Raymond        Note Added: 0008055                          
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-16-06 04:01 Raymond        Note Added: 0008083                          
-02-19-06 06:31 Raymond        Note Added: 0008130                          
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+01-12-06 00:26 rlrevell       Note Added: 0007576                          
+01-12-06 01:16 mytux          Note Added: 0007577                          
+01-12-06 01:20 mytux          Note Edited: 0007577                         
+01-12-06 14:13 robertw        Note Added: 0007586                          
+01-12-06 14:43 lobstaj        Note Added: 0007587                          
+01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
+01-12-06 21:04 rlrevell       Note Added: 0007591                          
+01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
+01-13-06 08:03 eudoxos        Note Added: 0007631                          
+01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
+01-16-06 00:32 jwoithe        Note Added: 0007682                          
+01-17-06 23:32 ilovetronik    Issue Monitored: ilovetronik                    
+01-19-06 23:36 ajmitch        Issue Monitored: ajmitch                     
+02-08-06 14:46 svilen         Note Added: 0007965                          
+02-09-06 00:29 jwoithe        Note Added: 0007969                          
+02-09-06 09:04 hweigel        Issue Monitored: hweigel                     
+02-10-06 11:02 svilen         Note Added: 0007999                          
+02-12-06 21:42 AndyP          Note Added: 0008031                          
+02-12-06 22:11 wattazoum      Note Added: 0008032                          
+02-12-06 22:14 rlrevell       Note Added: 0008033                          
+02-12-06 23:05 er-ku          Note Added: 0008034                          
+02-12-06 23:07 er-ku          Note Edited: 0008034                         
+02-13-06 00:45 jwoithe        Note Added: 0008035                          
+02-13-06 06:42 er-ku          Note Added: 0008037                          
+02-13-06 06:43 er-ku          Note Edited: 0008037                         
+02-14-06 00:07 jwoithe        Note Added: 0008066                          
+02-18-06 23:48 AndyP          Note Added: 0008125                          
+02-19-06 10:41 er-ku          Note Added: 0008131                          
 ======================================================================
 
 
