@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Setup when compiled in 2.6 kernel
-Date: Sun, 19 Feb 2006 16:52:38 -0500
-Message-ID: <1140385958.2733.397.camel@mindpipe>
-References: <43F8A917.8010008@dpets.demon.co.uk>
-	 <1140375659.2733.338.camel@mindpipe>  <43F8CB22.4060202@dpets.demon.co.uk>
-	 <1140378836.2733.357.camel@mindpipe>  <43F8E781.4030802@dpets.demon.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001860]: Writing MIDI messages to the MIDI output of an M-Audio Audiophile 2496 causes a hard lockup of the system
+Date: Sun, 19 Feb 2006 23:29:15 +0100
+Message-ID: <a742b07d8d6b100f2e8462629a52049e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43F8E781.4030802@dpets.demon.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A4300152
+	for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2006 23:29:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,24 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: John Talbut <john@dpets.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-02-19 at 21:47 +0000, John Talbut wrote:
-> Is there any way of testing whether this is the/a problem before I 
-> recompile the kernel?  I will have to upgrade it when I recompile
-> (2.6.8 
-> does not compile with gcc-4.0, which is what I have now.) 
 
-aplay -D default:2 file.wav should work.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1860> 
+======================================================================
+Reported By:                Vesuri
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1860
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               DIY
+Kernel Version:             2.6.15.3
+======================================================================
+Date Submitted:             02-19-2006 21:14 CET
+Last Modified:              02-19-2006 23:29 CET
+======================================================================
+Summary:                    Writing MIDI messages to the MIDI output of an
+M-Audio Audiophile 2496 causes a hard lockup of the system
+Description: 
+When MIDI messages are sent through the MIDI output port of an M-Audio
+Audiophile 2496 for a while the entire system locks up completely. Even
+the magic SysRq key won't do anything. I have no way to debug through the
+serial port so I don't know if anything is written to the system log - at
+least nothing is written so that it would get shown on the screen. This
+occurs after playing a MIDI song (for example) for a while - sometimes
+after a few seconds, sometimes after a few minutes. Usually it takes 1-2
+minutes to reproduce the lockup.
 
-If you won't use modules for whatever reason, you have to pass kernel
-command line parameters to get your real soundcard to be device 0.
+This is a major annoyance since it is not possible to compose anything on
+the system due to the lockups.
+======================================================================
 
-Easiest way is just use modules and load snd-ens1371 first
+----------------------------------------------------------------------
+ Vesuri - 02-19-06 21:16 
+----------------------------------------------------------------------
+I tried reducing the amount of loaded kernel modules to the minimum and not
+running X (to make sure the ATI kernel module does not affect this) but
+the results were the same.
 
-Lee
+----------------------------------------------------------------------
+ Vesuri - 02-19-06 23:29 
+----------------------------------------------------------------------
+I also tried disabling HyperThreading and the pre-emptible kernel features
+with no luck. Downgrading back to Linux 2.6.11.12 solved the problem (ALSA
+1.0.8). I haven't yet tried the versions in between.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-19-06 21:14 Vesuri         New Issue                                    
+02-19-06 21:14 Vesuri         Distribution              => DIY             
+02-19-06 21:14 Vesuri         Kernel Version            => 2.6.15.3        
+02-19-06 21:16 Vesuri         Note Added: 0008136                          
+02-19-06 23:29 Vesuri         Note Added: 0008139                          
+======================================================================
+
 
 
 
