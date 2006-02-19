@@ -1,9 +1,9 @@
-From: Dino Puller <dino@e4a.it>
-Subject: Umaintained drivers
-Date: Sun, 19 Feb 2006 15:32:41 +0100
-Message-ID: <43F88189.7090905@e4a.it>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: DMA strangeness?
+Date: Sun, 19 Feb 2006 15:12:33 +0000
+Message-ID: <1140361953.9117.9.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -18,13 +18,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-    i'm having a lot of problems with my cs46xx card because no replay 
-to my questions/bugs from the manteiner. So is this driver dead? Is 
-there a manteiner for it? How many drivers are actually unmanteined?
+I am using oss emulation to test my driver (I cannot get the alsa
+utilities to work properly on my Dreamcast (SH4/uclibc) system).
 
-bye,
-    Dino Puller
+When I do something like
+
+cat foobar > /dev/dsp
+
+it seems that the DMA buffer is filled with doubles of every byte of
+foobar eg if foobar was 0xFF, 0x10 ... etc then the first four bytes of
+the DMA buffer would be 0xFF 0xFF 0x10 0x10
+
+Is there a reason for this? Obviously I've made a mistake somewhere but
+I don't know where 
+
+(driver code is at http://newgoldddream.dyndns.nfo/repos)
+
 
 
 -------------------------------------------------------
