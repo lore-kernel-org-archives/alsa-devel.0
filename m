@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001860]: Writing MIDI messages to the MIDI output of an M-Audio Audiophile 2496 causes a hard lockup of the system
-Date: Mon, 20 Feb 2006 21:05:35 +0100
-Message-ID: <0068d24f5940a8dccd27c4bcb710c204@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001850]: source available
+Date: Mon, 20 Feb 2006 22:02:12 +0100
+Message-ID: <3b04d8b15875619ae9ee96d14707ede0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32AC91C7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 21:05:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58BB8158
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 22:02:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1860> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
 ======================================================================
-Reported By:                Vesuri
+Reported By:                coz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1860
-Category:                   PCI - ice1712
+Issue ID:                   1850
+Category:                   PCI - echoaudio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               DIY
-Kernel Version:             2.6.15.3
+Distribution:               ubuntu/breezy/Debian
+Kernel Version:             2.6.12.10.386
 ======================================================================
-Date Submitted:             02-19-2006 21:14 CET
-Last Modified:              02-20-2006 21:05 CET
+Date Submitted:             02-16-2006 13:05 CET
+Last Modified:              02-20-2006 22:02 CET
 ======================================================================
-Summary:                    Writing MIDI messages to the MIDI output of an
-M-Audio Audiophile 2496 causes a hard lockup of the system
+Summary:                    source available
 Description: 
-When MIDI messages are sent through the MIDI output port of an M-Audio
-Audiophile 2496 for a while the entire system locks up completely. Even
-the magic SysRq key won't do anything. I have no way to debug through the
-serial port so I don't know if anything is written to the system log - at
-least nothing is written so that it would get shown on the screen. This
-occurs after playing a MIDI song (for example) for a while - sometimes
-after a few seconds, sometimes after a few minutes. Usually it takes 1-2
-minutes to reproduce the lockup.
-
-This is a major annoyance since it is not possible to compose anything on
-the system due to the lockups.
+can't start layla24
 ======================================================================
 
 ----------------------------------------------------------------------
- Vesuri - 02-20-06 20:55 
+ coz - 02-20-06 03:30 
 ----------------------------------------------------------------------
-Ouch, I was too hasty. 2.6.13.5 locked up as well.
+Heloo, thanks for the response.
+ i am not a linux techy. I have no idea where to begin. i already knew
+that the driver was on the system but I have no idea what to do about it.
+ I was hoping for a lead to a really good how to to compile the layla24
+module.
 
 ----------------------------------------------------------------------
- Vesuri - 02-20-06 21:05 
+ pochini - 02-20-06 22:02 
 ----------------------------------------------------------------------
-...and so did 2.6.12.6. It seems that the lockup is triggered when there is
-a lot of disk I/O.
+Download the files from alsa-project.org and compile and install them just
+like any other program:
+
+./configure --with-cards=layla24[,other cards] [other options]
+make
+make install
+
+More infos here: http://www.webalice.it/g_pochini/ead/ (I should update
+them...)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-06 21:14 Vesuri         New Issue                                    
-02-19-06 21:14 Vesuri         Distribution              => DIY             
-02-19-06 21:14 Vesuri         Kernel Version            => 2.6.15.3        
-02-19-06 21:16 Vesuri         Note Added: 0008136                          
-02-19-06 23:29 Vesuri         Note Added: 0008139                          
-02-20-06 19:39 Vesuri         Note Added: 0008145                          
-02-20-06 19:58 Vesuri         Note Added: 0008146                          
-02-20-06 20:42 Vesuri         Note Added: 0008147                          
-02-20-06 20:55 Vesuri         Note Added: 0008148                          
-02-20-06 21:05 Vesuri         Note Added: 0008149                          
+02-16-06 13:05 coz            New Issue                                    
+02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
+02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
+02-18-06 13:34 pochini        Note Added: 0008119                          
+02-20-06 03:30 coz            Note Added: 0008140                          
+02-20-06 22:02 pochini        Note Added: 0008150                          
 ======================================================================
 
 
