@@ -1,16 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Setup when compiled in 2.6 kernel
-Date: Mon, 20 Feb 2006 03:01:23 -0500
-Message-ID: <1140422484.2836.0.camel@mindpipe>
+Date: Mon, 20 Feb 2006 09:21:37 +0100
+Message-ID: <20060220082137.GA12595@ifiu25.informatik.uni-halle.de>
 References: <43F8A917.8010008@dpets.demon.co.uk>
-	 <1140375659.2733.338.camel@mindpipe>  <43F8CB22.4060202@dpets.demon.co.uk>
-	 <1140378836.2733.357.camel@mindpipe>  <43F8E781.4030802@dpets.demon.co.uk>
-	 <1140385958.2733.397.camel@mindpipe>  <43F96C31.9050901@dpets.demon.co.uk>
+ <1140375659.2733.338.camel@mindpipe> <43F8CB22.4060202@dpets.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <43F96C31.9050901@dpets.demon.co.uk>
+In-reply-to: <43F8CB22.4060202@dpets.demon.co.uk>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,28 +23,18 @@ To: John Talbut <john@dpets.demon.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-02-20 at 07:13 +0000, John Talbut wrote:
-> Lee Revell wrote:
-> > aplay -D default:2 file.wav should work.
-> > 
-> # aplay -D default:2 /dos/Workspace/Music/originaldedodedo.wav
-> ALSA lib pcm.c:2099:(snd_pcm_open_noupdate) Unknown PCM default:2
-> aplay: main:544: audio open error: No such file or directory
-> 
-> also
-> 
-> # aplay -L
->   aplay: conf.c:3109: snd_config_update_free: Assertion `update->count > 
-> 0 && update->finfo' failed.
->   Aborted
-> 
-> What next?
+John Talbut wrote:
+> # aplay /dos/Workspace/Music/originaldedodedo.wav
+> ALSA lib pcm.c:2099:(snd_pcm_open_noupdate) Unknown PCM default
 
-Try what I said in my previous mail - build ALSA as modules and load the
-one for your sound card first.
+It seems alsa-lib isn't installed correctly.
 
-Lee
+Please try to compile+install the latest alsa-lib and alsa-utils
+packages.
 
+
+HTH
+Clemens
 
 
 -------------------------------------------------------
