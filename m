@@ -1,15 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: snd-cs4236 (possibly all isa-pnp cards or all alsa isa-pnp cards)
- broken in 2.6.16-rc4
-Date: Mon, 20 Feb 2006 18:18:42 +0100
-Message-ID: <43F9F9F2.4070203__33772.8300052278$1140455985$gmane$org@keyaccess.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001860]: Writing MIDI messages to the MIDI output of an M-Audio Audiophile 2496 causes a hard lockup of the system
+Date: Mon, 20 Feb 2006 19:39:31 +0100
+Message-ID: <c77adf6c3f8993a31c5a555220dc00f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------030103030307050204040103"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl [213.51.146.201])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFB1F192
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 18:18:41 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FBAD1C7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 19:39:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,105 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adam Belay <ambx1@neo.rr.com>, Andrew Morton <akpm@osdl.org>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------030103030307050204040103
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Takashi.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1860> 
+======================================================================
+Reported By:                Vesuri
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1860
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               DIY
+Kernel Version:             2.6.15.3
+======================================================================
+Date Submitted:             02-19-2006 21:14 CET
+Last Modified:              02-20-2006 19:39 CET
+======================================================================
+Summary:                    Writing MIDI messages to the MIDI output of an
+M-Audio Audiophile 2496 causes a hard lockup of the system
+Description: 
+When MIDI messages are sent through the MIDI output port of an M-Audio
+Audiophile 2496 for a while the entire system locks up completely. Even
+the magic SysRq key won't do anything. I have no way to debug through the
+serial port so I don't know if anything is written to the system log - at
+least nothing is written so that it would get shown on the screen. This
+occurs after playing a MIDI song (for example) for a while - sometimes
+after a few seconds, sometimes after a few minutes. Usually it takes 1-2
+minutes to reproduce the lockup.
 
-[ Takashi: Adam's wonderful provider is again not accepting mail from my 
-wonderful provider. Could you forward? Also added alsa-devel ]
+This is a major annoyance since it is not possible to compose anything on
+the system due to the lockups.
+======================================================================
 
-I noticed on 2.6.16-rc4 that my MPU-401 wasn't functional, due to a
-simple copy & paste error in sound/isa/cs423x/cs4236.c:
+----------------------------------------------------------------------
+ Vesuri - 02-19-06 23:29 
+----------------------------------------------------------------------
+I also tried disabling HyperThreading and the pre-emptible kernel features
+with no luck. Downgrading back to Linux 2.6.11.12 solved the problem (ALSA
+1.0.8). I haven't yet tried the versions in between.
 
-Index: local/sound/isa/cs423x/cs4236.c
-===================================================================
---- local.orig/sound/isa/cs423x/cs4236.c        2006-02-11
-00:34:12.000000000 +0100
-+++ local/sound/isa/cs423x/cs4236.c     2006-02-20 04:01:29.000000000 +0100
-@@ -414,7 +414,7 @@ static int __devinit snd_card_cs423x_pnp
-          }
-          /* MPU initialization */
-          if (acard->mpu && mpu_port[dev] > 0) {
--               if (snd_cs423x_pnp_init_mpu(dev, acard->ctrl, cfg) < 0)
-+               if (snd_cs423x_pnp_init_mpu(dev, acard->mpu, cfg) < 0)
-                          goto error;
-          }
-          kfree(cfg);
+----------------------------------------------------------------------
+ Vesuri - 02-20-06 19:39 
+----------------------------------------------------------------------
+Does not occur with Linux 2.6.12.6 (ALSA 1.0.9rc2).
 
-Please apply. However, when I tested it (mpu works fine again after
-this) I noticed that modprobe -r snd-cs4236 didn't release things --
-specifically that the fixed index=1 I have for the card failed on a
-subsequent modprobe since ALSA believes that index is still taken.
-
-I stuck a few printks in cs4236.c. From "snd_cs423x_unregister_all",
-"pnp_unregister_card_driver(&cs423x_pnpc_driver)" is indeed being called
-but the card driver's own remove method, snd_cs423x_pnpc_remove, is not.
-
-I started looking, but ran into the next issue again -- when snd-cs4236
-is not card1 but card0, modprobe -r oopses in snd_timer_free (attached)
-meaning debugging this wants someone with more of an overview of recent
-damage done^W^Wchanges made.
-
-Given that calling pnp_unregister_card_driver() is not cs4236 specific,
-I assume the problem is more general. Possibly all ALSA ISA-PnP drivers.
-Or, given that pnp_unregister_card_driver is not an ALSA function, maybe
-even all ISA-PnP drivers using the card_driver interface.
-
-The more general this problem turns out, the more reason there would be
-for fixing this pre 2.6.16, obviously. I can test patches...
-
-Rene.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-19-06 21:14 Vesuri         New Issue                                    
+02-19-06 21:14 Vesuri         Distribution              => DIY             
+02-19-06 21:14 Vesuri         Kernel Version            => 2.6.15.3        
+02-19-06 21:16 Vesuri         Note Added: 0008136                          
+02-19-06 23:29 Vesuri         Note Added: 0008139                          
+02-20-06 19:39 Vesuri         Note Added: 0008145                          
+======================================================================
 
 
-
-
---------------030103030307050204040103
-Content-Type: text/plain;
- name="oops"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="oops"
-
-cG5wOiBEZXZpY2UgMDE6MDEuMDMgZGlzYWJsZWQuCnBucDogRGV2aWNlIDAxOjAxLjAyIGRp
-c2FibGVkLgpBTFNBIHNvdW5kL2lzYS9jczQyM3gvY3M0MjMxX2xpYi5jOjIwODogaW46IGF1
-dG8gY2FsaWJyYXRpb24gdGltZSBvdXQgLSByZWcgPSAweDE4CkFMU0Egc291bmQvaXNhL2Nz
-NDIzeC9jczQyMzFfbGliLmM6MTg3OiBvdXQ6IGF1dG8gY2FsaWJyYXRpb24gdGltZSBvdXQg
-LSByZWcgPSAweDEwLCB2YWx1ZSA9IDB4ODAKQUxTQSBzb3VuZC9pc2EvY3M0MjN4L2NzNDIz
-MV9saWIuYzoxNDk6IG91dG06IGF1dG8gY2FsaWJyYXRpb24gdGltZSBvdXQgLSByZWcgPSAw
-eDE4LCB2YWx1ZSA9IDB4MApwbnA6IERldmljZSAwMTowMS4wMCBkaXNhYmxlZC4KcG5wOiB0
-aGUgZHJpdmVyICdjczQyMzZfaXNhcG5wJyBoYXMgYmVlbiB1bnJlZ2lzdGVyZWQKQUxTQSBz
-b3VuZC9jb3JlL3NlcS9zZXFfZGV2aWNlLmM6NTc0OiBkcml2ZXJzIG5vdCByZWxlYXNlZCAo
-MikKVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQgdmlydHVhbCBh
-ZGRyZXNzIGYwOWM2MDU4CiBwcmludGluZyBlaXA6CmYwOWM2MDU4CipwZGUgPSAwMTZkNjA2
-NwoqcHRlID0gMDAwMDAwMDAKT29wczogMDAwMCBbIzFdClBSRUVNUFQgCk1vZHVsZXMgbGlu
-a2VkIGluOiBzbmRfdGltZXIgc25kIHNvdW5kY29yZSBzbmRfcGFnZV9hbGxvYyBtZ2EgYW1k
-X2s3X2FncCBkcm0gYWdwZ2FydCBuZnNkIGV4cG9ydGZzIGxvY2tkIHN1bnJwYyBubHNfaXNv
-ODg1OV8xIG5sc19jcDQzNyB2ZmF0IGZhdCBubHNfYmFzZQpDUFU6ICAgIDAKRUlQOiAgICAw
-MDYwOls8ZjA5YzYwNTg+XSAgICBOb3QgdGFpbnRlZCBWTEkKRUZMQUdTOiAwMDAxMDI4MiAg
-ICgyLjYuMTYtcmM0LWxvY2FsICM4KSAKRUlQIGlzIGF0IDB4ZjA5YzYwNTgKZWF4OiBlYzIw
-ZjQwMCAgIGVieDogZWMyMGY0MDAgICBlY3g6IGVjMjBmNGU4ICAgZWR4OiBmMDljNjA1OApl
-c2k6IGI3ZjA0MTdjICAgZWRpOiAwMDAwMDAwMCAgIGVicDogZTYyN2EwMDAgICBlc3A6IGU2
-MjdhZjU0CmRzOiAwMDdiICAgZXM6IDAwN2IgICBzczogMDA2OApQcm9jZXNzIG1vZHByb2Jl
-IChwaWQ6IDEzNTksIHRocmVhZGluZm89ZTYyN2EwMDAgdGFzaz1lODI5MWFkMCkKU3RhY2s6
-IDwwPmYwOWIyMGYyIGU2MjYxMGU4IGYwOWIzYzIwIGYwOWI1YmMwIGMwMTI2NTI5IDAwMDAw
-MDAwIDVmNjQ2ZTczIDY1NmQ2OTc0IAogICAgICAgYzAxMzAwNzIgZmZmZmZmZmYgZTY1ZDMy
-MmMgYjdmMTQwMDAgYzAxMzdmNmMgYjdmMTMwMDAgYjdmMTQwMDAgYjdmMTQwMDAgCiAgICAg
-ICBlNjVkMzNlNCBlZjEyY2FlMCBlZjEyY2IxMCBmZmZmMDAwMSAwMDI3YTAwMCBjMDEzN2Zh
-ZSAwODA1YzNmOCBiN2YwNDE3YyAKQ2FsbCBUcmFjZToKIFs8ZjA5YjIwZjI+XSBzbmRfdGlt
-ZXJfZnJlZSsweDNiLzB4NDYgW3NuZF90aW1lcl0KIFs8ZjA5YjNjMjA+XSBhbHNhX3RpbWVy
-X2V4aXQrMHgyNy8weDQyIFtzbmRfdGltZXJdCiBbPGMwMTI2NTI5Pl0gc3lzX2RlbGV0ZV9t
-b2R1bGUrMHgxMmIvMHgxNTUKIFs8YzAxMzAwNzI+XSBfX3BkZmx1c2grMHgxOTYvMHgxYWMK
-IFs8YzAxMzdmNmM+XSBkb19tdW5tYXArMHhlMi8weGVmCiBbPGMwMTM3ZmFlPl0gc3lzX211
-bm1hcCsweDM1LzB4NGQKIFs8YzAxMDI1NTE+XSBzeXNjYWxsX2NhbGwrMHg3LzB4YgpDb2Rl
-OiAgQmFkIEVJUCB2YWx1ZS4K
---------------030103030307050204040103--
 
 
 -------------------------------------------------------
