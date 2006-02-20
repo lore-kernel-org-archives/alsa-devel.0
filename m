@@ -1,13 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Re: Test model
-Date: Mon, 20 Feb 2006 11:14:51 +1030 (CST)
-Message-ID: <200602200044.k1K0ipOl023282@auster.physics.adelaide.edu.au>
-References: <acb0c1690602170457l5335e137vf3db87bdc7f3857e@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001850]: source available
+Date: Mon, 20 Feb 2006 03:30:30 +0100
+Message-ID: <f443492b38018345c9e58f77b3ced7f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <acb0c1690602170457l5335e137vf3db87bdc7f3857e@mail.gmail.com> from "Paulo Matias" at Feb 17, 2006 10:57:00 AM
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAE5B1BD
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 03:30:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,63 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paulo Matias <syscoder@gmail.com>
-Cc: Rimas Kudelis <rq@akl.lt>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paulo
 
-> But, hey, I've looked better at the driver files and found an
-> AzMixerSel.ini. This file has clsids associated with mixer controls,
-> like this:
-> 
-> [008F1025&Dev0_{0A8C1AA2-42B0-11D2-95D2-00C04FB925D3}]
-> :
->
-> I've installed the driver in my Wine and then looked for these clsids
-> in the drive_c directory of Wine, and found only one binary file that
-> references all these clsids: windows/system32/drivers/RtkHDAud.Sys.
-> 
-> I suspect all the manufacturers use the same driver provided by
-> Realtek and then change the AzMixerSel.ini for adjusting the internal
-> routings.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
+======================================================================
+Reported By:                coz
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1850
+Category:                   PCI - echoaudio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               ubuntu/breezy/Debian
+Kernel Version:             2.6.12.10.386
+======================================================================
+Date Submitted:             02-16-2006 13:05 CET
+Last Modified:              02-20-2006 03:30 CET
+======================================================================
+Summary:                    source available
+Description: 
+can't start layla24
+======================================================================
 
-That would make sense.
+----------------------------------------------------------------------
+ pochini - 02-18-06 13:34 
+----------------------------------------------------------------------
+A driver for all the PCI and CARDBUS cards by Echoaudio is in alsa-drive
+since 1.0.8rc1 .
+If you can't make it work, please say the version and what is the problem.
+Does it compile ? Can you load the module ? Is there some error message in
+the logs ?
 
-> Now, how can we know what clsid refers to what?
+----------------------------------------------------------------------
+ coz - 02-20-06 03:30 
+----------------------------------------------------------------------
+Heloo, thanks for the response.
+ i am not a linux techy. I have no idea where to begin. i already knew
+that the driver was on the system but I have no idea what to do about it.
+ I was hoping for a lead to a really good how to to compile the layla24
+module.
 
-It's probably a little tricky as you've eluded to.  I particular, we want
-to know the NIDs of these controls.  We can eliminate a lot of the clsid
-parts just by comparison though.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-16-06 13:05 coz            New Issue                                    
+02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
+02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
+02-18-06 13:34 pochini        Note Added: 0008119                          
+02-20-06 03:30 coz            Note Added: 0008140                          
+======================================================================
 
-The "Wave" has a clsid of DFF21FE4-F70F-11D0-B917-00A0C9223196.
-The "CD player" has clsid DFF220E3-F70F-11D0-B917-00A0C9223196.
 
->From these two se can see that the only differences between the two occur
-in the first 8 characters (presumedly describing the first 4 bytes of
-something).  Therefore *if* the clsid itself contains any information about
-the NIDs I would expect it to be in this first section.
-
-I then note the following:
-
-  Dev 0 Mic Volume: 0A8C1A8D-42B0-11D2-95D2-00C04FB925D3
-  Dev 0 Mic Volume: 185FEDED-9905-11D1-95A9-00C04FB925D3
-  Dev 1 Mic Volume: 0A8C1A8D-42B0-11D2-95D2-00C04FB925D3
-  Dev 1 Mic Volume: 185FEDED-9905-11D1-95A9-00C04FB925D3
-
-If the clsids were in some way describing the NIDs and other things I cannot
-work out why the mic volume would appear twice with two quite different
-clsids.  Furthermore, I note the clsid for Dev 0 mic and Dev 1 mic are the
-same.  This last point almost guarantees that the clsid itself does not
-contain the NID information.  If it *is* used to get information about what
-controls to offer I suspect it is used to allow the driver to make an
-indirect lookup of the info.
-
-So in summary I don't think this file is going to provide any clues.  It
-was a good idea though.
-
-Regards
-  jonathan
 
 
 -------------------------------------------------------
