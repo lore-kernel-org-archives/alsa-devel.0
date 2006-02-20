@@ -1,13 +1,14 @@
 From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: Test model
-Date: Mon, 20 Feb 2006 07:32:05 +0200
-Message-ID: <43F95455.1030502@akl.lt>
-References: <200602192333.k1JNXCKp018481@auster.physics.adelaide.edu.au>
+Subject: Re: [PATCH] hda/alc260: tweak test model input mux labels,
+ fix a comment
+Date: Mon, 20 Feb 2006 07:36:08 +0200
+Message-ID: <43F95548.1000805@akl.lt>
+References: <200602200017.k1K0HiRP021736@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602192333.k1JNXCKp018481@auster.physics.adelaide.edu.au>
+In-Reply-To: <200602200017.k1K0HiRP021736@auster.physics.adelaide.edu.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,43 +22,40 @@ To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Jonathan,
 
-> Note that this has nothing to do with the inability to make the internal
-> speaker play ball on your laptop - it affects only the ability to record
-> from certain widgets via the second ADC (0x05) since the existing capture list
-> is for NID 0x04.
-
-I know that. BTW one of the actions I tried last weekend was recording 
-something from the microphone. And it failed too. selecting one (don't 
-remember which, though) of the capture channels for capture resulted 
-in continuous noise being recorded, and selecting the other one 
-resulted in silence. Also, selecting both resulted in sum of these, 
-hence, noise again...
-
-Also, not sure if it's alsamixer's or driver's fault, alsamixer always 
-says "Input Source 1" is "1", even though it selects the required source.
-
-Paulo, would you please confirm this too?
-
-Jonathan, I think that maybe the "test" model should have even more 
-controls to play with, even those that may seem like should never be 
-used? For example, there seem to be no checkboxes or something similar 
-to control S/PDIF NIDs, or jack (pin) widgets and so on. Such controls 
-might be useful for testing, when nothing else seems to work out, like 
-the Acer case at the moment. In order not to clutter the default 
-tester's mixer interface, maybe this (at least partially) should go to 
-some kind of an "extended test" model, i don't know.
-
-BTW, if I haven't misunderstood the datasheet, I think it says that 
-S/PDIF NIDs (0x03 and 0x06, if I remember correctly) can be told to 
-output Analog audio, along with the other channels. Could this 
-possibly be Acer's case? I'm asking this because these were probably 
-the only NIDs that I didn't even try to play with...
-
-Best regards,
+I think you forgot to add ", 0x7" to the last line in the list.
 
 Rimas
+
+
+> +/* This is a bit messy since the two input muxes in the ALC260 have slight
+> + * variations in their signal assignments.  The ideal way to deal with this
+> + * is to extend alc_spec.input_mux to allow a different input MUX for each
+> + * ADC.  For the purposes of the test model it's sufficient to just list
+> + * both options for affected signal indices.  The separate input mux
+> + * functionality only needs to be considered if a model comes along which
+> + * actually uses signals 0x5, 0x6 and 0x7 for something which makes sense to
+> + * record.
+> + */
+>  static struct hda_input_mux alc260_test_capture_source = {
+> -	.num_items = 7,
+> +	.num_items = 8,
+>  	.items = {
+>  		{ "MIC1 pin", 0x0 },
+>  		{ "MIC2 pin", 0x1 },
+>  		{ "LINE1 pin", 0x2 },
+>  		{ "LINE2 pin", 0x3 },
+>  		{ "CD pin", 0x4 },
+> -		{ "LINE-OUT pin", 0x5 },
+> -		{ "HP-OUT pin", 0x6 },
+> +		{ "LINE-OUT pin (cap1), Mixer (cap2)", 0x5 },
+> +		{ "HP-OUT pin (cap1), LINE-OUT pin (cap2)", 0x6 },
+> +		{ "HP-OUT pin (cap2 only) },
+>          },
+>  };
+>  static struct snd_kcontrol_new alc260_test_mixer[] = {
+> 
 
 
 
