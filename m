@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001860]: Writing MIDI messages to the MIDI output of an M-Audio Audiophile 2496 causes a hard lockup of the system
-Date: Mon, 20 Feb 2006 19:58:36 +0100
-Message-ID: <252cdb3e4e8ce01f3d2c5164faea9a9c@bugtrack.alsa-project.org>
+Date: Mon, 20 Feb 2006 20:42:05 +0100
+Message-ID: <d5351cc18186d0323652f5f677bb160b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 428641C7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 19:58:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE79512E
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 20:42:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               DIY
 Kernel Version:             2.6.15.3
 ======================================================================
 Date Submitted:             02-19-2006 21:14 CET
-Last Modified:              02-20-2006 19:58 CET
+Last Modified:              02-20-2006 20:42 CET
 ======================================================================
 Summary:                    Writing MIDI messages to the MIDI output of an
 M-Audio Audiophile 2496 causes a hard lockup of the system
@@ -59,14 +59,15 @@ the system due to the lockups.
 ======================================================================
 
 ----------------------------------------------------------------------
- Vesuri - 02-20-06 19:39 
-----------------------------------------------------------------------
-Does not occur with Linux 2.6.12.6 (ALSA 1.0.9rc2).
-
-----------------------------------------------------------------------
  Vesuri - 02-20-06 19:58 
 ----------------------------------------------------------------------
 Does not occur with Linux 2.6.13.5 (ALSA 1.0.9b).
+
+----------------------------------------------------------------------
+ Vesuri - 02-20-06 20:42 
+----------------------------------------------------------------------
+Occurs also with Linux 2.6.14.7 (ALSA 1.0.10rc1). SND_SEQ_RTCTIMER_DEFAULT
+does not seem to make a difference.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -78,6 +79,7 @@ Date Modified  Username       Field                    Change
 02-19-06 23:29 Vesuri         Note Added: 0008139                          
 02-20-06 19:39 Vesuri         Note Added: 0008145                          
 02-20-06 19:58 Vesuri         Note Added: 0008146                          
+02-20-06 20:42 Vesuri         Note Added: 0008147                          
 ======================================================================
 
 
