@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001850]: source available
-Date: Mon, 20 Feb 2006 22:02:12 +0100
-Message-ID: <3b04d8b15875619ae9ee96d14707ede0@bugtrack.alsa-project.org>
+From: Falko Schmidt <kaethorn@stud.uni-stuttgart.de>
+Subject: trouble on ppc32?
+Date: Tue, 21 Feb 2006 00:12:40 +0100
+Message-ID: <20060220231240.GB6186@celes>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58BB8158
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 22:02:12 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +15,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
-======================================================================
-Reported By:                coz
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1850
-Category:                   PCI - echoaudio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               ubuntu/breezy/Debian
-Kernel Version:             2.6.12.10.386
-======================================================================
-Date Submitted:             02-16-2006 13:05 CET
-Last Modified:              02-20-2006 22:02 CET
-======================================================================
-Summary:                    source available
-Description: 
-can't start layla24
-======================================================================
+I'm using a 32bit PowerPC based RS/6000 (43p-140) trying to get at least
+one sound card to work. All other 'machine-independent' drivers for
+cards such as NICs and disk controllers work fine.
 
-----------------------------------------------------------------------
- coz - 02-20-06 03:30 
-----------------------------------------------------------------------
-Heloo, thanks for the response.
- i am not a linux techy. I have no idea where to begin. i already knew
-that the driver was on the system but I have no idea what to do about it.
- I was hoping for a lead to a really good how to to compile the layla24
-module.
+I tried four different sound cards on kernels 2.6.8 and 2.6.15 which
+work fine on x86 and non-x86 machines (using the same kernel versions).
 
-----------------------------------------------------------------------
- pochini - 02-20-06 22:02 
-----------------------------------------------------------------------
-Download the files from alsa-project.org and compile and install them just
-like any other program:
+Are there known issues regarding ALSA drivers on ppc? Or might it be
+faulty hardware on the system side?
 
-./configure --with-cards=layla24[,other cards] [other options]
-make
-make install
+I'd like to fix some of the drivers but I doubt that it's a driver
+specific problem looking at the number of different cards used.
 
-More infos here: http://www.webalice.it/g_pochini/ead/ (I should update
-them...)
+Any ideas are welcome.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-16-06 13:05 coz            New Issue                                    
-02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
-02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
-02-18-06 13:34 pochini        Note Added: 0008119                          
-02-20-06 03:30 coz            Note Added: 0008140                          
-02-20-06 22:02 pochini        Note Added: 0008150                          
-======================================================================
+Thanks a lot in advance,
 
+Falko
 
+-------------
+Soundblaster 16 PnP (ISA):
+-------------
+
+pnp: Device 00:01.00 activated.
+pnp: Device 00:01.00 disabled.
+ALSA /usr/src/modules/alsa-driver/alsa-kernel/isa/sb/sb16.c:653: Sound Blaster 16 soundcard not found or device busy
+ALSA /usr/src/modules/alsa-driver/alsa-kernel/isa/sb/sb16.c:657: In case, if you have AWE card, try snd-sbawe module
+pnp: Device 00:01.00 activated.
+pnp: Device 00:01.00 disabled.
+ALSA /usr/src/modules/alsa-driver/alsa-kernel/isa/sb/sb16.c:653: Sound Blaster 16 soundcard not found or device busy
+ALSA /usr/src/modules/alsa-driver/alsa-kernel/isa/sb/sb16.c:657: In case, if you have AWE card, try snd-sbawe module
+
+-------------
+Terratec DMX Xfire 1024 (PCI):
+-------------
+
+Feb 20 14:39:21 cyan kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/c
+s46xx/cs46xx_lib.c:427: cs46xx: failure waiting for FIFO command to complete
+Feb 20 14:43:20 cyan kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/c
+s46xx/cs46xx_lib.c:427: cs46xx: failure waiting for FIFO command to complete
+
+-------------
+Soundblaster Live 512 (PCI):
+-------------
+
+Feb 20 21:54:43 cyan kernel: PCI: Enabling device 0000:01:03.0 (0104 -> 0105)
+Feb 20 21:54:43 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba3f000)!!
+Feb 20 21:54:59 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
+Feb 20 21:54:59 cyan kernel: emu: failure page = 0
+Feb 20 21:54:59 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
+Feb 20 21:54:59 cyan kernel: emu: failure page = 0
+Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
+Feb 20 21:55:13 cyan kernel: emu: failure page = 0
+Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
+Feb 20 21:55:13 cyan kernel: emu: failure page = 0
+Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8baa1000)!!
+Feb 20 21:55:13 cyan kernel: emu: failure page = 0
+Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8baa1000)!!
+Feb 20 21:55:13 cyan kernel: emu: failure page = 0
+
+-------------
+S3 Sonic Vibes (PCI):
+-------------
+
+Feb 20 18:34:48 cyan kernel: PCI: Enabling device 0000:01:03.0 (0004 -> 0005)
+Feb 20 18:34:48 cyan kernel: BIOS did not allocate DDMA channel A i/o, allocated
+ at 0x7a00
+Feb 20 18:34:48 cyan kernel: BIOS did not allocate DDMA channel C i/o, allocated
+  at 0x7a10
 
 
 -------------------------------------------------------
