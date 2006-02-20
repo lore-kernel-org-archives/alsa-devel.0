@@ -1,14 +1,15 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Hidden mixer controls
-Date: Mon, 20 Feb 2006 13:00:46 +0000
-Message-ID: <1140440446.3733.63.camel@localhost.localdomain>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: snd-cs4236 (possibly all isa-pnp cards or all alsa isa-pnp cards)
+ broken in 2.6.16-rc4
+Date: Mon, 20 Feb 2006 18:18:42 +0100
+Message-ID: <43F9F9F2.4070203__33772.8300052278$1140455985$gmane$org@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------030103030307050204040103"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from orlando.wolfsonmicro.main (webmail.wolfsonmicro.com [212.20.225.142])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 263091C1
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 14:26:37 +0100 (MET)
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl [213.51.146.201])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFB1F192
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 18:18:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,33 +19,105 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: "Xu, Jingqing" <jingqing.xu@intel.com>, Richard Purdie <rpurdie@rpsys.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adam Belay <ambx1@neo.rr.com>, Andrew Morton <akpm@osdl.org>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently mixer controls can be marked inactive (in the driver) with the
-SNDRV_CTL_ELEM_ACCESS_INACTIVE flag. This causes alsamixer to skip them
-when rendering the mixer controls. 
+This is a multi-part message in MIME format.
+--------------030103030307050204040103
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I'd like to add a similar extension to alsa-lib so that we can
-additionally mark controls as hidden within the sound card configuration
-file. i.e.
+Hi Takashi.
 
-   name "Mic Select"
-   preserve true
-   value "Mic1"
-   lock true
-   optional true
-   inactive true
+[ Takashi: Adam's wonderful provider is again not accepting mail from my 
+wonderful provider. Could you forward? Also added alsa-devel ]
 
-The reason for needing this is that the ASoC codec drivers are generic
-and must export all the codec controls. This can make alsamixer very big
-(and confusing) with a lot of unused controls.
+I noticed on 2.6.16-rc4 that my MPU-401 wasn't functional, due to a
+simple copy & paste error in sound/isa/cs423x/cs4236.c:
 
-Any objections ?
+Index: local/sound/isa/cs423x/cs4236.c
+===================================================================
+--- local.orig/sound/isa/cs423x/cs4236.c        2006-02-11
+00:34:12.000000000 +0100
++++ local/sound/isa/cs423x/cs4236.c     2006-02-20 04:01:29.000000000 +0100
+@@ -414,7 +414,7 @@ static int __devinit snd_card_cs423x_pnp
+          }
+          /* MPU initialization */
+          if (acard->mpu && mpu_port[dev] > 0) {
+-               if (snd_cs423x_pnp_init_mpu(dev, acard->ctrl, cfg) < 0)
++               if (snd_cs423x_pnp_init_mpu(dev, acard->mpu, cfg) < 0)
+                          goto error;
+          }
+          kfree(cfg);
 
-Liam
+Please apply. However, when I tested it (mpu works fine again after
+this) I noticed that modprobe -r snd-cs4236 didn't release things --
+specifically that the fixed index=1 I have for the card failed on a
+subsequent modprobe since ALSA believes that index is still taken.
 
+I stuck a few printks in cs4236.c. From "snd_cs423x_unregister_all",
+"pnp_unregister_card_driver(&cs423x_pnpc_driver)" is indeed being called
+but the card driver's own remove method, snd_cs423x_pnpc_remove, is not.
+
+I started looking, but ran into the next issue again -- when snd-cs4236
+is not card1 but card0, modprobe -r oopses in snd_timer_free (attached)
+meaning debugging this wants someone with more of an overview of recent
+damage done^W^Wchanges made.
+
+Given that calling pnp_unregister_card_driver() is not cs4236 specific,
+I assume the problem is more general. Possibly all ALSA ISA-PnP drivers.
+Or, given that pnp_unregister_card_driver is not an ALSA function, maybe
+even all ISA-PnP drivers using the card_driver interface.
+
+The more general this problem turns out, the more reason there would be
+for fixing this pre 2.6.16, obviously. I can test patches...
+
+Rene.
+
+
+
+
+--------------030103030307050204040103
+Content-Type: text/plain;
+ name="oops"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="oops"
+
+cG5wOiBEZXZpY2UgMDE6MDEuMDMgZGlzYWJsZWQuCnBucDogRGV2aWNlIDAxOjAxLjAyIGRp
+c2FibGVkLgpBTFNBIHNvdW5kL2lzYS9jczQyM3gvY3M0MjMxX2xpYi5jOjIwODogaW46IGF1
+dG8gY2FsaWJyYXRpb24gdGltZSBvdXQgLSByZWcgPSAweDE4CkFMU0Egc291bmQvaXNhL2Nz
+NDIzeC9jczQyMzFfbGliLmM6MTg3OiBvdXQ6IGF1dG8gY2FsaWJyYXRpb24gdGltZSBvdXQg
+LSByZWcgPSAweDEwLCB2YWx1ZSA9IDB4ODAKQUxTQSBzb3VuZC9pc2EvY3M0MjN4L2NzNDIz
+MV9saWIuYzoxNDk6IG91dG06IGF1dG8gY2FsaWJyYXRpb24gdGltZSBvdXQgLSByZWcgPSAw
+eDE4LCB2YWx1ZSA9IDB4MApwbnA6IERldmljZSAwMTowMS4wMCBkaXNhYmxlZC4KcG5wOiB0
+aGUgZHJpdmVyICdjczQyMzZfaXNhcG5wJyBoYXMgYmVlbiB1bnJlZ2lzdGVyZWQKQUxTQSBz
+b3VuZC9jb3JlL3NlcS9zZXFfZGV2aWNlLmM6NTc0OiBkcml2ZXJzIG5vdCByZWxlYXNlZCAo
+MikKVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQgdmlydHVhbCBh
+ZGRyZXNzIGYwOWM2MDU4CiBwcmludGluZyBlaXA6CmYwOWM2MDU4CipwZGUgPSAwMTZkNjA2
+NwoqcHRlID0gMDAwMDAwMDAKT29wczogMDAwMCBbIzFdClBSRUVNUFQgCk1vZHVsZXMgbGlu
+a2VkIGluOiBzbmRfdGltZXIgc25kIHNvdW5kY29yZSBzbmRfcGFnZV9hbGxvYyBtZ2EgYW1k
+X2s3X2FncCBkcm0gYWdwZ2FydCBuZnNkIGV4cG9ydGZzIGxvY2tkIHN1bnJwYyBubHNfaXNv
+ODg1OV8xIG5sc19jcDQzNyB2ZmF0IGZhdCBubHNfYmFzZQpDUFU6ICAgIDAKRUlQOiAgICAw
+MDYwOls8ZjA5YzYwNTg+XSAgICBOb3QgdGFpbnRlZCBWTEkKRUZMQUdTOiAwMDAxMDI4MiAg
+ICgyLjYuMTYtcmM0LWxvY2FsICM4KSAKRUlQIGlzIGF0IDB4ZjA5YzYwNTgKZWF4OiBlYzIw
+ZjQwMCAgIGVieDogZWMyMGY0MDAgICBlY3g6IGVjMjBmNGU4ICAgZWR4OiBmMDljNjA1OApl
+c2k6IGI3ZjA0MTdjICAgZWRpOiAwMDAwMDAwMCAgIGVicDogZTYyN2EwMDAgICBlc3A6IGU2
+MjdhZjU0CmRzOiAwMDdiICAgZXM6IDAwN2IgICBzczogMDA2OApQcm9jZXNzIG1vZHByb2Jl
+IChwaWQ6IDEzNTksIHRocmVhZGluZm89ZTYyN2EwMDAgdGFzaz1lODI5MWFkMCkKU3RhY2s6
+IDwwPmYwOWIyMGYyIGU2MjYxMGU4IGYwOWIzYzIwIGYwOWI1YmMwIGMwMTI2NTI5IDAwMDAw
+MDAwIDVmNjQ2ZTczIDY1NmQ2OTc0IAogICAgICAgYzAxMzAwNzIgZmZmZmZmZmYgZTY1ZDMy
+MmMgYjdmMTQwMDAgYzAxMzdmNmMgYjdmMTMwMDAgYjdmMTQwMDAgYjdmMTQwMDAgCiAgICAg
+ICBlNjVkMzNlNCBlZjEyY2FlMCBlZjEyY2IxMCBmZmZmMDAwMSAwMDI3YTAwMCBjMDEzN2Zh
+ZSAwODA1YzNmOCBiN2YwNDE3YyAKQ2FsbCBUcmFjZToKIFs8ZjA5YjIwZjI+XSBzbmRfdGlt
+ZXJfZnJlZSsweDNiLzB4NDYgW3NuZF90aW1lcl0KIFs8ZjA5YjNjMjA+XSBhbHNhX3RpbWVy
+X2V4aXQrMHgyNy8weDQyIFtzbmRfdGltZXJdCiBbPGMwMTI2NTI5Pl0gc3lzX2RlbGV0ZV9t
+b2R1bGUrMHgxMmIvMHgxNTUKIFs8YzAxMzAwNzI+XSBfX3BkZmx1c2grMHgxOTYvMHgxYWMK
+IFs8YzAxMzdmNmM+XSBkb19tdW5tYXArMHhlMi8weGVmCiBbPGMwMTM3ZmFlPl0gc3lzX211
+bm1hcCsweDM1LzB4NGQKIFs8YzAxMDI1NTE+XSBzeXNjYWxsX2NhbGwrMHg3LzB4YgpDb2Rl
+OiAgQmFkIEVJUCB2YWx1ZS4K
+--------------030103030307050204040103--
 
 
 -------------------------------------------------------
