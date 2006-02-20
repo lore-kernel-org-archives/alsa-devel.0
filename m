@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001858]: surround40 could be opened only 15 times
-Date: Mon, 20 Feb 2006 04:12:09 +0100
-Message-ID: <de8cf292384f463915fa49ce96dacdce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001318]: Volume control per PCM
+Date: Mon, 20 Feb 2006 04:52:53 +0100
+Message-ID: <cc369ebfe15a0be84ae7cdda4647fa19@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 580271BD
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 04:12:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 919A8161
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2006 04:52:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,110 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1858> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1318> 
 ======================================================================
 Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1858
+Issue ID:                   1318
 Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             02-19-2006 20:40 CET
-Last Modified:              02-20-2006 04:12 CET
+Date Submitted:             08-07-2005 14:45 CEST
+Last Modified:              02-20-2006 04:52 CET
 ======================================================================
-Summary:                    surround40 could be opened only 15 times
+Summary:                    Volume control per PCM
 Description: 
-The device surround40 could be opened only 15 times even if we have 32 pcm
-front channel and 32 rear channel.
+Hi, i'm trying to implement a volume control per PCM streams, i've attached
+a function that does the job. Unfortunally when it change the volume it
+also change the equalizer cutting off low frequencyes. I think 
+there is a problem with the second poke, infact withot that poke, the
+volume works correctly for left case. Any suggestion? Any documentation?
+Thanks,
+   Dino
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-20-06 04:12 
+ Raymond - 02-14-06 03:05 
 ----------------------------------------------------------------------
-Can you open 32 front pcm and 32 rear pcm at the same time ?
+For SND_PCM_TYPE_MULIT and all slaves pcm are SND_PCM_TYPE_HW
 
-How many front pcm can you open at the same time ?
 
-May be some pcm hardware reserve for capturing.
+void find_multi_iface_pcm_elem(snd_pcm_t *pcm)
+{
+	snd_pcm_multi_t *multi = pcm->private_data;
+	unsigned int i;
+	for (i = 0; i < multi->slaves_count; ++i) {
+		snd_pcm_multi_slave_t *slave = &multi->slaves[i];
+                if ( snd_pcm_type(slave->pcm) == SND_PCM_TYPE_HW ) {
+                       find_hw_iface_pcm_elem(slave->pcm);
+		}
+	}
+}
+
+----------------------------------------------------------------------
+ Raymond - 02-20-06 04:52 
+----------------------------------------------------------------------
+There are difference between emu10k1 and ymfpci
+
+one kcontrol with index to subdevice (emu10k1)
+kcontrol per subdevice (ymfpci)
+
+Which is the best method to implement ?
+
+What are the pros and cons of this two method ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-06 20:40 darkbrain      New Issue                                    
-02-20-06 04:12 Raymond        Note Added: 0008141                          
+08-07-05 14:45 darkbrain      New Issue                                    
+08-07-05 14:45 darkbrain      File Added: volume.c                         
+08-13-05 10:43 darkbrain      Note Added: 0005802                          
+01-10-06 12:55 darkbrain      Note Added: 0007548                          
+02-05-06 04:55 Raymond        Note Added: 0007929                          
+02-05-06 05:33 Raymond        Note Edited: 0007929                         
+02-05-06 13:19 darkbrain      Note Added: 0007932                          
+02-05-06 14:42 Raymond        Note Added: 0007934                          
+02-06-06 03:43 Raymond        Note Edited: 0007934                         
+02-07-06 21:04 darkbrain      File Added: pcm1.patch                       
+02-07-06 21:05 darkbrain      Note Added: 0007960                          
+02-08-06 02:39 Raymond        Note Edited: 0007934                         
+02-08-06 03:24 Raymond        Note Added: 0007962                          
+02-08-06 03:31 Raymond        Note Edited: 0007962                         
+02-08-06 09:54 Raymond        Note Edited: 0007934                         
+02-08-06 10:41 darkbrain      Note Added: 0007964                          
+02-09-06 08:06 Raymond        Note Added: 0007970                          
+02-09-06 08:11 Raymond        Note Edited: 0007970                         
+02-09-06 10:37 Raymond        Note Deleted: 0007970                        
+02-10-06 12:59 Raymond        Note Added: 0008002                          
+02-10-06 15:29 darkbrain      Note Added: 0008005                          
+02-11-06 02:38 Raymond        Note Added: 0008011                          
+02-11-06 02:51 Raymond        Note Edited: 0007962                         
+02-11-06 02:53 Raymond        Note Edited: 0008011                         
+02-11-06 03:00 Raymond        Note Edited: 0008011                         
+02-11-06 14:30 darkbrain      Note Added: 0008017                          
+02-11-06 15:16 Raymond        Note Added: 0008019                          
+02-13-06 08:32 Raymond        Note Edited: 0008019                         
+02-13-06 13:30 Raymond        Note Edited: 0008019                         
+02-13-06 13:34 Raymond        Note Added: 0008047                          
+02-13-06 17:03 darkbrain      Note Added: 0008056                          
+02-13-06 17:04 darkbrain      Note Edited: 0008056                         
+02-13-06 17:24 Raymond        Note Added: 0008058                          
+02-13-06 17:30 Raymond        Note Added: 0008059                          
+02-14-06 02:50 Raymond        Note Edited: 0008058                         
+02-14-06 03:05 Raymond        Note Added: 0008068                          
+02-14-06 03:06 Raymond        Note Edited: 0008059                         
+02-14-06 05:09 Raymond        Note Edited: 0008058                         
+02-14-06 05:12 Raymond        Note Edited: 0008058                         
+02-14-06 05:25 Raymond        Note Edited: 0008058                         
+02-20-06 04:52 Raymond        Note Added: 0008142                          
 ======================================================================
 
 
