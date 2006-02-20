@@ -1,13 +1,13 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: [PATCH] hda/alc260: tweak test model input mux labels, fix a comment
-Date: Mon, 20 Feb 2006 10:47:44 +1030 (CST)
-Message-ID: <200602200017.k1K0HiRP021736@auster.physics.adelaide.edu.au>
-References: <20060219205100.E38D7885EA@sc8-sf-spam1.sourceforge.net>
+Subject: Re: Test model
+Date: Mon, 20 Feb 2006 10:57:03 +1030 (CST)
+Message-ID: <200602200027.k1K0R3Q3022176@auster.physics.adelaide.edu.au>
+References: <43F5BC71.6040404@akl.lt>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060219205100.E38D7885EA@sc8-sf-spam1.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Feb 19, 2006 12:50:05 PM
+In-Reply-To: <43F5BC71.6040404@akl.lt> from "Rimas Kudelis" at Feb 17, 2006 02:07:13 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,79 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: Rimas Kudelis <rq@akl.lt>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This small patch adds clarity to the input mux labels used when the ALC260
-test mode is activated.  The problem is that the ALC260's input muxes have
-slight differences in how they interpret certain connection IDs, and they
-even have a different number of input signals.  This patch takes the easy
-way out and simply describes both interpretations where needed.
+> > Very interesting.  The only difference between the "line out" and "headphone"
+> > setting is that the latter enables an onboard amplifier which allows it
+> > to drive headphones to a louder volume.  On the headphones I've tried 
+> > you still get adequate output when the pin is "lineout" - it's just slightly
+> > louder when "headphone" mode is selected.
+> 
+> OK, then I hope it doesn't apply here, as I'm testing things with an 
+> external amplifier connected to big speakers.
 
-As noted in a comment in the source, the correct way of dealing with this is
-to extend the alc_spec.input_mux field to allow the option of having
-different mux setups for each ADC.  This involves a reasonable amount of
-work and care since the changes will affect code for all of the realtek
-codecs.  I'll try to look into adding this at some point, but in the meantime
-this patch at least gives the test model full access to both ADC muxes if
-needed.
+If this is how you're testing then I would expect there to be very little
+difference in the audio through the speakers when the "lineout" and
+"headphone" mode settings are used.
 
-Note that the issue of differing input muxes doesn't affect any ALC260
-models which currently give access to the second ADC since none of them use
-the affected connection IDs (0x5, 0x6, 0x7) for signals which one would
-sensibly want to record.
+> >> Btw, when I redirect the output to Line In, and make everything else
+> >> (HP-OUT, LINE-OUT, LINE2 and MIC2) be "Headphone" pins, I get a lot of
+> >> noise from the speakers connected to the Line In jack. These seem to catch
+> >> some interference even from the video card (just noticed). That electronic
+> >> noise differs depending on what I see in the screen atm. Weird...
+> > 
+> > Which output - the headphone jack?  What kind of noise - squeals or hiss?
+> 
+> Hard to tell (English is not my native), but I think it's more like 
+> hiss. Actually, it sounds a bit similar to a TV with bad reception, 
+> except that in my case the noise is quiet enough.
 
-The patch also includes a minor correction to a comment related to the
-Fujitsu S702x input mux.
+Ok, that would be "hiss".
+
+> >   2) Does the laptop have an external volume control?  If so, is it turned
+> >      up to maximum?
+> 
+> No, it doesn't. Just the keyboard controls that Paolo has mentioned.
+
+Right.  It was worth checking.
+
+> BTW, could I catch you on IRC or MSN or some other real-time media?
+
+Not at this stage.
 
 Regards
   jonathan
-
-
---- patch_realtek.c-orig	2006-02-10 10:10:31.000000000 +1030
-+++ patch_realtek.c	2006-02-20 10:31:36.000000000 +1030
-@@ -2414,8 +2414,8 @@
- 	},
- };
- 
--/* On Fujitsu S702x laptops capture only makes sense from Mic/LineIn jack
-- * and the internal CD lines.
-+/* On Fujitsu S702x laptops capture only makes sense from Mic/LineIn jack,
-+ * headphone jack and the internal CD lines.
-  */
- static struct hda_input_mux alc260_fujitsu_capture_source = {
- 	.num_items = 3,
-@@ -2790,16 +2790,26 @@
- static hda_nid_t alc260_test_adc_nids[2] = {
- 	0x04, 0x05,
- };
-+/* This is a bit messy since the two input muxes in the ALC260 have slight
-+ * variations in their signal assignments.  The ideal way to deal with this
-+ * is to extend alc_spec.input_mux to allow a different input MUX for each
-+ * ADC.  For the purposes of the test model it's sufficient to just list
-+ * both options for affected signal indices.  The separate input mux
-+ * functionality only needs to be considered if a model comes along which
-+ * actually uses signals 0x5, 0x6 and 0x7 for something which makes sense to
-+ * record.
-+ */
- static struct hda_input_mux alc260_test_capture_source = {
--	.num_items = 7,
-+	.num_items = 8,
- 	.items = {
- 		{ "MIC1 pin", 0x0 },
- 		{ "MIC2 pin", 0x1 },
- 		{ "LINE1 pin", 0x2 },
- 		{ "LINE2 pin", 0x3 },
- 		{ "CD pin", 0x4 },
--		{ "LINE-OUT pin", 0x5 },
--		{ "HP-OUT pin", 0x6 },
-+		{ "LINE-OUT pin (cap1), Mixer (cap2)", 0x5 },
-+		{ "HP-OUT pin (cap1), LINE-OUT pin (cap2)", 0x6 },
-+		{ "HP-OUT pin (cap2 only) },
-         },
- };
- static struct snd_kcontrol_new alc260_test_mixer[] = {
 
 
 -------------------------------------------------------
