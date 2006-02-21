@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001864]: ADC/DAC Volume should be stereo controls instead of two independent mono controls
-Date: Tue, 21 Feb 2006 20:27:30 +0100
-Message-ID: <253bd1947be006105bb82eb7015cfe0f@bugtrack.alsa-project.org>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: snd-cs4236 (possibly all isa-pnp cards or all alsa isa-pnp cards)
+ broken in 2.6.16-rc4
+Date: Tue, 21 Feb 2006 20:35:38 +0100
+Message-ID: <43FB6B8A.6070904__8877.68986071951$1140550606$gmane$org@keyaccess.nl>
+References: <43F9F9F2.4070203@keyaccess.nl>	<s5hu0askd7e.wl%tiwai@suse.de>	<43FB3718.6060503@keyaccess.nl> <s5hek1wk3op.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 253101A2
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2006 20:27:31 +0100 (MET)
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl [213.51.146.200])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69DCE15C
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2006 20:35:22 +0100 (MET)
+In-Reply-To: <s5hek1wk3op.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +21,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adam Belay <ambx1@neo.rr.com>, Andrew Morton <akpm@osdl.org>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1864> 
-======================================================================
-Reported By:                karrikuh
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1864
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             02-21-2006 17:10 CET
-Last Modified:              02-21-2006 20:27 CET
-======================================================================
-Summary:                    ADC/DAC Volume should be stereo controls instead of
-two independent mono controls
-Description: 
-Until now the ice1712 driver provides 4 mono controls for ADC, ADC2, DAC,
-DAC2.
-I'm using a Terratec EWX24/96 soundcard for which ADC and ADC2 mean the
-left/right channel of the analog input. Right now everytime I want to
-change the input or output level, I have to adjust two faders in
-gnome-mixer-applet.
+> Rene Herman wrote:
 
-It should be obvious that it makes more sense to combine the two controls
-(ADC/ADC2) into one stereo fader pair (the same for DAC). I guess most
-other envy24-based cards use the same scheme though I'm not sure.
+>> "ALSA sound/core/device.c:106: device free eee4e000 (from f099153d), not 
+>> found"
 
+> This is harmless.  The opl3-oss instance was already freed but the
+> driver tries to release it again just to be sure.
+> 
+> The patch below should fix this annoyance.
 
+Ah, good. Yes, it ofcourse does. Thanks. So, only the isapnp/bustype one 
+was in fact a problem, it seems...
 
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 02-21-06 20:27 
-----------------------------------------------------------------------
-No, it's not obvious.  What if someone wants to use the inputs as
-independent mono channels?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-21-06 17:10 karrikuh       New Issue                                    
-02-21-06 17:10 karrikuh       Distribution              => Ubuntu Breezy   
-02-21-06 17:10 karrikuh       Kernel Version            => 2.6.14          
-02-21-06 20:27 rlrevell       Note Added: 0008154                          
-======================================================================
-
-
+Rene.
 
 
 -------------------------------------------------------
