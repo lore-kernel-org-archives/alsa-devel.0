@@ -1,17 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: snd-cs4236 (possibly all isa-pnp cards or all alsa isa-pnp	cards)
- broken in 2.6.16-rc4
-Date: Tue, 21 Feb 2006 16:37:36 +0100
-Message-ID: <43FB33C0.2090004__36852.3470046513$1140536309$gmane$org@keyaccess.nl>
-References: <43F9F9F2.4070203@keyaccess.nl> <1140499646.21116.30.camel@localhost.localdomain>
+From: "Adrian McMenamin" <adrian@mcmen.demon.co.uk>
+Subject: Re: DMA strangeness?
+Date: Tue, 21 Feb 2006 15:43:15 -0000 (GMT)
+Message-ID: <49492.217.150.108.178.1140536595.squirrel@newgolddream.dyndns.info>
+References: <1140361953.9117.9.camel@localhost.localdomain>
+    <s5hlkw4ka19.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------030103000103000007020709"
+Content-Type: text/plain;charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq3.groni1.gr.home.nl (smtpq3.groni1.gr.home.nl [213.51.130.202])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4223218D
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2006 16:37:27 +0100 (MET)
-In-Reply-To: <1140499646.21116.30.camel@localhost.localdomain>
+In-Reply-To: <s5hlkw4ka19.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,73 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Belay <abelay@MIT.EDU>
-Cc: Takashi Iwai <tiwai@suse.de>, Andrew Morton <akpm@osdl.org>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------030103000103000007020709
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, 21 February, 2006 3:26 pm, Takashi Iwai wrote:
+> At Sun, 19 Feb 2006 15:12:33 +0000,
+> Adrian McMenamin wrote:
+>>
+>> I am using oss emulation to test my driver (I cannot get the alsa
+>> utilities to work properly on my Dreamcast (SH4/uclibc) system).
+>>
+>> When I do something like
+>>
+>> cat foobar > /dev/dsp
+>>
+>> it seems that the DMA buffer is filled with doubles of every byte of
+>> foobar eg if foobar was 0xFF, 0x10 ... etc then the first four bytes o=
+f
+>> the DMA buffer would be 0xFF 0xFF 0x10 0x10
+>>
+>> Is there a reason for this? Obviously I've made a mistake somewhere bu=
+t
+>> I don't know where
+>
+> Depending on the configuration, the mono signal is expanded to
+> stereo.
+>
 
-Adam Belay wrote:
+Thanks. I guessed it was probably some sort of stereo sep stuff. How do I
+control this - where are the sources I can look at?
 
-[ pnp_card_driver.remove() not called ]
+The way my card works that might not be the best way of doing it - I need
+to load the left and right channels into two different buffers in the
+device space - or else find a very different way to arrange the playback.
 
-> Hopefully this email account will work better.  In any case, thanks
-> for bringing this bug to my attention.  I may have stumbled across it
-> a couple days ago, and would appreciate if you would try this patch: 
-> (there may be some fuzz)
-
-Reject even. I've attached this patch regenerated against 2.6.16-rc4.
-
-> -       if (drv->link.driver.probe) {
-> -               if (drv->link.driver.probe(&dev->dev)) {
-
-> +       if (pnp_bus_type.probe(&dev->dev)) {
-
-Yes, this works, thanks. If it's also the correct fix, I guess this 
-should go into 2.6.16?
-
-I by the way also tested with a driver that uses pnp_driver instead of 
-pnp_card_driver, and that also works.
-
-> It's possible that the attach mechanism isn't working correctly
-> because of recent driver model changes.  If this is the case, it
-> would also explain the detach-not-called issues.
-
-The bustype stuff...
-
-Rene.
-
-
---------------030103000103000007020709
-Content-Type: text/plain;
- name="pnp_bus_type_adam.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="pnp_bus_type_adam.diff"
-
-SW5kZXg6IGxvY2FsL2RyaXZlcnMvcG5wL2NhcmQuYwo9PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsb2Nh
-bC5vcmlnL2RyaXZlcnMvcG5wL2NhcmQuYwkyMDA2LTAyLTExIDAwOjM0OjAxLjAwMDAwMDAw
-MCArMDEwMAorKysgbG9jYWwvZHJpdmVycy9wbnAvY2FyZC5jCTIwMDYtMDItMjEgMTQ6MDY6
-MjEuMDAwMDAwMDAwICswMTAwCkBAIC0zMDMsMTMgKzMwMywxMSBAQCBmb3VuZDoKIAlkb3du
-X3dyaXRlKCZkZXYtPmRldi5idXMtPnN1YnN5cy5yd3NlbSk7CiAJZGV2LT5jYXJkX2xpbmsg
-PSBjbGluazsKIAlkZXYtPmRldi5kcml2ZXIgPSAmZHJ2LT5saW5rLmRyaXZlcjsKLQlpZiAo
-ZHJ2LT5saW5rLmRyaXZlci5wcm9iZSkgewotCQlpZiAoZHJ2LT5saW5rLmRyaXZlci5wcm9i
-ZSgmZGV2LT5kZXYpKSB7Ci0JCQlkZXYtPmRldi5kcml2ZXIgPSBOVUxMOwotCQkJZGV2LT5j
-YXJkX2xpbmsgPSBOVUxMOwotCQkJdXBfd3JpdGUoJmRldi0+ZGV2LmJ1cy0+c3Vic3lzLnJ3
-c2VtKTsKLQkJCXJldHVybiBOVUxMOwotCQl9CisJaWYgKHBucF9idXNfdHlwZS5wcm9iZSgm
-ZGV2LT5kZXYpKSB7CisJCWRldi0+ZGV2LmRyaXZlciA9IE5VTEw7CisJCWRldi0+Y2FyZF9s
-aW5rID0gTlVMTDsKKwkJdXBfd3JpdGUoJmRldi0+ZGV2LmJ1cy0+c3Vic3lzLnJ3c2VtKTsK
-KwkJcmV0dXJuIE5VTEw7CiAJfQogCWRldmljZV9iaW5kX2RyaXZlcigmZGV2LT5kZXYpOwog
-CXVwX3dyaXRlKCZkZXYtPmRldi5idXMtPnN1YnN5cy5yd3NlbSk7Cg==
---------------030103000103000007020709--
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc. Do you grep through log files
+This SF.net email is sponsored by: Splunk Inc. Do you grep through log fi=
+les
 for problems?  Stop!  Download the new AJAX search engine that makes
 searching your log files as easy as surfing the  web.  DOWNLOAD SPLUNK!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=103432&bid=230486&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D103432&bid=3D230486&dat=3D=
+121642
