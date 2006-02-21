@@ -1,17 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: snd-cs4236 (possibly all isa-pnp cards or all alsa isa-pnp cards)
- broken in 2.6.16-rc4
-Date: Tue, 21 Feb 2006 16:51:52 +0100
-Message-ID: <43FB3718.6060503__45571.8023855754$1140537171$gmane$org@keyaccess.nl>
-References: <43F9F9F2.4070203@keyaccess.nl> <s5hu0askd7e.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001864]: ADC/DAC Volume should be stereo controls instead of two independent mono controls
+Date: Tue, 21 Feb 2006 17:10:06 +0100
+Message-ID: <eadfcbfb126d6907a64b3150961949d5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl [213.51.130.200])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 021D518D
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2006 16:51:36 +0100 (MET)
-In-Reply-To: <s5hu0askd7e.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C8D618D
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2006 17:10:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,71 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adam Belay <ambx1@neo.rr.com>, Andrew Morton <akpm@osdl.org>, Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
-> Rene Herman wrote:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1864> 
+======================================================================
+Reported By:                karrikuh
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1864
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             02-21-2006 17:10 CET
+Last Modified:              02-21-2006 17:10 CET
+======================================================================
+Summary:                    ADC/DAC Volume should be stereo controls instead of
+two independent mono controls
+Description: 
+Until now the ice1712 driver provides 4 mono controls for ADC, ADC2, DAC,
+DAC2.
+I'm using a Terratec EWX24/96 soundcard for which ADC and ADC2 mean the
+left/right channel of the analog input. Right now everytime I want to
+change the input or output level, I have to adjust two faders in
+gnome-mixer-applet.
 
->> I noticed on 2.6.16-rc4 that my MPU-401 wasn't functional, due to a
->> simple copy & paste error in sound/isa/cs423x/cs4236.c:
-> 
-> Thanks, I applied it to ALSA CVS tree, too.
+It should be obvious that it makes more sense to combine the two controls
+(ADC/ADC2) into one stereo fader pair (the same for DAC). I guess most
+other envy24-based cards use the same scheme though I'm not sure.
 
-The patch Adam sent fixes the ".remove not called" issue. It _also_ 
-fixes the OOPS in snd_timer_free() I sent along, so that one wasn't 
-independent. During testing, I uncovered one more bug though.
 
-After using aplaymidi (to test cs4236 mpu401), which pulls in 
-snd-seq-oss, modprobe -r snd-cs4236 tells me:
 
-"ALSA sound/core/device.c:106: device free eee4e000 (from f099153d), not 
-found"
+======================================================================
 
-That then stays until reboot, with a different device address each time.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-21-06 17:10 karrikuh       New Issue                                    
+02-21-06 17:10 karrikuh       Distribution              => Ubuntu Breezy   
+02-21-06 17:10 karrikuh       Kernel Version            => 2.6.14          
+======================================================================
 
-f099153d is snd_opl3_free_seq_oss() here. For now I've stuck a 
-dump_stack() in there, which treats me to:
 
-===
-  [<f099152e>] snd_opl3_free_seq_oss+0x8/0x20 [snd_opl3_synth]
-  [<f099044f>] snd_opl3_seq_delete_device+0x17/0x3c [snd_opl3_synth]
-  [<f08f06ec>] free_device+0x4b/0x8e [snd_seq_device]
-  [<f08f02da>] snd_seq_device_free+0x88/0xa9 [snd_seq_device]
-  [<f09579a2>] snd_device_free+0x8b/0xf0 [snd]
-  [<f0957ccd>] snd_device_free_all+0x67/0x7a [snd]
-  [<f0953d01>] snd_card_free+0x111/0x1f3 [snd]
-  [<c0134464>] zap_pte_range+0x1cf/0x1ec
-  [<c026a76e>] wait_for_completion+0xc4/0xdf
-  [<c010ea9b>] complete+0x2e/0x5c
-  [<c010eaa9>] complete+0x3c/0x5c
-  [<f096b7f9>] snd_cs423x_pnpc_remove+0xb/0x14 [snd_cs4236]
-  [<c01c148b>] card_remove_first+0x2f/0x4a
-  [<c01c1e3d>] pnp_device_remove+0x18/0x2d
-  [<c01e149d>] __device_release_driver+0x53/0x6b
-  [<c01e156a>] driver_detach+0x91/0xbf
-  [<c01e0fac>] bus_remove_driver+0x27/0x41
-  [<c01e181b>] driver_unregister+0xb/0x13
-  [<c01c1f46>] pnp_unregister_driver+0xb/0x1b
-  [<f096b826>] snd_cs423x_unregister_all+0x14/0x36 [snd_cs4236]
-  [<c0126529>] sys_delete_module+0x12b/0x155
-  [<c0137f6c>] do_munmap+0xe2/0xef
-  [<c0137fae>] sys_munmap+0x35/0x4d
-  [<c0102551>] syscall_call+0x7/0xb
-ALSA sound/core/device.c:106: device free eee4e000 (from f099153d), not 
-found
-pnp: Device 01:01.03 disabled.
-pnp: Device 01:01.02 disabled.
-pnp: Device 01:01.00 disabled.
-pnp: the driver 'cs4236_isapnp' has been unregistered
-===
-
-I'll try and see if I can find anything later, but if you could, please 
-beat me to it. I'm not even quite sure what that oss sequencer thing is...
-
-Rene.
 
 
 -------------------------------------------------------
