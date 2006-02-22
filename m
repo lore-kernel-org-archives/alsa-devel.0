@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001867]: CMI8788 support status
-Date: Wed, 22 Feb 2006 17:31:58 +0100
-Message-ID: <f7c1d59643698a2d0b07ec2f14534c58@bugtrack.alsa-project.org>
+From: "Tarik Reghif" <alsa@reghif.com>
+Subject: Capturing audio output
+Date: Wed, 22 Feb 2006 16:53:22 +0000
+Message-ID: <e90ba5fc0602220853q5db477bx@mail.gmail.com>
+Reply-To: "Tarik Reghif" <alsa@reghif.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6AE391C2
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 17:31:58 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1867> 
-======================================================================
-Reported By:                unit3
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1867
-Category:                   PCI - cmipci
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.15-11-amd64-k8
-======================================================================
-Date Submitted:             02-22-2006 17:31 CET
-Last Modified:              02-22-2006 17:31 CET
-======================================================================
-Summary:                    CMI8788 support status
-Description: 
-It would be nice to have some support status information in the soundcard
-matrix about the newer CMI chips like the CMI8788
-(http://www.cmedia.com.tw/product/CMI8788.htm) and CMI8770, which is used
-in soundcards like the AuzenTech X-Plosion. To know even something like
-"tested, doesn't work" or "untested" would be better than nothing.
-======================================================================
+I'm trying to build a program to grab whatever's being played on a computer=
+.
+There isn't a recording device that will in all cases pass the audio
+being outputed to a recording channel is there?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-22-06 17:31 unit3          New Issue                                    
-02-22-06 17:31 unit3          Distribution              => Ubuntu          
-02-22-06 17:31 unit3          Kernel Version            => 2.6.15-11-amd64-k8
-======================================================================
+The idea being, if the user is playing a video, sound file, voice
+conversation, etc, whatever goes through the speakers going into my
+program.
+What I actually want is so it goes out my program instead of the
+speakers (but I'm kinda flexible).
 
+Is this possible without delving too much into alsa? (i.e. writing an
+app rather than re-writing alsa)
 
+Any ideas would be greatly appreciated,
+
+Cheers
+
+Tarik
 
 
 -------------------------------------------------------
