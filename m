@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001868]: Audigy4 lacks line-in
-Date: Wed, 22 Feb 2006 20:26:36 +0100
-Message-ID: <8326230afb8e8ad762406318830d9746@bugtrack.alsa-project.org>
+Date: Wed, 22 Feb 2006 20:30:39 +0100
+Message-ID: <1e41fa36d7ae8922b4121c8b13e78ed6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DEDD61BD
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 20:26:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B127184
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 20:30:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.6.5
 ======================================================================
 Date Submitted:             02-22-2006 19:12 CET
-Last Modified:              02-22-2006 20:26 CET
+Last Modified:              02-22-2006 20:30 CET
 ======================================================================
 Summary:                    Audigy4 lacks line-in
 Description: 
@@ -56,6 +56,11 @@ proposal for this card's chip detail (attached to this report)
 ----------------------------------------------------------------------
 Ahum, sorry it's kernel 2.6.15.
 
+----------------------------------------------------------------------
+ pzad - 02-22-06 20:30 
+----------------------------------------------------------------------
+Make sure, you have set "Analog Mix", "Line In", "Front", "Master" volume.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -66,6 +71,7 @@ alsa-driver-1.0.11rc3-audigy4-sb0400.diff
 02-22-06 19:12 wwp            Kernel Version            => 2.6.5           
 02-22-06 19:21 wwp            Issue Monitored: wwp                         
 02-22-06 20:26 wwp            Note Added: 0008162                          
+02-22-06 20:30 pzad           Note Added: 0008163                          
 ======================================================================
 
 
