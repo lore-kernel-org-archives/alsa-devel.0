@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001864]: ADC/DAC Volume should be stereo controls instead of two independent mono controls
-Date: Wed, 22 Feb 2006 11:48:39 +0100
-Message-ID: <6b7675160ca4c2c2f01037240c0b2061@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001863]: Roland ua-20 stops working
+Date: Wed, 22 Feb 2006 15:33:18 +0100
+Message-ID: <31e61fd0bdb2e6152038f12846220713@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B13061AC
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 11:48:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C85EB186
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 15:33:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1864> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1863> 
 ======================================================================
-Reported By:                karrikuh
-Assigned To:                
+Reported By:                ldk_linux
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1864
-Category:                   PCI - ice1712
+Issue ID:                   1863
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.14
+Status:                     assigned
+Distribution:               Debian Sarge, SUSE Linux OSS
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             02-21-2006 17:10 CET
-Last Modified:              02-22-2006 11:48 CET
+Date Submitted:             02-21-2006 13:25 CET
+Last Modified:              02-22-2006 15:33 CET
 ======================================================================
-Summary:                    ADC/DAC Volume should be stereo controls instead of
-two independent mono controls
+Summary:                    Roland ua-20 stops working
 Description: 
-Until now the ice1712 driver provides 4 mono controls for ADC, ADC2, DAC,
-DAC2.
-I'm using a Terratec EWX24/96 soundcard for which ADC and ADC2 mean the
-left/right channel of the analog input. Right now everytime I want to
-change the input or output level, I have to adjust two faders in
-gnome-mixer-applet.
+With the usb-audio alsa driver shipped with kernel 2.6.15 this unit (Roland
+ua-20 audio & midi interface) stops working. Under a standard vanilla
+kernel alsa clients (xmms, alsaplayer, jack) reports "unable to set hw
+parameters" and quit. Under the kernel from the jacklab project
+(http://jacklab.net/) no error message is visualized, all seems to work
+but there is no audio output.
 
-It should be obvious that it makes more sense to combine the two controls
-(ADC/ADC2) into one stereo fader pair (the same for DAC). I guess most
-other envy24-based cards use the same scheme though I'm not sure.
-
-
-
+I've tested the unit with 2.6.12 and 2.6.13 kernels and it works
+perfectly.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-21-06 20:27 
+ ldk_linux - 02-22-06 15:33 
 ----------------------------------------------------------------------
-No, it's not obvious.  What if someone wants to use the inputs as
-independent mono channels?
-
-----------------------------------------------------------------------
- karrikuh - 02-22-06 11:48 
-----------------------------------------------------------------------
-If I remember correctly, stereo controls still have one fader per channel,
-just that their positions are linked by default (but can be unlinked if
-you want to use the channels independently).
-
-In gnome-volume-control it looks like this:
-http://ronald.bitfreak.net/images/gvc11.png
-
-BTW, the Windows control panel for my card has the same type of control.
-You see, ADC and DAC are really ment to be stereo channel pairs.
+I just want to point out that the issue occurs with the unit in "standard
+mode" (44100 KHz, 16 bit, no midi interface)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-21-06 17:10 karrikuh       New Issue                                    
-02-21-06 17:10 karrikuh       Distribution              => Ubuntu Breezy   
-02-21-06 17:10 karrikuh       Kernel Version            => 2.6.14          
-02-21-06 20:27 rlrevell       Note Added: 0008154                          
-02-22-06 11:48 karrikuh       Note Added: 0008157                          
+02-21-06 13:25 ldk_linux      New Issue                                    
+02-21-06 13:25 ldk_linux      Distribution              => Debian Sarge, SUSE
+Linux OSS
+02-21-06 13:25 ldk_linux      Kernel Version            => 2.6.15          
+02-22-06 15:33 ldk_linux      Note Added: 0008158                          
 ======================================================================
 
 
