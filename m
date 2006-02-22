@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001864]: ADC/DAC Volume should be stereo controls instead of two independent mono controls
-Date: Wed, 22 Feb 2006 19:40:25 +0100
-Message-ID: <5f09014c20d102123db85a2170cac9dc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001868]: Audigy4 lacks line-in
+Date: Wed, 22 Feb 2006 20:26:36 +0100
+Message-ID: <8326230afb8e8ad762406318830d9746@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E970B1AA
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 19:40:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DEDD61BD
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 20:26:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1864> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1868> 
 ======================================================================
-Reported By:                karrikuh
+Reported By:                wwp
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1864
-Category:                   PCI - ice1712
+Issue ID:                   1868
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.14
+Distribution:               Debian unstable
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             02-21-2006 17:10 CET
-Last Modified:              02-22-2006 19:40 CET
+Date Submitted:             02-22-2006 19:12 CET
+Last Modified:              02-22-2006 20:26 CET
 ======================================================================
-Summary:                    ADC/DAC Volume should be stereo controls instead of
-two independent mono controls
+Summary:                    Audigy4 lacks line-in
 Description: 
-Until now the ice1712 driver provides 4 mono controls for ADC, ADC2, DAC,
-DAC2.
-I'm using a Terratec EWX24/96 soundcard for which ADC and ADC2 mean the
-left/right channel of the analog input. Right now everytime I want to
-change the input or output level, I have to adjust two faders in
-gnome-mixer-applet.
-
-It should be obvious that it makes more sense to combine the two controls
-(ADC/ADC2) into one stereo fader pair (the same for DAC). I guess most
-other envy24-based cards use the same scheme though I'm not sure.
-
-
-
+I'm not able to get line-in support (un-mute is OK), but PCM out is fine.
+Is that because the emu10k1 sources don't include the card IDs for my
+model?
+Don't know if this would be enough or even right, but here's a patch
+proposal for this card's chip detail (attached to this report)
 ======================================================================
 
 ----------------------------------------------------------------------
- karrikuh - 02-22-06 11:48 
+ wwp - 02-22-06 20:26 
 ----------------------------------------------------------------------
-If I remember correctly, stereo controls still have one fader per channel,
-just that their positions are linked by default (but can be unlinked if
-you want to use the channels independently).
-
-In gnome-volume-control it looks like this:
-http://ronald.bitfreak.net/images/gvc11.png
-
-BTW, the Windows control panel for my card has the same type of control.
-You see, ADC and DAC are really ment to be stereo channel pairs.
-
-----------------------------------------------------------------------
- rlrevell - 02-22-06 19:40 
-----------------------------------------------------------------------
-Someone needs to implement that in the mixer app or alsa-lib, it does not
-belong in the driver.
+Ahum, sorry it's kernel 2.6.15.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-21-06 17:10 karrikuh       New Issue                                    
-02-21-06 17:10 karrikuh       Distribution              => Ubuntu Breezy   
-02-21-06 17:10 karrikuh       Kernel Version            => 2.6.14          
-02-21-06 20:27 rlrevell       Note Added: 0008154                          
-02-22-06 11:48 karrikuh       Note Added: 0008157                          
-02-22-06 19:40 rlrevell       Note Added: 0008161                          
+02-22-06 19:12 wwp            New Issue                                    
+02-22-06 19:12 wwp            File Added:
+alsa-driver-1.0.11rc3-audigy4-sb0400.diff                    
+02-22-06 19:12 wwp            Distribution              => Debian unstable 
+02-22-06 19:12 wwp            Kernel Version            => 2.6.5           
+02-22-06 19:21 wwp            Issue Monitored: wwp                         
+02-22-06 20:26 wwp            Note Added: 0008162                          
 ======================================================================
 
 
