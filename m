@@ -1,11 +1,13 @@
-From: William Nagel <bill@williamnagel.net>
-Subject: Closing a USB device after unplugging
-Date: Tue, 21 Feb 2006 16:22:06 -0500
-Message-ID: <C6C2DD5C-A863-4F47-8097-3005A6E1AB45@williamnagel.net>
-Mime-Version: 1.0 (Apple Message framework v746.2)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Content-Transfer-Encoding: 7bit
+From: "Katie" <Katie@verizon.net>
+Subject: Sorry we missed you.
+Date: Wed, 22 Feb 2006 00:58:21 -0500
+Message-ID: <20060221215816.10F3718F@alsa.jcu.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from verizon.net (ppp-17-14.vtsnet.ru [195.151.86.244])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 10F3718F
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2006 22:58:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,27 +17,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have a long-running application that needs to deal with multiple  
-USB audio devices.  The ideal is of course to not unplug those  
-devices without telling the application that you're going to do so,  
-but real life dictates that the ideal won't always happen.   
-Therefore, I want to make my application robustly handle an unplug/ 
-replug without requiring a restart of the application.   
-Unfortunately, once the device has been unplugged, snd_pcm_close()  
-returns an "Inappropriate ioctl for device" error, but resources are  
-apparently still held for the device because I don't get a new device  
-event if the USB device is plugged back in until my application exits.
+We've attempted to contact you to refinanc-e your home. Your current loan
+ has been pre-appr_oved for a low-er ra-te.
+*_Loan Qua_lifies for up to 3% or a more l_ower -ra-te.
+Visit here to confirm your information within 24 hours.
+http://www.zsf2.net/real
 
-My question: Is there any way to safely and reliably free the device  
-resources once I've detected that an unplug has occurred without  
-restarting my application?
 
-Thanks ahead of time for any help,
-
--Bill Nagel
 
 
 -------------------------------------------------------
