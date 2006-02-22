@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001863]: Roland ua-20 stops working
-Date: Wed, 22 Feb 2006 15:33:18 +0100
-Message-ID: <31e61fd0bdb2e6152038f12846220713@bugtrack.alsa-project.org>
+Date: Wed, 22 Feb 2006 16:06:38 +0100
+Message-ID: <bcdddb33d2793923c4c91db7b9537302@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C85EB186
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 15:33:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9344818C
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 16:06:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge, SUSE Linux OSS
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             02-21-2006 13:25 CET
-Last Modified:              02-22-2006 15:33 CET
+Last Modified:              02-22-2006 16:06 CET
 ======================================================================
 Summary:                    Roland ua-20 stops working
 Description: 
@@ -56,10 +56,27 @@ perfectly.
 ======================================================================
 
 ----------------------------------------------------------------------
- ldk_linux - 02-22-06 15:33 
+ ldk_linux - 02-22-06 15:36 
 ----------------------------------------------------------------------
 I just want to point out that the issue occurs with the unit in "standard
-mode" (44100 KHz, 16 bit, no midi interface)
+mode" (44100 KHz, 16 bit, no midi interface). I've not tried with the
+advanced mode and actually I've downgraded to 2.6.13 so I can't.
+
+
+
+----------------------------------------------------------------------
+ lemeur - 02-22-06 16:06 
+----------------------------------------------------------------------
+What is the ALSA driver version included in your kernel?
+
+Your problem seems similar to this one:
+--> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585
+
+Moreover, Florian Ladstaedter has reported this issue on the debia-kernel
+mailing list (Bug#346070: linux-image-2.6.15-1-k7)
+--> see http://lists.debian.org/debian-kernel/2006/01/msg00598.html
+
+Can you compile and test the lastest ALSA driver?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -69,6 +86,8 @@ Date Modified  Username       Field                    Change
 Linux OSS
 02-21-06 13:25 ldk_linux      Kernel Version            => 2.6.15          
 02-22-06 15:33 ldk_linux      Note Added: 0008158                          
+02-22-06 15:36 ldk_linux      Note Edited: 0008158                         
+02-22-06 16:06 lemeur         Note Added: 0008159                          
 ======================================================================
 
 
