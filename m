@@ -1,11 +1,14 @@
-From: wwp <subscript@free.fr>
-Subject: Audigy4 support
-Date: Wed, 22 Feb 2006 19:40:29 +0100
-Message-ID: <20060222194029.1709b043@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001864]: ADC/DAC Volume should be stereo controls instead of two independent mono controls
+Date: Wed, 22 Feb 2006 19:40:25 +0100
+Message-ID: <5f09014c20d102123db85a2170cac9dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_38nbkflWN2y=HlFdlpxfuA6";
- protocol="application/pgp-signature"; micalg=PGP-SHA1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E970B1AA
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 19:40:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,125 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Sig_38nbkflWN2y=HlFdlpxfuA6
-Content-Type: multipart/mixed; boundary=MP_baPVuew5ZC3t0Ga9jvQGeFw
 
---MP_baPVuew5ZC3t0Ga9jvQGeFw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1864> 
+======================================================================
+Reported By:                karrikuh
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1864
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             02-21-2006 17:10 CET
+Last Modified:              02-22-2006 19:40 CET
+======================================================================
+Summary:                    ADC/DAC Volume should be stereo controls instead of
+two independent mono controls
+Description: 
+Until now the ice1712 driver provides 4 mono controls for ADC, ADC2, DAC,
+DAC2.
+I'm using a Terratec EWX24/96 soundcard for which ADC and ADC2 mean the
+left/right channel of the analog input. Right now everytime I want to
+change the input or output level, I have to adjust two faders in
+gnome-mixer-applet.
 
-Hello all,
-
-
-I've got a brand new Audigy4 PCI sound-card, running on Debian unstable
-(kernel 2.6.15, feat. Alsa 1.0.10+1.0.11-rc2-2).
-
-I'm able to get PCM out but can't get line-in to work: the alsa mixer allows
-un-muting line-in but I can't get the input selector in audacity for instan=
-ce.
-
-
-The exact model is a Creative SoundBlaster Audigy 4 retail (purchase date:
-20060219, UK) w/ remote controler RM-1500.
-
-0000:00:0a.0 0401: 1102:0008
-Here was lspci says:
-
-0000:00:0a.0 Multimedia audio controller: Creative Labs SB0400 Audigy2 Value
-         Subsystem: Creative Labs: Unknown device 1021
-		 Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Step=
-ping- SERR- FastB2B-
-		 Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=3Dmedium >TAbort- <TAbo=
-rt- <MAbort- >SERR- <PERR-
-		 Latency: 32 (500ns min, 5000ns max)
-		 Interrupt: pin A routed to IRQ 12
-		 Region 0: I/O ports at d400 [size=3D64]
-		 Capabilities: [dc] Power Management version 2
-				 Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=3D0mA PME(D0-,D1-,D2-,D3hot-,D3=
-cold-)
-				 Status: D0 PME-Enable- DSel=3D0 DScale=3D0 PME-
+It should be obvious that it makes more sense to combine the two controls
+(ADC/ADC2) into one stereo fader pair (the same for DAC). I guess most
+other envy24-based cards use the same scheme though I'm not sure.
 
 
-I've found that the emu10k1 sources (checked at 1.0.11-rc3) don't include t=
-he
-card IDs, would the attached patch do it? Would that one be enough to get
-proper line-in support?
 
-BTW, is it normal that the chip_detail table shows .id Audigy2 for Audigy4
-cards? Is emu10k1 falling back to Audigy2 Value when it doesn't know the
-exact card IDs?
+======================================================================
+
+----------------------------------------------------------------------
+ karrikuh - 02-22-06 11:48 
+----------------------------------------------------------------------
+If I remember correctly, stereo controls still have one fader per channel,
+just that their positions are linked by default (but can be unlinked if
+you want to use the channels independently).
+
+In gnome-volume-control it looks like this:
+http://ronald.bitfreak.net/images/gvc11.png
+
+BTW, the Windows control panel for my card has the same type of control.
+You see, ADC and DAC are really ment to be stereo channel pairs.
+
+----------------------------------------------------------------------
+ rlrevell - 02-22-06 19:40 
+----------------------------------------------------------------------
+Someone needs to implement that in the mixer app or alsa-lib, it does not
+belong in the driver.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-21-06 17:10 karrikuh       New Issue                                    
+02-21-06 17:10 karrikuh       Distribution              => Ubuntu Breezy   
+02-21-06 17:10 karrikuh       Kernel Version            => 2.6.14          
+02-21-06 20:27 rlrevell       Note Added: 0008154                          
+02-22-06 11:48 karrikuh       Note Added: 0008157                          
+02-22-06 19:40 rlrevell       Note Added: 0008161                          
+======================================================================
 
 
-Here are some references more:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1868
-http://www.creative.com/products/product.asp?category=3D1&subcategory=3D434=
-&product=3D14103
-
-
-Regards,
-
---=20
-wwp
-
---MP_baPVuew5ZC3t0Ga9jvQGeFw
-Content-Type: text/x-patch; name=alsa-driver-1.0.11rc3-audigy4-sb0400.diff
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename=alsa-driver-1.0.11rc3-audigy4-sb0400.diff
-
---- emu10k1_main.c.orig	2006-02-22 18:24:06.000000000 +0100
-+++ emu10k1_main.c	2006-02-22 18:24:12.000000000 +0100
-@@ -824,6 +824,16 @@
- 	 .emu10k2_chip =3D 1,
- 	 .ca0102_chip =3D 1,
- 	 .emu1212m =3D 1} ,
-+	/* Tested by claws 22nd February 2006 */
-+	{.vendor =3D 0x1102, .device =3D 0x0004, .subsystem =3D 0x20081102,
-+	 .driver =3D "Audigy2", .name =3D "Audigy 4 [SB0400]",=20
-+	 .id =3D "Audigy2",
-+	 .emu10k2_chip =3D 1,
-+	 .ca0102_chip =3D 1,
-+	 .ca0151_chip =3D 1,
-+	 .spk71 =3D 1,
-+	 .spdif_bug =3D 1,
-+	 .ac97_chip =3D 1} ,
- 	/* Tested by James@superbug.co.uk 3rd July 2005 */
- 	{.vendor =3D 0x1102, .device =3D 0x0004, .subsystem =3D 0x20071102,
- 	 .driver =3D "Audigy2", .name =3D "Audigy 4 PRO [SB0380]",=20
---- p16v.c.orig	2005-12-22 18:01:20.000000000 +0100
-+++ p16v.c	2006-02-22 18:24:46.000000000 +0100
-@@ -118,6 +118,7 @@
-  * Class 0401: 1102:0004 (rev 04) Subsystem: 1102:1007 -> Audigy2 6.1    M=
-odel:SB0240
-  * Class 0401: 1102:0004 (rev 04) Subsystem: 1102:1002 -> Audigy2 Platinum=
-  Model:SB msb0240230009266
-  * Class 0401: 1102:0004 (rev 04) Subsystem: 1102:2007 -> Audigy4 Pro Mode=
-l:SB0380 M1SB0380472001901E
-+ * Class 0401: 1102:0004 (rev 04) Subsystem: 1102:2008 -> Audigy4 Model:SB=
-0400
-  *
-  */
-=20
-
---MP_baPVuew5ZC3t0Ga9jvQGeFw--
-
---Sig_38nbkflWN2y=HlFdlpxfuA6
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.7 (GNU/Linux)
-
-iD8DBQFD/LAhadgnuQFKG88RAuUaAJoClzgln9zpVVgzvm1GkXUY0mHg5QCdFtVl
-XJGjrk5tpegV0vBVaHsc0I8=
-=/T9M
------END PGP SIGNATURE-----
-
---Sig_38nbkflWN2y=HlFdlpxfuA6--
 
 
 -------------------------------------------------------
