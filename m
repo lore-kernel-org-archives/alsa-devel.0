@@ -1,11 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: [PATCH] HDA/ALC260: switch pin buffers when pin mode changed
-Date: Thu, 23 Feb 2006 11:18:26 +1030 (CST)
-Message-ID: <200602230048.k1N0mQkP006542@auster.physics.adelaide.edu.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001871]: A possible (??) new feature? - volume normalisation
+Date: Thu, 23 Feb 2006 01:55:53 +0100
+Message-ID: <0935b10b39b26a00910ec367f1ce930a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C3CA1A2
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 01:55:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,118 +18,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-The following patch (against CVS from 20060223) makes ALSA switch ALC260 pin
-input/output buffers in tandem with pin mode changes.  This means that a
-given pin only ever has a single buffer enabled and there's no need to
-statically enable both input and output for pins which can be retasked by
-the user as inputs and outputs.  Although there is little obvervable benefit
-from doing the dynamic switching, it is arguably a neater solution from the
-engineering point of view, an will probably also result in a slightly lower
-noise floor when recording from such pins.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1871> 
+======================================================================
+Reported By:                noremac
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1871
+Category:                   alsamixer
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-23-2006 01:55 CET
+Last Modified:              02-23-2006 01:55 CET
+======================================================================
+Summary:                    A possible (??) new feature? - volume normalisation
+Description: 
+I was pointed here from the gento forum
+http://forums.gentoo.org/viewtopic-t-436425.html?sid=afbe87e55c4b71954a0e6d8e55d3028b
 
-The initverbs for the test and fujitsu models have been adjusted to take
-this new functionality into account.
+but am not sure this is the best place for a feature request. (sorry if it
+is not)
 
-Regards
-  jonathan
+Would it be possible to build into alsa a volume modulatation of
+normalisation feature? This would accomadate for listening to music with
+huge dynamic range (I find when I turn the volume up high enough to hear
+the soft parts, the loud parts nearly deafen me).
+The feature I had in mind would be such that when this feature was
+switched off the volume controll would act as it does (as an amplification
+adjustment). When the modulation feature was activated the volume control
+would become an absolute-volume control.  
+If, for example, the modulation control was set at 50% the computor would
+calculate the difference between the volume of music and the volume as set
+with the volume control, and halve that difference. In this way the soft
+would be bought louder, and the loud softened. 
+If the modulation control was set at 100% everything would be at the same
+volume.
 
---- patch_realtek.c-orig	2006-02-10 10:10:31.000000000 +1030
-+++ patch_realtek.c	2006-02-23 11:05:06.000000000 +1030
-@@ -306,9 +306,32 @@
- 		val = alc_pin_mode_min(dir);
- 
- 	change = pinctl != alc_pin_mode_values[val];
--	if (change)
-+	if (change) {
-+		/* Set pin mode as requested */
- 		snd_hda_codec_write(codec,nid,0,AC_VERB_SET_PIN_WIDGET_CONTROL,
- 			alc_pin_mode_values[val]);
-+
-+		/* Also enable the retasking pin's input/output as required 
-+		 * for the requested pin mode.  Enum values of 2 or less are
-+		 * input modes.
-+		 *
-+		 * Dynamically switching the input/output buffers probably
-+		 * reduces noise slightly, particularly on input.  However,
-+		 * having both the input and output buffers enabled
-+		 * simultaneously doesn't seem to be too problematic.
-+		 */
-+		if (val <= 2) {
-+			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
-+				AMP_OUT_MUTE);
-+			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
-+				AMP_IN_UNMUTE(0));
-+		} else {
-+			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
-+				AMP_IN_MUTE(0));
-+			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
-+				AMP_OUT_UNMUTE);
-+		}
-+	}
- 	return change;
- }
- 
-@@ -2744,14 +2767,16 @@
- 
-         /* Unmute HP pin widget amp left and right (no equiv mixer ctrl) */
-         {0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
--        /* Unmute Line1 pin widget amp left and right (no equiv mixer ctrl) */
-+        /* Unmute Line1 pin widget output buffer since it starts as an output.
-+         * If the pin mode is changed by the user the pin mode control will
-+         * take care of enabling the pin's input/output buffers as needed.
-+         * Therefore there's no need to enable the input buffer at this
-+         * stage.
-+	 */
-         {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
--        /* Unmute Line1 pin widget input for when this pin is used as input
--         * (no equiv mixer ctrl).  Having input and output unmuted doesn't
--         * seem to cause a problem.
--         */
--        {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--	/* Unmute pin widget used for Line-in (no equiv mixer ctrl) */
-+	/* Unmute input buffer of pin widget used for Line-in (no equiv 
-+	 * mixer ctrl)
-+	 */
-         {0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- 
-         /* Mute capture amp left and right */
-@@ -2872,7 +2897,11 @@
- 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
- 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
- 
--	/* Unmute retasking pin widget output amp left/right (no mixer ctrl) */
-+	/* Unmute retasking pin widget output buffers since the default
-+	 * state appears to be output.  As the pin mode is changed by the
-+	 * user the pin mode control will take care of enabling the pin's
-+	 * input/output buffers as needed.
-+	 */
- 	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-@@ -2882,17 +2911,6 @@
- 	/* Also unmute the mono-out pin widget */
- 	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 
--	/* Also unmute the retasking pin input amps.  Having the input and
--	 * output amps unmuted at the same time doesn't appear to cause any
--	 * trouble.
--	 */
--	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--	{0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
--
- 	/* Mute capture amp left and right */
- 	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	/* Set ADC connection select to match default mixer setting - line 
+thanks for your time
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-23-06 01:55 noremac        New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
