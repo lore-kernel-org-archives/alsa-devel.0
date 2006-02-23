@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001870]: Variable Sample Rate Audio (VSR/VRA) feature not implemented for chip AD1981B to allow output at sample rate other than 48000
-Date: Thu, 23 Feb 2006 18:23:47 +0100
-Message-ID: <54d8a93453d8f41d0a328abf39b8feac@bugtrack.alsa-project.org>
+From: Florian Schlichting <f.schlichting@ucl.ac.uk>
+Subject: debugging nm256: some results, many questions
+Date: Fri, 24 Feb 2006 02:52:54 +0800
+Message-ID: <20060223185253.GA7954@tigerbay>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9amGYk9869ThD9tj"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C871E1A7
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 18:23:47 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,111 +16,125 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1870> 
-======================================================================
-Reported By:                bmill
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1870
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-r2
-======================================================================
-Date Submitted:             02-23-2006 01:08 CET
-Last Modified:              02-23-2006 18:23 CET
-======================================================================
-Summary:                    Variable Sample Rate Audio (VSR/VRA) feature not
-implemented for chip AD1981B to allow output at sample rate other than 48000
-Description: 
-For soundcards using the audio chip Analog Devices AC '97 SoundMAX Codec
-AD1981B, the driver intel8x0 is used. These chips have Variable Sample
-Rate Audio which gives Full-Duplex Variable Sample Rate Audio from 7040 hz
-to 48 khz in 1 hz increments (see datasheet). The software driver,
-however, does not have this feature implemented but rather hardcodes 48000
-as the default sample rate without the ability to alter it.
+--9amGYk9869ThD9tj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Playback at other sample rates is desired to skip the step of resampling
-audio material at samples other than 48000, resultin in better sound
-quality with less distortion due to resampling artifacts.
+Hi,
 
-Requesting an implementation of altering the output sample rate via VRA.
-======================================================================
+spurred by the upcoming removal of the OSS audio drivers and a post on
+LKML saying ALSA developers lack access to hardware / testers, I thought
+I should get a little more active and find out about the reasons for
+frequent hangs when booting my Dell Latitude LS (the 500 MHz version
+with 2MB video RAM) - the issue looks similar to
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D328
+ie setting another workaround than the default (=3D1) doesn't have any
+effect.
 
-----------------------------------------------------------------------
- bmill - 02-23-06 11:34 
-----------------------------------------------------------------------
-HVLinuxMobile hara # cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: Analog Devices AD1981B
+I was able to narrow down where exactly it hangs (most of the time), but
+have as yet no idea why this doesn't occur with the OSS driver or why my
+ideas for workarounds weren't successful. I must say that this is the
+first time I'm looking at kernel code and I'm pretty inexperienced with
+C, so I hope that some of you who are much more experienced with the
+sound architecture have some pointers and ideas for me...
 
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 16-bit
-3D enhancement   : No 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic2
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0 VRA
-Extended status  : VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 22050Hz
-
-AD18XX configuration
-Unchained        : 0x1000,0x0000,0x0000
-Chained          : 0x0000,0x0000,0x0000
-
-HVLinuxMobile hara # lspci        #output filtered
-00:1f.5 Multimedia audio controller: Intel Corporation 82801DB/DBL/DBM
-(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
-
-HVLinuxMobile hara # lspci -nv    #output filtered
-00:1f.5 0401: 8086:24c5 (rev 03)
-        Subsystem: 1179:0241
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at be00 [size=256]
-        I/O ports at bdc0 [size=64]
-        Memory at cfdffe00 (32-bit, non-prefetchable) [size=512]
-        Memory at cfdffd00 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [50] Power Management version 2
-
-----------------------------------------------------------------------
- Clemens Ladisch - 02-23-06 18:23 
-----------------------------------------------------------------------
-Looks OK.
-
-Does the "PCM font DAC" frequency change after you run "aplay -D plughw:0
-something.wav"?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-23-06 01:08 bmill          New Issue                                    
-02-23-06 01:08 bmill          Distribution              => Gentoo          
-02-23-06 01:08 bmill          Kernel Version            => 2.6.14-r2       
-02-23-06 01:14 bmill          File Added: ad1981B.pdf                      
-02-23-06 11:08 Clemens LadischNote Added: 0008166                          
-02-23-06 11:34 bmill          Note Added: 0008167                          
-02-23-06 18:23 Clemens LadischNote Added: 0008168                          
-======================================================================
+I'm not sure about what "is known" about this problem (or where that
+would be documented), so what I write now is fairly extensive...
 
 
+hangs occur at initialization, more precisely when both snd-nm256 and
+snd-ac97-codec are loaded (repeated loading and unloading of snd-nm256
+alone is fine) - it never died on me during ordinary use. nm256 is being
+initialized via snd_nm256_probe calling snd_nm256_mixer on line 1648
+calling snd_ac97_mixer on line 1249. This is identical for all hangs.
+
+snd_ac97_mixer and snd_ac97_mixer_build in ac97_codec.c is a bit more
+complicated, as hangs occur in various places when the different
+registers are initialized; for me, most occur when initializing the
+volume of Phone, Mic, Line-In, CD, Video and Aux. As far as I can tell
+there's no pattern what register it hangs at. All eventually call
+snd_ac97_read, which returns ac97->bus->ops->read(ac97, reg) which is
+snd_nm256_ac97_read which, after some delays and waiting, returns
+readw(chip->cport + offset) in snd_nm256_readw. This is as far as I
+could trace it, and ALL hangs during initialization occur here.
+
+Is that as far as tracing the source of the problem can go? So what can
+be done about this, and why doesn't it occur with the OSS driver?
+
+
+I did a little searching and found the web pages of the original OSS
+driver author, where he says among other things (at
+http://web.archive.org/web/20020830005020/www.uglx.org/sony-nm256av-notes.h=
+tml)
+
+> (However, I've run into problems with hanging the laptop while writing
+> to some of the optional registers; you have been warned. The safest
+> approach is to stick with the standard set of registers.)
+>
+> Also, if you attempt to read too quickly from the mixer, it will also
+> cause hangs. Bad juju. The driver caches a copy of the mixer contents,
+> and it seems to be successful at avoiding the hanging problem.
+
+I haven't understood how the OSS driver is doing this caching, and
+whether the ALSA driver is doing it, too. There are a lot of reads, and
+during tracing the hang I had the impression that an increasing number of
+printk's is not just slowing down the whole process but also slightly reduc=
+ing
+the likelihood of crashes. I thus added massive udelay's before and
+after the read in an attempt to come up with a fix, but nothing changed
+(I couldn't even bring the delays to a point where I'd notice them), so
+I aborted this.
+
+The other idea I came up with is that nearly all the hangs occur at
+registers I don't need (recording from the mic gets heavily distorted by
+the hard drive spinning, and I've never noticed Phone, Line-In, Video or
+Aux to do anything, so I really only need Master_Stereo and PCM) and
+could perhaps be avoided by telling the driver not to use them. So in
+the array mixer_regs at nm256.c:1229 I commented out everything apart
+=66rom AC97_MASTER, AC97_PCM, AC97_GENERAL_PURPOSE (which seemed important
+for many things in ac97_codec.c) and the apparently indispensable
+AC97_VENDOR_ID1, AC97_VENDOR_ID2. Booting with the resulting modules got
+me through the initialization very smoothly (I tried at least 10 times),
+but it always crashes shortly after completing snd_nm256_probe (on the
+console, I still get the new bash prompt before it hangs; on bootup, I
+sometimes get a line from the next driver)
+
+What on earth is happening _after_ initialization that's not happening
+during normal initialization??? (anything to do with
+concurrency/interrupts, and how would I test for that? - notice that in
+the above mentioned bug report, the reporter claims that the driver
+worked well with kernel 2.6.7, so perhaps it's not the driver but
+another subsection, like pci?)
+
+
+I'm confused, but I hope some of you are still with me and can tell me
+whether I've done some things right and what else I could try... I'm
+still not familiar enough with ALSA and AC97 to have any idea about what
+the OSS driver is really doing differently here (but isn't it
+implementing its own mixer??), but since we've got working code it must
+be possible to find a solution...
+
+Florian
+
+--9amGYk9869ThD9tj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFD/gSF/R0+cAphf/kRAjMOAKC9XMMjP6tGuFBBGp2yBdYFUTrCrQCfR3wD
+8t7S2I2C6oNqj5RXHOeMAAY=
+=OuCK
+-----END PGP SIGNATURE-----
+
+--9amGYk9869ThD9tj--
 
 
 -------------------------------------------------------
