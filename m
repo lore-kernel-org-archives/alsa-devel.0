@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001872]: Riptide firmware loading fails on my hardware
-Date: Thu, 23 Feb 2006 03:10:48 +0100
-Message-ID: <91521d147e2b28fbb9e9e9debab1c628@bugtrack.alsa-project.org>
+From: boku <boku0712@gmail.com>
+Subject: Configure error for alsa-utils
+Date: Thu, 23 Feb 2006 11:19:45 +0800
+Message-ID: <715d90900602221919g512f71edy5985d487c1fde62e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_4929_22836119.1140664785528"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C0801A0
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 03:10:48 +0100 (MET)
+Received: from zproxy.gmail.com (zproxy.gmail.com [64.233.162.198])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C51851A0
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 04:19:46 +0100 (MET)
+Received: by zproxy.gmail.com with SMTP id 34so1585758nzf
+        for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 19:19:45 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,51 +23,44 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_4929_22836119.1140664785528
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1872> 
-======================================================================
-Reported By:                hobbified
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1872
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             Various, this data from 2.6.15-rc2-ck2
-======================================================================
-Date Submitted:             02-23-2006 03:10 CET
-Last Modified:              02-23-2006 03:10 CET
-======================================================================
-Summary:                    Riptide firmware loading fails on my hardware
-Description: 
-When I try to use the snd-riptide module on this machine (actually a
-friend's), it fails to load the firmware properly, and so the module
-doesn't initialize. The device has PCI ID 127a:4310, which isn't in the
-PCI database, but the other function of the same device has ID 4311, which
-reports as a Riptide modem. It's an onboard device in an HP Presario. The
-problem is the same on 1.0.10 and 1.0.11rc3, but I used rc3 to produce the
-debugging output below. Also, I used the 'riptide.hex' firmware from the
-linuxant distribution (riptide-0.6lnxtbeta03122800), which I verified to
-be the same as in the Windows driver.
-======================================================================
+Dear all,
+    I met an error while configuring alsa-utils. It shows configure: error:
+No linkable libasound was found.
+Then I checked the config.log, there's a message shown
+"configure:5508: error: No linkable libasound was found."
+Before configuring alsa-utils, i've compiled alsa-lib with cross-compiling
+method.
+Could anyone tell me how to pass the alsa-utils installation? Thanks a lot!=
+~
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-23-06 03:10 hobbified      New Issue                                    
-02-23-06 03:10 hobbified      File Added: log.txt                          
-02-23-06 03:10 hobbified      Distribution              => Ubuntu          
-02-23-06 03:10 hobbified      Kernel Version            => Various, this data
-from 2.6.15-rc2-ck2
-======================================================================
+Best Regards,
+boku
 
+------=_Part_4929_22836119.1140664785528
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
+<div>Dear all,</div>
+<div>&nbsp;&nbsp;&nbsp; I met an error while configuring alsa-utils. It sho=
+ws configure: error: No linkable libasound was found.</div>
+<div>Then&nbsp;I checked the config.log, there's a message shown </div>
+<div>&quot;configure:5508: error: No linkable libasound was found.&quot; </=
+div>
+<div>Before configuring alsa-utils, i've compiled alsa-lib with cross-compi=
+ling method.&nbsp;</div>
+<div>Could&nbsp;anyone tell me&nbsp;how to pass the alsa-utils&nbsp;install=
+ation? Thanks a lot!~</div>
+<div>&nbsp;</div>
+<div>Best Regards,</div>
+<div>boku&nbsp;&nbsp;</div>
+
+------=_Part_4929_22836119.1140664785528--
 
 
 -------------------------------------------------------
