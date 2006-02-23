@@ -1,16 +1,16 @@
 From: boku <boku0712@gmail.com>
-Subject: Configure error for alsa-utils
-Date: Thu, 23 Feb 2006 11:19:45 +0800
-Message-ID: <715d90900602221919g512f71edy5985d487c1fde62e@mail.gmail.com>
+Subject: configuring error for alsa-utils
+Date: Thu, 23 Feb 2006 11:44:41 +0800
+Message-ID: <715d90900602221944t1f05c949rce8a0d9035f7cdc0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_Part_4929_22836119.1140664785528"
+	boundary="----=_Part_5053_19789470.1140666281462"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from zproxy.gmail.com (zproxy.gmail.com [64.233.162.198])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C51851A0
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 04:19:46 +0100 (MET)
-Received: by zproxy.gmail.com with SMTP id 34so1585758nzf
-        for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 19:19:45 -0800 (PST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 078781C5
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 04:44:42 +0100 (MET)
+Received: by zproxy.gmail.com with SMTP id n29so1583532nzf
+        for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2006 19:44:41 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,44 +23,35 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_4929_22836119.1140664785528
+------=_Part_5053_19789470.1140666281462
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-Dear all,
-    I met an error while configuring alsa-utils. It shows configure: error:
-No linkable libasound was found.
-Then I checked the config.log, there's a message shown
-"configure:5508: error: No linkable libasound was found."
-Before configuring alsa-utils, i've compiled alsa-lib with cross-compiling
-method.
-Could anyone tell me how to pass the alsa-utils installation? Thanks a lot!=
-~
+Hi all,
+     Another error occurred:
+checking for libasound headers version >=3D 1.0.9... not present.
+configure: error: Sufficiently new version of libasound not found.
+Would you please let me know how I can fix the error? Thanks!~
 
 Best Regards,
-boku
+Boku
 
-------=_Part_4929_22836119.1140664785528
+------=_Part_5053_19789470.1140666281462
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-<div>Dear all,</div>
-<div>&nbsp;&nbsp;&nbsp; I met an error while configuring alsa-utils. It sho=
-ws configure: error: No linkable libasound was found.</div>
-<div>Then&nbsp;I checked the config.log, there's a message shown </div>
-<div>&quot;configure:5508: error: No linkable libasound was found.&quot; </=
-div>
-<div>Before configuring alsa-utils, i've compiled alsa-lib with cross-compi=
-ling method.&nbsp;</div>
-<div>Could&nbsp;anyone tell me&nbsp;how to pass the alsa-utils&nbsp;install=
-ation? Thanks a lot!~</div>
+<div>Hi all,</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp; Another error occurred:</div>
+<div>checking for libasound headers version &gt;=3D 1.0.9... not present.<b=
+r>configure: error: Sufficiently new version of libasound not found.<br>Wou=
+ld you please let me know how I can fix the error? Thanks!~</div>
 <div>&nbsp;</div>
 <div>Best Regards,</div>
-<div>boku&nbsp;&nbsp;</div>
+<div>Boku</div>
 
-------=_Part_4929_22836119.1140664785528--
+------=_Part_5053_19789470.1140666281462--
 
 
 -------------------------------------------------------
