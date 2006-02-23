@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001871]: A possible (??) new feature? - volume normalisation
-Date: Thu, 23 Feb 2006 01:55:53 +0100
-Message-ID: <0935b10b39b26a00910ec367f1ce930a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001872]: Riptide firmware loading fails on my hardware
+Date: Thu, 23 Feb 2006 03:10:48 +0100
+Message-ID: <91521d147e2b28fbb9e9e9debab1c628@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C3CA1A2
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 01:55:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C0801A0
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 03:10:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1871> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1872> 
 ======================================================================
-Reported By:                noremac
+Reported By:                hobbified
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1871
-Category:                   alsamixer
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - driver
+Issue ID:                   1872
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             Various, this data from 2.6.15-rc2-ck2
 ======================================================================
-Date Submitted:             02-23-2006 01:55 CET
-Last Modified:              02-23-2006 01:55 CET
+Date Submitted:             02-23-2006 03:10 CET
+Last Modified:              02-23-2006 03:10 CET
 ======================================================================
-Summary:                    A possible (??) new feature? - volume normalisation
+Summary:                    Riptide firmware loading fails on my hardware
 Description: 
-I was pointed here from the gento forum
-http://forums.gentoo.org/viewtopic-t-436425.html?sid=afbe87e55c4b71954a0e6d8e55d3028b
-
-but am not sure this is the best place for a feature request. (sorry if it
-is not)
-
-Would it be possible to build into alsa a volume modulatation of
-normalisation feature? This would accomadate for listening to music with
-huge dynamic range (I find when I turn the volume up high enough to hear
-the soft parts, the loud parts nearly deafen me).
-The feature I had in mind would be such that when this feature was
-switched off the volume controll would act as it does (as an amplification
-adjustment). When the modulation feature was activated the volume control
-would become an absolute-volume control.  
-If, for example, the modulation control was set at 50% the computor would
-calculate the difference between the volume of music and the volume as set
-with the volume control, and halve that difference. In this way the soft
-would be bought louder, and the loud softened. 
-If the modulation control was set at 100% everything would be at the same
-volume.
-
-thanks for your time
+When I try to use the snd-riptide module on this machine (actually a
+friend's), it fails to load the firmware properly, and so the module
+doesn't initialize. The device has PCI ID 127a:4310, which isn't in the
+PCI database, but the other function of the same device has ID 4311, which
+reports as a Riptide modem. It's an onboard device in an HP Presario. The
+problem is the same on 1.0.10 and 1.0.11rc3, but I used rc3 to produce the
+debugging output below. Also, I used the 'riptide.hex' firmware from the
+linuxant distribution (riptide-0.6lnxtbeta03122800), which I verified to
+be the same as in the Windows driver.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 01:55 noremac        New Issue                                    
+02-23-06 03:10 hobbified      New Issue                                    
+02-23-06 03:10 hobbified      File Added: log.txt                          
+02-23-06 03:10 hobbified      Distribution              => Ubuntu          
+02-23-06 03:10 hobbified      Kernel Version            => Various, this data
+from 2.6.15-rc2-ck2
 ======================================================================
 
 
