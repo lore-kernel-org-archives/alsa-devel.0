@@ -1,16 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Configure error for alsa-utils
-Date: Thu, 23 Feb 2006 07:57:14 +0000
-Message-ID: <1140681434.9220.2.camel@localhost.localdomain>
-References: <715d90900602221919g512f71edy5985d487c1fde62e@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001870]: Variable Sample Rate Audio (VSR/VRA) feature not implemented for chip AD1981B to allow output at sample rate other than 48000
+Date: Thu, 23 Feb 2006 11:08:39 +0100
+Message-ID: <5ee5952a1b570b79e85b201ce44af7ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3D1821C5
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 08:57:17 +0100 (MET)
-In-Reply-To: <715d90900602221919g512f71edy5985d487c1fde62e@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8D30186
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 11:08:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,23 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: boku <boku0712@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-02-23 at 11:19 +0800, boku wrote:
-> Dear all,
->     I met an error while configuring alsa-utils. It shows configure:
-> error: No linkable libasound was found.
-> Then I checked the config.log, there's a message shown 
-> "configure:5508: error: No linkable libasound was found." 
-> Before configuring alsa-utils, i've compiled alsa-lib with
-> cross-compiling method. 
-> Could anyone tell me how to pass the alsa-utils installation? Thanks a
-> lot!~
->  
-Did you specify where your alsalib was when building? Otherwise it will
-try to use the alsalib on the build machine.
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1870> 
+======================================================================
+Reported By:                bmill
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1870
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-r2
+======================================================================
+Date Submitted:             02-23-2006 01:08 CET
+Last Modified:              02-23-2006 11:08 CET
+======================================================================
+Summary:                    Variable Sample Rate Audio (VSR/VRA) feature not
+implemented for chip AD1981B to allow output at sample rate other than 48000
+Description: 
+For soundcards using the audio chip Analog Devices AC '97 SoundMAX Codec
+AD1981B, the driver intel8x0 is used. These chips have Variable Sample
+Rate Audio which gives Full-Duplex Variable Sample Rate Audio from 7040 hz
+to 48 khz in 1 hz increments (see datasheet). The software driver,
+however, does not have this feature implemented but rather hardcodes 48000
+as the default sample rate without the ability to alter it.
+
+Playback at other sample rates is desired to skip the step of resampling
+audio material at samples other than 48000, resultin in better sound
+quality with less distortion due to resampling artifacts.
+
+Requesting an implementation of altering the output sample rate via VRA.
+======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-23-06 11:08 
+----------------------------------------------------------------------
+The AC'97 driver does implement VRA.
+
+Please show the contents of /proc/asound/card0/codec97#0/ac97#0-0
+and the output of "lspci -nv" for your AC'97 controller.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-23-06 01:08 bmill          New Issue                                    
+02-23-06 01:08 bmill          Distribution              => Gentoo          
+02-23-06 01:08 bmill          Kernel Version            => 2.6.14-r2       
+02-23-06 01:14 bmill          File Added: ad1981B.pdf                      
+02-23-06 11:08 Clemens LadischNote Added: 0008166                          
+======================================================================
+
 
 
 
