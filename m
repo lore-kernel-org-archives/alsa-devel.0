@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001870]: Variable Sample Rate Audio (VSR/VRA) feature not implemented for chip AD1981B to allow output at sample rate other than 48000
-Date: Thu, 23 Feb 2006 11:08:39 +0100
-Message-ID: <5ee5952a1b570b79e85b201ce44af7ed@bugtrack.alsa-project.org>
+From: "Margarito Alvarez" <alvarezdm@skolekom.dk>
+Subject: Your woman wants a replica
+Date: Thu, 23 Feb 2006 12:45:21 +0100
+Message-ID: <ffce01c6386e$cc194300$9ac8276d@pipeline.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8D30186
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 11:08:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Get the Finest Rolex Watch Replica
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1870> 
-======================================================================
-Reported By:                bmill
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1870
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.14-r2
-======================================================================
-Date Submitted:             02-23-2006 01:08 CET
-Last Modified:              02-23-2006 11:08 CET
-======================================================================
-Summary:                    Variable Sample Rate Audio (VSR/VRA) feature not
-implemented for chip AD1981B to allow output at sample rate other than 48000
-Description: 
-For soundcards using the audio chip Analog Devices AC '97 SoundMAX Codec
-AD1981B, the driver intel8x0 is used. These chips have Variable Sample
-Rate Audio which gives Full-Duplex Variable Sample Rate Audio from 7040 hz
-to 48 khz in 1 hz increments (see datasheet). The software driver,
-however, does not have this feature implemented but rather hardcodes 48000
-as the default sample rate without the ability to alter it.
+We only sell premium watches. There's no battery in these replicas just
+like the real ones since they charge themselves as you move. The second
+hand moves JUST like the real ones, too. These original watches sell in
+stores for thousands of dollars. We sell them for much less.
 
-Playback at other sample rates is desired to skip the step of resampling
-audio material at samples other than 48000, resultin in better sound
-quality with less distortion due to resampling artifacts.
+- Replicated to the Smallest Detail
 
-Requesting an implementation of altering the output sample rate via VRA.
-======================================================================
+- 98% Perfectly Accurate Markings
 
-----------------------------------------------------------------------
- Clemens Ladisch - 02-23-06 11:08 
-----------------------------------------------------------------------
-The AC'97 driver does implement VRA.
+- Signature Green Sticker w/ Serial Number on Watch Back
 
-Please show the contents of /proc/asound/card0/codec97#0/ac97#0-0
-and the output of "lspci -nv" for your AC'97 controller.
+- Magnified Quickset Date
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-23-06 01:08 bmill          New Issue                                    
-02-23-06 01:08 bmill          Distribution              => Gentoo          
-02-23-06 01:08 bmill          Kernel Version            => 2.6.14-r2       
-02-23-06 01:14 bmill          File Added: ad1981B.pdf                      
-02-23-06 11:08 Clemens LadischNote Added: 0008166                          
-======================================================================
+- Includes all Proper Markings
+
+Visit us: http://watches-worldonline.info/
+
+/Margarito
 
 
 
