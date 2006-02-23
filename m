@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001869]: Playing surround sound produces 100% CPU load
-Date: Thu, 23 Feb 2006 00:54:03 +0100
-Message-ID: <64ce52ed8d71897eed8ecc47cfed736d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001870]: Variable Sample Rate Audio (VSR/VRA) feature not implemented for chip AD1981B to allow output at sample rate other than 48000
+Date: Thu, 23 Feb 2006 01:08:19 +0100
+Message-ID: <f10794c1962844d1a87a8415eaae6ae5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A95F719D
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 00:54:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 548D91A1
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2006 01:08:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1870> 
 ======================================================================
-Reported By:                bitmage2
+Reported By:                bmill
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1869
-Category:                   CORE - pcm
+Issue ID:                   1870
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             Linux 2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC
-2006 i686 athlon i386 GNU/Linux
+Distribution:               Gentoo
+Kernel Version:             2.6.14-r2
 ======================================================================
-Date Submitted:             02-23-2006 00:48 CET
-Last Modified:              02-23-2006 00:54 CET
+Date Submitted:             02-23-2006 01:08 CET
+Last Modified:              02-23-2006 01:08 CET
 ======================================================================
-Summary:                    Playing surround sound produces 100% CPU load
+Summary:                    Variable Sample Rate Audio (VSR/VRA) feature not
+implemented for chip AD1981B to allow output at sample rate other than 48000
 Description: 
-I am using the CS46xx with a Hercules Gametheater XP 5.1 . It plays back
-stereo without problems.
-I wanted to use the rest of my 5.1 speaker set, so for a test I ran the
-speaker-test program. Running it without parameters or with 2 or 4.0
-channels works also fine. So far so good.
+For soundcards using the audio chip Analog Devices AC '97 SoundMAX Codec
+AD1981B, the driver intel8x0 is used. These chips have Variable Sample
+Rate Audio which gives Full-Duplex Variable Sample Rate Audio from 7040 hz
+to 48 khz in 1 hz increments (see datasheet). The software driver,
+however, does not have this feature implemented but rather hardcodes 48000
+as the default sample rate without the ability to alter it.
 
-But when I run it with 5.0 channels or 5.1 channels the CPU load of
-speaker-test goes to 100%. I'll show the output of top along with the
-command lines below (for the 2.0 and 5.1 case) in the "Additional
-Information" box.
+Playback at other sample rates is desired to skip the step of resampling
+audio material at samples other than 48000, resultin in better sound
+quality with less distortion due to resampling artifacts.
 
-
-
+Requesting an implementation of altering the output sample rate via VRA.
 ======================================================================
-
-----------------------------------------------------------------------
- bitmage2 - 02-23-06 00:54 
-----------------------------------------------------------------------
-A similar behaviour is reported here (I also get this behaviour):
-http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg14867.html
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 00:48 bitmage2       New Issue                                    
-02-23-06 00:48 bitmage2       Distribution              => SuSE Linux 10.0 
-02-23-06 00:48 bitmage2       Kernel Version            => Linux
-2.6.13-15.8-default #1 Tue Feb 7 11:07:24 UTC 2006 i686 athlon i386 GNU/Linux
-02-23-06 00:54 bitmage2       Note Added: 0008164                          
+02-23-06 01:08 bmill          New Issue                                    
+02-23-06 01:08 bmill          Distribution              => Gentoo          
+02-23-06 01:08 bmill          Kernel Version            => 2.6.14-r2       
 ======================================================================
 
 
