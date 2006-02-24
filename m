@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Fri, 24 Feb 2006 14:16:39 +0100
-Message-ID: <6a5bf37bf7f93b15adc9604b97fc73bf@bugtrack.alsa-project.org>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: Re: [RFC][PATCH] Transparent network support through
+ polypaudio
+Date: Fri, 24 Feb 2006 14:22:55 +0100
+Message-ID: <43FF08AF.8040601@cendio.se>
+References: <43F09D76.9060004@cendio.se>	<43F61E6D.5020206@cendio.se>	<s5hirr8k7ra.wl%tiwai@suse.de>	<43FB420D.8010605@cendio.se>	<s5hfymck6k3.wl%tiwai@suse.de>	<43FC3374.2030701@cendio.se>	<s5hirr7765t.wl%tiwai@suse.de>	<43FDB25D.402@cendio.se> <s5hwtfmb0ts.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13B571BF
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 14:16:39 +0100 (MET)
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 792B61BF
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 14:22:58 +0100 (MET)
+In-Reply-To: <s5hwtfmb0ts.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +21,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Thu, 23 Feb 2006 14:02:21 +0100,
+> Pierre Ossman wrote:
+>> Here is a final update to the plugin and the documentation. This release 
+>> adds capture volume and mute switches. This should also be the last API 
+>> change in polypaudio before the next release, so this plugin should be 
+>> stable for now.
+> 
+> Applied to CVS.  Thanks!
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
-======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
-======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              02-24-2006 14:16 CET
-======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
-Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
+On a related note, do you know if you guys have any plans on including 
+alsa-plugins in SLES? Or NLD? We're rather keen on getting this included 
+in most dists. :)
 
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
-======================================================================
-
-----------------------------------------------------------------------
- oggb4mp3 - 02-24-06 07:32 
-----------------------------------------------------------------------
-BTW, I chose block as the severity because the card does not work now, but
-has with earlier kernels, so it is a regression.
-
-----------------------------------------------------------------------
- Clemens Ladisch - 02-24-06 14:16 
-----------------------------------------------------------------------
-Please make sure that you're using kernel 2.6.15.2 or later.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
-02-24-06 14:16 Clemens LadischNote Added: 0008175                          
-======================================================================
-
-
+Rgds
+-- 
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
 
 
 -------------------------------------------------------
