@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001870]: Variable Sample Rate Audio (VSR/VRA) feature not implemented for chip AD1981B to allow output at sample rate other than 48000
-Date: Fri, 24 Feb 2006 01:51:33 +0100
-Message-ID: <24199b1492577882df2a0b4be5e91244@bugtrack.alsa-project.org>
+Date: Fri, 24 Feb 2006 02:10:27 +0100
+Message-ID: <2c2558c2ae2e583db8f0758afcbe9da7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFC2E18C
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 01:51:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25D3A191
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 02:10:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-r2
 ======================================================================
 Date Submitted:             02-23-2006 01:08 CET
-Last Modified:              02-24-2006 01:51 CET
+Last Modified:              02-24-2006 02:10 CET
 ======================================================================
 Summary:                    Variable Sample Rate Audio (VSR/VRA) feature not
 implemented for chip AD1981B to allow output at sample rate other than 48000
@@ -60,14 +60,6 @@ Requesting an implementation of altering the output sample rate via VRA.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-23-06 18:23 
-----------------------------------------------------------------------
-Looks OK.
-
-Does the "PCM font DAC" frequency change after you run "aplay -D plughw:0
-something.wav"?
-
-----------------------------------------------------------------------
  bmill - 02-24-06 01:51 
 ----------------------------------------------------------------------
 PCM front DAC does turn to 44100. I was wrong to conclude that the VRA
@@ -75,6 +67,12 @@ problem was from ALSA, I apologize.
 
 However, running xmms or mplayer (even with -srate 441000) does not alter
 the sample rate. Why is this?
+
+----------------------------------------------------------------------
+ bmill - 02-24-06 02:10 
+----------------------------------------------------------------------
+Nevermind, specifying the specific hardware device instead of the mixer
+plays at the correct rate.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -87,6 +85,7 @@ Date Modified  Username       Field                    Change
 02-23-06 11:34 bmill          Note Added: 0008167                          
 02-23-06 18:23 Clemens LadischNote Added: 0008168                          
 02-24-06 01:51 bmill          Note Added: 0008169                          
+02-24-06 02:10 bmill          Note Added: 0008170                          
 ======================================================================
 
 
