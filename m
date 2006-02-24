@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Fri, 24 Feb 2006 07:27:32 +0100
-Message-ID: <0ff7ed56c16155d3f41737b769de2a89@bugtrack.alsa-project.org>
+Date: Fri, 24 Feb 2006 07:32:10 +0100
+Message-ID: <fc1882faa4ae938a37ae33b8850af9a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 226D518F
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 07:27:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9E7B18C
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 07:32:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Arch Linux
 Kernel Version:             2.6.15-archck4
 ======================================================================
 Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              02-24-2006 07:27 CET
+Last Modified:              02-24-2006 07:32 CET
 ======================================================================
 Summary:                    USB sound device appears to be loading properly, but
 all applications report the device is busy
@@ -58,12 +58,19 @@ always was, and I can select it, but all apps report that it is busy or
 blocked.  This all worked properly with a 2.6.14-ck kernel.
 ======================================================================
 
+----------------------------------------------------------------------
+ oggb4mp3 - 02-24-06 07:32 
+----------------------------------------------------------------------
+BTW, I chose block as the severity because the card does not work now, but
+has with earlier kernels, so it is a regression.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-24-06 07:27 oggb4mp3       New Issue                                    
 02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
 02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
 ======================================================================
 
 
