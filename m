@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001870]: Variable Sample Rate Audio (VSR/VRA) feature not implemented for chip AD1981B to allow output at sample rate other than 48000
-Date: Fri, 24 Feb 2006 14:13:46 +0100
-Message-ID: <d05969eb244451b44f2bef8a9c699644@bugtrack.alsa-project.org>
+Date: Fri, 24 Feb 2006 14:14:04 +0100
+Message-ID: <5d1a3af0d78e19a728a719e6e64717b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7836B1BF
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 14:13:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A74BB1BF
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 14:14:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1870> 
 ======================================================================
@@ -35,14 +35,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Distribution:               Gentoo
 Kernel Version:             2.6.14-r2
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
 Date Submitted:             02-23-2006 01:08 CET
-Last Modified:              02-24-2006 14:13 CET
+Last Modified:              02-24-2006 14:14 CET
 ======================================================================
 Summary:                    Variable Sample Rate Audio (VSR/VRA) feature not
 implemented for chip AD1981B to allow output at sample rate other than 48000
@@ -88,6 +88,7 @@ Date Modified  Username       Field                    Change
 02-24-06 14:13 Clemens LadischResolution               open => not an issue
 02-24-06 14:13 Clemens LadischAssigned To               => Clemens Ladisch 
 02-24-06 14:13 Clemens LadischNote Added: 0008174                          
+02-24-06 14:14 Clemens LadischStatus                   resolved => closed  
 ======================================================================
 
 
