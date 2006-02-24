@@ -1,11 +1,14 @@
-From: Doug McLain <doug@nostar.net>
-Subject: patch for bug 1806
-Date: Fri, 24 Feb 2006 18:49:40 -0500
-Message-ID: <43FF9B94.6050909@nostar.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
+Date: Sat, 25 Feb 2006 00:49:36 +0100
+Message-ID: <1e9cd99b84883142447d50fc636db47d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000201050705010904070304"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81A401D2
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 00:49:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,53 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000201050705010904070304
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Jaroslav,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+======================================================================
+Reported By:                oggb4mp3
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1874
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Arch Linux
+Kernel Version:             2.6.15-archck4
+======================================================================
+Date Submitted:             02-24-2006 07:27 CET
+Last Modified:              02-25-2006 00:49 CET
+======================================================================
+Summary:                    USB sound device appears to be loading properly, but
+all applications report the device is busy
+Description: 
+I own a USB audio Device with a TI burr-brown DAC and with my recent
+upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
+this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
+I thought might be the culprit, but when I tried to apply the patch, I
+found that it was already applied.  I tried to reverse it, thinking that I
+might have had one of the devices that worked without it and this patch
+actually broke it, but no joy.
 
-I posted this patch to bug 1806 a while back, and have been awaiting a 
-reply or commit.  It currently reports the Locked/No Signal text 
-backwards in envy24control, since i was using an older version of 
-envy24control when I wrote the original code.  The Locked/No Signal test 
-was recently reversed in envy24control cvs, so the test in my code needs 
-to be reversed as well.  Here is the patch, once again.
+The device appears to be present as alsa device hw:1,0, the same as it
+always was, and I can select it, but all apps report that it is busy or
+blocked.  This all worked properly with a 2.6.14-ck kernel.
+======================================================================
 
-Doug
---
-http://nostar.net/
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-24-06 15:32 
+----------------------------------------------------------------------
+What is the output of "aplay -D plughw:1 something.wav" and of "lsof
+/dev/snd/* /dev/dsp*"?
 
---------------000201050705010904070304
-Content-Type: text/x-patch;
- name="1010lt_wordclock_status_correction.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="1010lt_wordclock_status_correction.diff"
+----------------------------------------------------------------------
+ oggb4mp3 - 02-25-06 00:49 
+----------------------------------------------------------------------
+$ aplay -D plughw:1 side_101.wav
+Playing WAVE 'side_101.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+aplay: set_params:949: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 44100
+PERIOD_TIME: (125011 125012)
+PERIOD_SIZE: 5513
+PERIOD_BYTES: 22052
+PERIODS: (3 4)
+BUFFER_TIME: 500000
+BUFFER_SIZE: 22050
+BUFFER_BYTES: 88200
+TICK_TIME: 1000
 
-? 1010lt_wordclock_status_correction.diff
-Index: pci/ice1712/delta.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ice1712/delta.c,v
-retrieving revision 1.25
-diff -u -r1.25 delta.c
---- pci/ice1712/delta.c	10 Feb 2006 08:42:17 -0000	1.25
-+++ pci/ice1712/delta.c	10 Feb 2006 21:30:27 -0000
-@@ -412,7 +412,7 @@
- 	if (snd_i2c_sendbytes(ice->cs8427, &reg, 1) != 1)
- 		snd_printk(KERN_ERR "unable to send register 0x%x byte to CS8427\n", reg);
- 	snd_i2c_readbytes(ice->cs8427, &reg, 1);
--	ucontrol->value.integer.value[0] = (reg ? 0 : 1);
-+	ucontrol->value.integer.value[0] = (reg ? 1 : 0);
- 	return 0;
- }
- 
+$ lsof /dev/snd/* /dev/dsp*
+COMMAND  PID USER   FD   TYPE DEVICE SIZE NODE NAME
+kmix    4595 greg   10u   CHR  116,0      8215 /dev/snd/controlC0
 
---------------000201050705010904070304--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-24-06 07:27 oggb4mp3       New Issue                                    
+02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
+02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+02-24-06 14:16 Clemens LadischNote Added: 0008175                          
+02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
+02-24-06 15:32 Clemens LadischNote Added: 0008178                          
+02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
