@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001873]: emu10k1 AC97 loopback on left channel only.
-Date: Fri, 24 Feb 2006 00:28:56 +0100
-Message-ID: <30359096403794b592ba2ebe99de9319@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001870]: Variable Sample Rate Audio (VSR/VRA) feature not implemented for chip AD1981B to allow output at sample rate other than 48000
+Date: Fri, 24 Feb 2006 01:51:33 +0100
+Message-ID: <24199b1492577882df2a0b4be5e91244@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E5B61C3
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 00:28:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFC2E18C
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 01:51:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1873> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1870> 
 ======================================================================
-Reported By:                kenm
+Reported By:                bmill
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1873
-Category:                   PCI - emu10k1
+Issue ID:                   1870
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware current
-Kernel Version:             2.6.15.3
+Distribution:               Gentoo
+Kernel Version:             2.6.14-r2
 ======================================================================
-Date Submitted:             02-24-2006 00:28 CET
-Last Modified:              02-24-2006 00:28 CET
+Date Submitted:             02-23-2006 01:08 CET
+Last Modified:              02-24-2006 01:51 CET
 ======================================================================
-Summary:                    emu10k1 AC97 loopback on left channel only.
+Summary:                    Variable Sample Rate Audio (VSR/VRA) feature not
+implemented for chip AD1981B to allow output at sample rate other than 48000
 Description: 
-Creative Labs CT4832 SBLive Value
-With alsa-driver versions 1.0.9b and previously, it was possible to set
-both "AC97" and "AC97 Capture" to full volume in alsamixer, to set up
-digital loopback to monitor in real time the sound recorded through "line
-in" via "line out".  With version 1.0.10, the monitored sound appears on
-the left channel only.  The right channel is completely muted.
+For soundcards using the audio chip Analog Devices AC '97 SoundMAX Codec
+AD1981B, the driver intel8x0 is used. These chips have Variable Sample
+Rate Audio which gives Full-Duplex Variable Sample Rate Audio from 7040 hz
+to 48 khz in 1 hz increments (see datasheet). The software driver,
+however, does not have this feature implemented but rather hardcodes 48000
+as the default sample rate without the ability to alter it.
+
+Playback at other sample rates is desired to skip the step of resampling
+audio material at samples other than 48000, resultin in better sound
+quality with less distortion due to resampling artifacts.
+
+Requesting an implementation of altering the output sample rate via VRA.
 ======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-23-06 18:23 
+----------------------------------------------------------------------
+Looks OK.
+
+Does the "PCM font DAC" frequency change after you run "aplay -D plughw:0
+something.wav"?
+
+----------------------------------------------------------------------
+ bmill - 02-24-06 01:51 
+----------------------------------------------------------------------
+PCM front DAC does turn to 44100. I was wrong to conclude that the VRA
+problem was from ALSA, I apologize.
+
+However, running xmms or mplayer (even with -srate 441000) does not alter
+the sample rate. Why is this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-06 00:28 kenm           New Issue                                    
-02-24-06 00:28 kenm           Distribution              => Slackware current
-02-24-06 00:28 kenm           Kernel Version            => 2.6.15.3        
+02-23-06 01:08 bmill          New Issue                                    
+02-23-06 01:08 bmill          Distribution              => Gentoo          
+02-23-06 01:08 bmill          Kernel Version            => 2.6.14-r2       
+02-23-06 01:14 bmill          File Added: ad1981B.pdf                      
+02-23-06 11:08 Clemens LadischNote Added: 0008166                          
+02-23-06 11:34 bmill          Note Added: 0008167                          
+02-23-06 18:23 Clemens LadischNote Added: 0008168                          
+02-24-06 01:51 bmill          Note Added: 0008169                          
 ======================================================================
 
 
