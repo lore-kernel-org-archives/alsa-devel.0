@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Fri, 24 Feb 2006 07:32:10 +0100
-Message-ID: <fc1882faa4ae938a37ae33b8850af9a3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001684]: no sound with SI7012
+Date: Fri, 24 Feb 2006 10:48:06 +0100
+Message-ID: <3e7b1c64a2d75194172a3166c6602668@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9E7B18C
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 07:32:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 951C7193
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 10:48:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,180 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1684> 
 ======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
+Reported By:                avant
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
+Issue ID:                   1684
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             kernel 2.6.14-1.1653_FC4
 ======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              02-24-2006 07:32 CET
+Date Submitted:             12-28-2005 08:39 CET
+Last Modified:              02-24-2006 10:48 CET
 ======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
+Summary:                    no sound with SI7012
 Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
+I do have some problems with sound on my Asus P4S 533 MX which is based on
+the SIS651 chipset with SI7012 (ADI AD1980 Codecs). Once it worked
+perfectly fine with OSS and FC2.
+OS: Fedora Core 4 fully updated with 
+    kernel 2.6.14-1.1653_FC4 and 
+    ALSA alsa-lib-1.0.10-2.FC4
 
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
+The FC systemtool system-config-soundcard identifies the soundcard and
+configures it apropriately, but - without playing any sound.
+I've unmuted all channels ans set the volume to max with alsamixer - no
+luck
+I've played with the option ac97_quirk, but again - no luck.
+
+Currently I don't know how to proceed
+
+Currently I'm using the following configuration:
+
+/etc/modprobe.conf
+==========================
+alias eth0 sis900
+alias usb-controller ehci-hcd
+alias usb-controller1 ohci-hcd
+
+alias char-major-116 snd
+alias snd-card-0 snd-intel8x0
+options snd-card-0 index=0 ac97_quirk=disable
+
+alias char-major-14 soundcore
+alias sound-slot-0 snd-intel8x0
+
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+==========================
+# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: SI7012 [SiS SI7012], device 0: Intel ICH [SiS SI7012]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+==========================
+# lsmod
+Module                  Size  Used by
+parport_pc             27909  1
+lp                     12937  0
+parport                35593  2 parport_pc,lp
+rfcomm                 38745  0
+l2cap                  25921  5 rfcomm
+bluetooth              48069  4 rfcomm,l2cap
+ipt_REJECT              5953  1
+ipt_state               1985  5
+ip_conntrack           51953  1 ipt_state
+nfnetlink               6617  1 ip_conntrack
+iptable_filter          3137  1
+ip_tables              20033  3 ipt_REJECT,ipt_state,iptable_filter
+dm_mod                 57181  0
+video                  16197  0
+button                  6737  0
+battery                 9541  0
+ac                      4933  0
+nvidia               4088432  12
+ipv6                  249761  12
+ohci_hcd               22497  0
+ehci_hcd               34381  0
+i2c_sis96x              5829  0
+i2c_core               22081  1 i2c_sis96x
+snd_intel8x0           32929  0
+snd_ac97_codec         88637  1 snd_intel8x0
+snd_ac97_bus            2497  1 snd_ac97_codec
+snd_seq_dummy           3781  0
+snd_seq_oss            31809  0
+snd_seq_midi_event      7105  1 snd_seq_oss
+snd_seq                49617  5
+snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
+snd_seq_device          9037  3 snd_seq_dummy,snd_seq_oss,snd_seq
+snd_pcm_oss            50545  0
+snd_mixer_oss          17985  1 snd_pcm_oss
+snd_pcm                87493  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer              25029  2 snd_seq,snd_pcm
+snd                    54437  9
+snd_intel8x0,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9889  1 snd
+snd_page_alloc         10697  2 snd_intel8x0,snd_pcm
+sis900                 21697  0
+mii                     5313  1 sis900
+floppy                 61957  0
+ext3                  129993  3
+jbd                    57813  1 ext3
+==========================
+# cat /proc/asound/pcm
+00-00: Intel ICH : SiS SI7012 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : SiS SI7012 - MIC ADC : capture 1
+==========================
+cat /proc/asound/SI7012/intel8x0
+Intel8x0
+
+Global control        : 0x00000002
+Global status         : 0x00300100
+AC'97 codecs ready    : primary
+==========================
+cat /proc/asound/oss/sndstat
+Sound Driver:3.8.1a-980706 (ALSA v1.0.10rc1 emulation code)
+Kernel: Linux bietigheim 2.6.14-1.1653_FC4 #1 Tue Dec 13 21:32:09 EST 2005
+i686
+Config options: 0
+
+Installed drivers:
+Type 10: ALSA emulation
+
+Card config:
+SiS SI7012 with AD1980 at 0x9400, irq 10
+
+Audio devices:
+0: SiS SI7012 (DUPLEX)
+
+Synth devices: NOT ENABLED IN CONFIG
+
+Midi devices: NOT ENABLED IN CONFIG
+
+Timers:
+7: system timer
+
+Mixers:
+0: Analog Devices AD1980
 ======================================================================
 
 ----------------------------------------------------------------------
- oggb4mp3 - 02-24-06 07:32 
+ rlrevell - 02-04-06 19:06 
 ----------------------------------------------------------------------
-BTW, I chose block as the severity because the card does not work now, but
-has with earlier kernels, so it is a regression.
+Any chance you can test FC3?
+
+----------------------------------------------------------------------
+ avant - 02-24-06 10:48 
+----------------------------------------------------------------------
+I haves tested yesterday also FC3 and it didn't work either.
+
+After this test I've bought a frontpanel extension for my case and I've
+attached this to the mobo - guess what, it works now perfectly fine. I'm
+just not sure if the connector at the backplane is broken or if I can add
+some parameters to use the backplane connector.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+12-28-05 08:39 avant          New Issue                                    
+12-28-05 08:39 avant          Distribution              => Fedora Core 4   
+12-28-05 08:39 avant          Kernel Version            => kernel
+2.6.14-1.1653_FC4
+01-24-06 13:54 avant          Note Added: 0007774                          
+01-24-06 21:39 rlrevell       Note Added: 0007775                          
+02-04-06 18:19 avant          Note Added: 0007918                          
+02-04-06 19:06 rlrevell       Note Added: 0007919                          
+02-24-06 10:48 avant          Note Added: 0008172                          
 ======================================================================
 
 
