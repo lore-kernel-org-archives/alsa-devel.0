@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001870]: Variable Sample Rate Audio (VSR/VRA) feature not implemented for chip AD1981B to allow output at sample rate other than 48000
-Date: Fri, 24 Feb 2006 14:14:04 +0100
-Message-ID: <5d1a3af0d78e19a728a719e6e64717b8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
+Date: Fri, 24 Feb 2006 14:16:39 +0100
+Message-ID: <6a5bf37bf7f93b15adc9604b97fc73bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A74BB1BF
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 14:14:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13B571BF
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2006 14:16:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,73 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1870> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
 ======================================================================
-Reported By:                bmill
+Reported By:                oggb4mp3
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1870
-Category:                   PCI - intel8x0
+Issue ID:                   1874
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.14-r2
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Arch Linux
+Kernel Version:             2.6.15-archck4
 ======================================================================
-Date Submitted:             02-23-2006 01:08 CET
-Last Modified:              02-24-2006 14:14 CET
+Date Submitted:             02-24-2006 07:27 CET
+Last Modified:              02-24-2006 14:16 CET
 ======================================================================
-Summary:                    Variable Sample Rate Audio (VSR/VRA) feature not
-implemented for chip AD1981B to allow output at sample rate other than 48000
+Summary:                    USB sound device appears to be loading properly, but
+all applications report the device is busy
 Description: 
-For soundcards using the audio chip Analog Devices AC '97 SoundMAX Codec
-AD1981B, the driver intel8x0 is used. These chips have Variable Sample
-Rate Audio which gives Full-Duplex Variable Sample Rate Audio from 7040 hz
-to 48 khz in 1 hz increments (see datasheet). The software driver,
-however, does not have this feature implemented but rather hardcodes 48000
-as the default sample rate without the ability to alter it.
+I own a USB audio Device with a TI burr-brown DAC and with my recent
+upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
+this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
+I thought might be the culprit, but when I tried to apply the patch, I
+found that it was already applied.  I tried to reverse it, thinking that I
+might have had one of the devices that worked without it and this patch
+actually broke it, but no joy.
 
-Playback at other sample rates is desired to skip the step of resampling
-audio material at samples other than 48000, resultin in better sound
-quality with less distortion due to resampling artifacts.
-
-Requesting an implementation of altering the output sample rate via VRA.
+The device appears to be present as alsa device hw:1,0, the same as it
+always was, and I can select it, but all apps report that it is busy or
+blocked.  This all worked properly with a 2.6.14-ck kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- bmill - 02-24-06 02:10 
+ oggb4mp3 - 02-24-06 07:32 
 ----------------------------------------------------------------------
-Nevermind, specifying the specific hardware device instead of the mixer
-plays at the correct rate.
+BTW, I chose block as the severity because the card does not work now, but
+has with earlier kernels, so it is a regression.
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-24-06 14:13 
+ Clemens Ladisch - 02-24-06 14:16 
 ----------------------------------------------------------------------
-The dmix plugin must always run at a fixed sample rate.
+Please make sure that you're using kernel 2.6.15.2 or later.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 01:08 bmill          New Issue                                    
-02-23-06 01:08 bmill          Distribution              => Gentoo          
-02-23-06 01:08 bmill          Kernel Version            => 2.6.14-r2       
-02-23-06 01:14 bmill          File Added: ad1981B.pdf                      
-02-23-06 11:08 Clemens LadischNote Added: 0008166                          
-02-23-06 11:34 bmill          Note Added: 0008167                          
-02-23-06 18:23 Clemens LadischNote Added: 0008168                          
-02-24-06 01:51 bmill          Note Added: 0008169                          
-02-24-06 02:10 bmill          Note Added: 0008170                          
-02-24-06 14:13 Clemens LadischStatus                   new => resolved     
-02-24-06 14:13 Clemens LadischResolution               open => not an issue
-02-24-06 14:13 Clemens LadischAssigned To               => Clemens Ladisch 
-02-24-06 14:13 Clemens LadischNote Added: 0008174                          
-02-24-06 14:14 Clemens LadischStatus                   resolved => closed  
+02-24-06 07:27 oggb4mp3       New Issue                                    
+02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
+02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+02-24-06 14:16 Clemens LadischNote Added: 0008175                          
 ======================================================================
 
 
