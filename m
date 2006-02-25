@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001878]: SIGSEGV in snd_pcm_rate_drain
-Date: Sat, 25 Feb 2006 14:08:05 +0100
-Message-ID: <7747676dbf9a553ef7fd97a13e40e1bf@bugtrack.alsa-project.org>
+From: =?shift-jis?B?c25zX2NvbXVuaV9saXZl?= <sns_comuni_live3net@rabbit.livedoor.com>
+Subject: =?shift-jis?B?Rnc6II5RicGCtYLEgt2C3IK5gvGCqYFI?=
+Date: Sat, 25 Feb 2006 20:22:50 +0800
+Message-ID: <2006022523446.17634@henglong03.vicp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="shift-jis"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A3C01BA
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 14:08:06 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09E4F1B5
+	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Sat, 25 Feb 2006 13:23:06 +0100 (MET)
+Received: from henglong03.vicp.net (unknown [222.171.78.52])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id C5E699936C
+	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Sat, 25 Feb 2006 13:22:49 +0100 (MET)
+Received: from qvhcgbhciw2 (unknown [36.232.69.133])
+	by smtp2 (Coremail) with SMTP id mbxQcQogG31KTfYx.1
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 20:22:50 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,69 +28,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1878> 
-======================================================================
-Reported By:                Faust3
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1878
-Category:                   CORE - pcm
-Reproducibility:            sometimes
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-25-2006 14:08 CET
-Last Modified:              02-25-2006 14:08 CET
-======================================================================
-Summary:                    SIGSEGV in snd_pcm_rate_drain
-Description: 
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread -1217157440 (LWP 13093)]
-0xb7e809b6 in snd_pcm_area_copy (dst_area=0x86b58c8, dst_offset=0,
-src_area=0x86b5508, src_offset=4096, samples=4294964224,
-format=SND_PCM_FORMAT_S16_LE) at pcm.c:2551
-2551                            *(u_int16_t*)dst = *(const
-u_int16_t*)src;
-(gdb) bt
-#0  0xb7e809b6 in snd_pcm_area_copy (dst_area=0x86b58c8, dst_offset=0,
-src_area=0x86b5508, src_offset=4096, samples=4294964224,
-format=SND_PCM_FORMAT_S16_LE)
-    at pcm.c:2551
-#1  0xb7e80c53 in snd_pcm_areas_copy (dst_areas=0x86b58c8, dst_offset=0,
-src_areas=0x86b5514, src_offset=4096, channels=2, frames=4294964224,
-    format=SND_PCM_FORMAT_S16_LE) at pcm.c:2650
-#2  0xb7e95d84 in snd_pcm_rate_commit_area (pcm=0x86b71d0, rate=0x86b7118,
-appl_offset=10752, size=11636, slave_size=17360) at pcm_rate.c:1067
-#3  0xb7e9653d in snd_pcm_rate_drain (pcm=0x86b71d0) at pcm_rate.c:1306
-#4  0xb7e771d2 in snd_pcm_drain (pcm=0x86b5940) at pcm.c:1057
-#5  0x080c9068 in uninit (immed=0) at ao_alsa.c:658
-#6  0x0807353d in uninit_player (mask=3659) at mplayer.c:485
-#7  0x08077d16 in main (argc=5, argv=0xbfb775b4) at mplayer.c:4488
-
-
-Problem seems to be that cont=4096 and period_size=1024
-in snd_pcm_rate_commit_area just before calling snd_pcm_areas_copy.
-With cont being unsigned the following calculation will overflow          
-    
-cont = rate->gen.slave->period_size - cont;
-slave_frames = cont;
-
-Tell me if you need more info.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-25-06 14:08 Faust3         New Issue                                    
-======================================================================
+ICAgICAgICCBoYGggaGBQINSg36DhYNqg2WDQoFbgUWDR4OTg16BW4Nlg0ODgYOTg2cggaGBoIGh
+DQqBoIGhgaAgg1yBW4NWg4ODi4Nsg2KDZ4OPgVuDTIOTg0+DVINDg2eCyY5RicGCtYLEgt2C3IK5
+gvGCqYFIIIGggaGBoA0KDQqDgYOTg2+BW4LmguiPtZHSgrOC6oK9lfuCzILdgsWNXJCsgrOC6oLE
+gqKC6YjXgUGIwJBTifWTSyEhDQqDfINDg5ODZ5HjgUWXv4vgk5mCzYjqkNiM5I3AgqKC3IK5gvGB
+QpFTgsSWs5e/gsWCqI5ngqKCyYLIguqC3IK3gUkNCg0KaHR0cDovL2Vuam95cGFnZS5uZXQvdGFk
+YS9rZWlqaWJhbjMNCoNlg4yDcoFFjkeOj4LFmGKR6IFJl0yWvIx8lFyQbILMg3WDjYNPgUGOypBe
+k5mC8JFTgsSWs5e/gsWCspeXgsmCyILqgtyCt4FJDQoNCoGhgrGC6oLcgsWCzJdGkGyK1oxXgvCK
+iJCribuCxYKrgukNCpBNl4qCxYKrgumLjJJtgsyXRpBsgUGCqJJtguiNh4KigsaCzIKolXSCq42H
+gqKCzIqIkKuJu4LwkH2C6YKzgtyCtILcgsgNCoNjgVuDi4LwgrKXcIjTgrWCxIKigtyCt4FCDQoN
+CoGhgXWXRpBsgsyXRpBsgXaCxozwl6yCxYKrgumBRYx8lFyQbIFBg0GDQ4Nog4uBQZRvl0SCxpdG
+kkKCyYLIguqC6YFJDQoNCpdGkGyTr45tgsyDbINig2eDj4Fbg06C8IK9gseCwYLEgXWXRpBsgsyX
+RpBsgXaCxoLMjPCXrIKqDQqKyJJQgsmCxYKrgtyCt4FCgruCsYLJgs2CoILIgr2CzJdGkGyCqYLn
+jHGCqoLpkE2XioLFgquC6YNsg2KDZ4OPgVuDToKqDQqMYJCsgrOC6oLEgqKC3IK3gUKCx4KxgqmC
+xYxxgqqCwYLEgqKC6ZBsk6+ObYKqj1eC3ILpg1KDfoOFg2qDZYNCgVsNCoLFgqCC6IFBgrGC6oKq
+g1yBW4NWg4ODi4Nsg2KDZ4OPgVuDTIOTg0+CzJPBkqWCxYK3gUINCg0Kg2WDjINygUWOR46PgsWY
+YpHogUmCspeYl3CXv4vggUWTb5hel7+CzYjqkNiM5I3AgqKC3IK5gvGBSZFTgsSWs5e/gsWCqI5n
+gqKCyYLIguqC3IK3gUINCg0Kj+6V8YFFg1KDfoOFg2qDZYNCgVuCyY3Fk0uBSQ0KaHR0cDovL2Vu
+am95cGFnZS5uZXQvdGFkYS9rZWlqaWJhbjMNCoK7guqCxYLNgUGOUYnBgvCQU4LmguiCqJHSgr+C
+tYLEgqiC6ILcgreBQg0KgaYyMDA2LzAyLzI4gtyCxZdMjPg=
 
 
 
