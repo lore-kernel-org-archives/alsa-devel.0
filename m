@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001876]: I/O hang during MIDI file sequencing on EMU10K1
-Date: Sat, 25 Feb 2006 07:16:50 +0100
-Message-ID: <74ce582ae16cf34d2cd1cd818e177b7a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001491]: Onboard sound of HP Kayak workstation isn't detected properly
+Date: Sat, 25 Feb 2006 09:54:22 +0100
+Message-ID: <8c4f292b4e0f15a2ed60ce5e674072ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A742B1D5
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 07:16:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 300D617B
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 09:54:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1876> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1491> 
 ======================================================================
-Reported By:                phorn
+Reported By:                mmp
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1876
-Category:                   CORE - sequencer
-Reproducibility:            sometimes
-Severity:                   crash
+Issue ID:                   1491
+Category:                   ISA - ad1816a
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing (etch)
-Kernel Version:             2.6.15 - custom built
+Distribution:               Debian GNU/Linux
+Kernel Version:              2.6.11-1-smp
 ======================================================================
-Date Submitted:             02-25-2006 07:07 CET
-Last Modified:              02-25-2006 07:16 CET
+Date Submitted:             10-21-2005 23:10 CEST
+Last Modified:              02-25-2006 09:54 CET
 ======================================================================
-Summary:                    I/O hang during MIDI file sequencing on EMU10K1
+Summary:                    Onboard sound of HP Kayak workstation isn't detected
+properly
 Description: 
-When playing a MIDI file, at certain points in the file, the operating
-system will hang (leaving notes constantly on in the background).  X.org
-will basically completely freeze within a few seconds of the crash.
-
-I have a Sound Blaster Live (emu10k1) and I use the MIDI driver included. 
-I have not had a single sound or midi-related crash in kernel versions
-prior to 2.6.15, so the bug must be new.
-
-Also note that I have the two-line patch from
-http://bugzilla.kernel.org/show_bug.cgi?id=5850
-in order to fix a gameport-related crash in 2.6.15.
+Detection of AD1816AJS chip contained on the board of HP Kayak workstation
+(chipset i440LX) is not detected by ALSA - tested in both PnP and non-PnP
+mode. With legacy OSS driver it works fine in non-PnP mode (PnP probably
+doesn't work), but there's need to hard-write all parameters like io, irq,
+dma and so...
 ======================================================================
 
 ----------------------------------------------------------------------
- phorn - 02-25-06 07:16 
+ axion - 02-25-06 09:54 
 ----------------------------------------------------------------------
-May be related to bug 1860, though in the last kernel I used (2.6.12.3) and
-lower versions I did not ever experience a sound-related crash.
+This problem still exists in latest kernel 2.6.15.3.
+
+The original OSS driver works, but can not be combined with alsa compliant
+cards.
+When using the original OSS driver in combination with an alsa driver-card
+udev does not create correct devices.
+
+Example of devices when only using original oss driver:
+
+crw-rw--w-  1 root audio 14, 4 2006-02-25 09:01 audio
+crw-rw--w-  1 root audio 14, 3 2006-02-25 09:01 dsp
+crw-rw--w-  1 root audio 14, 0 2006-02-25 09:01 mixer
+crw-rw--w-  1 root audio 14, 1 2006-02-25 09:01 sequencer
+crw-rw--w-  1 root audio 14, 8 2006-02-25 09:01 sequencer2
+
+Example of devices combining oss and alsa driver:
+
+crw-rw--w-  1 root audio 14, 12 2006-02-25 09:52 adsp
+crw-rw--w-  1 root audio 14,  4 2006-02-25 09:01 audio
+crw-rw--w-  1 root audio 14,  3 2006-02-25 09:01 dsp
+crw-rw--w-  1 root audio 14,  0 2006-02-25 09:01 mixer
+crw-rw--w-  1 root audio 14,  1 2006-02-25 09:01 sequencer
+crw-rw--w-  1 root audio 14,  8 2006-02-25 09:01 sequencer2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-25-06 07:07 phorn          New Issue                                    
-02-25-06 07:07 phorn          File Added: system-info-2.6.15.tgz                
-   
-02-25-06 07:07 phorn          Distribution              => Debian testing (etch)
-02-25-06 07:07 phorn          Kernel Version            => 2.6.15 - custom built
-02-25-06 07:16 phorn          Note Added: 0008184                          
+10-21-05 23:10 mmp            New Issue                                    
+10-21-05 23:10 mmp            Distribution              => Debian GNU/Linux
+10-21-05 23:10 mmp            Kernel Version            =>  2.6.11-1-smp   
+02-25-06 09:54 axion          Note Added: 0008186                          
 ======================================================================
 
 
