@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Sat, 25 Feb 2006 00:49:36 +0100
-Message-ID: <1e9cd99b84883142447d50fc636db47d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001876]: I/O hang during MIDI file sequencing on EMU10K1
+Date: Sat, 25 Feb 2006 07:07:34 +0100
+Message-ID: <d2e948fbf9af9baba77ebcec7c0ce409@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81A401D2
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 00:49:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF6401CE
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 07:07:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1876> 
 ======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
+Reported By:                phorn
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   block
+Issue ID:                   1876
+Category:                   CORE - sequencer
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
+Status:                     new
+Distribution:               Debian testing (etch)
+Kernel Version:             2.6.15 - custom built
 ======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              02-25-2006 00:49 CET
+Date Submitted:             02-25-2006 07:07 CET
+Last Modified:              02-25-2006 07:07 CET
 ======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
+Summary:                    I/O hang during MIDI file sequencing on EMU10K1
 Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
+When playing a MIDI file, at certain points in the file, the operating
+system will hang (leaving notes constantly on in the background).  X.org
+will basically completely freeze within a few seconds of the crash.
 
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
+I have a Sound Blaster Live (emu10k1) and I use the MIDI driver included. 
+I have not had a single sound or midi-related crash in kernel versions
+prior to 2.6.15, so the bug must be new.
+
+Also note that I have the two-line patch from
+http://bugzilla.kernel.org/show_bug.cgi?id=5850
+in order to fix a gameport-related crash in 2.6.15.
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 02-24-06 15:32 
-----------------------------------------------------------------------
-What is the output of "aplay -D plughw:1 something.wav" and of "lsof
-/dev/snd/* /dev/dsp*"?
-
-----------------------------------------------------------------------
- oggb4mp3 - 02-25-06 00:49 
-----------------------------------------------------------------------
-$ aplay -D plughw:1 side_101.wav
-Playing WAVE 'side_101.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-aplay: set_params:949: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (125011 125012)
-PERIOD_SIZE: 5513
-PERIOD_BYTES: 22052
-PERIODS: (3 4)
-BUFFER_TIME: 500000
-BUFFER_SIZE: 22050
-BUFFER_BYTES: 88200
-TICK_TIME: 1000
-
-$ lsof /dev/snd/* /dev/dsp*
-COMMAND  PID USER   FD   TYPE DEVICE SIZE NODE NAME
-kmix    4595 greg   10u   CHR  116,0      8215 /dev/snd/controlC0
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
-02-24-06 14:16 Clemens LadischNote Added: 0008175                          
-02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
-02-24-06 15:32 Clemens LadischNote Added: 0008178                          
-02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
+02-25-06 07:07 phorn          New Issue                                    
+02-25-06 07:07 phorn          File Added: system-info-2.6.15.tgz                
+   
+02-25-06 07:07 phorn          Distribution              => Debian testing (etch)
+02-25-06 07:07 phorn          Kernel Version            => 2.6.15 - custom built
 ======================================================================
 
 
