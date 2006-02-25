@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001876]: I/O hang during MIDI file sequencing on EMU10K1
-Date: Sat, 25 Feb 2006 07:07:34 +0100
-Message-ID: <d2e948fbf9af9baba77ebcec7c0ce409@bugtrack.alsa-project.org>
+Date: Sat, 25 Feb 2006 07:16:50 +0100
+Message-ID: <74ce582ae16cf34d2cd1cd818e177b7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF6401CE
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 07:07:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A742B1D5
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 07:16:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1876> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian testing (etch)
 Kernel Version:             2.6.15 - custom built
 ======================================================================
 Date Submitted:             02-25-2006 07:07 CET
-Last Modified:              02-25-2006 07:07 CET
+Last Modified:              02-25-2006 07:16 CET
 ======================================================================
 Summary:                    I/O hang during MIDI file sequencing on EMU10K1
 Description: 
@@ -57,6 +57,12 @@ http://bugzilla.kernel.org/show_bug.cgi?id=5850
 in order to fix a gameport-related crash in 2.6.15.
 ======================================================================
 
+----------------------------------------------------------------------
+ phorn - 02-25-06 07:16 
+----------------------------------------------------------------------
+May be related to bug 1860, though in the last kernel I used (2.6.12.3) and
+lower versions I did not ever experience a sound-related crash.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -65,6 +71,7 @@ Date Modified  Username       Field                    Change
    
 02-25-06 07:07 phorn          Distribution              => Debian testing (etch)
 02-25-06 07:07 phorn          Kernel Version            => 2.6.15 - custom built
+02-25-06 07:16 phorn          Note Added: 0008184                          
 ======================================================================
 
 
