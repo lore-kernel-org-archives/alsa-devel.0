@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001756]: Detects soundcard, alsamixer is ok, fiddled with switches, but no audio output
-Date: Sat, 25 Feb 2006 18:59:41 +0100
-Message-ID: <2a618f0312dbf427ce607d1578b96459@bugtrack.alsa-project.org>
+Date: Sat, 25 Feb 2006 18:57:33 +0100
+Message-ID: <e0ef25b74f2b1cc31e553b7a374b8097@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 161131C9
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 18:59:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AC391C9
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 18:57:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Breezy Badger
 Kernel Version:             2.6.12-i686
 ======================================================================
 Date Submitted:             01-16-2006 18:51 CET
-Last Modified:              02-25-2006 18:59 CET
+Last Modified:              02-25-2006 18:57 CET
 ======================================================================
 Summary:                    Detects soundcard, alsamixer is ok, fiddled with
 switches, but no audio output
@@ -228,20 +228,36 @@ MIS:          0
 ======================================================================
 
 ----------------------------------------------------------------------
+ anhi1968 - 02-14-06 22:35 
+----------------------------------------------------------------------
+#lspci -v -v
+00:1e.2 Multimedia audio controller: Intel Corporation
+82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 03)
+        Subsystem: IBM Unknown device 0567
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Interrupt: pin A routed to IRQ 18
+        Region 0: I/O ports at 1c00 [size=256]
+        Region 1: I/O ports at 1880 [size=64]
+        Region 2: Memory at a8000800 (32-bit, non-prefetchable)
+[size=512]
+        Region 3: Memory at a8000400 (32-bit, non-prefetchable)
+[size=256]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+----------------------------------------------------------------------
  thoroughfare - 02-25-06 18:57 
 ----------------------------------------------------------------------
 I too have a Packard Bell EasyNote A8202, with the same problem on Ubuntu
 5.10 (Breezy).
 
 I've tried everything, if I can help with this at all please let me know!
-
-----------------------------------------------------------------------
- thoroughfare - 02-25-06 18:59 
-----------------------------------------------------------------------
-PS Rawsock - please email me on matt [..at..] mattbostock [..dot..] com,
-I'd like to speak to you about DSDT ACPI codes for the EasyNote A8 series,
-as you're the first Linux user I've encountered with my model of laptop.
-Thanks!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -255,7 +271,6 @@ Date Modified  Username       Field                    Change
 02-14-06 22:22 anhi1968       Note Added: 0008071                          
 02-14-06 22:35 anhi1968       Note Added: 0008072                          
 02-25-06 18:57 thoroughfare   Note Added: 0008190                          
-02-25-06 18:59 thoroughfare   Note Added: 0008191                          
 ======================================================================
 
 
