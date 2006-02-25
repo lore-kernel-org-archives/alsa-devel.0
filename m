@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001877]: ALSA driver not recognising nVidia MCP51 (Realtek ALC850) sound chip
-Date: Sat, 25 Feb 2006 12:32:10 +0100
-Message-ID: <6fe1b8ff9ab19477a0644857114f5448@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Sat, 25 Feb 2006 13:15:46 +0100
+Message-ID: <f381f3054d81faa5bd5a15dfb07f37fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 166401B5
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 12:32:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AA1F1B5
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 13:15:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,211 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1877> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
 ======================================================================
-Reported By:                bobhesketh
+Reported By:                ponchick
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1877
-Category:                   PCI - intel8x0
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r5
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
-Date Submitted:             02-25-2006 12:29 CET
-Last Modified:              02-25-2006 12:32 CET
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              02-25-2006 13:15 CET
 ======================================================================
-Summary:                    ALSA driver not recognising nVidia MCP51 (Realtek
-ALC850) sound chip
+Summary:                    oops in snd_mpu401_uart
 Description: 
-The ASRock K8NF4G-SATA2 contains an nVidia MCP51 chipset, utilising a
-Realtek
-ALC850 codec sound chip. This is compatible with the intel8x0 ALSA sound
-driver.
-However, selecting the driver:
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-[Intel/Sis/nVidia/AMD/ALi AC97 Controller]
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-in the kernel doesn't work, and neither does the equivalent driver in the
-alsa-driver package.
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
 
 ----------------------------------------------------------------------
- bobhesketh - 02-25-06 12:32 
+ Raymond - 02-16-06 10:40 
 ----------------------------------------------------------------------
-Forgot to say, I'm using the AMD64 architecture
+If "vortex: FATAL: ResManager: resource type 0 exhausted" and "vortex:
+FATAL: ResManager: resource type 3 exhausted" appear with alsa-1.0.11rc3
+on 32-bits machine, you should file another bug report.
+
+
+
+----------------------------------------------------------------------
+ Raymond - 02-25-06 13:15 
+----------------------------------------------------------------------
+Patch to init card name before create components (e.g mpu401, ...)
+
+
+Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0.c,v
+retrieving revision 1.26
+diff -u -r1.26 au88x0.c
+--- alsa-driver/alsa-kernel/pci/au88x0/au88x0.c	13 Jan 2006 17:16:29
+-0000	1.26
++++ alsa-driver/alsa-kernel/pci/au88x0/au88x0.c	25 Feb 2006 12:10:42
+-0000
+@@ -261,7 +261,28 @@
+ 		return err;
+ 	}
+ 	snd_vortex_workaround(pci, pcifix[dev]);
+-	// (4) Alloc components.
++	// (4)
++	strcpy(card->driver, CARD_NAME_SHORT);
++	strcpy(card->shortname, CARD_NAME_SHORT);
++	sprintf(card->longname, "%s at 0x%lx irq %i",
++		card->shortname, chip->io, chip->irq);
++
++	if ((err = pci_read_config_word(pci, PCI_DEVICE_ID,
++				  &(chip->device))) < 0) {
++		snd_card_free(card);
++		return err;
++	}	
++	if ((err = pci_read_config_word(pci, PCI_VENDOR_ID,
++				  &(chip->vendor))) < 0) {
++		snd_card_free(card);
++		return err;
++	}
++	if ((err = pci_read_config_byte(pci, PCI_REVISION_ID,
++				  &(chip->rev))) < 0) {
++		snd_card_free(card);
++		return err;
++	}
++	// (5) Alloc components.
+ 	// ADB pcm.
+ 	if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
+ 		snd_card_free(card);
+@@ -322,27 +343,6 @@
+ 	}
+ #endif
+ 
+-	// (5)
+-	strcpy(card->driver, CARD_NAME_SHORT);
+-	strcpy(card->shortname, CARD_NAME_SHORT);
+-	sprintf(card->longname, "%s at 0x%lx irq %i",
+-		card->shortname, chip->io, chip->irq);
+-
+-	if ((err = pci_read_config_word(pci, PCI_DEVICE_ID,
+-				  &(chip->device))) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}	
+-	if ((err = pci_read_config_word(pci, PCI_VENDOR_ID,
+-				  &(chip->vendor))) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
+-	if ((err = pci_read_config_byte(pci, PCI_REVISION_ID,
+-				  &(chip->rev))) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
+ #ifdef CHIP_AU8830
+ 	if ((chip->rev) != 0xfe && (chip->rev) != 0xfa) {
+ 		printk(KERN_ALERT
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-25-06 12:29 bobhesketh     New Issue                                    
-02-25-06 12:29 bobhesketh     Distribution              => Gentoo          
-02-25-06 12:29 bobhesketh     Kernel Version            => 2.6.15-gentoo-r5
-02-25-06 12:32 bobhesketh     Note Added: 0008188                          
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-12-06 14:14 Raymond        Note Deleted: 0007990                        
+02-13-06 07:08 Raymond        Note Edited: 0008024                         
+02-13-06 16:44 Raymond        Note Edited: 0008001                         
+02-14-06 10:41 Raymond        Note Edited: 0008024                         
+02-16-06 04:40 Raymond        Note Added: 0008084                          
+02-16-06 06:33 ponchick       Note Added: 0008086                          
+02-16-06 09:57 Raymond        Note Added: 0008089                          
+02-16-06 10:16 ponchick       Note Added: 0008091                          
+02-16-06 10:38 Raymond        Note Added: 0008092                          
+02-16-06 10:40 Raymond        Note Edited: 0008092                         
+02-16-06 13:08 Raymond        Note Edited: 0008089                         
+02-25-06 13:15 Raymond        Note Added: 0008189                          
 ======================================================================
 
 
