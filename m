@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
-Date: Sat, 25 Feb 2006 21:40:35 +0100
-Message-ID: <083b13db3b29ec453ab647bcf45bea2e@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Advice on writing driver
+Date: Sat, 25 Feb 2006 23:53:07 +0000
+Message-ID: <1140911587.9838.19.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4AF61CE
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 21:40:35 +0100 (MET)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0281717C
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 00:53:09 +0100 (MET)
+Received: from bossclass (bossclass [192.168.62.105])
+	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k1PNr7QZ007490
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 23:53:07 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,60 +24,34 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I have asked some the questions below in piecemeal form before and only
+occasionally got an answer, so i'll go through it all now and see if you
+can help.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
-======================================================================
-Reported By:                richardfish
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1843
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             suspend2-sources-2.6.15-r6
-======================================================================
-Date Submitted:             02-13-2006 04:04 CET
-Last Modified:              02-25-2006 21:40 CET
-======================================================================
-Summary:                    regression: no sound with sigmatel stac9200, works
-in alsa 1.0.10
-Description: 
-With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
-from both speakers and headphones (although the speakers are not muted
-when the headphones are inserted, but that is a separate problem).  
+I am writing a driver for the Sega Dreamcast. Years ago I wrote an OSS
+driver but the sound dma had not been reversed then so it was slower and
+tended to lock the system.
 
-With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
-from either speakers or headphones.
-======================================================================
+On the Dreamcast (DC) sound the main CPU is an SH4 but there is a
+separate low powered ARM7 to handle sound (PCM). The ARM7 has its own
+memory space which is directly accessible to the SH4 only through a FIFO
+like gateway (so slow) unless DMA is used.
 
-----------------------------------------------------------------------
- lrupn - 02-25-06 21:40 
-----------------------------------------------------------------------
-I have the same problem with the same chip (stac9200) on laptop Acer
-3002WTMi. Reversing those 2 changes on the newest cvs tree makes
-everything work (except that internal microphone is still not working at
-all and external gives some background noise - as it was in 1.0.10).
-richardfish: thank You for finding that out...
+The ARM7 also has to have its own program to be told how to play the
+sound (this looks like firmware to the SH4).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-13-06 04:04 richardfish    New Issue                                    
-02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
-02-13-06 04:04 richardfish    Distribution              => Gentoo          
-02-13-06 04:04 richardfish    Kernel Version            =>
-suspend2-sources-2.6.15-r6
-02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
-02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
-02-25-06 21:40 lrupn          Note Added: 0008192                          
-======================================================================
+The driver currently allocates a buffer in the main SH4 memory (using
+the DMA buffer allocation APIs). This is then transferred to the ARM7
+space using DMA.
 
+The ARM7 code raises an interrupt to the SH4 whenever it plays 4096
+bytes of the sound - ie every period.
+
+What should my pointer callback return? the number of bytes/frames still
+to be transferred from the DMA buffer to the ARM memory or the number of
+bytes/frames still to play, or what?
+
+Adrian
 
 
 
