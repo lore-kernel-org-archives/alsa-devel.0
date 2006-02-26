@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Mon, 27 Feb 2006 00:27:36 +0100
-Message-ID: <fd5a5ab7c0ef6dc2a2c4cd8ef744f28c@bugtrack.alsa-project.org>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: [PATCH] Add support for Acer TravelMate and similar laptops
+Date: Mon, 27 Feb 2006 01:39:34 +0200
+Message-ID: <44023C36.2040404@akl.lt>
+References: <200602262315.k1QNFtak008145@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7248019C
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 00:27:36 +0100 (MET)
+In-Reply-To: <200602262315.k1QNFtak008145@auster.physics.adelaide.edu.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,165 +17,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello Jonathan,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
-======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
-======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-27-2006 00:27 CET
-======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
-Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-======================================================================
+>> Also, please note the "(?)"'s next to CD and Beep controls. These 
+>> controls don't actually influence anything now, but I suspect they 
+>> would work after a few more GPIO commands are issued, so I've left 
+>> them there for now (read below).
+> 
+> Stylistically I think the "?" can be omitted, but others might have different
+> opinions.
 
-----------------------------------------------------------------------
- jwoithe - 02-27-06 00:16 
-----------------------------------------------------------------------
-Rimas: as per the mailing list post: thanks for the patch.  After some
-frustrating weeks it's good to be finally making progress.
+I left those as a reminder that these widgets are untested/not working 
+yet. If after fiddling with GPIO commands we don't make them work, 
+they're useless and IMHO should be removed. If we do make them work, 
+they should be renamed.
 
-As I mentioned there, it would be good to delay this patch for a day or so
-while Takashi and I synchronise a series of pending ALC260 patches.  I
-also want to test the NID 0x15 thing in context on my laptop before this
-goes in.  If you're cool with the idea, I can push a (slightly revised)
-Acer patch to Takashi as part of this consolidation patchset.
+>> Btw, this patch also fixes a few comment typos in patch_realtek.c and 
+>> changes one setting in test model (it seems like inicially copy-pasted 
+>> from Fujitsu model). Also, it adds lines muting NID 0x15 for Fujitsu 
+>> model on startup (Jonathan, you said it turned out not to be 
+>> problematic at all).
+> 
+> Please, I would very much like to test this Fujitsu change before it goes
+> in.  It *appeared* that perhaps with the most recent CVS the omission of
+> NID 0x15 was not necessary but I have not verified this in the context
+> of the model-specific initialisation verbs yet.
 
-----------------------------------------------------------------------
- er-ku - 02-27-06 00:27 
-----------------------------------------------------------------------
-jwoithe:
+Sure. I was hoping you would test my changes before Takashi commits 
+them. :) I should've stated it clearly though...
 
-Sure, I don't mind delaying it a day or two. I would very much appreciate
-someone to review what I've came up with (at least from a programmer's
-PoV). Especially the Fujitsu and test models. If you feel my changes to
-your models aren't correct, you're absolutely free to cut them out. :)
+>> Jonathan, how about your idea to add GPIO controls to the test model? 
+> 
+> Hopefully coming early this week.
+> 
+>> Now a few notes/questions:
+>> * is there any reason in defining ADC NIDs for every model separately? 
+>> They seem to be the same anyways, and not to get in anyones way. Or do 
+>> they?
+> 
+> Up to this point the reason for the differing definitions has been
+> due to the different ways things needed to use the ADC NIDs.  As part of
+> a consolidation patch I'm preparing for Takashi I hope to clean this
+> stuff up a bit.
 
-A few more things:
-* AndyP's subvendor/subdevice ID's seem to taken from
-/proc/asound/card0/codec#0, not from lspci. I don't know why those ID's
-differ, but at least for me autodetection didn't work with 0x1025 0x160d
-(i have those numbers in my codec#0 file too). The correct ID's (at least
-for my laptop) are already in my patch, and I suppose those ID's will suit
-to a lot of other Acer users too.
-* replacing lobstaj's 0x01's with your 0x0f's doesn't seem to help at all,
-so I think it should stay as 0x01;
-* It would be interesting to play GPIO pins a bit more. How do I do that?
+Very good. I'm eagerly waiting for that. I hope, ALSA 1.0.11 won't 
+come out until we're done with ALC260.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
-01-04-06 22:00 robertw        Note Added: 0007453                          
-01-04-06 22:16 robertw        Note Edited: 0007453                         
-01-11-06 23:38 lobstaj        Note Added: 0007572                          
-01-11-06 23:48 rlrevell       Note Added: 0007573                          
-01-12-06 00:20 lobstaj        Note Added: 0007575                          
-01-12-06 00:26 rlrevell       Note Added: 0007576                          
-01-12-06 01:16 mytux          Note Added: 0007577                          
-01-12-06 01:20 mytux          Note Edited: 0007577                         
-01-12-06 14:13 robertw        Note Added: 0007586                          
-01-12-06 14:43 lobstaj        Note Added: 0007587                          
-01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
-01-12-06 21:04 rlrevell       Note Added: 0007591                          
-01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
-01-13-06 08:03 eudoxos        Note Added: 0007631                          
-01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
-01-16-06 00:32 jwoithe        Note Added: 0007682                          
-01-17-06 23:32 ilovetronik    Issue Monitored: ilovetronik                    
-01-19-06 23:36 ajmitch        Issue Monitored: ajmitch                     
-02-08-06 14:46 svilen         Note Added: 0007965                          
-02-09-06 00:29 jwoithe        Note Added: 0007969                          
-02-09-06 09:04 hweigel        Issue Monitored: hweigel                     
-02-10-06 11:02 svilen         Note Added: 0007999                          
-02-12-06 21:42 AndyP          Note Added: 0008031                          
-02-12-06 22:11 wattazoum      Note Added: 0008032                          
-02-12-06 22:14 rlrevell       Note Added: 0008033                          
-02-12-06 23:05 er-ku          Note Added: 0008034                          
-02-12-06 23:07 er-ku          Note Edited: 0008034                         
-02-13-06 00:45 jwoithe        Note Added: 0008035                          
-02-13-06 06:42 er-ku          Note Added: 0008037                          
-02-13-06 06:43 er-ku          Note Edited: 0008037                         
-02-14-06 00:07 jwoithe        Note Added: 0008066                          
-02-18-06 23:48 AndyP          Note Added: 0008125                          
-02-19-06 10:41 er-ku          Note Added: 0008131                          
-02-19-06 16:49 AndyP          Note Added: 0008134                          
-02-22-06 18:29 lobstaj        Note Added: 0008160                          
-02-23-06 01:12 jwoithe        Note Added: 0008165                          
-02-24-06 12:21 lobstaj        Note Added: 0008173                          
-02-24-06 12:25 lobstaj        Note Edited: 0008173                         
-02-24-06 14:58 mytux          Note Added: 0008176                          
-02-24-06 15:41 wattazoum      Note Added: 0008179                          
-02-24-06 15:42 wattazoum      Note Edited: 0008179                         
-02-24-06 22:32 er-ku          Note Added: 0008181                          
-02-24-06 23:23 AndyP          Note Added: 0008182                          
-02-25-06 12:29 wattazoum      File Added: patch_realtek.diff                    
-02-25-06 12:31 wattazoum      Note Added: 0008187                          
-02-26-06 05:50 at2000         Note Added: 0008196                          
-02-26-06 06:02 rlrevell       Note Added: 0008197                          
-02-26-06 14:58 er-ku          Note Added: 0008201                          
-02-26-06 15:00 er-ku          Note Added: 0008202                          
-02-26-06 23:39 er-ku          Note Edited: 0008201                         
-02-26-06 23:47 er-ku          Note Edited: 0008202                         
-02-26-06 23:47 er-ku          Note Deleted: 0008202                        
-02-26-06 23:48 er-ku          Note Added: 0008206                          
-02-26-06 23:53 jwoithe        Note Added: 0008207                          
-02-27-06 00:16 jwoithe        Note Added: 0008208                          
-02-27-06 00:27 er-ku          Note Added: 0008209                          
-======================================================================
+>> * If the jack is called "Line In", should I leave it as "Line" in 
+>> mixer, or should I name it "Line In"?
+> 
+> What do you think is less confusing?
 
+I don't actually know. It doesn't make significant difference for me, 
+so it's hard to tell. I'm just asking about the policy - is "Line" a 
+conventional name in ALSA, or is it a convention to name controls like 
+jacks?..
 
+>> * What's your opinion about adding a model configuration line that 
+>> would only check the subvendor (and ignore the subdevice setting)? 
+>> There would be more chances to autodetect an Acer laptop then, but 
+>> OTOH, if one day there'll be an ALC-260 based Acer with a different 
+>> config, you'd risk to misdetect, or to regress in automatic Acer 
+>> detectlion by removing that line...
+> 
+> I believe the generally accepted way is to include both.  If the machine
+> config did change in future there's really no guarantee that the existing
+> models will just magically work.  It's better to effectively force the new
+> models to be explicitly tested, and only when they're verified do they get
+> added to the "known model" list.
+
+That's what I thought... However, it may as always result in people 
+simply using a "model=acer" parameter and not bothering to inform the 
+developers about the success. But I think you're right.
+
+> In the next day or so I'll be sending a list of pending patches to Takashi
+> (as requested) so everything can be synced correctly and nothing gets
+> missed.  Some of these will result in minor changes to the Acer config.  Do
+> you mind if we hold your patch over until then, and I'll submit it with the
+> rest?  It will make Takashi's (and my) life easier if we do it this way.
+
+Of course I don't mind. You may consider my patch being a sketch which 
+you can transform into whatever seems best for you. Of course, I'll 
+want to test the results too. :)
+
+Regards,
+
+Rimas
 
 
 -------------------------------------------------------
