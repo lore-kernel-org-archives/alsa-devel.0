@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
-Date: Sun, 26 Feb 2006 04:24:57 +0100
-Message-ID: <8be795a05c0ceb963e20c3404fd00891@bugtrack.alsa-project.org>
+Date: Sun, 26 Feb 2006 04:44:57 +0100
+Message-ID: <d81c66a4de6cb0c6bf22d603a192c6ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C37A01DC
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 04:24:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B9C71DC
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 04:44:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             Debian kernel 2.6.5-4-686
 ======================================================================
 Date Submitted:             05-25-2004 14:49 CEST
-Last Modified:              02-26-2006 04:24 CET
+Last Modified:              02-26-2006 04:44 CET
 ======================================================================
 Summary:                    sound is locked up after suspend/resume (APM)
 Description: 
@@ -57,13 +57,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 has duplicate       0000226 Sound hangs after APM resume
 ======================================================================
-
-----------------------------------------------------------------------
- cull - 02-26-06 03:52 
-----------------------------------------------------------------------
-Hi, I have tried the latest 1.0.11rc3, but the the sound after suspend
-still doesn't work. No strange messages in dmesg during suspend. rmmod +
-modprobe get sound back. :(
 
 ----------------------------------------------------------------------
  cull - 02-26-06 04:24 
@@ -153,6 +146,13 @@ bridge (rev 03)
 
 Soft: Ubuntu breezy, kernel 2.6.15 with some patches (suspend2, CK)
 
+----------------------------------------------------------------------
+ rlrevell - 02-26-06 04:44 
+----------------------------------------------------------------------
+So you are using suspend2 to suspend?  That's completely different.
+
+What happens if you suspend the normal way?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -179,6 +179,7 @@ Date Modified  Username       Field                    Change
 12-13-05 22:06 jdthood        Note Added: 0007025                          
 02-26-06 03:52 cull           Note Added: 0008193                          
 02-26-06 04:24 cull           Note Added: 0008194                          
+02-26-06 04:44 rlrevell       Note Added: 0008195                          
 ======================================================================
 
 
