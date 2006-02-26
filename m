@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
-Date: Sun, 26 Feb 2006 03:52:34 +0100
-Message-ID: <93ec5dbfa21b5b4866a1593f54e32077@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: static snd_pcm_uframes_t
+	snd_aicapcm_pcm_pointer(snd_pcm_substream_t *substream)
+Date: Sat, 25 Feb 2006 20:48:11 -0500
+Message-ID: <1140918491.24141.80.camel@mindpipe>
+References: <1140813688.9827.1.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24BE71D9
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 03:52:35 +0100 (MET)
+In-Reply-To: <1140813688.9827.1.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +18,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2006-02-24 at 20:41 +0000, Adrian McMenamin wrote:
+> What should my pointer callback return - is it the number of frames
+> still to come from the dma transfer or the number of frames still to
+> play in the device's buffer, or something else?
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
-======================================================================
-Reported By:                klausr
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   305
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             Debian kernel 2.6.5-4-686
-======================================================================
-Date Submitted:             05-25-2004 14:49 CEST
-Last Modified:              02-26-2006 03:52 CET
-======================================================================
-Summary:                    sound is locked up after suspend/resume (APM)
-Description: 
-Until recently I was running oss driver cs46xx without a problem. I could
-suspend in the middle of playback and xmms would keep playing after resume
-as if nothing happend at all.
-After switching to the 2.6 kernel, currently running 2.6.5, I also
-switched to ALSA beeing the new sound architecture of choice.
-Unforunately now when I suspend and resume my notebook sound stops working
-at all. Sometimes unloading all ALSA modules helps, sometimes even that is
-not possible anymore.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000226 Sound hangs after APM resume
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 12-13-05 22:06 
-----------------------------------------------------------------------
-Actually, try 1.0.11rc1 since the changelog reports that cs46xx PM is
-fixed.  :)
-
-----------------------------------------------------------------------
- cull - 02-26-06 03:52 
-----------------------------------------------------------------------
-Hi, I have tried the latest 1.0.11rc3, but the the sound after suspend
-still doesn't work. No strange messages in dmesg during suspend. rmmod +
-modprobe get sound back. :(
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-25-04 14:49 klausr         New Issue                                    
-05-25-04 14:49 klausr         Kernel Version            => Debian kernel
-2.6.5-4-686
-05-25-04 15:02 tiwai          Note Added: 0001213                          
-05-25-04 15:31 klausr         Note Added: 0001215                          
-05-25-04 15:59 klausr         Note Added: 0001217                          
-05-25-04 16:02 klausr         Issue Monitored: klausr                      
-05-25-04 16:05 tiwai          Note Added: 0001218                          
-05-25-04 16:44 klausr         Note Added: 0001220                          
-05-25-04 16:56 klausr         Note Edited: 0001220                         
-05-27-04 08:49 klausr         Issue End Monitor: klausr                    
-05-28-04 17:08 tiwai          Note Added: 0001269                          
-05-29-04 09:36 klausr         Note Added: 0001276                          
-01-17-05 10:57 jdthood        Note Added: 0003226                          
-03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
-03-23-05 00:39 rlrevell       Note Added: 0004145                          
-03-28-05 15:42 sboehler       Issue Monitored: sboehler                    
-06-20-05 01:59 tromer         Issue Monitored: tromer                      
-12-12-05 11:12 bheung         Issue Monitored: bheung                      
-12-13-05 12:49 jdthood        Note Added: 0007003                          
-12-13-05 22:06 jdthood        Note Added: 0007025                          
-02-26-06 03:52 cull           Note Added: 0008193                          
-======================================================================
-
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x639.htm#PCM-INTERFACE-OPERATORS-POINTER-CALLBACK
 
 
 
