@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001684]: no sound with SI7012
-Date: Sun, 26 Feb 2006 17:30:41 +0100
-Message-ID: <6c1b8b9ce283ab1838efd64f2b55db01@bugtrack.alsa-project.org>
+From: Olaf Hering <olh@suse.de>
+Subject: Re: [PPC,SOUND] Fix audio gpio state detection
+Date: Sun, 26 Feb 2006 18:39:08 +0100
+Message-ID: <20060226173908.GA4871@suse.de>
+References: <jehd7527wq.fsf@sykes.suse.de> <1139783738.5247.54.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D18B18E
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 17:30:41 +0100 (MET)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85CC618E
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 19:39:12 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1139783738.5247.54.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,197 +20,126 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Andreas Schwab <schwab@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Ben Collins <ben.collins@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
+ On Mon, Feb 13, Benjamin Herrenschmidt wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1684> 
-======================================================================
-Reported By:                avant
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1684
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             kernel 2.6.14-1.1653_FC4
-======================================================================
-Date Submitted:             12-28-2005 08:39 CET
-Last Modified:              02-26-2006 17:30 CET
-======================================================================
-Summary:                    no sound with SI7012
-Description: 
-I do have some problems with sound on my Asus P4S 533 MX which is based on
-the SIS651 chipset with SI7012 (ADI AD1980 Codecs). Once it worked
-perfectly fine with OSS and FC2.
-OS: Fedora Core 4 fully updated with 
-    kernel 2.6.14-1.1653_FC4 and 
-    ALSA alsa-lib-1.0.10-2.FC4
+> On Sat, 2006-02-11 at 17:10 +0100, Andreas Schwab wrote:
+> > When booting with line out or headphone plugged, you won't hear anything.
+> > The problem is that after reset all channels are muted, but the actual
+> > value of the gpio port doesn't exactly match the active_val settings as
+> > expected by check_audio_gpio.  For example, the line_mute port is set to
+> > 7, but check_audio_gpio would expect 0xd or 0xf, thus its return value
+> > indicates that it is not active, even though it is.  AFAICS only looking
+> > at the low bit is enough to determine whether the port is active.
+> > 
+> > Signed-off-by: Andreas Schwab <schwab@suse.de>
+> > 
+> > Index: linux-2.6.16-rc2/sound/ppc/tumbler.c
+> > ===================================================================
+> > --- linux-2.6.16-rc2.orig/sound/ppc/tumbler.c	2006-02-03 19:43:50.000000000 +0100
+> > +++ linux-2.6.16-rc2/sound/ppc/tumbler.c	2006-02-11 03:46:30.000000000 +0100
+> > @@ -207,7 +207,7 @@ static int check_audio_gpio(struct pmac_
+> >  
+> >  	ret = do_gpio_read(gp);
+> >  
+> > -	return (ret & 0xd) == (gp->active_val & 0xd);
+> > +	return (ret & 0x1) == (gp->active_val & 0x1);
+> >  }
+> >  
+> >  static int read_audio_gpio(struct pmac_gpio *gp)
 
-The FC systemtool system-config-soundcard identifies the soundcard and
-configures it apropriately, but - without playing any sound.
-I've unmuted all channels ans set the volume to max with alsamixer - no
-luck
-I've played with the option ac97_quirk, but again - no luck.
+This (sort of) breaks PowerMac3,4 (69 (PowerMac G4 Silver)). I have to
+force it on up to now, but with this patch the internal speaker will not
+work with or without my patch to force it on.
 
-Currently I don't know how to proceed
+I get these values:
 
-Currently I'm using the following configuration:
+check_audio_gpio gp c040fc14 addr 0000006f ret 00000007
+check_audio_gpio gp c040fbfc addr 00000070 ret 00000004
 
-/etc/modprobe.conf
-==========================
-alias eth0 sis900
-alias usb-controller ehci-hcd
-alias usb-controller1 ohci-hcd
+With speakers plugged in, both give 0x07
 
-alias char-major-116 snd
-alias snd-card-0 snd-intel8x0
-options snd-card-0 index=0 ac97_quirk=disable
+/proc/device-tree/pci@f2000000/mac-io@17/gpio@50:
+linux,device     cfdc7808
+name             "gpio"
+linux,phandle    ff90fcd0
+reg              00000050 00000030
+built-in        
+device_type      "gpio"
 
-alias char-major-14 soundcore
-alias sound-slot-0 snd-intel8x0
+/proc/device-tree/pci@f2000000/mac-io@17/gpio@50/extint-gpio16:
+name             "extint-gpio16"
+linux,phandle    ff910a00
+interrupt-parent ff90fa80
+interrupts       0000003e 00000000
+AAPL,address     80000068
+built-in        
+one-wire-bus     "speaker-id"
+AAPL,driver-name ".DallasDriver"
+compatible       "keywest-gpio16"
+device_type      "extint-gpio16"
 
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-==========================
-# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: SI7012 [SiS SI7012], device 0: Intel ICH [SiS SI7012]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-==========================
-# lsmod
-Module                  Size  Used by
-parport_pc             27909  1
-lp                     12937  0
-parport                35593  2 parport_pc,lp
-rfcomm                 38745  0
-l2cap                  25921  5 rfcomm
-bluetooth              48069  4 rfcomm,l2cap
-ipt_REJECT              5953  1
-ipt_state               1985  5
-ip_conntrack           51953  1 ipt_state
-nfnetlink               6617  1 ip_conntrack
-iptable_filter          3137  1
-ip_tables              20033  3 ipt_REJECT,ipt_state,iptable_filter
-dm_mod                 57181  0
-video                  16197  0
-button                  6737  0
-battery                 9541  0
-ac                      4933  0
-nvidia               4088432  12
-ipv6                  249761  12
-ohci_hcd               22497  0
-ehci_hcd               34381  0
-i2c_sis96x              5829  0
-i2c_core               22081  1 i2c_sis96x
-snd_intel8x0           32929  0
-snd_ac97_codec         88637  1 snd_intel8x0
-snd_ac97_bus            2497  1 snd_ac97_codec
-snd_seq_dummy           3781  0
-snd_seq_oss            31809  0
-snd_seq_midi_event      7105  1 snd_seq_oss
-snd_seq                49617  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
-snd_seq_device          9037  3 snd_seq_dummy,snd_seq_oss,snd_seq
-snd_pcm_oss            50545  0
-snd_mixer_oss          17985  1 snd_pcm_oss
-snd_pcm                87493  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              25029  2 snd_seq,snd_pcm
-snd                    54437  9
-snd_intel8x0,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9889  1 snd
-snd_page_alloc         10697  2 snd_intel8x0,snd_pcm
-sis900                 21697  0
-mii                     5313  1 sis900
-floppy                 61957  0
-ext3                  129993  3
-jbd                    57813  1 ext3
-==========================
-# cat /proc/asound/pcm
-00-00: Intel ICH : SiS SI7012 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : SiS SI7012 - MIC ADC : capture 1
-==========================
-cat /proc/asound/SI7012/intel8x0
-Intel8x0
+/proc/device-tree/pci@f2000000/mac-io@17/gpio@50/extint-gpio15:
+name             "extint-gpio15"
+linux,phandle    ff9107f8
+interrupt-parent ff90fa80
+interrupts       0000003d 00000000
+AAPL,address     80000067
+built-in        
+compatible       "keywest-gpio15"
+device_type      "extint-gpio15"
 
-Global control        : 0x00000002
-Global status         : 0x00300100
-AC'97 codecs ready    : primary
-==========================
-cat /proc/asound/oss/sndstat
-Sound Driver:3.8.1a-980706 (ALSA v1.0.10rc1 emulation code)
-Kernel: Linux bietigheim 2.6.14-1.1653_FC4 #1 Tue Dec 13 21:32:09 EST 2005
-i686
-Config options: 0
+/proc/device-tree/pci@f2000000/mac-io@17/gpio@50/gpio11:
+name             "gpio11"
+linux,phandle    ff9105f8
+AAPL,address     80000075
+built-in        
+audio-gpio-active-state 00000000
+audio-gpio       "audio-hw-reset"
+compatible       "keywest-11"
+device_type      "gpio11"
 
-Installed drivers:
-Type 10: ALSA emulation
+/proc/device-tree/pci@f2000000/mac-io@17/gpio@50/gpio6:
+name             "gpio6"
+linux,phandle    ff910400
+AAPL,address     80000070
+built-in        
+audio-gpio-active-state 00000000
+audio-gpio       "amp-mute"
+compatible       "keywest-6"
+device_type      "gpio6"
 
-Card config:
-SiS SI7012 with AD1980 at 0x9400, irq 10
+/proc/device-tree/pci@f2000000/mac-io@17/gpio@50/gpio5:
+name             "gpio5"
+linux,phandle    ff910208
+AAPL,address     8000006f
+built-in        
+audio-gpio-active-state 00000000
+audio-gpio       "headphone-mute"
+compatible       "keywest-5"
+device_type      "gpio5"
 
-Audio devices:
-0: SiS SI7012 (DUPLEX)
+/proc/device-tree/pci@f2000000/mac-io@17/gpio@50/programmer-switch:
+name             "programmer-switch"
+linux,phandle    ff910058
+interrupt-parent ff90fa80
+interrupts       00000037 00000000
+built-in        
+device_type      "programmer-switch"
 
-Synth devices: NOT ENABLED IN CONFIG
+/proc/device-tree/pci@f2000000/mac-io@17/gpio@50/extint-gpio1:
+name             "extint-gpio1"
+linux,phandle    ff90fe38
+AAPL,interrupt-priorities 00000001
+interrupt-parent ff90fa80
+interrupts       0000002f 00000001
+built-in        
+compatible       "keywest-gpio1"
+device_type      "extint-gpio1"
 
-Midi devices: NOT ENABLED IN CONFIG
-
-Timers:
-7: system timer
-
-Mixers:
-0: Analog Devices AD1980
-======================================================================
-
-----------------------------------------------------------------------
- avant - 02-24-06 10:48 
-----------------------------------------------------------------------
-I haves tested yesterday also FC3 and it didn't work either.
-
-After this test I've bought a frontpanel extension for my case and I've
-attached this to the mobo - guess what, it works now perfectly fine. I'm
-just not sure if the connector at the backplane is broken or if I can add
-some parameters to use the backplane connector.
-
-----------------------------------------------------------------------
- Radik Yusupov - 02-26-06 17:30 
-----------------------------------------------------------------------
-&#1059; &#1084;&#1077;&#1085;&#1103;
-&#1079;&#1074;&#1091;&#1082;&#1086;&#1074;&#1072;&#1103;
-&#1082;&#1072;&#1088;&#1090;&#1072; &#1085;&#1072;
-&#1095;&#1080;&#1087;&#1089;&#1077;&#1090;&#1077; sis 7012.
-&#1047;&#1074;&#1091;&#1082; &#1077;&#1089;&#1090;&#1100;, &#1085;&#1086;
-&#1090;&#1080;&#1093;&#1080;&#1081;!
-&#1048;&#1089;&#1087;&#1088;&#1072;&#1074;&#1090;&#1077;
-&#1087;&#1086;&#1078;&#1072;&#1083;&#1091;&#1081;&#1089;&#1090;&#1072;
-&#1101;&#1090;&#1091;
-&#1087;&#1088;&#1086;&#1073;&#1083;&#1077;&#1084;&#1091;!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-05 08:39 avant          New Issue                                    
-12-28-05 08:39 avant          Distribution              => Fedora Core 4   
-12-28-05 08:39 avant          Kernel Version            => kernel
-2.6.14-1.1653_FC4
-01-24-06 13:54 avant          Note Added: 0007774                          
-01-24-06 21:39 rlrevell       Note Added: 0007775                          
-02-04-06 18:19 avant          Note Added: 0007918                          
-02-04-06 19:06 rlrevell       Note Added: 0007919                          
-02-24-06 10:48 avant          Note Added: 0008172                          
-02-26-06 17:30 Radik Yusupov  Note Added: 0008205                          
-======================================================================
 
 
 
