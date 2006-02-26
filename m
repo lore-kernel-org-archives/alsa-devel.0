@@ -1,17 +1,14 @@
-From: Tobias Klauser <tklauser@nuerscht.ch>
-Subject: [PATCH] sound: Create and use DMA_28BIT_MASK
-Date: Sun, 26 Feb 2006 15:44:12 +0100
-Message-ID: <20060226144412.GA1397__21862.7554517754$1140966562$gmane$org@neon.tklauser.home>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
+Date: Sun, 26 Feb 2006 16:08:12 +0100
+Message-ID: <397f744a4b77fc93ea04be20a2bf516d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81D60190
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 15:44:23 +0100 (MET)
-Received: from herakles.nuerscht.net (unknown [85.10.227.118])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id D2E8A9926C
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 15:44:22 +0100 (MET)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC4BF195
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 16:08:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,222 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: kernel-janitors@lists.osdl.org
-Cc: akpm@osdl.org, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch introduces the DMA_28BIT_MASK constant in dma-mapping.h
-ALSA drivers using this mask are changed to use the new constant.
 
-Signed-off-by: Tobias Klauser <tklauser@nuerscht.ch>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
+======================================================================
+Reported By:                richardfish
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1843
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             suspend2-sources-2.6.15-r6
+======================================================================
+Date Submitted:             02-13-2006 04:04 CET
+Last Modified:              02-26-2006 16:08 CET
+======================================================================
+Summary:                    regression: no sound with sigmatel stac9200, works
+in alsa 1.0.10
+Description: 
+With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
+from both speakers and headphones (although the speakers are not muted
+when the headphones are inserted, but that is a separate problem).  
 
----
+With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
+from either speakers or headphones.
+======================================================================
 
- include/linux/dma-mapping.h  |    1 +
- sound/pci/ad1889.c           |    7 ++++---
- sound/pci/emu10k1/emu10k1x.c |   13 +++++++------
- sound/pci/es1968.c           |    5 +++--
- sound/pci/ice1712/ice1712.c  |    5 +++--
- sound/pci/maestro3.c         |    5 +++--
- sound/pci/mixart/mixart.c    |    3 ++-
- sound/pci/pcxhr/pcxhr.c      |    3 ++-
- 8 files changed, 25 insertions(+), 17 deletions(-)
+----------------------------------------------------------------------
+ lrupn - 02-25-06 21:40 
+----------------------------------------------------------------------
+I have the same problem with the same chip (stac9200) on laptop Acer
+3002WTMi. Reversing those 2 changes on the newest cvs tree makes
+everything work (except that internal microphone is still not working at
+all and external gives some background noise - as it was in 1.0.10).
+richardfish: thank You for finding that out...
 
-99c5d8c1b63887d6ae17ecc9623fcf6488b114bc
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index 2d80cc7..a873106 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -20,6 +20,7 @@ enum dma_data_direction {
- #define DMA_31BIT_MASK	0x000000007fffffffULL
- #define DMA_30BIT_MASK	0x000000003fffffffULL
- #define DMA_29BIT_MASK	0x000000001fffffffULL
-+#define DMA_28BIT_MASK	0x000000000fffffffULL
- 
- #include <asm/dma-mapping.h>
- 
-diff --git a/sound/pci/ad1889.c b/sound/pci/ad1889.c
-index a208075..2aa5a7f 100644
---- a/sound/pci/ad1889.c
-+++ b/sound/pci/ad1889.c
-@@ -34,6 +34,7 @@
- 
- #include <linux/init.h>
- #include <linux/pci.h>
-+#include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/interrupt.h>
- #include <linux/compiler.h>
-@@ -909,10 +910,10 @@ snd_ad1889_create(struct snd_card *card,
- 
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
--	
-+
- 	/* check PCI availability (32bit DMA) */
--	if (pci_set_dma_mask(pci, 0xffffffff) < 0 ||
--	    pci_set_consistent_dma_mask(pci, 0xffffffff) < 0) {
-+	if (pci_set_dma_mask(pci, DMA_32BIT_MASK) < 0 ||
-+	    pci_set_consistent_dma_mask(pci, DMA_32BIT_MASK) < 0) {
- 		printk(KERN_ERR PFX "error setting 32-bit DMA mask.\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
-diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
-index 1107c8e..2208dbd 100644
---- a/sound/pci/emu10k1/emu10k1x.c
-+++ b/sound/pci/emu10k1/emu10k1x.c
-@@ -33,6 +33,7 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/pci.h>
-+#include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/moduleparam.h>
- #include <sound/core.h>
-@@ -893,24 +894,24 @@ static int __devinit snd_emu10k1x_create
- 	static struct snd_device_ops ops = {
- 		.dev_free = snd_emu10k1x_dev_free,
- 	};
--  
-+
- 	*rchip = NULL;
--  
-+
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
--	if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
--	    pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
-+	if (pci_set_dma_mask(pci, DMA_28BIT_MASK) < 0 ||
-+	    pci_set_consistent_dma_mask(pci, DMA_28BIT_MASK) < 0) {
- 		snd_printk(KERN_ERR "error to set 28bit mask DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
- 	}
--  
-+
- 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
- 	if (chip == NULL) {
- 		pci_disable_device(pci);
- 		return -ENOMEM;
- 	}
--  
-+
- 	chip->card = card;
- 	chip->pci = pci;
- 	chip->irq = -1;
-diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
-index 3747a43..5155fbc 100644
---- a/sound/pci/es1968.c
-+++ b/sound/pci/es1968.c
-@@ -100,6 +100,7 @@
- #include <linux/interrupt.h>
- #include <linux/init.h>
- #include <linux/pci.h>
-+#include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/gameport.h>
- #include <linux/moduleparam.h>
-@@ -2559,8 +2560,8 @@ static int __devinit snd_es1968_create(s
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
- 	/* check, if we can restrict PCI DMA transfers to 28 bits */
--	if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
--	    pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
-+	if (pci_set_dma_mask(pci, DMA_28BIT_MASK) < 0 ||
-+	    pci_set_consistent_dma_mask(pci, DMA_28BIT_MASK) < 0) {
- 		snd_printk(KERN_ERR "architecture does not support 28bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
-diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
-index ef6f185..c34f933 100644
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -53,6 +53,7 @@
- #include <linux/interrupt.h>
- #include <linux/init.h>
- #include <linux/pci.h>
-+#include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/moduleparam.h>
- #include <sound/core.h>
-@@ -2538,8 +2539,8 @@ static int __devinit snd_ice1712_create(
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
- 	/* check, if we can restrict PCI DMA transfers to 28 bits */
--	if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
--	    pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
-+	if (pci_set_dma_mask(pci, DMA_28BIT_MASK) < 0 ||
-+	    pci_set_consistent_dma_mask(pci, DMA_28BIT_MASK) < 0) {
- 		snd_printk(KERN_ERR "architecture does not support 28bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
-diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
-index d3ef0cc..8bc0849 100644
---- a/sound/pci/maestro3.c
-+++ b/sound/pci/maestro3.c
-@@ -37,6 +37,7 @@
- #include <linux/interrupt.h>
- #include <linux/init.h>
- #include <linux/pci.h>
-+#include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
- #include <linux/moduleparam.h>
-@@ -2657,8 +2658,8 @@ snd_m3_create(struct snd_card *card, str
- 		return -EIO;
- 
- 	/* check, if we can restrict PCI DMA transfers to 28 bits */
--	if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
--	    pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
-+	if (pci_set_dma_mask(pci, DMA_28BIT_MASK) < 0 ||
-+	    pci_set_consistent_dma_mask(pci, DMA_28BIT_MASK) < 0) {
- 		snd_printk(KERN_ERR "architecture does not support 28bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
-diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
-index b218e1d..80ef405 100644
---- a/sound/pci/mixart/mixart.c
-+++ b/sound/pci/mixart/mixart.c
-@@ -25,6 +25,7 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/pci.h>
-+#include <linux/dma-mapping.h>
- #include <linux/moduleparam.h>
- #include <sound/core.h>
- #include <sound/initval.h>
-@@ -1288,7 +1289,7 @@ static int __devinit snd_mixart_probe(st
- 	pci_set_master(pci);
- 
- 	/* check if we can restrict PCI DMA transfers to 32 bits */
--	if (pci_set_dma_mask(pci, 0xffffffff) < 0) {
-+	if (pci_set_dma_mask(pci, DMA_32BIT_MASK) < 0) {
- 		snd_printk(KERN_ERR "architecture does not support 32bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
-diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
-index b2cba75..54bcc08 100644
---- a/sound/pci/pcxhr/pcxhr.c
-+++ b/sound/pci/pcxhr/pcxhr.c
-@@ -26,6 +26,7 @@
- #include <linux/interrupt.h>
- #include <linux/slab.h>
- #include <linux/pci.h>
-+#include <linux/dma-mapping.h>
- #include <linux/delay.h>
- #include <linux/moduleparam.h>
- #include <sound/core.h>
-@@ -1215,7 +1216,7 @@ static int __devinit pcxhr_probe(struct 
- 	pci_set_master(pci);
- 
- 	/* check if we can restrict PCI DMA transfers to 32 bits */
--	if (pci_set_dma_mask(pci, 0xffffffff) < 0) {
-+	if (pci_set_dma_mask(pci, DMA_32BIT_MASK) < 0) {
- 		snd_printk(KERN_ERR "architecture does not support 32bit PCI busmaster DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
--- 
-1.2.3
+----------------------------------------------------------------------
+ toshio - 02-26-06 16:08 
+----------------------------------------------------------------------
+Do you also have background noise if you, first unload alsa drivers and
+then:
+modprobe snd-hda-intel position_fix=1
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-06 04:04 richardfish    New Issue                                    
+02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
+02-13-06 04:04 richardfish    Distribution              => Gentoo          
+02-13-06 04:04 richardfish    Kernel Version            =>
+suspend2-sources-2.6.15-r6
+02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
+02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
+02-25-06 21:40 lrupn          Note Added: 0008192                          
+02-26-06 16:08 toshio         Note Added: 0008203                          
+======================================================================
+
 
 
 
