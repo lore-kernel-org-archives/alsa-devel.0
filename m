@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Sun, 26 Feb 2006 23:53:05 +0100
-Message-ID: <a6c5c29e8bc08ecb51d9af480a4a2f07@bugtrack.alsa-project.org>
+Date: Mon, 27 Feb 2006 00:16:08 +0100
+Message-ID: <5060bc316e49764bc84c950bddc0e64e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8D5A198
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 23:53:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF37819A
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 00:16:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-26-2006 23:53 CET
+Last Modified:              02-27-2006 00:16 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -54,16 +54,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
-
-----------------------------------------------------------------------
- er-ku - 02-26-06 23:48 
-----------------------------------------------------------------------
-I have posted a patch to ALSA-devel mailing list. waiting for it to go
-upstream now. It's not final yet (CD and Beep playback problems still
-persist), but is much cleaner than what is attached to this bugreport. I'm
-not posting the patch here though, as it requires another patch from the
-mailing list to be applied first. Plus, I hope the patch to go upstream
-soon. However, if asked, I'll post a combined patch here.
 
 ----------------------------------------------------------------------
  jwoithe - 02-26-06 23:53 
@@ -146,6 +136,18 @@ Then test the CD (and everything else) again.  Hopefully this won't stop
 the internal speaker running, but there's an outside chance that it might
 give you CD audio.  When testing, don't forget to unmute the CD volume
 control in alsamixer and turn it up.
+
+----------------------------------------------------------------------
+ jwoithe - 02-27-06 00:16 
+----------------------------------------------------------------------
+Rimas: as per the mailing list post: thanks for the patch.  After some
+frustrating weeks it's good to be finally making progress.
+
+As I mentioned there, it would be good to delay this patch for a day or so
+while Takashi and I synchronise a series of pending ALC260 patches.  I
+also want to test the NID 0x15 thing in context on my laptop before this
+goes in.  If you're cool with the idea, I can push a (slightly revised)
+Acer patch to Takashi as part of this consolidation patchset.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -231,6 +233,7 @@ Date Modified  Username       Field                    Change
 02-26-06 23:47 er-ku          Note Deleted: 0008202                        
 02-26-06 23:48 er-ku          Note Added: 0008206                          
 02-26-06 23:53 jwoithe        Note Added: 0008207                          
+02-27-06 00:16 jwoithe        Note Added: 0008208                          
 ======================================================================
 
 
