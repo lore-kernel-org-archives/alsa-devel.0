@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Sun, 26 Feb 2006 14:58:25 +0100
-Message-ID: <2cb2384f78bc5eb6410a44b5266ca57d@bugtrack.alsa-project.org>
+Date: Sun, 26 Feb 2006 15:00:30 +0100
+Message-ID: <7fc9df21000c89d8fb277665945cbfa0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B503190
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 14:58:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98DA9190
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 15:00:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-26-2006 14:58 CET
+Last Modified:              02-26-2006 15:00 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -56,12 +56,6 @@ duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-26-06 06:02 
-----------------------------------------------------------------------
-That's a different problem, you have ALC800 while this bug is about Acer
-machines with ALC260.  Please open a new bug report.
-
-----------------------------------------------------------------------
  er-ku - 02-26-06 14:58 
 ----------------------------------------------------------------------
 As expected, lobstaj's fix works. That's great, but:
@@ -71,6 +65,13 @@ As expected, lobstaj's fix works. That's great, but:
 
 Are there any more GPIO commands I could try out in order to solve this?
 I'm trying to create an Acer model now...
+
+----------------------------------------------------------------------
+ er-ku - 02-26-06 15:00 
+----------------------------------------------------------------------
+Btw, headphone jack acts just like Mic jack does. As soon as I plug
+something into the Headphone jack, integrated speakers get automatically
+muted.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -150,6 +151,7 @@ Date Modified  Username       Field                    Change
 02-26-06 05:50 at2000         Note Added: 0008196                          
 02-26-06 06:02 rlrevell       Note Added: 0008197                          
 02-26-06 14:58 er-ku          Note Added: 0008201                          
+02-26-06 15:00 er-ku          Note Added: 0008202                          
 ======================================================================
 
 
