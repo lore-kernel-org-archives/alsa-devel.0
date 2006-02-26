@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001881]: Mixer controls not working for S/PDIF
-Date: Sun, 26 Feb 2006 10:45:15 +0100
-Message-ID: <703239823022ddb24d9d12f8d3fbc268@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: static snd_pcm_uframes_t
+	snd_aicapcm_pcm_pointer(snd_pcm_substream_t *substream)
+Date: Sun, 26 Feb 2006 10:55:05 +0000
+Message-ID: <1140951305.9540.3.camel@localhost.localdomain>
+References: <1140813688.9827.1.camel@localhost.localdomain>
+	 <1140918491.24141.80.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D65419A
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 10:45:15 +0100 (MET)
+In-Reply-To: <1140918491.24141.80.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +19,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2006-02-25 at 20:48 -0500, Lee Revell wrote:
+> On Fri, 2006-02-24 at 20:41 +0000, Adrian McMenamin wrote:
+> > What should my pointer callback return - is it the number of frames
+> > still to come from the dma transfer or the number of frames still to
+> > play in the device's buffer, or something else?
+> > 
+> 
+> http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x639.htm#PCM-INTERFACE-OPERATORS-POINTER-CALLBACK
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1881> 
-======================================================================
-Reported By:                lotan_rm
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1881
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.13.4
-======================================================================
-Date Submitted:             02-26-2006 10:45 CET
-Last Modified:              02-26-2006 10:45 CET
-======================================================================
-Summary:                    Mixer controls not working for S/PDIF
-Description: 
-My mainboard is the
 
-   Shuttle AN35N NForce2 Ultra 400
+The problem with that - which I have read many times and even host
+locally - http://newgolddream.dyndns.info/alsa - so I have a copy that
+is very easily accessible is that:
 
-$ cat /proc/asound/cards
- 0 [nForce2        ]: NFORCE - NVidia nForce2
-                      NVidia nForce2 with ALC650F at 0xe7001000, irq 16
+"This callback is called when the PCM middle layer inquires the current
+hardware position on the buffer." 
 
-$ cat /proc/asound/devices 
-  0: [ 0]   : control
-  1:        : sequencer
- 16: [ 0- 0]: digital audio playback
- 18: [ 0- 2]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 25: [ 0- 1]: digital audio capture
- 33:        : timer
+Could mean any number of different things because there is more than one
+buffer here.
 
-I'm luckier than most people in the way that S/PDIF worked right away on
-hw:0,2.
-But I can't get the mixer controls to work.
+As it is James Courtier-Dutton has clarified this for me.
 
-Most people on the web seeming to have similar problems adjusted the
-
-   IEC958 Playback AC-97-SPSA
-
-to 0% (PCM output), but that didn't help in my case.  In fact, any kind of
-adjustment in the mixer didn't show any result.
-
-I tried various .asoundrc configurations without any real success.  I
-don't even know, if it's really a driver issue.
-
-One thing I can say though: The onboard sound has a mixer device that can
-be controlled as on Windows, the native nVidia driver was working without
-a problem.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-26-06 10:45 lotan_rm       New Issue                                    
-02-26-06 10:45 lotan_rm       Distribution              => Gentoo          
-02-26-06 10:45 lotan_rm       Kernel Version            => 2.6.13.4        
-======================================================================
-
+But one more question: what is the different between this and the
+interrupt handling? Are they both seeking to do the same thing?
 
 
 
