@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Sun, 26 Feb 2006 23:48:03 +0100
-Message-ID: <895df3ef000bbbaef2b8029787222d0d@bugtrack.alsa-project.org>
+Date: Sun, 26 Feb 2006 23:53:05 +0100
+Message-ID: <a6c5c29e8bc08ecb51d9af480a4a2f07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1544C198
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 23:48:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8D5A198
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 23:53:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-26-2006 23:48 CET
+Last Modified:              02-26-2006 23:53 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -56,23 +56,6 @@ duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- er-ku - 02-26-06 23:39 
-----------------------------------------------------------------------
-As expected, lobstaj's fix works. That's great, but:
-
-* I still cannot play a CD with an old-fashioned CD player software and
-* I don't hear beeps
-
-Are there any more GPIO commands I could try out in order to solve this?
-I'm trying to create a proper Acer model definition now...
-
-Btw, headphone jack acts just like Mic jack does. As soon as I plug
-something into the Headphone jack, integrated speakers get automatically
-muted.
-
-
-
-----------------------------------------------------------------------
  er-ku - 02-26-06 23:48 
 ----------------------------------------------------------------------
 I have posted a patch to ALSA-devel mailing list. waiting for it to go
@@ -81,6 +64,88 @@ persist), but is much cleaner than what is attached to this bugreport. I'm
 not posting the patch here though, as it requires another patch from the
 mailing list to be applied first. Plus, I hope the patch to go upstream
 soon. However, if asked, I'll post a combined patch here.
+
+----------------------------------------------------------------------
+ jwoithe - 02-26-06 23:53 
+----------------------------------------------------------------------
+Hi everyone - catching up on the weekend developments.
+
+Firstly, I'm glad the GPIO suggestion has cracked the nut, so to speak. 
+Precisely why Acer did things this way is a mystery, but I'm sure they
+have their reasons.
+
+wattazoum: I had a quick look at the patch.  It can actually be refined
+quite a bit since most of the "acer specific" things in there are common
+to other models too.  Over the next few days I'll see about doing the
+refinement unless someone beats me to it first. :)  In particular, the ADC
+and DAC nids don't need duplication and the capture source details can be
+reused from other models too.  I've got some other pending ALC260 patches
+in the works which I'm syncing with Takashi now, so I'll probably roll
+these things into those in due course.
+
+There are a few other details we need to finalise.  Firstly, there are 4
+GPIO pins on the ALC260 - we need to make sure that there's no other
+features on these ACER laptops which rely on them being set.  Perhaps
+lobstaj or one of the others confortable with hacking can test each GPIO
+pin in turn and see if it does something.  The tests thus far seem to show
+that pin 1 (zero-based) switches the internal speaker / headphone output. 
+In particular, I'm wondering whether one of the others has something to do
+with the CD input, since er-ku has reported that he's not getting audio
+from the CD drive.
+
+We definitely do now need a list of vendor and subsystem IDs for these
+Acer laptops, as AndyP has already provided.  We'll need this before any
+patch can be finalised.  For those who don't know, the relevant numbers
+can be found using "lspci".  Firstly run "lspci -v" to identify the sound
+system and its "bus address" - the numbers which look something like
+
+  00:1b.0
+
+at the start of the first line of the subsystem's description.  Then run
+"lspci -nv", find the entry corresponding to the "bus address" previously
+identified and report the two colon (":") separated numbers in the
+"subsystem" entry.  For example, on my laptop, "lspci -v" gives me the
+following entry for the audio controller:
+
+  00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 04)
+    Subsystem: Fujitsu Limited.: Unknown device 1326
+    Flags: bus master, fast devsel, latency 0, IRQ 17
+    Memory at b0000000 (64-bit, non-prefetchable) [size=16k]
+    Capabilities: <available only to root>
+
+So we note that the bus address is 00:1b.0.  Then "lspci -nv" is run.  We
+find the entry for 00:1b.0:
+
+  00:1b.0 Class 0403: 8086:2668 (rev 04)
+    Subsystem: 10cf:1326
+    :
+
+and therefore conclude the numbers we need are 10cf:1326.  Note that the
+bus address on different laptops could easily be different to 00:1b.0.
+
+er-ku: I'm not surprised about the behaviour of the headphone jack with
+respect to the internal speaker.  Since the internal mic was switched off
+when an external one was plugged in I fully expected to find the headphone
+jack behaving in a similar way.
+
+er-ku: in connection with the beep - I must admit that I've done nothing
+with the beep generator simply because I actually don't like beeps and
+therefore I'm perfectly happy if this doesn't work.  Having said that,
+it's interesting that you don't get beeps - my laptop beeps even if the
+sound drivers aren't loaded.  That might be due to my laptop doing beeps
+independently of the sound hardware though.  I'll take a look at this over
+the next few days.  In the meantime, you might like to try the following
+variation to the GPIO commands which get the internal speaker running. 
+Replace the 3 lines added by lobstaj with:
+
+  {0x01, AC_VERB_SET_GPIO_MASK, 0x0f},
+  {0x01, AC_VERB_SET_GPIO_DIRECTION, 0x0f},
+  {0x01, AC_VERB_SET_GPIO_DATA, 0x0f},
+
+Then test the CD (and everything else) again.  Hopefully this won't stop
+the internal speaker running, but there's an outside chance that it might
+give you CD audio.  When testing, don't forget to unmute the CD volume
+control in alsamixer and turn it up.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -165,6 +230,7 @@ Date Modified  Username       Field                    Change
 02-26-06 23:47 er-ku          Note Edited: 0008202                         
 02-26-06 23:47 er-ku          Note Deleted: 0008202                        
 02-26-06 23:48 er-ku          Note Added: 0008206                          
+02-26-06 23:53 jwoithe        Note Added: 0008207                          
 ======================================================================
 
 
