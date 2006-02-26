@@ -1,16 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Advice on writing driver
-Date: Sun, 26 Feb 2006 02:40:07 +0000
-Message-ID: <44011507.7000808@superbug.co.uk>
-References: <1140911587.9838.19.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
+Date: Sun, 26 Feb 2006 03:52:34 +0100
+Message-ID: <93ec5dbfa21b5b4866a1593f54e32077@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net [194.217.242.88])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C029817C
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 03:40:04 +0100 (MET)
-In-Reply-To: <1140911587.9838.19.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24BE71D9
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 03:52:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,53 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Adrian McMenamin wrote:
-> I have asked some the questions below in piecemeal form before and only
-> occasionally got an answer, so i'll go through it all now and see if you
-> can help.
->
-> I am writing a driver for the Sega Dreamcast. Years ago I wrote an OSS
-> driver but the sound dma had not been reversed then so it was slower and
-> tended to lock the system.
->
-> On the Dreamcast (DC) sound the main CPU is an SH4 but there is a
-> separate low powered ARM7 to handle sound (PCM). The ARM7 has its own
-> memory space which is directly accessible to the SH4 only through a FIFO
-> like gateway (so slow) unless DMA is used.
->
-> The ARM7 also has to have its own program to be told how to play the
-> sound (this looks like firmware to the SH4).
->
-> The driver currently allocates a buffer in the main SH4 memory (using
-> the DMA buffer allocation APIs). This is then transferred to the ARM7
-> space using DMA.
->
-> The ARM7 code raises an interrupt to the SH4 whenever it plays 4096
-> bytes of the sound - ie every period.
->
-> What should my pointer callback return? the number of bytes/frames still
-> to be transferred from the DMA buffer to the ARM memory or the number of
-> bytes/frames still to play, or what?
->
-> Adrian
->
->   
-The pointer callback should return the current playback position in the 
-sound  ring buffer.
-So, NOT the following:
 
-a) the number of bytes/frames still to be transferred from the DMA buffer to the ARM memory
-b) the number of bytes/frames still to play
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
+======================================================================
+Reported By:                klausr
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   305
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             Debian kernel 2.6.5-4-686
+======================================================================
+Date Submitted:             05-25-2004 14:49 CEST
+Last Modified:              02-26-2006 03:52 CET
+======================================================================
+Summary:                    sound is locked up after suspend/resume (APM)
+Description: 
+Until recently I was running oss driver cs46xx without a problem. I could
+suspend in the middle of playback and xmms would keep playing after resume
+as if nothing happend at all.
+After switching to the 2.6 kernel, currently running 2.6.5, I also
+switched to ALSA beeing the new sound architecture of choice.
+Unforunately now when I suspend and resume my notebook sound stops working
+at all. Sometimes unloading all ALSA modules helps, sometimes even that is
+not possible anymore.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000226 Sound hangs after APM resume
+======================================================================
 
-but instead it should return the position in the ring buffer of the 
-frame currently being played by the ADC.
+----------------------------------------------------------------------
+ jdthood - 12-13-05 22:06 
+----------------------------------------------------------------------
+Actually, try 1.0.11rc1 since the changelog reports that cs46xx PM is
+fixed.  :)
 
+----------------------------------------------------------------------
+ cull - 02-26-06 03:52 
+----------------------------------------------------------------------
+Hi, I have tried the latest 1.0.11rc3, but the the sound after suspend
+still doesn't work. No strange messages in dmesg during suspend. rmmod +
+modprobe get sound back. :(
 
-James
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-25-04 14:49 klausr         New Issue                                    
+05-25-04 14:49 klausr         Kernel Version            => Debian kernel
+2.6.5-4-686
+05-25-04 15:02 tiwai          Note Added: 0001213                          
+05-25-04 15:31 klausr         Note Added: 0001215                          
+05-25-04 15:59 klausr         Note Added: 0001217                          
+05-25-04 16:02 klausr         Issue Monitored: klausr                      
+05-25-04 16:05 tiwai          Note Added: 0001218                          
+05-25-04 16:44 klausr         Note Added: 0001220                          
+05-25-04 16:56 klausr         Note Edited: 0001220                         
+05-27-04 08:49 klausr         Issue End Monitor: klausr                    
+05-28-04 17:08 tiwai          Note Added: 0001269                          
+05-29-04 09:36 klausr         Note Added: 0001276                          
+01-17-05 10:57 jdthood        Note Added: 0003226                          
+03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
+03-23-05 00:39 rlrevell       Note Added: 0004145                          
+03-28-05 15:42 sboehler       Issue Monitored: sboehler                    
+06-20-05 01:59 tromer         Issue Monitored: tromer                      
+12-12-05 11:12 bheung         Issue Monitored: bheung                      
+12-13-05 12:49 jdthood        Note Added: 0007003                          
+12-13-05 22:06 jdthood        Note Added: 0007025                          
+02-26-06 03:52 cull           Note Added: 0008193                          
+======================================================================
+
 
 
 
