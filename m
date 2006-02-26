@@ -1,13 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: [PATCH] Add support for Acer TravelMate and similar laptops
-Date: Mon, 27 Feb 2006 01:39:34 +0200
-Message-ID: <44023C36.2040404@akl.lt>
-References: <200602262315.k1QNFtak008145@auster.physics.adelaide.edu.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
+Date: Mon, 27 Feb 2006 00:37:11 +0100
+Message-ID: <d3d9ff84eafc12398c42921b33705140@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602262315.k1QNFtak008145@auster.physics.adelaide.edu.au>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BE1219C
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 00:37:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,96 +18,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Jonathan,
 
->> Also, please note the "(?)"'s next to CD and Beep controls. These 
->> controls don't actually influence anything now, but I suspect they 
->> would work after a few more GPIO commands are issued, so I've left 
->> them there for now (read below).
-> 
-> Stylistically I think the "?" can be omitted, but others might have different
-> opinions.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+======================================================================
+Reported By:                oggb4mp3
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1874
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Arch Linux
+Kernel Version:             2.6.15-archck4
+======================================================================
+Date Submitted:             02-24-2006 07:27 CET
+Last Modified:              02-27-2006 00:37 CET
+======================================================================
+Summary:                    USB sound device appears to be loading properly, but
+all applications report the device is busy
+Description: 
+I own a USB audio Device with a TI burr-brown DAC and with my recent
+upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
+this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
+I thought might be the culprit, but when I tried to apply the patch, I
+found that it was already applied.  I tried to reverse it, thinking that I
+might have had one of the devices that worked without it and this patch
+actually broke it, but no joy.
 
-I left those as a reminder that these widgets are untested/not working 
-yet. If after fiddling with GPIO commands we don't make them work, 
-they're useless and IMHO should be removed. If we do make them work, 
-they should be renamed.
+The device appears to be present as alsa device hw:1,0, the same as it
+always was, and I can select it, but all apps report that it is busy or
+blocked.  This all worked properly with a 2.6.14-ck kernel.
+======================================================================
 
->> Btw, this patch also fixes a few comment typos in patch_realtek.c and 
->> changes one setting in test model (it seems like inicially copy-pasted 
->> from Fujitsu model). Also, it adds lines muting NID 0x15 for Fujitsu 
->> model on startup (Jonathan, you said it turned out not to be 
->> problematic at all).
-> 
-> Please, I would very much like to test this Fujitsu change before it goes
-> in.  It *appeared* that perhaps with the most recent CVS the omission of
-> NID 0x15 was not necessary but I have not verified this in the context
-> of the model-specific initialisation verbs yet.
+----------------------------------------------------------------------
+ oggb4mp3 - 02-25-06 00:49 
+----------------------------------------------------------------------
+$ aplay -D plughw:1 side_101.wav
+Playing WAVE 'side_101.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+aplay: set_params:949: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 44100
+PERIOD_TIME: (125011 125012)
+PERIOD_SIZE: 5513
+PERIOD_BYTES: 22052
+PERIODS: (3 4)
+BUFFER_TIME: 500000
+BUFFER_SIZE: 22050
+BUFFER_BYTES: 88200
+TICK_TIME: 1000
 
-Sure. I was hoping you would test my changes before Takashi commits 
-them. :) I should've stated it clearly though...
+$ lsof /dev/snd/* /dev/dsp*
+COMMAND  PID USER   FD   TYPE DEVICE SIZE NODE NAME
+kmix    4595 greg   10u   CHR  116,0      8215 /dev/snd/controlC0
 
->> Jonathan, how about your idea to add GPIO controls to the test model? 
-> 
-> Hopefully coming early this week.
-> 
->> Now a few notes/questions:
->> * is there any reason in defining ADC NIDs for every model separately? 
->> They seem to be the same anyways, and not to get in anyones way. Or do 
->> they?
-> 
-> Up to this point the reason for the differing definitions has been
-> due to the different ways things needed to use the ADC NIDs.  As part of
-> a consolidation patch I'm preparing for Takashi I hope to clean this
-> stuff up a bit.
+----------------------------------------------------------------------
+ oggb4mp3 - 02-27-06 00:37 
+----------------------------------------------------------------------
+I just went back and tried with a 2.6.15.1 kernel and I have the same
+problem.  Something must have happened between 2.6.14.4 and 2.6.15 because
+I used this for a long time on 2.6.14.4.  I did not notice this right away
+when 2.6.15 came out because I hung back on 2.6.14 to avoid some of the
+changes related to udev and the addition of uevents.  This is why I cannot
+roll back to 2.6.14 now, because my machine is setup with udev for module
+loading and it will not work with a 2.6.14 kernel anymore.
 
-Very good. I'm eagerly waiting for that. I hope, ALSA 1.0.11 won't 
-come out until we're done with ALC260.
+What else can I do to help figure this out so it can be fixed?
 
->> * If the jack is called "Line In", should I leave it as "Line" in 
->> mixer, or should I name it "Line In"?
-> 
-> What do you think is less confusing?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-24-06 07:27 oggb4mp3       New Issue                                    
+02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
+02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+02-24-06 14:16 Clemens LadischNote Added: 0008175                          
+02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
+02-24-06 15:32 Clemens LadischNote Added: 0008178                          
+02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
+02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
+======================================================================
 
-I don't actually know. It doesn't make significant difference for me, 
-so it's hard to tell. I'm just asking about the policy - is "Line" a 
-conventional name in ALSA, or is it a convention to name controls like 
-jacks?..
 
->> * What's your opinion about adding a model configuration line that 
->> would only check the subvendor (and ignore the subdevice setting)? 
->> There would be more chances to autodetect an Acer laptop then, but 
->> OTOH, if one day there'll be an ALC-260 based Acer with a different 
->> config, you'd risk to misdetect, or to regress in automatic Acer 
->> detectlion by removing that line...
-> 
-> I believe the generally accepted way is to include both.  If the machine
-> config did change in future there's really no guarantee that the existing
-> models will just magically work.  It's better to effectively force the new
-> models to be explicitly tested, and only when they're verified do they get
-> added to the "known model" list.
-
-That's what I thought... However, it may as always result in people 
-simply using a "model=acer" parameter and not bothering to inform the 
-developers about the success. But I think you're right.
-
-> In the next day or so I'll be sending a list of pending patches to Takashi
-> (as requested) so everything can be synced correctly and nothing gets
-> missed.  Some of these will result in minor changes to the Acer config.  Do
-> you mind if we hold your patch over until then, and I'll submit it with the
-> rest?  It will make Takashi's (and my) life easier if we do it this way.
-
-Of course I don't mind. You may consider my patch being a sketch which 
-you can transform into whatever seems best for you. Of course, I'll 
-want to test the results too. :)
-
-Regards,
-
-Rimas
 
 
 -------------------------------------------------------
