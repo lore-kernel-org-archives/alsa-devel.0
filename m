@@ -1,13 +1,14 @@
-From: Markus Grabner <grabner@icg.tu-graz.ac.at>
-Subject: Line6 USB driver in ALSA?
-Date: Sun, 26 Feb 2006 12:07:30 +0100
-Message-ID: <200602261207.31050.grabner@icg.tu-graz.ac.at>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Sun, 26 Feb 2006 13:28:48 +0100
+Message-ID: <61fe81fa5bd2f011a5eea9ee99798362@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21F9E18F
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 13:28:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,63 +18,148 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: clemens@ladisch.de, rlrevell@joe-job.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-	Hi everybody!
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1726
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
+======================================================================
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              02-26-2006 13:28 CET
+======================================================================
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
+Description: 
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
 
-    I just had a brief conversation with Lee Revell about the question if a 
-USB driver for Line6 guitar equipment I am working on since 2004 (see 
-http://www.tanzband-scream.at/line6) could be included in ALSA. In 
-particular, the following devices are supported:
-*) POD series (http://www.line6.com/products/pods): these devices digitally 
-simulate the sound of different guitar amplifiers. The user can control these 
-devices by several dials without connecting them to the PC, or by appropriate 
-software running on a PC to which the device is connected via USB. Moreover, 
-the guitar signal can be captured, and simultaneously a PCM signal from the 
-PC can be played back (full-duplex).
-*) Variax guitars (http://www.line6.com/variax) connected to the PC via an USB 
-interface (http://www.line6.com/variaxWorkbench): these guitars digitally 
-simulate the sound of different guitars. The model parameters (e.g., pickup 
-type and position) can be modified via USB (the current version of the Linux 
-driver can only read these parameters, however).
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
 
-The driver I wrote registers the POD devices as a soundcard, therefore the PCM 
-portion would perfectly fit into ALSA. Moreover, POD parameters are 
-controlled via ALSA's MIDI interface, commands are translated to USB (the 
-devices also have a MIDI port, which can be accessed with the standard raw 
-MIDI driver, but PCM is not available via MIDI).
-However, I'm not so sure if other features of the driver are within the scope 
-of ALSA. These include
-*) a set of files registered under /sys/bus/usb/drivers/... to allow access to 
-the current states of the POD/Variax model parameters (as ASCII numbers)
-*) a method to access all parameters of a single or multiple models as a 
-binary block of data
-*) a guitar tuner
-*) and some more features not immediately related to audio
-
-The current driver source code is available under 
-"http://www.tanzband-scream.at/line6/download/line6usb-0.6.1.tar.bz2". The 
-main files are:
-*) pcm.*: the PCM interface
-*) midi.*: the MIDI interface
-*) pod.*: POD-specific code
-*) variax.*: Variax-specific code
-*) driver.*: generic code for all supported Line6 devices
-
-What is your opinion on how such a driver could fit into the ALSA concept?
-
-	Kind regards,
-		Markus
+Playing stereo sound is OK.
 
 
--- 
-Markus Grabner - Computer Graphics and Vision
-Graz University of Technology, Inffeldgasse 16/II, 8010 Graz, Austria
-Phone: +43/316/873-5041, Fax: +43/316/873-5050
-WWW: http://www.icg.tu-graz.ac.at/Members/grabner
+ speaker-test -c4 -D hw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+
+======================================================================
+
+----------------------------------------------------------------------
+ ponchick - 02-26-06 07:22 
+----------------------------------------------------------------------
+I try to describe more cleanly:
+1. Front/Rear swaps bug reproduced with any tool that use four channels
+including speaker-test, aplay, xine and mplayer.
+2. au88x0_surround40.patch fix this issue completly
+3. There is another similar issue when channels swap almost randomly
+(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726#0008085). It's
+reproduced by speaker-test but I cannot reproduce
+it with at least aplay and mplayer. au88x0_surround40.patch does not
+affect the bug at all. If someone can reproduce it with any tool other
+than speaker-test I think there should be separate bug report.
+4. This bug is fixed and could be closed.
+
+----------------------------------------------------------------------
+ Raymond - 02-26-06 13:28 
+----------------------------------------------------------------------
+Is it feasible to use the hook to provide real "front" and "rear" devices
+using 
+pcm volume control https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835 ?
+
+
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_hooks
+
+
+
+      hooks.0 {
+                type ctl_elems
+                hook_args [
+                        {
+                                name "Sigmatel Surround Playback Switch"
+                                preserve true
+                                lock true
+                                optional true
+                                value [ 0 ]
+                        }
+                        {
+                                name "PCM Playback Volume"
+                                index { @func private_pcm_subdevice }
+                                lock true
+                                value [ 0 0 -48 -48]
+                        }
+                ]
+        }
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+02-10-06 06:32 Raymond        Note Added: 0007991                          
+02-10-06 10:50 ponchick       Note Added: 0007998                          
+02-10-06 11:25 Raymond        Note Added: 0008000                          
+02-10-06 13:49 Raymond        Note Added: 0008003                          
+02-10-06 13:56 Raymond        Note Edited: 0008003                         
+02-12-06 07:48 Raymond        Note Edited: 0008003                         
+02-12-06 10:12 Raymond        Note Edited: 0008000                         
+02-16-06 05:37 ponchick       Note Added: 0008085                          
+02-16-06 08:12 Raymond        Note Added: 0008088                          
+02-16-06 10:12 Raymond        Note Added: 0008090                          
+02-16-06 10:28 Raymond        Note Edited: 0008090                         
+02-16-06 16:07 Raymond        Note Added: 0008097                          
+02-17-06 03:35 ponchick       Note Added: 0008104                          
+02-17-06 04:28 Raymond        Note Added: 0008105                          
+02-17-06 04:35 Raymond        Note Edited: 0008105                         
+02-17-06 05:56 Raymond        Note Edited: 0008105                         
+02-17-06 06:09 Raymond        Note Edited: 0008105                         
+02-26-06 07:22 ponchick       Note Added: 0008198                          
+02-26-06 13:28 Raymond        Note Added: 0008200                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
