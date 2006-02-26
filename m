@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Sun, 26 Feb 2006 05:50:06 +0100
-Message-ID: <0a72242d5b165770a286ca3d422bc431@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Sun, 26 Feb 2006 07:22:20 +0100
+Message-ID: <4bccb7f2c90ff66311158b42278c18c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E52F172
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 05:50:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54635185
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 07:22:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,187 +24,144 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
 ======================================================================
-Reported By:                robertw
-Assigned To:                tiwai
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
-Category:                   PCI - hda-intel
+Issue ID:                   1726
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-26-2006 05:50 CET
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              02-26-2006 07:22 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
+
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
+
+Playing stereo sound is OK.
+
+
+ speaker-test -c4 -D hw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-======================================================================
 
 ----------------------------------------------------------------------
- wattazoum - 02-25-06 12:31 
+ Raymond - 02-17-06 06:09 
 ----------------------------------------------------------------------
-I have uploaded a patch for that solution, You'll find it at the top
+Steps to reproduce the problem with alsa-1.0.11rc3 for au8830 (STAC9708)
 
-Thanks every one
+Immediately after the driver is loaded.
+
+1) use alsamixer to turn "Sigmatel Surround Playback Switch" off, it mix
+the front and rear channels
+
+numid=19,iface=MIXER,name='Sigmatel Surround Playback Switch'
+; type=BOOLEAN,access=rw---,values=1
+: values=off
+
+2) aplay -D hw:0,0 out1lq.wav ( you should hear the sound only from left
+speaker of out1 at first run )
+
+3) aplay -D hw:0,0 out1lq.wav ( Do the sound come out from left speaker of
+out2  with alsa-1.0.11rc3 on second/third/... run? )
+
+Repeat the about test with out1rq.wav. out2lq.wav and out2rq.wav (you need
+to reload the driver in order to have the sound come out from correct
+speaker on step 2)
+
+MX300 Win9x can detect one/two jacks are plugged into out1 and out2 using
+GPIO, but other au8830 cannot detect.
+
+The only side effect of the au88x0_surround40.patch is the "vortex: IRQ
+fifo error" appear in the system log when play/capture sound which is not
+mono. 
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1840
+
+The "vortex: IRQ fifo error" only appear once in alsa-1.0.11rc3
+
+
 
 ----------------------------------------------------------------------
- at2000 - 02-26-06 05:50 
+ ponchick - 02-26-06 07:22 
 ----------------------------------------------------------------------
-Hi,
-
-I just bought a new computer today, and faced a similar problem.
-
-# lspci
-0000:00:00.0 Host bridge: Intel Corporation 945G/P Memory Controller Hub
-(rev 02)
-0000:00:02.0 VGA compatible controller: Intel Corporation 945G Integrated
-Graphics Controller (rev 02)
-0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
-Audio Controller (rev 01)
-0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #1 (rev 01)
-0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #2 (rev 01)
-0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #3 (rev 01)
-0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #4 (rev 01)
-0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
-EHCI Controller (rev 01)
-0000:00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev e1)
-0000:00:1f.0 ISA bridge: Intel Corporation 82801GB/GR (ICH7 Family) LPC
-Interface Bridge (rev 01)
-0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
-Controller (rev 01)
-0000:00:1f.2 IDE interface: Intel Corporation 82801GB/GR/GH (ICH7 Family)
-Serial ATA Storage Controllers cc=IDE (rev 01)
-0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
-Controller (rev 01)
-0000:01:03.0 Ethernet controller: Broadcom Corporation NetXtreme BCM5788
-Gigabit Ethernet (rev 03)
-
-# grep . /proc/asound/*
-/proc/asound/cards: 0 [Intel          ]: HDA-Intel - HDA Intel
-/proc/asound/cards:                      HDA Intel at 0xfdff8000 irq 193
-/proc/asound/devices:  0: [ 0]   : control
-/proc/asound/devices: 16: [ 0- 0]: digital audio playback
-/proc/asound/devices: 17: [ 0- 1]: digital audio playback
-/proc/asound/devices: 24: [ 0- 0]: digital audio capture
-/proc/asound/devices: 33:        : timer
-/proc/asound/modules: 0 snd_hda_intel
-/proc/asound/pcm:00-00: ALC880 Analog : ALC880 Analog : playback 1 :
-capture 2
-/proc/asound/pcm:00-01: ALC880 Digital : ALC880 Digital : playback 1
-/proc/asound/timers:G0: system timer : 1000.000us (10000000 ticks)
-/proc/asound/timers:P0-0-0: PCM playback 0-0-0 : SLAVE
-/proc/asound/timers:P0-0-1: PCM capture 0-0-1 : SLAVE
-/proc/asound/timers:P0-0-3: PCM capture 0-0-3 : SLAVE
-/proc/asound/timers:P0-1-0: PCM playback 0-1-0 : SLAVE
-/proc/asound/version:Advanced Linux Sound Architecture Driver Version
-1.0.11rc2.
-/proc/asound/version:Compiled on Feb 26 2006 for kernel 2.6.15-16-686
-(SMP).
-
-aplay plays the file but no sound.
-
-kernel: 2.6.15.4 from Ubuntu Dapper + alsa 1.0.11rc2
-
-motherboard:
-http://www.foxconnchannel.com/products_motherboard_2.cfm?pName=945G7MA-8EKRS2
-
-Any idea? Thanks!
+I try to describe more cleanly:
+1. Front/Rear swaps bug reproduced with any tool that use four channels
+including speaker-test, aplay, xine and mplayer.
+2. au88x0_surround40.patch fix this issue completly
+3. There is another similar issue when channels swap almost randomly
+(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726#0008085). It's
+reproduced by speaker-test but I cannot reproduce
+it with at least aplay and mplayer. au88x0_surround40.patch does not
+affect the bug at all. If someone can reproduce it with any tool other
+than speaker-test I think there should be separate bug report.
+4. This bug is fixed and could be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
-01-04-06 22:00 robertw        Note Added: 0007453                          
-01-04-06 22:16 robertw        Note Edited: 0007453                         
-01-11-06 23:38 lobstaj        Note Added: 0007572                          
-01-11-06 23:48 rlrevell       Note Added: 0007573                          
-01-12-06 00:20 lobstaj        Note Added: 0007575                          
-01-12-06 00:26 rlrevell       Note Added: 0007576                          
-01-12-06 01:16 mytux          Note Added: 0007577                          
-01-12-06 01:20 mytux          Note Edited: 0007577                         
-01-12-06 14:13 robertw        Note Added: 0007586                          
-01-12-06 14:43 lobstaj        Note Added: 0007587                          
-01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
-01-12-06 21:04 rlrevell       Note Added: 0007591                          
-01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
-01-13-06 08:03 eudoxos        Note Added: 0007631                          
-01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
-01-16-06 00:32 jwoithe        Note Added: 0007682                          
-01-17-06 23:32 ilovetronik    Issue Monitored: ilovetronik                    
-01-19-06 23:36 ajmitch        Issue Monitored: ajmitch                     
-02-08-06 14:46 svilen         Note Added: 0007965                          
-02-09-06 00:29 jwoithe        Note Added: 0007969                          
-02-09-06 09:04 hweigel        Issue Monitored: hweigel                     
-02-10-06 11:02 svilen         Note Added: 0007999                          
-02-12-06 21:42 AndyP          Note Added: 0008031                          
-02-12-06 22:11 wattazoum      Note Added: 0008032                          
-02-12-06 22:14 rlrevell       Note Added: 0008033                          
-02-12-06 23:05 er-ku          Note Added: 0008034                          
-02-12-06 23:07 er-ku          Note Edited: 0008034                         
-02-13-06 00:45 jwoithe        Note Added: 0008035                          
-02-13-06 06:42 er-ku          Note Added: 0008037                          
-02-13-06 06:43 er-ku          Note Edited: 0008037                         
-02-14-06 00:07 jwoithe        Note Added: 0008066                          
-02-18-06 23:48 AndyP          Note Added: 0008125                          
-02-19-06 10:41 er-ku          Note Added: 0008131                          
-02-19-06 16:49 AndyP          Note Added: 0008134                          
-02-22-06 18:29 lobstaj        Note Added: 0008160                          
-02-23-06 01:12 jwoithe        Note Added: 0008165                          
-02-24-06 12:21 lobstaj        Note Added: 0008173                          
-02-24-06 12:25 lobstaj        Note Edited: 0008173                         
-02-24-06 14:58 mytux          Note Added: 0008176                          
-02-24-06 15:41 wattazoum      Note Added: 0008179                          
-02-24-06 15:42 wattazoum      Note Edited: 0008179                         
-02-24-06 22:32 er-ku          Note Added: 0008181                          
-02-24-06 23:23 AndyP          Note Added: 0008182                          
-02-25-06 12:29 wattazoum      File Added: patch_realtek.diff                    
-02-25-06 12:31 wattazoum      Note Added: 0008187                          
-02-26-06 05:50 at2000         Note Added: 0008196                          
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+02-10-06 06:32 Raymond        Note Added: 0007991                          
+02-10-06 10:50 ponchick       Note Added: 0007998                          
+02-10-06 11:25 Raymond        Note Added: 0008000                          
+02-10-06 13:49 Raymond        Note Added: 0008003                          
+02-10-06 13:56 Raymond        Note Edited: 0008003                         
+02-12-06 07:48 Raymond        Note Edited: 0008003                         
+02-12-06 10:12 Raymond        Note Edited: 0008000                         
+02-16-06 05:37 ponchick       Note Added: 0008085                          
+02-16-06 08:12 Raymond        Note Added: 0008088                          
+02-16-06 10:12 Raymond        Note Added: 0008090                          
+02-16-06 10:28 Raymond        Note Edited: 0008090                         
+02-16-06 16:07 Raymond        Note Added: 0008097                          
+02-17-06 03:35 ponchick       Note Added: 0008104                          
+02-17-06 04:28 Raymond        Note Added: 0008105                          
+02-17-06 04:35 Raymond        Note Edited: 0008105                         
+02-17-06 05:56 Raymond        Note Edited: 0008105                         
+02-17-06 06:09 Raymond        Note Edited: 0008105                         
+02-26-06 07:22 ponchick       Note Added: 0008198                          
 ======================================================================
 
 
