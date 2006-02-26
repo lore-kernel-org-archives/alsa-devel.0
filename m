@@ -1,16 +1,18 @@
-From: Olaf Hering <olh@suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Re: [PPC,SOUND] Fix audio gpio state detection
-Date: Sun, 26 Feb 2006 20:26:11 +0100
-Message-ID: <20060226192611.GA5249@suse.de>
-References: <jehd7527wq.fsf@sykes.suse.de> <1139783738.5247.54.camel@localhost.localdomain> <20060226173908.GA4871@suse.de> <1140981558.24141.112.camel@mindpipe>
+Date: Sun, 26 Feb 2006 14:19:18 -0500
+Message-ID: <1140981558.24141.112.camel@mindpipe>
+References: <jehd7527wq.fsf@sykes.suse.de>
+	 <1139783738.5247.54.camel@localhost.localdomain>
+	 <20060226173908.GA4871@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mx1.suse.de (cantor.suse.de [195.135.220.2])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7951187
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 20:26:12 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <1140981558.24141.112.camel@mindpipe>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8148A187
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 20:24:52 +0100 (MET)
+In-Reply-To: <20060226173908.GA4871@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,15 +22,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Olaf Hering <olh@suse.de>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Andreas Schwab <schwab@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Ben Collins <ben.collins@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
- On Sun, Feb 26, Lee Revell wrote:
+On Sun, 2006-02-26 at 18:39 +0100, Olaf Hering wrote:
+> /proc/device-tree/pci@f2000000/mac-io@17/gpio@50:
+> linux,device     cfdc7808
+> name             "gpio"
+> linux,phandle    ff90fcd0
+> reg              00000050 00000030
+> built-in        
+> device_type      "gpio"
+> 
 
-> Argh, /proc abuse... "historical reasons" presumably?
+Argh, /proc abuse... "historical reasons" presumably?
 
-No, the way it works.
+Lee
+
 
 
 -------------------------------------------------------
