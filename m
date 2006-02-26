@@ -1,12 +1,13 @@
-From: "Raja M." <raja.mallik@moschip.com>
-Subject: ALSA PCM core Q's
-Date: Sun, 26 Feb 2006 11:50:42 +0530
-Message-ID: <E044F591B954D84186173DB5134357A13C6E9E@lexus.moschip.com>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: hda-intel and Acer TravelMate 4062 LMi
+Date: Sun, 26 Feb 2006 11:05:13 +0200
+Message-ID: <44016F49.8010702@akl.lt>
+References: <47801.82.126.77.117.1140925511.squirrel@mail.eclaireurs.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C63A9C.C51AC354"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+In-Reply-To: <47801.82.126.77.117.1140925511.squirrel@mail.eclaireurs.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,77 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?ISO-8859-1?Q?Gilles_PI=C9TRI?= <contact@gilouweb.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi Gilou,
 
-------_=_NextPart_001_01C63A9C.C51AC354
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+The Acer fix is not in the CVS yet, hence you have to manually add a few
+lines to the code before compiling it.
+
+Rimas
 
 
-At present, I am involved in porting an SOC based audio controller(i2s) =
-that has standalone codec chip(for ADC/DAC).=20
+Gilles PI=C9TRI wrote:
+> Hi !
+>
+> I've been reading about the CVS version of the hda-intel allowing to us=
+e a
+> "test" model. I was unable to listen to any sounds neither with the deb=
+ian
+> version of alsa, nor with the developpment one. Driver was loading, but=
+ I
+> couldn't hear anything.
+> Using the CVS version, using the test model, I'm able to make some soun=
+d
+> getting out through the "Line out" jack, identified in alsamixer by
+> "LOUT1". LOUT1 acts also on the microphone jack : I can hear the sound =
+in
+> mono by the mic jack when it's active !
+> However, I can't hear anything from the headphone jack, and the same go=
+es
+> for the internal speakers, whatever strange things I try with the mixer.
+> I haven't tried to input anything, as I would like the output to work f=
+irst.
+>
+> I'm available by mail or an IRC if you tell me where, to go on testing =
+if
+> you are interested in this !
+>
+> Thanks for your job !
+>
+> Gilou
 
-To my understanding, Alsa driver has four main harward components: =
-PCM(for audio data stream), Control(for mixer arrangenment in terms of =
-codec the audio controller uses), MIDI interface, Sequencer.
-
-What I have observered in different embedded board is they have =
-different ways to capture/playback data of audio stream like dma, mmap =
-and others methods of directly copying audio controller hardware buffer =
-into PCM substream of ALSA core.=20
-
-However I would like to copy Rx/Tx FIFO hardware buffers to the PCM core =
-and my board doesnot have dma/mmap support. How do I go ahead with this =
-approach as I am very new to this?
-
-Regards
-Raja
-
-------_=_NextPart_001_01C63A9C.C51AC354
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7638.1">
-<TITLE>ALSA PCM core Q's</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-<BR>
-
-<P><FONT SIZE=3D2>At present, I am involved in porting an SOC based =
-audio controller(i2s) that has standalone codec chip(for ADC/DAC).<BR>
-<BR>
-To my understanding, Alsa driver has four main harward components: =
-PCM(for audio data stream), Control(for mixer arrangenment in terms of =
-codec the audio controller uses), MIDI interface, Sequencer.<BR>
-<BR>
-What I have observered in different embedded board is they have =
-different ways to capture/playback data of audio stream like dma, mmap =
-and others methods of directly copying audio controller hardware buffer =
-into PCM substream of ALSA core.<BR>
-<BR>
-However I would like to copy Rx/Tx FIFO hardware buffers to the PCM core =
-and my board doesnot have dma/mmap support. How do I go ahead with this =
-approach as I am very new to this?<BR>
-<BR>
-Regards<BR>
-Raja</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C63A9C.C51AC354--
 
 
 -------------------------------------------------------
