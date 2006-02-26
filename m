@@ -1,11 +1,14 @@
-From: Gilles =?iso-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>
-Subject: hda-intel and Acer TravelMate 4062 LMi
-Date: Sun, 26 Feb 2006 04:45:11 +0100 (CET)
-Message-ID: <47801.82.126.77.117.1140925511.squirrel@mail.eclaireurs.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001880]: Can not use alsamixer when using CK804  and the iec598 volume has to be all the day down
+Date: Sun, 26 Feb 2006 06:31:13 +0100
+Message-ID: <ac7f6cc6fd5e2eaa1a73f5e4808834b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DE551BA
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 06:31:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,32 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi !
 
-I've been reading about the CVS version of the hda-intel allowing to use =
-a
-"test" model. I was unable to listen to any sounds neither with the debia=
-n
-version of alsa, nor with the developpment one. Driver was loading, but I
-couldn't hear anything.
-Using the CVS version, using the test model, I'm able to make some sound
-getting out through the "Line out" jack, identified in alsamixer by
-"LOUT1". LOUT1 acts also on the microphone jack : I can hear the sound in
-mono by the mic jack when it's active !
-However, I can't hear anything from the headphone jack, and the same goes
-for the internal speakers, whatever strange things I try with the mixer.
-I haven't tried to input anything, as I would like the output to work fir=
-st.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1880> 
+======================================================================
+Reported By:                davegermiquet
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1880
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-26-2006 06:31 CET
+Last Modified:              02-26-2006 06:31 CET
+======================================================================
+Summary:                    Can not use alsamixer when using CK804  and the
+iec598 volume has to be all the day down
+Description: 
+First the IEC958 P volume has to be all the way down for my Coax cable to
+work and the only option that works to get it running is
 
-I'm available by mail or an IRC if you tell me where, to go on testing if
-you are interested in this !
+mplayer -ao device=surround51
 
-Thanks for your job !
+mplayer -ao device=hw0,2 does not work.
 
-Gilou
+When that is ran surround works and i my coax works but I can not use alsa
+mixer to modify volumes it is like its inactive however volume controls
+work in kaffeine and amarok.
+
+Using revision 3 and motherboard a8ne-fm
+Have attached file
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-26-06 06:31 davegermiquet  New Issue                                    
+02-26-06 06:31 davegermiquet  File Added: card.txt                         
+======================================================================
+
 
 
 
