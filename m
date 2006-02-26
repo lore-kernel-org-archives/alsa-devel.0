@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Sun, 26 Feb 2006 06:03:00 +0100
-Message-ID: <85cc6bf6d7fae68cbc31e8682fb6df99@bugtrack.alsa-project.org>
+Date: Sun, 26 Feb 2006 05:50:06 +0100
+Message-ID: <0a72242d5b165770a286ca3d422bc431@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E4E818C
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 06:03:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E52F172
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 05:50:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-26-2006 06:02 CET
+Last Modified:              02-26-2006 05:50 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -54,6 +54,13 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
+
+----------------------------------------------------------------------
+ wattazoum - 02-25-06 12:31 
+----------------------------------------------------------------------
+I have uploaded a patch for that solution, You'll find it at the top
+
+Thanks every one
 
 ----------------------------------------------------------------------
  at2000 - 02-26-06 05:50 
@@ -121,12 +128,6 @@ motherboard:
 http://www.foxconnchannel.com/products_motherboard_2.cfm?pName=945G7MA-8EKRS2
 
 Any idea? Thanks!
-
-----------------------------------------------------------------------
- rlrevell - 02-26-06 06:02 
-----------------------------------------------------------------------
-That's a different problem, you have ALC800 while this bug is about Acer
-machines with ALC260.  Please open a new bug report.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -204,7 +205,6 @@ Date Modified  Username       Field                    Change
 02-25-06 12:29 wattazoum      File Added: patch_realtek.diff                    
 02-25-06 12:31 wattazoum      Note Added: 0008187                          
 02-26-06 05:50 at2000         Note Added: 0008196                          
-02-26-06 06:02 rlrevell       Note Added: 0008197                          
 ======================================================================
 
 
