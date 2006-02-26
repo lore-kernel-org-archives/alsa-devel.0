@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Sun, 26 Feb 2006 07:22:20 +0100
-Message-ID: <4bccb7f2c90ff66311158b42278c18c1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001879]: No sound heard but no error
+Date: Sun, 26 Feb 2006 06:18:12 +0100
+Message-ID: <ecca16059ffe9b788dbde81376a39b0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54635185
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 07:22:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6AE7519A
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 06:18:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,146 +22,369 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1879> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                at2000
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
+Issue ID:                   1879
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Distribution:               Ubuntu
+Kernel Version:             2.6.15.4 (2.6.15-16-686)
 ======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              02-26-2006 07:22 CET
+Date Submitted:             02-26-2006 06:18 CET
+Last Modified:              02-26-2006 06:18 CET
 ======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
+Summary:                    No sound heard but no error
 Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
+# lspci
+0000:00:00.0 Host bridge: Intel Corporation 945G/P Memory Controller Hub
+(rev 02)
+0000:00:02.0 VGA compatible controller: Intel Corporation 945G Integrated
+Graphics Controller (rev 02)
+0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 01)
+0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #1 (rev 01)
+0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #2 (rev 01)
+0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #3 (rev 01)
+0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #4 (rev 01)
+0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
+EHCI Controller (rev 01)
+0000:00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev e1)
+0000:00:1f.0 ISA bridge: Intel Corporation 82801GB/GR (ICH7 Family) LPC
+Interface Bridge (rev 01)
+0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+Controller (rev 01)
+0000:00:1f.2 IDE interface: Intel Corporation 82801GB/GR/GH (ICH7 Family)
+Serial ATA Storage Controllers cc=IDE (rev 01)
+0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
+Controller (rev 01)
+0000:01:03.0 Ethernet controller: Broadcom Corporation NetXtreme BCM5788
+Gigabit Ethernet (rev 03)
 
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
+# grep . /proc/asound/*
+/proc/asound/cards: 0 [Intel ]: HDA-Intel - HDA Intel
+/proc/asound/cards: HDA Intel at 0xfdff8000 irq 193
+/proc/asound/devices: 0: [ 0] : control
+/proc/asound/devices: 16: [ 0- 0]: digital audio playback
+/proc/asound/devices: 17: [ 0- 1]: digital audio playback
+/proc/asound/devices: 24: [ 0- 0]: digital audio capture
+/proc/asound/devices: 33: : timer
+/proc/asound/modules: 0 snd_hda_intel
+/proc/asound/pcm:00-00: ALC880 Analog : ALC880 Analog : playback 1 :
+capture 2
+/proc/asound/pcm:00-01: ALC880 Digital : ALC880 Digital : playback 1
+/proc/asound/timers:G0: system timer : 1000.000us (10000000 ticks)
+/proc/asound/timers:P0-0-0: PCM playback 0-0-0 : SLAVE
+/proc/asound/timers:P0-0-1: PCM capture 0-0-1 : SLAVE
+/proc/asound/timers:P0-0-3: PCM capture 0-0-3 : SLAVE
+/proc/asound/timers:P0-1-0: PCM playback 0-1-0 : SLAVE
+/proc/asound/version:Advanced Linux Sound Architecture Driver Version
+1.0.11rc2.
+/proc/asound/version:Compiled on Feb 26 2006 for kernel 2.6.15-16-686
+(SMP).
 
-Playing stereo sound is OK.
+aplay plays the file but no sound.
 
-
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-
+# grep . /proc/asound/card0/*
+/proc/asound/card0/codec#2:Codec: Realtek ALC880
+/proc/asound/card0/codec#2:Address: 2
+/proc/asound/card0/codec#2:Vendor Id: 0x10ec0880
+/proc/asound/card0/codec#2:Subsystem Id: 0x105bb603
+/proc/asound/card0/codec#2:Revision Id: 0x100800
+/proc/asound/card0/codec#2:Default PCM: rates 0x560, bits 0x0e, types 0x1
+/proc/asound/card0/codec#2:Default Amp-In caps: N/A
+/proc/asound/card0/codec#2:Default Amp-Out caps: N/A
+/proc/asound/card0/codec#2:Node 0x02 [Audio Output] wcaps 0x411: Stereo
+/proc/asound/card0/codec#2:  PCM: rates 0x560, bits 0x0e, types 0x1
+/proc/asound/card0/codec#2:  Power: 0x0
+/proc/asound/card0/codec#2:Node 0x03 [Audio Output] wcaps 0x411: Stereo
+/proc/asound/card0/codec#2:  PCM: rates 0x560, bits 0x0e, types 0x1
+/proc/asound/card0/codec#2:  Power: 0x0
+/proc/asound/card0/codec#2:Node 0x04 [Audio Output] wcaps 0x411: Stereo
+/proc/asound/card0/codec#2:  PCM: rates 0x160, bits 0x0e, types 0x1
+/proc/asound/card0/codec#2:  Power: 0x0
+/proc/asound/card0/codec#2:Node 0x05 [Audio Output] wcaps 0x411: Stereo
+/proc/asound/card0/codec#2:  PCM: rates 0x160, bits 0x0e, types 0x1
+/proc/asound/card0/codec#2:  Power: 0x0
+/proc/asound/card0/codec#2:Node 0x06 [Audio Output] wcaps 0x211: Stereo
+Digital
+/proc/asound/card0/codec#2:  PCM: rates 0x160, bits 0x1e, types 0x1
+/proc/asound/card0/codec#2:Node 0x07 [Audio Input] wcaps 0x10051b: Stereo
+Amp-In
+/proc/asound/card0/codec#2:  Amp-In caps: ofs=0x00, nsteps=0x23,
+stepsize=0x03, mute=1
+/proc/asound/card0/codec#2:  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00
+0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+/proc/asound/card0/codec#2:  PCM: rates 0x160, bits 0x06, types 0x1
+/proc/asound/card0/codec#2:  Power: 0x0
+/proc/asound/card0/codec#2:  Connection: 7
+/proc/asound/card0/codec#2:     0x18* 0x19 0x1a 0x1b 0x1c 0x14 0x15
+/proc/asound/card0/codec#2:Node 0x08 [Audio Input] wcaps 0x10051b: Stereo
+Amp-In
+/proc/asound/card0/codec#2:  Amp-In caps: ofs=0x00, nsteps=0x23,
+stepsize=0x03, mute=1
+/proc/asound/card0/codec#2:  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00
+0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00]
+/proc/asound/card0/codec#2:  PCM: rates 0x160, bits 0x06, types 0x1
+/proc/asound/card0/codec#2:  Power: 0x0
+/proc/asound/card0/codec#2:  Connection: 7
+/proc/asound/card0/codec#2:     0x18* 0x19 0x1a 0x1b 0x1c 0x14 0x15
+/proc/asound/card0/codec#2:Node 0x09 [Audio Input] wcaps 0x10051b: Stereo
+Amp-In
+/proc/asound/card0/codec#2:  Amp-In caps: ofs=0x00, nsteps=0x23,
+stepsize=0x03, mute=1
+/proc/asound/card0/codec#2:  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00
+0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00] [0x00 0x00]
+/proc/asound/card0/codec#2:  PCM: rates 0x160, bits 0x06, types 0x1
+/proc/asound/card0/codec#2:  Power: 0x0
+/proc/asound/card0/codec#2:  Connection: 10
+/proc/asound/card0/codec#2:     0x18* 0x19 0x1a 0x1b 0x1c 0x0b 0x14 0x15
+0x16 0x17
+/proc/asound/card0/codec#2:Node 0x0a [Audio Input] wcaps 0x100391: Stereo
+Digital
+/proc/asound/card0/codec#2:  PCM: rates 0x160, bits 0x1e, types 0x1
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x1f
+/proc/asound/card0/codec#2:Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo
+Amp-In
+/proc/asound/card0/codec#2:  Amp-In caps: ofs=0x23, nsteps=0x41,
+stepsize=0x03, mute=1
+/proc/asound/card0/codec#2:  Amp-In vals:  [0x1d 0x1d] [0x41 0x41] [0x41
+0x41] [0x00 0x00] [0x41 0x41] [0xa3 0xa3] [0xa3 0xa3] [0xa3 0xa3]
+/proc/asound/card0/codec#2:  Connection: 8
+/proc/asound/card0/codec#2:     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15
+/proc/asound/card0/codec#2:Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo
+Amp-In Amp-Out
+/proc/asound/card0/codec#2:  Amp-In caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x40, nsteps=0x40,
+stepsize=0x03, mute=0
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x40 0x40]
+/proc/asound/card0/codec#2:  Connection: 2
+/proc/asound/card0/codec#2:     0x02 0x0b
+/proc/asound/card0/codec#2:Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo
+Amp-In Amp-Out
+/proc/asound/card0/codec#2:  Amp-In caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x40, nsteps=0x40,
+stepsize=0x03, mute=0
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x40 0x40]
+/proc/asound/card0/codec#2:  Connection: 2
+/proc/asound/card0/codec#2:     0x03 0x0b
+/proc/asound/card0/codec#2:Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo
+Amp-In Amp-Out
+/proc/asound/card0/codec#2:  Amp-In caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x40, nsteps=0x40,
+stepsize=0x03, mute=0
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x40 0x40]
+/proc/asound/card0/codec#2:  Connection: 2
+/proc/asound/card0/codec#2:     0x04 0x0b
+/proc/asound/card0/codec#2:Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo
+Amp-In Amp-Out
+/proc/asound/card0/codec#2:  Amp-In caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x40, nsteps=0x40,
+stepsize=0x03, mute=0
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x40 0x40]
+/proc/asound/card0/codec#2:  Connection: 2
+/proc/asound/card0/codec#2:     0x05 0x0b
+/proc/asound/card0/codec#2:Node 0x10 [Audio Selector] wcaps 0x300101:
+Stereo
+/proc/asound/card0/codec#2:  Connection: 4
+/proc/asound/card0/codec#2:     0x0c* 0x0d 0x0e 0x0f
+/proc/asound/card0/codec#2:Node 0x11 [Audio Selector] wcaps 0x300101:
+Stereo
+/proc/asound/card0/codec#2:  Connection: 4
+/proc/asound/card0/codec#2:     0x0c* 0x0d 0x0e 0x0f
+/proc/asound/card0/codec#2:Node 0x12 [Audio Selector] wcaps 0x300101:
+Stereo
+/proc/asound/card0/codec#2:  Connection: 4
+/proc/asound/card0/codec#2:     0x0c* 0x0d 0x0e 0x0f
+/proc/asound/card0/codec#2:Node 0x13 [Audio Selector] wcaps 0x300101:
+Stereo
+/proc/asound/card0/codec#2:  Connection: 4
+/proc/asound/card0/codec#2:     0x0c* 0x0d 0x0e 0x0f
+/proc/asound/card0/codec#2:Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo
+Amp-Out
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x00 0x00]
+/proc/asound/card0/codec#2:  Pincap 0x083f: IN OUT HP
+/proc/asound/card0/codec#2:  Pin Default 0x01014410: [Jack] Line Out at
+Ext Rear
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Green
+/proc/asound/card0/codec#2:  Pin-ctls: 0x40: OUT
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x0c
+/proc/asound/card0/codec#2:Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo
+Amp-Out
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x00 0x00]
+/proc/asound/card0/codec#2:  Pincap 0x083f: IN OUT HP
+/proc/asound/card0/codec#2:  Pin Default 0x01011412: [Jack] Line Out at
+Ext Rear
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Black
+/proc/asound/card0/codec#2:  Pin-ctls: 0x40: OUT
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x0d
+/proc/asound/card0/codec#2:Node 0x16 [Pin Complex] wcaps 0x40018d: Stereo
+Amp-Out
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x00 0x00]
+/proc/asound/card0/codec#2:  Pincap 0x083f: IN OUT HP
+/proc/asound/card0/codec#2:  Pin Default 0x01016411: [Jack] Line Out at
+Ext Rear
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Orange
+/proc/asound/card0/codec#2:  Pin-ctls: 0x40: OUT
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x0e
+/proc/asound/card0/codec#2:Node 0x17 [Pin Complex] wcaps 0x40018d: Stereo
+Amp-Out
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x00 0x00]
+/proc/asound/card0/codec#2:  Pincap 0x083f: IN OUT HP
+/proc/asound/card0/codec#2:  Pin Default 0x01012414: [Jack] Line Out at
+Ext Rear
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Grey
+/proc/asound/card0/codec#2:  Pin-ctls: 0x40: OUT
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x0f
+/proc/asound/card0/codec#2:Node 0x18 [Pin Complex] wcaps 0x40018d: Stereo
+Amp-Out
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x80 0x80]
+/proc/asound/card0/codec#2:  Pincap 0x08133f: IN OUT HP
+/proc/asound/card0/codec#2:  Pin Default 0x01a19c30: [Jack] Mic at Ext
+Rear
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Pink
+/proc/asound/card0/codec#2:  Pin-ctls: 0x24: IN
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x10
+/proc/asound/card0/codec#2:Node 0x19 [Pin Complex] wcaps 0x40018d: Stereo
+Amp-Out
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x80 0x80]
+/proc/asound/card0/codec#2:  Pincap 0x08133f: IN OUT HP
+/proc/asound/card0/codec#2:  Pin Default 0x02a19c40: [Jack] Mic at Ext
+Front
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Pink
+/proc/asound/card0/codec#2:  Pin-ctls: 0x24: IN
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x11
+/proc/asound/card0/codec#2:Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo
+Amp-Out
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x80 0x80]
+/proc/asound/card0/codec#2:  Pincap 0x08133f: IN OUT HP
+/proc/asound/card0/codec#2:  Pin Default 0x01813431: [Jack] Line In at Ext
+Rear
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Blue
+/proc/asound/card0/codec#2:  Pin-ctls: 0x20: IN
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x12
+/proc/asound/card0/codec#2:Node 0x1b [Pin Complex] wcaps 0x40018d: Stereo
+Amp-Out
+/proc/asound/card0/codec#2:  Amp-Out caps: ofs=0x00, nsteps=0x00,
+stepsize=0x00, mute=1
+/proc/asound/card0/codec#2:  Amp-Out vals:  [0x00 0x00]
+/proc/asound/card0/codec#2:  Pincap 0x08133f: IN OUT HP
+/proc/asound/card0/codec#2:  Pin Default 0x02214c20: [Jack] HP Out at Ext
+Front
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Green
+/proc/asound/card0/codec#2:  Pin-ctls: 0xc0: OUT HP
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x13
+/proc/asound/card0/codec#2:Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+/proc/asound/card0/codec#2:  Pincap 0x0820: IN
+/proc/asound/card0/codec#2:  Pin Default 0x99331133: [Fixed] CD at Int
+ATAPI
+/proc/asound/card0/codec#2:    Conn = ATAPI, Color = Black
+/proc/asound/card0/codec#2:  Pin-ctls: 0x00:
+/proc/asound/card0/codec#2:Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+/proc/asound/card0/codec#2:  Pincap 0x0820: IN
+/proc/asound/card0/codec#2:  Pin Default 0x99931132: [Fixed] Aux at Int
+ATAPI
+/proc/asound/card0/codec#2:    Conn = ATAPI, Color = Black
+/proc/asound/card0/codec#2:  Pin-ctls: 0x00:
+/proc/asound/card0/codec#2:Node 0x1e [Pin Complex] wcaps 0x400300: Mono
+Digital
+/proc/asound/card0/codec#2:  Pincap 0x0810: OUT
+/proc/asound/card0/codec#2:  Pin Default 0x9943111e: [Fixed] SPDIF Out at
+Int ATAPI
+/proc/asound/card0/codec#2:    Conn = ATAPI, Color = Black
+/proc/asound/card0/codec#2:  Pin-ctls: 0x00:
+/proc/asound/card0/codec#2:  Connection: 1
+/proc/asound/card0/codec#2:     0x06
+/proc/asound/card0/codec#2:Node 0x1f [Pin Complex] wcaps 0x400200: Mono
+Digital
+/proc/asound/card0/codec#2:  Pincap 0x0820: IN
+/proc/asound/card0/codec#2:  Pin Default 0x411111f0: [N/A] Speaker at Ext
+Rear
+/proc/asound/card0/codec#2:    Conn = 1/8, Color = Black
+/proc/asound/card0/codec#2:  Pin-ctls: 0x00:
+/proc/asound/card0/codec#2:Node 0x20 [Vendor Defined Widget] wcaps
+0xf00040: Mono
+/proc/asound/card0/codec#2:Node 0x21 [Volume Knob Widget] wcaps 0x600080:
+Mono
+/proc/asound/card0/id:Intel
+/proc/asound/card0/oss_mixer:VOLUME "Front" 0
+/proc/asound/card0/oss_mixer:BASS "" 0
+/proc/asound/card0/oss_mixer:TREBLE "" 0
+/proc/asound/card0/oss_mixer:SYNTH "" 0
+/proc/asound/card0/oss_mixer:PCM "" 0
+/proc/asound/card0/oss_mixer:SPEAKER "" 0
+/proc/asound/card0/oss_mixer:LINE "Line" 0
+/proc/asound/card0/oss_mixer:MIC "Mic" 0
+/proc/asound/card0/oss_mixer:CD "CD" 0
+/proc/asound/card0/oss_mixer:IMIX "" 0
+/proc/asound/card0/oss_mixer:ALTPCM "" 0
+/proc/asound/card0/oss_mixer:RECLEV "" 0
+/proc/asound/card0/oss_mixer:IGAIN "Capture" 0
+/proc/asound/card0/oss_mixer:OGAIN "" 0
+/proc/asound/card0/oss_mixer:LINE1 "" 0
+/proc/asound/card0/oss_mixer:LINE2 "" 0
+/proc/asound/card0/oss_mixer:LINE3 "" 0
+/proc/asound/card0/oss_mixer:DIGITAL1 "IEC958" 0
+/proc/asound/card0/oss_mixer:DIGITAL2 "" 0
+/proc/asound/card0/oss_mixer:DIGITAL3 "" 0
+/proc/asound/card0/oss_mixer:PHONEIN "" 0
+/proc/asound/card0/oss_mixer:PHONEOUT "" 0
+/proc/asound/card0/oss_mixer:VIDEO "" 0
+/proc/asound/card0/oss_mixer:RADIO "" 0
+/proc/asound/card0/oss_mixer:MONITOR "" 0
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 02-17-06 06:09 
-----------------------------------------------------------------------
-Steps to reproduce the problem with alsa-1.0.11rc3 for au8830 (STAC9708)
-
-Immediately after the driver is loaded.
-
-1) use alsamixer to turn "Sigmatel Surround Playback Switch" off, it mix
-the front and rear channels
-
-numid=19,iface=MIXER,name='Sigmatel Surround Playback Switch'
-; type=BOOLEAN,access=rw---,values=1
-: values=off
-
-2) aplay -D hw:0,0 out1lq.wav ( you should hear the sound only from left
-speaker of out1 at first run )
-
-3) aplay -D hw:0,0 out1lq.wav ( Do the sound come out from left speaker of
-out2  with alsa-1.0.11rc3 on second/third/... run? )
-
-Repeat the about test with out1rq.wav. out2lq.wav and out2rq.wav (you need
-to reload the driver in order to have the sound come out from correct
-speaker on step 2)
-
-MX300 Win9x can detect one/two jacks are plugged into out1 and out2 using
-GPIO, but other au8830 cannot detect.
-
-The only side effect of the au88x0_surround40.patch is the "vortex: IRQ
-fifo error" appear in the system log when play/capture sound which is not
-mono. 
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1840
-
-The "vortex: IRQ fifo error" only appear once in alsa-1.0.11rc3
-
-
-
-----------------------------------------------------------------------
- ponchick - 02-26-06 07:22 
-----------------------------------------------------------------------
-I try to describe more cleanly:
-1. Front/Rear swaps bug reproduced with any tool that use four channels
-including speaker-test, aplay, xine and mplayer.
-2. au88x0_surround40.patch fix this issue completly
-3. There is another similar issue when channels swap almost randomly
-(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726#0008085). It's
-reproduced by speaker-test but I cannot reproduce
-it with at least aplay and mplayer. au88x0_surround40.patch does not
-affect the bug at all. If someone can reproduce it with any tool other
-than speaker-test I think there should be separate bug report.
-4. This bug is fixed and could be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
-02-10-06 05:36 ponchick       Note Added: 0007987                          
-02-10-06 06:32 Raymond        Note Added: 0007991                          
-02-10-06 10:50 ponchick       Note Added: 0007998                          
-02-10-06 11:25 Raymond        Note Added: 0008000                          
-02-10-06 13:49 Raymond        Note Added: 0008003                          
-02-10-06 13:56 Raymond        Note Edited: 0008003                         
-02-12-06 07:48 Raymond        Note Edited: 0008003                         
-02-12-06 10:12 Raymond        Note Edited: 0008000                         
-02-16-06 05:37 ponchick       Note Added: 0008085                          
-02-16-06 08:12 Raymond        Note Added: 0008088                          
-02-16-06 10:12 Raymond        Note Added: 0008090                          
-02-16-06 10:28 Raymond        Note Edited: 0008090                         
-02-16-06 16:07 Raymond        Note Added: 0008097                          
-02-17-06 03:35 ponchick       Note Added: 0008104                          
-02-17-06 04:28 Raymond        Note Added: 0008105                          
-02-17-06 04:35 Raymond        Note Edited: 0008105                         
-02-17-06 05:56 Raymond        Note Edited: 0008105                         
-02-17-06 06:09 Raymond        Note Edited: 0008105                         
-02-26-06 07:22 ponchick       Note Added: 0008198                          
+02-26-06 06:18 at2000         New Issue                                    
+02-26-06 06:18 at2000         Distribution              => Ubuntu          
+02-26-06 06:18 at2000         Kernel Version            => 2.6.15.4
+(2.6.15-16-686)
 ======================================================================
 
 
