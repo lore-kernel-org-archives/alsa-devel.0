@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Sun, 26 Feb 2006 13:28:48 +0100
-Message-ID: <61fe81fa5bd2f011a5eea9ee99798362@bugtrack.alsa-project.org>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: vendor entry for cs46xx out of date
+Date: Sun, 26 Feb 2006 14:27:48 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0602261427420.14755@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21F9E18F
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 13:28:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,146 +14,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
-======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              02-26-2006 13:28 CET
-======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
-Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
-
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
-
-Playing stereo sound is OK.
+Hi,
 
 
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
+http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Cirrus_Logic#matrix
 
-======================================================================
+the cs46xx is missing (3)(hardware mixing), but at least mine does do it.
+Care to update the table?
 
-----------------------------------------------------------------------
- ponchick - 02-26-06 07:22 
-----------------------------------------------------------------------
-I try to describe more cleanly:
-1. Front/Rear swaps bug reproduced with any tool that use four channels
-including speaker-test, aplay, xine and mplayer.
-2. au88x0_surround40.patch fix this issue completly
-3. There is another similar issue when channels swap almost randomly
-(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726#0008085). It's
-reproduced by speaker-test but I cannot reproduce
-it with at least aplay and mplayer. au88x0_surround40.patch does not
-affect the bug at all. If someone can reproduce it with any tool other
-than speaker-test I think there should be separate bug report.
-4. This bug is fixed and could be closed.
-
-----------------------------------------------------------------------
- Raymond - 02-26-06 13:28 
-----------------------------------------------------------------------
-Is it feasible to use the hook to provide real "front" and "rear" devices
-using 
-pcm volume control https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835 ?
+Please Cc: me.
 
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_hooks
+Jan Engelhardt
+-- 
 
+(TerraTec DMX XFire1024)
+`lspci -vv`:
+00:0d.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24 
+[CrystalClear SoundFusion Audio Accelerator] (rev 01)
+        Subsystem: TERRATEC Electronic GmbH: Unknown device 112e
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
+Stepping- SERR+ FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- 
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (1000ns min, 6000ns max)
+        Interrupt: pin A routed to IRQ 201
+        Region 0: Memory at cfff7000 (32-bit, non-prefetchable) [size=4K]
+        Region 1: Memory at cfe00000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk+ DSI+ D1+ D2+ AuxCurrent=0mA 
+PME(D0+,D1+,D2+,D3hot+,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-
-      hooks.0 {
-                type ctl_elems
-                hook_args [
-                        {
-                                name "Sigmatel Surround Playback Switch"
-                                preserve true
-                                lock true
-                                optional true
-                                value [ 0 ]
-                        }
-                        {
-                                name "PCM Playback Volume"
-                                index { @func private_pcm_subdevice }
-                                lock true
-                                value [ 0 0 -48 -48]
-                        }
-                ]
-        }
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
-02-10-06 05:36 ponchick       Note Added: 0007987                          
-02-10-06 06:32 Raymond        Note Added: 0007991                          
-02-10-06 10:50 ponchick       Note Added: 0007998                          
-02-10-06 11:25 Raymond        Note Added: 0008000                          
-02-10-06 13:49 Raymond        Note Added: 0008003                          
-02-10-06 13:56 Raymond        Note Edited: 0008003                         
-02-12-06 07:48 Raymond        Note Edited: 0008003                         
-02-12-06 10:12 Raymond        Note Edited: 0008000                         
-02-16-06 05:37 ponchick       Note Added: 0008085                          
-02-16-06 08:12 Raymond        Note Added: 0008088                          
-02-16-06 10:12 Raymond        Note Added: 0008090                          
-02-16-06 10:28 Raymond        Note Edited: 0008090                         
-02-16-06 16:07 Raymond        Note Added: 0008097                          
-02-17-06 03:35 ponchick       Note Added: 0008104                          
-02-17-06 04:28 Raymond        Note Added: 0008105                          
-02-17-06 04:35 Raymond        Note Edited: 0008105                         
-02-17-06 05:56 Raymond        Note Edited: 0008105                         
-02-17-06 06:09 Raymond        Note Edited: 0008105                         
-02-26-06 07:22 ponchick       Note Added: 0008198                          
-02-26-06 13:28 Raymond        Note Added: 0008200                          
-======================================================================
+`lspci -n`:
+00:0d.0 Class 0401: 1013:6003 (rev 01)
 
 
 
