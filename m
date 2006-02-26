@@ -1,11 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: [PATCH] Add support for Acer TravelMate and similar laptops
-Date: Mon, 27 Feb 2006 00:35:33 +0200
-Message-ID: <44022D35.7050909@akl.lt>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Sun, 26 Feb 2006 23:48:03 +0100
+Message-ID: <895df3ef000bbbaef2b8029787222d0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020704040309050904080905"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1544C198
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 23:48:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,320 +18,156 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Paulo Matias <syscoder@gmail.com>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020704040309050904080905
-Content-Type: text/plain; charset=windows-1257; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi all,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+======================================================================
+Reported By:                robertw
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1618
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
+======================================================================
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              02-26-2006 23:48 CET
+======================================================================
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
+Description: 
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
+======================================================================
 
-Attached here is a patch that adds an Acer model to the HDA codec 
-driver. It assumes that Jonathan's patch (posted here on 23 Feb 2006 
-11:18:26 +1030 (CST)) has already been applied, so it applies on top 
-of it.
+----------------------------------------------------------------------
+ er-ku - 02-26-06 23:39 
+----------------------------------------------------------------------
+As expected, lobstaj's fix works. That's great, but:
 
-I have tested the patch with my mom's Acer (erased 
-/var/lib/alsa/asound.state, then cold-rebooted the computer), 
-everything seems to be working fine.
+* I still cannot play a CD with an old-fashioned CD player software and
+* I don't hear beeps
 
-The patch itself is much cleaner than the one attached to bug 1618. It 
-doesn't clutter the mixer with useless controls, and starts up with 
-settings more appropriate for an Acer.
+Are there any more GPIO commands I could try out in order to solve this?
+I'm trying to create a proper Acer model definition now...
 
-Also, please note the "(?)"'s next to CD and Beep controls. These 
-controls don't actually influence anything now, but I suspect they 
-would work after a few more GPIO commands are issued, so I've left 
-them there for now (read below).
+Btw, headphone jack acts just like Mic jack does. As soon as I plug
+something into the Headphone jack, integrated speakers get automatically
+muted.
 
-Btw, this patch also fixes a few comment typos in patch_realtek.c and 
-changes one setting in test model (it seems like inicially copy-pasted 
-from Fujitsu model). Also, it adds lines muting NID 0x15 for Fujitsu 
-model on startup (Jonathan, you said it turned out not to be 
-problematic at all).
 
-Takashi, would you please commit this to upstream (along with 
-Jonathan's patch)?
 
-Jonathan, how about your idea to add GPIO controls to the test model? 
-I think it would help testing. Hopefully, after these are added, I 
-could modify the Acer model in a way that CD and Beep controls would 
-become useful. Or, if playing with GPIO would seem useless, I could 
-simply remove those controls out of the mixer at all.
+----------------------------------------------------------------------
+ er-ku - 02-26-06 23:48 
+----------------------------------------------------------------------
+I have posted a patch to ALSA-devel mailing list. waiting for it to go
+upstream now. It's not final yet (CD and Beep playback problems still
+persist), but is much cleaner than what is attached to this bugreport. I'm
+not posting the patch here though, as it requires another patch from the
+mailing list to be applied first. Plus, I hope the patch to go upstream
+soon. However, if asked, I'll post a combined patch here.
 
-Now a few notes/questions:
-* is there any reason in defining ADC NIDs for every model separately? 
-They seem to be the same anyways, and not to get in anyones way. Or do 
-they?
-* There seems to be a mixup between tab-indented and space-indented 
-lines. It was like that at least in Fujitsu init verbs definition, and 
-now i've partially copied it to Acer...
-* If the jack is called "Line In", should I leave it as "Line" in 
-mixer, or should I name it "Line In"?
-* What's your opinion about adding a model configuration line that 
-would only check the subvendor (and ignore the subdevice setting)? 
-There would be more chances to autodetect an Acer laptop then, but 
-OTOH, if one day there'll be an ALC-260 based Acer with a different 
-config, you'd risk to misdetect, or to regress in automatic Acer 
-detectlion by removing that line...
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+01-12-06 00:26 rlrevell       Note Added: 0007576                          
+01-12-06 01:16 mytux          Note Added: 0007577                          
+01-12-06 01:20 mytux          Note Edited: 0007577                         
+01-12-06 14:13 robertw        Note Added: 0007586                          
+01-12-06 14:43 lobstaj        Note Added: 0007587                          
+01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
+01-12-06 21:04 rlrevell       Note Added: 0007591                          
+01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
+01-13-06 08:03 eudoxos        Note Added: 0007631                          
+01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
+01-16-06 00:32 jwoithe        Note Added: 0007682                          
+01-17-06 23:32 ilovetronik    Issue Monitored: ilovetronik                    
+01-19-06 23:36 ajmitch        Issue Monitored: ajmitch                     
+02-08-06 14:46 svilen         Note Added: 0007965                          
+02-09-06 00:29 jwoithe        Note Added: 0007969                          
+02-09-06 09:04 hweigel        Issue Monitored: hweigel                     
+02-10-06 11:02 svilen         Note Added: 0007999                          
+02-12-06 21:42 AndyP          Note Added: 0008031                          
+02-12-06 22:11 wattazoum      Note Added: 0008032                          
+02-12-06 22:14 rlrevell       Note Added: 0008033                          
+02-12-06 23:05 er-ku          Note Added: 0008034                          
+02-12-06 23:07 er-ku          Note Edited: 0008034                         
+02-13-06 00:45 jwoithe        Note Added: 0008035                          
+02-13-06 06:42 er-ku          Note Added: 0008037                          
+02-13-06 06:43 er-ku          Note Edited: 0008037                         
+02-14-06 00:07 jwoithe        Note Added: 0008066                          
+02-18-06 23:48 AndyP          Note Added: 0008125                          
+02-19-06 10:41 er-ku          Note Added: 0008131                          
+02-19-06 16:49 AndyP          Note Added: 0008134                          
+02-22-06 18:29 lobstaj        Note Added: 0008160                          
+02-23-06 01:12 jwoithe        Note Added: 0008165                          
+02-24-06 12:21 lobstaj        Note Added: 0008173                          
+02-24-06 12:25 lobstaj        Note Edited: 0008173                         
+02-24-06 14:58 mytux          Note Added: 0008176                          
+02-24-06 15:41 wattazoum      Note Added: 0008179                          
+02-24-06 15:42 wattazoum      Note Edited: 0008179                         
+02-24-06 22:32 er-ku          Note Added: 0008181                          
+02-24-06 23:23 AndyP          Note Added: 0008182                          
+02-25-06 12:29 wattazoum      File Added: patch_realtek.diff                    
+02-25-06 12:31 wattazoum      Note Added: 0008187                          
+02-26-06 05:50 at2000         Note Added: 0008196                          
+02-26-06 06:02 rlrevell       Note Added: 0008197                          
+02-26-06 14:58 er-ku          Note Added: 0008201                          
+02-26-06 15:00 er-ku          Note Added: 0008202                          
+02-26-06 23:39 er-ku          Note Edited: 0008201                         
+02-26-06 23:47 er-ku          Note Edited: 0008202                         
+02-26-06 23:47 er-ku          Note Deleted: 0008202                        
+02-26-06 23:48 er-ku          Note Added: 0008206                          
+======================================================================
 
-bye,
 
-Rimas
-
---------------020704040309050904080905
-Content-Type: text/plain;
- name="patch_realtek.after-jwoithe.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="patch_realtek.after-jwoithe.diff"
-
---- alsa-kernel/pci/hda/patch_realtek.c.orig	2006-02-26 23:50:48.000000000 +0200
-+++ alsa-kernel/pci/hda/patch_realtek.c	2006-02-26 23:27:13.000000000 +0200
-@@ -64,6 +64,7 @@
- 	ALC260_HP,
- 	ALC260_HP_3013,
- 	ALC260_FUJITSU_S702X,
-+	ALC260_ACER,
- #ifdef CONFIG_SND_DEBUG
- 	ALC260_TEST,
- #endif
-@@ -2424,6 +2425,11 @@
- 	0x04, 0x05
- };
- 
-+static hda_nid_t alc260_acer_adc_nids[2] = {
-+	/* ADC0, ADC1 */
-+	0x04, 0x05
-+};
-+
- #define ALC260_DIGOUT_NID	0x03
- #define ALC260_DIGIN_NID	0x06
- 
-@@ -2449,6 +2455,19 @@
- 	},
- };
- 
-+/* Acer TravelMate(/Extensa/Aspire) notebooks have similar configutation to
-+ * the Fujitsu S702x, but jacks are marked differently. We won't allow
-+ * retasking the Headphone jack, so it won't be available here.
-+ */
-+static struct hda_input_mux alc260_acer_capture_source = {
-+	.num_items = 3,
-+	.items = {
-+		{ "Mic", 0x0 },
-+		{ "Line", 0x2 },
-+		{ "CD", 0x4 },
-+        },
-+};
-+
- /*
-  * This is just place-holder, so there's something for alc_build_pcms to look
-  * at when it calculates the maximum number of channels. ALC260 has no mixer
-@@ -2466,6 +2485,7 @@
-  * HP: base_output + input + capture_alt
-  * HP_3013: hp_3013 + input + capture
-  * fujitsu: fujitsu + capture
-+ * acer: acer + capture
-  */
- 
- static struct snd_kcontrol_new alc260_base_output_mixer[] = {
-@@ -2524,6 +2544,22 @@
- 	{ } /* end */
- };
- 
-+static struct snd_kcontrol_new alc260_acer_mixer[] = {
-+	HDA_CODEC_VOLUME("Master Playback Volume", 0x08, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE("Master Playback Switch", 0x08, 2, HDA_INPUT),
-+	HDA_CODEC_VOLUME("CD (?) Playback Volume", 0x07, 0x04, HDA_INPUT),
-+	HDA_CODEC_MUTE("CD (?) Playback Switch", 0x07, 0x04, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Mic Playback Volume", 0x07, 0x0, HDA_INPUT),
-+	HDA_CODEC_MUTE("Mic Playback Switch", 0x07, 0x0, HDA_INPUT),
-+	ALC_PIN_MODE("Mic Jack Mode", 0x12, ALC_PIN_DIR_IN),
-+	HDA_CODEC_VOLUME("Line Playback Volume", 0x07, 0x02, HDA_INPUT),
-+	HDA_CODEC_MUTE("Line Playback Switch", 0x07, 0x02, HDA_INPUT),
-+	ALC_PIN_MODE("Line Jack Mode", 0x14, ALC_PIN_DIR_INOUT),
-+	HDA_CODEC_VOLUME("Beep (?) Playback Volume", 0x07, 0x05, HDA_INPUT),
-+	HDA_CODEC_MUTE("Beep (?) Playback Switch", 0x07, 0x05, HDA_INPUT),
-+	{ } /* end */
-+};
-+
- /* capture mixer elements */
- static struct snd_kcontrol_new alc260_capture_mixer[] = {
- 	HDA_CODEC_VOLUME("Capture Volume", 0x04, 0x0, HDA_INPUT),
-@@ -2735,16 +2771,15 @@
- 	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-         /* Mic/Line-in jack is connected to mic1 pin, so make it an input */
-         {0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
--        /* Ensure all other unused pins are disabled and muted.
--	 * Note: trying to set widget 0x15 to anything blocks all audio
--	 * output for some reason, so just leave that at the default.
--	 */
-+        /* Ensure all other unused pins are disabled and muted. */
-         {0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-         {0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-         {0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-         {0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-+        {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-         /* Disable digital (SPDIF) pins */
-         {0x03, AC_VERB_SET_DIGI_CONVERT_1, 0},
-         {0x06, AC_VERB_SET_DIGI_CONVERT_1, 0},
-@@ -2805,6 +2840,88 @@
- 	{ }
- };
- 
-+/* Initialisation sequence for ALC260 as configured in Acer TravelMate and
-+ * similar laptops (adapted from Fujitsu init verbs).
-+ */
-+static struct hda_verb alc260_acer_init_verbs[] = {
-+	/* Without this, the internal speaker and HP jacks are silent */
-+	{0x01, AC_VERB_SET_GPIO_MASK, 0x01},
-+	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x01},
-+	{0x01, AC_VERB_SET_GPIO_DATA, 0x01},
-+	/* Internal speaker/Headphone jack is connected to Line-out pin */
-+	{0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
-+	/* Internal microphone/Mic jack is connected to Mic1 pin */
-+	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF50},
-+	/* Line In jack is connected to Line1 pin */
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+	/* Ensure all other unused pins are disabled and muted. */
-+	{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-+	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-+	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-+	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-+	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	/* Disable digital (SPDIF) pins */
-+	{0x03, AC_VERB_SET_DIGI_CONVERT_1, 0},
-+	{0x06, AC_VERB_SET_DIGI_CONVERT_1, 0},
-+
-+	/* Ensure Mic1 and Line1 pin widgets take input from the OUT1 sum 
-+	 * bus when acting as outputs.
-+	 */
-+	{0x0b, AC_VERB_SET_CONNECT_SEL, 0},
-+	{0x0d, AC_VERB_SET_CONNECT_SEL, 0},
-+
-+	/* Start with output sum widgets muted and their output gains at min */
-+	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-+	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+	{0x09, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-+	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-+	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-+
-+        /* Unmute Line-out pin widget amp left and right (no equiv mixer ctrl) */
-+        {0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+        /* Unmute Mic1 and Line1 pin widget input buffers since they start as
-+         * inputs. If the pin mode is changed by the user the pin mode control
-+         * will take care of enabling the pin's input/output buffers as needed.
-+         * Therefore there's no need to enable the input buffer at this
-+         * stage.
-+	 */
-+        {0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+        {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+
-+
-+        /* Mute capture amp left and right */
-+        {0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+        /* Set ADC connection select to match default mixer setting - mic
-+         * (on mic1 pin)
-+         */
-+        {0x04, AC_VERB_SET_CONNECT_SEL, 0x00},
-+
-+        /* Do similar with the second ADC: mute capture input amp and
-+         * set ADC connection to line (on line1 pin)
-+         */
-+        {0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+        {0x05, AC_VERB_SET_CONNECT_SEL, 0x02},
-+
-+        /* Mute all inputs to mixer widget (even unconnected ones) */
-+        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)}, /* mic1 pin */
-+        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)}, /* mic2 pin */
-+        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)}, /* line1 pin */
-+        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)}, /* line2 pin */
-+        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)}, /* CD pin */
-+        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(5)}, /* Beep-gen pin */
-+        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(6)}, /* Line-out pin */
-+        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(7)}, /* HP-pin pin */
-+
-+	{ }
-+};
-+
- /* Test configuration for debugging, modelled after the ALC880 test
-  * configuration.
-  */
-@@ -2878,7 +2995,7 @@
- 	{0x03, AC_VERB_SET_DIGI_CONVERT_1, 0},
- 	{0x06, AC_VERB_SET_DIGI_CONVERT_1, 0},
- 
--	/* Ensure mic1, mic2, line1 and line2 pin widget take input from the 
-+	/* Ensure mic1, mic2, line1 and line2 pin widgets take input from the 
- 	 * OUT1 sum bus when acting as an output.
- 	 */
- 	{0x0b, AC_VERB_SET_CONNECT_SEL, 0},
-@@ -2913,16 +3030,16 @@
- 
- 	/* Mute capture amp left and right */
- 	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
--	/* Set ADC connection select to match default mixer setting - line 
--	 * in (on mic1 pin)
-+	/* Set ADC connection select to match default mixer setting -
-+	 * mic1 pin
- 	 */
- 	{0x04, AC_VERB_SET_CONNECT_SEL, 0x00},
- 
--	/* Do the same for the second ADC: mute capture input amp and
--	 * set ADC connection to line in
-+	/* Do similar with the second ADC: mute capture input amp and
-+	 * set ADC connection to line1 pin
- 	 */
- 	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
--	{0x05, AC_VERB_SET_CONNECT_SEL, 0x00},
-+	{0x05, AC_VERB_SET_CONNECT_SEL, 0x02},
- 
- 	/* Mute all inputs to mixer widget (even unconnected ones) */
- 	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)}, /* mic1 pin */
-@@ -3221,6 +3338,8 @@
- 	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x3016, .config = ALC260_HP },
- 	{ .modelname = "fujitsu", .config = ALC260_FUJITSU_S702X },
- 	{ .pci_subvendor = 0x10cf, .pci_subdevice = 0x1326, .config = ALC260_FUJITSU_S702X },
-+	{ .modelname = "acer", .config = ALC260_ACER },
-+	{ .pci_subvendor = 0x1025, .pci_subdevice = 0x008f, .config = ALC260_ACER },
- #ifdef CONFIG_SND_DEBUG
- 	{ .modelname = "test", .config = ALC260_TEST },
- #endif
-@@ -3281,6 +3400,18 @@
- 		.channel_mode = alc260_modes,
- 		.input_mux = &alc260_fujitsu_capture_source,
- 	},
-+	[ALC260_ACER] = {
-+		.mixers = { alc260_acer_mixer,
-+			    alc260_capture_mixer },
-+		.init_verbs = { alc260_acer_init_verbs },
-+		.num_dacs = ARRAY_SIZE(alc260_dac_nids),
-+		.dac_nids = alc260_dac_nids,
-+		.num_adc_nids = ARRAY_SIZE(alc260_acer_adc_nids),
-+		.adc_nids = alc260_acer_adc_nids,
-+		.num_channel_mode = ARRAY_SIZE(alc260_modes),
-+		.channel_mode = alc260_modes,
-+		.input_mux = &alc260_acer_capture_source,
-+	},
- #ifdef CONFIG_SND_DEBUG
- 	[ALC260_TEST] = {
- 		.mixers = { alc260_test_mixer,
-
---------------020704040309050904080905--
 
 
 -------------------------------------------------------
