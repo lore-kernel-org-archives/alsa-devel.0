@@ -1,11 +1,16 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Non-atomic code
-Date: Sun, 26 Feb 2006 19:18:03 +0000
-Message-ID: <1140981483.9540.28.camel@localhost.localdomain>
+From: Olaf Hering <olh@suse.de>
+Subject: Re: Re: [PPC,SOUND] Fix audio gpio state detection
+Date: Sun, 26 Feb 2006 20:26:11 +0100
+Message-ID: <20060226192611.GA5249@suse.de>
+References: <jehd7527wq.fsf@sykes.suse.de> <1139783738.5247.54.camel@localhost.localdomain> <20060226173908.GA4871@suse.de> <1140981558.24141.112.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mx1.suse.de (cantor.suse.de [195.135.220.2])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7951187
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 20:26:12 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1140981558.24141.112.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,24 +20,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Andreas Schwab <schwab@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Ben Collins <ben.collins@ubuntu.com>
 List-Id: alsa-devel@alsa-project.org
 
-Going through other drivers for ideas to write mine I notice lots of
-non-atomic code where the instructions say there shouldn't be code that
-can sleep eg
+ On Sun, Feb 26, Lee Revell wrote:
 
-http://sosdg.org/~coywolf/lxr/source/sound/mips/au1x00.c?v=2.6.15#L143
+> Argh, /proc abuse... "historical reasons" presumably?
 
-which includes:
-
-kmalloc(sizeof(au1000_period_t), GFP_KERNEL);
-
-In a function called from the trigger callback.
-
-How important is it that the code is atomic? it would make my life
-easier if it didn't need to be!
-
+No, the way it works.
 
 
 -------------------------------------------------------
