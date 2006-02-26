@@ -1,13 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: hda-intel and Acer TravelMate 4062 LMi
-Date: Sun, 26 Feb 2006 11:05:13 +0200
-Message-ID: <44016F49.8010702@akl.lt>
-References: <47801.82.126.77.117.1140925511.squirrel@mail.eclaireurs.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001881]: Mixer controls not working for S/PDIF
+Date: Sun, 26 Feb 2006 10:45:15 +0100
+Message-ID: <703239823022ddb24d9d12f8d3fbc268@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <47801.82.126.77.117.1140925511.squirrel@mail.eclaireurs.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D65419A
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2006 10:45:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?Gilles_PI=C9TRI?= <contact@gilouweb.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Gilou,
 
-The Acer fix is not in the CVS yet, hence you have to manually add a few
-lines to the code before compiling it.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1881> 
+======================================================================
+Reported By:                lotan_rm
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1881
+Category:                   PCI - intel8x0m
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.13.4
+======================================================================
+Date Submitted:             02-26-2006 10:45 CET
+Last Modified:              02-26-2006 10:45 CET
+======================================================================
+Summary:                    Mixer controls not working for S/PDIF
+Description: 
+My mainboard is the
 
-Rimas
+   Shuttle AN35N NForce2 Ultra 400
 
+$ cat /proc/asound/cards
+ 0 [nForce2        ]: NFORCE - NVidia nForce2
+                      NVidia nForce2 with ALC650F at 0xe7001000, irq 16
 
-Gilles PI=C9TRI wrote:
-> Hi !
->
-> I've been reading about the CVS version of the hda-intel allowing to us=
-e a
-> "test" model. I was unable to listen to any sounds neither with the deb=
-ian
-> version of alsa, nor with the developpment one. Driver was loading, but=
- I
-> couldn't hear anything.
-> Using the CVS version, using the test model, I'm able to make some soun=
-d
-> getting out through the "Line out" jack, identified in alsamixer by
-> "LOUT1". LOUT1 acts also on the microphone jack : I can hear the sound =
-in
-> mono by the mic jack when it's active !
-> However, I can't hear anything from the headphone jack, and the same go=
-es
-> for the internal speakers, whatever strange things I try with the mixer.
-> I haven't tried to input anything, as I would like the output to work f=
-irst.
->
-> I'm available by mail or an IRC if you tell me where, to go on testing =
-if
-> you are interested in this !
->
-> Thanks for your job !
->
-> Gilou
+$ cat /proc/asound/devices 
+  0: [ 0]   : control
+  1:        : sequencer
+ 16: [ 0- 0]: digital audio playback
+ 18: [ 0- 2]: digital audio playback
+ 24: [ 0- 0]: digital audio capture
+ 25: [ 0- 1]: digital audio capture
+ 33:        : timer
+
+I'm luckier than most people in the way that S/PDIF worked right away on
+hw:0,2.
+But I can't get the mixer controls to work.
+
+Most people on the web seeming to have similar problems adjusted the
+
+   IEC958 Playback AC-97-SPSA
+
+to 0% (PCM output), but that didn't help in my case.  In fact, any kind of
+adjustment in the mixer didn't show any result.
+
+I tried various .asoundrc configurations without any real success.  I
+don't even know, if it's really a driver issue.
+
+One thing I can say though: The onboard sound has a mixer device that can
+be controlled as on Windows, the native nVidia driver was working without
+a problem.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-26-06 10:45 lotan_rm       New Issue                                    
+02-26-06 10:45 lotan_rm       Distribution              => Gentoo          
+02-26-06 10:45 lotan_rm       Kernel Version            => 2.6.13.4        
+======================================================================
+
 
 
 
