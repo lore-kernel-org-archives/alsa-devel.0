@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001761]: sound doesn't work anymore, even after running `alsaconf`
-Date: Mon, 27 Feb 2006 15:31:04 +0100
-Message-ID: <d148e519298fe5e71586d952cd8fb18b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
+Date: Mon, 27 Feb 2006 16:48:37 +0100
+Message-ID: <87e07e1872849280417ae84fb39a71c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19815187
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 15:31:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A73D2190
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 16:48:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,182 +24,121 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1761> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
 ======================================================================
-Reported By:                redwood
-Assigned To:                
+Reported By:                oggb4mp3
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1761
-Category:                   PCI - via82xx
+Issue ID:                   1874
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               compiled from sources
-Kernel Version:             2.6.15, 2.6.15.1
+Status:                     assigned
+Distribution:               Arch Linux
+Kernel Version:             2.6.15-archck4
 ======================================================================
-Date Submitted:             01-19-2006 03:58 CET
-Last Modified:              02-27-2006 15:31 CET
+Date Submitted:             02-24-2006 07:27 CET
+Last Modified:              02-27-2006 16:48 CET
 ======================================================================
-Summary:                    sound doesn't work anymore, even after running
-`alsaconf`
+Summary:                    USB sound device appears to be loading properly, but
+all applications report the device is busy
 Description: 
-I have an ASUSTeK Computer Inc. A7V8X motherboard with AMD 2800+ Athlon XP
-with integrated sound and also a Turtle Beach Santa Cruz pci sound card.
-Both cards have always worked. Now after upgrading to latest 2.6.15 kernel
+I own a USB audio Device with a TI burr-brown DAC and with my recent
+upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
+this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
+I thought might be the culprit, but when I tried to apply the patch, I
+found that it was already applied.  I tried to reverse it, thinking that I
+might have had one of the devices that worked without it and this patch
+actually broke it, but no joy.
 
-and alsa-1.0.10 I no longer have any sound.
-
-`lspci -vv` reports:
-00:0d.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
-[CrystalClear SoundFusion Audio Accelerator] (rev 01)
-        Subsystem: Voyetra Technologies Unknown device 3307
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
-<TAbort- <MAbort- >SERR- <PERR+
-        Latency: 32 (1000ns min, 6000ns max)
-        Interrupt: pin A routed to IRQ 19
-        Region 0: Memory at dd800000 (32-bit, non-prefetchable) [size=4K]
-        Region 1: Memory at dd000000 (32-bit, non-prefetchable) [size=2M]
-
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: ASUSTeK Computer Inc. Unknown device 810d
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 20
-        Region 0: I/O ports at e000 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-
-My /etc/modprobe.conf :
-alias snd-card-0 snd-cs46xx
-alias sound-slot-0 snd-cs46xx
-alias snd-card-1 snd-via82xx
-alias sound-slot-1 snd-via82xx
-
-# ls /proc/asound/
-CS46xx  V8237  card0  card1  cards  devices  modules  oss  pcm  seq 
-timers  version
-
-
-dmesg reports the following error for snd_via82xx:
-PCI: Via IRQ fixup for 0000:00:11.5, from 0 to 4
-PCI: Setting latency timer of device 0000:00:11.5 to 64
-codec_read: codec 0 is not valid [0xfe0000]
-codec_read: codec 0 is not valid [0xfe0000]
-codec_read: codec 0 is not valid [0xfe0000]
-codec_read: codec 0 is not valid [0xfe0000]
-
-Even after I unload snd_via82xx and snd_cs46xx,
-modprobe -r snd_via82xx; modprobe -r snd_cs46xx
-and then reload snd_cs46xx I still have no sound from my Turtle Beach
-sound card.
-
-# lsmod|grep snd
-snd_via82xx            21144  0
-snd_mpu401_uart         5376  1 snd_via82xx
-snd_cs46xx             73672  0
-snd_rawmidi            18208  2 snd_mpu401_uart,snd_cs46xx
-snd_seq_device          6412  1 snd_rawmidi
-snd_ac97_codec         79264  2 snd_via82xx,snd_cs46xx
-snd_ac97_bus            1920  1 snd_ac97_codec
-snd_pcm_oss            41504  0
-snd_mixer_oss          14336  1 snd_pcm_oss
-snd_pcm                68360  4
-snd_via82xx,snd_cs46xx,snd_ac97_codec,snd_pcm_oss
-snd_timer              18308  1 snd_pcm
-snd                    40932  10
-snd_via82xx,snd_mpu401_uart,snd_cs46xx,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               7008  1 snd
-snd_page_alloc          7560  3 snd_via82xx,snd_cs46xx,snd_pcm
-
-# modprobe -l |grep snd
-/lib/modules/2.6.15.1/kernel/sound/pci/snd-via82xx.ko
-/lib/modules/2.6.15.1/kernel/sound/pci/snd-intel8x0.ko
-/lib/modules/2.6.15.1/kernel/sound/pci/cs46xx/snd-cs46xx.ko
-/lib/modules/2.6.15.1/kernel/sound/pci/ac97/snd-ac97-codec.ko
-/lib/modules/2.6.15.1/kernel/sound/pci/ac97/snd-ac97-bus.ko
-/lib/modules/2.6.15.1/kernel/sound/drivers/snd-virmidi.ko
-/lib/modules/2.6.15.1/kernel/sound/drivers/snd-serial-u16550.ko
-/lib/modules/2.6.15.1/kernel/sound/drivers/snd-mtpav.ko
-/lib/modules/2.6.15.1/kernel/sound/drivers/mpu401/snd-mpu401.ko
-/lib/modules/2.6.15.1/kernel/sound/drivers/mpu401/snd-mpu401-uart.ko
-/lib/modules/2.6.15.1/kernel/sound/core/snd.ko
-/lib/modules/2.6.15.1/kernel/sound/core/snd-timer.ko
-/lib/modules/2.6.15.1/kernel/sound/core/snd-rtctimer.ko
-/lib/modules/2.6.15.1/kernel/sound/core/snd-rawmidi.ko
-/lib/modules/2.6.15.1/kernel/sound/core/snd-pcm.ko
-/lib/modules/2.6.15.1/kernel/sound/core/snd-page-alloc.ko
-/lib/modules/2.6.15.1/kernel/sound/core/seq/snd-seq.ko
-/lib/modules/2.6.15.1/kernel/sound/core/seq/snd-seq-virmidi.ko
-/lib/modules/2.6.15.1/kernel/sound/core/seq/snd-seq-midi.ko
-/lib/modules/2.6.15.1/kernel/sound/core/seq/snd-seq-midi-event.ko
-/lib/modules/2.6.15.1/kernel/sound/core/seq/snd-seq-dummy.ko
-/lib/modules/2.6.15.1/kernel/sound/core/seq/snd-seq-device.ko
-/lib/modules/2.6.15.1/kernel/sound/core/seq/oss/snd-seq-oss.ko
-/lib/modules/2.6.15.1/kernel/sound/core/oss/snd-pcm-oss.ko
-/lib/modules/2.6.15.1/kernel/sound/core/oss/snd-mixer-oss.ko
-
-
-YES, I've run `alsamixer 0; alsamixer 1` and unmuted the appropriate
-channels
-and set the volume. But still no sound.
-
-
-This is the first time I've never had any sound on this computer.
-Any ideas would be appreciated.
-If there's some information you need which I've not provided
-tell me how to get it and I'll send it to you.
-
+The device appears to be present as alsa device hw:1,0, the same as it
+always was, and I can select it, but all apps report that it is busy or
+blocked.  This all worked properly with a 2.6.14-ck kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-27-06 07:25 
+ oggb4mp3 - 02-27-06 02:54 
 ----------------------------------------------------------------------
-Which was the last version that worked?
+Continuing to try and debug, I updated my driver module to the one in
+1.0.11rc3 and get the same result.  I also tried to take a diff from my
+current kernel source tree against the last known working tree, 2.6.14.4
+and apply it to the 2.6.15.4 tree I am currently working with.  The module
+compiled fine, but when trying to insert it, I got some unknown symbol
+errors in the log
+
+snd_usb_audio: Unknown symbol vfree_nocheck
+snd_usb_audio: Unknown symbol vmalloc_nocheck
+
+a quick grep of the 2.4.14.4 source tree turned up include/sound/core.h as
+missing a define in the 2.6.15.4 tree, but there are many changes to this
+file and I am quickly getting beyond my ability to muck around in the
+kernel sources.
+
+Anyway, I hope this is helpful, since I see lot's of changes to usb-audio
+2.6.14 => 2.6.15.  It looks like the entire driver was pretty much
+rewritten.
 
 ----------------------------------------------------------------------
- redwood - 02-27-06 15:31 
+ oggb4mp3 - 02-27-06 16:48 
 ----------------------------------------------------------------------
-I lost the sound in both my onboard via82xx and Turtle Beach Santa Cruz
-cs46xx
-after upgrading to kernel-2.6.15. I don't remember whether I was using
-2.6.12.?
-or 2.6.14.? before that. I was using the default alsa-drivers that come
-bundled
-with the kernel.
+Some more info from /proc/asound
 
-Since I know the sound was working before Christmas, I've tried
-downgrading alsa
-to alsa-driver-1.0.10 but it won't compile with the current kernel,
-complaining
-about undefined symbols. So I've gone instead with the 1.0.11r3 version
-which does
-compile with kernel-2.6.15.4, but unfortunately the sound is still not
-fixed. I bought this computer the fall before last and installed linux and
-I always had sound on both my sound cards until the kernel upgrade this
-past fall.
+$ cat /proc/asound/cards
+0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
+                     Sound Fusion CS46xx at 0xea122000/0xea000000, irq 10
+1 [default        ]: USB-Audio - USB Audio CODEC
+                     Burr-Brown from TI               USB Audio CODEC  at
+usb-0000:00:10.2-2, full s
+
+$ cat /proc/asound/pcm
+00-00: CS46xx : CS46xx : playback 31 : capture 1
+00-01: CS46xx - Rear : CS46xx - Rear : playback 31
+00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
+00-03: CS46xx - Center LFE : CS46xx - Center LFE : playback 31
+01-00: USB Audio : USB Audio : playback 1 : capture 1
+
+$ cat /proc/asound/modules
+0 snd_cs46xx
+1 snd_usb_audio
+
+$ cat /proc/asound/default/pcm0p/sub0/info
+card: 1
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: USB Audio
+name: USB Audio
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+$ cat /proc/asound/default/pcm0p/sub0/hw_params
+closed
+
+$ cat /proc/asound/default/pcm0p/sub0/sw_params
+closed
+
+$ cat /proc/asound/default/pcm0p/sub0/status
+closed
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-06 03:58 redwood        New Issue                                    
-01-19-06 03:58 redwood        Distribution              => compiled from sources
-01-19-06 03:58 redwood        Kernel Version            => 2.6.15, 2.6.15.1
-01-19-06 04:09 redwood        File Added: aadebug.log                      
-01-19-06 19:43 redwood        Issue Monitored: redwood                     
-02-10-06 05:48 redwood        Note Added: 0007989                          
-02-27-06 07:11 redwood        Note Added: 0008217                          
-02-27-06 07:25 rlrevell       Note Added: 0008218                          
-02-27-06 15:31 redwood        Note Added: 0008223                          
+02-24-06 07:27 oggb4mp3       New Issue                                    
+02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
+02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+02-24-06 14:16 Clemens LadischNote Added: 0008175                          
+02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
+02-24-06 15:32 Clemens LadischNote Added: 0008178                          
+02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
+02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
+02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
+02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
 ======================================================================
 
 
