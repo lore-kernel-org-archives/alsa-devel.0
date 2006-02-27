@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Mon, 27 Feb 2006 22:33:06 +0100
-Message-ID: <729cbab1d901518fd7f60909ea4acd09@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
+Date: Mon, 27 Feb 2006 22:26:37 +0100
+Message-ID: <8769ce08a9229e86421dc1ea82eaec31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F33BD194
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 22:33:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9B9C15C
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 22:26:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,219 +24,145 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
 ======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
+Reported By:                robertw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
+Issue ID:                   1618
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10-686
 ======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              02-27-2006 22:33 CET
+Date Submitted:             12-04-2005 21:24 CET
+Last Modified:              02-27-2006 22:26 CET
 ======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
+Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
+ALC260
 Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
-
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
+I can load the snd-hda-intel module and play a file via aplay or xmms or
+play a cd without any error, but I cannot hear anything neither via the
+build-in speakers nor via headphones. All volume controllers are at 70%
+and unmuted, except for PCM, because there is no mute/unmute-button.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-27-06 18:22 
+ grattemedi - 02-27-06 21:35 
 ----------------------------------------------------------------------
-What are the contents of /proc/asound/card1/stream0?
+hy, i have an acer 1641 with the same chipset ALC260. I read your notes,
+and i'd like to try your drivers. I 've downloaded the new ALSA driver
+source package  alsa-driver-1.0.11rc3. Could you explain me how to compile
+your changes i found in the 2006-02-26.tar.bz2 on the cvs ? thanks
+
+
 
 ----------------------------------------------------------------------
- oggb4mp3 - 02-27-06 22:33 
+ er-ku - 02-27-06 22:26 
 ----------------------------------------------------------------------
-$ cat /proc/asound/card1/stream0
-Burr-Brown from TI               USB Audio CODEC  at usb-0000:00:10.2-2,
-full s : USB Audio
-
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 2
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 3
-    Format: S8
-    Channels: 2
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 4
-    Format: S8
-    Channels: 1
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 5
-    Format: U8
-    Channels: 2
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 6
-    Format: U8
-    Channels: 1
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-
-Capture:
-  Status: Stop
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 48000
-  Interface 2
-    Altset 2
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 48000
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 44100
-  Interface 2
-    Altset 4
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 44100
-  Interface 2
-    Altset 5
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 32000
-  Interface 2
-    Altset 6
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 32000
-  Interface 2
-    Altset 7
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 22050
-  Interface 2
-    Altset 8
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 22050
-  Interface 2
-    Altset 9
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 16000
-  Interface 2
-    Altset 10
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 16000
-  Interface 2
-    Altset 11
-    Format: S8
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 16000
-  Interface 2
-    Altset 12
-    Format: S8
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 16000
-  Interface 2
-    Altset 13
-    Format: S8
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 8000
-  Interface 2
-    Altset 14
-    Format: S8
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 8000
-  Interface 2
-    Altset 15
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
-  Interface 2
-    Altset 16
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
-  Interface 2
-    Altset 17
-    Format: S8
-    Channels: 2
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
-  Interface 2
-    Altset 18
-    Format: S8
-    Channels: 1
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
+grattemedi: the Acer fix is not integrated yet. Just wait a few days, as it
+should be there very soon. Afterwards, you'll be able to test it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
-02-24-06 14:16 Clemens LadischNote Added: 0008175                          
-02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
-02-24-06 15:32 Clemens LadischNote Added: 0008178                          
-02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
-02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
-02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
-02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
-02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
-02-27-06 18:22 Clemens LadischNote Added: 0008227                          
-02-27-06 22:33 oggb4mp3       Note Added: 0008232                          
+12-04-05 21:24 robertw        New Issue                                    
+12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
+12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
+12-05-05 07:12 jwoithe        Note Added: 0006908                          
+12-05-05 19:35 timmy          Note Added: 0006914                          
+12-06-05 15:52 tiwai          Note Added: 0006925                          
+12-06-05 18:10 robertw        Note Added: 0006930                          
+12-06-05 20:07 tiwai          Note Added: 0006934                          
+12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
+12-06-05 20:09 tiwai          Note Added: 0006935                          
+12-06-05 22:51 robertw        Note Added: 0006938                          
+12-07-05 14:59 tiwai          Note Added: 0006941                          
+12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
+12-07-05 23:10 robertw        Note Added: 0006952                          
+12-08-05 17:19 tiwai          Note Added: 0006957                          
+12-08-05 22:01 robertw        File Added: codec#0                          
+12-08-05 22:02 robertw        File Added: codec#1                          
+12-08-05 22:03 robertw        File Added: asound.state                     
+12-08-05 22:05 robertw        Note Added: 0006963                          
+12-09-05 15:09 tiwai          Note Added: 0006966                          
+12-09-05 16:35 robertw        Note Added: 0006967                          
+12-09-05 17:03 tiwai          Note Added: 0006969                          
+12-09-05 17:17 robertw        Note Added: 0006970                          
+12-14-05 13:22 mytux          Issue Monitored: mytux                       
+12-19-05 02:11 rlrevell       Note Added: 0007077                          
+01-02-06 21:55 robertw        Note Added: 0007391                          
+01-04-06 17:29 tiwai          Note Added: 0007441                          
+01-04-06 22:00 robertw        Note Added: 0007453                          
+01-04-06 22:16 robertw        Note Edited: 0007453                         
+01-11-06 23:38 lobstaj        Note Added: 0007572                          
+01-11-06 23:48 rlrevell       Note Added: 0007573                          
+01-12-06 00:20 lobstaj        Note Added: 0007575                          
+01-12-06 00:26 rlrevell       Note Added: 0007576                          
+01-12-06 01:16 mytux          Note Added: 0007577                          
+01-12-06 01:20 mytux          Note Edited: 0007577                         
+01-12-06 14:13 robertw        Note Added: 0007586                          
+01-12-06 14:43 lobstaj        Note Added: 0007587                          
+01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
+01-12-06 21:04 rlrevell       Note Added: 0007591                          
+01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
+01-13-06 08:03 eudoxos        Note Added: 0007631                          
+01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
+01-16-06 00:32 jwoithe        Note Added: 0007682                          
+01-17-06 23:32 ilovetronik    Issue Monitored: ilovetronik                    
+01-19-06 23:36 ajmitch        Issue Monitored: ajmitch                     
+02-08-06 14:46 svilen         Note Added: 0007965                          
+02-09-06 00:29 jwoithe        Note Added: 0007969                          
+02-09-06 09:04 hweigel        Issue Monitored: hweigel                     
+02-10-06 11:02 svilen         Note Added: 0007999                          
+02-12-06 21:42 AndyP          Note Added: 0008031                          
+02-12-06 22:11 wattazoum      Note Added: 0008032                          
+02-12-06 22:14 rlrevell       Note Added: 0008033                          
+02-12-06 23:05 er-ku          Note Added: 0008034                          
+02-12-06 23:07 er-ku          Note Edited: 0008034                         
+02-13-06 00:45 jwoithe        Note Added: 0008035                          
+02-13-06 06:42 er-ku          Note Added: 0008037                          
+02-13-06 06:43 er-ku          Note Edited: 0008037                         
+02-14-06 00:07 jwoithe        Note Added: 0008066                          
+02-18-06 23:48 AndyP          Note Added: 0008125                          
+02-19-06 10:41 er-ku          Note Added: 0008131                          
+02-19-06 16:49 AndyP          Note Added: 0008134                          
+02-22-06 18:29 lobstaj        Note Added: 0008160                          
+02-23-06 01:12 jwoithe        Note Added: 0008165                          
+02-24-06 12:21 lobstaj        Note Added: 0008173                          
+02-24-06 12:25 lobstaj        Note Edited: 0008173                         
+02-24-06 14:58 mytux          Note Added: 0008176                          
+02-24-06 15:41 wattazoum      Note Added: 0008179                          
+02-24-06 15:42 wattazoum      Note Edited: 0008179                         
+02-24-06 22:32 er-ku          Note Added: 0008181                          
+02-24-06 23:23 AndyP          Note Added: 0008182                          
+02-25-06 12:29 wattazoum      File Added: patch_realtek.diff                    
+02-25-06 12:31 wattazoum      Note Added: 0008187                          
+02-26-06 05:50 at2000         Note Added: 0008196                          
+02-26-06 06:02 rlrevell       Note Added: 0008197                          
+02-26-06 14:58 er-ku          Note Added: 0008201                          
+02-26-06 15:00 er-ku          Note Added: 0008202                          
+02-26-06 23:39 er-ku          Note Edited: 0008201                         
+02-26-06 23:47 er-ku          Note Edited: 0008202                         
+02-26-06 23:47 er-ku          Note Deleted: 0008202                        
+02-26-06 23:48 er-ku          Note Added: 0008206                          
+02-26-06 23:53 jwoithe        Note Added: 0008207                          
+02-27-06 00:16 jwoithe        Note Added: 0008208                          
+02-27-06 00:27 er-ku          Note Added: 0008209                          
+02-27-06 00:41 er-ku          Note Edited: 0008209                         
+02-27-06 03:16 frat           Issue Monitored: frat                        
+02-27-06 18:33 mixcha         Issue Monitored: mixcha                      
+02-27-06 21:20 grattemedi     Note Added: 0008230                          
+02-27-06 21:35 grattemedi     Note Edited: 0008230                         
+02-27-06 22:26 er-ku          Note Added: 0008231                          
 ======================================================================
 
 
