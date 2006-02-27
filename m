@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001881]: Mixer controls not working for S/PDIF
-Date: Mon, 27 Feb 2006 11:16:19 +0100
-Message-ID: <6960161cbde66ab2fad5d9fcc5069672@bugtrack.alsa-project.org>
+From: "Thibault LE MEUR" <Thibault.LeMeur@supelec.fr>
+Subject: RE : Patch usb-audio: I need guidelines
+Date: Mon, 27 Feb 2006 12:11:25 +0100
+Message-ID: <02db01c63b8e$90356110$a578e4a0@supelec.fr>
+References: <s5h8xs0vbxq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70AD0187
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 11:16:19 +0100 (MET)
+Received: from laposte.supelec.fr (laposte.supelec.fr [160.228.120.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFE74192
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 12:11:36 +0100 (MET)
+In-Reply-To: <s5h8xs0vbxq.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,91 +21,110 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1881> 
-======================================================================
-Reported By:                lotan_rm
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1881
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.13.4
-======================================================================
-Date Submitted:             02-26-2006 10:45 CET
-Last Modified:              02-27-2006 11:16 CET
-======================================================================
-Summary:                    Mixer controls not working for S/PDIF
-Description: 
-My mainboard is the
+> Reading the above, I feel creating a new driver would be=20
+> cleaner rather than adding tons of workarounds for special=20
+> cases.  It could use most of functions in usb*.c.
 
-   Shuttle AN35N NForce2 Ultra 400
+Yes that could be a solution but 99% of the usbaudio.c code is fine for =
+the
+device, and I think little has to be done in order to get it work =
+better. So
+I think it would be better not to "fork" and customize this driver.
 
-$ cat /proc/asound/cards
- 0 [nForce2        ]: NFORCE - NVidia nForce2
-                      NVidia nForce2 with ALC650F at 0xe7001000, irq 16
+> I don't know what change you need in parse_audio_endpoints(),=20
 
-$ cat /proc/asound/devices 
-  0: [ 0]   : control
-  1:        : sequencer
- 16: [ 0- 0]: digital audio playback
- 18: [ 0- 2]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 25: [ 0- 1]: digital audio capture
- 33:        : timer
+In fact the m-audio audiophile usb has several usb interfaces each with
+several Altsettings but some Altsettings are mutually exclusive.
 
-I'm luckier than most people in the way that S/PDIF worked right away on
-hw:0,2.
-But I can't get the mixer controls to work.
+Let me be more specific:
+* Usb Interface 2 is the Analog Out audio function
+* Usb Interface 3 is the Digital Out audio function
+* Usb Interface 4 is the Analog In audio function
+* Usb Interface 5 is the Digital In audio function
+Usb Interfaces 2,3 and 4 has Altsettings 1,2,3,4,5 and Usb Intercace 5 =
+only
+has Altsetting 1,2,4:
+* AltSetting  1 is used in 24bits 96KHz mode only
+* AltSettings 3 and 5 (Synch and Adaptive mode) are used in 24bits/48KHz =
+and
+16bits/48KHz mode respectively _if_and_only_if_ Digital Input is _not_ =
+used
+* AltSettings 2 and 4 (ASync mode) are used in 24bits/48KHz and =
+16bits/48KHz
+mode respectively _if_and_only_if_ Digital Input is used and an SPDIF =
+source
+is connected to it
+   --> Not respecting this constraint may result in a byte alignment =
+error
+for the Analog Input stream see bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1801.
 
-Most people on the web seeming to have similar problems adjusted the
+Currently, the ALSA driver sets all the Interfaces/Altsettings at =
+"probing
+time", and then chooses the correct interface/altsettings "on-demand".
 
-   IEC958 Playback AC-97-SPSA
+My first patch only "hides" Altsettings that do not correspond to the
+"device_setup" module parameter I introduced (because I have no other =
+way to
+know if the user is planning to use Digital Input or not).
+  - the "device_setup" contains bits that say what the user is willing =
+to
+do: sample Resolution/Rate, which interface to enable (including Digital
+Input activation or not)...
 
-to 0% (PCM output), but that didn't help in my case.  In fact, any kind of
-adjustment in the mixer didn't show any result.
+> but if it's complicated, it'd be better to make a change more=20
 
-I tried various .asoundrc configurations without any real success.  I
-don't even know, if it's really a driver issue.
+I don't thinks it's that tricky a couple of lines checking bit of
+device_setup and just skipping some Interface/AltSettings =
+initializations.
 
-One thing I can say though: The onboard sound has a mixer device that can
-be controlled as on Windows, the native nVidia driver was working without
-a problem.
-======================================================================
+> generic. For example, we can add a hook as the argument to=20
+> this function.  It's a function pointer which is called in=20
+> the place where many USB_ID checks are for overriding with=20
+> device-speicific values.
 
-----------------------------------------------------------------------
- lotan_rm - 02-27-06 11:16 
-----------------------------------------------------------------------
-I've spotted a mistake I must have made:
+Yes, that's possible. I could create a quirk function
+"parse_audio_endpoints_audiophile_quirk" and call it from
+parse_audio_endpoints. I don't know if adding it as a function pointer
+parameter to parse_audio_endpoints is interresting: it would be usefull =
+only
+if several other devices need quirks at the exact same point in the
+function... But why not...
 
-the driver is
+I'm also wondering if patching the "Interface/AltSetting" selection =
+process
+instead of the parse_audio_endpoint process would be cleaner: but I'm =
+afraid
+that the audiophile usb device is touchy and doesn't like the whole
+Interfaces/Altsettings to have been initialized at first (and especially =
+the
+one that do not correspond to the Digital-Input state).
 
-   intel8x0
+By the way, I still have an issue when trying to unregister the
+snd-usb-audio module then probe it again with correct device_setup =
+value: it
+seems that my device is not reinitialized completely (even if I added
+interfaces resets, set clear on endpoints and even a set configuration =
+at
+reprobing time [just testing patches]). I always need to turn off and =
+then
+on again the device so that the correct initlization is taken into =
+account.
 
-and not
+* Do you know a way of completely reset a usb device without having to =
+turn
+it off/on ?
 
-   intel8x0m
+Thanks for your comments and support.
 
-I hope this makes no big difference.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-26-06 10:45 lotan_rm       New Issue                                    
-02-26-06 10:45 lotan_rm       Distribution              => Gentoo          
-02-26-06 10:45 lotan_rm       Kernel Version            => 2.6.13.4        
-02-27-06 11:16 lotan_rm       Note Added: 0008221                          
-======================================================================
+Regards,
+Thibault
 
 
 
