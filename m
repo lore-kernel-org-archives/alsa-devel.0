@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
-Date: Mon, 27 Feb 2006 05:14:57 +0100
-Message-ID: <d0710ca94eed2139c550f1caa9b40178@bugtrack.alsa-project.org>
+Date: Mon, 27 Feb 2006 05:55:55 +0100
+Message-ID: <545afc21ef4e705f0392347a2f0a3353@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCE8415D
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 05:14:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AC22170
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 05:55:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             01-21-2006 05:02 CET
-Last Modified:              02-27-2006 05:14 CET
+Last Modified:              02-27-2006 05:55 CET
 ======================================================================
 Summary:                    jackd : ALSA: cannot set period size to 1024 frames
 for capture
@@ -107,108 +107,107 @@ related to          0001724 au88x0 PCM configuration problem - buff...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-27-06 05:07 
-----------------------------------------------------------------------
-Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_pcm.c,v
-retrieving revision 1.11
-diff -u -r1.11 au88x0_pcm.c
---- alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c	17 Nov 2005 14:55:19
--0000	1.11
-+++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_pcm.c	27 Feb 2006 04:02:30
--0000
-@@ -43,10 +43,10 @@
- 	.rate_min = 5000,
- 	.rate_max = 48000,
- 	.channels_min = 1,
--#ifdef CHIP_AU8830
--	.channels_max = 4,
--#else
-+#ifndef CHIP_AU8820
- 	.channels_max = 2,
-+#else
-+	.channels_max = 4,
- #endif
- 	.buffer_bytes_max = 0x10000,
- 	.period_bytes_min = 0x1,
-@@ -55,6 +55,26 @@
- 	.periods_max = 32,
- };
- 
-+static struct snd_pcm_hardware snd_vortex_capture_hw_adb = {
-+	.info =
-+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
-+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-+	     SNDRV_PCM_INFO_MMAP_VALID),
-+	.formats =
-+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
-+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
-+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-+	.rate_min = 5000,
-+	.rate_max = 48000,
-+	.channels_min = 1,
-+	.channels_max = 2,
-+	.buffer_bytes_max = 0x10000,
-+	.period_bytes_min = 0x1,
-+	.period_bytes_max = 0x1000,
-+	.periods_min = 2,
-+	.periods_max = 32,
-+};
-+
- #ifndef CHIP_AU8820
- static struct snd_pcm_hardware snd_vortex_playback_hw_a3d = {
- 	.info =
-@@ -116,6 +136,17 @@
- 	.periods_max = 64,
- };
- #endif
-+
-+static unsigned int channels4[3] = {
-+	1, 2, 4
-+};
-+
-+static struct snd_pcm_hw_constraint_list hw_constraints_channels4 = {
-+	.count = ARRAY_SIZE(channels4),
-+	.list = channels4,
-+	.mask = 0,
-+};
-+
- /* open callback */
- static int snd_vortex_pcm_open(struct snd_pcm_substream *substream)
- {
-@@ -154,9 +185,21 @@
- 				break;
- 			}
- 		}
--		if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB
--		    || VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_I2S)
--			runtime->hw = snd_vortex_playback_hw_adb;
-+		if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB) {
-+			if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+				runtime->hw = snd_vortex_playback_hw_adb;
-+				if (VORTEX_IS_QUAD(vortex)) {
-+	        	        	runtime->hw.channels_max = 4;
-+					snd_pcm_hw_constraint_list(runtime, 0,
-+						SNDRV_PCM_HW_PARAM_CHANNELS,
-+						&hw_constraints_channels4);
-+				}
-+				else
-+	        	        	runtime->hw.channels_max = 2;
-+			}
-+			else 
-+				runtime->hw = snd_vortex_capture_hw_adb;
-+		};
- 		substream->runtime->private_data = NULL;
- 	}
- #ifndef CHIP_AU8810
-
-----------------------------------------------------------------------
  rlrevell - 02-27-06 05:14 
 ----------------------------------------------------------------------
 This patch fixes the bug?
 
 Can you send all your au88x0 patches for 1.0.11 to tiwai?
+
+----------------------------------------------------------------------
+ Raymond - 02-27-06 05:55 
+----------------------------------------------------------------------
+Only test with jackd and qjackctl, are there any jack application which can
+playback/capture ?
+
+
+ jackd -d alsa -S -p512
+jackd 0.100.0
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|512|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 512 frames, buffer = 2 periods
+nperiods = 2 for capture
+nperiods = 2 for playback
+
+---------------------------------------------------------------------
+
+ jackd -d alsa -S
+jackd 0.100.0
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+nperiods = 2 for capture
+ALSA: cannot set period size to 1024 frames for playback
+ALSA: cannot configure playback channel
+cannot load driver module alsa
+no message buffer overruns
+
+--------------------------------------------------------------------------
+
+jaaa-0.1.2]# make
+g++ -L/usr/X11R6/lib -o jaaa main.o styles.o spectwin.o audio.o rngen.o
+-lclalsadrv -lclxclient -lclthreads -ljack -lasound -lfftw3 -lpthread
+-lrt
+spectwin.o(.text+0x979): In function
+`Spectwin::Spectwin[not-in-charge](X_window*, ITC_ctrl*, char const*)':
+: undefined reference to `fftwf_malloc'
+spectwin.o(.text+0x98b): In function
+`Spectwin::Spectwin[not-in-charge](X_window*, ITC_ctrl*, char const*)':
+: undefined reference to `fftwf_malloc'
+spectwin.o(.text+0x1409): In function
+`Spectwin::Spectwin[in-charge](X_window*, ITC_ctrl*, char const*)':
+: undefined reference to `fftwf_malloc'
+spectwin.o(.text+0x141b): In function
+`Spectwin::Spectwin[in-charge](X_window*, ITC_ctrl*, char const*)':
+: undefined reference to `fftwf_malloc'
+spectwin.o(.text+0x157f): In function `Spectwin::~Spectwin
+[not-in-charge]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x158b): In function `Spectwin::~Spectwin
+[not-in-charge]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x15f9): In function `Spectwin::~Spectwin
+[not-in-charge]()':
+: undefined reference to `fftwf_destroy_plan'
+spectwin.o(.text+0x167b): In function `Spectwin::~Spectwin
+[in-charge]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x1687): In function `Spectwin::~Spectwin
+[in-charge]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x16f5): In function `Spectwin::~Spectwin
+[in-charge]()':
+: undefined reference to `fftwf_destroy_plan'
+spectwin.o(.text+0x1777): In function `Spectwin::~Spectwin [in-charge
+deleting]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x1783): In function `Spectwin::~Spectwin [in-charge
+deleting]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x17fd): In function `Spectwin::~Spectwin [in-charge
+deleting]()':
+: undefined reference to `fftwf_destroy_plan'
+spectwin.o(.text+0x3de2): In function `Spectwin::alloc_fft(Spectdata*)':
+: undefined reference to `fftwf_plan_dft_r2c_1d'
+spectwin.o(.text+0x3e22): In function `Spectwin::alloc_fft(Spectdata*)':
+: undefined reference to `fftwf_destroy_plan'
+spectwin.o(.text+0x3f89): In function `Spectwin::handle_trig()':
+: undefined reference to `fftwf_execute_dft_r2c'
+collect2: ld returned 1 exit status
+make: *** [jaaa] Error 1
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -231,6 +230,7 @@ Date Modified  Username       Field                    Change
 02-20-06 15:32 Raymond        Note Edited: 0007773                         
 02-27-06 05:07 Raymond        Note Added: 0008213                          
 02-27-06 05:14 rlrevell       Note Added: 0008214                          
+02-27-06 05:55 Raymond        Note Added: 0008215                          
 ======================================================================
 
 
