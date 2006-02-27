@@ -1,17 +1,11 @@
-From: "Adrian McMenamin" <adrian@mcmen.demon.co.uk>
-Subject: PCM driver only plays tiny portion of clip
-Date: Mon, 27 Feb 2006 16:07:06 -0000 (GMT)
-Message-ID: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
+From: postmaster@renesas.com
+Subject: =?utf-8?B?VW5kZWxpdmVyZWQgTWVzc2FnZW==?=
+Date: Tue, 28 Feb 2006 01:17:44 +0900
+Message-ID: <E1FDl4N-0006y4-Gw@mail.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8C81D190
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 17:07:13 +0100 (MET)
-Received: from newgolddream.dyndns.info (localhost.localdomain [127.0.0.1])
-	by localhost.localdomain (8.13.4/8.13.1) with ESMTP id k1RG76sj026578
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 16:07:06 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,52 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-My driver (for sound on the Sega Dreamcast) will now play the first part
-of a pcm sound =96 eg if I do the following:
-
-cat hal.wav > /dev/dsp
-
-I get the =93I=92m sorry=94 bit of =93I=92m sorry Dave I can=92t do that=94=
- =96 I am using
-the oss emulation because I cannot get aplay to work on my system.
-
-The clip however is stuck in an endless loop (in a sense this is the
-expected behaviour =96 the sound system on the dreamcast normally loops o=
-ver
-its buffer until told to do otherwise) and most of the =93playback=94 is
-silence.
-
-As the DMA transfer to the sound memory is working, it looks like the
-first 32k (or maybe just 4k =96 the period size) of the clip is transferr=
-ed
-but nothing else.
-
-How do I let my driver know that it has played a period and therefore it
-needs to load more into the buffer?
-
-At the moment the following seems to be happening:
-
-Create buffer in DMA space in main CPU addressed area
-    |
-    |
-Transfer contents of buffer into memory space of sound chip via DMA
-    |
-    |
-Start playback
-    |
-    |
-Fire interrupt for period played
-
-
-Then it gets stuck in a loop =96 the interrupt is fired and handled but
-nothing else seems to happen.
-
-I=92m a bit stuck and this might not be very clear, but any clues?
-
-
+VGhlIGVtYWlsIHdhcyBkZWxldGVkIGJ5IHN5c3RlbSBwb2xpY3kuDQpBdHRhY2hlZCBmaWxl
+IG1pZ2h0IGJlIGNvbnRhaW5pbmcgdmlydXMuDQoNCkNvbm5lY3Rpb24gRnJvbTogMTI3LjAu
+MC4xDQpGcm9tOiBhbHNhLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldA0KVG86IHRha2Fo
+YXNoaS50YWtlb0ByZW5lc2FzLmNvbQ0KRGF0ZTogVHVlLCAyOCBGZWIgMjAwNiAwMToxNzo0
+NCArMDkwMA0KU3ViamVjdDogUmU6IE1lc3NhZ2UNCg0KLS0tIFNjYW4gaW5mb3JtYXRpb24g
+Zm9sbG93cyAtLS0NCg0KVmlydXMgTmFtZTogVzMyLk5ldHNreS5QQG1tIWVuYw0KRmlsZSBB
+dHRhY2htZW50OiBNMjAwNjAyMjgwMTE3NDQwNjc1MS5tZXMNCkF0dGFjaG1lbnQgU3RhdHVz
+OiBpbmZlY3RlZA0KDQpWaXJ1cyBOYW1lOiBXMzIuTmV0c2t5LlBAbW0NCkZpbGUgQXR0YWNo
+bWVudDogYXR0YWNoLnNjcg0KQXR0YWNobWVudCBTdGF0dXM6IGluZmVjdGVkDQotLS0gRmls
+ZSBuYW1lIEJsb2NrIGluZm9ybWF0aW9uIGZvbGxvd3MgLS0tDQoNCkZpbGUgQXR0YWNobWVu
+dDogTTIwMDYwMjI4MDExNzQ0MDY3NTEubWVzDQpNYXRjaGluZyBmaWxlIG5hbWU6IE1lc3Nh
+Z2UgaXMgY29uc2lkZXJlZCB0byBiZSBhIG1hc3MtbWFpbGVyLg0KDQpUaGUgZm9sbG93aW5n
+IHRleHQgaXMgSmFwYW5lc2UuDQrmt7vku5jjg5XjgqHjgqTjg6vjgavjgqbjgqPjg6vjgrnj
+gYzlkKvjgb7jgozjgabjgYTjgovlj6/og73mgKfjgYzjgYLjgovjgYvjgIENCuWItumZkOOB
+q+OCiOOCiuOCpuOCo+ODq+OCueaknOefpeWHpueQhuOBjOS4reaWreOBleOCjOOBn+eCuuOA
+geODoeODvOODq+OCkg0K5YmK6Zmk6Ie044GX44G+44GX44Gf44CCDQoNCg0K
 
 
 -------------------------------------------------------
