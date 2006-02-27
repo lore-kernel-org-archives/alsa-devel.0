@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Mon, 27 Feb 2006 18:18:26 +0100
-Message-ID: <c5daea160c9217b252380faa4fe945ab@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: PCM driver only plays tiny portion of clip
+Date: Mon, 27 Feb 2006 18:26:01 +0100
+Message-ID: <20060227172601.GA446@turing.informatik.uni-halle.de>
+References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89B8E192
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 18:18:26 +0100 (MET)
+Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3313196
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 18:26:10 +0100 (MET)
+In-reply-to: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,115 +21,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adrian McMenamin wrote:
+> How do I let my driver know that it has played a period and therefore it
+> needs to load more into the buffer?
+> 
+> At the moment the following seems to be happening:
+> 
+> Create buffer in DMA space in main CPU addressed area
+>     |
+>     |
+> Transfer contents of buffer into memory space of sound chip via DMA
+>     |
+>     |
+> Start playback
+>     |
+>     |
+> Fire interrupt for period played
+> 
+> Then it gets stuck in a loop ? the interrupt is fired and handled but
+> nothing else seems to happen.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
-======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
-======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              02-27-2006 18:18 CET
-======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
-Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
+ALSA will notice that something has been played when the return value of
+the pointer callback changes.
 
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
-======================================================================
-
-----------------------------------------------------------------------
- oggb4mp3 - 02-27-06 16:48 
-----------------------------------------------------------------------
-Some more info from /proc/asound
-
-$ cat /proc/asound/cards
-0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
-                     Sound Fusion CS46xx at 0xea122000/0xea000000, irq 10
-1 [default        ]: USB-Audio - USB Audio CODEC
-                     Burr-Brown from TI               USB Audio CODEC  at
-usb-0000:00:10.2-2, full s
-
-$ cat /proc/asound/pcm
-00-00: CS46xx : CS46xx : playback 31 : capture 1
-00-01: CS46xx - Rear : CS46xx - Rear : playback 31
-00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
-00-03: CS46xx - Center LFE : CS46xx - Center LFE : playback 31
-01-00: USB Audio : USB Audio : playback 1 : capture 1
-
-$ cat /proc/asound/modules
-0 snd_cs46xx
-1 snd_usb_audio
-
-$ cat /proc/asound/default/pcm0p/sub0/info
-card: 1
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: USB Audio
-name: USB Audio
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 1
-
-$ cat /proc/asound/default/pcm0p/sub0/hw_params
-closed
-
-$ cat /proc/asound/default/pcm0p/sub0/sw_params
-closed
-
-$ cat /proc/asound/default/pcm0p/sub0/status
-closed
-
-----------------------------------------------------------------------
- oggb4mp3 - 02-27-06 18:18 
-----------------------------------------------------------------------
-Also, to make sure I have the latest of everything, i have updated alsa-lib
-and alsa-oss to 1.0.11rc3 with no improvement.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
-02-24-06 14:16 Clemens LadischNote Added: 0008175                          
-02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
-02-24-06 15:32 Clemens LadischNote Added: 0008178                          
-02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
-02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
-02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
-02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
-02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
-======================================================================
+What are the contents of /proc/asound/card0/pcm0p/sub0/* while it's
+playing?
 
 
+Regards,
+Clemens
 
 
 -------------------------------------------------------
