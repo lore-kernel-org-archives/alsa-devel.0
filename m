@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001761]: sound doesn't work anymore, even after running `alsaconf`
-Date: Mon, 27 Feb 2006 07:11:39 +0100
-Message-ID: <10a8d2fc7558e49b3b81b5fbea8a962c@bugtrack.alsa-project.org>
+Date: Mon, 27 Feb 2006 07:25:54 +0100
+Message-ID: <773819a7fabf2b1a06170f68b123c8a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A351B187
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 07:11:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E59B113F
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 07:25:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               compiled from sources
 Kernel Version:             2.6.15, 2.6.15.1
 ======================================================================
 Date Submitted:             01-19-2006 03:58 CET
-Last Modified:              02-27-2006 07:11 CET
+Last Modified:              02-27-2006 07:25 CET
 ======================================================================
 Summary:                    sound doesn't work anymore, even after running
 `alsaconf`
@@ -162,341 +162,6 @@ tell me how to get it and I'll send it to you.
 ======================================================================
 
 ----------------------------------------------------------------------
- redwood - 02-10-06 05:48 
-----------------------------------------------------------------------
-Since I last reported this bug, I've upgraded the kernel to 2.6.15.3
-but still no sound. So I then downloaded alsa-driver-1.0.11rc3
-and followed the INSTALL -- and still no sound.
-
-After configuring with debug=full and then
-insterting the module dmesg reports:
-
-# modprobe snd_cs46xx
-root@redwood:~/alsa-driver-1.0.11rc3# dmesg
-/../alsa-kernel/core/pcm_lib.c:157: BUG: stream = 0, pos = 0x7efc480,
-buffer size = 0x4000, period size = 0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc480, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc490, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4a0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4b0, buffer size = 0x4000, period size =
-0x200
-ALSA /root/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x7efc4c0, buffer size = 0x4000, period size =
-0x200
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB0
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB0
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:1347:
-open front channel
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:1326:
-dsp_spos: creating SRC "SrcTask_SCB0"
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:610:
-dsp_spos: setting SrcTask_SCB0 rate to 44100
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:305:
-dsp_spos: creating SCB <SrcTask_SCB0>
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:1351:
-dsp_spos: creating PCM "PCMReader_SCB0" (1)
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:305:
-dsp_spos: creating SCB <PCMReader_SCB0>
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:935:
-period_size (2048), periods (32) buffer_size(65536)
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB0
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB0
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing nullSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing TimingMasterSCBInst
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing CodecOutSCB_I
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing MasterMixSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing CodecInSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing WriteBackSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing VariDecimateSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing RecordMixerSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing CodecOutSCB_Rear
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing RearMixerSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing CodecOutSCB_CLFE
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing CLFEMixerSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing MagicSnoopSCB_I
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing SPIOWriteSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTaskSCB_SPDIFI
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing SPDIFOSCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing SPDIFISCB
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:233:
-cs46xx_dsp_proc_free_scb_desc: freeing AsynCodecInputSCB
-ACPI: PCI interrupt for device 0000:00:0d.0 disabled
-ACPI: PCI Interrupt 0000:00:0d.0[A] -> GSI 16 (level, low) -> IRQ 19
-ALSA
-/root/alsa-driver-1.0.11rc3/pci/cs46xx/../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:429:
-cs46xx: failure waiting for FIFO command to complete
-gameport: CS46xx Gameport is pci0000:00:0d.0/gameport0, speed 1754kHz
-analog.c: Unknown joystick device found  (data=0x2,
-pci0000:00:0d.0/gameport0), probably not analog joystick.
-
-----------------------------------------------------------------------
  redwood - 02-27-06 07:11 
 ----------------------------------------------------------------------
 I've now upgraded to kernel-2.6.15.4 and alsa-driver-1.0.11r3
@@ -520,6 +185,11 @@ ALSA
 cs46xx: failure waiting for FIFO command to complete
 gameport: CS46xx Gameport is pci0000:00:0d.0/gameport0, speed 1704kHz
 
+----------------------------------------------------------------------
+ rlrevell - 02-27-06 07:25 
+----------------------------------------------------------------------
+Which was the last version that worked?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -530,6 +200,7 @@ Date Modified  Username       Field                    Change
 01-19-06 19:43 redwood        Issue Monitored: redwood                     
 02-10-06 05:48 redwood        Note Added: 0007989                          
 02-27-06 07:11 redwood        Note Added: 0008217                          
+02-27-06 07:25 rlrevell       Note Added: 0008218                          
 ======================================================================
 
 
