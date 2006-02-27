@@ -1,16 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [RFC] echoaudio, suspend/resume
-Date: Mon, 27 Feb 2006 22:18:31 +0100
-Message-ID: <20060227221831.7c485b7c.pochini@shiny.it>
-References: <20060225174117.1979de90.pochini@shiny.it>
-	<s5hhd6lt4iu.wl%tiwai@suse.de>
-	<Pine.LNX.4.58.0602271445330.1121@denise.shiny.it>
-	<s5h4q2kubh5.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
+Date: Mon, 27 Feb 2006 22:33:06 +0100
+Message-ID: <729cbab1d901518fd7f60909ea4acd09@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4q2kubh5.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F33BD194
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 22:33:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,43 +18,228 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: pochini@denise.shiny.it, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 27 Feb 2006 15:23:34 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> > > In which timing does it occur?
-> > 
-> > echo -n 3 >/sys/.../power/state
-> > 	--> power down ok
-> > 
-> > amixer cset xyz
-> > 	--> DSP dead
-> > 
-> > 
-> > > If it occurs before calling resume callback (not meaning before
-> > > completing resume callack), we should handle it better in the sound
-> > > core to prevent it.
-> >
-> > The resume callback has to reinit the card from scratch. It involves
-> > loading 2 to 5 firmare images which takes several ms. I didn't check
-> > after which phase the DSP begins behaving nicely when it receives an
-> > unexpected command.
-> > Of cource I can put an "if (suspended) return -EBUSY;" in each .put()
-> > and trigger function, but if the middle layer already provides some sort
-> > of global switch it's better IMHO. Other proposals are welcome.
->
-> Hm, strange, prepare or trigger callback shouldn't be called at least
-> unless snd_power_change_state(D0) is called.  The power status is
-> checked in the middle layer.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+======================================================================
+Reported By:                oggb4mp3
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1874
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Arch Linux
+Kernel Version:             2.6.15-archck4
+======================================================================
+Date Submitted:             02-24-2006 07:27 CET
+Last Modified:              02-27-2006 22:33 CET
+======================================================================
+Summary:                    USB sound device appears to be loading properly, but
+all applications report the device is busy
+Description: 
+I own a USB audio Device with a TI burr-brown DAC and with my recent
+upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
+this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
+I thought might be the culprit, but when I tried to apply the patch, I
+found that it was already applied.  I tried to reverse it, thinking that I
+might have had one of the devices that worked without it and this patch
+actually broke it, but no joy.
 
-Yes, PCM trigger works as desired indeed, but MIDI trigger doesn't.
+The device appears to be present as alsa device hw:1,0, the same as it
+always was, and I can select it, but all apps report that it is busy or
+blocked.  This all worked properly with a 2.6.14-ck kernel.
+======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-27-06 18:22 
+----------------------------------------------------------------------
+What are the contents of /proc/asound/card1/stream0?
+
+----------------------------------------------------------------------
+ oggb4mp3 - 02-27-06 22:33 
+----------------------------------------------------------------------
+$ cat /proc/asound/card1/stream0
+Burr-Brown from TI               USB Audio CODEC  at usb-0000:00:10.2-2,
+full s : USB Audio
+
+Playback:
+  Status: Stop
+  Interface 1
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 32000, 44100, 48000
+  Interface 1
+    Altset 2
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 32000, 44100, 48000
+  Interface 1
+    Altset 3
+    Format: S8
+    Channels: 2
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 32000, 44100, 48000
+  Interface 1
+    Altset 4
+    Format: S8
+    Channels: 1
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 32000, 44100, 48000
+  Interface 1
+    Altset 5
+    Format: U8
+    Channels: 2
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 32000, 44100, 48000
+  Interface 1
+    Altset 6
+    Format: U8
+    Channels: 1
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 32000, 44100, 48000
+
+Capture:
+  Status: Stop
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 4 IN (ASYNC)
+    Rates: 48000
+  Interface 2
+    Altset 2
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (ASYNC)
+    Rates: 48000
+  Interface 2
+    Altset 3
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 4 IN (ASYNC)
+    Rates: 44100
+  Interface 2
+    Altset 4
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (ASYNC)
+    Rates: 44100
+  Interface 2
+    Altset 5
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 4 IN (ASYNC)
+    Rates: 32000
+  Interface 2
+    Altset 6
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (ASYNC)
+    Rates: 32000
+  Interface 2
+    Altset 7
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 4 IN (ASYNC)
+    Rates: 22050
+  Interface 2
+    Altset 8
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (ASYNC)
+    Rates: 22050
+  Interface 2
+    Altset 9
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 4 IN (ASYNC)
+    Rates: 16000
+  Interface 2
+    Altset 10
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (ASYNC)
+    Rates: 16000
+  Interface 2
+    Altset 11
+    Format: S8
+    Channels: 2
+    Endpoint: 4 IN (ASYNC)
+    Rates: 16000
+  Interface 2
+    Altset 12
+    Format: S8
+    Channels: 1
+    Endpoint: 4 IN (ASYNC)
+    Rates: 16000
+  Interface 2
+    Altset 13
+    Format: S8
+    Channels: 2
+    Endpoint: 4 IN (ASYNC)
+    Rates: 8000
+  Interface 2
+    Altset 14
+    Format: S8
+    Channels: 1
+    Endpoint: 4 IN (ASYNC)
+    Rates: 8000
+  Interface 2
+    Altset 15
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 4 IN (SYNC)
+    Rates: 11025
+  Interface 2
+    Altset 16
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (SYNC)
+    Rates: 11025
+  Interface 2
+    Altset 17
+    Format: S8
+    Channels: 2
+    Endpoint: 4 IN (SYNC)
+    Rates: 11025
+  Interface 2
+    Altset 18
+    Format: S8
+    Channels: 1
+    Endpoint: 4 IN (SYNC)
+    Rates: 11025
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-24-06 07:27 oggb4mp3       New Issue                                    
+02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
+02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+02-24-06 14:16 Clemens LadischNote Added: 0008175                          
+02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
+02-24-06 15:32 Clemens LadischNote Added: 0008178                          
+02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
+02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
+02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
+02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
+02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
+02-27-06 18:22 Clemens LadischNote Added: 0008227                          
+02-27-06 22:33 oggb4mp3       Note Added: 0008232                          
+======================================================================
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
