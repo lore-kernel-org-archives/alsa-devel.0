@@ -1,13 +1,14 @@
-From: Gilles =?ISO-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>
-Subject: Re: hda-intel and Acer TravelMate 4062 LMi
-Date: Mon, 27 Feb 2006 14:42:03 +0100
-Message-ID: <1141047723.8504.4.camel@lepetit.gilouweb.com>
-References: <200602270112.k1R1Ch6K016385@auster.physics.adelaide.edu.au>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: [PATCH] Add support for Acer TravelMate and similar
+ laptops
+Date: Mon, 27 Feb 2006 15:43:38 +0200
+Message-ID: <4403020A.5030400@akl.lt>
+References: <44022D35.7050909@akl.lt> <s5haccdt0ub.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602270112.k1R1Ch6K016385@auster.physics.adelaide.edu.au>
+In-Reply-To: <s5haccdt0ub.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,60 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Le lundi 27 f=C3=A9vrier 2006 =C3=A0 11:42 +1030, Jonathan Woithe a =C3=A9=
-crit :
-> Hi Gilou
->=20
-> > I've been reading about the CVS version of the hda-intel allowing to =
-use a
-> > "test" model. ... Using the CVS version, using the test model, I'm ab=
-le to
-> > make some sound getting out through the "Line out" jack, identified i=
-n
-> > alsamixer by "LOUT1". LOUT1 acts also on the microphone jack : I can =
-hear
-> > the sound in mono by the mic jack when it's active ! However, I can't=
- hear
-> > anything from the headphone jack, and the same goes for the internal
-> > speakers, whatever strange things I try with the mixer. I haven't tri=
-ed to
-> > input anything, as I would like the output to work first.
->=20
-> Over the weekend there have been major developments in this regard, to =
-the
-> point that at least some Acers can make noise from the internal speaker=
- and
-> the headphone jack.  I am preparing a series of ALC260 consolidation pa=
-tches
-> now which will include the initial implementation of an "acer" model.  =
-This
-> should be posted tomorrow.  It would be good if you could test these pa=
-tches
-> with your Acer and let us know how it goes.
->=20
-> If it *does* help, it would be good to know the make/model of your lapt=
-op
-> and the PCI IDs of your laptop's sound system.  The latter are reported=
- via
-> lspci. Refer to a post against bug 1618 by me earlier today for the ful=
-l
-> details on getting these numbers.
->=20
-> Regards
->   jonathan
+Hello,
 
-Hi, and thanks for your answer !
+> I prefer removing '(?)'. In case you are not sure whether these
+> controls really work, you can add a comment in the source code or
+> create a document.
+>   
+OK, but I think I'll leave these tasks to Jonathan.
 
-I followed Rimas Kudelis' advice, and I applied the patch on the bug
-report about the ALC260, and it just works smoothly.
+> Sure, once I got patches for Jonathan, I'll apply yours.
+>   
+There will be no need for that as he said he'll include my patch into
+his. After his patch is applied, there will probably be another patch
+from me (it should define the final CD and Beep status in mixer). But
+that's in future.
 
-Thanks for your work guys !
+> "Line" would be better since the OSS-emulation code uses this word to
+> construct the mixer layer.
+>   
+Then we'll leave it with "Line", as it is now.
 
-Gilou
+> You can set zero to subdevice to compare only subvendor.
+I'll keep that in mind. But I'm not sure if that's a good practice at
+all (even though I believe it should work).
+
+Rimas
 
 
 
