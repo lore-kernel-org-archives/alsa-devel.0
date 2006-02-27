@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Mon, 27 Feb 2006 14:09:36 +0100
-Message-ID: <894a810d94bd38f0838c89706d0e3a21@bugtrack.alsa-project.org>
+From: Gilles =?ISO-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>
+Subject: Re: hda-intel and Acer TravelMate 4062 LMi
+Date: Mon, 27 Feb 2006 14:42:03 +0100
+Message-ID: <1141047723.8504.4.camel@lepetit.gilouweb.com>
+References: <200602270112.k1R1Ch6K016385@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD5F8187
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 14:09:36 +0100 (MET)
+In-Reply-To: <200602270112.k1R1Ch6K016385@auster.physics.adelaide.edu.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,166 +17,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Le lundi 27 f=C3=A9vrier 2006 =C3=A0 11:42 +1030, Jonathan Woithe a =C3=A9=
+crit :
+> Hi Gilou
+>=20
+> > I've been reading about the CVS version of the hda-intel allowing to =
+use a
+> > "test" model. ... Using the CVS version, using the test model, I'm ab=
+le to
+> > make some sound getting out through the "Line out" jack, identified i=
+n
+> > alsamixer by "LOUT1". LOUT1 acts also on the microphone jack : I can =
+hear
+> > the sound in mono by the mic jack when it's active ! However, I can't=
+ hear
+> > anything from the headphone jack, and the same goes for the internal
+> > speakers, whatever strange things I try with the mixer. I haven't tri=
+ed to
+> > input anything, as I would like the output to work first.
+>=20
+> Over the weekend there have been major developments in this regard, to =
+the
+> point that at least some Acers can make noise from the internal speaker=
+ and
+> the headphone jack.  I am preparing a series of ALC260 consolidation pa=
+tches
+> now which will include the initial implementation of an "acer" model.  =
+This
+> should be posted tomorrow.  It would be good if you could test these pa=
+tches
+> with your Acer and let us know how it goes.
+>=20
+> If it *does* help, it would be good to know the make/model of your lapt=
+op
+> and the PCI IDs of your laptop's sound system.  The latter are reported=
+ via
+> lspci. Refer to a post against bug 1618 by me earlier today for the ful=
+l
+> details on getting these numbers.
+>=20
+> Regards
+>   jonathan
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
-======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              02-27-2006 14:09 CET
-======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
-Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
+Hi, and thanks for your answer !
 
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
+I followed Rimas Kudelis' advice, and I applied the patch on the bug
+report about the ALC260, and it just works smoothly.
 
-Playing stereo sound is OK.
+Thanks for your work guys !
 
-
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-
-======================================================================
-
-----------------------------------------------------------------------
- ponchick - 02-27-06 06:57 
-----------------------------------------------------------------------
-I don't understand what do you mean. Should I use patches from
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001835
-and then place this hook to my .asoundrc? If so what should I test?
-
-----------------------------------------------------------------------
- Raymond - 02-27-06 14:09 
-----------------------------------------------------------------------
-There is no way to play stereo sound to only rear speakers using the
-existing driver.
-
-   snd_pcm_open(handle,"rear",SND_PCM_STREAM_PLAYBACK,SND_PCM_NONBLOCK);
-
-
-
-
-Index: alsa-lib/src/conf/cards/AU8830.conf
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/AU8830.conf,v
-retrieving revision 1.2
-diff -u -r1.2 AU8830.conf
---- alsa-lib/src/conf/cards/AU8830.conf	22 Feb 2005 20:23:20 -0000	1.2
-+++ alsa-lib/src/conf/cards/AU8830.conf	14 Feb 2006 01:32:06 -0000
-@@ -16,7 +16,15 @@
- 
- <confdir:pcm/surround40.conf>
- 
--AU8830.pcm.surround40.0 "cards.AU8830.pcm.front.0"
-+AU8830.pcm.surround40.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type hw
-+	card $CARD
-+	device 0
-+}	
- 
- <confdir:pcm/iec958.conf>
-
-
-
-We need 
-
-AU8830.pcm.rear.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type hooks
-	slave.pcm {
-		type hw
-		card $CARD
-		device 0
-	}
-	hooks.0 {
-		type ctl_elems
-		hook_args [
-			{
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
-02-10-06 05:36 ponchick       Note Added: 0007987                          
-02-10-06 06:32 Raymond        Note Added: 0007991                          
-02-10-06 10:50 ponchick       Note Added: 0007998                          
-02-10-06 11:25 Raymond        Note Added: 0008000                          
-02-10-06 13:49 Raymond        Note Added: 0008003                          
-02-10-06 13:56 Raymond        Note Edited: 0008003                         
-02-12-06 07:48 Raymond        Note Edited: 0008003                         
-02-12-06 10:12 Raymond        Note Edited: 0008000                         
-02-16-06 05:37 ponchick       Note Added: 0008085                          
-02-16-06 08:12 Raymond        Note Added: 0008088                          
-02-16-06 10:12 Raymond        Note Added: 0008090                          
-02-16-06 10:28 Raymond        Note Edited: 0008090                         
-02-16-06 16:07 Raymond        Note Added: 0008097                          
-02-17-06 03:35 ponchick       Note Added: 0008104                          
-02-17-06 04:28 Raymond        Note Added: 0008105                          
-02-17-06 04:35 Raymond        Note Edited: 0008105                         
-02-17-06 05:56 Raymond        Note Edited: 0008105                         
-02-17-06 06:09 Raymond        Note Edited: 0008105                         
-02-26-06 07:22 ponchick       Note Added: 0008198                          
-02-26-06 13:28 Raymond        Note Added: 0008200                          
-02-26-06 14:08 Raymond        Note Edited: 0008200                         
-02-27-06 06:57 ponchick       Note Added: 0008216                          
-02-27-06 14:09 Raymond        Note Added: 0008222                          
-======================================================================
-
+Gilou
 
 
 
