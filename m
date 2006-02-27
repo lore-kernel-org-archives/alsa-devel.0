@@ -1,7 +1,7 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: [A[PATCH] HDA/ALC260: 0/6 - update patch series overview
-Date: Tue, 28 Feb 2006 10:17:49 +1030 (CST)
-Message-ID: <200602272347.k1RNloPp014339@auster.physics.adelaide.edu.au>
+Subject: [PATCH] HDA/ALC260: 1/7 - Fix test model input mux label
+Date: Tue, 28 Feb 2006 10:21:04 +1030 (CST)
+Message-ID: <200602272351.k1RNp4G9014602@auster.physics.adelaide.edu.au>
 References: <s5hlkvxt57f.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -21,41 +21,63 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
+Takashi
 
-The following series of 7 patches (sent as separate messages with subject
-line of the form "[PATCH] HDA/ALC260: x/7 - ...") contain a consolidation of
-development on the ALC260 HDA codec from the past few weeks, as requested. 
-Refer to the individual postings for details on what each one does.  A
-summary follows for reference.
-
-  patch 1/7: fixes the input mux label used in the test model to account for
-    the fact that the two ADCs in the ALC260 have slightly different input
-    selector layouts.
-
-  patch 2/7: add code to switch a retasking pin's input/output buffer
-    enables whenever the user changes the pin's mode.
-
-  patch 3/7: generalise some structures added for the Fujitsu model but
-    potentially useful for others.
-
-  patch 4/7: add switches for the GPIO pins to the mixer of the test model.
-
-  patch 5/7: add a new "acer" model.
-
-  patch 6/7: some minor janitorial fixes to the fujitsu and test models.
-
-  patch 7/7: add mixer controls to allow the SPDIF output to be enabled
-    in test mode.
-
-This series of patches has been generated against CVS from 24 Feb 2006.
-They are cumulative, set up to be applied in turn from 1-7.
-
-Having said that, all patches except 5 are more or less independent.  Patch
-5 depends on the changes made in patch 3.
+This patch fixes input mux labels used for the ALC260 "test" model.  This is
+needed to avoid confusion which comes about because the two ADCs in the
+ALC260 have slightly different mappings for their input selectors. Since
+this is just the test model it's sufficient to simply report both options
+where they exist.  If a model comes along for which this becomes an issue,
+the ALC260 input mux code will have to be extended to allow different mux
+layouts for different ADCs.
 
 Regards
   jonathan
+
+
+--- patch_realtek.c-orig	2006-02-10 10:10:31.000000000 +1030
++++ patch_realtek.c	2006-02-27 22:46:52.000000000 +1030
+@@ -2414,8 +2414,8 @@
+ 	},
+ };
+ 
+-/* On Fujitsu S702x laptops capture only makes sense from Mic/LineIn jack
+- * and the internal CD lines.
++/* On Fujitsu S702x laptops capture only makes sense from Mic/LineIn jack,
++ * headphone jack and the internal CD lines.
+  */
+ static struct hda_input_mux alc260_fujitsu_capture_source = {
+ 	.num_items = 3,
+@@ -2790,16 +2790,26 @@
+ static hda_nid_t alc260_test_adc_nids[2] = {
+ 	0x04, 0x05,
+ };
++/* This is a bit messy since the two input muxes in the ALC260 have slight
++ * variations in their signal assignments.  The ideal way to deal with this
++ * is to extend alc_spec.input_mux to allow a different input MUX for each
++ * ADC.  For the purposes of the test model it's sufficient to just list
++ * both options for affected signal indices.  The separate input mux
++ * functionality only needs to be considered if a model comes along which
++ * actually uses signals 0x5, 0x6 and 0x7 for something which makes sense to
++ * record.
++ */
+ static struct hda_input_mux alc260_test_capture_source = {
+-	.num_items = 7,
++	.num_items = 8,
+ 	.items = {
+ 		{ "MIC1 pin", 0x0 },
+ 		{ "MIC2 pin", 0x1 },
+ 		{ "LINE1 pin", 0x2 },
+ 		{ "LINE2 pin", 0x3 },
+ 		{ "CD pin", 0x4 },
+-		{ "LINE-OUT pin", 0x5 },
+-		{ "HP-OUT pin", 0x6 },
++		{ "LINE-OUT pin (cap1), Mixer (cap2)", 0x5 },
++		{ "HP-OUT pin (cap1), LINE-OUT pin (cap2)", 0x6 },
++		{ "HP-OUT pin (cap2 only)", 0x7 },
+         },
+ };
+ static struct snd_kcontrol_new alc260_test_mixer[] = {
 
 
 -------------------------------------------------------
