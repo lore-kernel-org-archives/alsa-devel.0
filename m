@@ -1,14 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: snd-opti92x-{ad1848,cs4231} won't compile without CONFIG_PNP
-Date: Mon, 27 Feb 2006 23:06:40 +0100
-Message-ID: <440377F0.6040201@keyaccess.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
+Date: Mon, 27 Feb 2006 23:45:43 +0100
+Message-ID: <9b7e04660f71f604a91d8ca0a7c6be83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040801030801080206090307"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl [213.51.130.200])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE5B917B
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 23:05:40 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FB15190
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 23:45:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040801030801080206090307
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Takashi.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
+======================================================================
+Reported By:                richardfish
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1843
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             suspend2-sources-2.6.15-r6
+======================================================================
+Date Submitted:             02-13-2006 04:04 CET
+Last Modified:              02-27-2006 23:45 CET
+======================================================================
+Summary:                    regression: no sound with sigmatel stac9200, works
+in alsa 1.0.10
+Description: 
+With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
+from both speakers and headphones (although the speakers are not muted
+when the headphones are inserted, but that is a separate problem).  
 
-Noticed the snd-opti92x driver wouldn't compile without ISA-PnP support. 
-I see the driver only supports one card meaning it wants a bit more than 
-this to bring it inline, but a minimal fix is attached.
+With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
+from either speakers or headphones.
+======================================================================
 
-I do actually have a pnp opti92x / cs4231 card lying around somewhere 
-although not available right now. I'll dig it up and do some cleanup / 
-testing in the not too distant future, if you'd like me to.
+----------------------------------------------------------------------
+ toshio - 02-26-06 16:08 
+----------------------------------------------------------------------
+Do you also have background noise if you, first unload alsa drivers and
+then:
+modprobe snd-hda-intel position_fix=1
 
-Rene.
+----------------------------------------------------------------------
+ richardfish - 02-27-06 23:45 
+----------------------------------------------------------------------
+toshio: nope, no background noise here.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-06 04:04 richardfish    New Issue                                    
+02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
+02-13-06 04:04 richardfish    Distribution              => Gentoo          
+02-13-06 04:04 richardfish    Kernel Version            =>
+suspend2-sources-2.6.15-r6
+02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
+02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
+02-25-06 21:40 lrupn          Note Added: 0008192                          
+02-26-06 16:08 toshio         Note Added: 0008203                          
+02-27-06 23:45 richardfish    Note Added: 0008233                          
+======================================================================
 
 
---------------040801030801080206090307
-Content-Type: text/plain;
- name="opti92x_pnpc_driver.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="opti92x_pnpc_driver.diff"
-
-Index: local/sound/isa/opti9xx/opti92x-ad1848.c
-===================================================================
---- local.orig/sound/isa/opti9xx/opti92x-ad1848.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/opti9xx/opti92x-ad1848.c	2006-02-27 22:26:52.000000000 +0100
-@@ -2088,9 +2088,12 @@ static int __init alsa_card_opti9xx_init
- 	int error;
- 	struct platform_device *device;
- 
-+#ifdef CONFIG_PNP
- 	pnp_register_card_driver(&opti9xx_pnpc_driver);
- 	if (snd_opti9xx_pnp_is_probed)
- 		return 0;
-+	pnp_unregister_card_driver(&opti9xx_pnpc_driver);
-+#endif
- 	if (! is_isapnp_selected()) {
- 		error = platform_driver_register(&snd_opti9xx_driver);
- 		if (error < 0)
-@@ -2102,7 +2105,6 @@ static int __init alsa_card_opti9xx_init
- 		}
- 		platform_driver_unregister(&snd_opti9xx_driver);
- 	}
--	pnp_unregister_card_driver(&opti9xx_pnpc_driver);
- #ifdef MODULE
- 	printk(KERN_ERR "no OPTi " CHIP_NAME " soundcard found\n");
- #endif
-@@ -2115,7 +2117,10 @@ static void __exit alsa_card_opti9xx_exi
- 		platform_device_unregister(snd_opti9xx_platform_device);
- 		platform_driver_unregister(&snd_opti9xx_driver);
- 	}
--	pnp_unregister_card_driver(&opti9xx_pnpc_driver);
-+#ifdef CONFIG_PNP
-+	else
-+		pnp_unregister_card_driver(&opti9xx_pnpc_driver);
-+#endif
- }
- 
- module_init(alsa_card_opti9xx_init)
-
---------------040801030801080206090307--
 
 
 -------------------------------------------------------
