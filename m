@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Mon, 27 Feb 2006 00:37:11 +0100
-Message-ID: <d3d9ff84eafc12398c42921b33705140@bugtrack.alsa-project.org>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: [PATCH] HDA/ALC260: switch pin buffers when pin mode changed
+Date: Mon, 27 Feb 2006 11:26:03 +1030 (CST)
+Message-ID: <200602270056.k1R0u38w014770@auster.physics.adelaide.edu.au>
+References: <s5hwtfktsjd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BE1219C
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 00:37:11 +0100 (MET)
+In-Reply-To: <s5hwtfktsjd.wl%tiwai@suse.de> from "Takashi Iwai" at Feb 24, 2006 09:23:34 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,101 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
-======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
-======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              02-27-2006 00:37 CET
-======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
-Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
+> > The following patch (against CVS from 20060223) makes ALSA switch ALC260 pin
+> > input/output buffers in tandem with pin mode changes.  This means that a
+> > given pin only ever has a single buffer enabled and there's no need to
+> > statically enable both input and output for pins which can be retasked by
+> > the user as inputs and outputs.  Although there is little obvervable benefit
+> > from doing the dynamic switching, it is arguably a neater solution from the
+> > engineering point of view, an will probably also result in a slightly lower
+> > noise floor when recording from such pins.
+> > 
+> > The initverbs for the test and fujitsu models have been adjusted to take
+> > this new functionality into account.
+> 
+> The patch looks fine.
+> 
+> Could you send me a series of pending patches for ALC260 so that I can
+> merge them all without missing?
 
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
-======================================================================
+No worries.  I'll collect them all up tonight, do diffs vs current CVS and
+send them on tomorrow.  I'll also forward some other minor patches which
+have been in development over the last few days, including:
 
-----------------------------------------------------------------------
- oggb4mp3 - 02-25-06 00:49 
-----------------------------------------------------------------------
-$ aplay -D plughw:1 side_101.wav
-Playing WAVE 'side_101.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-aplay: set_params:949: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (125011 125012)
-PERIOD_SIZE: 5513
-PERIOD_BYTES: 22052
-PERIODS: (3 4)
-BUFFER_TIME: 500000
-BUFFER_SIZE: 22050
-BUFFER_BYTES: 88200
-TICK_TIME: 1000
+ * add GPIO controls to ALC260 test model
+ * make some structures more generically applicable
+ * integrate the new "acer" model recently posted in draft form (using some
+   features in the above patches)
 
-$ lsof /dev/snd/* /dev/dsp*
-COMMAND  PID USER   FD   TYPE DEVICE SIZE NODE NAME
-kmix    4595 greg   10u   CHR  116,0      8215 /dev/snd/controlC0
-
-----------------------------------------------------------------------
- oggb4mp3 - 02-27-06 00:37 
-----------------------------------------------------------------------
-I just went back and tried with a 2.6.15.1 kernel and I have the same
-problem.  Something must have happened between 2.6.14.4 and 2.6.15 because
-I used this for a long time on 2.6.14.4.  I did not notice this right away
-when 2.6.15 came out because I hung back on 2.6.14 to avoid some of the
-changes related to udev and the addition of uevents.  This is why I cannot
-roll back to 2.6.14 now, because my machine is setup with udev for module
-loading and it will not work with a 2.6.14 kernel anymore.
-
-What else can I do to help figure this out so it can be fixed?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
-02-24-06 14:16 Clemens LadischNote Added: 0008175                          
-02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
-02-24-06 15:32 Clemens LadischNote Added: 0008178                          
-02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
-02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
-======================================================================
-
-
+Regards
+  jonathan
 
 
 -------------------------------------------------------
