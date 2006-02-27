@@ -1,7 +1,7 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: [Al[PATCH] HDA/ALC260: 3/7 - generalise some structures
-Date: Tue, 28 Feb 2006 10:26:06 +1030 (CST)
-Message-ID: <200602272356.k1RNu6B2014915@auster.physics.adelaide.edu.au>
+Subject: [PATCH] HDA/ALC260: 2/7 - switch pin buffer enables
+Date: Tue, 28 Feb 2006 10:23:35 +1030 (CST)
+Message-ID: <200602272353.k1RNrZtN014672@auster.physics.adelaide.edu.au>
 References: <s5hlkvxt57f.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -23,43 +23,106 @@ List-Id: alsa-devel@alsa-project.org
 
 Takashi
 
-This patch generalises a structure added for the "fujitsu" model but which
-is potentially useful for other models as well.  It turns the
-"alc260_fujitsu_adc_nids" array into "alc260_dual_adc_nids"; for other
-models which decide to utilise the dual ADC functionality there's really
-no reason why they need to define their own list of ADC nids.
-
-The "fujitsu" model preset is adjusted accordingly.
+This patch adds functionality which switches the input/output buffer enables
+of retasking pins when the user changes their mode with the mode control.
+This probably reduces noise *slightly* for recording compared to the case
+where both input and output buffers were enabled simultaneously.
 
 Regards
   jonathan
 
 
---- patch_realtek.c-02-switch_pin_io_mode	2006-02-27 22:46:24.000000000 +1030
-+++ patch_realtek.c	2006-02-27 22:47:09.000000000 +1030
-@@ -2419,7 +2419,10 @@
- 	0x05, 0x04
- };
+--- patch_realtek.c-01-input_mux_label	2006-02-27 22:46:52.000000000 +1030
++++ patch_realtek.c	2006-02-27 22:46:24.000000000 +1030
+@@ -306,9 +306,32 @@
+ 		val = alc_pin_mode_min(dir);
  
--static hda_nid_t alc260_fujitsu_adc_nids[2] = {
-+/* NIDs used when simultaneous access to both ADCs makes sense.  Note that
-+ * alc260_capture_mixer assumes ADC0 (nid 0x04) is the first ADC.
-+ */
-+static hda_nid_t alc260_dual_adc_nids[2] = {
- 	/* ADC0, ADC1 */
- 	0x04, 0x05
- };
-@@ -3285,8 +3288,8 @@
- 		.init_verbs = { alc260_fujitsu_init_verbs },
- 		.num_dacs = ARRAY_SIZE(alc260_dac_nids),
- 		.dac_nids = alc260_dac_nids,
--		.num_adc_nids = ARRAY_SIZE(alc260_fujitsu_adc_nids),
--		.adc_nids = alc260_fujitsu_adc_nids,
-+		.num_adc_nids = ARRAY_SIZE(alc260_dual_adc_nids),
-+		.adc_nids = alc260_dual_adc_nids,
- 		.num_channel_mode = ARRAY_SIZE(alc260_modes),
- 		.channel_mode = alc260_modes,
- 		.input_mux = &alc260_fujitsu_capture_source,
+ 	change = pinctl != alc_pin_mode_values[val];
+-	if (change)
++	if (change) {
++		/* Set pin mode to that requested */
+ 		snd_hda_codec_write(codec,nid,0,AC_VERB_SET_PIN_WIDGET_CONTROL,
+ 			alc_pin_mode_values[val]);
++
++		/* Also enable the retasking pin's input/output as required 
++		 * for the requested pin mode.  Enum values of 2 or less are
++		 * input modes.
++		 *
++		 * Dynamically switching the input/output buffers probably
++		 * reduces noise slightly, particularly on input.  However,
++		 * havingboth input and output buffers enabled
++		 * simultaneously doesn't seem to be problematic.
++		 */
++		if (val <= 2) {
++			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
++				AMP_OUT_MUTE);
++			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
++				AMP_IN_UNMUTE(0));
++		} else {
++			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
++				AMP_IN_MUTE(0));
++			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
++				AMP_OUT_UNMUTE);
++		}
++	}
+ 	return change;
+ }
+ 
+@@ -2744,14 +2767,16 @@
+ 
+         /* Unmute HP pin widget amp left and right (no equiv mixer ctrl) */
+         {0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+-        /* Unmute Line1 pin widget amp left and right (no equiv mixer ctrl) */
++        /* Unmute Line1 pin widget output buffer since it starts as an output.
++         * If the pin mode is changed by the user the pin mode control will
++         * take care of enabling the pin's input/output buffers as needed.
++         * Therefore there's no need to enable the input buffer at this
++         * stage.
++	 */
+         {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+-        /* Unmute Line1 pin widget input for when this pin is used as input
+-         * (no equiv mixer ctrl).  Having input and output unmuted doesn't
+-         * seem to cause a problem.
+-         */
+-        {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	/* Unmute pin widget used for Line-in (no equiv mixer ctrl) */
++	/* Unmute input buffer of pin widget used for Line-in (no equiv 
++	 * mixer ctrl)
++	 */
+         {0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+ 
+         /* Mute capture amp left and right */
+@@ -2882,7 +2907,11 @@
+ 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
+ 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
+ 
+-	/* Unmute retasking pin widget output amp left/right (no mixer ctrl) */
++	/* Unmute retasking pin widget output buffers since the default
++	 * state appears to be output.  As the pin mode is changed by the
++	 * user the pin mode control will take care of enabling the pin's
++	 * input/output buffers as needed.
++	 */
+ 	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+ 	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+ 	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+@@ -2892,17 +2921,6 @@
+ 	/* Also unmute the mono-out pin widget */
+ 	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
+ 
+-	/* Also unmute the retasking pin input amps.  Having the input and
+-	 * output amps unmuted at the same time doesn't appear to cause any
+-	 * trouble.
+-	 */
+-	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-	{0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
+-
+ 	/* Mute capture amp left and right */
+ 	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+ 	/* Set ADC connection select to match default mixer setting - line 
 
 
 -------------------------------------------------------
