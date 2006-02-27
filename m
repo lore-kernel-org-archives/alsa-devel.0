@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001858]: surround40 could be opened only 15 times
-Date: Mon, 27 Feb 2006 17:06:55 +0100
-Message-ID: <3c47a7ea29b131cc3b0f2cf066783334@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
+Date: Mon, 27 Feb 2006 18:18:26 +0100
+Message-ID: <c5daea160c9217b252380faa4fe945ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4D82190
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 17:06:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89B8E192
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 18:18:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,106 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1858> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                oggb4mp3
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1858
-Category:                   PCI - cs46xx
+Issue ID:                   1874
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Arch Linux
+Kernel Version:             2.6.15-archck4
 ======================================================================
-Date Submitted:             02-19-2006 20:40 CET
-Last Modified:              02-27-2006 17:06 CET
+Date Submitted:             02-24-2006 07:27 CET
+Last Modified:              02-27-2006 18:18 CET
 ======================================================================
-Summary:                    surround40 could be opened only 15 times
+Summary:                    USB sound device appears to be loading properly, but
+all applications report the device is busy
 Description: 
-The device surround40 could be opened only 15 times even if we have 32 pcm
-front channel and 32 rear channel.
+I own a USB audio Device with a TI burr-brown DAC and with my recent
+upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
+this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
+I thought might be the culprit, but when I tried to apply the patch, I
+found that it was already applied.  I tried to reverse it, thinking that I
+might have had one of the devices that worked without it and this patch
+actually broke it, but no joy.
+
+The device appears to be present as alsa device hw:1,0, the same as it
+always was, and I can select it, but all apps report that it is busy or
+blocked.  This all worked properly with a 2.6.14-ck kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-20-06 04:15 
+ oggb4mp3 - 02-27-06 16:48 
 ----------------------------------------------------------------------
-Can you open 32 front pcm and 32 rear pcm at the same time ?
+Some more info from /proc/asound
 
-How many front pcm can you open at the same time ? (mono/stereo)
+$ cat /proc/asound/cards
+0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
+                     Sound Fusion CS46xx at 0xea122000/0xea000000, irq 10
+1 [default        ]: USB-Audio - USB Audio CODEC
+                     Burr-Brown from TI               USB Audio CODEC  at
+usb-0000:00:10.2-2, full s
 
-May be some pcm hardware reserve for capturing.
+$ cat /proc/asound/pcm
+00-00: CS46xx : CS46xx : playback 31 : capture 1
+00-01: CS46xx - Rear : CS46xx - Rear : playback 31
+00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
+00-03: CS46xx - Center LFE : CS46xx - Center LFE : playback 31
+01-00: USB Audio : USB Audio : playback 1 : capture 1
 
+$ cat /proc/asound/modules
+0 snd_cs46xx
+1 snd_usb_audio
 
+$ cat /proc/asound/default/pcm0p/sub0/info
+card: 1
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: USB Audio
+name: USB Audio
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+$ cat /proc/asound/default/pcm0p/sub0/hw_params
+closed
+
+$ cat /proc/asound/default/pcm0p/sub0/sw_params
+closed
+
+$ cat /proc/asound/default/pcm0p/sub0/status
+closed
 
 ----------------------------------------------------------------------
- Raymond - 02-27-06 17:06 
+ oggb4mp3 - 02-27-06 18:18 
 ----------------------------------------------------------------------
-cat /proc/asound/pcm
-
-
-
-( 32 - 1 ) / 2 = 15.5
+Also, to make sure I have the latest of everything, i have updated alsa-lib
+and alsa-oss to 1.0.11rc3 with no improvement.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-06 20:40 darkbrain      New Issue                                    
-02-20-06 04:12 Raymond        Note Added: 0008141                          
-02-20-06 04:15 Raymond        Note Edited: 0008141                         
-02-27-06 17:06 Raymond        Note Added: 0008225                          
+02-24-06 07:27 oggb4mp3       New Issue                                    
+02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
+02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+02-24-06 14:16 Clemens LadischNote Added: 0008175                          
+02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
+02-24-06 15:32 Clemens LadischNote Added: 0008178                          
+02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
+02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
+02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
+02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
+02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
 ======================================================================
 
 
