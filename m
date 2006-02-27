@@ -1,17 +1,14 @@
-From: Pierre Ossman <ossman@cendio.se>
-Subject: Re: [RFC][PATCH] Transparent network support through
- polypaudio
-Date: Mon, 27 Feb 2006 09:09:20 +0100
-Message-ID: <4402B3B0.8000508@cendio.se>
-References: <43F09D76.9060004@cendio.se>	<43F61E6D.5020206@cendio.se>	<s5hirr8k7ra.wl%tiwai@suse.de>	<43FB420D.8010605@cendio.se>	<s5hfymck6k3.wl%tiwai@suse.de>	<43FC3374.2030701@cendio.se>	<s5hirr7765t.wl%tiwai@suse.de>	<43FDB25D.402@cendio.se> <s5hwtfmb0ts.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
+Date: Mon, 27 Feb 2006 09:30:17 +0100
+Message-ID: <c4ac6f857ca6ef84bf27d360fdac0bd0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060204040900030601010306"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70D2017C
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 09:09:23 +0100 (MET)
-In-Reply-To: <s5hwtfmb0ts.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FB6E183
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 09:30:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,169 +18,223 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, mzcbylcnhqvb@0pointer.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060204040900030601010306
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Just one more. :)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1766
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              02-27-2006 09:30 CET
+======================================================================
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
+Description: 
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-Seems I fumbled the control event code a bit. Only one event at a time 
-got through. Here is a fix so that all four elements can change in one go.
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
--- 
-Pierre Ossman                Telephone: +46-13-21 46 00
-Cendio AB                    Web: http://www.cendio.com
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
 
---------------060204040900030601010306
-Content-Type: text/x-patch;
- name="polyp-update.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="polyp-update.patch"
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
 
-? polyp-update.patch
-Index: polyp/ctl_polyp.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-plugins/polyp/ctl_polyp.c,v
-retrieving revision 1.2
-diff -u -r1.2 ctl_polyp.c
---- polyp/ctl_polyp.c	23 Feb 2006 14:31:13 -0000	1.2
-+++ polyp/ctl_polyp.c	26 Feb 2006 21:48:32 -0000
-@@ -48,6 +48,11 @@
- #define SINK_VOL_NAME "Master Playback Volume"
- #define SINK_MUTE_NAME "Master Playback Switch"
- 
-+#define UPDATE_SINK_VOL     0x01
-+#define UPDATE_SINK_MUTE    0x02
-+#define UPDATE_SOURCE_VOL   0x04
-+#define UPDATE_SOURCE_MUTE  0x08
-+
- static void sink_info_cb(pa_context *c, const pa_sink_info *i, int is_last, void *userdata)
- {
-     snd_ctl_polyp_t *ctl = (snd_ctl_polyp_t*)userdata;
-@@ -58,6 +63,11 @@
- 
-     assert(ctl && i);
- 
-+    if (!!ctl->sink_muted != !!i->mute) {
-+        ctl->sink_muted = i->mute;
-+        ctl->updated |= UPDATE_SINK_MUTE;
-+    }
-+
-     if (ctl->sink_volume.channels == i->volume.channels) {
-         for (chan = 0;chan < ctl->sink_volume.channels;chan++)
-             if (i->volume.values[chan] != ctl->sink_volume.values[chan])
-@@ -66,15 +76,10 @@
-         if (chan == ctl->sink_volume.channels)
-             return;
- 
--        ctl->updated = 1;
-+        ctl->updated |= UPDATE_SINK_VOL;
-     }
- 
-     memcpy(&ctl->sink_volume, &i->volume, sizeof(pa_cvolume));
--
--    if (!!ctl->sink_muted != !!i->mute) {
--        ctl->sink_muted = i->mute;
--        ctl->updated = 1;
--    }
- }
- 
- static void source_info_cb(pa_context *c, const pa_source_info *i, int is_last, void *userdata)
-@@ -87,6 +92,11 @@
- 
-     assert(ctl && i);
- 
-+    if (!!ctl->source_muted != !!i->mute) {
-+        ctl->source_muted = i->mute;
-+        ctl->updated |= UPDATE_SOURCE_MUTE;
-+    }
-+
-     if (ctl->source_volume.channels == i->volume.channels) {
-         for (chan = 0;chan < ctl->source_volume.channels;chan++)
-             if (i->volume.values[chan] != ctl->source_volume.values[chan])
-@@ -95,15 +105,10 @@
-         if (chan == ctl->source_volume.channels)
-             return;
- 
--        ctl->updated = 1;
-+        ctl->updated |= UPDATE_SOURCE_VOL;
-     }
- 
-     memcpy(&ctl->source_volume, &i->volume, sizeof(pa_cvolume));
--
--    if (!!ctl->source_muted != !!i->mute) {
--        ctl->source_muted = i->mute;
--        ctl->updated = 1;
--    }
- }
- 
- static void event_cb(pa_context *c, pa_subscription_event_type_t t,
-@@ -392,15 +397,33 @@
-     unsigned int *event_mask)
- {
-     snd_ctl_polyp_t *ctl = ext->private_data;
-+    int offset;
- 
-     assert(ctl);
- 
-     if (!ctl->updated || !ctl->subscribed)
-         return -EAGAIN;
- 
--    polyp_elem_list(ext, 0, id);
-+    if (ctl->source)
-+        offset = 2;
-+    else
-+        offset = 0;
-+
-+    if (ctl->updated & UPDATE_SOURCE_VOL) {
-+        polyp_elem_list(ext, 0, id);
-+        ctl->updated &= ~UPDATE_SOURCE_VOL;
-+    } else if (ctl->updated & UPDATE_SOURCE_MUTE) {
-+        polyp_elem_list(ext, 1, id);
-+        ctl->updated &= ~UPDATE_SOURCE_MUTE;
-+    } else if (ctl->updated & UPDATE_SINK_VOL) {
-+        polyp_elem_list(ext, offset + 0, id);
-+        ctl->updated &= ~UPDATE_SINK_VOL;
-+    } else if (ctl->updated & UPDATE_SINK_MUTE) {
-+        polyp_elem_list(ext, offset + 1, id);
-+        ctl->updated &= ~UPDATE_SINK_MUTE;
-+    }
-+
-     *event_mask = SND_CTL_EVENT_MASK_VALUE;
--    ctl->updated = 0;
- 
-     return 1;
- }
-@@ -416,11 +439,20 @@
- 
- static int polyp_ctl_poll_descriptors(snd_ctl_ext_t *ext, struct pollfd *pfd, unsigned int space)
- {
-+    int num;
-+
- 	snd_ctl_polyp_t *ctl = ext->private_data;
- 
-     assert(ctl && ctl->p);
- 
--    return polyp_poll_descriptors(ctl->p, pfd, space);
-+    num = polyp_poll_descriptors(ctl->p, pfd, space);
-+    if (num < 0)
-+        return num;
-+
-+    if (ctl->updated)
-+        pa_mainloop_wakeup(ctl->p->mainloop);
-+
-+    return num;
- }
- 
- static int polyp_ctl_poll_revents(snd_ctl_ext_t *ext, struct pollfd *pfd, unsigned int nfds, unsigned short *revents)
+jackd -d alsa hw:0 -S
+jackd 0.100.9
 
---------------060204040900030601010306--
+...
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001724 au88x0 PCM configuration problem - buff...
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 02-27-06 05:55 
+----------------------------------------------------------------------
+Only test with jackd and qjackctl, are there any jack application which can
+playback/capture ?
+
+
+ jackd -d alsa -S -p512
+jackd 0.100.0
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|512|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 512 frames, buffer = 2 periods
+nperiods = 2 for capture
+nperiods = 2 for playback
+
+---------------------------------------------------------------------
+
+ jackd -d alsa -S
+jackd 0.100.0
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+ 
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+nperiods = 2 for capture
+ALSA: cannot set period size to 1024 frames for playback
+ALSA: cannot configure playback channel
+cannot load driver module alsa
+no message buffer overruns
+
+--------------------------------------------------------------------------
+
+jaaa-0.1.2]# make
+g++ -L/usr/X11R6/lib -o jaaa main.o styles.o spectwin.o audio.o rngen.o
+-lclalsadrv -lclxclient -lclthreads -ljack -lasound -lfftw3 -lpthread
+-lrt
+spectwin.o(.text+0x979): In function
+`Spectwin::Spectwin[not-in-charge](X_window*, ITC_ctrl*, char const*)':
+: undefined reference to `fftwf_malloc'
+spectwin.o(.text+0x98b): In function
+`Spectwin::Spectwin[not-in-charge](X_window*, ITC_ctrl*, char const*)':
+: undefined reference to `fftwf_malloc'
+spectwin.o(.text+0x1409): In function
+`Spectwin::Spectwin[in-charge](X_window*, ITC_ctrl*, char const*)':
+: undefined reference to `fftwf_malloc'
+spectwin.o(.text+0x141b): In function
+`Spectwin::Spectwin[in-charge](X_window*, ITC_ctrl*, char const*)':
+: undefined reference to `fftwf_malloc'
+spectwin.o(.text+0x157f): In function `Spectwin::~Spectwin
+[not-in-charge]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x158b): In function `Spectwin::~Spectwin
+[not-in-charge]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x15f9): In function `Spectwin::~Spectwin
+[not-in-charge]()':
+: undefined reference to `fftwf_destroy_plan'
+spectwin.o(.text+0x167b): In function `Spectwin::~Spectwin
+[in-charge]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x1687): In function `Spectwin::~Spectwin
+[in-charge]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x16f5): In function `Spectwin::~Spectwin
+[in-charge]()':
+: undefined reference to `fftwf_destroy_plan'
+spectwin.o(.text+0x1777): In function `Spectwin::~Spectwin [in-charge
+deleting]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x1783): In function `Spectwin::~Spectwin [in-charge
+deleting]()':
+: undefined reference to `fftwf_free'
+spectwin.o(.text+0x17fd): In function `Spectwin::~Spectwin [in-charge
+deleting]()':
+: undefined reference to `fftwf_destroy_plan'
+spectwin.o(.text+0x3de2): In function `Spectwin::alloc_fft(Spectdata*)':
+: undefined reference to `fftwf_plan_dft_r2c_1d'
+spectwin.o(.text+0x3e22): In function `Spectwin::alloc_fft(Spectdata*)':
+: undefined reference to `fftwf_destroy_plan'
+spectwin.o(.text+0x3f89): In function `Spectwin::handle_trig()':
+: undefined reference to `fftwf_execute_dft_r2c'
+collect2: ld returned 1 exit status
+make: *** [jaaa] Error 1
+
+----------------------------------------------------------------------
+ Raymond - 02-27-06 09:30 
+----------------------------------------------------------------------
+What is the usage of hw_meter in jack ? 
+
+Can the 10-band stereo EQ peak be used as hw_meter ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-21-06 05:02 Raymond        New Issue                                    
+01-21-06 05:25 rlrevell       Note Added: 0007735                          
+01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
+01-21-06 07:36 Raymond        Note Added: 0007736                          
+01-21-06 07:41 Raymond        Note Edited: 0007736                         
+01-21-06 07:59 rlrevell       Note Added: 0007737                          
+01-23-06 10:36 Raymond        Note Added: 0007761                          
+01-23-06 10:42 Raymond        Note Edited: 0007761                         
+01-24-06 11:25 Raymond        Note Added: 0007773                          
+01-28-06 02:23 Raymond        Note Added: 0007816                          
+01-31-06 13:49 perex          Relationship added       related to 0001724  
+02-04-06 05:49 Raymond        File Added: au88x0_pcm_channels.patch             
+      
+02-04-06 06:14 Raymond        Note Added: 0007911                          
+02-18-06 08:34 Raymond        Note Added: 0008117                          
+02-20-06 15:32 Raymond        Note Edited: 0007773                         
+02-27-06 05:07 Raymond        Note Added: 0008213                          
+02-27-06 05:14 rlrevell       Note Added: 0008214                          
+02-27-06 05:55 Raymond        Note Added: 0008215                          
+02-27-06 09:30 Raymond        Note Added: 0008220                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
