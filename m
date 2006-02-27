@@ -1,17 +1,13 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: static
-	snd_pcm_uframes_t	snd_aicapcm_pcm_pointer(snd_pcm_substream_t *substream)
-Date: Mon, 27 Feb 2006 23:35:26 +0000
-Message-ID: <1141083326.9257.5.camel@localhost.localdomain>
-References: <1140813688.9827.1.camel@localhost.localdomain>
-	 <1140918491.24141.80.camel@mindpipe>
-	 <1140951305.9540.3.camel@localhost.localdomain>
-	 <s5hirr1t4pc.wl%tiwai@suse.de>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: [A[PATCH] HDA/ALC260: 0/6 - update patch series overview
+Date: Tue, 28 Feb 2006 10:17:49 +1030 (CST)
+Message-ID: <200602272347.k1RNloPp014339@auster.physics.adelaide.edu.au>
+References: <s5hlkvxt57f.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hirr1t4pc.wl%tiwai@suse.de>
+In-Reply-To: <s5hlkvxt57f.wl%tiwai@suse.de> from "Takashi Iwai" at Feb 27, 2006 12:24:20 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,19 +18,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-02-27 at 12:35 +0100, Takashi Iwai wrote:
+Hi Takashi
 
-> 
-> The pointer callback can be at any time to query the current DMA
-> position, not only from the interrupt handler, e.g. from ioctl.
-> 
-> 
-What has DMA got to do with it? I am again confused.. I thought it was
-meant to return the current playback position, not the DMA position.
+The following series of 7 patches (sent as separate messages with subject
+line of the form "[PATCH] HDA/ALC260: x/7 - ...") contain a consolidation of
+development on the ALC260 HDA codec from the past few weeks, as requested. 
+Refer to the individual postings for details on what each one does.  A
+summary follows for reference.
 
+  patch 1/7: fixes the input mux label used in the test model to account for
+    the fact that the two ADCs in the ALC260 have slightly different input
+    selector layouts.
+
+  patch 2/7: add code to switch a retasking pin's input/output buffer
+    enables whenever the user changes the pin's mode.
+
+  patch 3/7: generalise some structures added for the Fujitsu model but
+    potentially useful for others.
+
+  patch 4/7: add switches for the GPIO pins to the mixer of the test model.
+
+  patch 5/7: add a new "acer" model.
+
+  patch 6/7: some minor janitorial fixes to the fujitsu and test models.
+
+  patch 7/7: add mixer controls to allow the SPDIF output to be enabled
+    in test mode.
+
+This series of patches has been generated against CVS from 24 Feb 2006.
+They are cumulative, set up to be applied in turn from 1-7.
+
+Having said that, all patches except 5 are more or less independent.  Patch
+5 depends on the changes made in patch 3.
+
+Regards
+  jonathan
 
 
 -------------------------------------------------------
