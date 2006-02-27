@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
-Date: Mon, 27 Feb 2006 05:55:55 +0100
-Message-ID: <545afc21ef4e705f0392347a2f0a3353@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Mon, 27 Feb 2006 06:57:41 +0100
+Message-ID: <eef1de46871a42606cc5e8af427ff87e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AC22170
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 05:55:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 723EE185
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2006 06:57:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,213 +24,135 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
 ======================================================================
 Reported By:                Raymond
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1766
+Issue ID:                   1726
 Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             01-21-2006 05:02 CET
-Last Modified:              02-27-2006 05:55 CET
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              02-27-2006 06:57 CET
 ======================================================================
-Summary:                    jackd : ALSA: cannot set period size to 1024 frames
-for capture
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
 Description: 
-snd_pcm_hw_params_get_channels_max() return 4 for capture stream
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
 
-static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
-	.info =
-	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
-	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-	     SNDRV_PCM_INFO_MMAP_VALID),
-	.formats =
-	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
-	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
-	.rates = SNDRV_PCM_RATE_CONTINUOUS,
-	.rate_min = 5000,
-	.rate_max = 48000,
-	.channels_min = 1,
-#ifdef CHIP_AU8830
-	.channels_max = 4,
-#else
-	.channels_max = 2,
-#endif
-	.buffer_bytes_max = 0x10000,
-	.period_bytes_min = 0x1,
-	.period_bytes_max = 0x1000,
-	.periods_min = 2,
-	.periods_max = 32,
-};
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
 
-static int
-vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
-type)
-{
-	stream_t *stream;
-	int i, en;
-	
-	if ((nr_ch == 3)
-	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
-		return -EBUSY;
+Playing stereo sound is OK.
 
-therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
-capture"
 
-jackd -d alsa hw:0 -S
-jackd 0.100.9
-
-...
+ speaker-test -c4 -D hw:0,0
  
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
-ALSA: cannot set period size to 1024 frames for capture
-ALSA: cannot configure capture channel
-cannot load driver module alsa
-no message buffer overruns
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001724 au88x0 PCM configuration problem - buff...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-27-06 05:14 
+ Raymond - 02-26-06 14:08 
 ----------------------------------------------------------------------
-This patch fixes the bug?
+Is it feasible to use a hook in /usr/share/alsa/cards/AU8830.conf to
+provide real "front" and "rear" devices using 
+pcm volume control https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835 ?
 
-Can you send all your au88x0 patches for 1.0.11 to tiwai?
+
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_hooks
+
+
+
+      hooks.0 {
+                type ctl_elems
+                hook_args [
+                        {
+                                name "Sigmatel Surround Playback Switch"
+                                preserve true
+                                lock true
+                                optional true
+                                value [ 0 ]
+                        }
+                        {
+                                name "PCM Playback Volume"
+                                index { @func private_pcm_subdevice }
+                                lock true
+                                value [ 0 0 -64 -64]
+                        }
+                ]
+        }
+
+
 
 ----------------------------------------------------------------------
- Raymond - 02-27-06 05:55 
+ ponchick - 02-27-06 06:57 
 ----------------------------------------------------------------------
-Only test with jackd and qjackctl, are there any jack application which can
-playback/capture ?
-
-
- jackd -d alsa -S -p512
-jackd 0.100.0
-Copyright 2001-2005 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
- 
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:0|hw:0|512|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 512 frames, buffer = 2 periods
-nperiods = 2 for capture
-nperiods = 2 for playback
-
----------------------------------------------------------------------
-
- jackd -d alsa -S
-jackd 0.100.0
-Copyright 2001-2005 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
- 
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
-nperiods = 2 for capture
-ALSA: cannot set period size to 1024 frames for playback
-ALSA: cannot configure playback channel
-cannot load driver module alsa
-no message buffer overruns
-
---------------------------------------------------------------------------
-
-jaaa-0.1.2]# make
-g++ -L/usr/X11R6/lib -o jaaa main.o styles.o spectwin.o audio.o rngen.o
--lclalsadrv -lclxclient -lclthreads -ljack -lasound -lfftw3 -lpthread
--lrt
-spectwin.o(.text+0x979): In function
-`Spectwin::Spectwin[not-in-charge](X_window*, ITC_ctrl*, char const*)':
-: undefined reference to `fftwf_malloc'
-spectwin.o(.text+0x98b): In function
-`Spectwin::Spectwin[not-in-charge](X_window*, ITC_ctrl*, char const*)':
-: undefined reference to `fftwf_malloc'
-spectwin.o(.text+0x1409): In function
-`Spectwin::Spectwin[in-charge](X_window*, ITC_ctrl*, char const*)':
-: undefined reference to `fftwf_malloc'
-spectwin.o(.text+0x141b): In function
-`Spectwin::Spectwin[in-charge](X_window*, ITC_ctrl*, char const*)':
-: undefined reference to `fftwf_malloc'
-spectwin.o(.text+0x157f): In function `Spectwin::~Spectwin
-[not-in-charge]()':
-: undefined reference to `fftwf_free'
-spectwin.o(.text+0x158b): In function `Spectwin::~Spectwin
-[not-in-charge]()':
-: undefined reference to `fftwf_free'
-spectwin.o(.text+0x15f9): In function `Spectwin::~Spectwin
-[not-in-charge]()':
-: undefined reference to `fftwf_destroy_plan'
-spectwin.o(.text+0x167b): In function `Spectwin::~Spectwin
-[in-charge]()':
-: undefined reference to `fftwf_free'
-spectwin.o(.text+0x1687): In function `Spectwin::~Spectwin
-[in-charge]()':
-: undefined reference to `fftwf_free'
-spectwin.o(.text+0x16f5): In function `Spectwin::~Spectwin
-[in-charge]()':
-: undefined reference to `fftwf_destroy_plan'
-spectwin.o(.text+0x1777): In function `Spectwin::~Spectwin [in-charge
-deleting]()':
-: undefined reference to `fftwf_free'
-spectwin.o(.text+0x1783): In function `Spectwin::~Spectwin [in-charge
-deleting]()':
-: undefined reference to `fftwf_free'
-spectwin.o(.text+0x17fd): In function `Spectwin::~Spectwin [in-charge
-deleting]()':
-: undefined reference to `fftwf_destroy_plan'
-spectwin.o(.text+0x3de2): In function `Spectwin::alloc_fft(Spectdata*)':
-: undefined reference to `fftwf_plan_dft_r2c_1d'
-spectwin.o(.text+0x3e22): In function `Spectwin::alloc_fft(Spectdata*)':
-: undefined reference to `fftwf_destroy_plan'
-spectwin.o(.text+0x3f89): In function `Spectwin::handle_trig()':
-: undefined reference to `fftwf_execute_dft_r2c'
-collect2: ld returned 1 exit status
-make: *** [jaaa] Error 1
+I don't understand what do you mean. Should I use patches from
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001835
+and then place this hook to my .asoundrc? If so what should I test?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-21-06 05:02 Raymond        New Issue                                    
-01-21-06 05:25 rlrevell       Note Added: 0007735                          
-01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
-01-21-06 07:36 Raymond        Note Added: 0007736                          
-01-21-06 07:41 Raymond        Note Edited: 0007736                         
-01-21-06 07:59 rlrevell       Note Added: 0007737                          
-01-23-06 10:36 Raymond        Note Added: 0007761                          
-01-23-06 10:42 Raymond        Note Edited: 0007761                         
-01-24-06 11:25 Raymond        Note Added: 0007773                          
-01-28-06 02:23 Raymond        Note Added: 0007816                          
-01-31-06 13:49 perex          Relationship added       related to 0001724  
-02-04-06 05:49 Raymond        File Added: au88x0_pcm_channels.patch             
-      
-02-04-06 06:14 Raymond        Note Added: 0007911                          
-02-18-06 08:34 Raymond        Note Added: 0008117                          
-02-20-06 15:32 Raymond        Note Edited: 0007773                         
-02-27-06 05:07 Raymond        Note Added: 0008213                          
-02-27-06 05:14 rlrevell       Note Added: 0008214                          
-02-27-06 05:55 Raymond        Note Added: 0008215                          
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+02-10-06 06:32 Raymond        Note Added: 0007991                          
+02-10-06 10:50 ponchick       Note Added: 0007998                          
+02-10-06 11:25 Raymond        Note Added: 0008000                          
+02-10-06 13:49 Raymond        Note Added: 0008003                          
+02-10-06 13:56 Raymond        Note Edited: 0008003                         
+02-12-06 07:48 Raymond        Note Edited: 0008003                         
+02-12-06 10:12 Raymond        Note Edited: 0008000                         
+02-16-06 05:37 ponchick       Note Added: 0008085                          
+02-16-06 08:12 Raymond        Note Added: 0008088                          
+02-16-06 10:12 Raymond        Note Added: 0008090                          
+02-16-06 10:28 Raymond        Note Edited: 0008090                         
+02-16-06 16:07 Raymond        Note Added: 0008097                          
+02-17-06 03:35 ponchick       Note Added: 0008104                          
+02-17-06 04:28 Raymond        Note Added: 0008105                          
+02-17-06 04:35 Raymond        Note Edited: 0008105                         
+02-17-06 05:56 Raymond        Note Edited: 0008105                         
+02-17-06 06:09 Raymond        Note Edited: 0008105                         
+02-26-06 07:22 ponchick       Note Added: 0008198                          
+02-26-06 13:28 Raymond        Note Added: 0008200                          
+02-26-06 14:08 Raymond        Note Edited: 0008200                         
+02-27-06 06:57 ponchick       Note Added: 0008216                          
 ======================================================================
 
 
