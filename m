@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [PATCH] Add support for Acer TravelMate and
-Date: Tue, 28 Feb 2006 18:54:08 -0500
-Message-ID: <1141170850.5860.69.camel@mindpipe>
-References: <200602282345.k1SNjPfu020504@auster.physics.adelaide.edu.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001344]: Acer Laptop Card not working (3002WTCi)
+Date: Wed, 1 Mar 2006 00:55:35 +0100
+Message-ID: <35c141efeb2fe08f256393f68ff60733@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602282345.k1SNjPfu020504@auster.physics.adelaide.edu.au>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3E771C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:55:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: Rimas Kudelis <rq@akl.lt>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-03-01 at 10:15 +1030, Jonathan Woithe wrote:
-> > On Wed, 2006-03-01 at 09:52 +1030, Jonathan Woithe wrote:
-> > > The "CD" input on the ALC260 is an analog input.  It expects the CD drive to
-> > > do all the audio decoding and present an ordinary stereo signal to this pin. 
-> > > If when playing a CD and enabling the "CD" control you get no audio that
-> > > strongly suggests that there is no audio signal running to that pin.
-> > > However, if there is no analog connection to the ALC260 one does wonder
-> > > precisely how these systems are expected to play CDs.  The only option 
-> > > left would be for software to read the raw CD bitstream (which isn't a straight
-> > > audio bitstream), decode it and then send the resulting audio bitstream to
-> > > the DAC.  Given that CD drives are more than capable of doing all this it would
-> > > surprise me if this were the case.
-> > > 
-> > > One thing worth checking though - have you tested *all* ALC260 inputs with
-> > > the CD playing?  Maybe Acer connect the CD audio to some other ALC260 pin. 
-> > 
-> > I would not be surprised if some vendors were leaving out the DAC from
-> > their CD drives, and expect you to play audio CDs in digital mode.  I
-> > believe this is how Windows Media Player works by default (it also
-> > allows it to generate visual effects from the CD audio).
-> 
-> Ah, right.  I wasn't aware of that.  If that's its default behaviour then
-> perhaps the Acers do expect the OS to use digital mode for playing CDs. If
-> this proves to be the case then we'll revise the "acer" model to omit the CD
-> controls.
 
-Are #1843 and #1847 related to this problem?  Those both involve Acer
-systems but with Sigmatel codecs rather than Realtek.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1344> 
+======================================================================
+Reported By:                bqtran
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1344
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.13-rc5 (mm-sources)
+======================================================================
+Date Submitted:             08-17-2005 07:33 CEST
+Last Modified:              03-01-2006 00:55 CET
+======================================================================
+Summary:                    Acer Laptop Card not working (3002WTCi)
+Description: 
+The module fails to load for this card. Here is some info.
 
-Lee
+lspci -v:
+0000:00:01b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
+         Subsystem: Acer Incorporated [ALI]: Unknown device 0067
+         Flags: bus master, fast devsel, latency 0
+         Memory at d000c000 (64-bit, non-prefetchable)
+         Capabilities: [50] Power Management version 2
+         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+         Capabilities: [70] #10 [0091]
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 03-01-06 00:55 
+----------------------------------------------------------------------
+Any improvement in later releases?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-05 07:33 bqtran         New Issue                                    
+08-17-05 07:33 bqtran         Distribution              => Gentoo          
+08-17-05 07:33 bqtran         Kernel Version            => 2.6.13-rc5
+(mm-sources)
+08-17-05 07:38 bqtran         Issue Monitored: bqtran                      
+08-23-05 16:26 bqtran         Issue End Monitor: bqtran                    
+03-01-06 00:55 rlrevell       Note Added: 0008255                          
+======================================================================
+
 
 
 
