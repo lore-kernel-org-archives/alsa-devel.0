@@ -1,13 +1,13 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: [PATCH] Add support for Acer TravelMate and similar laptops
-Date: Tue, 28 Feb 2006 11:55:48 +1030 (CST)
-Message-ID: <200602280125.k1S1Pmlb021588@auster.physics.adelaide.edu.au>
-References: <44023C36.2040404@akl.lt>
+Subject: Re: [PATCH] Add support for Acer TravelMate and similar
+Date: Tue, 28 Feb 2006 11:58:46 +1030 (CST)
+Message-ID: <200602280128.k1S1Sknk021679@auster.physics.adelaide.edu.au>
+References: <4403020A.5030400@akl.lt>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <44023C36.2040404@akl.lt> from "Rimas Kudelis" at Feb 27, 2006 01:39:34 AM
+In-Reply-To: <4403020A.5030400@akl.lt> from "Rimas Kudelis" at Feb 27, 2006 03:43:38 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Rimas Kudelis <rq@akl.lt>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rimas
+Hi
 
-As you might have noticed, the consolidation patch eluded to yesterday has
-now been posted to alsa-devel.  One of these adds the "acer" model.  Look
-for messages with a subject of the form 
+> > I prefer removing '(?)'. In case you are not sure whether these
+> > controls really work, you can add a comment in the source code or
+> > create a document.
+> OK, but I think I'll leave these tasks to Jonathan.
 
-  [PATCH] HDA/ALC260: x/7 - ...
+The "?" is removed in the patchset I sent earlier today.  The issue of
+the CD controls can be worked on later once we've consolidated developments
+to date.
 
-where x=1-7.
+> > Sure, once I got patches for Jonathan, I'll apply yours.
+> >   
+> There will be no need for that as he said he'll include my patch into
+> his. After his patch is applied, there will probably be another patch
+> from me (it should define the final CD and Beep status in mixer). But
+> that's in future.
 
-> >> Jonathan, how about your idea to add GPIO controls to the test model? 
-> > Hopefully coming early this week.
-
-This is part of the 7-patch series, along with SPDIF enable switches.
-
-> >> * is there any reason in defining ADC NIDs for every model separately? 
-> >> They seem to be the same anyways, and not to get in anyones way. Or do 
-> >> they?
-> > 
-> > Up to this point the reason for the differing definitions has been
-> > due to the different ways things needed to use the ADC NIDs.  As part of
-> > a consolidation patch I'm preparing for Takashi I hope to clean this
-> > stuff up a bit.
-> 
-> Very good. I'm eagerly waiting for that. I hope, ALSA 1.0.11 won't 
-> come out until we're done with ALC260.
-
-There is now a single ADC NID list which can be used by any model which
-utilises the "dual ADC" functionality.  The fujitsu model was the only
-model using this up to this point; now the newly added acer model does
-as well.
-
-> >> * If the jack is called "Line In", should I leave it as "Line" in 
-> >> mixer, or should I name it "Line In"?
-> > What do you think is less confusing?
-> I don't actually know. It doesn't make significant difference for me, 
-> so it's hard to tell. I'm just asking about the policy - is "Line" a 
-> conventional name in ALSA, or is it a convention to name controls like 
-> jacks?..
-
-I've left it as "Line" since in this context it's more consistent with the
-rest of ALSA.
-
-> Of course I don't mind. You may consider my patch being a sketch which 
-> you can transform into whatever seems best for you. Of course, I'll 
-> want to test the results too. :)
-
-Feel free to grab the 7 patches and give them a whirl.  Note that they
-are against a recent CVS version of alsa.  Hopefully though it won't be
-too long before they show up in CVS.
+Takashi: just to confirm, the "acer" model *is* included in the 7-patch set
+I submitted earlier today (it's patch 5 of 7).
 
 Regards
   jonathan
