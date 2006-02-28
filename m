@@ -1,13 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Re: [PATCH] Add support for Acer TravelMate and
-Date: Wed, 1 Mar 2006 10:15:25 +1030 (CST)
-Message-ID: <200602282345.k1SNjPfu020504@auster.physics.adelaide.edu.au>
-References: <1141169734.5860.61.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001736]: No sound on my acertravelmate 4062nwlmi
+Date: Wed, 1 Mar 2006 00:53:22 +0100
+Message-ID: <d544d345e4cdac530ab18e8c40ac2afb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1141169734.5860.61.camel@mindpipe> from "Lee Revell" at Feb 28, 2006 06:35:34 PM
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CACD1C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:53:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, Rimas Kudelis <rq@akl.lt>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Wed, 2006-03-01 at 09:52 +1030, Jonathan Woithe wrote:
-> > The "CD" input on the ALC260 is an analog input.  It expects the CD drive to
-> > do all the audio decoding and present an ordinary stereo signal to this pin. 
-> > If when playing a CD and enabling the "CD" control you get no audio that
-> > strongly suggests that there is no audio signal running to that pin.
-> > However, if there is no analog connection to the ALC260 one does wonder
-> > precisely how these systems are expected to play CDs.  The only option 
-> > left would be for software to read the raw CD bitstream (which isn't a straight
-> > audio bitstream), decode it and then send the resulting audio bitstream to
-> > the DAC.  Given that CD drives are more than capable of doing all this it would
-> > surprise me if this were the case.
-> > 
-> > One thing worth checking though - have you tested *all* ALC260 inputs with
-> > the CD playing?  Maybe Acer connect the CD audio to some other ALC260 pin. 
-> 
-> I would not be surprised if some vendors were leaving out the DAC from
-> their CD drives, and expect you to play audio CDs in digital mode.  I
-> believe this is how Windows Media Player works by default (it also
-> allows it to generate visual effects from the CD audio).
 
-Ah, right.  I wasn't aware of that.  If that's its default behaviour then
-perhaps the Acers do expect the OS to use digital mode for playing CDs. If
-this proves to be the case then we'll revise the "acer" model to omit the CD
-controls.
+The following issue has been set as DUPLICATE OF issue 0001618.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1736> 
+======================================================================
+Reported By:                clamath
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1736
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               No sound on acer Travelmate 4062wnlmi
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             01-11-2006 11:24 CET
+Last Modified:              03-01-2006 00:53 CET
+======================================================================
+Summary:                    No sound on my acertravelmate 4062nwlmi
+Description: 
+alsa counf found drivers; modprobe snd-hda-intel succes; chanels NOT muted
+; but still no sound any ideas????also a tried drvers 1.0.11rc2 but still
+no sound
 
-Regards
-  jonathan
+lspci
+00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML Express
+Proce
+ssor to DRAM Controller (rev 03)
+00:02.0 VGA compatible controller: Intel Corporation Mobile
+915GM/GMS/910GML Ex
+press Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation Mobile 915GM/GMS/910GML
+Express G
+raphics Controller (rev 03)
+00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High
+Definition Audio Controller (rev 04)
+00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E
+xpress Port 1 (rev 04)
+00:1c.1 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E
+xpress Port 2 (rev 04)
+00:1c.2 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E                               xpress Port 3 (rev 04)
+00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #1 (rev 04)
+00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #2 (rev 04)
+00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #3 (rev 04)
+00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #4 (rev 04)
+00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB2 EHCI Controller (rev 04)
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev d4)
+00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
+Bridge (re                               v 04)
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
+duplicate of        0001618 No Sound on Acer with Intel ICH6 HDA an...
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-11-06 11:24 clamath        New Issue                                    
+01-11-06 11:24 clamath        Distribution              => No sound on acer
+Travelmate 4062wnlmi
+01-11-06 11:24 clamath        Kernel Version            => 2.6.15          
+03-01-06 00:53 rlrevell       Relationship added       duplicate of 0001517
+03-01-06 00:53 rlrevell       Relationship added       duplicate of 0001618
+======================================================================
+
+
 
 
 -------------------------------------------------------
