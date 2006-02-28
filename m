@@ -1,13 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Line6 USB driver in ALSA?
-Date: Mon, 27 Feb 2006 21:18:41 -0500
-Message-ID: <1141093122.3264.6.camel@mindpipe>
-References: <200602261207.31050.grabner@icg.tu-graz.ac.at>
+From: Gilles =?iso-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>
+Subject: Re: hda-intel and Acer TravelMate 4062 LMi
+Date: Tue, 28 Feb 2006 03:27:16 +0100 (CET)
+Message-ID: <39973.86.203.46.202.1141093636.squirrel@mail.eclaireurs.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200602261207.31050.grabner@icg.tu-graz.ac.at>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,20 +15,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Markus Grabner <grabner@icg.tu-graz.ac.at>
-Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-02-26 at 12:07 +0100, Markus Grabner wrote:
-> 	Hi everybody!
+Le Mar 28 f=E9vrier 2006 2:32, Jonathan Woithe a =E9crit :
+> Hi Gilou
+>
+>> > Over the weekend there have been major developments in this regard, =
+to
+>> the
+>> > point that at least some Acers can make noise from the internal
+>> speaker and
+>> > the headphone jack.  I am preparing a series of ALC260 consolidation
+>> patches
+>> > now which will include the initial implementation of an "acer" model=
+.
+>> This
+>> > should be posted tomorrow.  It would be good if you could test these
+>> patches
+>> > with your Acer and let us know how it goes.
+>> >
+>> > If it *does* help, it would be good to know the make/model of your
+>> laptop
+>> > and the PCI IDs of your laptop's sound system.  The latter are
+>> reported via
+>> > lspci. Refer to a post against bug 1618 by me earlier today for the
+>> full
+>> > details on getting these numbers.
+>>
+>> Hi, and thanks for your answer !
+>>
+>> I followed Rimas Kudelis' advice, and I applied the patch on the bug
+report about the ALC260, and it just works smoothly.
+>
+> That's good to know.  If you can get us the subsystem IDs from your
+laptop as described by myself in a post under bug 1618 that would be
+good.
 
-Why don't you just submit your driver in its current form as a patch
-against ALSA CVS, and we can go from there?  I'm a big fan of "release
-early, release often".  If it's not too much work, you can break out the
-parts that don't fit into the ALSA sources and submit those to LKML
-separately.
+The subsystem ID is  1025:008f
 
-Lee
+However, I must confess that I haven't checked that the labels of the
+mixer match perfectly the jack they indicate, being too happy to have
+sound while playing (almost) randomly with the mixer. I'll do that when I
+have some time !
+
+> Note that the patch as ultimately submitted to alsa (as part of a
+7-patch series earlier today) has evolved slightly since the one posted
+to bug report 1618.  Once the latest ALC260 patches have been merged to
+CVS it would be good if you could test the result to make sure nothing's
+been broken for you in the transition.
+>
+
+OK, then I'll probably use the CVS version to make my label tests once th=
+e
+CVS is up to date, and I'll tell you about it.
+
+Gilou
 
 
 
