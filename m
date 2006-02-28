@@ -1,13 +1,19 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: static snd_pcm_uframes_t	snd_aicapcm_pcm_pointe
-Date: Tue, 28 Feb 2006 09:20:21 +0100 (CET)
-Message-ID: <XFMail.20060228092021.pochini@shiny.it>
-References: <1141083326.9257.5.camel@localhost.localdomain>
+From: "Adrian McMenamin" <adrian@mcmen.demon.co.uk>
+Subject: Re: PCM driver only plays tiny portion of clip
+Date: Tue, 28 Feb 2006 09:10:53 -0000 (GMT)
+Message-ID: <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
+References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
+    <20060227172601.GA446@turing.informatik.uni-halle.de>
+    <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
+    <20060228073049.GA4158@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;charset=iso-8859-15
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1141083326.9257.5.camel@localhost.localdomain>
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id AB6091A8
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 10:10:55 +0100 (MET)
+In-Reply-To: <20060228073049.GA4158@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,39 +23,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 27-Feb-2006 Adrian McMenamin wrote:
-> On Mon, 2006-02-27 at 12:35 +0100, Takashi Iwai wrote:
+On Tue, 28 February, 2006 7:30 am, Clemens Ladisch wrote:
+> Adrian McMenamin wrote:
+>> On Mon, 27 February, 2006 5:26 pm, Clemens Ladisch wrote:
+>> > ALSA will notice that something has been played when the return valu=
+e
+>> of
+>> > the pointer callback changes.
+>>
+>> And what happens then? ie what will the alsa subsystem do when that
+>> changes (as it certainly will be duting the playback as it cycles
+>> through
+>> the buffer)
 >
->>
->> The pointer callback can be at any time to query the current DMA
->> position, not only from the interrupt handler, e.g. from ioctl.
->>
->>
-> What has DMA got to do with it? I am again confused.. I thought it was
-> meant to return the current playback position, not the DMA position.
+> When an interrupt occurs (that is, when it calls
+> snd_pcm_period_elapsed()), ALSA calls the pointer callback.  A differen=
+t
+> return value indicates that there is some free space in the buffer, so
+> ALSA wakes up the application so that it can write more data.
+>
+>
 
-The ring buffer that holds audio data is accessed by your card
-via DMA I guess.
-.pointer(substream) shall return the position inside the buffer,
-in frames, that the card is accessing in this moment. It's not
-important whether the card uses DMA or it doesn't.
+This (application writing more data) doesn't seem to be happening in my c=
+ase.
 
+I am using oss emulation and a simple car command ie cat somefile.wav >
+/dev/dsp - should I expect this to work, or do I really need to compile
+something like sox (does sox use the native alsa if)?
 
---
-Giuliano.
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting langua=
-ge
-that extends applications into web and mobile media. Attend the live webc=
-ast
-and join the prime developer group breaking into this new coding territor=
-y!
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D110944&bid=3D241720&dat=3D=
-121642
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
