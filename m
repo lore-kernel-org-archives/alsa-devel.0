@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001020]: Driver only records left channel when requested to record in stereo from Line-In
-Date: Wed, 1 Mar 2006 01:02:07 +0100
-Message-ID: <a05edcf549f8a0597cfbb4577654f217@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001266]: Does not detect my sound card as valid
+Date: Wed, 1 Mar 2006 00:59:19 +0100
+Message-ID: <a2d967fd1d77bb023c26488801f042b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BC4E1C4
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:02:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 043F81C9
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1020> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1266> 
 ======================================================================
-Reported By:                David Klusacek
+Reported By:                darins
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1020
-Category:                   CORE - pcm
+Issue ID:                   1266
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.6.11
+Distribution:               Fedora Core 3
+Kernel Version:             
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-29-2005 14:13 CEST
-Last Modified:              03-01-2006 01:02 CET
+Date Submitted:             07-19-2005 06:37 CEST
+Last Modified:              03-01-2006 00:59 CET
 ======================================================================
-Summary:                    Driver only records left channel when requested to
-record in stereo from Line-In
+Summary:                    Does not detect my sound card as valid
 Description: 
+I have an AudioTrak Prodigy 7.1LT sound card.  Modprobing ice-1724 produces
+the following output in /var/log/messages:
 
-When recording analog source, only one channel is really being captured,
-while the other returns some garbage (usually zeroes), regardless of the
-program being used for recording. As it appears on at least three
-different soundcards (snd-ens1371, snd-via82xx and snd-intel8x0 (intel
-records left and omits right channel)), I think that the cause might have
-something to do with the pcm core. 
+Jul 18 23:24:45 coruscant kernel: ice1724: No matching model found for ID
+0x32315441
+Jul 18 23:24:45 coruscant kernel: ice1724: Invalid EEPROM (size = 120)
+Jul 18 23:24:45 coruscant kernel: ICE1724: probe of 0000:00:06.0 failed
+with error -5
 
-Note also, that drivers for ens1371 and via82xx worked well in the older
-(0.5.10b) versions of ALSA.
+It looks like the driver just can't identify my card.
+I upgraded to the latest driver available from atrpms, but got the same
+error.
 
+aplay -l doesn't show any devices from this soundcard available, though
+lsmod shows the module loaded and using all the normal stuff.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- David Klusacek - 03-30-05 19:28 
+ darins - 07-19-05 06:39 
 ----------------------------------------------------------------------
-Of course that I checked the cable (and it is working since it works with
-old kernel and old alsa). I even tried three diffrent machines, hence the
-bug is quite independent of CPU and chipset used. 
+uname -a output:
 
-Unfortunately I do not have any /etc/asound.state file on my machine (what
-is it good for, anyway?). If you doubt about my mixer setting I attached
-the output of amixer program  (file amixer.out). Hope this helps.
+Linux coruscant 2.6.11-1.27_FC3 #1 Tue May 17 20:27:37 EDT 2005 i686
+athlon i386 GNU/Linux
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:15 
+ rlrevell - 12-30-05 23:55 
 ----------------------------------------------------------------------
-Any updates on this?
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-05 14:13 David Klusacek New Issue                                    
-03-29-05 14:13 David Klusacek Kernel Version            => 2.6.11          
-03-29-05 17:14 tiwai          Note Added: 0004248                          
-03-29-05 20:14 David Klusacek Note Added: 0004257                          
-03-29-05 20:19 tiwai          Note Added: 0004258                          
-03-30-05 19:28 David Klusacek Note Added: 0004272                          
-03-30-05 19:29 David Klusacek File Added: amixer.out                       
-12-30-05 05:15 rlrevell       Note Added: 0007237                          
-03-01-06 01:02 rlrevell       Status                   new => closed       
+07-19-05 06:37 darins         New Issue                                    
+07-19-05 06:37 darins         Distribution              => Fedora Core 3   
+07-19-05 06:38 darins         Issue Monitored: darins                      
+07-19-05 06:39 darins         Note Added: 0005525                          
+12-30-05 23:55 rlrevell       Note Added: 0007304                          
+03-01-06 00:59 rlrevell       Status                   new => closed       
 ======================================================================
 
 
