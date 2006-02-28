@@ -1,21 +1,13 @@
-From: "Adrian McMenamin" <adrian@mcmen.demon.co.uk>
-Subject: Re: PCM driver only plays tiny portion of clip
-Date: Tue, 28 Feb 2006 15:14:16 -0000 (GMT)
-Message-ID: <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
-References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
-    <20060227172601.GA446@turing.informatik.uni-halle.de>
-    <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
-    <20060228073049.GA4158@turing.informatik.uni-halle.de>
-    <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
-    <20060228145541.GA20876@turing.informatik.uni-halle.de>
+From: Falko Schmidt <kaethorn@stud.uni-stuttgart.de>
+Subject: Re: trouble on ppc32?
+Date: Tue, 28 Feb 2006 16:41:03 +0100
+Message-ID: <20060228154103.GA2205@celes>
+References: <20060220231240.GB6186@celes> <s5hmzgkkag3.wl%tiwai@suse.de> <20060222170201.GA2262@celes> <s5h7j7kvbcb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C1CEB173
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 16:14:18 +0100 (MET)
-In-Reply-To: <20060228145541.GA20876@turing.informatik.uni-halle.de>
+Content-Disposition: inline
+In-Reply-To: <s5h7j7kvbcb.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,53 +17,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 28 February, 2006 2:55 pm, Clemens Ladisch wrote:
-> Adrian McMenamin wrote:
->> On Tue, 28 February, 2006 7:30 am, Clemens Ladisch wrote:
->> > When an interrupt occurs (that is, when it calls
->> > snd_pcm_period_elapsed()), ALSA calls the pointer callback.  A
->> different
->> > return value indicates that there is some free space in the buffer, =
-so
->> > ALSA wakes up the application so that it can write more data.
->>
->> This (application writing more data) doesn't seem to be happening in m=
-y
->> case.
->>
->> I am using oss emulation and a simple car command ie cat somefile.wav =
+On Fri, Feb 24, 2006 at 07:52:04PM +0100, Takashi Iwai wrote:
+> At Wed, 22 Feb 2006 18:02:01 +0100,
+> Falko Schmidt wrote:
+> > 
+> > On Tue, Feb 21, 2006 at 04:17:48PM +0100, Takashi Iwai wrote:
+> > > > -------------
+> > > > Soundblaster Live 512 (PCI):
+> > > > -------------
+> > > > 
+> > > > Feb 20 21:54:43 cyan kernel: PCI: Enabling device 0000:01:03.0 (0104 -> 0105)
+> > > > Feb 20 21:54:43 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba3f000)!!
+> > > > Feb 20 21:54:59 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
+> > > > Feb 20 21:54:59 cyan kernel: emu: failure page = 0
+> > > > Feb 20 21:54:59 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
+> > > > Feb 20 21:54:59 cyan kernel: emu: failure page = 0
+> > > > Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
+> > > > Feb 20 21:55:13 cyan kernel: emu: failure page = 0
+> > > > Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
+> > > > Feb 20 21:55:13 cyan kernel: emu: failure page = 0
+> > > > Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8baa1000)!!
+> > > > Feb 20 21:55:13 cyan kernel: emu: failure page = 0
+> > > > Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8baa1000)!!
+> > > > Feb 20 21:55:13 cyan kernel: emu: failure page = 0
+> > > 
+> > > It's not the fault of driver but because of ppc's dma_alloc_coherent().
+> > > It doesn't allocate memories in the given coherent_dma_mask.
+> > 
+> > That sounds interesting. Thanks for pointing it out.
+> 
+> Does the patch below have any influence?  It's a blind-shot, though...
+> 
+> 
+> Takashi
+> 
+> 
+> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
+> index 946f321..b77caa7 100644
+> --- a/arch/powerpc/kernel/iommu.c
+> +++ b/arch/powerpc/kernel/iommu.c
+> @@ -546,6 +546,7 @@ void *iommu_alloc_coherent(struct iommu_
+>  		return NULL;
+>  
+>  	/* Alloc enough pages (and possibly more) */
+> + again:
+>  	ret = (void *)__get_free_pages(flag, order);
+>  	if (!ret)
+>  		return NULL;
+> @@ -556,6 +557,15 @@ void *iommu_alloc_coherent(struct iommu_
+>  	if (mapping == DMA_ERROR_CODE) {
+>  		free_pages((unsigned long)ret, order);
+>  		ret = NULL;
+> +	} else if (dev->coherent_dma_mask &&
+> +		   mapping >= dev->coherent_dma_mask) {
+> +		iommu_free(tbl, mapping, npages);
+> +		free_pages((unsigned long)ret, order);
+> +		if (! (flag & __GFP_DMA)) {
+> +			flag |= __GFP_DMA;
+> +			goto again;
+> +		}
+> +		ret = NULL;
+>  	} else
+>  		*dma_handle = mapping;
+>  	return ret;
 >
->> /dev/dsp - should I expect this to work, or do I really need to compil=
-e
->> something like sox (does sox use the native alsa if)?
->
-> Dumping something into /dev/dsp should work.  It may use the wrong
-> sample format, but if the first part of the file can be heard, the rest
-> should play OK, too.
->
-Thanks
 
-I am at something of a loss though.
+2.6.15 kernels currently won't boot on my machine. I'll get back to you
+once I solved that. Thanks a lot so far.
 
-I admit that my dma code as it is today won't work properly - the dma
-transfer function tries to fill the whole of the ring buffer everytime it
-is called. But it is only being called once - which is the real problem! =
-I
-can fix the dma issue I am sure, but it is not the blockage at the moment=
-.
-
-When the pointer callback returned incorrect values the dma function did
-get called more than once and the sample was all tranferred, if in a
-useless way. But now it sends the correct value (and I've tested it as
-such)such) it doesn't and the playback is stuck in an endless loop merely
-playing the first part of the sample.
-
-I'm at something of a loss as to know what to do
-
+Falko
 
 
 -------------------------------------------------------
