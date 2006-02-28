@@ -1,13 +1,18 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: hda-intel and Acer TravelMate 4062 LMi
-Date: Tue, 28 Feb 2006 12:02:30 +1030 (CST)
-Message-ID: <200602280132.k1S1WUNu021958@auster.physics.adelaide.edu.au>
-References: <1141047723.8504.4.camel@lepetit.gilouweb.com>
+From: "Macie Goold" <gooldimacie@vms.huji.ac.il>
+Subject: vogu e news
+Date: Mon, 27 Feb 2006 20:56:30 -0500
+Message-ID: <000001c63c0a$31b84fe0$3ef8a8c0@srb50>
+Reply-To: "Macie Goold" <gooldimacie@vms.huji.ac.il>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C63BE0.48E247E0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1141047723.8504.4.camel@lepetit.gilouweb.com> from "Gilles =?ISO-8859-1?Q?PI=C9TRI?=" at Feb 27, 2006 02:42:03 PM
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4D6C18D
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 02:56:54 +0100 (MET)
+Received: from vms.huji.ac.il (unknown [61.77.61.219])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 288E998BE1
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 02:56:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +22,115 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gilles =?ISO-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Gilou
+This is a multi-part message in MIME format.
 
-> > Over the weekend there have been major developments in this regard, to the
-> > point that at least some Acers can make noise from the internal speaker and
-> > the headphone jack.  I am preparing a series of ALC260 consolidation patches
-> > now which will include the initial implementation of an "acer" model.  This
-> > should be posted tomorrow.  It would be good if you could test these patches
-> > with your Acer and let us know how it goes.
-> > 
-> > If it *does* help, it would be good to know the make/model of your laptop
-> > and the PCI IDs of your laptop's sound system.  The latter are reported via
-> > lspci. Refer to a post against bug 1618 by me earlier today for the full
-> > details on getting these numbers.
-> 
-> Hi, and thanks for your answer !
-> 
-> I followed Rimas Kudelis' advice, and I applied the patch on the bug
-> report about the ALC260, and it just works smoothly.
+------=_NextPart_000_0001_01C63BE0.48E247E0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-That's good to know.  If you can get us the subsystem IDs from your laptop
-as described by myself in a post under bug 1618 that would be good.
+V=20
+A=20
+V=20
+P=20
+C=20
+X=20
+L=20
+A=20
+m=20
+I=20
+r=20
+I=20
+a=20
+e=20
+L=20
+b=20
+A=20
+o=20
+A=20
+n=20
+v=20
+I=20
+i=20
+G=20
+z=20
+L=20
+a=20
+i=20
+U=20
+e=20
+R=20
+a=20
+I=20
+x=20
+t=20
+M=20
+n=20
+A=20
+c=20
+S=20
 
-Note that the patch as ultimately submitted to alsa (as part of a 7-patch
-series earlier today) has evolved slightly since the one posted to bug
-report 1618.  Once the latest ALC260 patches have been merged to CVS it
-would be good if you could test the result to make sure nothing's been
-broken for you in the transition.
+r=20
+ =20
 
-Regards
-  jonathan
+ =20
+
+ =20
+
+a=20
+=20
+http://www.alsgette.com <http://www.alsgette.com>=20
+
+------=_NextPart_000_0001_01C63BE0.48E247E0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>
+<TABLE>
+<TR>
+<TD> <DIV> <STRONG> V </STRONG> </DIV> <DIV> A </DIV> <DIV> <STRONG> V =
+</STRONG> </DIV> <DIV> P </DIV> <DIV> <STRONG> C </STRONG> </DIV> <DIV> =
+X </DIV> <DIV> L </DIV> </TD>
+<TD> <DIV> <STRONG> A </STRONG> </DIV> <DIV> m </DIV> <DIV> <STRONG> I =
+</STRONG> </DIV> <DIV> r </DIV> <DIV> <STRONG> I </STRONG> </DIV> <DIV> =
+a </DIV> <DIV> e </DIV> </TD>
+<TD> <DIV> <STRONG> L </STRONG> </DIV> <DIV> b </DIV> <DIV> <STRONG> A =
+</STRONG> </DIV> <DIV> o </DIV> <DIV> <STRONG> A </STRONG> </DIV> <DIV> =
+n </DIV> <DIV> v </DIV> </TD>
+<TD> <DIV> <STRONG> I </STRONG> </DIV> <DIV> i </DIV> <DIV> <STRONG> G =
+</STRONG> </DIV> <DIV> z </DIV> <DIV> <STRONG> L </STRONG> </DIV> <DIV> =
+a </DIV> <DIV> i </DIV> </TD>
+<TD> <DIV> <STRONG> U </STRONG> </DIV> <DIV> e </DIV> <DIV> <STRONG> R =
+</STRONG> </DIV> <DIV> a </DIV> <DIV> <STRONG> I </STRONG> </DIV> <DIV> =
+x </DIV> <DIV> t </DIV> </TD>
+<TD> <DIV> <STRONG> M </STRONG> </DIV> <DIV> n </DIV> <DIV> <STRONG> A =
+</STRONG> </DIV> <DIV> c </DIV> <DIV> <STRONG> S </STRONG> </DIV> <DIV> =
+<BR> </DIV> <DIV> r </DIV> </TD>
+<TD> <DIV> &nbsp; </DIV> <DIV> <BR> </DIV> <DIV> &nbsp; </DIV> <DIV> =
+<BR> </DIV> <DIV> &nbsp; </DIV> <DIV> <BR> </DIV> <DIV> a </DIV> </TD>
+</TR>
+</TABLE>
+</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><A =
+href=3D"http://www.alsgette.com"><FONT face=3DArial =
+size=3D2>http://www.alsgette.com</FONT></A></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C63BE0.48E247E0--
+
+
+
 
 
 -------------------------------------------------------
