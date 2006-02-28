@@ -1,11 +1,14 @@
-From: Gilles =?iso-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>
-Subject: Re: hda-intel and Acer TravelMate 4062 LMi
-Date: Tue, 28 Feb 2006 03:27:16 +0100 (CET)
-Message-ID: <39973.86.203.46.202.1141093636.squirrel@mail.eclaireurs.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001794]: Change of the capture source works not like expected
+Date: Tue, 28 Feb 2006 03:50:59 +0100
+Message-ID: <75bb75c26a679ce465fced3301dae0ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF0CB19C
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 03:50:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,62 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Le Mar 28 f=E9vrier 2006 2:32, Jonathan Woithe a =E9crit :
-> Hi Gilou
->
->> > Over the weekend there have been major developments in this regard, =
-to
->> the
->> > point that at least some Acers can make noise from the internal
->> speaker and
->> > the headphone jack.  I am preparing a series of ALC260 consolidation
->> patches
->> > now which will include the initial implementation of an "acer" model=
-.
->> This
->> > should be posted tomorrow.  It would be good if you could test these
->> patches
->> > with your Acer and let us know how it goes.
->> >
->> > If it *does* help, it would be good to know the make/model of your
->> laptop
->> > and the PCI IDs of your laptop's sound system.  The latter are
->> reported via
->> > lspci. Refer to a post against bug 1618 by me earlier today for the
->> full
->> > details on getting these numbers.
->>
->> Hi, and thanks for your answer !
->>
->> I followed Rimas Kudelis' advice, and I applied the patch on the bug
-report about the ALC260, and it just works smoothly.
->
-> That's good to know.  If you can get us the subsystem IDs from your
-laptop as described by myself in a post under bug 1618 that would be
-good.
 
-The subsystem ID is  1025:008f
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1794> 
+======================================================================
+Reported By:                Peppi
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1794
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-30-2006 02:24 CET
+Last Modified:              02-28-2006 03:50 CET
+======================================================================
+Summary:                    Change of the capture source works not like expected
+Description: 
+A change from Mic to Line changes only one value.
+======================================================================
 
-However, I must confess that I haven't checked that the labels of the
-mixer match perfectly the jack they indicate, being too happy to have
-sound while playing (almost) randomly with the mixer. I'll do that when I
-have some time !
+----------------------------------------------------------------------
+ Peppi - 02-28-06 03:02 
+----------------------------------------------------------------------
+Please click on "View Advanced" right above to get a more detailed view.
+There you can find the "Steps To Reproduce" notes.
 
-> Note that the patch as ultimately submitted to alsa (as part of a
-7-patch series earlier today) has evolved slightly since the one posted
-to bug report 1618.  Once the latest ALC260 patches have been merged to
-CVS it would be good if you could test the result to make sure nothing's
-been broken for you in the transition.
->
+----------------------------------------------------------------------
+ Raymond - 02-28-06 03:50 
+----------------------------------------------------------------------
+No problem on 1.0.11rc3
 
-OK, then I'll probably use the CVS version to make my label tests once th=
-e
-CVS is up to date, and I'll tell you about it.
+amixer contents
 
-Gilou
+numid=102,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw---,values=2,items=8
+  ; Item #0 'Mic'
+  ; Item #1 'CD'
+  ; Item #2 'Video'
+  ; Item #3 'Aux'
+  ; Item #4 'Line'
+  ; Item #5 'Mix'
+  ; Item #6 'Mix Mono'
+  ; Item #7 'Phone'
+  : values=4,4
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-30-06 02:24 Peppi          New Issue                                    
+02-28-06 03:02 Peppi          Note Added: 0008236                          
+02-28-06 03:50 Raymond        Note Added: 0008237                          
+======================================================================
+
 
 
 
