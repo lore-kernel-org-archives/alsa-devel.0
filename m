@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Tue, 28 Feb 2006 04:42:57 +0100
-Message-ID: <8372ec252b18b96dc2508a32c1f90e2d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000279]: Cannot enable rear line-in
+Date: Tue, 28 Feb 2006 06:25:23 +0100
+Message-ID: <b62b23afa5dd512c48c8caab39293d77@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B147C1A0
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 04:42:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 39F601A3
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 06:25:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,205 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=279> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                atiixp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
+Issue ID:                   279
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Distribution:               Debian GNU/Linux i386 testing
+Kernel Version:             2.6.6
 ======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              02-28-2006 04:42 CET
+Date Submitted:             05-17-2004 00:24 CEST
+Last Modified:              02-28-2006 06:25 CET
 ======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
+Summary:                    Cannot enable rear line-in
 Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
+ALSA version: the one included in linux 2.6.6
 
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
+Intro: I use the atiixp driver on a Shuttle ST62K, 
+which has two line-ins, one in the front, and one 
+in the rear. The one in the front works fine, but 
+I can't get the rear line-in to work.
 
-Playing stereo sound is OK.
+The setup: a TV-card's line-out is connected to 
+line-in. Xawtv is running, and the speakers are on.
+The alsamixer is configured to a minimal working 
+state: 'Master' is set to 71% and 'Line' is set to
+71%. When the front line-in is used, this setup 
+produces sound. When I move the cable from the 
+front line-in to the rear, sound stops.
 
 
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
+I have tried changing things in the mixer, for 
+example:
+
+- set capture switch
+- raise capture volume
+- choose the line-in as the capture source
+- turn off 'Line-In As Surround'
+
+and then, as a desperate measure:
+
+- raise everything to max, and shifting around 
+  capture source and muting.
+
+In the "detailed information" you fill the following
+three sections:
+  1. Motherboard manual text
+  2. output of 'amixer scontents'
+  3. output of 'lsmod'
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-27-06 14:09 
+ jdthood - 08-30-05 12:19 
 ----------------------------------------------------------------------
-There is no way to play stereo sound to only rear speakers using the
-existing driver.
-
-   snd_pcm_open(handle,"rear",SND_PCM_STREAM_PLAYBACK,SND_PCM_NONBLOCK);
-
-
-
-
-Index: alsa-lib/src/conf/cards/AU8830.conf
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/AU8830.conf,v
-retrieving revision 1.2
-diff -u -r1.2 AU8830.conf
---- alsa-lib/src/conf/cards/AU8830.conf	22 Feb 2005 20:23:20 -0000	1.2
-+++ alsa-lib/src/conf/cards/AU8830.conf	14 Feb 2006 01:32:06 -0000
-@@ -16,7 +16,15 @@
- 
- <confdir:pcm/surround40.conf>
- 
--AU8830.pcm.surround40.0 "cards.AU8830.pcm.front.0"
-+AU8830.pcm.surround40.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type hw
-+	card $CARD
-+	device 0
-+}	
- 
- <confdir:pcm/iec958.conf>
-
-
-
-We need 
-
-AU8830.pcm.rear.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type hooks
-	slave.pcm {
-		type hw
-		card $CARD
-		device 0
-	}
-	hooks.0 {
-		type ctl_elems
-		hook_args [
-			{
+Is this bug fixed now?
 
 ----------------------------------------------------------------------
- Raymond - 02-28-06 04:42 
+ jimt - 02-28-06 06:25 
 ----------------------------------------------------------------------
-xine seem to work but mplayer does not, center can be sent to device 2
-instead of device 0
-
-<confdir:pcm/surround51.conf>
-
-AU8830.pcm.surround51.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type multi
-	slaves [
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
-				]
-			}
-			channels 4
-		}
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
-				]
-			}
-			channels 1
-		}
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
-				]
-			}
-			channels 1
-		}
-	]
-	bindings [
-		{ slave 0 channel 0 }
-		{ slave 0 channel 1 }
-		{ slave 0 channel 2 }
-		{ slave 0 channel 3 }
-		{ slave 1 channel 0 }
-		{ slave 2 channel 0 }
-	]
-}
+With Alsa 1.0.10 I am still unable to use the rear panel line in, after
+trying all of the alternative inputs (aux, video, Mic2).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
-02-10-06 05:36 ponchick       Note Added: 0007987                          
-02-10-06 06:32 Raymond        Note Added: 0007991                          
-02-10-06 10:50 ponchick       Note Added: 0007998                          
-02-10-06 11:25 Raymond        Note Added: 0008000                          
-02-10-06 13:49 Raymond        Note Added: 0008003                          
-02-10-06 13:56 Raymond        Note Edited: 0008003                         
-02-12-06 07:48 Raymond        Note Edited: 0008003                         
-02-12-06 10:12 Raymond        Note Edited: 0008000                         
-02-16-06 05:37 ponchick       Note Added: 0008085                          
-02-16-06 08:12 Raymond        Note Added: 0008088                          
-02-16-06 10:12 Raymond        Note Added: 0008090                          
-02-16-06 10:28 Raymond        Note Edited: 0008090                         
-02-16-06 16:07 Raymond        Note Added: 0008097                          
-02-17-06 03:35 ponchick       Note Added: 0008104                          
-02-17-06 04:28 Raymond        Note Added: 0008105                          
-02-17-06 04:35 Raymond        Note Edited: 0008105                         
-02-17-06 05:56 Raymond        Note Edited: 0008105                         
-02-17-06 06:09 Raymond        Note Edited: 0008105                         
-02-26-06 07:22 ponchick       Note Added: 0008198                          
-02-26-06 13:28 Raymond        Note Added: 0008200                          
-02-26-06 14:08 Raymond        Note Edited: 0008200                         
-02-27-06 06:57 ponchick       Note Added: 0008216                          
-02-27-06 14:09 Raymond        Note Added: 0008222                          
-02-28-06 04:42 Raymond        Note Added: 0008239                          
+05-17-04 00:24 atiixp         New Issue                                    
+05-17-04 00:24 atiixp         Distribution              => Debian GNU/Linux i386
+testing
+05-17-04 00:24 atiixp         Kernel Version            => 2.6.6           
+05-17-04 00:27 atiixp         Issue Monitored: atiixp                      
+05-17-04 15:02 tiwai          Note Added: 0001129                          
+05-17-04 16:27 atiixp         Note Added: 0001133                          
+05-17-04 16:28 atiixp         File Added: atiixp.tgz                       
+05-25-04 14:26 tiwai          Note Added: 0001210                          
+05-26-04 00:37 atiixp         Note Added: 0001241                          
+05-26-04 00:38 atiixp         Note Edited: 0001241                         
+05-26-04 13:37 tiwai          Note Added: 0001252                          
+08-30-05 12:19 jdthood        Note Added: 0005970                          
+02-28-06 06:25 jimt           Note Added: 0008240                          
 ======================================================================
 
 
