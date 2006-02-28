@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001186]: SIS7012: the speakers can sound, but not the headphones.
-Date: Wed, 1 Mar 2006 00:59:33 +0100
-Message-ID: <a7939be4129e53af6db3078c6bb460c9@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001305]: some odd conditions cause gnomemeeting to crash on takeoff - they blame libasound
+Date: Wed, 1 Mar 2006 00:59:20 +0100
+Message-ID: <5fc2761095f0d8fce40d7c897bdaca24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 708F31CD
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC8601C1
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,154 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1186> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1305> 
 ======================================================================
-Reported By:                shiyutang
+Reported By:                zsd
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1186
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1305
+Category:                   1_pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Mandriva Linux 2005
-Kernel Version:             2.6.11
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-12-2005 11:30 CEST
+Date Submitted:             08-03-2005 03:42 CEST
 Last Modified:              03-01-2006 00:59 CET
 ======================================================================
-Summary:                    SIS7012: the speakers can sound, but not the
-headphones.
+Summary:                    some odd conditions cause gnomemeeting to crash on
+takeoff - they blame libasound
 Description: 
-The model of my laptop PC is Acer TravelMate 273xv. I install Mandriva
-Linux 2005 in it and find a strange problem, that is I can have sound from
-the speakers, but not the headphones.
+Here is what I reported to the gnomemeeting people:
 
-The machine I bought has the following specs:
-Processor	1.7Ghz Pentium 4 (Mobile)
-RAM	256 MB DDR
-HDD	30GB
-CD	DVD
-Motherboard chipset: SIS 650
-FDD	Built in
-USB	3 Ports, USB 1.1
-Firewire IEEE 1394 small 4 pin socket
-PCMCIA	Two sockets
-Modem	SoftModem, Lucent
-LAN	Built in 10/100, RTL8139 compatible
-Video	built-in GPU, 1024x768, Monitor out, S-Video Out
-Legacy	Both serial and Parallel ports
-Mouse	Touchpad. I have added a Logitech mouse
-Supplied OS	Windows XP
+Steps to reproduce the crash:
+1. start it
 
-A strange status may help you:
-If you are using Windows XP, and using SIS 7012 driver downloaded from
-SIS, you will meet the same problem as ALSA, speakers sound but headphones
-not sound. But if you are using Realtek ALC 650 driver downloaded from
-Realtek(http://152.104.125.9/pc/ac97/alc650/wdm_a373.exe), both speakers
-and headphones will sound. So I think this model of Acer laptop doesn't
-use the common SIS 7012.
+Expected Results:
+It should run
 
-Not only I meet the problem, another Debian user also meet it and post it
-on linux-laptop.net, see
-http://www.martinjones.net/acerlinux/linuxsound.html
+How often does this happen?
+Every time
+
+Admittedly, this was vague, and I finally tracked it down (see "Steps to
+reproduce" below).
+
+But first, here was the gnomemeeting traceback:
+
+Backtrace was generated from '/usr/bin/gnomemeeting'
+
+(no debugging symbols found)...Using host libthread_db library
+"/lib/libthread_db.so.1".
+(no debugging symbols found)...(no debugging symbols found)...(no
+debugging symbols found)...(no debugging symbols found)...(no debugging
+symbols found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...(no debugging symbols
+found)...(no debugging symbols found)...[Thread debugging using
+libthread_db enabled]
+[New Thread 16384 (LWP 16377)]
+0x41498497 in waitpid () from /lib/libpthread.so.0
+#0  0x41498497 in waitpid () from /lib/libpthread.so.0
+#1  0x400985c4 in libgnomeui_module_info_get () from
+/usr/lib/libgnomeui-2.so.0
+#2  0x41496be5 in __pthread_sighandler () from /lib/libpthread.so.0
+#3  <signal handler called>
+#4  0x4183beda in snd_ctl_close () from /usr/lib/libasound.so.2
+#5  0x41bf9155 in PSoundChannelALSA::UpdateDictionary ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+#6  0x41bf919a in PSoundChannelALSA::GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+#7  0x41bf88a5 in PSoundChannelALSA_GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+#8  0x41340fea in PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+#9  0x413411a9 in PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+#10 0x41341229 in PSoundChannel::GetDefaultDevice ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+#11 0x40fe98fe in H323EndPoint::H323EndPoint ()
+   from /usr/lib/libh323_linux_x86_r.so.1.15.2
+#12 0x0807c832 in GMH323EndPoint::GMH323EndPoint ()
+#13 0x08079852 in GnomeMeeting::GnomeMeeting ()
+#14 0x080941b2 in main ()
+
+Thread 1 (Thread 16384 (LWP 16377)):
+#0  0x41498497 in waitpid () from /lib/libpthread.so.0
+No symbol table info available.
+#1  0x400985c4 in libgnomeui_module_info_get () from
+/usr/lib/libgnomeui-2.so.0
+No symbol table info available.
+#2  0x41496be5 in __pthread_sighandler () from /lib/libpthread.so.0
+No symbol table info available.
+#3  <signal handler called>
+No symbol table info available.
+#4  0x4183beda in snd_ctl_close () from /usr/lib/libasound.so.2
+No symbol table info available.
+#5  0x41bf9155 in PSoundChannelALSA::UpdateDictionary ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+#6  0x41bf919a in PSoundChannelALSA::GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+#7  0x41bf88a5 in PSoundChannelALSA_GetDeviceNames ()
+   from /usr/lib/pwlib/devices/sound/alsa_pwplugin.so
+No symbol table info available.
+#8  0x41340fea in PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+#9  0x413411a9 in PSoundChannel::GetDeviceNames ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+#10 0x41341229 in PSoundChannel::GetDefaultDevice ()
+   from /usr/lib/libpt_linux_x86_r.so.1.8.3
+No symbol table info available.
+#11 0x40fe98fe in H323EndPoint::H323EndPoint ()
+   from /usr/lib/libh323_linux_x86_r.so.1.15.2
+No symbol table info available.
+#12 0x0807c832 in GMH323EndPoint::GMH323EndPoint ()
+No symbol table info available.
+#13 0x08079852 in GnomeMeeting::GnomeMeeting ()
+No symbol table info available.
+#14 0x080941b2 in main ()
+No symbol table info available.
+#0  0x41498497 in waitpid () from /lib/libpthread.so.0
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 22:15 
+ schorpp - 08-03-05 08:58 
 ----------------------------------------------------------------------
-Any improvement in later ALSA releases?
+i know this backtrace from debian-pre-sarge times a few months ago and also
+had some problems with alsa 1.0.8.
+
+use gm >= 1.2.1 and alsa >= 1.0.9 and update your system libs.
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 23:53 
+----------------------------------------------------------------------
+Is this fixed in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-05 11:30 shiyutang      New Issue                                    
-06-12-05 11:30 shiyutang      Distribution              => Mandriva Linux 2005
-06-12-05 11:30 shiyutang      Kernel Version            => 2.6.11          
-06-13-05 14:55 dale           Issue Monitored: dale                        
-12-30-05 22:15 rlrevell       Note Added: 0007271                          
+08-03-05 03:42 zsd            New Issue                                    
+08-03-05 04:01 zsd            Note Added: 0005611                          
+08-03-05 08:58 schorpp        Note Added: 0005612                          
+12-30-05 23:53 rlrevell       Note Added: 0007302                          
 03-01-06 00:59 rlrevell       Status                   new => closed       
 ======================================================================
 
