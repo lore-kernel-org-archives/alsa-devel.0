@@ -1,18 +1,13 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: PCM driver only plays tiny portion of clip
-Date: Tue, 28 Feb 2006 08:30:49 +0100
-Message-ID: <20060228073049.GA4158@turing.informatik.uni-halle.de>
-References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
- <20060227172601.GA446@turing.informatik.uni-halle.de>
- <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
+Subject: Re: Line6 USB driver in ALSA?
+Date: Tue, 28 Feb 2006 08:35:36 +0100
+Message-ID: <20060228073536.GB4158@turing.informatik.uni-halle.de>
+References: <200602261207.31050.grabner@icg.tu-graz.ac.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AB2019C
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 08:31:38 +0100 (MET)
-In-reply-to: <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
+In-reply-to: <200602261207.31050.grabner@icg.tu-graz.ac.at>
 Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -23,26 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Markus Grabner <grabner@icg.tu-graz.ac.at>
+Cc: alsa-devel@lists.sourceforge.net, rlrevell@joe-job.com
 List-Id: alsa-devel@alsa-project.org
 
-Adrian McMenamin wrote:
-> On Mon, 27 February, 2006 5:26 pm, Clemens Ladisch wrote:
-> > ALSA will notice that something has been played when the return value of
-> > the pointer callback changes.
-> 
-> And what happens then? ie what will the alsa subsystem do when that
-> changes (as it certainly will be duting the playback as it cycles through
-> the buffer)
+Markus Grabner wrote:
+> The driver I wrote registers the POD devices as a soundcard, therefore the PCM 
+> portion would perfectly fit into ALSA. Moreover, POD parameters are 
+> controlled via ALSA's MIDI interface, commands are translated to USB (the 
+> devices also have a MIDI port, which can be accessed with the standard raw 
+> MIDI driver, but PCM is not available via MIDI).
+> However, I'm not so sure if other features of the driver are within the scope 
+> of ALSA. These include
+> *) a set of files registered under /sys/bus/usb/drivers/... to allow access to 
+> the current states of the POD/Variax model parameters (as ASCII numbers)
 
-When an interrupt occurs (that is, when it calls
-snd_pcm_period_elapsed()), ALSA calls the pointer callback.  A different
-return value indicates that there is some free space in the buffer, so
-ALSA wakes up the application so that it can write more data.
+AFAICS those parameters could be handled by a userspace application that
+handles some MIDI messages.
+
+> *) a method to access all parameters of a single or multiple models as a 
+> binary block of data
+
+ditto
+
+> *) a guitar tuner
+
+How does its interface look like?
+
+> *) and some more features not immediately related to audio
+
+It might make sense to put them into the same driver if they're handled
+through the same USB interface.
 
 
-HTH
+Regards,
 Clemens
 
 
