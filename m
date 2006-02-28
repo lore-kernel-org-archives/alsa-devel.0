@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Tue, 28 Feb 2006 21:21:47 +0100
-Message-ID: <2a5e790decc103cf9f6b4aa089a3544e@bugtrack.alsa-project.org>
+Date: Tue, 28 Feb 2006 21:27:48 +0100
+Message-ID: <3ee2516b444d27572318c3b3fc9017d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B3E41A3
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 21:21:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 852A01A3
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 21:27:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10-686
 ======================================================================
 Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              02-28-2006 21:21 CET
+Last Modified:              02-28-2006 21:27 CET
 ======================================================================
 Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
 ALC260
@@ -56,34 +56,23 @@ duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- jwoithe - 02-28-06 01:31 
+ grattemedi - 02-28-06 21:24 
 ----------------------------------------------------------------------
-For those watching this bug who are not on alsa-devel: I've just submitted
-a series of 7 patches containing a number of pending patches I've been
-working on for the past few weeks.  Of particular interest for most here
-will be patch 5/7, which adds the "acer" model.  This has been modelled
-closely on the patch Rimas posted to alsa-devel.  I've tidied up some
-comments and changed a handful of things to fit in with some changes made
-in patchs 1-4 from the series of 7.  Kudos to all those who have assisted
-with the development of this model over the past few weeks.  There's still
-some rough edges to iron out but I think most of the hard work has been
-done.  Well done!
-
-Hopefully this patch series will be merged into CVS soon.  Feel free to
-test the patches earlier if you wish - you can pick them up from
-alsa-devel.  Note that for best results you'll want to grab all 7.
-
-Other things added by this patch series which may be of interest:
- * SPDIF enable switches for the "test" model
- * GPIO switches for the "test" model
-
-----------------------------------------------------------------------
- grattemedi - 02-28-06 21:21 
-----------------------------------------------------------------------
-hello, i finally succeed in compiling the HDA/ALC260: 7/7 found on cvs.
-The sound works now very good on my acer 1641. THANK YOU SO MUCH !!! 
+hello, I finally succeed in compiling the HDA/ALC260: 7/7 found on cvs.
+The sound works now very good on my acer 1641 (I use the model=acer option
+in my modprobe.conf). THANK YOU SO MUCH !!! 
 Speakers are ok and the jack line out too but the external mic and the
 line in doesn't work. (Sorry for my english, it's not my mother tongue)
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 02-28-06 21:27 
+----------------------------------------------------------------------
+jwoithe,
+
+Can I close this bug, as the patches are now in CVS?  We can start a new
+one for the CD and beep issues.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -180,6 +169,8 @@ Date Modified  Username       Field                    Change
 02-28-06 01:31 jwoithe        Note Added: 0008235                          
 02-28-06 16:02 grattemedi     Note Edited: 0008230                         
 02-28-06 21:21 grattemedi     Note Added: 0008246                          
+02-28-06 21:24 grattemedi     Note Edited: 0008246                         
+02-28-06 21:27 rlrevell       Note Added: 0008247                          
 ======================================================================
 
 
