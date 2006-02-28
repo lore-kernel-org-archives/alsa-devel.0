@@ -1,13 +1,13 @@
-From: Falko Schmidt <kaethorn@stud.uni-stuttgart.de>
-Subject: Re: trouble on ppc32?
-Date: Tue, 28 Feb 2006 16:41:03 +0100
-Message-ID: <20060228154103.GA2205@celes>
-References: <20060220231240.GB6186@celes> <s5hmzgkkag3.wl%tiwai@suse.de> <20060222170201.GA2262@celes> <s5h7j7kvbcb.wl%tiwai@suse.de>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: [PATCH] Add support for Acer TravelMate and similar laptops
+Date: Tue, 28 Feb 2006 15:55:05 +0200
+Message-ID: <44045639.8090502@akl.lt>
+References: <200602280125.k1S1Pmlb021588@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h7j7kvbcb.wl%tiwai@suse.de>
+In-Reply-To: <200602280125.k1S1Pmlb021588@auster.physics.adelaide.edu.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,78 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 24, 2006 at 07:52:04PM +0100, Takashi Iwai wrote:
-> At Wed, 22 Feb 2006 18:02:01 +0100,
-> Falko Schmidt wrote:
-> > 
-> > On Tue, Feb 21, 2006 at 04:17:48PM +0100, Takashi Iwai wrote:
-> > > > -------------
-> > > > Soundblaster Live 512 (PCI):
-> > > > -------------
-> > > > 
-> > > > Feb 20 21:54:43 cyan kernel: PCI: Enabling device 0000:01:03.0 (0104 -> 0105)
-> > > > Feb 20 21:54:43 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba3f000)!!
-> > > > Feb 20 21:54:59 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
-> > > > Feb 20 21:54:59 cyan kernel: emu: failure page = 0
-> > > > Feb 20 21:54:59 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
-> > > > Feb 20 21:54:59 cyan kernel: emu: failure page = 0
-> > > > Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
-> > > > Feb 20 21:55:13 cyan kernel: emu: failure page = 0
-> > > > Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8ba21000)!!
-> > > > Feb 20 21:55:13 cyan kernel: emu: failure page = 0
-> > > > Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8baa1000)!!
-> > > > Feb 20 21:55:13 cyan kernel: emu: failure page = 0
-> > > > Feb 20 21:55:13 cyan kernel: max memory size is 0x7fffffff (addr = 0x8baa1000)!!
-> > > > Feb 20 21:55:13 cyan kernel: emu: failure page = 0
-> > > 
-> > > It's not the fault of driver but because of ppc's dma_alloc_coherent().
-> > > It doesn't allocate memories in the given coherent_dma_mask.
-> > 
-> > That sounds interesting. Thanks for pointing it out.
-> 
-> Does the patch below have any influence?  It's a blind-shot, though...
-> 
-> 
-> Takashi
-> 
-> 
-> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
-> index 946f321..b77caa7 100644
-> --- a/arch/powerpc/kernel/iommu.c
-> +++ b/arch/powerpc/kernel/iommu.c
-> @@ -546,6 +546,7 @@ void *iommu_alloc_coherent(struct iommu_
->  		return NULL;
->  
->  	/* Alloc enough pages (and possibly more) */
-> + again:
->  	ret = (void *)__get_free_pages(flag, order);
->  	if (!ret)
->  		return NULL;
-> @@ -556,6 +557,15 @@ void *iommu_alloc_coherent(struct iommu_
->  	if (mapping == DMA_ERROR_CODE) {
->  		free_pages((unsigned long)ret, order);
->  		ret = NULL;
-> +	} else if (dev->coherent_dma_mask &&
-> +		   mapping >= dev->coherent_dma_mask) {
-> +		iommu_free(tbl, mapping, npages);
-> +		free_pages((unsigned long)ret, order);
-> +		if (! (flag & __GFP_DMA)) {
-> +			flag |= __GFP_DMA;
-> +			goto again;
-> +		}
-> +		ret = NULL;
->  	} else
->  		*dma_handle = mapping;
->  	return ret;
->
+Hello,
 
-2.6.15 kernels currently won't boot on my machine. I'll get back to you
-once I solved that. Thanks a lot so far.
+The patches are in anonymous CVS already. That's great! :)
+> There is now a single ADC NID list which can be used by any model which
+> utilises the "dual ADC" functionality.  The fujitsu model was the only
+> model using this up to this point; now the newly added acer model does
+> as well.
+>   
+Now another question - is there a reason to list ADC's in reversed order
+for HP model? If there's none, I think HP model could simply use the
+same list that Fujitsu and Acer now use.
 
-Falko
+
+>>>> * If the jack is called "Line In", should I leave it as "Line" in 
+>>>> mixer, or should I name it "Line In"?
+>>>>         
+>>> What do you think is less confusing?
+>>>       
+>> I don't actually know. It doesn't make significant difference for me, 
+>> so it's hard to tell. I'm just asking about the policy - is "Line" a 
+>> conventional name in ALSA, or is it a convention to name controls like 
+>> jacks?..
+>>     
+> I've left it as "Line" since in this context it's more consistent with the
+> rest of ALSA.
+>   
+That's great. Takashi has provided us with a good reason to leave it as is.
+
+> Feel free to grab the 7 patches and give them a whirl. Note that they
+> are against a recent CVS version of alsa.  Hopefully though it won't be
+> too long before they show up in CVS.
+As I said, I can already see the changes in
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/hda/. I think
+I'll try them out today. Hopefully, I'll find out whether the CD and
+Beep controls actually do anything on Acers at all.
+
+Best regards,
+Rimas
+
 
 
 -------------------------------------------------------
