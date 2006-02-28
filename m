@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001516]: sound truncated unless I move mouse
-Date: Wed, 1 Mar 2006 00:59:17 +0100
-Message-ID: <2639d771a1f4fd972758ade38c74ccce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001319]: MIDI I/O (MPU-401) works for output only, not input
+Date: Wed, 1 Mar 2006 00:59:31 +0100
+Message-ID: <7174df884f432ef3a5df4b43ccd2da97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E3FD1C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 477961CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1516> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1319> 
 ======================================================================
-Reported By:                moobaxx
+Reported By:                roothorick
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1516
-Category:                   PCI - intel8x0
-Reproducibility:            N/A
+Issue ID:                   1319
+Category:                   PCI - emu10k1
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               slackware
-Kernel Version:             2.4
+Distribution:               
+Kernel Version:             
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-30-2005 20:14 CET
+Date Submitted:             08-08-2005 05:38 CEST
 Last Modified:              03-01-2006 00:59 CET
 ======================================================================
-Summary:                    sound truncated unless I move mouse
+Summary:                    MIDI I/O (MPU-401) works for output only, not input
 Description: 
-there's something unusual, becouse when i reproduce a sound, it's sounds
-cut off. Today i discovered that moving the mouse while playing, it's
-sound perfect. When i stop moving it, the sound starts cut off again. 
-As you notice, my english is very poor, so if you need aditional
-information, just ask!
-tnx.
+I have a Sound Blaster PCI 512, and MIDI interfacing with external devices,
+such as keyboards, only works for output (from the soundcard to other
+devices). When I try to do input (from those devices to the soundcard) no
+events get through at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:20 
+ roothorick - 08-12-05 16:38 
 ----------------------------------------------------------------------
-Sounds like an ACPI bug.  Any improvement with later kernel/ALSA releases?
+Passing the option enable_ir=1 had no effect whatsoever.
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 23:22 
+----------------------------------------------------------------------
+Any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-30-05 20:14 moobaxx        New Issue                                    
-10-30-05 20:14 moobaxx        File Added: sonido.wav                       
-10-30-05 20:14 moobaxx        Distribution              => slackware       
-10-30-05 20:14 moobaxx        Kernel Version            => 2.4             
-11-01-05 15:35 jdthood        Summary                  sounds cut off => sound
-truncated unless I move mouse
-12-31-05 00:20 rlrevell       Note Added: 0007316                          
+08-08-05 05:38 roothorick     New Issue                                    
+08-11-05 14:31 tiwai          Note Added: 0005759                          
+08-11-05 17:41 roothorick     Note Added: 0005761                          
+08-12-05 15:53 tiwai          Note Added: 0005776                          
+08-12-05 16:17 roothorick     Note Added: 0005779                          
+08-12-05 16:30 Clemens LadischNote Added: 0005780                          
+08-12-05 16:38 roothorick     Note Added: 0005781                          
+12-30-05 23:22 rlrevell       Note Added: 0007286                          
 03-01-06 00:59 rlrevell       Status                   new => closed       
 ======================================================================
 
