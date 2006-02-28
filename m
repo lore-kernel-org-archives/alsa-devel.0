@@ -1,13 +1,13 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: [PATCH] Add support for Acer TravelMate and similar
-Date: Tue, 28 Feb 2006 11:58:46 +1030 (CST)
-Message-ID: <200602280128.k1S1Sknk021679@auster.physics.adelaide.edu.au>
-References: <4403020A.5030400@akl.lt>
+Subject: Re: hda-intel and Acer TravelMate 4062 LMi
+Date: Tue, 28 Feb 2006 12:02:30 +1030 (CST)
+Message-ID: <200602280132.k1S1WUNu021958@auster.physics.adelaide.edu.au>
+References: <1141047723.8504.4.camel@lepetit.gilouweb.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4403020A.5030400@akl.lt> from "Rimas Kudelis" at Feb 27, 2006 03:43:38 PM
+In-Reply-To: <1141047723.8504.4.camel@lepetit.gilouweb.com> from "Gilles =?ISO-8859-1?Q?PI=C9TRI?=" at Feb 27, 2006 02:42:03 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rimas Kudelis <rq@akl.lt>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: Gilles =?ISO-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hi Gilou
 
-> > I prefer removing '(?)'. In case you are not sure whether these
-> > controls really work, you can add a comment in the source code or
-> > create a document.
-> OK, but I think I'll leave these tasks to Jonathan.
+> > Over the weekend there have been major developments in this regard, to the
+> > point that at least some Acers can make noise from the internal speaker and
+> > the headphone jack.  I am preparing a series of ALC260 consolidation patches
+> > now which will include the initial implementation of an "acer" model.  This
+> > should be posted tomorrow.  It would be good if you could test these patches
+> > with your Acer and let us know how it goes.
+> > 
+> > If it *does* help, it would be good to know the make/model of your laptop
+> > and the PCI IDs of your laptop's sound system.  The latter are reported via
+> > lspci. Refer to a post against bug 1618 by me earlier today for the full
+> > details on getting these numbers.
+> 
+> Hi, and thanks for your answer !
+> 
+> I followed Rimas Kudelis' advice, and I applied the patch on the bug
+> report about the ALC260, and it just works smoothly.
 
-The "?" is removed in the patchset I sent earlier today.  The issue of
-the CD controls can be worked on later once we've consolidated developments
-to date.
+That's good to know.  If you can get us the subsystem IDs from your laptop
+as described by myself in a post under bug 1618 that would be good.
 
-> > Sure, once I got patches for Jonathan, I'll apply yours.
-> >   
-> There will be no need for that as he said he'll include my patch into
-> his. After his patch is applied, there will probably be another patch
-> from me (it should define the final CD and Beep status in mixer). But
-> that's in future.
-
-Takashi: just to confirm, the "acer" model *is* included in the 7-patch set
-I submitted earlier today (it's patch 5 of 7).
+Note that the patch as ultimately submitted to alsa (as part of a 7-patch
+series earlier today) has evolved slightly since the one posted to bug
+report 1618.  Once the latest ALC260 patches have been merged to CVS it
+would be good if you could test the result to make sure nothing's been
+broken for you in the transition.
 
 Regards
   jonathan
