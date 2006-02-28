@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001884]: alsaconf don't find Realtek ALC850 onboard soundchip on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
-Date: Tue, 28 Feb 2006 15:20:29 +0100
-Message-ID: <da244bed8a75b7d35dc9dfa3ed33268b@bugtrack.alsa-project.org>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: Re: [PATCH] Add support for Acer TravelMate and
+ similar laptops
+Date: Tue, 28 Feb 2006 16:32:47 +0200
+Message-ID: <44045F0F.20507@akl.lt>
+References: <200602280125.k1S1Pmlb021588@auster.physics.adelaide.edu.au>	<44045639.8090502@akl.lt> <s5hhd6jr27t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CAE7196
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 15:20:29 +0100 (MET)
+In-Reply-To: <s5hhd6jr27t.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1884> 
-======================================================================
-Reported By:                bergwiesel
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1884
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian 4.0.2-5
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             02-28-2006 15:18 CET
-Last Modified:              02-28-2006 15:20 CET
-======================================================================
-Summary:                    alsaconf don't find Realtek ALC850 onboard soundchip
-on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
-Description: 
-Hi!
+>>> There is now a single ADC NID list which can be used by any model which
+>>> utilises the "dual ADC" functionality.  The fujitsu model was the only
+>>> model using this up to this point; now the newly added acer model does
+>>> as well.
+>>>       
+>> Now another question - is there a reason to list ADC's in reversed order
+>> for HP model? If there's none, I think HP model could simply use the
+>> same list that Fujitsu and Acer now use.
+>>     
+> It's just a historical reason.  The original realtek driver did it so,
+> and I didn't want a possible breakage.  Once after we confirm that it
+> works regardless of the order, we can reuse the same list. 
+>
+> Can anyone test it?
 
-I have an Asus A8V Deluxe mainboard with its Realtek ALC850 soundchip,
-which is fine for its own, but if I plug in my new Soundblaster X-Fi
-alsaconf don't find a thing.
+Would it be enough to test things vice-versa (e.g. swapping them for
+acer or test model on an Acer)? ;)
 
-Do you need some more informations?
-======================================================================
-
-----------------------------------------------------------------------
- er-ku - 02-28-06 15:20 
-----------------------------------------------------------------------
-could it be conflicting IRQs?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-28-06 15:18 bergwiesel     New Issue                                    
-02-28-06 15:18 bergwiesel     Distribution              => Debian 4.0.2-5  
-02-28-06 15:18 bergwiesel     Kernel Version            => 2.6.12          
-02-28-06 15:20 er-ku          Note Added: 0008243                          
-======================================================================
-
+Rimas
 
 
 
