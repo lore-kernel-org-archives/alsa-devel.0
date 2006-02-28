@@ -1,7 +1,7 @@
 From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: [PATCH] HDA/ALC260: 6/7 - Fujitsu/test model tweaks
-Date: Tue, 28 Feb 2006 10:50:42 +1030 (CST)
-Message-ID: <200602280020.k1S0KgDV017061@auster.physics.adelaide.edu.au>
+Subject: [PATCH] HDA/ALC260: 7/7 - add SPDIF enable to test model
+Date: Tue, 28 Feb 2006 10:54:05 +1030 (CST)
+Message-ID: <200602280024.k1S0O5ZV017334@auster.physics.adelaide.edu.au>
 References: <s5hlkvxt57f.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -23,172 +23,112 @@ List-Id: alsa-devel@alsa-project.org
 
 Takashi
 
-This patch is janitorial - it cleans up a number of cosmetic issues with
-the "fujitsu" and "test" models.  Issues addressed:
+This patch adds mixer controls to the "test" ALC260 model which allow the
+user to selectively enable or disable the SPDIF output pins.  This should
+assist people identify digital outputs on machines which bring them to the
+outside world.
 
- * spaces instead of tabs used for some indents,
+Note that while the patch *should* work, I cannot personally verify it since
+my laptop doesn't bring the SPDIF lines out.
 
- * clarified/corrected selected comments.
-
-Unlike a patch from earlier this week, this keeps both ADCs connected to
-the mic1 pin widget by default.  I believe this is the better default, since
-some laptops don't bring the line1 widget to the outside world.  Most (if
-not all) do bring mic1 out though, so it seems to me that this default
-should remain in place.
+As for the GPIO switches added in patch 4, these controls are currently
+only compiled in if debug mode is selected.
 
 Regards
   jonathan
 
---- patch_realtek.c-05-add_acer_model	2006-02-28 00:17:48.000000000 +1030
-+++ patch_realtek.c	2006-02-28 00:17:29.000000000 +1030
-@@ -2819,28 +2819,28 @@
- 	{0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
- 	/* Headphone/Line-out jack connects to Line1 pin; make it an output */
- 	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
--        /* Mic/Line-in jack is connected to mic1 pin, so make it an input */
--        {0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
--        /* Ensure all other unused pins are disabled and muted.
--	 * Note: trying to set widget 0x15 to anything blocks all audio
--	 * output for some reason, so just leave that at the default.
--	 */
--        {0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
--        {0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	/* Mic/Line-in jack is connected to mic1 pin, so make it an input */
-+	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+	/* Ensure all other unused pins are disabled and muted. */
-+	{0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-+	{0x0f, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	{0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
--        {0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
--        {0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
--        /* Disable digital (SPDIF) pins */
--        {0x03, AC_VERB_SET_DIGI_CONVERT_1, 0},
--        {0x06, AC_VERB_SET_DIGI_CONVERT_1, 0},
--
--        /* Ensure Line1 pin widget takes its input from the OUT1 sum bus 
--         * when acting as an output.
--         */
--        {0x0d, AC_VERB_SET_CONNECT_SEL, 0},
-+	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0},
-+	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+
-+	/* Disable digital (SPDIF) pins */
-+	{0x03, AC_VERB_SET_DIGI_CONVERT_1, 0},
-+	{0x06, AC_VERB_SET_DIGI_CONVERT_1, 0},
+
+--- patch_realtek.c-06-fujitsu+test_model_tweaks	2006-02-28 00:17:29.000000000 +1030
++++ patch_realtek.c-all_01-06	2006-02-28 00:32:07.000000000 +1030
+@@ -395,6 +395,60 @@
+ 	  .private_value = nid | (mask<<16) }
+ #endif   /* CONFIG_SND_DEBUG */
  
--        /* Start with output sum widgets muted and their output gains at min */
-+	/* Ensure Line1 pin widget takes its input from the OUT1 sum bus 
-+	 * when acting as an output.
++/* A switch control to allow the enabling of the digital IO pins on the
++ * ALC260.  This is incredibly simplistic; the intention of this control is
++ * to provide something in the test model allowing digital outputs to be
++ * identified if present.  If models are found which can utilise these
++ * outputs a more complete mixer control can be devised for those models if
++ * necessary.
++ */
++#ifdef CONFIG_SND_DEBUG
++static int alc_spdif_ctrl_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 1;
++	return 0;
++}                                
++static int alc_spdif_ctrl_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value & 0xffff;
++	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
++	long *valp = ucontrol->value.integer.value;
++	unsigned int val = snd_hda_codec_read(codec,nid,0,AC_VERB_GET_DIGI_CONVERT,0x00);
++
++	*valp = (val & mask) != 0;
++	return 0;
++}
++static int alc_spdif_ctrl_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
++{
++	signed int change;
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	hda_nid_t nid = kcontrol->private_value & 0xffff;
++	unsigned char mask = (kcontrol->private_value >> 16) & 0xff;
++	long val = *ucontrol->value.integer.value;
++	unsigned int ctrl_data = snd_hda_codec_read(codec,nid,0,AC_VERB_GET_DIGI_CONVERT,0x00);
++
++	/* Set/unset the masked control bit(s) as needed */
++	change = (val==0?0:mask) != (ctrl_data & mask);
++	if (val==0)
++		ctrl_data &= ~mask;
++	else
++		ctrl_data |= mask;
++	snd_hda_codec_write(codec,nid,0,AC_VERB_SET_DIGI_CONVERT_1,ctrl_data);
++
++	return change;
++}
++#define ALC_SPDIF_CTRL_SWITCH(xname, nid, mask) \
++	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = 0,  \
++	  .info = alc_spdif_ctrl_info, \
++	  .get = alc_spdif_ctrl_get, \
++	  .put = alc_spdif_ctrl_put, \
++	  .private_value = nid | (mask<<16) }
++#endif   /* CONFIG_SND_DEBUG */
++
+ /*
+  * set up from the preset table
+  */
+@@ -3048,6 +3102,13 @@
+ 	ALC_GPIO_DATA_SWITCH("GPIO pin 2", 0x01, 0x04),
+ 	ALC_GPIO_DATA_SWITCH("GPIO pin 3", 0x01, 0x08),
+ 
++	/* Switches to allow the digital IO pins to be enabled.  The datasheet
++	 * is ambigious as to which NID is which; testing on laptops which
++	 * make this output available should provide clarification. 
 +	 */
-+	{0x0d, AC_VERB_SET_CONNECT_SEL, 0},
++	ALC_SPDIF_CTRL_SWITCH("SPDIF Playback Switch", 0x03, 0x01),
++	ALC_SPDIF_CTRL_SWITCH("SPDIF Capture Switch", 0x06, 0x01),
 +
-+	/* Start with output sum widgets muted and their output gains at min */
- 	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
- 	{0x08, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-@@ -2851,42 +2851,42 @@
- 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
- 	{0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
- 
--        /* Unmute HP pin widget amp left and right (no equiv mixer ctrl) */
--        {0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
--        /* Unmute Line1 pin widget output buffer since it starts as an output.
--         * If the pin mode is changed by the user the pin mode control will
--         * take care of enabling the pin's input/output buffers as needed.
--         * Therefore there's no need to enable the input buffer at this
--         * stage.
-+	/* Unmute HP pin widget amp left and right (no equiv mixer ctrl) */
-+	{0x10, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	/* Unmute Line1 pin widget output buffer since it starts as an output.
-+	 * If the pin mode is changed by the user the pin mode control will
-+	 * take care of enabling the pin's input/output buffers as needed.
-+	 * Therefore there's no need to enable the input buffer at this
-+	 * stage.
- 	 */
--        {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 	/* Unmute input buffer of pin widget used for Line-in (no equiv 
- 	 * mixer ctrl)
- 	 */
--        {0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+	{0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
- 
--        /* Mute capture amp left and right */
--        {0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
--        /* Set ADC connection select to match default mixer setting - line 
--         * in (on mic1 pin)
--         */
--        {0x04, AC_VERB_SET_CONNECT_SEL, 0x00},
--
--        /* Do the same for the second ADC: mute capture input amp and
--         * set ADC connection to line in
--         */
--        {0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
--        {0x05, AC_VERB_SET_CONNECT_SEL, 0x00},
--
--        /* Mute all inputs to mixer widget (even unconnected ones) */
--        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)}, /* mic1 pin */
--        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)}, /* mic2 pin */
--        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)}, /* line1 pin */
--        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)}, /* line2 pin */
--        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)}, /* CD pin */
--        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(5)}, /* Beep-gen pin */
--        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(6)}, /* Line-out pin */
--        {0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(7)}, /* HP-pin pin */
-+	/* Mute capture amp left and right */
-+	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	/* Set ADC connection select to match default mixer setting - line 
-+	 * in (on mic1 pin)
-+	 */
-+	{0x04, AC_VERB_SET_CONNECT_SEL, 0x00},
-+
-+	/* Do the same for the second ADC: mute capture input amp and
-+	 * set ADC connection to line in (on mic1 pin)
-+	 */
-+	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x05, AC_VERB_SET_CONNECT_SEL, 0x00},
-+
-+	/* Mute all inputs to mixer widget (even unconnected ones) */
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)}, /* mic1 pin */
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)}, /* mic2 pin */
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)}, /* line1 pin */
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)}, /* line2 pin */
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)}, /* CD pin */
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(5)}, /* Beep-gen pin */
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(6)}, /* Line-out pin */
-+	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(7)}, /* HP-pin pin */
- 
- 	{ }
+ 	{ } /* end */
  };
-@@ -3068,7 +3068,7 @@
+ static struct hda_verb alc260_test_init_verbs[] = {
+@@ -3064,7 +3125,12 @@
+ 	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 	{0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
+ 
+-	/* Disable digital (SPDIF) pins for now */
++	/* Disable digital (SPDIF) pins initially, but users can enable
++	 * them via a mixer switch.  In the case of SPDIF-out, this initverb
++	 * payload also sets the generation to 0, output to be in "consumer"
++	 * PCM format, copyright asserted, no pre-emphasis and no validity
++	 * control.
++	 */
  	{0x03, AC_VERB_SET_DIGI_CONVERT_1, 0},
  	{0x06, AC_VERB_SET_DIGI_CONVERT_1, 0},
  
--	/* Ensure mic1, mic2, line1 and line2 pin widget take input from the 
-+	/* Ensure mic1, mic2, line1 and line2 pin widgets take input from the 
- 	 * OUT1 sum bus when acting as an output.
- 	 */
- 	{0x0b, AC_VERB_SET_CONNECT_SEL, 0},
-@@ -3103,13 +3103,13 @@
- 
- 	/* Mute capture amp left and right */
- 	{0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
--	/* Set ADC connection select to match default mixer setting - line 
--	 * in (on mic1 pin)
-+	/* Set ADC connection select to match default mixer setting (mic1
-+	 * pin)
- 	 */
- 	{0x04, AC_VERB_SET_CONNECT_SEL, 0x00},
- 
- 	/* Do the same for the second ADC: mute capture input amp and
--	 * set ADC connection to line in
-+	 * set ADC connection to mic1 pin
- 	 */
- 	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
- 	{0x05, AC_VERB_SET_CONNECT_SEL, 0x00},
 
 
 -------------------------------------------------------
