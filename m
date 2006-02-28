@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001374]: unplug usb audio device while streaming will lock up the usb kernel
-Date: Wed, 1 Mar 2006 00:59:32 +0100
-Message-ID: <d42a589074b304055f2aae4974134b9c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001009]: NVidia CK8S 8ch: a center speaker is always silent in native alsa mode (through alsa-lib), works with oss emulation though
+Date: Wed, 1 Mar 2006 00:59:18 +0100
+Message-ID: <8caa05004a22449fe88f5a991dafe812@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0E5D1C2
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F4CE1C2
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,93 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1374> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1009> 
 ======================================================================
-Reported By:                byuan
+Reported By:                modax
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1374
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1009
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.11.5 with self-compiled alsa-driver
+1.0.9rc1
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-27-2005 23:53 CEST
+Date Submitted:             03-22-2005 22:34 CET
 Last Modified:              03-01-2006 00:59 CET
 ======================================================================
-Summary:                    unplug usb audio device while streaming will lock up
-the usb kernel
+Summary:                    NVidia CK8S 8ch: a center speaker is always silent
+in native alsa mode (through alsa-lib), works with oss emulation though
 Description: 
-unplug usb audio device while streaming will lock up the usb kernel, the
-snd_pcm_close() doesn't help, unless the process that called the
-snd_pcm_open be closed.
+A center speaker stays quiet while playing 5.1 audio directly through
+alsa-lib (eg. with kaffeine (xine) or mplayer using alsa plugin). As a
+result, I'm unable to hear what people are speaking in movies because the
+speech is usually sent to the center speaker (correct me if i'm wrong. i'm
+new to all this 5.1 business). Anyway, adjusting the volume,
+muting/unmuting "Center" section, enabling/disabling "Mic As Center/LFE"
+doesn't have any effect on the center speaker. It stays silent. However,
+as I noted in the summary, the center speaker works with oss audio driver
+of xine/mplayer (using oss emulation). However, that mode is not perfect
+as the center speaker plays the role of left surround and vice versa. In
+addition, a right surround speaker stays always silent (i guess that's
+because the RS channel needs to be swapped with LFE; at least I got this
+impression by having a look at
+/usr/share/alsa/cards/NForce.conf:surround51). To sum up, my problem is
+that I can't get the center speaker (which, I guess, is channel 2 on my
+hardware) working with native alsa apps playing ac3/5.1 audio.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:18 
+ modax - 04-25-05 00:03 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+I've tested alsa-driver and alsa-lib CVS as of 2005-04-24 and I really like
+the new way of surround jacks management. I can confim, that "Independent"
+works as expected here, not sure about "Shared", but I can test it if you
+wish. Thanks for your work on this issue. 
+
+In addition, I want to propose a suggestion to make surround support
+completely flawless. The "Duplicate Front" switch makes no sence in
+surround{40,51} modes because it replaces real sound information going to
+surround channels with front speaker soundstream. "Duplicate Front" is
+acceptible only in 2ch mode as these is no original surround soundstream.
+But in 4ch and 6ch it results in original surround soundstream loss. So
+I've prepared a patch to NFORCE.conf, which resolves the issue by
+disabling "Duplicate Front" in 4ch and 6ch modes. The patch is against
+alsa-lib CVS 2005-04-24.
+
+----------------------------------------------------------------------
+ rlrevell - 12-31-05 00:13 
+----------------------------------------------------------------------
+Bug seems to be fixed, should the patch be applied?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-27-05 23:53 byuan          New Issue                                    
-08-27-05 23:55 byuan          Issue Monitored: byuan                       
-12-30-05 23:18 rlrevell       Note Added: 0007283                          
+03-22-05 22:34 modax          New Issue                                    
+03-22-05 22:34 modax          Distribution              => Debian unstable 
+03-22-05 22:34 modax          Kernel Version            => vanilla 2.6.11.5 with
+self-compiled alsa-driver 1.0.9rc1
+03-23-05 13:01 tiwai          Note Added: 0004156                          
+03-25-05 00:37 modax          Note Added: 0004204                          
+03-25-05 00:37 modax          File Added: bug-1009.tar.gz                    
+03-30-05 18:22 tiwai          Note Added: 0004268                          
+03-30-05 18:22 tiwai          File Added: nforce-conf-test.diff                 
+  
+03-30-05 23:28 modax          Note Added: 0004275                          
+04-03-05 17:47 modax          Note Added: 0004311                          
+04-04-05 09:59 modax          Note Added: 0004324                          
+04-07-05 16:28 tiwai          Note Added: 0004358                          
+04-08-05 01:55 modax          Note Added: 0004371                          
+04-25-05 00:03 modax          Note Added: 0004568                          
+04-25-05 00:04 modax          File Added: duplicate-front.diff                  
+ 
+12-31-05 00:13 rlrevell       Note Added: 0007311                          
 03-01-06 00:59 rlrevell       Status                   new => closed       
 ======================================================================
 
