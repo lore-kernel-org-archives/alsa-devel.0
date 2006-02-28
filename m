@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001794]: Change of the capture source works not like expected
-Date: Tue, 28 Feb 2006 03:02:41 +0100
-Message-ID: <cd092a9090f1b9de303e86f48d944fa1@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Line6 USB driver in ALSA?
+Date: Mon, 27 Feb 2006 21:18:41 -0500
+Message-ID: <1141093122.3264.6.camel@mindpipe>
+References: <200602261207.31050.grabner@icg.tu-graz.ac.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E4AF19A
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 03:02:41 +0100 (MET)
+In-Reply-To: <200602261207.31050.grabner@icg.tu-graz.ac.at>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Markus Grabner <grabner@icg.tu-graz.ac.at>
+Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2006-02-26 at 12:07 +0100, Markus Grabner wrote:
+> 	Hi everybody!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1794> 
-======================================================================
-Reported By:                Peppi
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1794
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-30-2006 02:24 CET
-Last Modified:              02-28-2006 03:02 CET
-======================================================================
-Summary:                    Change of the capture source works not like expected
-Description: 
-A change from Mic to Line changes only one value.
-======================================================================
+Why don't you just submit your driver in its current form as a patch
+against ALSA CVS, and we can go from there?  I'm a big fan of "release
+early, release often".  If it's not too much work, you can break out the
+parts that don't fit into the ALSA sources and submit those to LKML
+separately.
 
-----------------------------------------------------------------------
- Peppi - 02-28-06 03:02 
-----------------------------------------------------------------------
-Please click on "View Advanced" right above to get a more detailed view.
-There you can find the "Steps To Reproduce" notes.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-30-06 02:24 Peppi          New Issue                                    
-02-28-06 03:02 Peppi          Note Added: 0008236                          
-======================================================================
-
+Lee
 
 
 
