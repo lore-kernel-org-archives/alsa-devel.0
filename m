@@ -1,17 +1,23 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: Re: snd-opti92x-{ad1848,cs4231} won't compile without
- CONFIG_PNP
-Date: Tue, 28 Feb 2006 16:43:12 +0100
-Message-ID: <44046F90.1010707@keyaccess.nl>
-References: <440377F0.6040201@keyaccess.nl> <s5hwtffrdcg.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: PCM driver only plays tiny portion of clip
+Date: Tue, 28 Feb 2006 18:08:24 +0100
+Message-ID: <20060228170824.GA24675@turing.informatik.uni-halle.de>
+References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
+ <20060227172601.GA446@turing.informatik.uni-halle.de>
+ <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
+ <20060228073049.GA4158@turing.informatik.uni-halle.de>
+ <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
+ <20060228145541.GA20876@turing.informatik.uni-halle.de>
+ <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq3.tilbu1.nb.home.nl (smtpq3.tilbu1.nb.home.nl [213.51.146.202])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A73D8187
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 16:42:09 +0100 (MET)
-In-Reply-To: <s5hwtffrdcg.wl%tiwai@suse.de>
+Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27B3F194
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 18:08:30 +0100 (MET)
+In-reply-to: <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,19 +27,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Adrian McMenamin wrote:
+> On Tue, 28 February, 2006 2:55 pm, Clemens Ladisch wrote:
+> > Dumping something into /dev/dsp should work.  It may use the wrong
+> > sample format, but if the first part of the file can be heard, the rest
+> > should play OK, too.
+> 
+> I am at something of a loss though.
+> 
+> I admit that my dma code as it is today won't work properly - the dma
+> transfer function tries to fill the whole of the ring buffer everytime it
+> is called. But it is only being called once - which is the real problem! I
+> can fix the dma issue I am sure, but it is not the blockage at the moment.
 
-> Thanks, a similar fix was already on ALSA CVS tree yesterday
-> (although yours looks nicer :) Maybe better to wait until the clean
-> up patch?
+Where is the source code of your driver?
 
-Oh, okay, yes, that's fine.
 
-Rene.
+Regards,
+Clemens
 
 
 -------------------------------------------------------
