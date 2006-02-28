@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001736]: No sound on my acertravelmate 4062nwlmi
-Date: Wed, 1 Mar 2006 00:53:22 +0100
-Message-ID: <d544d345e4cdac530ab18e8c40ac2afb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
+Date: Wed, 1 Mar 2006 00:59:22 +0100
+Message-ID: <ae136de6de7eaaad7379198fbd7c0af1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CACD1C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:53:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9146D1C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +22,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001618.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1736> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
 ======================================================================
-Reported By:                clamath
-Assigned To:                tiwai
+Reported By:                johnz
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1736
-Category:                   PCI - hda-intel
+Issue ID:                   978
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               No sound on acer Travelmate 4062wnlmi
-Kernel Version:             2.6.15
+Status:                     closed
+Distribution:               FC3
+Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-11-2006 11:24 CET
-Last Modified:              03-01-2006 00:53 CET
+Date Submitted:             03-10-2005 06:37 CET
+Last Modified:              03-01-2006 00:59 CET
 ======================================================================
-Summary:                    No sound on my acertravelmate 4062nwlmi
+Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
+alsa 1.0.8
 Description: 
-alsa counf found drivers; modprobe snd-hda-intel succes; chanels NOT muted
-; but still no sound any ideas????also a tried drvers 1.0.11rc2 but still
-no sound
-
-lspci
-00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML Express
-Proce
-ssor to DRAM Controller (rev 03)
-00:02.0 VGA compatible controller: Intel Corporation Mobile
-915GM/GMS/910GML Ex
-press Graphics Controller (rev 03)
-00:02.1 Display controller: Intel Corporation Mobile 915GM/GMS/910GML
-Express G
-raphics Controller (rev 03)
-00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High
-Definition Audio Controller (rev 04)
-00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E
-xpress Port 1 (rev 04)
-00:1c.1 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E
-xpress Port 2 (rev 04)
-00:1c.2 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E                               xpress Port 3 (rev 04)
-00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #1 (rev 04)
-00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #2 (rev 04)
-00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #3 (rev 04)
-00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #4 (rev 04)
-00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB2 EHCI Controller (rev 04)
-00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev d4)
-00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
-Bridge (re                               v 04)
-
+On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
+kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
+mixer control works; volume sliders have no effect.)  There is no sound
+when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
+2.6.10 kernels with 1.0.8 alsa.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-duplicate of        0001618 No Sound on Acer with Intel ICH6 HDA an...
+related to          0001381 No sound on Thinkpad T40p
 ======================================================================
+
+----------------------------------------------------------------------
+ johnz - 09-27-05 04:43 
+----------------------------------------------------------------------
+Problem is still present in most current fedora core 3 kernel and alsa
+module.
+uname -r
+2.6.12-1.1378_FC3
+
+rpm -q alsa-kmdl-2.6.12-1.1378_FC3
+alsa-kmdl-2.6.12-1.1378_FC3-1.0.9rfb-40.rhfc3.at
+
+
+0:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] Sound
+Controller (rev a0)
+        Subsystem: ASRock Incorporation: Unknown device 7012
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at c800 [size=256]
+        I/O ports at c400 [size=128]
+        Capabilities: [48] Power Management version 2
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 23:51 
+----------------------------------------------------------------------
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 11:24 clamath        New Issue                                    
-01-11-06 11:24 clamath        Distribution              => No sound on acer
-Travelmate 4062wnlmi
-01-11-06 11:24 clamath        Kernel Version            => 2.6.15          
-03-01-06 00:53 rlrevell       Relationship added       duplicate of 0001517
-03-01-06 00:53 rlrevell       Relationship added       duplicate of 0001618
+03-10-05 06:37 johnz          New Issue                                    
+03-10-05 06:37 johnz          File Added: asound.state                     
+03-10-05 06:37 johnz          Distribution              => FC3             
+03-10-05 06:37 johnz          Kernel Version            =>
+kernel-2.6.10-1.770_14.rhfc3.at
+03-10-05 06:39 johnz          Issue Monitored: johnz                       
+03-10-05 06:43 johnz          File Added: lsmod                            
+03-10-05 14:39 tiwai          Note Added: 0003853                          
+03-11-05 03:19 johnz          Note Added: 0003879                          
+09-22-05 15:03 jdthood        Note Added: 0006342                          
+09-27-05 04:43 johnz          Note Added: 0006403                          
+09-29-05 12:02 jdthood        Relationship added       related to 0001381  
+12-30-05 23:51 rlrevell       Note Added: 0007301                          
+02-07-06 08:32 anhi1968       Issue Monitored: anhi1968                    
+02-28-06 12:00 anhi1968       Issue End Monitor: anhi1968                    
+03-01-06 00:59 rlrevell       Status                   new => closed       
 ======================================================================
 
 
