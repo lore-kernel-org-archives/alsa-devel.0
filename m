@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001884]: alsaconf don't find Realtek ALC850 onboard soundchip on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
-Date: Tue, 28 Feb 2006 15:52:49 +0100
-Message-ID: <3617a1a0ca7daca119d45571807c02e6@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: PCM driver only plays tiny portion of clip
+Date: Tue, 28 Feb 2006 15:55:41 +0100
+Message-ID: <20060228145541.GA20876@turing.informatik.uni-halle.de>
+References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
+ <20060227172601.GA446@turing.informatik.uni-halle.de>
+ <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
+ <20060228073049.GA4158@turing.informatik.uni-halle.de>
+ <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5DEE19C
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 15:52:49 +0100 (MET)
+Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40D7314B
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 15:56:01 +0100 (MET)
+In-reply-to: <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +25,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adrian McMenamin wrote:
+> On Tue, 28 February, 2006 7:30 am, Clemens Ladisch wrote:
+> > When an interrupt occurs (that is, when it calls
+> > snd_pcm_period_elapsed()), ALSA calls the pointer callback.  A different
+> > return value indicates that there is some free space in the buffer, so
+> > ALSA wakes up the application so that it can write more data.
+> 
+> This (application writing more data) doesn't seem to be happening in my case.
+> 
+> I am using oss emulation and a simple car command ie cat somefile.wav >
+> /dev/dsp - should I expect this to work, or do I really need to compile
+> something like sox (does sox use the native alsa if)?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1884> 
-======================================================================
-Reported By:                bergwiesel
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1884
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian 4.0.2-5
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             02-28-2006 15:18 CET
-Last Modified:              02-28-2006 15:52 CET
-======================================================================
-Summary:                    alsaconf don't find Realtek ALC850 onboard soundchip
-on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
-Description: 
-Hi!
-
-I have an Asus A8V Deluxe mainboard with its Realtek ALC850 soundchip,
-which is fine for its own, but if I plug in my new Soundblaster X-Fi
-alsaconf don't find a thing.
-
-Do you need some more informations?
-======================================================================
-
-----------------------------------------------------------------------
- er-ku - 02-28-06 15:20 
-----------------------------------------------------------------------
-could it be conflicting IRQs?
-
-----------------------------------------------------------------------
- vsu - 02-28-06 15:52 
-----------------------------------------------------------------------
-ASUS A8V BIOS has a "feature" which cannot be disabled: if a PCI sound card
-is present, the onboard sound is disabled automatically.  I remember that
-it is documented somewhere in the manual.
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001066 describes the
-same problem with the same motherboard.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-28-06 15:18 bergwiesel     New Issue                                    
-02-28-06 15:18 bergwiesel     Distribution              => Debian 4.0.2-5  
-02-28-06 15:18 bergwiesel     Kernel Version            => 2.6.12          
-02-28-06 15:20 er-ku          Note Added: 0008243                          
-02-28-06 15:52 vsu            Note Added: 0008244                          
-======================================================================
+Dumping something into /dev/dsp should work.  It may use the wrong
+sample format, but if the first part of the file can be heard, the rest
+should play OK, too.
 
 
+HTH
+Clemens
 
 
 -------------------------------------------------------
