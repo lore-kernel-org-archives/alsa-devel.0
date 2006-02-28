@@ -1,14 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Line6 USB driver in ALSA?
-Date: Tue, 28 Feb 2006 08:35:36 +0100
-Message-ID: <20060228073536.GB4158@turing.informatik.uni-halle.de>
-References: <200602261207.31050.grabner@icg.tu-graz.ac.at>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: Re: [RFC][PATCH] Transparent network support through
+ polypaudio
+Date: Tue, 28 Feb 2006 09:11:53 +0100
+Message-ID: <440405C9.2010403@cendio.se>
+References: <43F09D76.9060004@cendio.se>	<43F61E6D.5020206@cendio.se>	<s5hirr8k7ra.wl%tiwai@suse.de>	<43FB420D.8010605@cendio.se>	<s5hfymck6k3.wl%tiwai@suse.de>	<43FC3374.2030701@cendio.se>	<s5hirr7765t.wl%tiwai@suse.de>	<43FDB25D.402@cendio.se>	<s5hwtfmb0ts.wl%tiwai@suse.de>	<4402B3B0.8000508@cendio.se> <s5h64n0sj31.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200602261207.31050.grabner@icg.tu-graz.ac.at>
-Content-disposition: inline
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 091A31A3
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2006 09:11:54 +0100 (MET)
+In-Reply-To: <s5h64n0sj31.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,41 +21,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Markus Grabner <grabner@icg.tu-graz.ac.at>
-Cc: alsa-devel@lists.sourceforge.net, rlrevell@joe-job.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, mzcbylcnhqvb@0pointer.de
 List-Id: alsa-devel@alsa-project.org
 
-Markus Grabner wrote:
-> The driver I wrote registers the POD devices as a soundcard, therefore the PCM 
-> portion would perfectly fit into ALSA. Moreover, POD parameters are 
-> controlled via ALSA's MIDI interface, commands are translated to USB (the 
-> devices also have a MIDI port, which can be accessed with the standard raw 
-> MIDI driver, but PCM is not available via MIDI).
-> However, I'm not so sure if other features of the driver are within the scope 
-> of ALSA. These include
-> *) a set of files registered under /sys/bus/usb/drivers/... to allow access to 
-> the current states of the POD/Variax model parameters (as ASCII numbers)
+Takashi Iwai wrote:
+> 
+> Applied to CVS now.
+> Could you provide a short changelog and a signed-off-by line for CVS
+> commit at next time, too?
+> 
 
-AFAICS those parameters could be handled by a userspace application that
-handles some MIDI messages.
+Will do.
 
-> *) a method to access all parameters of a single or multiple models as a 
-> binary block of data
-
-ditto
-
-> *) a guitar tuner
-
-How does its interface look like?
-
-> *) and some more features not immediately related to audio
-
-It might make sense to put them into the same driver if they're handled
-through the same USB interface.
-
-
-Regards,
-Clemens
+-- 
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
 
 
 -------------------------------------------------------
