@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001778]: Only sound on line-out jack
-Date: Wed, 1 Mar 2006 01:24:40 +0100
-Message-ID: <f590292bde6020944f5c45c7a74b9a9c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
+Date: Wed, 1 Mar 2006 00:59:25 +0100
+Message-ID: <41e2c66c29462827a07b0f0e798caf5d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 494ED156
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:24:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1354D1C2
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001517.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1778> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
 ======================================================================
-Reported By:                pw
-Assigned To:                tiwai
+Reported By:                ianw1234
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1778
-Category:                   PCI - hda-intel
+Issue ID:                   772
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.9-1.681_FC3
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-24-2006 15:24 CET
-Last Modified:              03-01-2006 01:24 CET
+Date Submitted:             12-31-2004 23:02 CET
+Last Modified:              03-01-2006 00:59 CET
 ======================================================================
-Summary:                    Only sound on line-out jack
+Summary:                    Analog/Digital output not working.
 Description: 
-I'm using a Acer Extensa 6702-100 notebook (Intel ICH6 chipset / kernel
-2.6.15 / alsa-driver 1.0.11-rc2). The notebook has internal stereo
-speakers, a built-in microphone and three jacks (line-out, microphone and
-headphones).
+I've been unable to get my SB Live! to send analog pcm out through the
+Analog/Digital port. It's connected through this port to my receiver, and
+while AC3 over the digital port works fine, I can't get anything else to
+go over the line. I have a 48kHz wave file I've been testing, and I've
+tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
+and hw0,2 (no effect). 
 
-I've loaded the snd-hda-intel module with every model listed in the
-documentation. When using the fujitsu model option I'm getting sound on
-the line-out jack. The internal speakers, built-in microphone and
-headphone jack don't work. I've not tested the mic jack yet.
+I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
+Analog/Digital Output Jack all either unmuted or set to max volume. I've
+tried loading the snd_pcm_oss module with various snd_dsp_map settings
+without success.
+
+I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
+the past, so I don't know if this was broken in the upgrade to 1.0.7
+(which I had to do because AC3 passthrough didn't work in the version that
+came with the 2.6.9 kernel) or whether I have some strange
+misconfiguration. Help is appreciated! Thanks!
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-======================================================================
 
 ----------------------------------------------------------------------
- blackr2d - 01-25-06 11:51 
+ razer1 - 09-24-05 17:47 
 ----------------------------------------------------------------------
-Duplicate of 1572 - mixer controls not picked up correctly for ALC880
+I've a similar bug too : geexbox distrib (multimedia usage :
+www.geexbox.org), based on kernel 2.6.12, mplayer 1.0-pre7 & alsa 1.0.9. 
+I try to use this SB Live 5.1 in 6 channels analog mode.
+2 channels mode works, the rear output duplicates the front, but no output
+via LFE/Center Jack Output (used for spdif too).
+In Surround5.1 mode, the card give an uggly noise instead of movie sound
+or music
+All different amixer config give same result
+Note : the card was working fine in this mode with an 2.6.7 on gentoo
 
 ----------------------------------------------------------------------
- pw - 02-01-06 12:41 
+ rlrevell - 12-30-05 23:43 
 ----------------------------------------------------------------------
-AFAIK mine is an ALC260 chipset... however, maybe it's the same issue
+Any improvement in later ALSA releases?  These bugs are thought to have
+been fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-06 15:24 pw             New Issue                                    
-01-24-06 15:26 pw             File Added: codec#0                          
-01-24-06 15:27 pw             File Added: codec#1                          
-01-25-06 11:51 blackr2d       Note Added: 0007777                          
-02-01-06 12:41 pw             Note Added: 0007859                          
-03-01-06 01:24 rlrevell       Relationship added       duplicate of 0001517
+12-31-04 23:02 ianw1234       New Issue                                    
+12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
+01-01-05 00:33 ianw1234       Note Added: 0003028                          
+01-01-05 02:28 rlrevell       Note Added: 0003030                          
+01-01-05 10:01 pzad           Note Added: 0003031                          
+01-01-05 22:48 ianw1234       Note Added: 0003039                          
+01-01-05 23:03 pzad           Note Added: 0003041                          
+01-02-05 19:15 jukkat         Note Added: 0003046                          
+01-02-05 19:20 jukkat         Note Edited: 0003046                         
+01-04-05 21:57 visit0r        Issue Monitored: visit0r                     
+04-18-05 23:16 jdthood        Note Added: 0004516                          
+09-24-05 17:47 razer1         Note Added: 0006373                          
+09-26-05 12:59 razer1         Issue Monitored: razer1                      
+12-30-05 23:43 rlrevell       Note Added: 0007296                          
+03-01-06 00:59 rlrevell       Status                   new => closed       
 ======================================================================
 
 
