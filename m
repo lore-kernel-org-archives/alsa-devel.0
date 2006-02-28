@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001019]: Unresolved symbols for snd-seq-oss.o on gentoo with a kernel 2.4.29
-Date: Wed, 1 Mar 2006 01:01:56 +0100
-Message-ID: <d6193db0d787715b22fbc47c3306baa6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001740]: No sound on ACER laptop with ALC260
+Date: Wed, 1 Mar 2006 00:51:00 +0100
+Message-ID: <74e1cca0f92157189e2612cd6531d45d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC4B11C2
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:01:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C16001C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:51:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,109 +22,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been set as DUPLICATE OF issue 0001517.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1019> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1740> 
 ======================================================================
-Reported By:                Alinoe
-Assigned To:                
+Reported By:                Nicolas_Raoul
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1019
-Category:                   CORE OSS - sequencer
+Issue ID:                   1740
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.4.29 with grsecurity (but grsecurity doesn't
-matter in this case ;p)
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora, Ubuntu, SUSE
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             03-27-2005 11:47 CEST
-Last Modified:              03-01-2006 01:01 CET
+Date Submitted:             01-11-2006 22:40 CET
+Last Modified:              03-01-2006 00:50 CET
 ======================================================================
-Summary:                    Unresolved symbols for snd-seq-oss.o on gentoo with
-a kernel 2.4.29
+Summary:                    No sound on ACER laptop with ALC260
 Description: 
-# /etc/init.d/alsasound restart
- * WARNING:  you are stopping a boot service.
- * Storing ALSA Mixer Levels...                                           
-                                           [ ok ]
- * Unloading ALSA...                                                      
-                                           [ ok ]
- * Unloading ALSA modules...                                              
-                                           [ ok ]
- * Loading ALSA modules...
- *   Loading: snd-card-0...                                               
-                                           [ ok ]
- *   Loading: snd-mixer-oss...                                            
-                                           [ ok ]
- *   Loading: snd-pcm-oss...                                              
-                                           [ ok ]
- *   Loading: snd-seq-oss...
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-init_module: Device or resource busy
-Hint: insmod errors can be caused by incorrect module parameters,
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o: insmod
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o failed
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o: insmod
-snd-seq-oss failed                         [ !! ]
+Hello all,
 
- *   Loading: snd-seq...                                                  
-                                           [ ok ]
- * Restoring Mixer Levels...                                              
-                                           [ ok ]
+I have no sound on my ACER Aspire 1640 laptop, Intel HDA, ALC260, all
+unmuted, latest everything, tried on:
+- SUSE
+- Kubuntu
+- Ubuntu 2005.10
+- Ubuntu 2006.04-flight1
+- Fedora
+So far, I have never seen any unsilent ALC260 on ACER (please confirm or
+infirm). This has lead me to suspect there may be a problem within ALSA.
 
+Yesterday I started modifying the ALSA source code to try and fix it.
+Especially, I edited patch_realtek.c. One hour ago, I finally managed to
+get some sound out of the headphones :-)
 
-Damn WTF?! :-)
+If you have some informations or questions, my contact ids are on
+http://nrw.free.fr . Documentation from ACER would be particulary
+helpful.
 
-# dmesg [...]
-ALSA mixer_oss.c:1260: unable to register OSS mixer device 0:0
-ALSA pcm_oss.c:2436: unable to register OSS PCM device 0:0
-ALSA seq_oss.c:236: can't register device seq
+Have a good day,
+Nicolas Raoul.
 
-My mistake? :-/
-
-# insmod
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-unresolved symbol snd_midi_event_no_status_R5c9c7f86
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-unresolved symbol snd_midi_event_free_R9cf69370
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-unresolved symbol snd_midi_event_encode_byte_Rea2835af
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-unresolved symbol snd_midi_event_decode_R7a1ad7c0
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
-unresolved symbol snd_midi_event_new_R1e92e146
-
-Urgh no :-/
-
+PS: This issue looks somehow similar to those ones:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001517
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001618
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001736.
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:21 
-----------------------------------------------------------------------
-Were you ever able to get this to work?
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-27-05 11:47 Alinoe         New Issue                                    
-03-27-05 11:47 Alinoe         Kernel Version            => 2.4.29 with
-grsecurity (but grsecurity doesn't matter in this case ;p)
-03-28-05 01:29 Alinoe         Issue Monitored: Alinoe                      
-12-30-05 05:21 rlrevell       Note Added: 0007242                          
-03-01-06 01:01 rlrevell       Status                   new => closed       
+01-11-06 22:40 Nicolas_Raoul  New Issue                                    
+01-11-06 22:40 Nicolas_Raoul  Distribution              => Fedora, Ubuntu, SUSE
+01-11-06 22:40 Nicolas_Raoul  Kernel Version            => 2.6.15          
+03-01-06 00:50 rlrevell       Relationship added       duplicate of 0001517
 ======================================================================
 
 
