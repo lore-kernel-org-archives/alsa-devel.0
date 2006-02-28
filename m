@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001344]: Acer Laptop Card not working (3002WTCi)
-Date: Wed, 1 Mar 2006 00:55:35 +0100
-Message-ID: <35c141efeb2fe08f256393f68ff60733@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001516]: sound truncated unless I move mouse
+Date: Wed, 1 Mar 2006 00:59:17 +0100
+Message-ID: <2639d771a1f4fd972758ade38c74ccce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3E771C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:55:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E3FD1C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1344> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1516> 
 ======================================================================
-Reported By:                bqtran
-Assigned To:                tiwai
+Reported By:                moobaxx
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1344
-Category:                   PCI - hda-intel
-Reproducibility:            always
+Issue ID:                   1516
+Category:                   PCI - intel8x0
+Reproducibility:            N/A
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.13-rc5 (mm-sources)
+Status:                     closed
+Distribution:               slackware
+Kernel Version:             2.4
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-17-2005 07:33 CEST
-Last Modified:              03-01-2006 00:55 CET
+Date Submitted:             10-30-2005 20:14 CET
+Last Modified:              03-01-2006 00:59 CET
 ======================================================================
-Summary:                    Acer Laptop Card not working (3002WTCi)
+Summary:                    sound truncated unless I move mouse
 Description: 
-The module fails to load for this card. Here is some info.
-
-lspci -v:
-0000:00:01b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-         Subsystem: Acer Incorporated [ALI]: Unknown device 0067
-         Flags: bus master, fast devsel, latency 0
-         Memory at d000c000 (64-bit, non-prefetchable)
-         Capabilities: [50] Power Management version 2
-         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-         Capabilities: [70] #10 [0091]
-
-
+there's something unusual, becouse when i reproduce a sound, it's sounds
+cut off. Today i discovered that moving the mouse while playing, it's
+sound perfect. When i stop moving it, the sound starts cut off again. 
+As you notice, my english is very poor, so if you need aditional
+information, just ask!
+tnx.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 00:55 
+ rlrevell - 12-31-05 00:20 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Sounds like an ACPI bug.  Any improvement with later kernel/ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-05 07:33 bqtran         New Issue                                    
-08-17-05 07:33 bqtran         Distribution              => Gentoo          
-08-17-05 07:33 bqtran         Kernel Version            => 2.6.13-rc5
-(mm-sources)
-08-17-05 07:38 bqtran         Issue Monitored: bqtran                      
-08-23-05 16:26 bqtran         Issue End Monitor: bqtran                    
-03-01-06 00:55 rlrevell       Note Added: 0008255                          
+10-30-05 20:14 moobaxx        New Issue                                    
+10-30-05 20:14 moobaxx        File Added: sonido.wav                       
+10-30-05 20:14 moobaxx        Distribution              => slackware       
+10-30-05 20:14 moobaxx        Kernel Version            => 2.4             
+11-01-05 15:35 jdthood        Summary                  sounds cut off => sound
+truncated unless I move mouse
+12-31-05 00:20 rlrevell       Note Added: 0007316                          
+03-01-06 00:59 rlrevell       Status                   new => closed       
 ======================================================================
 
 
