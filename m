@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
-Date: Wed, 1 Mar 2006 00:59:25 +0100
-Message-ID: <41e2c66c29462827a07b0f0e798caf5d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001740]: No sound on ACER laptop with ALC260
+Date: Wed, 1 Mar 2006 00:52:44 +0100
+Message-ID: <0cacde4920d6e88e035c8c5c9cffa408@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1354D1C2
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE65E1C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:52:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,86 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1740> 
 ======================================================================
-Reported By:                ianw1234
-Assigned To:                
+Reported By:                Nicolas_Raoul
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   772
-Category:                   PCI - emu10k1
+Issue ID:                   1740
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.6.9-1.681_FC3
-Resolution:                 open
+Status:                     resolved
+Distribution:               Fedora, Ubuntu, SUSE
+Kernel Version:             2.6.15
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-31-2004 23:02 CET
-Last Modified:              03-01-2006 00:59 CET
+Date Submitted:             01-11-2006 22:40 CET
+Last Modified:              03-01-2006 00:52 CET
 ======================================================================
-Summary:                    Analog/Digital output not working.
+Summary:                    No sound on ACER laptop with ALC260
 Description: 
-I've been unable to get my SB Live! to send analog pcm out through the
-Analog/Digital port. It's connected through this port to my receiver, and
-while AC3 over the digital port works fine, I can't get anything else to
-go over the line. I have a 48kHz wave file I've been testing, and I've
-tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
-and hw0,2 (no effect). 
+Hello all,
 
-I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
-Analog/Digital Output Jack all either unmuted or set to max volume. I've
-tried loading the snd_pcm_oss module with various snd_dsp_map settings
-without success.
+I have no sound on my ACER Aspire 1640 laptop, Intel HDA, ALC260, all
+unmuted, latest everything, tried on:
+- SUSE
+- Kubuntu
+- Ubuntu 2005.10
+- Ubuntu 2006.04-flight1
+- Fedora
+So far, I have never seen any unsilent ALC260 on ACER (please confirm or
+infirm). This has lead me to suspect there may be a problem within ALSA.
 
-I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
-the past, so I don't know if this was broken in the upgrade to 1.0.7
-(which I had to do because AC3 passthrough didn't work in the version that
-came with the 2.6.9 kernel) or whether I have some strange
-misconfiguration. Help is appreciated! Thanks!
+Yesterday I started modifying the ALSA source code to try and fix it.
+Especially, I edited patch_realtek.c. One hour ago, I finally managed to
+get some sound out of the headphones :-)
+
+If you have some informations or questions, my contact ids are on
+http://nrw.free.fr . Documentation from ACER would be particulary
+helpful.
+
+Have a good day,
+Nicolas Raoul.
+
+PS: This issue looks somehow similar to those ones:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001517
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001618
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001736.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
+duplicate of        0001618 No Sound on Acer with Intel ICH6 HDA an...
 ======================================================================
 
 ----------------------------------------------------------------------
- razer1 - 09-24-05 17:47 
+ rlrevell - 03-01-06 00:52 
 ----------------------------------------------------------------------
-I've a similar bug too : geexbox distrib (multimedia usage :
-www.geexbox.org), based on kernel 2.6.12, mplayer 1.0-pre7 & alsa 1.0.9. 
-I try to use this SB Live 5.1 in 6 channels analog mode.
-2 channels mode works, the rear output duplicates the front, but no output
-via LFE/Center Jack Output (used for spdif too).
-In Surround5.1 mode, the card give an uggly noise instead of movie sound
-or music
-All different amixer config give same result
-Note : the card was working fine in this mode with an 2.6.7 on gentoo
-
-----------------------------------------------------------------------
- rlrevell - 12-30-05 23:43 
-----------------------------------------------------------------------
-Any improvement in later ALSA releases?  These bugs are thought to have
-been fixed.
+Fixed in CVS
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 23:02 ianw1234       New Issue                                    
-12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
-01-01-05 00:33 ianw1234       Note Added: 0003028                          
-01-01-05 02:28 rlrevell       Note Added: 0003030                          
-01-01-05 10:01 pzad           Note Added: 0003031                          
-01-01-05 22:48 ianw1234       Note Added: 0003039                          
-01-01-05 23:03 pzad           Note Added: 0003041                          
-01-02-05 19:15 jukkat         Note Added: 0003046                          
-01-02-05 19:20 jukkat         Note Edited: 0003046                         
-01-04-05 21:57 visit0r        Issue Monitored: visit0r                     
-04-18-05 23:16 jdthood        Note Added: 0004516                          
-09-24-05 17:47 razer1         Note Added: 0006373                          
-09-26-05 12:59 razer1         Issue Monitored: razer1                      
-12-30-05 23:43 rlrevell       Note Added: 0007296                          
-03-01-06 00:59 rlrevell       Status                   new => closed       
+01-11-06 22:40 Nicolas_Raoul  New Issue                                    
+01-11-06 22:40 Nicolas_Raoul  Distribution              => Fedora, Ubuntu, SUSE
+01-11-06 22:40 Nicolas_Raoul  Kernel Version            => 2.6.15          
+03-01-06 00:50 rlrevell       Relationship added       duplicate of 0001517
+03-01-06 00:51 rlrevell       Relationship added       duplicate of 0001618
+03-01-06 00:52 rlrevell       Status                   assigned => resolved
+03-01-06 00:52 rlrevell       Resolution               open => fixed       
+03-01-06 00:52 rlrevell       Note Added: 0008253                          
 ======================================================================
 
 
