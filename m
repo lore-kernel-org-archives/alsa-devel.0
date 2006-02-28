@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001618]: No Sound on Acer with Intel ICH6 HDA and Realtek ALC260
-Date: Wed, 1 Mar 2006 00:38:56 +0100
-Message-ID: <37e5b6b19ddcecfcf9a239f673a512fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001736]: No sound on my acertravelmate 4062nwlmi
+Date: Wed, 1 Mar 2006 00:53:01 +0100
+Message-ID: <4ddc0b968dfc99b0219cbeff5e25203c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18D211C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:38:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE8141C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:53:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,176 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as DUPLICATE OF issue 0001517.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1736> 
 ======================================================================
-Reported By:                robertw
+Reported By:                clamath
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1618
+Issue ID:                   1736
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10-686
+Distribution:               No sound on acer Travelmate 4062wnlmi
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             12-04-2005 21:24 CET
-Last Modified:              03-01-2006 00:38 CET
+Date Submitted:             01-11-2006 11:24 CET
+Last Modified:              03-01-2006 00:53 CET
 ======================================================================
-Summary:                    No Sound on Acer with Intel ICH6 HDA and Realtek
-ALC260
+Summary:                    No sound on my acertravelmate 4062nwlmi
 Description: 
-I can load the snd-hda-intel module and play a file via aplay or xmms or
-play a cd without any error, but I cannot hear anything neither via the
-build-in speakers nor via headphones. All volume controllers are at 70%
-and unmuted, except for PCM, because there is no mute/unmute-button.
+alsa counf found drivers; modprobe snd-hda-intel succes; chanels NOT muted
+; but still no sound any ideas????also a tried drvers 1.0.11rc2 but still
+no sound
+
+lspci
+00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML Express
+Proce
+ssor to DRAM Controller (rev 03)
+00:02.0 VGA compatible controller: Intel Corporation Mobile
+915GM/GMS/910GML Ex
+press Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation Mobile 915GM/GMS/910GML
+Express G
+raphics Controller (rev 03)
+00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High
+Definition Audio Controller (rev 04)
+00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E
+xpress Port 1 (rev 04)
+00:1c.1 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E
+xpress Port 2 (rev 04)
+00:1c.2 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+PCI E                               xpress Port 3 (rev 04)
+00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #1 (rev 04)
+00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #2 (rev 04)
+00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #3 (rev 04)
+00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB UHCI #4 (rev 04)
+00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) U                               SB2 EHCI Controller (rev 04)
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev d4)
+00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
+Bridge (re                               v 04)
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
 duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
-----------------------------------------------------------------------
- jwoithe - 03-01-06 00:34 
-----------------------------------------------------------------------
-grattemedi: thanks for your report of success.  Others have given similar
-reports except for them capture is working fine.  Please double-check all
-your alsamixer settings to make sure things aren't inadvertantly muted. 
-To record from the internal mic or the external mic jack, you need to:
-
- * select the "mic" as the input source (displayed in "Playback" view)
- * in the "Mic Jack Mode" control, select "Mic bias 80pc"
- * in "Capture" view, unmute "Capture" channel (NOT "Capture 1") and
-   turn its volume up
-
-If you want to hear the mic input in the soundcard's output you will also
-need to unmute the "mic" channel in the alsamixer "playback" view and
-maybe turn its volume up a bit.  This does not affect recording/capturing,
-however.
-
-With all this done try capturing again and see what happens.  Also note
-that on these Acers the internal mic is disconnected by the hardware when
-you plug an external mic into the mic jack.  If there's still an issue
-please file a new bug report.  I'm pretty sure your problem is a software
-setup thing though, since capture has been reported working by others.
-
-----------------------------------------------------------------------
- jwoithe - 03-01-06 00:38 
-----------------------------------------------------------------------
-Lee: yes, I think this bug can be closed.  We have sufficient reports of
-success with the latest CVS patch series to suggest that we're almost
-there with regard to support for these Acer models.  The few remaining
-issues can be dealt with via existing alsa-devel list threads, or affected
-users can file new bugs.
-
-Note that the beep issue is deeper than it seems - that control refers to
-the beep generator on the ALC260 (which currently isn't being driven by
-any driver).  How that might fit into the rest of the Linux system I'm not
-sure.  I'm still pondering that.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-05 21:24 robertw        New Issue                                    
-12-04-05 21:24 robertw        Distribution              => Ubuntu 5.10     
-12-04-05 21:24 robertw        Kernel Version            => 2.6.12-10-686   
-12-05-05 07:12 jwoithe        Note Added: 0006908                          
-12-05-05 19:35 timmy          Note Added: 0006914                          
-12-06-05 15:52 tiwai          Note Added: 0006925                          
-12-06-05 18:10 robertw        Note Added: 0006930                          
-12-06-05 20:07 tiwai          Note Added: 0006934                          
-12-06-05 20:08 tiwai          File Added: alc-cvs-fix.diff                    
-12-06-05 20:09 tiwai          Note Added: 0006935                          
-12-06-05 22:51 robertw        Note Added: 0006938                          
-12-07-05 14:59 tiwai          Note Added: 0006941                          
-12-07-05 15:00 tiwai          File Added: alc-cvs-fix2.diff                    
-12-07-05 23:10 robertw        Note Added: 0006952                          
-12-08-05 17:19 tiwai          Note Added: 0006957                          
-12-08-05 22:01 robertw        File Added: codec#0                          
-12-08-05 22:02 robertw        File Added: codec#1                          
-12-08-05 22:03 robertw        File Added: asound.state                     
-12-08-05 22:05 robertw        Note Added: 0006963                          
-12-09-05 15:09 tiwai          Note Added: 0006966                          
-12-09-05 16:35 robertw        Note Added: 0006967                          
-12-09-05 17:03 tiwai          Note Added: 0006969                          
-12-09-05 17:17 robertw        Note Added: 0006970                          
-12-14-05 13:22 mytux          Issue Monitored: mytux                       
-12-19-05 02:11 rlrevell       Note Added: 0007077                          
-01-02-06 21:55 robertw        Note Added: 0007391                          
-01-04-06 17:29 tiwai          Note Added: 0007441                          
-01-04-06 22:00 robertw        Note Added: 0007453                          
-01-04-06 22:16 robertw        Note Edited: 0007453                         
-01-11-06 23:38 lobstaj        Note Added: 0007572                          
-01-11-06 23:48 rlrevell       Note Added: 0007573                          
-01-12-06 00:20 lobstaj        Note Added: 0007575                          
-01-12-06 00:26 rlrevell       Note Added: 0007576                          
-01-12-06 01:16 mytux          Note Added: 0007577                          
-01-12-06 01:20 mytux          Note Edited: 0007577                         
-01-12-06 14:13 robertw        Note Added: 0007586                          
-01-12-06 14:43 lobstaj        Note Added: 0007587                          
-01-12-06 16:45 eudoxos        Issue Monitored: eudoxos                     
-01-12-06 21:04 rlrevell       Note Added: 0007591                          
-01-13-06 01:11 rlrevell       Relationship added       duplicate of 0001517
-01-13-06 08:03 eudoxos        Note Added: 0007631                          
-01-13-06 11:30 er-ku          Issue Monitored: er-ku                       
-01-16-06 00:32 jwoithe        Note Added: 0007682                          
-01-17-06 23:32 ilovetronik    Issue Monitored: ilovetronik                    
-01-19-06 23:36 ajmitch        Issue Monitored: ajmitch                     
-02-08-06 14:46 svilen         Note Added: 0007965                          
-02-09-06 00:29 jwoithe        Note Added: 0007969                          
-02-09-06 09:04 hweigel        Issue Monitored: hweigel                     
-02-10-06 11:02 svilen         Note Added: 0007999                          
-02-12-06 21:42 AndyP          Note Added: 0008031                          
-02-12-06 22:11 wattazoum      Note Added: 0008032                          
-02-12-06 22:14 rlrevell       Note Added: 0008033                          
-02-12-06 23:05 er-ku          Note Added: 0008034                          
-02-12-06 23:07 er-ku          Note Edited: 0008034                         
-02-13-06 00:45 jwoithe        Note Added: 0008035                          
-02-13-06 06:42 er-ku          Note Added: 0008037                          
-02-13-06 06:43 er-ku          Note Edited: 0008037                         
-02-14-06 00:07 jwoithe        Note Added: 0008066                          
-02-18-06 23:48 AndyP          Note Added: 0008125                          
-02-19-06 10:41 er-ku          Note Added: 0008131                          
-02-19-06 16:49 AndyP          Note Added: 0008134                          
-02-22-06 18:29 lobstaj        Note Added: 0008160                          
-02-23-06 01:12 jwoithe        Note Added: 0008165                          
-02-24-06 12:21 lobstaj        Note Added: 0008173                          
-02-24-06 12:25 lobstaj        Note Edited: 0008173                         
-02-24-06 14:58 mytux          Note Added: 0008176                          
-02-24-06 15:41 wattazoum      Note Added: 0008179                          
-02-24-06 15:42 wattazoum      Note Edited: 0008179                         
-02-24-06 22:32 er-ku          Note Added: 0008181                          
-02-24-06 23:23 AndyP          Note Added: 0008182                          
-02-25-06 12:29 wattazoum      File Added: patch_realtek.diff                    
-02-25-06 12:31 wattazoum      Note Added: 0008187                          
-02-26-06 05:50 at2000         Note Added: 0008196                          
-02-26-06 06:02 rlrevell       Note Added: 0008197                          
-02-26-06 14:58 er-ku          Note Added: 0008201                          
-02-26-06 15:00 er-ku          Note Added: 0008202                          
-02-26-06 23:39 er-ku          Note Edited: 0008201                         
-02-26-06 23:47 er-ku          Note Edited: 0008202                         
-02-26-06 23:47 er-ku          Note Deleted: 0008202                        
-02-26-06 23:48 er-ku          Note Added: 0008206                          
-02-26-06 23:53 jwoithe        Note Added: 0008207                          
-02-27-06 00:16 jwoithe        Note Added: 0008208                          
-02-27-06 00:27 er-ku          Note Added: 0008209                          
-02-27-06 00:41 er-ku          Note Edited: 0008209                         
-02-27-06 03:16 frat           Issue Monitored: frat                        
-02-27-06 18:33 mixcha         Issue Monitored: mixcha                      
-02-27-06 21:20 grattemedi     Note Added: 0008230                          
-02-27-06 21:35 grattemedi     Note Edited: 0008230                         
-02-27-06 22:26 er-ku          Note Added: 0008231                          
-02-28-06 01:31 jwoithe        Note Added: 0008235                          
-02-28-06 16:02 grattemedi     Note Edited: 0008230                         
-02-28-06 21:21 grattemedi     Note Added: 0008246                          
-02-28-06 21:24 grattemedi     Note Edited: 0008246                         
-02-28-06 21:27 rlrevell       Note Added: 0008247                          
-03-01-06 00:34 jwoithe        Note Added: 0008249                          
-03-01-06 00:38 jwoithe        Note Added: 0008250                          
+01-11-06 11:24 clamath        New Issue                                    
+01-11-06 11:24 clamath        Distribution              => No sound on acer
+Travelmate 4062wnlmi
+01-11-06 11:24 clamath        Kernel Version            => 2.6.15          
+03-01-06 00:53 rlrevell       Relationship added       duplicate of 0001517
 ======================================================================
 
 
