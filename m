@@ -1,18 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [RFC][PATCH] Transparent network support through
-	polypaudio
-Date: Tue, 28 Feb 2006 23:09:13 -0500
-Message-ID: <1141186155.5860.91.camel@mindpipe>
-References: <43F09D76.9060004@cendio.se>
-	 <20060214094741.GA8943@turing.informatik.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001713]: ALC260 no input
+Date: Wed, 1 Mar 2006 06:16:37 +0100
+Message-ID: <413f886c8f06b3a44ec009d45d8b9c50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A41081CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 05:09:36 +0100 (MET)
-In-Reply-To: <20060214094741.GA8943@turing.informatik.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FC391CD
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 06:16:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,32 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Pierre Ossman <ossman@cendio.se>, alsa-devel@alsa-project.org, mzcbylcnhqvb@0pointer.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-02-14 at 10:47 +0100, Clemens Ladisch wrote:
-> And you're speaking with mplayer's ALSA driver maintainer.
-> Is there anything wrong with mplayer?  ;-) 
 
-Actually, since you mention it...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1713> 
+======================================================================
+Reported By:                hweigel
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1713
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-04-2006 17:24 CET
+Last Modified:              03-01-2006 06:16 CET
+======================================================================
+Summary:                    ALC260 no input
+Description: 
+My FSC Lifebook S-7020 has the ALC260. While 
+all sound output seems to work fine with 
+alsa 1.0.10, the microphone produces only very 
+weak sound (just infinitesimally more than zero).
+======================================================================
 
-I still get smoother playback with OSS emulation than mplayer's ALSA
-driver.  I think it's because the ALSA driver resets the stream on
-xruns:
+----------------------------------------------------------------------
+ rlrevell - 03-01-06 01:27 
+----------------------------------------------------------------------
+Any improvement with later releases (1.0.11-rc3 or CVS)?
 
-alsa-space: xrun of at least 862.101 msecs. resetting stream3% 7 0                                    
-alsa-space: xrun of at least 53.590 msecs. resetting stream.2% 27 0                                   
-alsa-play: xrun of at least 5.844 msecs. resetting stream 5.1% 102 0                                  
-alsa-space: xrun of at least 442.926 msecs. resetting stream1% 168 0                                  
-alsa-space: xrun of at least 50.325 msecs. resetting stream 5.2% 4 0                                  
-alsa-play: xrun of at least 15.953 msecs. resetting stream  5.1% 84 0        
+----------------------------------------------------------------------
+ jwoithe - 03-01-06 06:16 
+----------------------------------------------------------------------
+hweigel: I bet the microphone you're using is a condensor type.  Most small
+"made for computers" microphones fall into this category.  They require a
+small DC bias to be supplied by the computer before they will operate.
 
-This seems like a waste of CPU - after all there's nothing we can do but
-drop frames if I'm trying to play a movie that my CPU can't quite
-handle.  Shouldn't mplayer just ignore xruns?
+The version of the ALC260 driver now in CVS includes support to turn this
+bias on if you need it.  Get the latest CVS version or wait for 1.0.11 to
+be released.  Get this compiled and loaded.  Then go to alsamixer, find
+the control labeled "Mic/Line jack mode" and set it to "Mic 80pc bias". 
+Once done, try capturing again; it should work much better.
 
-Lee
+Note that the "mic jack mode" control is not AFAIK in 1.0.11-rc3 - you
+will need a reasonably recent CVS snapshot.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-04-06 17:24 hweigel        New Issue                                    
+03-01-06 01:27 rlrevell       Note Added: 0008257                          
+03-01-06 06:16 jwoithe        Note Added: 0008271                          
+======================================================================
+
 
 
 
