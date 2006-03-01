@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000282]: ES1688 driver assumes inappropriate port for OPL3; no way to change
-Date: Wed, 1 Mar 2006 01:01:54 +0100
-Message-ID: <7bd6b6458ef0df4f6ffcbe406a519904@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000365]: No audio with Asus p4p800-vm
+Date: Wed, 1 Mar 2006 01:02:00 +0100
+Message-ID: <34f1f835991dfc35d004efa50e2e1ed2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26AD21C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:01:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36DC91C1
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:02:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,86 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=282> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=365> 
 ======================================================================
-Reported By:                jessleah
+Reported By:                Anlar
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   282
-Category:                   ISA - es1688
+Issue ID:                   365
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian GNU/Linux 3.0 (Woody) for i386
-Kernel Version:             2.4.25
+Distribution:               Gentoo - up to date stable
+Kernel Version:             2.6.7
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-19-2004 05:22 CEST
+Date Submitted:             07-04-2004 20:53 CEST
 Last Modified:              03-01-2006 01:01 CET
 ======================================================================
-Summary:                    ES1688 driver assumes inappropriate port for OPL3;
-no way to change
+Summary:                    No audio with Asus p4p800-vm
 Description: 
-On a ThinkPad 560 (which uses an ES1688 chip), the OPL3 should use the port
-range 0x388-0x38b. However, ALSA 1.0.4 for some reason assumes that the
-port you specify for the ES1688 (i.e. 0x220, in my case) is the base port
-of the OPL3 chip, which is just plain wrong.
+I have new Asus P4P800-VM motherboard (865G) that has i8x0 (x=1?) (ADI1980)
+builtin. Alsa does seem to initialize, the required modules load and
+something gets fed to the device but nothing comes out. I have played
+around with the mixer volumes and done other known usual stuff as well.
 
-I go:
-modprobe snd-es1688-lib
-modprobe snd-mpu401-uart
-modprobe snd-opl3-lib
-modprobe snd-es1688 port=0x220 irq=7 dma8=1 mpu_port=0x330 mpu_irq=9
+A googling session revealed that some people have had success with this
+motherboard but most of the people have failed. I thought that something
+on this motherboard might be non-standard and require attention. 
 
-And when I cat /proc/ioports | grep -i opl, I get:
-
-0220-0221 : OPL2/3 (left)
-0222-0223 : OPL2/3 (right)
-
-Needless to say, MIDI doesn't work!
-
-The OSS/Free driver works fine with my OPL3, and the same command (cat
-/proc/ioports | grep -i opl) yields:
-
-0388-038b : Yamaha OPL3
-
-MIDI works fine with the OSS/Free driver.
-
-Heeeeeeeeeeeeeeeeeeeeeeeeelp...
+(If it is trivial, something t be added to the wikis. I doubt though since
+couple guys have tried already and none of them were complete newbies.)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-04-05 22:23 
+ Anlar - 03-25-05 19:40 
 ----------------------------------------------------------------------
-It isn't apparent to me that anything has been done about this.
+Works on all flavors of Windows. It's quite stunning actually. I spent a
+lot time trying to find out any sane explanation but was unable to find
+any. 
+
+The spdif module (that I stole from P4PE mobo, those modules seem to be
+more or less universal) works wonderfully so I am happy. I tried finding
+any proof that some P4P800VM user would have got the analogs working.
+Didn't find any. 
+
+However the mobo is old already, never sold much (I guess) and it's not
+imho worth digging more.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:24 
+ rlrevell - 12-30-05 05:18 
 ----------------------------------------------------------------------
-Has there been any improvement in later ALSA releases?
+Any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-19-04 05:22 jessleah       New Issue                                    
-05-19-04 05:22 jessleah       Distribution              => Debian GNU/Linux 3.0
-(Woody) for i386
-05-19-04 05:22 jessleah       Kernel Version            => 2.4.25          
-05-19-04 14:20 jessleah       Issue Monitored: jessleah                    
-04-04-05 22:23 jdthood        Note Added: 0004331                          
-12-30-05 05:24 rlrevell       Note Added: 0007244                          
+07-04-04 20:53 Anlar          New Issue                                    
+07-04-04 20:53 Anlar          Distribution              => Gentoo - up to date
+stable
+07-04-04 20:53 Anlar          Kernel Version            => 2.6.7           
+07-04-04 20:54 Anlar          Issue Monitored: Anlar                       
+07-06-04 22:04 Anlar          Note Added: 0001387                          
+07-06-04 22:29 Anlar          File Added: asound.state                     
+07-06-04 22:58 Anlar          Note Added: 0001389                          
+07-06-04 22:59 Anlar          Note Edited: 0001389                         
+07-07-04 17:32 Anlar          Note Edited: 0001389                         
+07-07-04 22:02 Anlar          Note Added: 0001394                          
+07-08-04 20:30 Anlar          Note Added: 0001395                          
+07-08-04 20:31 Anlar          File Added: alsa                             
+07-08-04 20:32 Anlar          File Added: alsa.conf                        
+07-08-04 20:33 Anlar          Note Edited: 0001387                         
+07-08-04 20:36 Anlar          Note Edited: 0001395                         
+07-08-04 20:40 Anlar          Note Edited: 0001395                         
+07-16-04 12:14 tiwai          Note Added: 0001447                          
+07-16-04 20:09 Anlar          Note Added: 0001454                          
+03-23-05 16:09 jdthood        Note Added: 0004175                          
+03-25-05 19:40 Anlar          Note Added: 0004210                          
+12-30-05 05:18 rlrevell       Note Added: 0007240                          
 03-01-06 01:01 rlrevell       Status                   new => closed       
 ======================================================================
 
