@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001886]: Problems on reboot
-Date: Wed, 1 Mar 2006 17:59:58 +0100
-Message-ID: <97b2266b3c85cb29f1819816b6647173@bugtrack.alsa-project.org>
+Date: Wed, 1 Mar 2006 18:01:52 +0100
+Message-ID: <5673eb22462169f9ceaec281d27b07e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CED3B1C9
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 17:59:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD0CCA0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 18:01:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1886> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-01-2006 17:59 CET
-Last Modified:              03-01-2006 17:59 CET
+Last Modified:              03-01-2006 18:01 CET
 ======================================================================
 Summary:                    Problems on reboot
 Description: 
@@ -58,10 +58,38 @@ sometime when i reboot i card as inverted and i have this udev message:
 
 ======================================================================
 
+----------------------------------------------------------------------
+ eric - 03-01-06 18:01 
+----------------------------------------------------------------------
+my modules.conf on kernel 2.6:
+
+##### ALSA Config avmmanager START #####
+alias char-major-116* snd
+alias snd-timer-1* snd_rtctimer
+alias snd-timer-2* snd_hpet
+
+alias /dev/mixer* snd-mixer-oss
+alias /dev/dsp* snd-pcm-oss
+alias /dev/midi* snd-seq-oss
+
+##### Card via id=0 #####
+alias snd-card-0 snd-via82xx
+options snd-via82xx index=0 dxs_support=3
+
+##### Card terratec28 id=1 #####
+alias snd-card-1 snd-ice1724
+options snd-ice1724 index=1 model=phase28
+
+##### Card terratec28 id=2 #####
+alias snd-card-2 snd-ice1724
+options snd-ice1724 index=2 model=phase28
+##### ALSA Config avmmanager END #####
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-01-06 17:59 eric           New Issue                                    
+03-01-06 18:01 eric           Note Added: 0008285                          
 ======================================================================
 
 
