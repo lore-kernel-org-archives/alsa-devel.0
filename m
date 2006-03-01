@@ -1,29 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: PCM driver only plays tiny portion of clip
-Date: Wed, 01 Mar 2006 15:31:10 -0500
-Message-ID: <1141245071.5860.216.camel@mindpipe>
-References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
-	 <20060227172601.GA446@turing.informatik.uni-halle.de>
-	 <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
-	 <20060228073049.GA4158@turing.informatik.uni-halle.de>
-	 <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
-	 <20060228145541.GA20876@turing.informatik.uni-halle.de>
-	 <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
-	 <20060228170824.GA24675@turing.informatik.uni-halle.de>
-	 <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
-	 <1141240231.9233.11.camel@localhost.localdomain>
-	 <1141241474.5860.183.camel@mindpipe>
-	 <1141242058.9233.17.camel@localhost.localdomain>
-	 <1141243152.5860.197.camel@mindpipe>
-	 <1141244449.9233.24.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
+Date: Wed, 1 Mar 2006 22:35:12 +0100
+Message-ID: <1dcdd834c05ed1e4c0fd7dbf461c1e39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7409E1C5
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 21:31:13 +0100 (MET)
-In-Reply-To: <1141244449.9233.24.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36EBE1D0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 22:35:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -33,35 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-03-01 at 20:20 +0000, Adrian McMenamin wrote:
-> On Wed, 2006-03-01 at 14:59 -0500, Lee Revell wrote:
-> 
-> > 
-> > The trigger callback is only called when the PCM is stopped, started, or
-> > paused.
-> > 
-> 
-> 
-> Which buffer?
 
-The way most soundcards work is that there is a single ring buffer
-shared by the software and hardware.  Once the PCM is started the
-hardware will repeatedly loop over this buffer playing the samples in
-it.  The buffer is normally divided in half - while your app is writing
-to one half of the buffer the hardware is playing the samples in the
-other half.  The hardware generates interrupts at the middle and end of
-this buffer, which is where we switch - the hardware is now playing what
-the software just wrote to the one half of the buffer and the software
-can write into the other half that was just played by the hardware.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1887> 
+======================================================================
+Reported By:                grattemedi
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1887
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.15.4
+======================================================================
+Date Submitted:             03-01-2006 22:35 CET
+Last Modified:              03-01-2006 22:35 CET
+======================================================================
+Summary:                    Can't record anything from MIC with Acer 1641
+(ALC260)
+Description: 
+With the new hda drivers in CVS, the speakers and jack output works very
+good.
+But I can't record anything from the external mic or from the mic input.
+I followed jwoithe advises : To record from the internal mic or the
+external mic jack, you need to:
 
-If your soundcard does not work this way you'll have to model it
-somehow.
+ * select the "mic" as the input source (displayed in "Playback" view)
+ * in the "Mic Jack Mode" control, select "Mic bias 80pc"
+ * in "Capture" view, unmute "Capture" channel (NOT "Capture 1") and
+   turn its volume up.
+Even after doing that, I can't record sound.
+Nevertheless, when I unmute the "mic" channel in the alsamixer "playback",
+i can hear sound from the mic but i cannot record it.
+======================================================================
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-01-06 22:35 grattemedi     New Issue                                    
+03-01-06 22:35 grattemedi     Distribution              => Slackware 10.2  
+03-01-06 22:35 grattemedi     Kernel Version            => 2.6.15.4        
+======================================================================
+
 
 
 
