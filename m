@@ -1,14 +1,24 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001603]: via8235 no sound since kernel 2.6.13
-Date: Wed, 1 Mar 2006 19:39:41 +0100
-Message-ID: <06f8f9f0d89d68c38ddfae3945ab30d1@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: PCM driver only plays tiny portion of clip
+Date: Wed, 01 Mar 2006 19:10:31 +0000
+Message-ID: <1141240231.9233.11.camel@localhost.localdomain>
+References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
+	 <20060227172601.GA446@turing.informatik.uni-halle.de>
+	 <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
+	 <20060228073049.GA4158@turing.informatik.uni-halle.de>
+	 <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
+	 <20060228145541.GA20876@turing.informatik.uni-halle.de>
+	 <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
+	 <20060228170824.GA24675@turing.informatik.uni-halle.de>
+	 <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E233D1B7
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 19:39:41 +0100 (MET)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DCD591B4
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 20:10:34 +0100 (MET)
+In-Reply-To: <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +28,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-02-28 at 17:36 +0000, Adrian McMenamin wrote:
+> On Tue, 28 February, 2006 5:08 pm, Clemens Ladisch wrote:
+> 
+> >
+> > Where is the source code of your driver?
+> >
+> >
+> 
+> http://newgolddream.dyndns.info/repos
+> 
+Anybody have any comments? For my own understanding is the patten this:
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
-======================================================================
-Reported By:                picobyte
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1603
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               slackware 10.2
-Kernel Version:             2.6.13 - 2.6.14.2
-Resolution:                 fixed
-Fixed in Version:           1.0.11rc3
-======================================================================
-Date Submitted:             11-27-2005 15:06 CET
-Last Modified:              03-01-2006 19:39 CET
-======================================================================
-Summary:                    via8235 no sound since kernel 2.6.13
-Description: 
-I have no sound after a kernel upgrade. I seem to have lost it in 2.6.13.
-Sound was available in 2.6.12. 2.6.14.2 didn't give sound either. The
-problem is in 1.0.9b and 1.0.10. The modules are loaded as supposed
-without error messages and alsamixer is set to volume.
-======================================================================
+Hardware triggers interrupt as period boundary passed  ---->
 
-----------------------------------------------------------------------
- picobyte - 01-18-06 00:41 
-----------------------------------------------------------------------
-yes, actually, the problem seems to have been resolved in 2.6.15 :)
-Is there any way I can/should change this bugs' status?
+Interrupt handler calls ALSA middle layer  ---->
+
+ALSA middle layer calls pointer callback --->
+
+Pointer callback returns ring buffer position
 
 
-
-----------------------------------------------------------------------
- picobyte - 03-01-06 19:27 
-----------------------------------------------------------------------
-It wasn't the kernel upgrade, but the upgrade to alsa 1.0.11-rc2.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-27-05 15:06 picobyte       New Issue                                    
-11-27-05 15:06 picobyte       Distribution              => slackware 10.2  
-11-27-05 15:06 picobyte       Kernel Version            => 2.6.13 - 2.6.14.2
-12-31-05 03:38 rlrevell       Note Added: 0007330                          
-01-18-06 00:38 picobyte       Note Added: 0007704                          
-01-18-06 00:38 picobyte       Issue Monitored: picobyte                    
-01-18-06 00:39 picobyte       Issue End Monitor: picobyte                    
-01-18-06 00:41 picobyte       Note Edited: 0007704                         
-03-01-06 19:27 picobyte       Note Added: 0008287                          
-03-01-06 19:39 rlrevell       Status                   new => resolved     
-03-01-06 19:39 rlrevell       Fixed in Version          => 1.0.11rc3       
-03-01-06 19:39 rlrevell       Resolution               open => fixed       
-03-01-06 19:39 rlrevell       Assigned To               => rlrevell        
-======================================================================
-
+What happens next?
 
 
 
