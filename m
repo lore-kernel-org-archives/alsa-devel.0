@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001740]: No sound on ACER laptop with ALC260
-Date: Wed, 1 Mar 2006 00:51:00 +0100
-Message-ID: <74e1cca0f92157189e2612cd6531d45d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000282]: ES1688 driver assumes inappropriate port for OPL3; no way to change
+Date: Wed, 1 Mar 2006 01:01:54 +0100
+Message-ID: <7bd6b6458ef0df4f6ffcbe406a519904@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C16001C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:51:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26AD21C0
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:01:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001517.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1740> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=282> 
 ======================================================================
-Reported By:                Nicolas_Raoul
-Assigned To:                tiwai
+Reported By:                jessleah
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1740
-Category:                   PCI - hda-intel
+Issue ID:                   282
+Category:                   ISA - es1688
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora, Ubuntu, SUSE
-Kernel Version:             2.6.15
+Status:                     closed
+Distribution:               Debian GNU/Linux 3.0 (Woody) for i386
+Kernel Version:             2.4.25
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-11-2006 22:40 CET
-Last Modified:              03-01-2006 00:50 CET
+Date Submitted:             05-19-2004 05:22 CEST
+Last Modified:              03-01-2006 01:01 CET
 ======================================================================
-Summary:                    No sound on ACER laptop with ALC260
+Summary:                    ES1688 driver assumes inappropriate port for OPL3;
+no way to change
 Description: 
-Hello all,
+On a ThinkPad 560 (which uses an ES1688 chip), the OPL3 should use the port
+range 0x388-0x38b. However, ALSA 1.0.4 for some reason assumes that the
+port you specify for the ES1688 (i.e. 0x220, in my case) is the base port
+of the OPL3 chip, which is just plain wrong.
 
-I have no sound on my ACER Aspire 1640 laptop, Intel HDA, ALC260, all
-unmuted, latest everything, tried on:
-- SUSE
-- Kubuntu
-- Ubuntu 2005.10
-- Ubuntu 2006.04-flight1
-- Fedora
-So far, I have never seen any unsilent ALC260 on ACER (please confirm or
-infirm). This has lead me to suspect there may be a problem within ALSA.
+I go:
+modprobe snd-es1688-lib
+modprobe snd-mpu401-uart
+modprobe snd-opl3-lib
+modprobe snd-es1688 port=0x220 irq=7 dma8=1 mpu_port=0x330 mpu_irq=9
 
-Yesterday I started modifying the ALSA source code to try and fix it.
-Especially, I edited patch_realtek.c. One hour ago, I finally managed to
-get some sound out of the headphones :-)
+And when I cat /proc/ioports | grep -i opl, I get:
 
-If you have some informations or questions, my contact ids are on
-http://nrw.free.fr . Documentation from ACER would be particulary
-helpful.
+0220-0221 : OPL2/3 (left)
+0222-0223 : OPL2/3 (right)
 
-Have a good day,
-Nicolas Raoul.
+Needless to say, MIDI doesn't work!
 
-PS: This issue looks somehow similar to those ones:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001517
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001618
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001736.
+The OSS/Free driver works fine with my OPL3, and the same command (cat
+/proc/ioports | grep -i opl) yields:
+
+0388-038b : Yamaha OPL3
+
+MIDI works fine with the OSS/Free driver.
+
+Heeeeeeeeeeeeeeeeeeeeeeeeelp...
 ======================================================================
-Relationships       ID      Summary
+
 ----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-======================================================================
+ jdthood - 04-04-05 22:23 
+----------------------------------------------------------------------
+It isn't apparent to me that anything has been done about this.
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 05:24 
+----------------------------------------------------------------------
+Has there been any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 22:40 Nicolas_Raoul  New Issue                                    
-01-11-06 22:40 Nicolas_Raoul  Distribution              => Fedora, Ubuntu, SUSE
-01-11-06 22:40 Nicolas_Raoul  Kernel Version            => 2.6.15          
-03-01-06 00:50 rlrevell       Relationship added       duplicate of 0001517
+05-19-04 05:22 jessleah       New Issue                                    
+05-19-04 05:22 jessleah       Distribution              => Debian GNU/Linux 3.0
+(Woody) for i386
+05-19-04 05:22 jessleah       Kernel Version            => 2.4.25          
+05-19-04 14:20 jessleah       Issue Monitored: jessleah                    
+04-04-05 22:23 jdthood        Note Added: 0004331                          
+12-30-05 05:24 rlrevell       Note Added: 0007244                          
+03-01-06 01:01 rlrevell       Status                   new => closed       
 ======================================================================
 
 
