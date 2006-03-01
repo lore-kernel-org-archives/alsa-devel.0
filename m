@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001778]: Only sound on line-out jack
-Date: Wed, 1 Mar 2006 01:25:10 +0100
-Message-ID: <a497945b1bbf7f66a26c9993e6e68c25@bugtrack.alsa-project.org>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: Re: [PATCH] Add support for Acer TravelMate and
+Date: Wed, 1 Mar 2006 10:52:48 +1030 (CST)
+Message-ID: <200603010022.k210Mmis023446@auster.physics.adelaide.edu.au>
+References: <1141170850.5860.69.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 397781C1
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:25:10 +0100 (MET)
+In-Reply-To: <1141170850.5860.69.camel@mindpipe> from "Lee Revell" at Feb 28, 2006 06:54:08 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +17,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, Rimas Kudelis <rq@akl.lt>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Lee
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1778> 
-======================================================================
-Reported By:                pw
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1778
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             01-24-2006 15:24 CET
-Last Modified:              03-01-2006 01:25 CET
-======================================================================
-Summary:                    Only sound on line-out jack
-Description: 
-I'm using a Acer Extensa 6702-100 notebook (Intel ICH6 chipset / kernel
-2.6.15 / alsa-driver 1.0.11-rc2). The notebook has internal stereo
-speakers, a built-in microphone and three jacks (line-out, microphone and
-headphones).
+> > > > The "CD" input on the ALC260 is an analog input.  It expects the CD drive to
+> > > > do all the audio decoding and present an ordinary stereo signal to this pin. 
+> > > > If when playing a CD and enabling the "CD" control you get no audio that
+> > > > strongly suggests that there is no audio signal running to that pin.
+> > > > However, if there is no analog connection to the ALC260 one does wonder
+> > > > precisely how these systems are expected to play CDs.  The only option 
+> > > > left would be for software to read the raw CD bitstream (which isn't a straight
+> > > > audio bitstream), decode it and then send the resulting audio bitstream to
+> > > > the DAC.  Given that CD drives are more than capable of doing all this it would
+> > > > surprise me if this were the case.
+> > > > 
+> > > > One thing worth checking though - have you tested *all* ALC260 inputs with
+> > > > the CD playing?  Maybe Acer connect the CD audio to some other ALC260 pin. 
+> > > 
+> > > I would not be surprised if some vendors were leaving out the DAC from
+> > > their CD drives, and expect you to play audio CDs in digital mode.  I
+> > > believe this is how Windows Media Player works by default (it also
+> > > allows it to generate visual effects from the CD audio).
+> > 
+> > Ah, right.  I wasn't aware of that.  If that's its default behaviour then
+> > perhaps the Acers do expect the OS to use digital mode for playing CDs. If
+> > this proves to be the case then we'll revise the "acer" model to omit the CD
+> > controls.
+> 
+> Are #1843 and #1847 related to this problem?  Those both involve Acer
+> systems but with Sigmatel codecs rather than Realtek.
 
-I've loaded the snd-hda-intel module with every model listed in the
-documentation. When using the fujitsu model option I'm getting sound on
-the line-out jack. The internal speakers, built-in microphone and
-headphone jack don't work. I've not tested the mic jack yet.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-======================================================================
+Not sure, since we don't yet know for sure that this is the problem with
+the 1641 etc.  It *might* still be due to a gremlin lurking in the ALC260
+code.  To prove this we probably need someone with the laptops affected by
+#1843 and #1847 to test both modes of WMP and report their findings.
 
-----------------------------------------------------------------------
- pw - 02-01-06 12:41 
-----------------------------------------------------------------------
-AFAIK mine is an ALC260 chipset... however, maybe it's the same issue
-
-----------------------------------------------------------------------
- rlrevell - 03-01-06 01:25 
-----------------------------------------------------------------------
-Fixed in CVS
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-24-06 15:24 pw             New Issue                                    
-01-24-06 15:26 pw             File Added: codec#0                          
-01-24-06 15:27 pw             File Added: codec#1                          
-01-25-06 11:51 blackr2d       Note Added: 0007777                          
-02-01-06 12:41 pw             Note Added: 0007859                          
-03-01-06 01:24 rlrevell       Relationship added       duplicate of 0001517
-03-01-06 01:25 rlrevell       Status                   assigned => resolved
-03-01-06 01:25 rlrevell       Resolution               open => fixed       
-03-01-06 01:25 rlrevell       Note Added: 0008256                          
-======================================================================
-
-
+Regards
+  jonathan
 
 
 -------------------------------------------------------
