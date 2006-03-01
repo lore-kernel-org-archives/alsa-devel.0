@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001713]: ALC260 no input
-Date: Wed, 1 Mar 2006 06:16:37 +0100
-Message-ID: <413f886c8f06b3a44ec009d45d8b9c50@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001424]: crash on snd-powermac initilize
+Date: Wed, 1 Mar 2006 07:20:20 +0100
+Message-ID: <7d08d917454c993bb9bb3e449ce7c542@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FC391CD
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 06:16:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71C0D1CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 07:20:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1713> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1424> 
 ======================================================================
-Reported By:                hweigel
+Reported By:                amir
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1713
-Category:                   PCI - hda-intel
+Issue ID:                   1424
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               GeeXboX
+Kernel Version:             2.6.13.1
 ======================================================================
-Date Submitted:             01-04-2006 17:24 CET
-Last Modified:              03-01-2006 06:16 CET
+Date Submitted:             09-15-2005 20:38 CEST
+Last Modified:              03-01-2006 07:20 CET
 ======================================================================
-Summary:                    ALC260 no input
+Summary:                    crash on snd-powermac initilize
 Description: 
-My FSC Lifebook S-7020 has the ALC260. While 
-all sound output seems to work fine with 
-alsa 1.0.10, the microphone produces only very 
-weak sound (just infinitesimally more than zero).
+I have users reporting a reproducable, on init, crash of our powerpc
+distro,
+but this happens to only some of the ppc users.
+
+the distro is geexbox, www.geexbox.org
+
+this crash happens also when snd-powermac is compiled as module,
+and crashes when module is loaded.
+
+I can't reproduce the bug myself, but I have users who do the tests,
+and those users report that debian and ubuntu works great for them.
+
+this bug also happened with linux 2.6.12
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 01:27 
+ netstar - 03-01-06 07:20 
 ----------------------------------------------------------------------
-Any improvement with later releases (1.0.11-rc3 or CVS)?
+I can also confirm this behaviour.  Using 2.6.15 kernel and any
+distribution.  I think it's an issue with older iMacs.  My model is:
 
-----------------------------------------------------------------------
- jwoithe - 03-01-06 06:16 
-----------------------------------------------------------------------
-hweigel: I bet the microphone you're using is a condensor type.  Most small
-"made for computers" microphones fall into this category.  They require a
-small DC bias to be supplied by the computer before they will operate.
+processor       : 0
+cpu             : PPC970FX, altivec supported
+clock           : 1800.000000MHz
+revision        : 3.0 (pvr 003c 0300)
 
-The version of the ALC260 driver now in CVS includes support to turn this
-bias on if you need it.  Get the latest CVS version or wait for 1.0.11 to
-be released.  Get this compiled and loaded.  Then go to alsamixer, find
-the control labeled "Mic/Line jack mode" and set it to "Mic 80pc bias". 
-Once done, try capturing again; it should work much better.
+timebase        : 33333333
+machine         : PowerMac8,1
+motherboard     : PowerMac8,1 MacRISC4 Power Macintosh
+detected as     : 338 (iMac G5)
+pmac flags      : 00000000
+L2 cache        : 512K unified
+pmac-generation : NewWorld
 
-Note that the "mic jack mode" control is not AFAIK in 1.0.11-rc3 - you
-will need a reasonably recent CVS snapshot.
+This crashing is definitely not distribution specific, but rather model
+specific.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 17:24 hweigel        New Issue                                    
-03-01-06 01:27 rlrevell       Note Added: 0008257                          
-03-01-06 06:16 jwoithe        Note Added: 0008271                          
+09-15-05 20:38 amir           New Issue                                    
+09-15-05 20:38 amir           File Added: .config                          
+09-15-05 20:38 amir           Distribution              => GeeXboX         
+09-15-05 20:38 amir           Kernel Version            => 2.6.13.1        
+03-01-06 07:20 netstar        Note Added: 0008272                          
 ======================================================================
 
 
