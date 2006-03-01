@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Wed, 1 Mar 2006 03:40:33 +0100
-Message-ID: <51e3cfe7af19e2f248af73095e8835be@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
+Date: Wed, 1 Mar 2006 03:41:15 +0100
+Message-ID: <17e747d0da150c4ad289b5b3bb33526e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1BDA1C2
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 03:40:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BBEE1C2
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 03:41:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,225 +24,251 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
 ======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
+Reported By:                klausr
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
+Issue ID:                   305
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
+Status:                     new
+Distribution:               
+Kernel Version:             Debian kernel 2.6.5-4-686
 ======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              03-01-2006 03:40 CET
+Date Submitted:             05-25-2004 14:49 CEST
+Last Modified:              03-01-2006 03:41 CET
 ======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
+Summary:                    sound is locked up after suspend/resume (APM)
 Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
-
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
+Until recently I was running oss driver cs46xx without a problem. I could
+suspend in the middle of playback and xmms would keep playing after resume
+as if nothing happend at all.
+After switching to the 2.6 kernel, currently running 2.6.5, I also
+switched to ALSA beeing the new sound architecture of choice.
+Unforunately now when I suspend and resume my notebook sound stops working
+at all. Sometimes unloading all ALSA modules helps, sometimes even that is
+not possible anymore.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000226 Sound hangs after APM resume
 ======================================================================
 
 ----------------------------------------------------------------------
- oggb4mp3 - 02-27-06 22:33 
+ cull - 02-26-06 23:24 
 ----------------------------------------------------------------------
-$ cat /proc/asound/card1/stream0
-Burr-Brown from TI               USB Audio CODEC  at usb-0000:00:10.2-2,
-full s : USB Audio
+Disabling suspend2 does not seem to make any difference. 
+Well, it does sleep using ACPI anyway, but with additional scripts (I use
+it since it allowes one to kill all application that use sound before
+sleep/suspend)
+Anyway, here are dmesg that I get with ACPI sleep without suspend2:
 
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 2
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 3
-    Format: S8
-    Channels: 2
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 4
-    Format: S8
-    Channels: 1
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 5
-    Format: U8
-    Channels: 2
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
-  Interface 1
-    Altset 6
-    Format: U8
-    Channels: 1
-    Endpoint: 2 OUT (ADAPTIVE)
-    Rates: 32000, 44100, 48000
+[4294858.354000] ACPI: PCI interrupt for device 0000:00:07.2 disabled
+[4294861.984000] ACPI: PCI interrupt for device 0000:00:05.0 disabled
+[4294861.995000] ACPI: PCI interrupt for device 0000:00:02.1 disabled
+[4294861.995000] ACPI: PCI interrupt for device 0000:00:02.0 disabled
+[4294861.995000] Back to C!
+[4294865.000000] WARNING: Interrupts reenabled while resuming sysdev class
+speci
+[4294865.000000] ACPI: PCI Interrupt 0000:00:02.0[A] -> Link [LNKA] -> GSI
+11 (l
+[4294865.031000] ACPI: PCI Interrupt 0000:00:02.1[B] -> Link [LNKB] -> GSI
+11 (l
+[4294865.073000] ACPI: PCI Interrupt 0000:00:03.1[A] -> Link [LNKC] -> GSI
+11 (l
+[4294865.073000] ACPI: PCI Interrupt 0000:00:05.0[A] -> Link [LNKA] -> GSI
+11 (l
+[4294867.358000] e100: Intel(R) PRO/100 Network Driver, 3.4.14-k4-NAPI
+[4294867.358000] e100: Copyright(c) 1999-2005 Intel Corporation
+[4294867.370000] ACPI: PCI Interrupt 0000:00:03.0[A] -> Link [LNKC] -> GSI
+11 (l
+[4294867.469000] e100: eth0: e100_probe: addr 0xe8120000, irq 11, MAC addr
+00:03
+[4294867.514000] USB Universal Host Controller Interface driver v2.3
+[4294867.579000] ACPI: PCI Interrupt 0000:00:07.2[D] -> Link [LNKD] -> GSI
+11 (l
+[4294867.579000] uhci_hcd 0000:00:07.2: UHCI Host Controller
+[4294867.644000] uhci_hcd 0000:00:07.2: new USB bus registered, assigned
+bus num
+[4294867.644000] uhci_hcd 0000:00:07.2: irq 11, io base 0x00001860
+[4294867.660000] hub 1-0:1.0: USB hub found
+[4294867.661000] hub 1-0:1.0: 2 ports detected
+[4294868.035000] usb 1-1: new low speed USB device using uhci_hcd and
+address 2
+[4294868.074000] e100: eth0: e100_watchdog: link up, 10Mbps, full-duplex
+[4294868.252000] input: Logitech USB Mouse as /class/input/input4
+[4294868.265000] input: USB HID v1.10 Mouse [Logitech USB Mouse] on
+usb-0000:00:
+[4294869.085000] ACPI: AC Adapter [AC] (on-line)
+[4294869.156000] ACPI: Battery Slot [BAT0] (battery present)
+[4294869.753000] ACPI: Power Button (FF) [PWRF]
+[4294869.753000] ACPI: Lid Switch [LID]
+[4294869.754000] ACPI: Sleep Button (CM) [SLPB]
+[4294869.876000] ACPI: Thermal Zone [THM0] (59 C)
+[4294869.931000] ibm_acpi: IBM ThinkPad ACPI Extras v0.12a
+[4294869.931000] ibm_acpi: http://ibm-acpi.sf.net/
+[4294869.932000] ibm_acpi: dock device not present
+[4294878.466000] eth0: no IPv6 routers present
 
-Capture:
-  Status: Stop
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 48000
-  Interface 2
-    Altset 2
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 48000
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 44100
-  Interface 2
-    Altset 4
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 44100
-  Interface 2
-    Altset 5
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 32000
-  Interface 2
-    Altset 6
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 32000
-  Interface 2
-    Altset 7
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 22050
-  Interface 2
-    Altset 8
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 22050
-  Interface 2
-    Altset 9
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 16000
-  Interface 2
-    Altset 10
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 16000
-  Interface 2
-    Altset 11
-    Format: S8
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 16000
-  Interface 2
-    Altset 12
-    Format: S8
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 16000
-  Interface 2
-    Altset 13
-    Format: S8
-    Channels: 2
-    Endpoint: 4 IN (ASYNC)
-    Rates: 8000
-  Interface 2
-    Altset 14
-    Format: S8
-    Channels: 1
-    Endpoint: 4 IN (ASYNC)
-    Rates: 8000
-  Interface 2
-    Altset 15
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
-  Interface 2
-    Altset 16
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
-  Interface 2
-    Altset 17
-    Format: S8
-    Channels: 2
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
-  Interface 2
-    Altset 18
-    Format: S8
-    Channels: 1
-    Endpoint: 4 IN (SYNC)
-    Rates: 11025
+the sound doesn't come up after suspend, rmmod modprobe enables it as
+before.
+I have also enabled debug mode when configured alsa (--with-debug=full).
+This gives me some more messages when I try to sleep while playing some
+audio (in xmms or xine). Those messages appear right after I start to
+resume:
+
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+[4295810.805000] ALSA
+/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
+BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
+0x200
+
+Note that I get no sound after resume regardless whether the sound device
+is used or not - it suffices if the module snd_cs46xx is loaded.
+
+
 
 ----------------------------------------------------------------------
- oggb4mp3 - 03-01-06 03:40 
+ cull - 03-01-06 03:41 
 ----------------------------------------------------------------------
-Okay, I am still trying to narrow this down, and I have patched the plain
-2.6.15 kernel with the uevent patch and the
-alsa-usbaudio-2.6.15-revert-001.patch form this bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585.  Kernel
-boots, usb device works.  So for sure, something in the usb-audio device
-rewrite for 2.6.15 broke support for this device.
+Hi, I don't know if this might give a clue, but I get additional sound
+related messages when I hibernate to disc using suspend2:
+
+[4469757.963000] ACPI: PCI interrupt for device 0000:00:05.0 disabled
+[4469758.655000] snd: Not freed snd_alloc_kmalloc = 468
+[4469758.655000] snd: kmalloc(468) from d0caad05 not freed
+[4469758.829000] gameport: kgameportd exiting
+
+Here I do not tell suspend2 to unload the sound module before suspend,
+however it is not loaded after resume. If I use ACPI suspend, I don't have
+these messages, the sound module is loaded after resume but is not
+functional.
+
+The rest of the log for suspend2 looks as follows:
+
+[4469759.540000] uhci_hcd 0000:00:07.2: remove, state 1
+[4469759.541000] usb usb1: USB disconnect, address 1
+[4469759.541000] usb 1-1: USB disconnect, address 2
+[4469759.868000] uhci_hcd 0000:00:07.2: USB bus 1 deregistered
+[4469759.918000] ACPI: PCI interrupt for device 0000:00:07.2 disabled
+[4469760.764000] Suspend2 2.2-rc16: Initiating a software suspend cycle.
+[4469764.665000] 20%...40%...60%...80%...100%...done.
+[4469773.160000] ACPI: PCI interrupt for device 0000:00:03.0 disabled
+[4469773.171000] ACPI: PCI interrupt for device 0000:00:02.1 disabled
+[4469773.171000] ACPI: PCI interrupt for device 0000:00:02.0 disabled
+[4469808.175000] ACPI: PCI Interrupt 0000:00:02.0[A] -> Link [LNKA] -> GSI
+11 (l
+evel, low) -> IRQ 11
+[4469808.206000] ACPI: PCI Interrupt 0000:00:02.1[B] -> Link [LNKB] -> GSI
+11 (l
+evel, low) -> IRQ 11
+[4469808.284000] ACPI: PCI Interrupt 0000:00:03.1[A] -> Link [LNKC] -> GSI
+11 (l
+evel, low) -> IRQ 11
+[4469810.274000] e100: eth0: e100_watchdog: link up, 10Mbps, full-duplex
+[4469810.624000] 20%...40%...60%...80%...100%...done.
+[4469819.456000] Suspend2 debugging info:
+[4469819.456000] - SUSPEND core   : 2.2-rc16
+[4469819.456000] - Kernel Version : 2.6.15-archck2
+[4469819.456000] - Compiler vers. : 4.0
+[4469819.456000] - Attempt number : 5
+[4469819.456000] - Parameters     : 0 32 0 1 182 0
+[4469819.456000] - Overall expected compression percentage: 50.
+[4469819.456000] - Compressor lzf enabled.
+[4469819.456000]   Compressed 246611968 bytes into 132064606 (46 percent
+compres
+sion).
+[4469819.456000] - Swapwriter active.
+[4469819.456000]   Swap available for image: 485537 pages.
+[4469819.456000] - I/O speed: Write 20 MB/s, Read 18 MB/s.
+[4469819.798000] USB Universal Host Controller Interface driver v2.3
+[4469819.813000] ACPI: PCI Interrupt 0000:00:07.2[D] -> Link [LNKD] -> GSI
+11 (l
+evel, low) -> IRQ 11
+[4469819.814000] uhci_hcd 0000:00:07.2: UHCI Host Controller
+[4469819.863000] uhci_hcd 0000:00:07.2: new USB bus registered, assigned
+bus num
+ber 1
+[4469819.863000] uhci_hcd 0000:00:07.2: irq 11, io base 0x00001860
+[4469819.881000] hub 1-0:1.0: USB hub found
+[4469819.881000] hub 1-0:1.0: 2 ports detected
+[4469820.421000] usb 1-1: new low speed USB device using uhci_hcd and
+address 2
+[4469820.639000] input: Logitech USB Mouse as /class/input/input29
+[4469820.644000] input: USB HID v1.10 Mouse [Logitech USB Mouse] on
+usb-0000:00:
+07.2-1
+[4469820.832000] ACPI: Power Button (FF) [PWRF]
+[4469820.832000] ACPI: Lid Switch [LID]
+[4469820.832000] ACPI: Sleep Button (CM) [SLPB]
+[4469820.954000] IBM TrackPoint firmware: 0x0e, buttons: 3/3
+[4469821.002000] input: TPPS/2 IBM TrackPoint as /class/input/input30
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
-02-24-06 14:16 Clemens LadischNote Added: 0008175                          
-02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
-02-24-06 15:32 Clemens LadischNote Added: 0008178                          
-02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
-02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
-02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
-02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
-02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
-02-27-06 18:22 Clemens LadischNote Added: 0008227                          
-02-27-06 22:33 oggb4mp3       Note Added: 0008232                          
-03-01-06 03:40 oggb4mp3       Note Added: 0008263                          
+05-25-04 14:49 klausr         New Issue                                    
+05-25-04 14:49 klausr         Kernel Version            => Debian kernel
+2.6.5-4-686
+05-25-04 15:02 tiwai          Note Added: 0001213                          
+05-25-04 15:31 klausr         Note Added: 0001215                          
+05-25-04 15:59 klausr         Note Added: 0001217                          
+05-25-04 16:02 klausr         Issue Monitored: klausr                      
+05-25-04 16:05 tiwai          Note Added: 0001218                          
+05-25-04 16:44 klausr         Note Added: 0001220                          
+05-25-04 16:56 klausr         Note Edited: 0001220                         
+05-27-04 08:49 klausr         Issue End Monitor: klausr                    
+05-28-04 17:08 tiwai          Note Added: 0001269                          
+05-29-04 09:36 klausr         Note Added: 0001276                          
+01-17-05 10:57 jdthood        Note Added: 0003226                          
+03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
+03-23-05 00:39 rlrevell       Note Added: 0004145                          
+03-28-05 15:42 sboehler       Issue Monitored: sboehler                    
+06-20-05 01:59 tromer         Issue Monitored: tromer                      
+12-12-05 11:12 bheung         Issue Monitored: bheung                      
+12-13-05 12:49 jdthood        Note Added: 0007003                          
+12-13-05 22:06 jdthood        Note Added: 0007025                          
+02-26-06 03:52 cull           Note Added: 0008193                          
+02-26-06 04:24 cull           Note Added: 0008194                          
+02-26-06 04:44 rlrevell       Note Added: 0008195                          
+02-26-06 16:31 cull           Note Added: 0008204                          
+02-26-06 23:24 cull           Note Edited: 0008204                         
+03-01-06 03:41 cull           Note Added: 0008264                          
 ======================================================================
 
 
