@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: PCM driver only plays tiny portion of clip
-Date: Wed, 01 Mar 2006 15:41:39 -0500
-Message-ID: <1141245699.5860.224.camel@mindpipe>
+Date: Wed, 01 Mar 2006 15:31:10 -0500
+Message-ID: <1141245071.5860.216.camel@mindpipe>
 References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
 	 <20060227172601.GA446@turing.informatik.uni-halle.de>
 	 <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
@@ -15,15 +15,15 @@ References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
 	 <1141241474.5860.183.camel@mindpipe>
 	 <1141242058.9233.17.camel@localhost.localdomain>
 	 <1141243152.5860.197.camel@mindpipe>
-	 <1141244926.9233.32.camel@localhost.localdomain>
+	 <1141244449.9233.24.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 49DEB1C5
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 21:41:42 +0100 (MET)
-In-Reply-To: <1141244926.9233.32.camel@localhost.localdomain>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7409E1C5
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 21:31:13 +0100 (MET)
+In-Reply-To: <1141244449.9233.24.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,39 +37,29 @@ To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-03-01 at 20:28 +0000, Adrian McMenamin wrote:
+On Wed, 2006-03-01 at 20:20 +0000, Adrian McMenamin wrote:
 > On Wed, 2006-03-01 at 14:59 -0500, Lee Revell wrote:
-> > On Wed, 2006-03-01 at 19:40 +0000, Adrian McMenamin wrote:
-> > > On Wed, 2006-03-01 at 14:31 -0500, Lee Revell wrote:
-> > > 
-> > > > > What happens next?
-> > > > 
-> > > > The app(s) waiting to output audio (sleeping in poll() or write()) will
-> > > > be woken up and based on the value returned by the pointer callback
-> > > > above, informed that there is space in the buffer and how much space
-> > > > there is, and will then write the next chunk of frames, and go back to
-> > > > sleep.  Then we go back to "Hardware triggers interrupt" above and the
-> > > > process repeats.
-> > > 
-> > > But something in the alsa subsystem determines whether there is any
-> > > space before waking the app, yes?
-> > > 
+> 
 > > 
-> > Yes - the value returned by your pointer callback minus the last value
-> > returned by your pointer callback determines how much space is left.  So
-> > if the app is waiting to write 512 frames, the pointer was 256 at the
-> > last interrupt, and the current pointer is 512, the app will not wake up
-> > until the next interrupt because only 256 frames can be written.
+> > The trigger callback is only called when the PCM is stopped, started, or
+> > paused.
 > > 
 > 
-> Presumably this is on the assumption that 512 frames is a period?
+> 
+> Which buffer?
 
-In this example the period (# of frames between interrupts) is 256.  So
-if the app is waiting to write 512 frames (by setting the avail_min
-software parameter) it will be woken up every other interrupt.  (This
-example only makes sense if there are more than 2 periods per buffer,
-otherwise the app is constantly overwriting the data that the hardware
-is playing).
+The way most soundcards work is that there is a single ring buffer
+shared by the software and hardware.  Once the PCM is started the
+hardware will repeatedly loop over this buffer playing the samples in
+it.  The buffer is normally divided in half - while your app is writing
+to one half of the buffer the hardware is playing the samples in the
+other half.  The hardware generates interrupts at the middle and end of
+this buffer, which is where we switch - the hardware is now playing what
+the software just wrote to the one half of the buffer and the software
+can write into the other half that was just played by the hardware.
+
+If your soundcard does not work this way you'll have to model it
+somehow.
 
 Lee
 
