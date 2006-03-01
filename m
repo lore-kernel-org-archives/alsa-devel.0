@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
-Date: Wed, 1 Mar 2006 04:45:31 +0100
-Message-ID: <e5c41c2c4552569feff7f8904e9a3ed8@bugtrack.alsa-project.org>
+Date: Wed, 1 Mar 2006 04:53:55 +0100
+Message-ID: <b74f55ee4bc903a1ec2006887ae731cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C43C1CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 04:45:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF8731CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 04:53:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             Debian kernel 2.6.5-4-686
 ======================================================================
 Date Submitted:             05-25-2004 14:49 CEST
-Last Modified:              03-01-2006 04:45 CET
+Last Modified:              03-01-2006 04:53 CET
 ======================================================================
 Summary:                    sound is locked up after suspend/resume (APM)
 Description: 
@@ -59,21 +59,6 @@ has duplicate       0000226 Sound hangs after APM resume
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 04:14 
-----------------------------------------------------------------------
-OK, we may be on to something.  Register 26 is:
-
-#define  AC97_POWER_CONTROL      0x0026
-
-But, AFAICT bit 0x8000 should only affect the modem.
-
-After resume try:
-
-echo 26 800f > /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-Does it restore your sound?
-
-----------------------------------------------------------------------
  cull - 03-01-06 04:45 
 ----------------------------------------------------------------------
 no, doesn't help.
@@ -88,6 +73,13 @@ playback write error (DMA or IRQ trouble?)
 
 Not sure at which moment exactly, but after suspend.
 I'll try to repeat this and report more exatcly.
+
+----------------------------------------------------------------------
+ cull - 03-01-06 04:53 
+----------------------------------------------------------------------
+yes, the message appears after resume, when I try to play sound in an
+alsa-native (for example in gnomemeeting), but not in oss-based
+application (like xmms). I do not get sound in any of them.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +115,7 @@ Date Modified  Username       Field                    Change
 03-01-06 04:03 cull           Note Added: 0008266                          
 03-01-06 04:14 rlrevell       Note Added: 0008267                          
 03-01-06 04:45 cull           Note Added: 0008268                          
+03-01-06 04:53 cull           Note Added: 0008269                          
 ======================================================================
 
 
