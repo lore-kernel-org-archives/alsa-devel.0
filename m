@@ -1,20 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [RFC][PATCH] Transparent network support through
- polypaudio
-Date: Wed, 01 Mar 2006 09:32:45 +0100
-Message-ID: <20060301083245.GB6381@turing.informatik.uni-halle.de>
-References: <43F09D76.9060004@cendio.se>
- <20060214094741.GA8943@turing.informatik.uni-halle.de>
- <1141186155.5860.91.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001882]: Use ESC key to stop the speaker-test instead of using ctrl-C
+Date: Wed, 1 Mar 2006 09:51:49 +0100
+Message-ID: <941552641c700fa76a932c57a3978984@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C9B01CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 09:36:22 +0100 (MET)
-In-reply-to: <1141186155.5860.91.camel@mindpipe>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A95D21CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 09:51:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,27 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> I still get smoother playback with OSS emulation than mplayer's ALSA
-> driver.  I think it's because the ALSA driver resets the stream on
-> xruns:
-> 
-> alsa-space: xrun of at least 862.101 msecs. resetting stream3% 7 0                                    
-> 
-> This seems like a waste of CPU - after all there's nothing we can do but
-> drop frames if I'm trying to play a movie that my CPU can't quite
-> handle.  Shouldn't mplayer just ignore xruns?
 
-Yes, it should.  And it does in the CVS version; the last is horribly
-outdated.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1882> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1882
+Category:                   speakertest
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-27-2006 03:57 CET
+Last Modified:              03-01-2006 09:51 CET
+======================================================================
+Summary:                    Use ESC key to stop the speaker-test instead of
+using ctrl-C
+Description: 
+Is it possible to use ESC key to stop the speaker-test instead of abort the
+test by using control-C ?
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 02-27-06 04:01 
+----------------------------------------------------------------------
+Why, what's wrong with Ctrl-C?  It's the standard way to stop a program.
+
+----------------------------------------------------------------------
+ Raymond - 03-01-06 09:51 
+----------------------------------------------------------------------
+It seem that -t wav does not work for -D surround51 -c 6
+
+speaker-test -D surround51 -t wav -c 6
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+Cannot open WAV file /usr/share/sounds/alsa/Center.wavLFE.wav
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-27-06 03:57 Raymond        New Issue                                    
+02-27-06 04:01 rlrevell       Note Added: 0008212                          
+03-01-06 09:51 Raymond        Note Added: 0008277                          
+======================================================================
 
 
-Regards,
-Clemens
 
 
 -------------------------------------------------------
