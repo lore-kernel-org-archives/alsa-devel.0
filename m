@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001494]: Intel HDA audio "scratchy" on Fujitsu S7020D unless position_fix=1 used
-Date: Wed, 1 Mar 2006 17:54:07 +0100
-Message-ID: <f9473edd2dffb3de77a0e6f9cde7da31@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001713]: ALC260 no input
+Date: Wed, 1 Mar 2006 17:56:24 +0100
+Message-ID: <1dbbe21ced1f6c900103809ed9422ea8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 795571C5
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 17:54:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 439A01C9
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 17:56:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1494> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1713> 
 ======================================================================
-Reported By:                Paul Walmsley
+Reported By:                hweigel
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1494
+Issue ID:                   1713
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Red Hat Fedora Core 4
-Kernel Version:             2.6.13-1.1532_FC4 with ALSA drivers from CVS head
-13-Oct-2005
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-22-2005 19:03 CEST
-Last Modified:              03-01-2006 17:54 CET
+Date Submitted:             01-04-2006 17:24 CET
+Last Modified:              03-01-2006 17:56 CET
 ======================================================================
-Summary:                    Intel HDA audio "scratchy" on Fujitsu S7020D unless
-position_fix=1 used
+Summary:                    ALC260 no input
 Description: 
-Audio on a Fujitsu Lifebook S7020D (snd-hda-intel with a Realtek ALC260) is
-distorted and choppy unless position_fix=1 is used as a module parameter. 
-This should be the default for this particular configuration.
-
-By the way, Jonathan Woithe's mixer changes in patch-realtek.c CVS rev
-1.26 work well on this platform for playback.  (I have not yet tested
-recording.) 
-
-
-
-
+My FSC Lifebook S-7020 has the ALC260. While 
+all sound output seems to work fine with 
+alsa 1.0.10, the microphone produces only very 
+weak sound (just infinitesimally more than zero).
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 01:44 
+ jwoithe - 03-01-06 06:16 
 ----------------------------------------------------------------------
-Is this fixed in later releases?
+hweigel: I bet the microphone you're using is a condensor type.  Most small
+"made for computers" microphones fall into this category.  They require a
+small DC bias to be supplied by the computer before they will operate.
+
+The version of the ALC260 driver now in CVS includes support to turn this
+bias on if you need it.  Get the latest CVS version or wait for 1.0.11 to
+be released.  Get this compiled and loaded.  Then go to alsamixer, find
+the control labeled "Mic/Line jack mode" and set it to "Mic 80pc bias". 
+Once done, try capturing again; it should work much better.
+
+Note that the "mic jack mode" control is not AFAIK in 1.0.11-rc3 - you
+will need a reasonably recent CVS snapshot.
 
 ----------------------------------------------------------------------
- Paul Walmsley - 03-01-06 10:48 
+ rlrevell - 03-01-06 17:56 
 ----------------------------------------------------------------------
-Just tested 1.0.11rc3; it works fine without an explicit position_fix
-parameter
-on this hardware.
+should be fixed in CVS
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-22-05 19:03 Paul Walmsley  New Issue                                    
-10-22-05 19:03 Paul Walmsley  Distribution              => Red Hat Fedora Core 4
-10-22-05 19:03 Paul Walmsley  Kernel Version            => 2.6.13-1.1532_FC4
-with ALSA drivers from CVS head 13-Oct-2005
-10-22-05 19:04 Paul Walmsley  Issue Monitored: Paul Walmsley                    
-03-01-06 01:44 rlrevell       Note Added: 0008262                          
+01-04-06 17:24 hweigel        New Issue                                    
+03-01-06 01:27 rlrevell       Note Added: 0008257                          
+03-01-06 06:16 jwoithe        Note Added: 0008271                          
 03-01-06 10:05 cartman        Issue Monitored: cartman                     
-03-01-06 10:48 Paul Walmsley  Note Added: 0008279                          
-03-01-06 17:54 rlrevell       Status                   assigned => resolved
-03-01-06 17:54 rlrevell       Resolution               open => fixed       
+03-01-06 17:56 rlrevell       Status                   assigned => resolved
+03-01-06 17:56 rlrevell       Resolution               open => fixed       
+03-01-06 17:56 rlrevell       Note Added: 0008283                          
 ======================================================================
 
 
