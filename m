@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001603]: via8235 no sound since kernel 2.6.13
-Date: Wed, 1 Mar 2006 19:27:32 +0100
-Message-ID: <25e74f32de893f9da4a2a170f1d39e1c@bugtrack.alsa-project.org>
+Date: Wed, 1 Mar 2006 19:39:41 +0100
+Message-ID: <06f8f9f0d89d68c38ddfae3945ab30d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56E141AB
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 19:27:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E233D1B7
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 19:39:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
 ======================================================================
 Reported By:                picobyte
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1603
@@ -35,12 +35,14 @@ Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               slackware 10.2
 Kernel Version:             2.6.13 - 2.6.14.2
+Resolution:                 fixed
+Fixed in Version:           1.0.11rc3
 ======================================================================
 Date Submitted:             11-27-2005 15:06 CET
-Last Modified:              03-01-2006 19:27 CET
+Last Modified:              03-01-2006 19:39 CET
 ======================================================================
 Summary:                    via8235 no sound since kernel 2.6.13
 Description: 
@@ -75,6 +77,10 @@ Date Modified  Username       Field                    Change
 01-18-06 00:39 picobyte       Issue End Monitor: picobyte                    
 01-18-06 00:41 picobyte       Note Edited: 0007704                         
 03-01-06 19:27 picobyte       Note Added: 0008287                          
+03-01-06 19:39 rlrevell       Status                   new => resolved     
+03-01-06 19:39 rlrevell       Fixed in Version          => 1.0.11rc3       
+03-01-06 19:39 rlrevell       Resolution               open => fixed       
+03-01-06 19:39 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
