@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001736]: No sound on my acertravelmate 4062nwlmi
-Date: Wed, 1 Mar 2006 00:54:01 +0100
-Message-ID: <5387f7314403941ff8236f1a2c568010@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001044]: Heavily distorted audio
+Date: Wed, 1 Mar 2006 01:35:23 +0100
+Message-ID: <ad6782182f6f1da8105921dce4bcdf95@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD2491C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:54:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 277C8170
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:35:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +22,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1736> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1044> 
 ======================================================================
-Reported By:                clamath
-Assigned To:                tiwai
+Reported By:                jefferai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1736
-Category:                   PCI - hda-intel
+Issue ID:                   1044
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               No sound on acer Travelmate 4062wnlmi
+Status:                     feedback
+Distribution:               Gentoo
 Kernel Version:             2.6.15
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             01-11-2006 11:24 CET
-Last Modified:              03-01-2006 00:54 CET
+Date Submitted:             04-11-2005 17:41 CEST
+Last Modified:              03-01-2006 01:35 CET
 ======================================================================
-Summary:                    No sound on my acertravelmate 4062nwlmi
+Summary:                    Heavily distorted audio
 Description: 
-alsa counf found drivers; modprobe snd-hda-intel succes; chanels NOT muted
-; but still no sound any ideas????also a tried drvers 1.0.11rc2 but still
-no sound
+I have a laptop that is fine by itself, but when plugged into my docking
+station I get heavily distorted audio when something plays either
+directly to hw0:0 or through the OSS emulation. The problem seems to be
+with sample rate conversion -- if I create my own dmix-based device that
+resamples audio to 48KHz and then plays it to hw0:0, and I have an
+ALSA-aware app that lets me define which device to use and set it to
+that device, the audio is beautiful both on and off of the docking
+station.  Unfortunately, not all apps allow these settings, so things such
+as RealPlayer and Flash (in Firefox) sound horrid if I'm on my docking
+station, which is most of the time.
 
-lspci
-00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML Express
-Proce
-ssor to DRAM Controller (rev 03)
-00:02.0 VGA compatible controller: Intel Corporation Mobile
-915GM/GMS/910GML Ex
-press Graphics Controller (rev 03)
-00:02.1 Display controller: Intel Corporation Mobile 915GM/GMS/910GML
-Express G
-raphics Controller (rev 03)
-00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High
-Definition Audio Controller (rev 04)
-00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E
-xpress Port 1 (rev 04)
-00:1c.1 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E
-xpress Port 2 (rev 04)
-00:1c.2 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI E                               xpress Port 3 (rev 04)
-00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #1 (rev 04)
-00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #2 (rev 04)
-00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #3 (rev 04)
-00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB UHCI #4 (rev 04)
-00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) U                               SB2 EHCI Controller (rev 04)
-00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev d4)
-00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
-Bridge (re                               v 04)
+I've seen this same problem through three Linux distributions now
+(Gentoo, SuSE, and Fedora Core 3) on the same laptop so I know it's an
+ALSA issue (or configuration issue) and not distribution-specific.
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
-duplicate of        0001618 No Sound on Acer with Intel ICH6 HDA an...
+I've hard-set the ac97 clock option in the snd-intel8x0 module to 48000
+but this
+doesn't help, and my clock is detected as being 48000Hz anyways.  I
+don't know what to do.  Some people have said to point OSS apps to
+/dev/adsp but apps complain it's not a valid device, and anyways pointing
+to anything but /dev/dsp doesn't seem to be an option for all apps. 
+Besides, I'd still have the ALSA issues for apps that don't let you define
+which device to use.
+
+Following are relevant snippets of files.  I'm on up-to-date Gentoo
+linux using the Gentoo alsa-driver, alsa-tools, alsa-headers, alsa-lib,
+and alsa-oss ebuilds, all 1.0.8.  Configuration files are the defaults
+(I added the extra device with a .asoundrc).
+
+TIA,
+Jeff
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 00:54 
+ rlrevell - 03-01-06 01:34 
 ----------------------------------------------------------------------
-Fixed in CVS
+Hmm, with alsa-lib 1.0.9b or later, dmix should be used by default with
+this device - can you double check that disabling the .asoundrc and using
+the "default" device (aplay file.wav) does not work?
+
+----------------------------------------------------------------------
+ rlrevell - 03-01-06 01:35 
+----------------------------------------------------------------------
+Also what's the exact model of the laptop?
+
+This might be hard to fix (lack of documentation)...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 11:24 clamath        New Issue                                    
-01-11-06 11:24 clamath        Distribution              => No sound on acer
-Travelmate 4062wnlmi
-01-11-06 11:24 clamath        Kernel Version            => 2.6.15          
-03-01-06 00:53 rlrevell       Relationship added       duplicate of 0001517
-03-01-06 00:53 rlrevell       Relationship added       duplicate of 0001618
-03-01-06 00:54 rlrevell       Status                   assigned => resolved
-03-01-06 00:54 rlrevell       Resolution               open => fixed       
-03-01-06 00:54 rlrevell       Note Added: 0008254                          
+04-11-05 17:41 jefferai       New Issue                                    
+04-11-05 17:41 jefferai       Distribution              => Gentoo          
+04-11-05 17:41 jefferai       Kernel Version            => 2.6.11-ck3      
+04-12-05 16:32 tiwai          Note Added: 0004448                          
+04-12-05 18:13 jefferai       Note Added: 0004457                          
+04-12-05 18:39 tiwai          Note Added: 0004458                          
+12-30-05 04:42 rlrevell       Note Added: 0007219                          
+03-01-06 01:02 rlrevell       Status                   new => closed       
+03-01-06 01:29 jefferai       Kernel Version           2.6.11-ck3 => 2.6.15
+03-01-06 01:29 jefferai       Status                   closed => feedback  
+03-01-06 01:29 jefferai       Resolution               open => reopened    
+03-01-06 01:29 jefferai       Note Added: 0008258                          
+03-01-06 01:34 rlrevell       Note Added: 0008260                          
+03-01-06 01:35 rlrevell       Note Added: 0008261                          
 ======================================================================
 
 
