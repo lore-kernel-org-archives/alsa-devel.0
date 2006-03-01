@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001882]: Use ESC key to stop the speaker-test instead of using ctrl-C
-Date: Wed, 1 Mar 2006 18:01:33 +0100
-Message-ID: <d8960d3cc4feee3e2a44f7d4414548c1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
+Date: Wed, 1 Mar 2006 18:02:45 +0100
+Message-ID: <647ac676dcbd0270298fcf9d52d0a931@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D06B21C9
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 18:01:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8624AAA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 18:02:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1882> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
 ======================================================================
-Reported By:                Raymond
+Reported By:                iq79
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1882
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1259
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12-gentoo-r1
 ======================================================================
-Date Submitted:             02-27-2006 03:57 CET
-Last Modified:              03-01-2006 18:01 CET
+Date Submitted:             07-15-2005 18:18 CEST
+Last Modified:              03-01-2006 18:02 CET
 ======================================================================
-Summary:                    Use ESC key to stop the speaker-test instead of
-using ctrl-C
+Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
+from AUX in
 Description: 
-Is it possible to use ESC key to stop the speaker-test instead of abort the
-test by using control-C ?
+I am unable to unmute the internal AUX-in header of my Audigy4Pro.
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
+- I played around with all (Playback/Capture) mixer settings in alsamixer
+but I couldn't find a configuration which gives me sound from AUX-in.
+
+- I tried loading emu10k1 module with several extin/exout combinations.
+That didn't help, too.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-01-06 09:53 
+ iq79 - 03-01-06 10:46 
 ----------------------------------------------------------------------
-It seem that -t wav does not work for -D surround51 -c 6
+*bump*
 
-speaker-test -D surround51 -t wav -c 6
- 
-speaker-test 1.0.11rc2
- 
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-WAV file(s)
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
-Cannot open WAV file /usr/share/sounds/alsa/Center.wavLFE.wav
-
-
-
-
-
-./speaker-test -c 4 -D surround40 -t wav
- 
-speaker-test 1.0.11rc2
- 
-Playback device is surround40
-Stream parameters are 48000Hz, S16_LE, 4 channels
-WAV file(s)
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 5.723369
- 0 - Front Left
-
-
+Still having this problem. I double-checked everything again (HW is okay,
+software setup should be fine, too), but couldn't get it to work.
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 18:01 
+ rlrevell - 03-01-06 18:02 
 ----------------------------------------------------------------------
-That's not what -t does in speaker-test
-
-Usage: speaker-test [OPTION]... 
--h,--help       help
--D,--device     playback device
--r,--rate       stream rate in Hz
--c,--channels   count of channels in stream
--f,--frequency  sine wave frequency in Hz
--F,--format     sample format
--b,--buffer     ring buffer size in us
--p,--period     period size in us
--t,--test       1=use pink noise, 2=use sine wave
--s,--speaker    single speaker test. Values 1=Left or 2=right
+Have you tried a newer ALSA than 1.0.9-rc2?  That's very old.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-06 03:57 Raymond        New Issue                                    
-02-27-06 04:01 rlrevell       Note Added: 0008212                          
-03-01-06 09:51 Raymond        Note Added: 0008277                          
-03-01-06 09:53 Raymond        Note Edited: 0008277                         
-03-01-06 18:01 rlrevell       Note Added: 0008284                          
+07-15-05 18:18 iq79           New Issue                                    
+07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
+07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
+07-15-05 19:50 pzad           Note Edited: 0005483                         
+07-15-05 23:40 iq79           Note Added: 0005484                          
+07-16-05 16:31 jdthood        Note Added: 0005496                          
+07-16-05 18:36 iq79           File Added: amixer_output                    
+07-16-05 18:38 iq79           Note Added: 0005500                          
+07-20-05 05:32 jcdutton       Note Added: 0005532                          
+03-01-06 10:46 iq79           Note Added: 0008278                          
+03-01-06 18:02 rlrevell       Note Added: 0008286                          
 ======================================================================
 
 
