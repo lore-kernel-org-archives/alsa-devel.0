@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001855]: no sound with openal
-Date: Wed, 1 Mar 2006 08:00:24 +0100
-Message-ID: <d0a2560997f187ca493b848fb0ea5f6e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
+Date: Wed, 1 Mar 2006 08:14:37 +0100
+Message-ID: <f30789cc929d6fb4cad0a77f4a82b088@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 333C21CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 08:00:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8B9C1CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 08:14:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1855> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
 ======================================================================
-Reported By:                eiz
-Assigned To:                
+Reported By:                penguinparty
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1855
-Category:                   PCI - emu10k1
+Issue ID:                   1138
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.3
+Status:                     assigned
+Distribution:               ubuntu 5.04
+Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
 ======================================================================
-Date Submitted:             02-18-2006 20:24 CET
-Last Modified:              03-01-2006 08:00 CET
+Date Submitted:             05-28-2005 22:22 CEST
+Last Modified:              03-01-2006 08:14 CET
 ======================================================================
-Summary:                    no sound with openal
+Summary:                    errors when installing au8820 modules
 Description: 
-when forcing ( define devices '(alsa native) ) in .openalrc
-no sound at all and no error 
-tested with openal own demo and ut2004
+Please see the section additional information for a dump of my dmesg output
+regarding the au8820 module.
 
-openal 0.2005080600-2.1 or openal-alsa-emu10k1-1.2
-kernel 2.6.15.3
+I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
+kernels. The shipping alsa support under each of these kerenls provies me
+with the same result. I have also tried installing each of these kernels
+without alsa support only CONFIG_SOUND and then installing the
+alsa-drivers 1.0.9rc4a
 
-cat ~/.asoundrc
-pcm.emu10k1 {
-           type hw
-           card 0
-}
-ctl.emu10k1 {
-           type hw
-           card 0
-}
+I get the same result every time I do the modprobe snd-au8820
 
-NOTES : 
-- maybe useful tip : I noticed mmap call seems broken on amd64
-- my surround51 device through spdiff is working very well with 
-  aplay -c 6 -D surround51
-
+Using older versions of debian as well as the ubuntu live cd's I am able
+to get this sound card working.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 02-19-06 12:34 
+ Raymond - 01-05-06 10:01 
 ----------------------------------------------------------------------
-Don't use .asoundrc. Your card doesn't need it and it can cause problems.
-I think openal-alsa-emu10k1-1.2 will not work with newer alsa (needs one
-simple change).
+Do your hear any sound when playing mono pcm wav through hw:0,3(WT) of your
+au8820 after applying this patch ?
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593
+
+> -  (dma->dma_ctrl & FMT_MASK) | ((fmt << FMT_SHIFT) & FMT_MASK);
+> + (dma->dma_ctrl & ~FMT_MASK) | ((fmt << FMT_SHIFT) & FMT_MASK);
 
 ----------------------------------------------------------------------
- Raymond - 03-01-06 08:00 
+ Raymond - 03-01-06 08:14 
 ----------------------------------------------------------------------
-The iface of the kcontrols had been changed from MIXER to PCM
+Would any of you try the au88x0_surround40.patch (alsa-driver-1.0.11rc3) to
+see if there is any side effect on au8820 ? 
 
-http://sourceforge.net/mailarchive/forum.php?thread_id=7849852&forum_id=33141
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-18-06 20:24 eiz            New Issue                                    
-02-18-06 20:24 eiz            File Added: openal-demo-strace.txt.gz             
-      
-02-18-06 20:24 eiz            Distribution              => Debian          
-02-18-06 20:24 eiz            Kernel Version            => 2.6.15.3        
-02-18-06 20:30 rlrevell       Note Added: 0008123                          
-02-19-06 12:25 eiz            Note Added: 0008132                          
-02-19-06 12:34 pzad           Note Added: 0008133                          
-03-01-06 08:00 Raymond        Note Added: 0008275                          
+05-28-05 22:22 penguinparty   New Issue                                    
+05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
+05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
+and 2.6.10
+05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
+06-08-05 04:41 penguinparty   File Added: typescript                       
+06-08-05 04:43 penguinparty   Note Added: 0004914                          
+08-24-05 10:55 Raymond        Note Added: 0005925                          
+08-24-05 10:58 Raymond        Note Added: 0005926                          
+08-24-05 10:59 Raymond        Note Deleted: 0005926                        
+09-01-05 04:24 penguinparty   File Added: make-typescript                    
+09-01-05 04:25 penguinparty   Note Added: 0005993                          
+09-01-05 05:58 Raymond        Note Added: 0005994                          
+09-02-05 02:49 penguinparty   Note Added: 0006002                          
+09-02-05 05:49 Raymond        Note Added: 0006003                          
+11-16-05 06:29 Raymond        Note Added: 0006736                          
+11-23-05 13:50 Raymond        Note Added: 0006810                          
+01-02-06 10:07 Raymond        Note Deleted: 0006810                        
+01-05-06 09:51 Raymond        Note Deleted: 0006736                        
+01-05-06 10:01 Raymond        Note Added: 0007465                          
+03-01-06 08:14 Raymond        Note Added: 0008276                          
 ======================================================================
 
 
