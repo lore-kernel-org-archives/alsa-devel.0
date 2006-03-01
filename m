@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001424]: crash on snd-powermac initilize
-Date: Wed, 1 Mar 2006 07:20:20 +0100
-Message-ID: <7d08d917454c993bb9bb3e449ce7c542@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Wed, 1 Mar 2006 07:39:31 +0100
+Message-ID: <ff9bb8a75e8e584dbd2325bd6b0220a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71C0D1CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 07:20:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BEC81CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 07:39:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,140 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1424> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                amir
-Assigned To:                tiwai
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1424
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   crash
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               GeeXboX
-Kernel Version:             2.6.13.1
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             09-15-2005 20:38 CEST
-Last Modified:              03-01-2006 07:20 CET
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              03-01-2006 07:39 CET
 ======================================================================
-Summary:                    crash on snd-powermac initilize
+Summary:                    module hangs at seemingly random times
 Description: 
-I have users reporting a reproducable, on init, crash of our powerpc
-distro,
-but this happens to only some of the ppc users.
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-the distro is geexbox, www.geexbox.org
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
 
-this crash happens also when snd-powermac is compiled as module,
-and crashes when module is loaded.
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
 
-I can't reproduce the bug myself, but I have users who do the tests,
-and those users report that debian and ubuntu works great for them.
 
-this bug also happened with linux 2.6.12
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- netstar - 03-01-06 07:20 
+ Raymond - 02-13-06 16:41 
 ----------------------------------------------------------------------
-I can also confirm this behaviour.  Using 2.6.15 kernel and any
-distribution.  I think it's an issue with older iMacs.  My model is:
+Still oops in snd_mpu401_uart
 
-processor       : 0
-cpu             : PPC970FX, altivec supported
-clock           : 1800.000000MHz
-revision        : 3.0 (pvr 003c 0300)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833
 
-timebase        : 33333333
-machine         : PowerMac8,1
-motherboard     : PowerMac8,1 MacRISC4 Power Macintosh
-detected as     : 338 (iMac G5)
-pmac flags      : 00000000
-L2 cache        : 512K unified
-pmac-generation : NewWorld
+----------------------------------------------------------------------
+ Raymond - 03-01-06 07:39 
+----------------------------------------------------------------------
+control.117 {
+		comment.access 'read write inactive'
+		comment.type INTEGER
+		comment.count 4
+		comment.range '-64 - 8'
+		iface PCM
+		name 'Subdevice Playback Volume'
+		subdevice 1
+		value.0 0
+		value.1 0
+		value.2 8
+		value.3 8
+	}
 
-This crashing is definitely not distribution specific, but rather model
-specific.
+	control.149 {
+		comment.access 'read write inactive'
+		comment.type INTEGER
+		comment.count 4
+		comment.range '-64 - 8'
+		iface PCM
+		name 'index Playback Volume'
+		index 1
+		value.0 0
+		value.1 0
+		value.2 8
+		value.3 8
+	}
+
+Which function in alsa-lib can be used to differentate the subdevice
+control and the index control (volume control per pcm open) ?
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-05 20:38 amir           New Issue                                    
-09-15-05 20:38 amir           File Added: .config                          
-09-15-05 20:38 amir           Distribution              => GeeXboX         
-09-15-05 20:38 amir           Kernel Version            => 2.6.13.1        
-03-01-06 07:20 netstar        Note Added: 0008272                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
+01-13-06 18:18 tiwai          Note Added: 0007648                          
+01-14-06 04:53 Raymond        Note Added: 0007653                          
+01-14-06 05:00 Raymond        Note Edited: 0007653                         
+01-17-06 12:27 Raymond        Note Added: 0007697                          
+01-18-06 15:51 Raymond        Note Added: 0007710                          
+01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
+01-19-06 13:51 Raymond        Note Added: 0007719                          
+02-05-06 05:20 Raymond        Note Edited: 0007710                         
+02-05-06 05:28 Raymond        Note Added: 0007930                          
+02-13-06 16:38 Raymond        Note Deleted: 0006564                        
+02-13-06 16:41 Raymond        Note Added: 0008054                          
+03-01-06 07:39 Raymond        Note Added: 0008273                          
 ======================================================================
 
 
