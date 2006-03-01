@@ -1,14 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001344]: Acer Laptop Card not working (3002WTCi)
-Date: Wed, 1 Mar 2006 17:55:09 +0100
-Message-ID: <0c39ac90eb7c5ee0d1c4698b98b1dd94@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [RFC][PATCH] Transparent network support through
+	polypaudio
+Date: Wed, 01 Mar 2006 12:00:37 -0500
+Message-ID: <1141232437.5860.103.camel@mindpipe>
+References: <43F09D76.9060004@cendio.se>
+	 <20060214094741.GA8943@turing.informatik.uni-halle.de>
+	 <1141186155.5860.91.camel@mindpipe>
+	 <20060301083245.GB6381@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FCAD1C9
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 17:55:09 +0100 (MET)
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 901EF1C9
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 18:00:40 +0100 (MET)
+In-Reply-To: <20060301083245.GB6381@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +24,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-03-01 at 09:32 +0100, Clemens Ladisch wrote:
+> Lee Revell wrote:
+> > I still get smoother playback with OSS emulation than mplayer's ALSA
+> > driver.  I think it's because the ALSA driver resets the stream on
+> > xruns:
+> > 
+> > alsa-space: xrun of at least 862.101 msecs. resetting stream3% 7 0                                    
+> > 
+> > This seems like a waste of CPU - after all there's nothing we can do but
+> > drop frames if I'm trying to play a movie that my CPU can't quite
+> > handle.  Shouldn't mplayer just ignore xruns?
+> 
+> Yes, it should.  And it does in the CVS version; the last is horribly
+> outdated.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1344> 
-======================================================================
-Reported By:                bqtran
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1344
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.13-rc5 (mm-sources)
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             08-17-2005 07:33 CEST
-Last Modified:              03-01-2006 17:55 CET
-======================================================================
-Summary:                    Acer Laptop Card not working (3002WTCi)
-Description: 
-The module fails to load for this card. Here is some info.
+Thanks for taking this on!  Mplayer's ALSA support was so bad for so
+long, I had given up...
 
-lspci -v:
-0000:00:01b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-         Subsystem: Acer Incorporated [ALI]: Unknown device 0067
-         Flags: bus master, fast devsel, latency 0
-         Memory at d000c000 (64-bit, non-prefetchable)
-         Capabilities: [50] Power Management version 2
-         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-         Capabilities: [70] #10 [0091]
-
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-01-06 00:55 
-----------------------------------------------------------------------
-Any improvement in later releases?
-
-----------------------------------------------------------------------
- lrupn - 03-01-06 17:10 
-----------------------------------------------------------------------
-This hardware is working on 1.0.10....
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-17-05 07:33 bqtran         New Issue                                    
-08-17-05 07:33 bqtran         Distribution              => Gentoo          
-08-17-05 07:33 bqtran         Kernel Version            => 2.6.13-rc5
-(mm-sources)
-08-17-05 07:38 bqtran         Issue Monitored: bqtran                      
-08-23-05 16:26 bqtran         Issue End Monitor: bqtran                    
-03-01-06 00:55 rlrevell       Note Added: 0008255                          
-03-01-06 17:10 lrupn          Note Added: 0008282                          
-03-01-06 17:55 rlrevell       Status                   assigned => resolved
-03-01-06 17:55 rlrevell       Resolution               open => fixed       
-======================================================================
-
+Lee
 
 
 
