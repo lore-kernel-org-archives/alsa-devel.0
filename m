@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
-Date: Wed, 1 Mar 2006 03:41:15 +0100
-Message-ID: <17e747d0da150c4ad289b5b3bb33526e@bugtrack.alsa-project.org>
+Date: Wed, 1 Mar 2006 03:50:40 +0100
+Message-ID: <30ff094742810f1efadbe1cef3bcd026@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BBEE1C2
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 03:41:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7CAB1CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 03:50:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             Debian kernel 2.6.5-4-686
 ======================================================================
 Date Submitted:             05-25-2004 14:49 CEST
-Last Modified:              03-01-2006 03:41 CET
+Last Modified:              03-01-2006 03:50 CET
 ======================================================================
 Summary:                    sound is locked up after suspend/resume (APM)
 Description: 
@@ -57,111 +57,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 has duplicate       0000226 Sound hangs after APM resume
 ======================================================================
-
-----------------------------------------------------------------------
- cull - 02-26-06 23:24 
-----------------------------------------------------------------------
-Disabling suspend2 does not seem to make any difference. 
-Well, it does sleep using ACPI anyway, but with additional scripts (I use
-it since it allowes one to kill all application that use sound before
-sleep/suspend)
-Anyway, here are dmesg that I get with ACPI sleep without suspend2:
-
-[4294858.354000] ACPI: PCI interrupt for device 0000:00:07.2 disabled
-[4294861.984000] ACPI: PCI interrupt for device 0000:00:05.0 disabled
-[4294861.995000] ACPI: PCI interrupt for device 0000:00:02.1 disabled
-[4294861.995000] ACPI: PCI interrupt for device 0000:00:02.0 disabled
-[4294861.995000] Back to C!
-[4294865.000000] WARNING: Interrupts reenabled while resuming sysdev class
-speci
-[4294865.000000] ACPI: PCI Interrupt 0000:00:02.0[A] -> Link [LNKA] -> GSI
-11 (l
-[4294865.031000] ACPI: PCI Interrupt 0000:00:02.1[B] -> Link [LNKB] -> GSI
-11 (l
-[4294865.073000] ACPI: PCI Interrupt 0000:00:03.1[A] -> Link [LNKC] -> GSI
-11 (l
-[4294865.073000] ACPI: PCI Interrupt 0000:00:05.0[A] -> Link [LNKA] -> GSI
-11 (l
-[4294867.358000] e100: Intel(R) PRO/100 Network Driver, 3.4.14-k4-NAPI
-[4294867.358000] e100: Copyright(c) 1999-2005 Intel Corporation
-[4294867.370000] ACPI: PCI Interrupt 0000:00:03.0[A] -> Link [LNKC] -> GSI
-11 (l
-[4294867.469000] e100: eth0: e100_probe: addr 0xe8120000, irq 11, MAC addr
-00:03
-[4294867.514000] USB Universal Host Controller Interface driver v2.3
-[4294867.579000] ACPI: PCI Interrupt 0000:00:07.2[D] -> Link [LNKD] -> GSI
-11 (l
-[4294867.579000] uhci_hcd 0000:00:07.2: UHCI Host Controller
-[4294867.644000] uhci_hcd 0000:00:07.2: new USB bus registered, assigned
-bus num
-[4294867.644000] uhci_hcd 0000:00:07.2: irq 11, io base 0x00001860
-[4294867.660000] hub 1-0:1.0: USB hub found
-[4294867.661000] hub 1-0:1.0: 2 ports detected
-[4294868.035000] usb 1-1: new low speed USB device using uhci_hcd and
-address 2
-[4294868.074000] e100: eth0: e100_watchdog: link up, 10Mbps, full-duplex
-[4294868.252000] input: Logitech USB Mouse as /class/input/input4
-[4294868.265000] input: USB HID v1.10 Mouse [Logitech USB Mouse] on
-usb-0000:00:
-[4294869.085000] ACPI: AC Adapter [AC] (on-line)
-[4294869.156000] ACPI: Battery Slot [BAT0] (battery present)
-[4294869.753000] ACPI: Power Button (FF) [PWRF]
-[4294869.753000] ACPI: Lid Switch [LID]
-[4294869.754000] ACPI: Sleep Button (CM) [SLPB]
-[4294869.876000] ACPI: Thermal Zone [THM0] (59 C)
-[4294869.931000] ibm_acpi: IBM ThinkPad ACPI Extras v0.12a
-[4294869.931000] ibm_acpi: http://ibm-acpi.sf.net/
-[4294869.932000] ibm_acpi: dock device not present
-[4294878.466000] eth0: no IPv6 routers present
-
-the sound doesn't come up after suspend, rmmod modprobe enables it as
-before.
-I have also enabled debug mode when configured alsa (--with-debug=full).
-This gives me some more messages when I try to sleep while playing some
-audio (in xmms or xine). Those messages appear right after I start to
-resume:
-
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-[4295810.805000] ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:157:
-BUG: stream = 0, pos = 0x12fb29a, buffer size = 0x4000, period size =
-0x200
-
-Note that I get no sound after resume regardless whether the sound device
-is used or not - it suffices if the module snd_cs46xx is loaded.
-
-
 
 ----------------------------------------------------------------------
  cull - 03-01-06 03:41 
@@ -239,6 +134,12 @@ usb-0000:00:
 [4469820.954000] IBM TrackPoint firmware: 0x0e, buttons: 3/3
 [4469821.002000] input: TPPS/2 IBM TrackPoint as /class/input/input30
 
+----------------------------------------------------------------------
+ rlrevell - 03-01-06 03:50 
+----------------------------------------------------------------------
+Can you save /proc/asound/card0/codec97#0/ac97#0-0+regs before and after
+suspend and post the diff?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -269,6 +170,7 @@ Date Modified  Username       Field                    Change
 02-26-06 16:31 cull           Note Added: 0008204                          
 02-26-06 23:24 cull           Note Edited: 0008204                         
 03-01-06 03:41 cull           Note Added: 0008264                          
+03-01-06 03:50 rlrevell       Note Added: 0008265                          
 ======================================================================
 
 
