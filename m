@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001266]: Does not detect my sound card as valid
-Date: Wed, 1 Mar 2006 00:59:19 +0100
-Message-ID: <a2d967fd1d77bb023c26488801f042b9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001778]: Only sound on line-out jack
+Date: Wed, 1 Mar 2006 01:25:10 +0100
+Message-ID: <a497945b1bbf7f66a26c9993e6e68c25@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 043F81C9
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 397781C1
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:25:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1266> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1778> 
 ======================================================================
-Reported By:                darins
-Assigned To:                
+Reported By:                pw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1266
-Category:                   PCI - ice1724
+Issue ID:                   1778
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 3
+Status:                     resolved
+Distribution:               
 Kernel Version:             
-Resolution:                 open
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-19-2005 06:37 CEST
-Last Modified:              03-01-2006 00:59 CET
+Date Submitted:             01-24-2006 15:24 CET
+Last Modified:              03-01-2006 01:25 CET
 ======================================================================
-Summary:                    Does not detect my sound card as valid
+Summary:                    Only sound on line-out jack
 Description: 
-I have an AudioTrak Prodigy 7.1LT sound card.  Modprobing ice-1724 produces
-the following output in /var/log/messages:
+I'm using a Acer Extensa 6702-100 notebook (Intel ICH6 chipset / kernel
+2.6.15 / alsa-driver 1.0.11-rc2). The notebook has internal stereo
+speakers, a built-in microphone and three jacks (line-out, microphone and
+headphones).
 
-Jul 18 23:24:45 coruscant kernel: ice1724: No matching model found for ID
-0x32315441
-Jul 18 23:24:45 coruscant kernel: ice1724: Invalid EEPROM (size = 120)
-Jul 18 23:24:45 coruscant kernel: ICE1724: probe of 0000:00:06.0 failed
-with error -5
-
-It looks like the driver just can't identify my card.
-I upgraded to the latest driver available from atrpms, but got the same
-error.
-
-aplay -l doesn't show any devices from this soundcard available, though
-lsmod shows the module loaded and using all the normal stuff.
-
+I've loaded the snd-hda-intel module with every model listed in the
+documentation. When using the fujitsu model option I'm getting sound on
+the line-out jack. The internal speakers, built-in microphone and
+headphone jack don't work. I've not tested the mic jack yet.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001517 No sound on hda-intel on Acer TravelMat...
 ======================================================================
 
 ----------------------------------------------------------------------
- darins - 07-19-05 06:39 
+ pw - 02-01-06 12:41 
 ----------------------------------------------------------------------
-uname -a output:
-
-Linux coruscant 2.6.11-1.27_FC3 #1 Tue May 17 20:27:37 EDT 2005 i686
-athlon i386 GNU/Linux
+AFAIK mine is an ALC260 chipset... however, maybe it's the same issue
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:55 
+ rlrevell - 03-01-06 01:25 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Fixed in CVS
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-19-05 06:37 darins         New Issue                                    
-07-19-05 06:37 darins         Distribution              => Fedora Core 3   
-07-19-05 06:38 darins         Issue Monitored: darins                      
-07-19-05 06:39 darins         Note Added: 0005525                          
-12-30-05 23:55 rlrevell       Note Added: 0007304                          
-03-01-06 00:59 rlrevell       Status                   new => closed       
+01-24-06 15:24 pw             New Issue                                    
+01-24-06 15:26 pw             File Added: codec#0                          
+01-24-06 15:27 pw             File Added: codec#1                          
+01-25-06 11:51 blackr2d       Note Added: 0007777                          
+02-01-06 12:41 pw             Note Added: 0007859                          
+03-01-06 01:24 rlrevell       Relationship added       duplicate of 0001517
+03-01-06 01:25 rlrevell       Status                   assigned => resolved
+03-01-06 01:25 rlrevell       Resolution               open => fixed       
+03-01-06 01:25 rlrevell       Note Added: 0008256                          
 ======================================================================
 
 
