@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: PCM driver only plays tiny portion of clip
-Date: Wed, 01 Mar 2006 14:31:14 -0500
-Message-ID: <1141241474.5860.183.camel@mindpipe>
+Date: Wed, 01 Mar 2006 14:59:11 -0500
+Message-ID: <1141243152.5860.197.camel@mindpipe>
 References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
 	 <20060227172601.GA446@turing.informatik.uni-halle.de>
 	 <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
@@ -12,14 +12,16 @@ References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
 	 <20060228170824.GA24675@turing.informatik.uni-halle.de>
 	 <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
 	 <1141240231.9233.11.camel@localhost.localdomain>
+	 <1141241474.5860.183.camel@mindpipe>
+	 <1141242058.9233.17.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E326A1B9
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 20:31:17 +0100 (MET)
-In-Reply-To: <1141240231.9233.11.camel@localhost.localdomain>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C658E1C5
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 20:59:20 +0100 (MET)
+In-Reply-To: <1141242058.9233.17.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -33,42 +35,36 @@ To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-03-01 at 19:10 +0000, Adrian McMenamin wrote:
-> On Tue, 2006-02-28 at 17:36 +0000, Adrian McMenamin wrote:
-> > On Tue, 28 February, 2006 5:08 pm, Clemens Ladisch wrote:
+On Wed, 2006-03-01 at 19:40 +0000, Adrian McMenamin wrote:
+> On Wed, 2006-03-01 at 14:31 -0500, Lee Revell wrote:
+> 
+> > > What happens next?
 > > 
-> > >
-> > > Where is the source code of your driver?
-> > >
-> > >
-> > 
-> > http://newgolddream.dyndns.info/repos
-> > 
-> Anybody have any comments? For my own understanding is the patten this:
+> > The app(s) waiting to output audio (sleeping in poll() or write()) will
+> > be woken up and based on the value returned by the pointer callback
+> > above, informed that there is space in the buffer and how much space
+> > there is, and will then write the next chunk of frames, and go back to
+> > sleep.  Then we go back to "Hardware triggers interrupt" above and the
+> > process repeats.
 > 
-> Hardware triggers interrupt as period boundary passed  ---->
+> But something in the alsa subsystem determines whether there is any
+> space before waking the app, yes?
 > 
-> Interrupt handler calls ALSA middle layer  ---->
-> 
-> ALSA middle layer calls pointer callback --->
-> 
-> Pointer callback returns ring buffer position
-> 
-> 
-> What happens next?
 
-The app(s) waiting to output audio (sleeping in poll() or write()) will
-be woken up and based on the value returned by the pointer callback
-above, informed that there is space in the buffer and how much space
-there is, and will then write the next chunk of frames, and go back to
-sleep.  Then we go back to "Hardware triggers interrupt" above and the
-process repeats.
+Yes - the value returned by your pointer callback minus the last value
+returned by your pointer callback determines how much space is left.  So
+if the app is waiting to write 512 frames, the pointer was 256 at the
+last interrupt, and the current pointer is 512, the app will not wake up
+until the next interrupt because only 256 frames can be written.
 
-I'm not sure why your driver is locking up the system - maybe the
-pointer callback indicates that there is more space in the buffer than
-there is, which might wedge the app when it goes to write the next
-period of audio?  But normally this would just cause corrupted sound,
-not a lockup...
+> and when the app is woken alsa calls the trigger callback?
+> 
+
+No when the app is woken it writes the data to the buffer, and we're
+done, until the next interrupt.
+
+The trigger callback is only called when the PCM is stopped, started, or
+paused.
 
 Lee
 
