@@ -1,23 +1,14 @@
-From: Ben Collins <bcollins@ubuntu.com>
-Subject: Re: [PPC,SOUND] Fix audio gpio state detection
-Date: Wed, 01 Mar 2006 18:49:25 -0500
-Message-ID: <1141256965.4378.145.camel@grayson>
-References: <jehd7527wq.fsf@sykes.suse.de>
- <1139783738.5247.54.camel@localhost.localdomain>
- <20060226173908.GA4871@suse.de> <20060301223034.GA5965@suse.de>
- <1141254596.3889.26.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
+Date: Thu, 2 Mar 2006 00:53:33 +0100
+Message-ID: <cb363fc64d6a80e8dbc55a048e9a74a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from a34-mta02.direcway.com (a34-mta02.direcpc.com [66.82.4.91])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 280E31CB
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 00:50:28 +0100 (MET)
-Received: from mail.phunnypharm.org ([72.169.114.90]) by a34-mta02.direcway.com
- (iPlanet Messaging Server 5.2 HotFix 1.25 (built Mar  3 2004))
- with ESMTP id <0IVH00KTM3JWPS@a34-mta02.direcway.com> for
- alsa-devel@alsa-project.org; Wed, 01 Mar 2006 18:50:27 -0500 (EST)
-In-reply-to: <1141254596.3889.26.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5CDA1CB
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 00:53:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,34 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Olaf Hering <olh@suse.de>, alsa-devel@alsa-project.org, Ben Collins <ben.collins@ubuntu.com>, linuxppc-dev@ozlabs.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-02 at 10:09 +1100, Benjamin Herrenschmidt wrote:
-> > > This (sort of) breaks PowerMac3,4 (69 (PowerMac G4 Silver)). I have to
-> > > force it on up to now, but with this patch the internal speaker will not
-> > > work with or without my patch to force it on.
-> > 
-> > But the patch fixes also my PowerBook4,1, I dont have to toggle the headphone
-> > once to get the built-in speakers enabled.
-> > Looks like 2.6.16 stuff, but its been broken for so long now...
-> 
-> What is the status of Ben's latest stuff ?
 
-I'm rediffing now. However, I may not include my tumbler changes
-immediately. For some reason, those are the ones causing problems. I
-need to review the diff and see if I can find the problem (which I
-cannot reproduce).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1887> 
+======================================================================
+Reported By:                grattemedi
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1887
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.15.4
+======================================================================
+Date Submitted:             03-01-2006 22:35 CET
+Last Modified:              03-02-2006 00:53 CET
+======================================================================
+Summary:                    Can't record anything from MIC with Acer 1641
+(ALC260)
+Description: 
+With the new hda drivers in CVS, the speakers and jack output works very
+good.
+But I can't record anything from the external mic or from the mic input.
+I followed jwoithe advises : To record from the internal mic or the
+external mic jack, you need to:
 
-The toonie stuff is great. Been working really well for all the folks
-I've heard from, and for me on my PowerBook5,9.
+ * select the "mic" as the input source (displayed in "Playback" view)
+ * in the "Mic Jack Mode" control, select "Mic bias 80pc"
+ * in "Capture" view, unmute "Capture" channel (NOT "Capture 1") and
+   turn its volume up.
+Even after doing that, I can't record sound.
+Nevertheless, when I unmute the "mic" channel in the alsamixer "playback",
+i can hear sound from the mic but i cannot record it.
+======================================================================
 
--- 
-Ubuntu     - http://www.ubuntu.com/
-Debian     - http://www.debian.org/
-Linux 1394 - http://www.linux1394.org/
-SwissDisk  - http://www.swissdisk.com/
+----------------------------------------------------------------------
+ jwoithe - 03-02-06 00:53 
+----------------------------------------------------------------------
+This is puzzling since others have reported successful recording on the
+same type of system I think.  Anyway, some quick questions.
+
+What software are you using for recording?  If applicable, what options /
+command line arguments are you using?
+
+Does your recording software have its own controls for things like
+recording volume, recording source etc?  If so, are these set
+appropriately?
+
+When setting the input source in alsamixer, did you use the control
+labeled "Input Source"?  "Input Source 1" is not the one you want.
+
+What *is* recorded into the output file - do you hear hiss, or is it total
+silence?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-01-06 22:35 grattemedi     New Issue                                    
+03-01-06 22:35 grattemedi     Distribution              => Slackware 10.2  
+03-01-06 22:35 grattemedi     Kernel Version            => 2.6.15.4        
+03-01-06 22:36 grattemedi     Issue Monitored: grattemedi                    
+03-01-06 22:37 grattemedi     Issue End Monitor: grattemedi                    
+03-02-06 00:53 jwoithe        Note Added: 0008289                          
+======================================================================
+
 
 
 
