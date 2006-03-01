@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
-Date: Wed, 1 Mar 2006 04:03:39 +0100
-Message-ID: <9a5c8164a0ebc4b0f6ac2cca7c300d96@bugtrack.alsa-project.org>
+Date: Wed, 1 Mar 2006 04:14:58 +0100
+Message-ID: <2b2243446094ce4c1ee27e4727667473@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E71C71CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 04:03:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47AB11CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 04:14:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             Debian kernel 2.6.5-4-686
 ======================================================================
 Date Submitted:             05-25-2004 14:49 CEST
-Last Modified:              03-01-2006 04:03 CET
+Last Modified:              03-01-2006 04:14 CET
 ======================================================================
 Summary:                    sound is locked up after suspend/resume (APM)
 Description: 
@@ -59,12 +59,6 @@ has duplicate       0000226 Sound hangs after APM resume
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 03:50 
-----------------------------------------------------------------------
-Can you save /proc/asound/card0/codec97#0/ac97#0-0+regs before and after
-suspend and post the diff?
-
-----------------------------------------------------------------------
  cull - 03-01-06 04:03 
 ----------------------------------------------------------------------
 the diff when i use ACPI sleep:
@@ -72,6 +66,21 @@ the diff when i use ACPI sleep:
 < 0:26 = 800f
 ---
 > 0:26 = 000f
+
+----------------------------------------------------------------------
+ rlrevell - 03-01-06 04:14 
+----------------------------------------------------------------------
+OK, we may be on to something.  Register 26 is:
+
+#define  AC97_POWER_CONTROL      0x0026
+
+But, AFAICT bit 0x8000 should only affect the modem.
+
+After resume try:
+
+echo 26 800f > /proc/asound/card0/codec97#0/ac97#0-0+regs
+
+Does it restore your sound?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +114,7 @@ Date Modified  Username       Field                    Change
 03-01-06 03:41 cull           Note Added: 0008264                          
 03-01-06 03:50 rlrevell       Note Added: 0008265                          
 03-01-06 04:03 cull           Note Added: 0008266                          
+03-01-06 04:14 rlrevell       Note Added: 0008267                          
 ======================================================================
 
 
