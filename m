@@ -1,7 +1,7 @@
 From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Subject: Re: PCM driver only plays tiny portion of clip
-Date: Wed, 01 Mar 2006 20:20:49 +0000
-Message-ID: <1141244449.9233.24.camel@localhost.localdomain>
+Date: Wed, 01 Mar 2006 20:28:46 +0000
+Message-ID: <1141244926.9233.32.camel@localhost.localdomain>
 References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
 	 <20060227172601.GA446@turing.informatik.uni-halle.de>
 	 <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
@@ -19,9 +19,9 @@ Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 94DFC1AA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 21:20:51 +0100 (MET)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 94BAA1C5
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 21:28:48 +0100 (MET)
 In-Reply-To: <1141243152.5860.197.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -37,14 +37,32 @@ Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 On Wed, 2006-03-01 at 14:59 -0500, Lee Revell wrote:
-
+> On Wed, 2006-03-01 at 19:40 +0000, Adrian McMenamin wrote:
+> > On Wed, 2006-03-01 at 14:31 -0500, Lee Revell wrote:
+> > 
+> > > > What happens next?
+> > > 
+> > > The app(s) waiting to output audio (sleeping in poll() or write()) will
+> > > be woken up and based on the value returned by the pointer callback
+> > > above, informed that there is space in the buffer and how much space
+> > > there is, and will then write the next chunk of frames, and go back to
+> > > sleep.  Then we go back to "Hardware triggers interrupt" above and the
+> > > process repeats.
+> > 
+> > But something in the alsa subsystem determines whether there is any
+> > space before waking the app, yes?
+> > 
 > 
-> The trigger callback is only called when the PCM is stopped, started, or
-> paused.
+> Yes - the value returned by your pointer callback minus the last value
+> returned by your pointer callback determines how much space is left.  So
+> if the app is waiting to write 512 frames, the pointer was 256 at the
+> last interrupt, and the current pointer is 512, the app will not wake up
+> until the next interrupt because only 256 frames can be written.
 > 
 
+Presumably this is on the assumption that 512 frames is a period?
 
-Which buffer?
+
 
 
 
