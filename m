@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
-Date: Wed, 1 Mar 2006 00:59:22 +0100
-Message-ID: <ae136de6de7eaaad7379198fbd7c0af1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001291]: random system crash afer 1h-4h of sound playing
+Date: Wed, 1 Mar 2006 01:31:20 +0100
+Message-ID: <e52f9ea697cc4ffe7e2e40e52d5849f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9146D1C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D25FC170
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:31:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1291> 
 ======================================================================
-Reported By:                johnz
-Assigned To:                
+Reported By:                bubbleguuum
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   978
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1291
+Category:                   PCI - hda-intel
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               FC3
-Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
+Distribution:               PCLinuxOS  P9.1
+Kernel Version:             2.6.11-oci12
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-10-2005 06:37 CET
-Last Modified:              03-01-2006 00:59 CET
+Date Submitted:             07-29-2005 19:41 CEST
+Last Modified:              03-01-2006 01:31 CET
 ======================================================================
-Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
-alsa 1.0.8
+Summary:                    random system crash afer 1h-4h of sound playing
 Description: 
-On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
-kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
-mixer control works; volume sliders have no effect.)  There is no sound
-when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
-2.6.10 kernels with 1.0.8 alsa.
+Playing mp3 files in either amaroK using artsd or xmms using the alsa-xmms
+plugin crashes consistently the system (sound is looping), no recovery
+possible (machine is not pingable). No crash if there is no sound
+playing.
+
+The chipset is Realtek ALC260.
+Kernel is a custom patched kernel used by PCLinuxOS P9.1 (2.6.11-oci12)
+
+changelog of patches applied  : 
+http://www.pclinuxfiles.com/ocilent1/kernel/2.6.X-oci-kernel-changelog
+
+Another strange potential symptom: sometimes artsd takes 100% CPU usage
+and kills itself after displaying a popup. It can happend 5min after boot
+or never and after relaunching it, it never takes up 100% again.
+
+As you can see this is quite annoying as it prevent me from using this
+distro fulltime. I may add than I had this module working perfectly with
+Ubuntu Hoary which is using kernel 2.6.10 
+
+If I can offer other details, just tell me
+
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001381 No sound on Thinkpad T40p
-======================================================================
 
 ----------------------------------------------------------------------
- johnz - 09-27-05 04:43 
+ bubbleguuum - 07-30-05 09:02 
 ----------------------------------------------------------------------
-Problem is still present in most current fedora core 3 kernel and alsa
-module.
-uname -r
-2.6.12-1.1378_FC3
-
-rpm -q alsa-kmdl-2.6.12-1.1378_FC3
-alsa-kmdl-2.6.12-1.1378_FC3-1.0.9rfb-40.rhfc3.at
-
-
-0:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] Sound
-Controller (rev a0)
-        Subsystem: ASRock Incorporation: Unknown device 7012
-        Flags: bus master, medium devsel, latency 32, IRQ 10
-        I/O ports at c800 [size=256]
-        I/O ports at c400 [size=128]
-        Capabilities: [48] Power Management version 2
+Did some further test without sound and my notebook crashed, so it's not an
+alsa issue as I believed. YOu can close this bug
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:51 
+ rlrevell - 03-01-06 01:31 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Closed per user request
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-10-05 06:37 johnz          New Issue                                    
-03-10-05 06:37 johnz          File Added: asound.state                     
-03-10-05 06:37 johnz          Distribution              => FC3             
-03-10-05 06:37 johnz          Kernel Version            =>
-kernel-2.6.10-1.770_14.rhfc3.at
-03-10-05 06:39 johnz          Issue Monitored: johnz                       
-03-10-05 06:43 johnz          File Added: lsmod                            
-03-10-05 14:39 tiwai          Note Added: 0003853                          
-03-11-05 03:19 johnz          Note Added: 0003879                          
-09-22-05 15:03 jdthood        Note Added: 0006342                          
-09-27-05 04:43 johnz          Note Added: 0006403                          
-09-29-05 12:02 jdthood        Relationship added       related to 0001381  
-12-30-05 23:51 rlrevell       Note Added: 0007301                          
-02-07-06 08:32 anhi1968       Issue Monitored: anhi1968                    
-02-28-06 12:00 anhi1968       Issue End Monitor: anhi1968                    
-03-01-06 00:59 rlrevell       Status                   new => closed       
+07-29-05 19:41 bubbleguuum    New Issue                                    
+07-29-05 19:41 bubbleguuum    Distribution              => PCLinuxOS  P9.1 
+07-29-05 19:41 bubbleguuum    Kernel Version            => 2.6.11-oci12    
+07-29-05 19:45 bubbleguuum    Note Added: 0005586                          
+07-29-05 19:47 bubbleguuum    Note Added: 0005587                          
+07-30-05 09:02 bubbleguuum    Note Added: 0005589                          
+03-01-06 01:31 rlrevell       Status                   assigned => closed  
+03-01-06 01:31 rlrevell       Note Added: 0008259                          
 ======================================================================
 
 
