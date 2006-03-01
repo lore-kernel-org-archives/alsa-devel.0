@@ -1,18 +1,11 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PPC,SOUND] Fix audio gpio state detection
-Date: Thu, 02 Mar 2006 10:09:55 +1100
-Message-ID: <1141254596.3889.26.camel@localhost.localdomain>
-References: <jehd7527wq.fsf@sykes.suse.de>
-	 <1139783738.5247.54.camel@localhost.localdomain>
-	 <20060226173908.GA4871@suse.de>  <20060301223034.GA5965@suse.de>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [RFC] alsa-kernel, make control.c suspend aware
+Date: Thu, 2 Mar 2006 00:18:59 +0100
+Message-ID: <20060302001859.58bd93af.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BFC9616F
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 00:10:01 +0100 (MET)
-In-Reply-To: <20060301223034.GA5965@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,24 +15,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Olaf Hering <olh@suse.de>
-Cc: alsa-devel@alsa-project.org, Ben Collins <ben.collins@ubuntu.com>, linuxppc-dev@ozlabs.org
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+First attempt to add code that prevents someone to access the hardware via
+control interface when the card is suspended.
 
-> > This (sort of) breaks PowerMac3,4 (69 (PowerMac G4 Silver)). I have to
-> > force it on up to now, but with this patch the internal speaker will not
-> > work with or without my patch to force it on.
-> 
-> But the patch fixes also my PowerBook4,1, I dont have to toggle the headphone
-> once to get the built-in speakers enabled.
-> Looks like 2.6.16 stuff, but its been broken for so long now...
-
-What is the status of Ben's latest stuff ?
-
-Ben.
+I put the code in snd_ctl_elem_read_user() instead of snd_ctl_elem_read()
+because /pci/hda/hda_codec.c:snd_hda_resume_ctls() calls the latter from the
+resume callback. I had no time to check other things, consider it mostly
+untested.
 
 
+
+diff -dup alsa-kernel__orig/core/control.c alsa-kernel/core/control.c
+--- alsa-kernel__orig/core/control.c	2005-11-26 13:14:54.000000000 +0100
++++ alsa-kernel/core/control.c	2006-03-02 00:11:55.000000000 +0100
+@@ -672,6 +672,7 @@ int snd_ctl_elem_read(struct snd_card *c
+ 	unsigned int index_offset;
+ 	int result, indirect;
+ 
++snd_printk("snd_ctl_elem_read\n");
+ 	down_read(&card->controls_rwsem);
+ 	kctl = snd_ctl_find_id(card, &control->id);
+ 	if (kctl == NULL) {
+@@ -708,7 +709,13 @@ static int snd_ctl_elem_read_user(struct
+ 		kfree(control);
+ 		return -EFAULT;
+ 	}
+-	result = snd_ctl_elem_read(card, control);
++snd_printk("snd_ctl_elem_read_user1\n");
++	snd_power_lock(card);
++	result = snd_power_wait(card, SNDRV_CTL_POWER_D0, NULL);
++	if (result >= 0)
++		result = snd_ctl_elem_read(card, control);
++	snd_power_unlock(card);
++snd_printk("snd_ctl_elem_read_user2\n");
+ 	if (result >= 0)
+ 		if (copy_to_user(_control, control, sizeof(*control)))
+ 			result = -EFAULT;
+@@ -723,6 +730,7 @@ int snd_ctl_elem_write(struct snd_card *
+ 	struct snd_kcontrol_volatile *vd;
+ 	unsigned int index_offset;
+ 	int result, indirect;
++snd_printk("snd_ctl_elem_write\n");
+ 
+ 	down_read(&card->controls_rwsem);
+ 	kctl = snd_ctl_find_id(card, &control->id);
+@@ -758,6 +766,7 @@ static int snd_ctl_elem_write_user(struc
+ 				   struct snd_ctl_elem_value __user *_control)
+ {
+ 	struct snd_ctl_elem_value *control;
++	struct snd_card *card;
+ 	int result;
+ 
+ 	control = kmalloc(sizeof(*control), GFP_KERNEL);
+@@ -767,7 +776,14 @@ static int snd_ctl_elem_write_user(struc
+ 		kfree(control);
+ 		return -EFAULT;
+ 	}
+-	result = snd_ctl_elem_write(file->card, file, control);
++	card = file->card;
++snd_printk("snd_ctl_elem_write_user1\n");
++	snd_power_lock(card);
++	result = snd_power_wait(card, SNDRV_CTL_POWER_D0, NULL);
++	if (result >= 0)
++		result = snd_ctl_elem_write(card, file, control);
++	snd_power_unlock(card);
++snd_printk("snd_ctl_elem_write_user2\n");
+ 	if (result >= 0)
+ 		if (copy_to_user(_control, control, sizeof(*control)))
+ 			result = -EFAULT;
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
