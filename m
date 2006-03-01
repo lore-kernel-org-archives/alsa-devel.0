@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001793]: No sound on ASUS A8N-VM CSM
-Date: Wed, 1 Mar 2006 13:09:15 +0100
-Message-ID: <e2c55ab4d8c5e673e71c864ef132661b@bugtrack.alsa-project.org>
+From: "Yadira Stills" <still@yuji.com>
+Subject: hindm ost news
+Date: Wed, 1 Mar 2006 10:01:19 -0500
+Message-ID: <000001c63d40$ff2d06a0$c086a8c0@fgq13>
+Reply-To: "Yadira Stills" <still@yuji.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C63D17.1656FEA0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 326431C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 13:09:16 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A328C1BC
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 16:01:54 +0100 (MET)
+Received: from yuji.com (unknown [124.61.82.96])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id BC744991B3
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 16:01:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,270 +25,110 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1793> 
-======================================================================
-Reported By:                labene
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1793
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.15 standard
-======================================================================
-Date Submitted:             01-29-2006 18:31 CET
-Last Modified:              03-01-2006 13:09 CET
-======================================================================
-Summary:                    No sound on ASUS A8N-VM CSM
-Description: 
-No sound on ASUS A8N-VM CSM, chipset nForce 430 (HDA nvidia) don't have
-sound on the speaker but found by kernel 2.6.15 and exist with alsamixer
-!
-I don't any issue in the line :
-options snd-hda-intel model=???? position_fix=1
+------=_NextPart_000_0001_01C63D17.1656FEA0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I don't know where is the problem !
+A
+X
+P
+C
+V
+V
+L
+m
+a
+r
+I
+I
+A
+e
+b
+n
+o
+A
+A
+L
+v
+i
+a
+z
+L
+G
+I
+i
+e
+x
+a
+I
+R
+U
+t
+n
+
+c
+S
+A
+M
+r
 
 
-cat /proc/asound/cards :
-0 [NVidia         ]: HDA-Intel - HDA NVidia
-                     HDA NVidia at 0xfebd8000 irq 5
 
-lspci -nv :
+=20
+=20
+=20
+a
+=20
+http://www.borerzon.com <http://www.borerzon.com>=20
 
+------=_NextPart_000_0001_01C63D17.1656FEA0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-0000:00:00.0 0500: 10de:02f0 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        Capabilities: <available only to root>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>
+<TABLE>
+<TR>
+<TD> <DIV>A</DIV> <DIV>X</DIV> <DIV>P</DIV> =
+<DIV><B>C</B></DIV><DIV><B>V</B></DIV><DIV><B>V</B></DIV><DIV>L</DIV> =
+</TD>
+<TD> <DIV>m</DIV> <DIV>a</DIV> <DIV>r</DIV> =
+<DIV><B>I</B></DIV><DIV><B>I</B></DIV><DIV><B>A</B></DIV><DIV>e</DIV> =
+</TD>
+<TD> <DIV>b</DIV> <DIV>n</DIV> <DIV>o</DIV> =
+<DIV><B>A</B></DIV><DIV><B>A</B></DIV><DIV><B>L</B></DIV><DIV>v</DIV> =
+</TD>
+<TD> <DIV>i</DIV> <DIV>a</DIV> <DIV>z</DIV> =
+<DIV><B>L</B></DIV><DIV><B>G</B></DIV><DIV><B>I</B></DIV><DIV>i</DIV> =
+</TD>
+<TD> <DIV>e</DIV> <DIV>x</DIV> <DIV>a</DIV> =
+<DIV><B>I</B></DIV><DIV><B>R</B></DIV><DIV><B>U</B></DIV><DIV>t</DIV> =
+</TD>
+<TD> <DIV>n</DIV> <DIV><BR></DIV> <DIV>c</DIV> =
+<DIV><B>S</B></DIV><DIV><B>A</B></DIV><DIV><B>M</B></DIV><DIV>r</DIV> =
+</TD>
+<TD> <DIV><BR></DIV> <DIV><BR></DIV> <DIV><BR></DIV> <DIV>&nbsp;</DIV> =
+<DIV>&nbsp;</DIV> <DIV>&nbsp;</DIV> <DIV>a</DIV> </TD>
+</TR>
+</TABLE>
+</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><A =
+href=3D"http://www.borerzon.com"><FONT face=3DArial =
+size=3D2>http://www.borerzon.com</FONT></A></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C63D17.1656FEA0--
 
-0000:00:00.1 0500: 10de:02fa (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:00.2 0500: 10de:02fe (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:00.3 0500: 10de:02f8 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:00.4 0500: 10de:02f9 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-
-0000:00:00.5 0500: 10de:02ff (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        Capabilities: <available only to root>
-
-0000:00:00.6 0500: 10de:027f (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:00.7 0500: 10de:027e (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel
-
-0000:00:02.0 0604: 10de:02fc (rev a1)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-        Capabilities: <available only to root>
-
-0000:00:03.0 0604: 10de:02fd (rev a1)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
-        Capabilities: <available only to root>
-
-0000:00:04.0 0604: 10de:02fb (rev a1)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
-        Capabilities: <available only to root>
-
-0000:00:05.0 0300: 10de:0240 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 11
-        Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
-        Memory at d0000000 (64-bit, prefetchable) [size=256M]
-        Memory at fc000000 (64-bit, non-prefetchable) [size=16M]
-        Expansion ROM at febe0000 [disabled] [size=128K]
-        Capabilities: <available only to root>
-
-0000:00:09.0 0500: 10de:0270 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        Capabilities: <available only to root>
-
-0000:00:0a.0 0601: 10de:0260 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-
-0000:00:0a.1 0c05: 10de:0264 (rev a2)
-        Subsystem: 10de:cb84
-        Flags: 66MHz, fast devsel, IRQ 5
-        I/O ports at 0600 [size=64]
-        I/O ports at 0700 [size=64]
-        Capabilities: <available only to root>
-
-0000:00:0b.0 0c03: 10de:026d (rev a2) (prog-if 10)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        Memory at febde000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: <available only to root>
-
-0000:00:0b.1 0c03: 10de:026e (rev a2) (prog-if 20)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 3
-        Memory at febdfc00 (32-bit, non-prefetchable) [size=256]
-        Capabilities: <available only to root>
-
-0000:00:0d.0 0101: 10de:0265 (rev a1) (prog-if 8a [Master SecP PriP])
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        I/O ports at ffa0 [size=16]
-        Capabilities: <available only to root>
-
-0000:00:0e.0 0101: 10de:0266 (rev a1) (prog-if 85 [Master SecO PriO])
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        I/O ports at e800 [size=8]
-        I/O ports at e480 [size=4]
-        I/O ports at e400 [size=8]
-        I/O ports at e080 [size=4]
-        I/O ports at e000 [size=16]
-        Memory at febdd000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: <available only to root>
-
-0000:00:0f.0 0101: 10de:0267 (rev a1) (prog-if 85 [Master SecO PriO])
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        I/O ports at dc00 [size=8]
-        I/O ports at d880 [size=4]
-        I/O ports at d800 [size=8]
-        I/O ports at d480 [size=4]
-        I/O ports at d400 [size=16]
-        Memory at febdc000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: <available only to root>
-
-0000:00:10.0 0604: 10de:026f (rev a2) (prog-if 01)
-        Flags: bus master, 66MHz, fast devsel, latency 0
-        Bus: primary=00, secondary=04, subordinate=04, sec-latency=128
-        I/O behind bridge: 0000c000-0000cfff
-        Memory behind bridge: faa00000-faafffff
-        Capabilities: <available only to root>
-
-0000:00:10.1 0403: 10de:026c (rev a2)
-        Subsystem: 10de:cb84
-        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
-        Memory at febd8000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: <available only to root>
-
-0000:00:18.0 0600: 1022:1100
-        Flags: fast devsel
-        Capabilities: <available only to root>
-
-0000:00:18.1 0600: 1022:1101
-        Flags: fast devsel
-
-0000:00:18.2 0600: 1022:1102
-        Flags: fast devsel
-
-0000:00:18.3 0600: 1022:1103
-        Flags: fast devsel
-
-0000:04:05.0 0c00: 1106:3044 (rev 80) (prog-if 10)
-        Subsystem: 1043:808a
-        Flags: bus master, medium devsel, latency 128, IRQ 5
-        Memory at faaff800 (32-bit, non-prefetchable) [size=2K]
-        I/O ports at cc00 [size=128]
-        Capabilities: <available only to root>
-
-0000:04:08.0 0200: 10ec:8139 (rev 10)
-        Subsystem: 10ec:8139
-        Flags: bus master, medium devsel, latency 128, IRQ 5
-        I/O ports at c800 [size=256]
-        Memory at faaff400 (32-bit, non-prefetchable) [size=256]
-
-======================================================================
-
-----------------------------------------------------------------------
- awjb - 02-13-06 15:02 
-----------------------------------------------------------------------
-Same problem here. I only get sound from the right speaker and the left one
-does a  high pitch noise. If I select stereo downmix whole card goes
-silent and won't do anything thereafter.
-
-[03:00 PM][awjb@alkaid ~]$ rpm -q alsa-lib
-alsa-lib-1.0.11-3.rc2.2
-
-00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio (rev
-a2)
-	Subsystem: nVidia Corporation Unknown device cb84
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR- FastB2B-
-	Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- <TAbort-
-<MAbort- >SERR- <PERR-
-	Latency: 0 (500ns min, 1250ns max)
-	Interrupt: pin B routed to IRQ 5
-	Region 0: Memory at febd8000 (32-bit, non-prefetchable) [size=16K]
-	Capabilities: <access denied>
-
-----------------------------------------------------------------------
- tassilo80 - 03-01-06 13:09 
-----------------------------------------------------------------------
-Same problem, different Notebook (Samsung R65), alsa-driver and alsa-lib
-version 1.0.11_rc3
-
-cat /proc/asound/pcm
-00-06: Si3054 Modem : Si3054 Modem : playback 1 : capture 1
-00-01: AD198x Digital : AD198x Digital : playback 1
-00-00: AD198x Analog : AD198x Analog : playback 1 : capture 1
-
-Without patching there was no sound at all, neither from the internal
-speakers (which are not listet in `alsamixer` at all) nor from the
-headphones.
-
-I applied the changes made by the patch labene mentioned to the
-alsa-driver-1.0.11_rc3 and as a result the headphones now work. I tried
-switching/muting several switches in alsamixer, stereo downmix, too, but
-the headphones still work.
-
-Anyway, it would be great to get the internal speakers running.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-06 18:31 labene         New Issue                                    
-01-29-06 18:31 labene         Distribution              => Debian          
-01-29-06 18:31 labene         Kernel Version            => 2.6.15 standard 
-01-29-06 18:54 labene         Note Added: 0007833                          
-01-29-06 19:13 labene         Note Added: 0007834                          
-02-01-06 15:38 thorstenl      Issue Monitored: thorstenl                    
-02-04-06 02:20 rbenech        Issue Monitored: rbenech                     
-02-04-06 02:23 rbenech        Note Added: 0007909                          
-02-04-06 02:28 rbenech        Note Edited: 0007909                         
-02-04-06 15:36 labene         Note Added: 0007916                          
-02-04-06 15:44 labene         Note Edited: 0007916                         
-02-04-06 19:15 rlrevell       Note Added: 0007920                          
-02-04-06 20:23 Arnaud Patard  Note Added: 0007924                          
-02-05-06 06:26 gerick         Note Added: 0007931                          
-02-05-06 06:32 gerick         Issue Monitored: gerick                      
-02-06-06 20:16 quagga         Note Added: 0007951                          
-02-08-06 13:04 simonckenyon   Issue Monitored: simonckenyon                    
-02-13-06 14:00 ukrcald        Note Added: 0008048                          
-02-13-06 14:56 awjb           Issue Monitored: awjb                        
-02-13-06 15:02 awjb           Note Added: 0008051                          
-02-13-06 21:29 chalvorson     Issue Monitored: chalvorson                    
-03-01-06 13:09 tassilo80      Note Added: 0008280                          
-======================================================================
 
 
 
