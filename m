@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
-Date: Wed, 1 Mar 2006 18:02:45 +0100
-Message-ID: <647ac676dcbd0270298fcf9d52d0a931@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001603]: via8235 no sound since kernel 2.6.13
+Date: Wed, 1 Mar 2006 19:27:32 +0100
+Message-ID: <25e74f32de893f9da4a2a170f1d39e1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8624AAA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 18:02:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56E141AB
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 19:27:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
 ======================================================================
-Reported By:                iq79
+Reported By:                picobyte
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1259
-Category:                   PCI - emu10k1
+Issue ID:                   1603
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.12-gentoo-r1
+Distribution:               slackware 10.2
+Kernel Version:             2.6.13 - 2.6.14.2
 ======================================================================
-Date Submitted:             07-15-2005 18:18 CEST
-Last Modified:              03-01-2006 18:02 CET
+Date Submitted:             11-27-2005 15:06 CET
+Last Modified:              03-01-2006 19:27 CET
 ======================================================================
-Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
-from AUX in
+Summary:                    via8235 no sound since kernel 2.6.13
 Description: 
-I am unable to unmute the internal AUX-in header of my Audigy4Pro.
-
-- I played around with all (Playback/Capture) mixer settings in alsamixer
-but I couldn't find a configuration which gives me sound from AUX-in.
-
-- I tried loading emu10k1 module with several extin/exout combinations.
-That didn't help, too.
+I have no sound after a kernel upgrade. I seem to have lost it in 2.6.13.
+Sound was available in 2.6.12. 2.6.14.2 didn't give sound either. The
+problem is in 1.0.9b and 1.0.10. The modules are loaded as supposed
+without error messages and alsamixer is set to volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- iq79 - 03-01-06 10:46 
+ picobyte - 01-18-06 00:41 
 ----------------------------------------------------------------------
-*bump*
+yes, actually, the problem seems to have been resolved in 2.6.15 :)
+Is there any way I can/should change this bugs' status?
 
-Still having this problem. I double-checked everything again (HW is okay,
-software setup should be fine, too), but couldn't get it to work.
+
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 18:02 
+ picobyte - 03-01-06 19:27 
 ----------------------------------------------------------------------
-Have you tried a newer ALSA than 1.0.9-rc2?  That's very old.
+It wasn't the kernel upgrade, but the upgrade to alsa 1.0.11-rc2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-15-05 18:18 iq79           New Issue                                    
-07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
-07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
-07-15-05 19:49 pzad           Note Added: 0005483                          
-07-15-05 19:50 pzad           Note Edited: 0005483                         
-07-15-05 23:40 iq79           Note Added: 0005484                          
-07-16-05 16:31 jdthood        Note Added: 0005496                          
-07-16-05 18:36 iq79           File Added: amixer_output                    
-07-16-05 18:38 iq79           Note Added: 0005500                          
-07-20-05 05:32 jcdutton       Note Added: 0005532                          
-03-01-06 10:46 iq79           Note Added: 0008278                          
-03-01-06 18:02 rlrevell       Note Added: 0008286                          
+11-27-05 15:06 picobyte       New Issue                                    
+11-27-05 15:06 picobyte       Distribution              => slackware 10.2  
+11-27-05 15:06 picobyte       Kernel Version            => 2.6.13 - 2.6.14.2
+12-31-05 03:38 rlrevell       Note Added: 0007330                          
+01-18-06 00:38 picobyte       Note Added: 0007704                          
+01-18-06 00:38 picobyte       Issue Monitored: picobyte                    
+01-18-06 00:39 picobyte       Issue End Monitor: picobyte                    
+01-18-06 00:41 picobyte       Note Edited: 0007704                         
+03-01-06 19:27 picobyte       Note Added: 0008287                          
 ======================================================================
 
 
