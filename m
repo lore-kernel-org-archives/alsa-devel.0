@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001494]: Intel HDA audio "scratchy" on Fujitsu S7020D unless position_fix=1 used
-Date: Wed, 1 Mar 2006 01:44:20 +0100
-Message-ID: <ddd48c102d6f787f9c10036149ad8ebb@bugtrack.alsa-project.org>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: Re: [PATCH] Add support for Acer TravelMate and
+Date: Wed, 1 Mar 2006 12:22:34 +1030 (CST)
+Message-ID: <200603010152.k211qYq0029665@auster.physics.adelaide.edu.au>
+References: <1141172997.5860.70.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCB33187
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:44:20 +0100 (MET)
+In-Reply-To: <1141172997.5860.70.camel@mindpipe> from "Lee Revell" at Feb 28, 2006 07:29:57 PM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, Rimas Kudelis <rq@akl.lt>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Lee
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1494> 
-======================================================================
-Reported By:                Paul Walmsley
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1494
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Red Hat Fedora Core 4
-Kernel Version:             2.6.13-1.1532_FC4 with ALSA drivers from CVS head
-13-Oct-2005
-======================================================================
-Date Submitted:             10-22-2005 19:03 CEST
-Last Modified:              03-01-2006 01:44 CET
-======================================================================
-Summary:                    Intel HDA audio "scratchy" on Fujitsu S7020D unless
-position_fix=1 used
-Description: 
-Audio on a Fujitsu Lifebook S7020D (snd-hda-intel with a Realtek ALC260) is
-distorted and choppy unless position_fix=1 is used as a module parameter. 
-This should be the default for this particular configuration.
+> On Wed, 2006-03-01 at 10:52 +1030, Jonathan Woithe wrote:
+> > Not sure, since we don't yet know for sure that this is the problem with
+> > the 1641 etc.  It *might* still be due to a gremlin lurking in the
+> > ALC260 code.  To prove this we probably need someone with the laptops
+> > affected by #1843 and #1847 to test both modes of WMP and report their
+> > findings.
+> 
+> Actually I was wondering if these are related to the original bug from
+> #1618 not the CD issue.
 
-By the way, Jonathan Woithe's mixer changes in patch-realtek.c CVS rev
-1.26 work well on this platform for playback.  (I have not yet tested
-recording.) 
+Ah, oops, sorry.
 
+> Do your patches have any effect on Acer machines with HDA intel codecs
+> other than the ALC260?
 
+No.  They only apply to Acer machines with a Realtek ALC260 codec.  Even
+if they have a Realtek codec, if it's not an ALC260 then the latest patches
+don't apply to the machine.
 
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-01-06 01:44 
-----------------------------------------------------------------------
-Is this fixed in later releases?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-22-05 19:03 Paul Walmsley  New Issue                                    
-10-22-05 19:03 Paul Walmsley  Distribution              => Red Hat Fedora Core 4
-10-22-05 19:03 Paul Walmsley  Kernel Version            => 2.6.13-1.1532_FC4
-with ALSA drivers from CVS head 13-Oct-2005
-10-22-05 19:04 Paul Walmsley  Issue Monitored: Paul Walmsley                    
-03-01-06 01:44 rlrevell       Note Added: 0008262                          
-======================================================================
-
-
+Regards
+  jonathan
 
 
 -------------------------------------------------------
