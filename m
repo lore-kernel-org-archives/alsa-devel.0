@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001164]: aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-Date: Wed, 1 Mar 2006 01:02:09 +0100
-Message-ID: <318c4cc05d866837fedb33ea38db5f90@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001044]: Heavily distorted audio
+Date: Wed, 1 Mar 2006 01:02:20 +0100
+Message-ID: <8eb49e9fccc297613d763d848c3bb85c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20E381C1
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:02:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C28221C4
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:02:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,116 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1164> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1044> 
 ======================================================================
-Reported By:                sst4
+Reported By:                jefferai
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1164
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1044
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.11-ck3
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-07-2005 00:33 CEST
+Date Submitted:             04-11-2005 17:41 CEST
 Last Modified:              03-01-2006 01:02 CET
 ======================================================================
-Summary:                    aoss + skype: volume_adjust: SOUND_MIXER_WRITE_IGAIN
-failed: Invalid argument
+Summary:                    Heavily distorted audio
 Description: 
-I've tried 'skype' with my M-Audio Revolution 7.1.
+I have a laptop that is fine by itself, but when plugged into my docking
+station I get heavily distorted audio when something plays either
+directly to hw0:0 or through the OSS emulation. The problem seems to be
+with sample rate conversion -- if I create my own dmix-based device that
+resamples audio to 48KHz and then plays it to hw0:0, and I have an
+ALSA-aware app that lets me define which device to use and set it to
+that device, the audio is beautiful both on and off of the docking
+station.  Unfortunately, not all apps allow these settings, so things such
+as RealPlayer and Flash (in Firefox) sound horrid if I'm on my docking
+station, which is most of the time.
 
-Soon (probably in a second) after this command line:
+I've seen this same problem through three Linux distributions now
+(Gentoo, SuSE, and Fedora Core 3) on the same laptop so I know it's an
+ALSA issue (or configuration issue) and not distribution-specific.
 
-aoss skype &
+I've hard-set the ac97 clock option in the snd-intel8x0 module to 48000
+but this
+doesn't help, and my clock is detected as being 48000Hz anyways.  I
+don't know what to do.  Some people have said to point OSS apps to
+/dev/adsp but apps complain it's not a valid device, and anyways pointing
+to anything but /dev/dsp doesn't seem to be an option for all apps. 
+Besides, I'd still have the ALSA issues for apps that don't let you define
+which device to use.
 
-the terminal window gets filled with
+Following are relevant snippets of files.  I'm on up-to-date Gentoo
+linux using the Gentoo alsa-driver, alsa-tools, alsa-headers, alsa-lib,
+and alsa-oss ebuilds, all 1.0.8.  Configuration files are the defaults
+(I added the extra device with a .asoundrc).
 
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-
-messages, and I do not hear anything in 'skype' connecting to their
-automated 'echo123' service.
-
-The message is not quite clear, and I believe it shouldn't flood the
-screen.
-
-I mean, the code should first check capabilities of the card and its
-configuration and
-issue the message once.
-
-
-What is IGAIN in the message above ? Input gain ? That is, capture gain ?
-
+TIA,
+Jeff
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001096 no capture with M-Audio Revolution 7.1
-======================================================================
 
 ----------------------------------------------------------------------
- sst4 - 12-30-05 04:59 
+ tiwai - 04-12-05 18:39 
 ----------------------------------------------------------------------
-Am I still supposed to compile the patch and the whole ALSA or the patch
-is already in the main code ?
-
-Anyway, now even with non-redirected STODUT/STDERR and lot of
-
-volume_adjust: SOUND_MIXER_WRITE_IGAIN failed: Invalid argument
-
-messages the sound with Skype is smooth; I do not know whether it's due
-to
-changes in Skype, quality of connection or slightly different kernel
-- now it's 2.6.11-6mdk-i686-up-4GB instead of 2.6.11-6mdk-i586-up-1GB.
-
-
-I hope to make and upgrade to Mandriva 2006 next week, I think it has
-ALSA
-vesrion 1.0.9b.
+Both alsa-driver and alsa-lib must be updated to the same version.
+Especially, 1.0.9rc2 alsa-lib might lead to a kernel Oops with the older
+alsa-driver.  alsa-utils can be kept old, though.
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:07 
+ rlrevell - 12-30-05 04:42 
 ----------------------------------------------------------------------
-I guess you're still supposed to use the patch.  Try it first with
---dry-run to see if it applies still.
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-05 00:33 sst4           New Issue                                    
-06-08-05 14:50 tiwai          Note Added: 0004923                          
-06-08-05 14:51 tiwai          File Added: aoss-igain-fix.diff                   
-
-06-08-05 14:53 tiwai          Note Added: 0004926                          
-06-08-05 14:54 tiwai          File Added: aoss-igain-fix2.diff                  
- 
-06-08-05 14:55 tiwai          File Deleted: aoss-igain-fix.diff                 
-  
-06-12-05 19:35 sst4           Note Added: 0004999                          
-06-13-05 13:03 tiwai          Note Added: 0005006                          
-06-13-05 14:12 sst4           Note Added: 0005009                          
-06-13-05 14:30 tiwai          Note Added: 0005010                          
-06-13-05 15:55 sst4           File Added: asound.state.geberated_by_alsaconf    
-               
-06-13-05 15:59 sst4           File Added: asound.state.generated_by_alsaconf    
-               
-06-13-05 16:05 sst4           Note Added: 0005012                          
-06-15-05 08:25 sst4           Note Added: 0005021                          
-06-15-05 15:44 tiwai          Note Added: 0005035                          
-06-22-05 01:48 rlrevell       Relationship added       duplicate of 0001096
-06-28-05 00:59 sst4           Note Added: 0005290                          
-06-28-05 01:14 sst4           Note Added: 0005291                          
-06-28-05 12:45 tiwai          Note Added: 0005297                          
-06-28-05 23:45 sst4           Note Added: 0005301                          
-06-29-05 00:08 sst4           Note Added: 0005302                          
-06-29-05 20:22 tiwai          Note Added: 0005311                          
-06-29-05 21:40 sst4           Note Added: 0005316                          
-12-30-05 04:10 rlrevell       Note Added: 0007202                          
-12-30-05 04:59 sst4           Note Added: 0007229                          
-12-30-05 05:07 rlrevell       Note Added: 0007230                          
+04-11-05 17:41 jefferai       New Issue                                    
+04-11-05 17:41 jefferai       Distribution              => Gentoo          
+04-11-05 17:41 jefferai       Kernel Version            => 2.6.11-ck3      
+04-12-05 16:32 tiwai          Note Added: 0004448                          
+04-12-05 18:13 jefferai       Note Added: 0004457                          
+04-12-05 18:39 tiwai          Note Added: 0004458                          
+12-30-05 04:42 rlrevell       Note Added: 0007219                          
 03-01-06 01:02 rlrevell       Status                   new => closed       
 ======================================================================
 
