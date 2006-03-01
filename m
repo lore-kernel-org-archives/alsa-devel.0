@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001437]: Support for Audiotrak Maya Series.
-Date: Wed, 1 Mar 2006 00:59:29 +0100
-Message-ID: <db4dc040c309711ddb462a50eb8fa6bf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001019]: Unresolved symbols for snd-seq-oss.o on gentoo with a kernel 2.4.29
+Date: Wed, 1 Mar 2006 01:01:56 +0100
+Message-ID: <d6193db0d787715b22fbc47c3306baa6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8584C1C1
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC4B11C2
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:01:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,107 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1437> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1019> 
 ======================================================================
-Reported By:                Miliardo
+Reported By:                Alinoe
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1437
-Category:                   PCI - ice1724
+Issue ID:                   1019
+Category:                   CORE OSS - sequencer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6
+Distribution:               
+Kernel Version:             2.4.29 with grsecurity (but grsecurity doesn't
+matter in this case ;p)
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-21-2005 07:27 CEST
-Last Modified:              03-01-2006 00:59 CET
+Date Submitted:             03-27-2005 11:47 CEST
+Last Modified:              03-01-2006 01:01 CET
 ======================================================================
-Summary:                    Support for Audiotrak Maya Series.
+Summary:                    Unresolved symbols for snd-seq-oss.o on gentoo with
+a kernel 2.4.29
 Description: 
-I have a Maya 44 Pro Soundcard, ALSA detected it as a snd1724 Device, but
-it failed to detect it's firmware. It says it have a invaild firmware.
-What shell I do if I want to use it?
+# /etc/init.d/alsasound restart
+ * WARNING:  you are stopping a boot service.
+ * Storing ALSA Mixer Levels...                                           
+                                           [ ok ]
+ * Unloading ALSA...                                                      
+                                           [ ok ]
+ * Unloading ALSA modules...                                              
+                                           [ ok ]
+ * Loading ALSA modules...
+ *   Loading: snd-card-0...                                               
+                                           [ ok ]
+ *   Loading: snd-mixer-oss...                                            
+                                           [ ok ]
+ *   Loading: snd-pcm-oss...                                              
+                                           [ ok ]
+ *   Loading: snd-seq-oss...
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+init_module: Device or resource busy
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o: insmod
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o failed
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o: insmod
+snd-seq-oss failed                         [ !! ]
+
+ *   Loading: snd-seq...                                                  
+                                           [ ok ]
+ * Restoring Mixer Levels...                                              
+                                           [ ok ]
+
+
+Damn WTF?! :-)
+
+# dmesg [...]
+ALSA mixer_oss.c:1260: unable to register OSS mixer device 0:0
+ALSA pcm_oss.c:2436: unable to register OSS PCM device 0:0
+ALSA seq_oss.c:236: can't register device seq
+
+My mistake? :-/
+
+# insmod
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_no_status_R5c9c7f86
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_free_R9cf69370
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_encode_byte_Rea2835af
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_decode_R7a1ad7c0
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+/lib/modules/2.4.29-grsec/kernel/sound/acore/seq/oss/snd-seq-oss.o:
+unresolved symbol snd_midi_event_new_R1e92e146
+
+Urgh no :-/
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:32 
+ rlrevell - 12-30-05 05:21 
 ----------------------------------------------------------------------
-Any improvement in later releases?  Is the card listed in the matrix as
-supported?
+Were you ever able to get this to work?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-05 07:27 Miliardo       New Issue                                    
-09-21-05 07:27 Miliardo       Distribution              => Debian GNU/Linux
-09-21-05 07:27 Miliardo       Kernel Version            => 2.6             
-12-30-05 23:32 rlrevell       Note Added: 0007292                          
-03-01-06 00:59 rlrevell       Status                   new => closed       
+03-27-05 11:47 Alinoe         New Issue                                    
+03-27-05 11:47 Alinoe         Kernel Version            => 2.4.29 with
+grsecurity (but grsecurity doesn't matter in this case ;p)
+03-28-05 01:29 Alinoe         Issue Monitored: Alinoe                      
+12-30-05 05:21 rlrevell       Note Added: 0007242                          
+03-01-06 01:01 rlrevell       Status                   new => closed       
 ======================================================================
 
 
