@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
-Date: Wed, 1 Mar 2006 04:53:55 +0100
-Message-ID: <b74f55ee4bc903a1ec2006887ae731cd@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [RFC][PATCH] Transparent network support through
+	polypaudio
+Date: Tue, 28 Feb 2006 23:09:13 -0500
+Message-ID: <1141186155.5860.91.camel@mindpipe>
+References: <43F09D76.9060004@cendio.se>
+	 <20060214094741.GA8943@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF8731CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 04:53:55 +0100 (MET)
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A41081CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 05:09:36 +0100 (MET)
+In-Reply-To: <20060214094741.GA8943@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,106 +22,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Pierre Ossman <ossman@cendio.se>, alsa-devel@alsa-project.org, mzcbylcnhqvb@0pointer.de
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-02-14 at 10:47 +0100, Clemens Ladisch wrote:
+> And you're speaking with mplayer's ALSA driver maintainer.
+> Is there anything wrong with mplayer?  ;-) 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
-======================================================================
-Reported By:                klausr
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   305
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             Debian kernel 2.6.5-4-686
-======================================================================
-Date Submitted:             05-25-2004 14:49 CEST
-Last Modified:              03-01-2006 04:53 CET
-======================================================================
-Summary:                    sound is locked up after suspend/resume (APM)
-Description: 
-Until recently I was running oss driver cs46xx without a problem. I could
-suspend in the middle of playback and xmms would keep playing after resume
-as if nothing happend at all.
-After switching to the 2.6 kernel, currently running 2.6.5, I also
-switched to ALSA beeing the new sound architecture of choice.
-Unforunately now when I suspend and resume my notebook sound stops working
-at all. Sometimes unloading all ALSA modules helps, sometimes even that is
-not possible anymore.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000226 Sound hangs after APM resume
-======================================================================
+Actually, since you mention it...
 
-----------------------------------------------------------------------
- cull - 03-01-06 04:45 
-----------------------------------------------------------------------
-no, doesn't help.
-now 
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs 
-the same as before sleep, but there is no sound.
-However I there is a message appears in dmesg:
+I still get smoother playback with OSS emulation than mplayer's ALSA
+driver.  I think it's because the ALSA driver resets the stream on
+xruns:
 
-ALSA
-/usr/src/alsa/1.0.11rc3/alsa-driver-1.0.11rc3/acore/../alsa-kernel/core/pcm_lib.c:2231:
-playback write error (DMA or IRQ trouble?)
+alsa-space: xrun of at least 862.101 msecs. resetting stream3% 7 0                                    
+alsa-space: xrun of at least 53.590 msecs. resetting stream.2% 27 0                                   
+alsa-play: xrun of at least 5.844 msecs. resetting stream 5.1% 102 0                                  
+alsa-space: xrun of at least 442.926 msecs. resetting stream1% 168 0                                  
+alsa-space: xrun of at least 50.325 msecs. resetting stream 5.2% 4 0                                  
+alsa-play: xrun of at least 15.953 msecs. resetting stream  5.1% 84 0        
 
-Not sure at which moment exactly, but after suspend.
-I'll try to repeat this and report more exatcly.
+This seems like a waste of CPU - after all there's nothing we can do but
+drop frames if I'm trying to play a movie that my CPU can't quite
+handle.  Shouldn't mplayer just ignore xruns?
 
-----------------------------------------------------------------------
- cull - 03-01-06 04:53 
-----------------------------------------------------------------------
-yes, the message appears after resume, when I try to play sound in an
-alsa-native (for example in gnomemeeting), but not in oss-based
-application (like xmms). I do not get sound in any of them.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-25-04 14:49 klausr         New Issue                                    
-05-25-04 14:49 klausr         Kernel Version            => Debian kernel
-2.6.5-4-686
-05-25-04 15:02 tiwai          Note Added: 0001213                          
-05-25-04 15:31 klausr         Note Added: 0001215                          
-05-25-04 15:59 klausr         Note Added: 0001217                          
-05-25-04 16:02 klausr         Issue Monitored: klausr                      
-05-25-04 16:05 tiwai          Note Added: 0001218                          
-05-25-04 16:44 klausr         Note Added: 0001220                          
-05-25-04 16:56 klausr         Note Edited: 0001220                         
-05-27-04 08:49 klausr         Issue End Monitor: klausr                    
-05-28-04 17:08 tiwai          Note Added: 0001269                          
-05-29-04 09:36 klausr         Note Added: 0001276                          
-01-17-05 10:57 jdthood        Note Added: 0003226                          
-03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
-03-23-05 00:39 rlrevell       Note Added: 0004145                          
-03-28-05 15:42 sboehler       Issue Monitored: sboehler                    
-06-20-05 01:59 tromer         Issue Monitored: tromer                      
-12-12-05 11:12 bheung         Issue Monitored: bheung                      
-12-13-05 12:49 jdthood        Note Added: 0007003                          
-12-13-05 22:06 jdthood        Note Added: 0007025                          
-02-26-06 03:52 cull           Note Added: 0008193                          
-02-26-06 04:24 cull           Note Added: 0008194                          
-02-26-06 04:44 rlrevell       Note Added: 0008195                          
-02-26-06 16:31 cull           Note Added: 0008204                          
-02-26-06 23:24 cull           Note Edited: 0008204                         
-03-01-06 03:41 cull           Note Added: 0008264                          
-03-01-06 03:50 rlrevell       Note Added: 0008265                          
-03-01-06 04:03 cull           Note Added: 0008266                          
-03-01-06 04:14 rlrevell       Note Added: 0008267                          
-03-01-06 04:45 cull           Note Added: 0008268                          
-03-01-06 04:53 cull           Note Added: 0008269                          
-======================================================================
-
+Lee
 
 
 
