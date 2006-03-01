@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001314]: No SPDIF sound, no SPDIF mixer controls
-Date: Wed, 1 Mar 2006 00:59:30 +0100
-Message-ID: <eb78fff1eb58284b1a02f3669594c669@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000579]: multi+route distort sound
+Date: Wed, 1 Mar 2006 01:05:14 +0100
+Message-ID: <e751ec7b2f87c8944ca9a2a866e566c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E09F1C0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EDF7013E
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:05:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,127 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1314> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=579> 
 ======================================================================
-Reported By:                SamiH
+Reported By:                ramendik
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1314
-Category:                   PCI - via82xx
+Project:                    ALSA - lib
+Issue ID:                   579
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               BLFS
-Kernel Version:             2.6.11.8
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-05-2005 17:41 CEST
-Last Modified:              03-01-2006 00:59 CET
+Date Submitted:             10-11-2004 20:45 CEST
+Last Modified:              03-01-2006 01:05 CET
 ======================================================================
-Summary:                    No SPDIF sound, no SPDIF mixer controls
+Summary:                    multi+route distort sound
 Description: 
-  * I have S/PDIF output, but it doesn't work
-  * I don't even have the mixer control for that entry
-  * SPDIF have worked in Fedora Core 2 or something else,
-    but I haven't got it working again even on that system.
+I have Intel ICH5, with both analog and spdif output.
 
-  * Stereo output works fine from the analog output.
+I have made up /etc/asound.conf to route to both hw:0,0 and hw:0,4; I am
+listening on spdif (hw:0,4). (tiwai: I will try the new patch that may
+make this redundant, but what we have here seems to be another bug and
+might happen in other cases too).
+
+Here's my /etc/asound.conf in its entirety:
+
+pcm.analog {
+    type hw
+    card 0
+    device 0
+}
+
+pcm.digit {
+    type hw
+    card 0
+    device 4
+}
+
+pcm.whole {
+    type multi
+    slaves.a.pcm "hw:0,0"
+    slaves.a.channels 2
+    slaves.b.pcm "hw:0,4"
+    slaves.b.channels 2
+    bindings.0.slave a
+    bindings.0.channel 0
+    bindings.1.slave a
+    bindings.1.channel 1
+    bindings.2.slave b
+    bindings.2.channel 0
+    bindings.3.slave b
+    bindings.3.channel 1
+}
+
+pcm.rt {
+    type route
+    slave.pcm whole
+    slave.channels 4
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
+pcm.!default {
+    type copy
+    slave.pcm rt
+}
+
+ctl.!default {
+    type hw
+    card 0
+}
+
+When I play to hw:0,4 or "analog", the sound is OK. When I play to "rt",
+it is distorted. Not noisy this time; instead, the pitch is shifted
+somewhat lower. 
+
+Checked with alsaplayer and xmms 1.2.10 . (XMMS 1.2.8 also caused high CPU
+use when playing to "rt", but this may be a CPU bug). Checked with both
+44100 Hz and 48000 Hz files.
+
+This may have something to do with a strange fact. When I play a 48k file,
+iecset still reports a rate of 44100 Hz. And in fact, if I set it to 48000
+Hz manualy and start a 48k file in alsaplayer, it still shifts to 44100 !
+This is true for both playing to hw:0,4 and to "rt". (Not tested with
+XMMS, can test if needed)
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000569 Software mixing to rear channel
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 23:26 
+ ramendik - 03-20-05 13:21 
 ----------------------------------------------------------------------
-Any improvement in later ALSA releases?
+Thanks for reminding! I'll test out with alsa in kernel 2.6.11 and newest
+libs, and report back.
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 04:19 
+----------------------------------------------------------------------
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-05-05 17:41 SamiH          New Issue                                    
-08-05-05 17:41 SamiH          Distribution              => BLFS            
-08-05-05 17:41 SamiH          Kernel Version            => 2.6.11.8        
-12-30-05 23:26 rlrevell       Note Added: 0007289                          
-03-01-06 00:59 rlrevell       Status                   new => closed       
+10-11-04 20:45 ramendik       New Issue                                    
+10-11-04 20:45 ramendik       Distribution              => ASP Linux, RH9-based
+10-11-04 20:45 ramendik       Kernel Version            => 2.6.8.1-ck8 , with
+alsa 1.0.7rc1 stuck in and patches from bug 505 put on top
+10-12-04 13:10 tiwai          Note Added: 0002091                          
+10-22-04 16:56 perex          Relationship added       related to 0000569  
+10-22-04 16:58 perex          Project                  ALSA - driver => ALSA -
+lib
+03-20-05 13:05 jdthood        Note Added: 0004077                          
+03-20-05 13:21 ramendik       Note Added: 0004079                          
+12-30-05 04:19 rlrevell       Note Added: 0007204                          
+03-01-06 01:05 rlrevell       Status                   new => closed       
 ======================================================================
 
 
