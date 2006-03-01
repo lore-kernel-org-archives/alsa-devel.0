@@ -1,7 +1,7 @@
 From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Subject: Re: PCM driver only plays tiny portion of clip
-Date: Wed, 01 Mar 2006 19:10:31 +0000
-Message-ID: <1141240231.9233.11.camel@localhost.localdomain>
+Date: Wed, 01 Mar 2006 19:40:58 +0000
+Message-ID: <1141242058.9233.17.camel@localhost.localdomain>
 References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
 	 <20060227172601.GA446@turing.informatik.uni-halle.de>
 	 <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
@@ -11,14 +11,16 @@ References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
 	 <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
 	 <20060228170824.GA24675@turing.informatik.uni-halle.de>
 	 <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
+	 <1141240231.9233.11.camel@localhost.localdomain>
+	 <1141241474.5860.183.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DCD591B4
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 20:10:34 +0100 (MET)
-In-Reply-To: <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D47EE1B9
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 20:41:00 +0100 (MET)
+In-Reply-To: <1141241474.5860.183.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,32 +30,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-02-28 at 17:36 +0000, Adrian McMenamin wrote:
-> On Tue, 28 February, 2006 5:08 pm, Clemens Ladisch wrote:
+On Wed, 2006-03-01 at 14:31 -0500, Lee Revell wrote:
+
+> > What happens next?
 > 
-> >
-> > Where is the source code of your driver?
-> >
-> >
-> 
-> http://newgolddream.dyndns.info/repos
-> 
-Anybody have any comments? For my own understanding is the patten this:
+> The app(s) waiting to output audio (sleeping in poll() or write()) will
+> be woken up and based on the value returned by the pointer callback
+> above, informed that there is space in the buffer and how much space
+> there is, and will then write the next chunk of frames, and go back to
+> sleep.  Then we go back to "Hardware triggers interrupt" above and the
+> process repeats.
 
-Hardware triggers interrupt as period boundary passed  ---->
+But something in the alsa subsystem determines whether there is any
+space before waking the app, yes?
 
-Interrupt handler calls ALSA middle layer  ---->
-
-ALSA middle layer calls pointer callback --->
-
-Pointer callback returns ring buffer position
-
-
-What happens next?
+and when the app is woken alsa calls the trigger callback?
 
 
 
