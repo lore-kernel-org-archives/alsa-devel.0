@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001009]: NVidia CK8S 8ch: a center speaker is always silent in native alsa mode (through alsa-lib), works with oss emulation though
-Date: Wed, 1 Mar 2006 00:59:18 +0100
-Message-ID: <8caa05004a22449fe88f5a991dafe812@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000573]: no SPDIF output with vt82xx/ICEnsemble VT1616i
+Date: Wed, 1 Mar 2006 01:02:22 +0100
+Message-ID: <5cf2f20afcc8268544a256c60a308fb4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F4CE1C2
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 00:59:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0143C1C1
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:02:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,94 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1009> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=573> 
 ======================================================================
-Reported By:                modax
+Reported By:                vladimir
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1009
-Category:                   PCI - intel8x0
+Issue ID:                   573
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.11.5 with self-compiled alsa-driver
-1.0.9rc1
+Distribution:               Fedora Core 3 test 2
+Kernel Version:             2.6.8-1.541, as shipped with FC3t2
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-22-2005 22:34 CET
-Last Modified:              03-01-2006 00:59 CET
+Date Submitted:             10-09-2004 00:59 CEST
+Last Modified:              03-01-2006 01:02 CET
 ======================================================================
-Summary:                    NVidia CK8S 8ch: a center speaker is always silent
-in native alsa mode (through alsa-lib), works with oss emulation though
+Summary:                    no SPDIF output with vt82xx/ICEnsemble VT1616i
 Description: 
-A center speaker stays quiet while playing 5.1 audio directly through
-alsa-lib (eg. with kaffeine (xine) or mplayer using alsa plugin). As a
-result, I'm unable to hear what people are speaking in movies because the
-speech is usually sent to the center speaker (correct me if i'm wrong. i'm
-new to all this 5.1 business). Anyway, adjusting the volume,
-muting/unmuting "Center" section, enabling/disabling "Mic As Center/LFE"
-doesn't have any effect on the center speaker. It stays silent. However,
-as I noted in the summary, the center speaker works with oss audio driver
-of xine/mplayer (using oss emulation). However, that mode is not perfect
-as the center speaker plays the role of left surround and vice versa. In
-addition, a right surround speaker stays always silent (i guess that's
-because the RS channel needs to be swapped with LFE; at least I got this
-impression by having a look at
-/usr/share/alsa/cards/NForce.conf:surround51). To sum up, my problem is
-that I can't get the center speaker (which, I guess, is channel 2 on my
-hardware) working with native alsa apps playing ac3/5.1 audio.
+With alsa 1.0.6 (in kernel), 1.0.7rc1, or CVS, I'm unable to reliably get
+SPDIF output to work -- it might work once out of a dozen or so times. 
+The attached patch improves things -- ignoring the cached values in
+ac97_read_cache gives me working spdif playbac.  The values I see printed
+with the printk added in ac97_read_cache by the patch are:
+
+AC97_read_cache: register 0x002a has real value 0x01f1 cached 0x05f1 
+AC97_read_cache: register 0x002a has real value 0x05f1 cached 0x01f1 
+
+which indicates a change in the read-only SPCV bit.  Perhaps registers
+with read-only status bits shouldn't be cached?  I'm not sure if that's
+the fix, or if there's a deeper issue here.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- modax - 04-25-05 00:03 
+ vladimir - 04-10-05 06:05 
 ----------------------------------------------------------------------
-I've tested alsa-driver and alsa-lib CVS as of 2005-04-24 and I really like
-the new way of surround jacks management. I can confim, that "Independent"
-works as expected here, not sure about "Shared", but I can test it if you
-wish. Thanks for your work on this issue. 
-
-In addition, I want to propose a suggestion to make surround support
-completely flawless. The "Duplicate Front" switch makes no sence in
-surround{40,51} modes because it replaces real sound information going to
-surround channels with front speaker soundstream. "Duplicate Front" is
-acceptible only in 2ch mode as these is no original surround soundstream.
-But in 4ch and 6ch it results in original surround soundstream loss. So
-I've prepared a patch to NFORCE.conf, which resolves the issue by
-disabling "Duplicate Front" in 4ch and 6ch modes. The patch is against
-alsa-lib CVS 2005-04-24.
+I ended up RMA'ing my EPIA ME6000 for an identical one, and just recently
+got around to setting the machine up. Reinstalling stock FC3, and updating
+to the latest kernel -- kernel-2.6.10-1.770_FC3 -- and now I've yet to get
+any SPDIF output at all.  Trying to track it down..
 
 ----------------------------------------------------------------------
- rlrevell - 12-31-05 00:13 
+ rlrevell - 12-30-05 04:39 
 ----------------------------------------------------------------------
-Bug seems to be fixed, should the patch be applied?
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 22:34 modax          New Issue                                    
-03-22-05 22:34 modax          Distribution              => Debian unstable 
-03-22-05 22:34 modax          Kernel Version            => vanilla 2.6.11.5 with
-self-compiled alsa-driver 1.0.9rc1
-03-23-05 13:01 tiwai          Note Added: 0004156                          
-03-25-05 00:37 modax          Note Added: 0004204                          
-03-25-05 00:37 modax          File Added: bug-1009.tar.gz                    
-03-30-05 18:22 tiwai          Note Added: 0004268                          
-03-30-05 18:22 tiwai          File Added: nforce-conf-test.diff                 
-  
-03-30-05 23:28 modax          Note Added: 0004275                          
-04-03-05 17:47 modax          Note Added: 0004311                          
-04-04-05 09:59 modax          Note Added: 0004324                          
-04-07-05 16:28 tiwai          Note Added: 0004358                          
-04-08-05 01:55 modax          Note Added: 0004371                          
-04-25-05 00:03 modax          Note Added: 0004568                          
-04-25-05 00:04 modax          File Added: duplicate-front.diff                  
+10-09-04 00:59 vladimir       New Issue                                    
+10-09-04 00:59 vladimir       File Added: ac97_codec-no-readcache.patch         
+          
+10-09-04 00:59 vladimir       Distribution              => Fedora Core 3 test 2
+10-09-04 00:59 vladimir       Kernel Version            => 2.6.8-1.541, as
+shipped with FC3t2
+10-11-04 08:21 vladimir       Note Added: 0002070                          
+10-11-04 12:54 tiwai          Note Added: 0002076                          
+10-11-04 19:46 vladimir       Note Added: 0002083                          
+10-12-04 14:31 tiwai          Note Added: 0002092                          
+10-12-04 14:31 tiwai          File Added: ac97-spcv-debug.diff                  
  
-12-31-05 00:13 rlrevell       Note Added: 0007311                          
-03-01-06 00:59 rlrevell       Status                   new => closed       
+10-12-04 19:44 vladimir       Note Added: 0002107                          
+10-13-04 11:16 tiwai          Note Added: 0002118                          
+10-13-04 11:17 tiwai          File Added: ac97-ea-fix.diff                    
+04-09-05 16:17 jdthood        Note Added: 0004409                          
+04-10-05 06:05 vladimir       Note Added: 0004432                          
+12-30-05 04:39 rlrevell       Note Added: 0007216                          
+03-01-06 01:02 rlrevell       Status                   new => closed       
 ======================================================================
 
 
