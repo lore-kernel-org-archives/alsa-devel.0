@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001886]: Problems on reboot
-Date: Wed, 1 Mar 2006 18:01:52 +0100
-Message-ID: <5673eb22462169f9ceaec281d27b07e4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001344]: Acer Laptop Card not working (3002WTCi)
+Date: Wed, 1 Mar 2006 17:55:09 +0100
+Message-ID: <0c39ac90eb7c5ee0d1c4698b98b1dd94@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD0CCA0
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 18:01:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FCAD1C9
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 17:55:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1886> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1344> 
 ======================================================================
-Reported By:                eric
-Assigned To:                
+Reported By:                bqtran
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1886
-Category:                   PCI - via82xx
-Reproducibility:            random
+Issue ID:                   1344
+Category:                   PCI - hda-intel
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.13-rc5 (mm-sources)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-01-2006 17:59 CET
-Last Modified:              03-01-2006 18:01 CET
+Date Submitted:             08-17-2005 07:33 CEST
+Last Modified:              03-01-2006 17:55 CET
 ======================================================================
-Summary:                    Problems on reboot
+Summary:                    Acer Laptop Card not working (3002WTCi)
 Description: 
-Hi, i have little problem with my alsa configuration,
+The module fails to load for this card. Here is some info.
 
-i use kernel 2.6.15 and alsa release 10RC3
+lspci -v:
+0000:00:01b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
+         Subsystem: Acer Incorporated [ALI]: Unknown device 0067
+         Flags: bus master, fast devsel, latency 0
+         Memory at d000c000 (64-bit, non-prefetchable)
+         Capabilities: [50] Power Management version 2
+         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+         Capabilities: [70] #10 [0091]
 
-on my configuration i use 
-
-1 X snd-via82xx and 2 X snd-ice1724
-
-sometime when i reboot i card as inverted and i have this udev message:
-
- VIA 82xx Audio: probe of 0000:00:11.5 failed with error -12
 
 ======================================================================
 
 ----------------------------------------------------------------------
- eric - 03-01-06 18:01 
+ rlrevell - 03-01-06 00:55 
 ----------------------------------------------------------------------
-my modules.conf on kernel 2.6:
+Any improvement in later releases?
 
-##### ALSA Config avmmanager START #####
-alias char-major-116* snd
-alias snd-timer-1* snd_rtctimer
-alias snd-timer-2* snd_hpet
-
-alias /dev/mixer* snd-mixer-oss
-alias /dev/dsp* snd-pcm-oss
-alias /dev/midi* snd-seq-oss
-
-##### Card via id=0 #####
-alias snd-card-0 snd-via82xx
-options snd-via82xx index=0 dxs_support=3
-
-##### Card terratec28 id=1 #####
-alias snd-card-1 snd-ice1724
-options snd-ice1724 index=1 model=phase28
-
-##### Card terratec28 id=2 #####
-alias snd-card-2 snd-ice1724
-options snd-ice1724 index=2 model=phase28
-##### ALSA Config avmmanager END #####
+----------------------------------------------------------------------
+ lrupn - 03-01-06 17:10 
+----------------------------------------------------------------------
+This hardware is working on 1.0.10....
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-06 17:59 eric           New Issue                                    
-03-01-06 18:01 eric           Note Added: 0008285                          
+08-17-05 07:33 bqtran         New Issue                                    
+08-17-05 07:33 bqtran         Distribution              => Gentoo          
+08-17-05 07:33 bqtran         Kernel Version            => 2.6.13-rc5
+(mm-sources)
+08-17-05 07:38 bqtran         Issue Monitored: bqtran                      
+08-23-05 16:26 bqtran         Issue End Monitor: bqtran                    
+03-01-06 00:55 rlrevell       Note Added: 0008255                          
+03-01-06 17:10 lrupn          Note Added: 0008282                          
+03-01-06 17:55 rlrevell       Status                   assigned => resolved
+03-01-06 17:55 rlrevell       Resolution               open => fixed       
 ======================================================================
 
 
