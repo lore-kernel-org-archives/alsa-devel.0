@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
-Date: Wed, 1 Mar 2006 04:14:58 +0100
-Message-ID: <2b2243446094ce4c1ee27e4727667473@bugtrack.alsa-project.org>
+From: "Jodie Wilken" <wilkeijodie@website.ne.jp>
+Subject: psyc hoses news
+Date: Tue, 28 Feb 2006 22:19:42 -0500
+Message-ID: <000001c63cde$fb8a02d0$3c79a8c0@vwp54>
+Reply-To: "Jodie Wilken" <wilkeijodie@website.ne.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C63CB5.12B3FAD0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47AB11CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 04:14:59 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 655A41CA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 04:20:11 +0100 (MET)
+Received: from regard.co.il (129.red-217-217-151.user.auna.net [217.217.151.129])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id EBDFA99261
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 04:20:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,101 +25,104 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
-======================================================================
-Reported By:                klausr
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   305
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             Debian kernel 2.6.5-4-686
-======================================================================
-Date Submitted:             05-25-2004 14:49 CEST
-Last Modified:              03-01-2006 04:14 CET
-======================================================================
-Summary:                    sound is locked up after suspend/resume (APM)
-Description: 
-Until recently I was running oss driver cs46xx without a problem. I could
-suspend in the middle of playback and xmms would keep playing after resume
-as if nothing happend at all.
-After switching to the 2.6 kernel, currently running 2.6.5, I also
-switched to ALSA beeing the new sound architecture of choice.
-Unforunately now when I suspend and resume my notebook sound stops working
-at all. Sometimes unloading all ALSA modules helps, sometimes even that is
-not possible anymore.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000226 Sound hangs after APM resume
-======================================================================
+------=_NextPart_000_0001_01C63CB5.12B3FAD0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- cull - 03-01-06 04:03 
-----------------------------------------------------------------------
-the diff when i use ACPI sleep:
-20c20
-< 0:26 = 800f
----
-> 0:26 = 000f
+V
+L
+P
+A
+C
+X
+V
+I
+e
+r
+m
+I
+a
+A
+A
+v
+o
+b
+A
+n
+L
+G
+i
+z
+i
+L
+a
+I
+R
+t
+a
+e
+I
+x
+U
+A
+r
+c
+n
+S
 
-----------------------------------------------------------------------
- rlrevell - 03-01-06 04:14 
-----------------------------------------------------------------------
-OK, we may be on to something.  Register 26 is:
+M
+=20
+a
 
-#define  AC97_POWER_CONTROL      0x0026
 
-But, AFAICT bit 0x8000 should only affect the modem.
+=20
 
-After resume try:
+=20
+=20
+http://www.taesaroup.com <http://www.taesaroup.com>=20
 
-echo 26 800f > /proc/asound/card0/codec97#0/ac97#0-0+regs
+------=_NextPart_000_0001_01C63CB5.12B3FAD0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Does it restore your sound?
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>
+<TABLE>
+<TR>
+<TD> <DIV><B>V</B></DIV><DIV>L</DIV> <DIV>P</DIV> <DIV>A</DIV> =
+<DIV><B>C</B></DIV><DIV>X</DIV> <DIV><B>V</B></DIV></TD>
+<TD> <DIV><B>I</B></DIV><DIV>e</DIV> <DIV>r</DIV> <DIV>m</DIV> =
+<DIV><B>I</B></DIV><DIV>a</DIV> <DIV><B>A</B></DIV></TD>
+<TD> <DIV><B>A</B></DIV><DIV>v</DIV> <DIV>o</DIV> <DIV>b</DIV> =
+<DIV><B>A</B></DIV><DIV>n</DIV> <DIV><B>L</B></DIV></TD>
+<TD> <DIV><B>G</B></DIV><DIV>i</DIV> <DIV>z</DIV> <DIV>i</DIV> =
+<DIV><B>L</B></DIV><DIV>a</DIV> <DIV><B>I</B></DIV></TD>
+<TD> <DIV><B>R</B></DIV><DIV>t</DIV> <DIV>a</DIV> <DIV>e</DIV> =
+<DIV><B>I</B></DIV><DIV>x</DIV> <DIV><B>U</B></DIV></TD>
+<TD> <DIV><B>A</B></DIV><DIV>r</DIV> <DIV>c</DIV> <DIV>n</DIV> =
+<DIV><B>S</B></DIV><DIV><BR></DIV> <DIV><B>M</B></DIV></TD>
+<TD> <DIV>&nbsp;</DIV> <DIV>a</DIV> <DIV><BR></DIV> <DIV><BR></DIV> =
+<DIV>&nbsp;</DIV> <DIV><BR></DIV> <DIV>&nbsp;</DIV> </TD>
+</TR>
+</TABLE>
+</DIV>
+<DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><A =
+href=3D"http://www.taesaroup.com"><FONT face=3DArial =
+size=3D2>http://www.taesaroup.com</FONT></A></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C63CB5.12B3FAD0--
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-25-04 14:49 klausr         New Issue                                    
-05-25-04 14:49 klausr         Kernel Version            => Debian kernel
-2.6.5-4-686
-05-25-04 15:02 tiwai          Note Added: 0001213                          
-05-25-04 15:31 klausr         Note Added: 0001215                          
-05-25-04 15:59 klausr         Note Added: 0001217                          
-05-25-04 16:02 klausr         Issue Monitored: klausr                      
-05-25-04 16:05 tiwai          Note Added: 0001218                          
-05-25-04 16:44 klausr         Note Added: 0001220                          
-05-25-04 16:56 klausr         Note Edited: 0001220                         
-05-27-04 08:49 klausr         Issue End Monitor: klausr                    
-05-28-04 17:08 tiwai          Note Added: 0001269                          
-05-29-04 09:36 klausr         Note Added: 0001276                          
-01-17-05 10:57 jdthood        Note Added: 0003226                          
-03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
-03-23-05 00:39 rlrevell       Note Added: 0004145                          
-03-28-05 15:42 sboehler       Issue Monitored: sboehler                    
-06-20-05 01:59 tromer         Issue Monitored: tromer                      
-12-12-05 11:12 bheung         Issue Monitored: bheung                      
-12-13-05 12:49 jdthood        Note Added: 0007003                          
-12-13-05 22:06 jdthood        Note Added: 0007025                          
-02-26-06 03:52 cull           Note Added: 0008193                          
-02-26-06 04:24 cull           Note Added: 0008194                          
-02-26-06 04:44 rlrevell       Note Added: 0008195                          
-02-26-06 16:31 cull           Note Added: 0008204                          
-02-26-06 23:24 cull           Note Edited: 0008204                         
-03-01-06 03:41 cull           Note Added: 0008264                          
-03-01-06 03:50 rlrevell       Note Added: 0008265                          
-03-01-06 04:03 cull           Note Added: 0008266                          
-03-01-06 04:14 rlrevell       Note Added: 0008267                          
-======================================================================
 
 
 
