@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001138]: errors when installing au8820 modules
-Date: Wed, 1 Mar 2006 08:14:37 +0100
-Message-ID: <f30789cc929d6fb4cad0a77f4a82b088@bugtrack.alsa-project.org>
+From: John Shillinglaw <ianchas@sc.rr.com>
+Subject: Roland SCP-55 Soundcanvas ALSA Driver
+Date: Wed, 01 Mar 2006 02:24:26 -0500
+Message-ID: <1141197867.923.8.camel@Pippin.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8B9C1CA
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 08:14:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,92 +15,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello, 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1138> 
-======================================================================
-Reported By:                penguinparty
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1138
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               ubuntu 5.04
-Kernel Version:             2.6.11.11 2.6.11.8 and 2.6.10
-======================================================================
-Date Submitted:             05-28-2005 22:22 CEST
-Last Modified:              03-01-2006 08:14 CET
-======================================================================
-Summary:                    errors when installing au8820 modules
-Description: 
-Please see the section additional information for a dump of my dmesg output
-regarding the au8820 module.
+Some time ago, I posted a request about help developing a driver for
+Roland's SCP-55 Soundcanvas pcmcia card which has 2 digital audio in/out
+channels, MPU-401 compatible MIDI in/out, and a wave table synth module.
 
-I have tried installing this module using 2.6.11.11 2.6.11.8 and 2.6.10
-kernels. The shipping alsa support under each of these kerenls provies me
-with the same result. I have also tried installing each of these kernels
-without alsa support only CONFIG_SOUND and then installing the
-alsa-drivers 1.0.9rc4a
+I've made some progress and have created a webpage to document my work:
+http://linuxtech.netfirms.com
 
-I get the same result every time I do the modprobe snd-au8820
+I've made a good start, but have a long way to go. Any help is
+appreciated, my goal at the moment is getting the driver framework
+completed, and the midi driver working.
 
-Using older versions of debian as well as the ubuntu live cd's I am able
-to get this sound card working.
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 01-05-06 10:01 
-----------------------------------------------------------------------
-Do your hear any sound when playing mono pcm wav through hw:0,3(WT) of your
-au8820 after applying this patch ?
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593
-
-> -  (dma->dma_ctrl & FMT_MASK) | ((fmt << FMT_SHIFT) & FMT_MASK);
-> + (dma->dma_ctrl & ~FMT_MASK) | ((fmt << FMT_SHIFT) & FMT_MASK);
-
-----------------------------------------------------------------------
- Raymond - 03-01-06 08:14 
-----------------------------------------------------------------------
-Would any of you try the au88x0_surround40.patch (alsa-driver-1.0.11rc3) to
-see if there is any side effect on au8820 ? 
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-28-05 22:22 penguinparty   New Issue                                    
-05-28-05 22:22 penguinparty   Distribution              => ubuntu 5.04     
-05-28-05 22:22 penguinparty   Kernel Version            => 2.6.11.11 2.6.11.8
-and 2.6.10
-05-28-05 22:22 penguinparty   Issue Monitored: penguinparty                    
-06-08-05 04:41 penguinparty   File Added: typescript                       
-06-08-05 04:43 penguinparty   Note Added: 0004914                          
-08-24-05 10:55 Raymond        Note Added: 0005925                          
-08-24-05 10:58 Raymond        Note Added: 0005926                          
-08-24-05 10:59 Raymond        Note Deleted: 0005926                        
-09-01-05 04:24 penguinparty   File Added: make-typescript                    
-09-01-05 04:25 penguinparty   Note Added: 0005993                          
-09-01-05 05:58 Raymond        Note Added: 0005994                          
-09-02-05 02:49 penguinparty   Note Added: 0006002                          
-09-02-05 05:49 Raymond        Note Added: 0006003                          
-11-16-05 06:29 Raymond        Note Added: 0006736                          
-11-23-05 13:50 Raymond        Note Added: 0006810                          
-01-02-06 10:07 Raymond        Note Deleted: 0006810                        
-01-05-06 09:51 Raymond        Note Deleted: 0006736                        
-01-05-06 10:01 Raymond        Note Added: 0007465                          
-03-01-06 08:14 Raymond        Note Added: 0008276                          
-======================================================================
-
+John
 
 
 
