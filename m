@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001044]: Heavily distorted audio
-Date: Wed, 1 Mar 2006 01:02:20 +0100
-Message-ID: <8eb49e9fccc297613d763d848c3bb85c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001061]: can't test audio with aplay using 16-bit signed LE format; 1.0.7 however works
+Date: Wed, 1 Mar 2006 01:05:13 +0100
+Message-ID: <279d2847e34b9026e21a1e1767f94a9f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C28221C4
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:02:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1AE7127
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2006 01:05:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1044> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1061> 
 ======================================================================
-Reported By:                jefferai
+Reported By:                ukr
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1044
+Issue ID:                   1061
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.11-ck3
+Distribution:               Fedora Core 3
+Kernel Version:             Linux 2.6.11
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-11-2005 17:41 CEST
-Last Modified:              03-01-2006 01:02 CET
+Date Submitted:             04-18-2005 03:24 CEST
+Last Modified:              03-01-2006 01:05 CET
 ======================================================================
-Summary:                    Heavily distorted audio
+Summary:                    can't test audio with aplay using 16-bit signed LE
+format; 1.0.7 however works
 Description: 
-I have a laptop that is fine by itself, but when plugged into my docking
-station I get heavily distorted audio when something plays either
-directly to hw0:0 or through the OSS emulation. The problem seems to be
-with sample rate conversion -- if I create my own dmix-based device that
-resamples audio to 48KHz and then plays it to hw0:0, and I have an
-ALSA-aware app that lets me define which device to use and set it to
-that device, the audio is beautiful both on and off of the docking
-station.  Unfortunately, not all apps allow these settings, so things such
-as RealPlayer and Flash (in Firefox) sound horrid if I'm on my docking
-station, which is most of the time.
+I usually test my speakers with aplay using
 
-I've seen this same problem through three Linux distributions now
-(Gentoo, SuSE, and Fedora Core 3) on the same laptop so I know it's an
-ALSA issue (or configuration issue) and not distribution-specific.
+aplay -t raw -f S16_LE -c 6 -r 48000 -Dsurround51
 
-I've hard-set the ac97 clock option in the snd-intel8x0 module to 48000
-but this
-doesn't help, and my clock is detected as being 48000Hz anyways.  I
-don't know what to do.  Some people have said to point OSS apps to
-/dev/adsp but apps complain it's not a valid device, and anyways pointing
-to anything but /dev/dsp doesn't seem to be an option for all apps. 
-Besides, I'd still have the ALSA issues for apps that don't let you define
-which device to use.
+With 1.0.8, when I do this, nothing goes to any of the speakers. However,
+when I revert to alsa-driver 1.0.7, it works correctly. I have Intel ICH5
+audio with Realtek ALC650F chip with 5.1 channel audio.
 
-Following are relevant snippets of files.  I'm on up-to-date Gentoo
-linux using the Gentoo alsa-driver, alsa-tools, alsa-headers, alsa-lib,
-and alsa-oss ebuilds, all 1.0.8.  Configuration files are the defaults
-(I added the extra device with a .asoundrc).
-
-TIA,
-Jeff
+Thanks,
+            Uday.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 18:39 
+ ukr - 04-23-05 02:08 
 ----------------------------------------------------------------------
-Both alsa-driver and alsa-lib must be updated to the same version.
-Especially, 1.0.9rc2 alsa-lib might lead to a kernel Oops with the older
-alsa-driver.  alsa-utils can be kept old, though.
+I would like to add that surround51 is working correctly but not ch51dup
+and ch41dup (which I had set up using the route plug-in in .asoundrc).
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 04:42 
+ rlrevell - 12-30-05 04:24 
 ----------------------------------------------------------------------
 Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-11-05 17:41 jefferai       New Issue                                    
-04-11-05 17:41 jefferai       Distribution              => Gentoo          
-04-11-05 17:41 jefferai       Kernel Version            => 2.6.11-ck3      
-04-12-05 16:32 tiwai          Note Added: 0004448                          
-04-12-05 18:13 jefferai       Note Added: 0004457                          
-04-12-05 18:39 tiwai          Note Added: 0004458                          
-12-30-05 04:42 rlrevell       Note Added: 0007219                          
-03-01-06 01:02 rlrevell       Status                   new => closed       
+04-18-05 03:24 ukr            New Issue                                    
+04-18-05 03:24 ukr            Distribution              => Fedora Core 3   
+04-18-05 03:24 ukr            Kernel Version            => Linux 2.6.11    
+04-19-05 02:30 ukr            Issue Monitored: ukr                         
+04-19-05 17:39 tiwai          Note Added: 0004524                          
+04-19-05 17:52 ukr            Note Added: 0004530                          
+04-19-05 17:58 tiwai          Note Added: 0004531                          
+04-19-05 18:45 ukr            Note Added: 0004538                          
+04-19-05 18:46 ukr            File Added: debug.output                     
+04-23-05 02:08 ukr            Note Added: 0004562                          
+12-30-05 04:24 rlrevell       Note Added: 0007206                          
+03-01-06 01:05 rlrevell       Status                   new => closed       
 ======================================================================
 
 
