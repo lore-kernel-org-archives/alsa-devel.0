@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001878]: SIGSEGV in snd_pcm_rate_drain
-Date: Thu, 2 Mar 2006 15:45:32 +0100
-Message-ID: <781746f9e2063a4760ec5846688971f7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001872]: Riptide firmware loading fails on my hardware
+Date: Thu, 2 Mar 2006 15:52:27 +0100
+Message-ID: <803c8511cdbd1ef85229539335b87861@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5193D1CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:45:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4A731CF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:52:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1878> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1872> 
 ======================================================================
-Reported By:                Faust3
+Reported By:                hobbified
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1878
-Category:                   CORE - pcm
-Reproducibility:            sometimes
-Severity:                   crash
+Issue ID:                   1872
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu
+Kernel Version:             Various, this data from 2.6.15-rc2-ck2
 ======================================================================
-Date Submitted:             02-25-2006 14:08 CET
-Last Modified:              03-02-2006 15:45 CET
+Date Submitted:             02-23-2006 03:10 CET
+Last Modified:              03-02-2006 15:52 CET
 ======================================================================
-Summary:                    SIGSEGV in snd_pcm_rate_drain
+Summary:                    Riptide firmware loading fails on my hardware
 Description: 
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread -1217157440 (LWP 13093)]
-0xb7e809b6 in snd_pcm_area_copy (dst_area=0x86b58c8, dst_offset=0,
-src_area=0x86b5508, src_offset=4096, samples=4294964224,
-format=SND_PCM_FORMAT_S16_LE) at pcm.c:2551
-2551                            *(u_int16_t*)dst = *(const
-u_int16_t*)src;
-(gdb) bt
-#0  0xb7e809b6 in snd_pcm_area_copy (dst_area=0x86b58c8, dst_offset=0,
-src_area=0x86b5508, src_offset=4096, samples=4294964224,
-format=SND_PCM_FORMAT_S16_LE)
-    at pcm.c:2551
-#1  0xb7e80c53 in snd_pcm_areas_copy (dst_areas=0x86b58c8, dst_offset=0,
-src_areas=0x86b5514, src_offset=4096, channels=2, frames=4294964224,
-    format=SND_PCM_FORMAT_S16_LE) at pcm.c:2650
-#2  0xb7e95d84 in snd_pcm_rate_commit_area (pcm=0x86b71d0, rate=0x86b7118,
-appl_offset=10752, size=11636, slave_size=17360) at pcm_rate.c:1067
-#3  0xb7e9653d in snd_pcm_rate_drain (pcm=0x86b71d0) at pcm_rate.c:1306
-#4  0xb7e771d2 in snd_pcm_drain (pcm=0x86b5940) at pcm.c:1057
-#5  0x080c9068 in uninit (immed=0) at ao_alsa.c:658
-#6  0x0807353d in uninit_player (mask=3659) at mplayer.c:485
-#7  0x08077d16 in main (argc=5, argv=0xbfb775b4) at mplayer.c:4488
-
-
-Problem seems to be that cont=4096 and period_size=1024
-in snd_pcm_rate_commit_area just before calling snd_pcm_areas_copy.
-With cont being unsigned the following calculation will overflow          
-    
-cont = rate->gen.slave->period_size - cont;
-slave_frames = cont;
-
-Tell me if you need more info.
-
+When I try to use the snd-riptide module on this machine (actually a
+friend's), it fails to load the firmware properly, and so the module
+doesn't initialize. The device has PCI ID 127a:4310, which isn't in the
+PCI database, but the other function of the same device has ID 4311, which
+reports as a Riptide modem. It's an onboard device in an HP Presario. The
+problem is the same on 1.0.10 and 1.0.11rc3, but I used rc3 to produce the
+debugging output below. Also, I used the 'riptide.hex' firmware from the
+linuxant distribution (riptide-0.6lnxtbeta03122800), which I verified to
+be the same as in the Windows driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 15:45 
+ tiwai - 03-02-06 15:52 
 ----------------------------------------------------------------------
-Does the attached patch fix the problem?
+Try the CVS version.  Some bugs on riptide driver were fixed, including the
+support of a differentl model.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-25-06 14:08 Faust3         New Issue                                    
-02-25-06 14:09 Faust3         Issue Monitored: Faust3                      
-03-02-06 15:45 tiwai          Note Added: 0008311                          
+02-23-06 03:10 hobbified      New Issue                                    
+02-23-06 03:10 hobbified      File Added: log.txt                          
+02-23-06 03:10 hobbified      Distribution              => Ubuntu          
+02-23-06 03:10 hobbified      Kernel Version            => Various, this data
+from 2.6.15-rc2-ck2
+02-23-06 09:22 hobbified      Issue Monitored: hobbified                    
+03-02-06 15:52 tiwai          Note Added: 0008313                          
 ======================================================================
 
 
