@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001882]: Use ESC key to stop the speaker-test instead of using ctrl-C
-Date: Thu, 2 Mar 2006 12:44:04 +0100
-Message-ID: <0efc094cb9f712c67e0c279b7d6881f4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001886]: Problems on reboot
+Date: Thu, 2 Mar 2006 12:49:22 +0100
+Message-ID: <0aba9e5e8fae34a3998cb83b840f13e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C3361B4
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 12:44:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 036F11B4
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 12:49:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1882> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1886> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                tiwai
+Reported By:                eric
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1882
-Category:                   speakertest
-Reproducibility:            always
-Severity:                   feature
+Project:                    ALSA - driver
+Issue ID:                   1886
+Category:                   PCI - via82xx
+Reproducibility:            random
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-27-2006 03:57 CET
-Last Modified:              03-02-2006 12:44 CET
+Date Submitted:             03-01-2006 17:59 CET
+Last Modified:              03-02-2006 12:49 CET
 ======================================================================
-Summary:                    Use ESC key to stop the speaker-test instead of
-using ctrl-C
+Summary:                    Problems on reboot
 Description: 
-Is it possible to use ESC key to stop the speaker-test instead of abort the
-test by using control-C ?
+Hi, i have little problem with my alsa configuration,
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
+i use kernel 2.6.15 and alsa release 10RC3
+
+on my configuration i use 
+
+1 X snd-via82xx and 2 X snd-ice1724
+
+sometime when i reboot i card as inverted and i have this udev message:
+
+ VIA 82xx Audio: probe of 0000:00:11.5 failed with error -12
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-02-06 04:49 
+ eric - 03-01-06 18:01 
 ----------------------------------------------------------------------
-The feature -t wav was added last year
+my modules.conf on kernel 2.6:
 
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-utils/speaker-test/speaker-test.c?r1=1.14&r2=1.15
+##### ALSA Config avmmanager START #####
+alias char-major-116* snd
+alias snd-timer-1* snd_rtctimer
+alias snd-timer-2* snd_hpet
 
-I am testing whether multi can be used to downmix surround51 to 4 speakers
-by hardware mixer as the other cards can combine 3 stereo pcm to play
-surround51
+alias /dev/mixer* snd-mixer-oss
+alias /dev/dsp* snd-pcm-oss
+alias /dev/midi* snd-seq-oss
 
-May be we cannot send any (human voice) to bass ?
+##### Card via id=0 #####
+alias snd-card-0 snd-via82xx
+options snd-via82xx index=0 dxs_support=3
 
+##### Card terratec28 id=1 #####
+alias snd-card-1 snd-ice1724
+options snd-ice1724 index=1 model=phase28
 
+##### Card terratec28 id=2 #####
+alias snd-card-2 snd-ice1724
+options snd-ice1724 index=2 model=phase28
+##### ALSA Config avmmanager END #####
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 12:44 
+ tiwai - 03-02-06 12:49 
 ----------------------------------------------------------------------
-The handling of such a key is more tricky.  Unless someone sends a enough
-clean patch, no plan to implement it.
-
-The speaker-test problem of WAV and 5.1 output is fixed on CVS
-(tentatively).
+You have two definitions of snd-ice1724 options, and the latter one
+overrides.
+Combine the options for ice1724 into a single line.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-06 03:57 Raymond        New Issue                                    
-02-27-06 04:01 rlrevell       Note Added: 0008212                          
-03-01-06 09:51 Raymond        Note Added: 0008277                          
-03-01-06 09:53 Raymond        Note Edited: 0008277                         
-03-01-06 18:01 rlrevell       Note Added: 0008284                          
-03-02-06 04:36 Raymond        Note Added: 0008293                          
-03-02-06 04:46 Raymond        Note Edited: 0008293                         
-03-02-06 04:49 Raymond        Note Edited: 0008293                         
-03-02-06 12:44 tiwai          Status                   new => resolved     
-03-02-06 12:44 tiwai          Resolution               open => won't fix   
-03-02-06 12:44 tiwai          Assigned To               => tiwai           
-03-02-06 12:44 tiwai          Note Added: 0008298                          
+03-01-06 17:59 eric           New Issue                                    
+03-01-06 18:01 eric           Note Added: 0008285                          
+03-02-06 12:49 tiwai          Note Added: 0008299                          
 ======================================================================
 
 
