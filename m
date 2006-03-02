@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001888]: MIDI external output occasionally freezes the machine
-Date: Thu, 2 Mar 2006 09:59:29 +0100
-Message-ID: <be56203a9c44d596c99c8065b62f26a8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001786]: Speaker produce sound even head phone is plugged in
+Date: Thu, 2 Mar 2006 10:51:31 +0100
+Message-ID: <3510a512102e74e85e1e2f8ef7a82784@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21B5D1CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 09:59:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F5F71CF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 10:51:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1888> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1786> 
 ======================================================================
-Reported By:                pigeon
-Assigned To:                
+Reported By:                siukamming
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1888
-Category:                   PCI - ymfpci
-Reproducibility:            random
-Severity:                   block
+Issue ID:                   1786
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.14.4 SMP, self-built
+Status:                     assigned
+Distribution:               Debain unstable
+Kernel Version:             2.6.14(Debain version) , 2.6.15(customized version)
 ======================================================================
-Date Submitted:             03-02-2006 09:59 CET
-Last Modified:              03-02-2006 09:59 CET
+Date Submitted:             01-27-2006 04:10 CET
+Last Modified:              03-02-2006 10:51 CET
 ======================================================================
-Summary:                    MIDI external output occasionally freezes the
-machine
+Summary:                    Speaker produce sound even head phone is plugged in
 Description: 
-
-Since I've upgraded my kernel from 2.4 to 2.6.14.4, I'm having random
-machine freezes when using the external MIDI port on my ymf soundcard. It
-can happen just by playing midi using "pmidi -p 64:0 <midi file>". It
-freezes sometimes when I simply ctrl-c it. Rosegarden also suffers from
-the same behavior while starting and/or stopping a playback.
-
-My external MIDI is connected to a Yamaha digital piano.
-
-I do not have this problem when I was using a 2.4 kernel, and a self built
-alsa driver (possibly version 1.0.9).
-
-The snd-ymfpci driver is loaded with the follow options:
-mpu_port=1 fm_port=1 joystick_port=1
-
-Thanks.
-
+On my notebook Dell 630M(915GM + sigmatel 9200), the speaker still produce
+sound even headphone is plugged in. Now the speaker and headphone produce
+sound simultaneously. Suppose the speaker stop to produce sound as
+headphone is plugged in. 
+I tested Windows. The speaker really stop produce sound as headphone is
+plugged in. So it should be the driver problem. 
 ======================================================================
+
+----------------------------------------------------------------------
+ siukamming - 03-01-06 05:32 
+----------------------------------------------------------------------
+
+
+----------------------------------------------------------------------
+ adoroar - 03-02-06 10:51 
+----------------------------------------------------------------------
+Got a url for that patch toshio for, whle we wait? :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-06 09:59 pigeon         New Issue                                    
-03-02-06 09:59 pigeon         Distribution              => Debian testing  
-03-02-06 09:59 pigeon         Kernel Version            => 2.6.14.4 SMP,
-self-built
+01-27-06 04:10 siukamming     New Issue                                    
+01-27-06 04:10 siukamming     File Added: codec#0                          
+01-27-06 04:10 siukamming     Distribution              => Debain unstable 
+01-27-06 04:10 siukamming     Kernel Version            => 2.6.14(Debain
+version) , 2.6.15(customized version)
+02-20-06 08:26 toshio         Note Added: 0008143                          
+02-20-06 08:29 toshio         Issue Monitored: toshio                      
+02-25-06 08:15 toshio         Note Added: 0008185                          
+03-01-06 05:32 siukamming     Note Added: 0008270                          
+03-02-06 10:51 adoroar        Note Added: 0008295                          
 ======================================================================
 
 
