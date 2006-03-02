@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001852]: Network transparency through polypaudio
-Date: Thu, 2 Mar 2006 16:02:57 +0100
-Message-ID: <d492b9c26e247e2d1d2ceef6233d1985@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001859]: request update intel8x0.c to support NVIDIA nForce 410
+Date: Thu, 2 Mar 2006 16:03:52 +0100
+Message-ID: <6acf35e65419002764e1911e476ef483@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18FF3191
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 16:02:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A598F191
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 16:03:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1852> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1859> 
 ======================================================================
-Reported By:                drzeus
+Reported By:                nangate
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1852
-Category:                   PCM - oss
-Reproducibility:            N/A
+Project:                    ALSA - driver
+Issue ID:                   1859
+Category:                   PCI - intel8x0
+Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     resolved
+Distribution:               Fedora FC4
+Kernel Version:             2.6.15-1.1831_FC4
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-17-2006 20:47 CET
-Last Modified:              03-02-2006 16:02 CET
+Date Submitted:             02-19-2006 20:48 CET
+Last Modified:              03-02-2006 16:03 CET
 ======================================================================
-Summary:                    Network transparency through polypaudio
+Summary:                    request update intel8x0.c to support NVIDIA nForce
+410
 Description: 
-This is a request to include the polypaudio (a sound server) plugin I've
-written. Having it in ALSA would mean that all ALSA apps could
-transparently work across the network.
+The nvidia proprietary driver does not support ALSA for the 410 south
+bridge chip.
 
-The plugin can currently handle:
+I patched the current intel8x0.c source as follows:
 
- * PCM playback.
- * PCM capture.
- * Playback volume control.
+408a409
+>       { 0x10de, 0x026b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },  
+    /* NFORCE4 */
 
-I supports polled mode and direct access.
+I made and replaced snd-intel8x0.ko for 2.6.15-1.1831_FC4 kernel. I
+manually updated /etc/modprobe.conf. Sound works on both KDE and GNOME
+desktops for me now.
 
-Polypaudio needed to be extended a bit to support this plugin so to
-compile and use it you need the svn version of polypaudio:
-
-svn co svn://svn.0pointer.de/polypaudio/trunk polypaudio
 ======================================================================
 
 ----------------------------------------------------------------------
- drzeus - 02-20-06 13:53 
+ tiwai - 03-02-06 16:03 
 ----------------------------------------------------------------------
-New version that follows API changes in polypaudio svn.
-
-----------------------------------------------------------------------
- tiwai - 03-02-06 16:02 
-----------------------------------------------------------------------
-Merged to ALSA CVS tree.  Thanks.
+It's already fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-06 20:47 drzeus         New Issue                                    
-02-17-06 20:47 drzeus         File Added: alsa-polyp-1.0.10-3.tar.bz2           
-        
-02-18-06 02:12 rlrevell       Note Added: 0008113                          
-02-18-06 03:16 drzeus         Note Added: 0008115                          
-02-20-06 13:52 drzeus         File Added: alsa-polyp-1.0.10-4.tar.bz2           
-        
-02-20-06 13:53 drzeus         Note Added: 0008144                          
-03-02-06 16:02 tiwai          Status                   new => resolved     
-03-02-06 16:02 tiwai          Resolution               open => fixed       
-03-02-06 16:02 tiwai          Assigned To               => tiwai           
-03-02-06 16:02 tiwai          Note Added: 0008317                          
+02-19-06 20:48 nangate        New Issue                                    
+02-19-06 20:48 nangate        File Added: patch.diff                       
+02-19-06 20:48 nangate        Distribution              => Fedora FC4      
+02-19-06 20:48 nangate        Kernel Version            => 2.6.15-1.1831_FC4
+02-19-06 20:49 nangate        Issue Monitored: nangate                     
+02-26-06 20:26 nangate        Issue End Monitor: nangate                    
+03-02-06 16:03 tiwai          Status                   new => resolved     
+03-02-06 16:03 tiwai          Resolution               open => fixed       
+03-02-06 16:03 tiwai          Assigned To               => tiwai           
+03-02-06 16:03 tiwai          Note Added: 0008318                          
 ======================================================================
 
 
