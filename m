@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
-Date: Thu, 2 Mar 2006 23:00:59 +0100
-Message-ID: <4bc01a4ca868ced1b9864f6ab11da053@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [RFC] alsa-kernel, make control.c suspend aware
+Date: Thu, 2 Mar 2006 23:07:20 +0100
+Message-ID: <20060302230720.669b348f.pochini@shiny.it>
+References: <20060302001859.58bd93af.pochini@shiny.it>
+	<s5hmzg9865c.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77F6D16C
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 23:00:59 +0100 (MET)
+In-Reply-To: <s5hmzg9865c.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 02 Mar 2006 11:58:39 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
-======================================================================
-Reported By:                iq79
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1259
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.12-gentoo-r1
-======================================================================
-Date Submitted:             07-15-2005 18:18 CEST
-Last Modified:              03-02-2006 23:00 CET
-======================================================================
-Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
-from AUX in
-Description: 
-I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+> At Thu, 2 Mar 2006 00:18:59 +0100,
+> Giuliano Pochini wrote:
+> > 
+> > First attempt to add code that prevents someone to access the hardware via
+> > control interface when the card is suspended.
+> > 
+> > I put the code in snd_ctl_elem_read_user() instead of snd_ctl_elem_read()
+> > because /pci/hda/hda_codec.c:snd_hda_resume_ctls() calls the latter from the
+> > resume callback. I had no time to check other things, consider it mostly
+> > untested.
+> 
+> Looks fine.  We need also power_lock() around ioctls, too?
 
-- I played around with all (Playback/Capture) mixer settings in alsamixer
-but I couldn't find a configuration which gives me sound from AUX-in.
+My driver doesn't use the ioctl interface, but if we want to make ti work
+always, I think so.
 
-- I tried loading emu10k1 module with several extin/exout combinations.
-That didn't help, too.
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-01-06 18:02 
-----------------------------------------------------------------------
-Have you tried a newer ALSA than 1.0.9-rc2?  That's very old.
-
-----------------------------------------------------------------------
- iq79 - 03-02-06 23:00 
-----------------------------------------------------------------------
-Yes, I did try a recent version.
-
-cat /proc/asound/version
-
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-15-05 18:18 iq79           New Issue                                    
-07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
-07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
-07-15-05 19:49 pzad           Note Added: 0005483                          
-07-15-05 19:50 pzad           Note Edited: 0005483                         
-07-15-05 23:40 iq79           Note Added: 0005484                          
-07-16-05 16:31 jdthood        Note Added: 0005496                          
-07-16-05 18:36 iq79           File Added: amixer_output                    
-07-16-05 18:38 iq79           Note Added: 0005500                          
-07-20-05 05:32 jcdutton       Note Added: 0005532                          
-03-01-06 10:46 iq79           Note Added: 0008278                          
-03-01-06 18:02 rlrevell       Note Added: 0008286                          
-03-02-06 23:00 iq79           Note Added: 0008327                          
-======================================================================
+->put() and ->get() are called directly only from
+core/control.c:snd_ctl_elem_read() and core/control.c:snd_ctl_elem_write().
+If we put snd_power_wait() in snd_ctl_elem_read/write() all their current
+and future callers are protected, but /hda/hda_codec.c deadlocks in the
+resume function (it's the only one). Otherwise, we can put snd_power_wait()
+in snd_ctl_elem_read/write_user() and in _snd_ioctl32_ctl_elem_value().
+Which choice ?  Do we duplicate power_wait or do we change hda_intel ?
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
