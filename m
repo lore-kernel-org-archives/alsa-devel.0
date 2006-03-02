@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
-Date: Thu, 2 Mar 2006 01:38:47 +0100
-Message-ID: <17b5ddfea44c7b091d8690428a9ac6fb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
+Date: Thu, 2 Mar 2006 04:34:02 +0100
+Message-ID: <7572573a73dadb1f0155b88871e2ecb9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F29A1D0
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 01:38:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A8FF1CF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 04:34:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1887> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
 ======================================================================
-Reported By:                grattemedi
-Assigned To:                tiwai
+Reported By:                oggb4mp3
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1887
-Category:                   PCI - hda-intel
+Issue ID:                   1874
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.15.4
+Distribution:               Arch Linux
+Kernel Version:             2.6.15-archck4
 ======================================================================
-Date Submitted:             03-01-2006 22:35 CET
-Last Modified:              03-02-2006 01:38 CET
+Date Submitted:             02-24-2006 07:27 CET
+Last Modified:              03-02-2006 04:34 CET
 ======================================================================
-Summary:                    Can't record anything from MIC with Acer 1641
-(ALC260)
+Summary:                    USB sound device appears to be loading properly, but
+all applications report the device is busy
 Description: 
-With the new hda drivers in CVS, the speakers and jack output works very
-good.
-But I can't record anything from the external mic or from the mic input.
-I followed jwoithe advises : To record from the internal mic or the
-external mic jack, you need to:
+I own a USB audio Device with a TI burr-brown DAC and with my recent
+upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
+this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
+I thought might be the culprit, but when I tried to apply the patch, I
+found that it was already applied.  I tried to reverse it, thinking that I
+might have had one of the devices that worked without it and this patch
+actually broke it, but no joy.
 
- * select the "mic" as the input source (displayed in "Playback" view)
- * in the "Mic Jack Mode" control, select "Mic bias 80pc"
- * in "Capture" view, unmute "Capture" channel (NOT "Capture 1") and
-   turn its volume up.
-Even after doing that, I can't record sound.
-Nevertheless, when I unmute the "mic" channel in the alsamixer "playback",
-i can hear sound from the mic but i cannot record it.
+The device appears to be present as alsa device hw:1,0, the same as it
+always was, and I can select it, but all apps report that it is busy or
+blocked.  This all worked properly with a 2.6.14-ck kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- grattemedi - 03-02-06 01:19 
+ oggb4mp3 - 03-01-06 03:42 
 ----------------------------------------------------------------------
-I 've tried two software : first i've tried with the shell command :
-   rec test.wav    (i have also tried the --volume=100 option)
-and play test.wav to hear it.There 's no error but when i tape play
-test.wav, there is no sound at all : "total silence".
-Indeed i use "Input Source" and not "Input Source 1".
-Secondly i tried with a kde software KRec with no success : "total
-silence" when i play what i've recorded.
+Okay, I am still trying to narrow this down, and I have patched the plain
+2.6.15 kernel with the uevent patch and the
+alsa-usbaudio-2.6.15-revert-001.patch from this bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585.  Kernel
+boots, usb device works.  So for sure, something in the usb-audio device
+rewrite for 2.6.15 broke support for this device.  Whatever was reverted
+as part of the fix for bug 1585 did not fix support for this device.
+
+I am not a coder, but I really want to fix this bug, so what else can I do
+to help?
+
+
 
 ----------------------------------------------------------------------
- jwoithe - 03-02-06 01:38 
+ oggb4mp3 - 03-02-06 04:34 
 ----------------------------------------------------------------------
-Interesting.  I'll have to ponder this.  Perhaps in the meantime one of the
-other 16xx owners (for whom recording works) can chime in and provide a
-suggestion.  Did I perhaps forget a step in the process as reproduced by
-grattemedi in the initial bug report?
+Continuing to investigate so I can narrow it down for you, as I can imagine
+you are quite busy, I find that the same patch that broke playback for the
+other usb devices as reported in bug 1585 also broke playback for my
+device.  
 
-The "Capture" volume is also turned up I assume?  It really sounds as if
-the capture channel is muted, but you said it was definitely unmuted in
-alsamixer.
-
-It would be good to know whether the recorded file consisted entirely of
-zeros or whether it has low-level noise (perhaps too low to be heard when
-played back).  Could you check this using hexdump or something?  If not,
-could you put it up on the web somewhere so I can grab it?
-
-Since you can hear the mic when you turn up the "mic" control we at least
-know that the jack itself is working and that it is definitely in the
-"mic" jack (as opposed to the "line in" jack which this laptop also
-apparently has).
+I determined this by taking my now working 2.6.15 kernel, and applied only
+the commit entitled "start submitting URBs in the prepared state".  This
+broke playback.  The fix applied in 2.6.15.2 did not fix it for this
+device.  So I hope this is helpful and it can be fixed soon.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-06 22:35 grattemedi     New Issue                                    
-03-01-06 22:35 grattemedi     Distribution              => Slackware 10.2  
-03-01-06 22:35 grattemedi     Kernel Version            => 2.6.15.4        
-03-01-06 22:36 grattemedi     Issue Monitored: grattemedi                    
-03-01-06 22:37 grattemedi     Issue End Monitor: grattemedi                    
-03-02-06 00:53 jwoithe        Note Added: 0008289                          
-03-02-06 01:19 grattemedi     Note Added: 0008290                          
-03-02-06 01:38 jwoithe        Note Added: 0008291                          
+02-24-06 07:27 oggb4mp3       New Issue                                    
+02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
+02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+02-24-06 14:16 Clemens LadischNote Added: 0008175                          
+02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
+02-24-06 15:32 Clemens LadischNote Added: 0008178                          
+02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
+02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
+02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
+02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
+02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
+02-27-06 18:22 Clemens LadischNote Added: 0008227                          
+02-27-06 22:33 oggb4mp3       Note Added: 0008232                          
+03-01-06 03:40 oggb4mp3       Note Added: 0008263                          
+03-01-06 03:42 oggb4mp3       Note Edited: 0008263                         
+03-02-06 04:34 oggb4mp3       Note Added: 0008292                          
 ======================================================================
 
 
