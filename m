@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Thu, 2 Mar 2006 14:37:31 +0100
-Message-ID: <1390756197ef0a792a0e303e6688db73@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001786]: Speaker produce sound even head phone is plugged in
+Date: Thu, 2 Mar 2006 14:50:29 +0100
+Message-ID: <29864e57e7f9127d3c6d8c253f5c2bc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC5F11D2
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 14:37:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D0261D4
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 14:50:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,87 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1786> 
 ======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
+Reported By:                siukamming
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
+Issue ID:                   1786
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
+Distribution:               Debain unstable
+Kernel Version:             2.6.14(Debain version) , 2.6.15(customized version)
 ======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              03-02-2006 14:37 CET
+Date Submitted:             01-27-2006 04:10 CET
+Last Modified:              03-02-2006 14:50 CET
 ======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
+Summary:                    Speaker produce sound even head phone is plugged in
 Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
-
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
+On my notebook Dell 630M(915GM + sigmatel 9200), the speaker still produce
+sound even headphone is plugged in. Now the speaker and headphone produce
+sound simultaneously. Suppose the speaker stop to produce sound as
+headphone is plugged in. 
+I tested Windows. The speaker really stop produce sound as headphone is
+plugged in. So it should be the driver problem. 
 ======================================================================
 
 ----------------------------------------------------------------------
- oggb4mp3 - 03-02-06 04:34 
+ tiwai - 03-02-06 12:58 
 ----------------------------------------------------------------------
-Continuing to investigate so I can narrow it down for you, as I can imagine
-you are quite busy, I find that the same patch that broke playback for the
-other usb devices as reported in bug 1585 also broke playback for my
-device.  
+Well, the problem is that the code is pretty different between 2.6.15 and
+2.6.16 kernels, so your patch can't be applied to the latest version at
+all.  Care to check the latest version and rediff your patch?
 
-I determined this by taking my now working 2.6.15 kernel, and applied only
-the commit entitled "start submitting URBs in the prepared state".  This
-broke playback.  The fix applied in 2.6.15.2 did not fix it for this
-device.  So I hope this is helpful and it can be fixed soon.
+Anyway, it'd be better to contact the author of patch_sigmatel since it's
+quite codec-specific.  Unfortunately, I have no hardware for testing this.
 
 ----------------------------------------------------------------------
- oggb4mp3 - 03-02-06 14:37 
+ adoroar - 03-02-06 14:50 
 ----------------------------------------------------------------------
-I am very happy as I have sound again.  I reversed the two commits against
-2.6.15.4, the fix first and then the original "start submitting URBs in
-the prepared state", and I have a working device.  So I have sound for the
-time being, and a patch to apply against future kernels if necessary.  I
-attach the patch for reference and for anybody else that might stumble
-across this bug and need a fix before it is fixed in the kernel.
-
-I am happy to provide any additional information about the device, or do
-all manners of testing to help fix this in the driver permanently.
+Thanks toshio, the patch worked! had to plug it in when sound was playing
+for it to mute the internal speakers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
-02-24-06 14:16 Clemens LadischNote Added: 0008175                          
-02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
-02-24-06 15:32 Clemens LadischNote Added: 0008178                          
-02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
-02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
-02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
-02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
-02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
-02-27-06 18:22 Clemens LadischNote Added: 0008227                          
-02-27-06 22:33 oggb4mp3       Note Added: 0008232                          
-03-01-06 03:40 oggb4mp3       Note Added: 0008263                          
-03-01-06 03:42 oggb4mp3       Note Edited: 0008263                         
-03-02-06 04:34 oggb4mp3       Note Added: 0008292                          
-03-02-06 14:37 oggb4mp3       Note Added: 0008305                          
+01-27-06 04:10 siukamming     New Issue                                    
+01-27-06 04:10 siukamming     File Added: codec#0                          
+01-27-06 04:10 siukamming     Distribution              => Debain unstable 
+01-27-06 04:10 siukamming     Kernel Version            => 2.6.14(Debain
+version) , 2.6.15(customized version)
+02-20-06 08:26 toshio         Note Added: 0008143                          
+02-20-06 08:29 toshio         Issue Monitored: toshio                      
+02-25-06 08:15 toshio         Note Added: 0008185                          
+03-01-06 05:32 siukamming     Note Added: 0008270                          
+03-02-06 10:51 adoroar        Note Added: 0008295                          
+03-02-06 10:51 adoroar        Note Edited: 0008295                         
+03-02-06 10:52 adoroar        Note Edited: 0008295                         
+03-02-06 11:06 toshio         File Added: unsol-patch.tar.bz2                   
+
+03-02-06 11:09 toshio         Note Added: 0008296                          
+03-02-06 11:10 toshio         Note Deleted: 0008185                        
+03-02-06 11:50 tiwai          Note Added: 0008297                          
+03-02-06 12:54 toshio         Note Added: 0008300                          
+03-02-06 12:58 tiwai          Note Added: 0008301                          
+03-02-06 14:50 adoroar        Note Added: 0008306                          
 ======================================================================
 
 
