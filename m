@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Thu, 2 Mar 2006 13:00:57 +0100
-Message-ID: <a71cb099c70e877856212b07845f8868@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001884]: alsaconf don't find Realtek ALC850 onboard soundchip on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
+Date: Thu, 2 Mar 2006 13:21:03 +0100
+Message-ID: <a831588095640e5a2b58c782c4b0e440@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B1BB1D2
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 13:00:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F38481D3
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 13:21:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,115 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1884> 
 ======================================================================
-Reported By:                christophe
-Assigned To:                
+Reported By:                bergwiesel
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   917
-Category:                   PCI - intel8x0
+Issue ID:                   1884
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Ununtu
-Kernel Version:             2.6.11-rc3
+Status:                     resolved
+Distribution:               Debian 4.0.2-5
+Kernel Version:             2.6.12
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              03-02-2006 13:00 CET
+Date Submitted:             02-28-2006 15:18 CET
+Last Modified:              03-02-2006 13:21 CET
 ======================================================================
-Summary:                    intel8x0 ACPI suspend/resume trouble
+Summary:                    alsaconf don't find Realtek ALC850 onboard soundchip
+on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
 Description: 
-I have a problem with the driver for my soundcard after
-ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
-problem with prior kernels, I first tried with 2.6.8).
+Hi!
 
-This is a IBM x40 laptop (23865FU) with an intel chipset.
+I have an Asus A8V Deluxe mainboard with its Realtek ALC850 soundchip,
+which is fine for its own, but if I plug in my new Soundblaster X-Fi
+alsaconf don't find a thing.
 
-The relevant lspci line is:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
-Audio Controller (rev
-+01)
-
-The driver I use is snd_intel8x0.
-
-The problem is that after a suspend/resume cycle the sound
-output is either off or only on one side or with statics.
-
-I tried to do:
-
-~$ alsactl power off
-~$ alsactl power on
-
-without any change.
-
-If I suspend/resume multiple time I can get the sound output
-a little better (like on one side instead of off). But so far
-to get the correct sound back I need to reboot.
-
-Is it a known problem?
-Is there a way to force the driver to reinitialized the chipset?
-
-Thanks for alsa,
-Christophe
-
+Do you need some more informations?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 22:09 
+ bergwiesel - 02-28-06 16:14 
 ----------------------------------------------------------------------
-Any improvement with later ALSA releases?  Did you report the bug upstream
-to the ACPI maintainers?
+thx
+
+that I didn't find. It's not in the mainboard manual!
 
 ----------------------------------------------------------------------
- christophe - 03-02-06 13:00 
+ tiwai - 03-02-06 13:21 
 ----------------------------------------------------------------------
-Well I have tried a new release since last december. But last time I tried
-it was not fixed. Unless you have a good reason to think that this bug has
-been fixed I think it should stay open. I will try a new release asap.
+Closing now as this is no bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-05 20:16 christophe     New Issue                                    
-02-17-05 20:16 christophe     Distribution              => Ununtu          
-02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
-02-17-05 20:30 tiwai          Note Added: 0003636                          
-02-17-05 21:01 christophe     Note Added: 0003639                          
-02-17-05 21:06 christophe     Note Added: 0003640                          
-02-17-05 22:38 christophe     Note Added: 0003643                          
-02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
-02-18-05 09:41 alexs81        Note Added: 0003649                          
-02-18-05 18:00 christophe     Note Added: 0003657                          
-02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
-               
-02-18-05 20:35 alexs81        Note Added: 0003659                          
-02-18-05 20:50 christophe     Note Added: 0003660                          
-02-18-05 21:13 alexs81        Note Added: 0003661                          
-02-18-05 21:16 christophe     Note Added: 0003662                          
-02-18-05 21:32 alexs81        Note Added: 0003663                          
-02-18-05 21:39 rlrevell       Note Added: 0003664                          
-02-19-05 02:40 christophe     Note Added: 0003668                          
-02-19-05 12:07 alexs81        Note Added: 0003669                          
-02-19-05 22:15 christophe     Note Added: 0003671                          
-02-19-05 22:16 christophe     Note Added: 0003672                          
-02-21-05 19:16 christophe     Note Added: 0003681                          
-02-21-05 19:21 christophe     Note Added: 0003682                          
-06-28-05 16:49 christophe     Note Added: 0005298                          
-06-29-05 16:04 christophe     Note Added: 0005306                          
-06-29-05 20:05 tiwai          Note Added: 0005308                          
-06-29-05 20:05 tiwai          File Added: ich-resume-fix.diff                   
-
-06-29-05 20:28 christophe     Note Added: 0005313                          
-06-29-05 23:17 christophe     Note Added: 0005320                          
-12-30-05 22:09 rlrevell       Note Added: 0007268                          
-03-01-06 00:59 rlrevell       Status                   new => closed       
-03-02-06 13:00 christophe     Status                   closed => feedback  
-03-02-06 13:00 christophe     Resolution               open => reopened    
-03-02-06 13:00 christophe     Note Added: 0008302                          
+02-28-06 15:18 bergwiesel     New Issue                                    
+02-28-06 15:18 bergwiesel     Distribution              => Debian 4.0.2-5  
+02-28-06 15:18 bergwiesel     Kernel Version            => 2.6.12          
+02-28-06 15:20 er-ku          Note Added: 0008243                          
+02-28-06 15:52 vsu            Note Added: 0008244                          
+02-28-06 16:14 bergwiesel     Note Added: 0008245                          
+03-02-06 13:21 tiwai          Status                   new => resolved     
+03-02-06 13:21 tiwai          Resolution               open => not an issue
+03-02-06 13:21 tiwai          Assigned To               => tiwai           
+03-02-06 13:21 tiwai          Note Added: 0008304                          
 ======================================================================
 
 
