@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001886]: Problems on reboot
-Date: Thu, 2 Mar 2006 12:49:22 +0100
-Message-ID: <0aba9e5e8fae34a3998cb83b840f13e4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001786]: Speaker produce sound even head phone is plugged in
+Date: Thu, 2 Mar 2006 12:54:27 +0100
+Message-ID: <a8429bef414081d758cb32dc0965a723@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 036F11B4
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 12:49:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98FFB1D2
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 12:54:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1886> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1786> 
 ======================================================================
-Reported By:                eric
-Assigned To:                
+Reported By:                siukamming
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1886
-Category:                   PCI - via82xx
-Reproducibility:            random
+Issue ID:                   1786
+Category:                   PCI - hda-intel
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Debain unstable
+Kernel Version:             2.6.14(Debain version) , 2.6.15(customized version)
 ======================================================================
-Date Submitted:             03-01-2006 17:59 CET
-Last Modified:              03-02-2006 12:49 CET
+Date Submitted:             01-27-2006 04:10 CET
+Last Modified:              03-02-2006 12:54 CET
 ======================================================================
-Summary:                    Problems on reboot
+Summary:                    Speaker produce sound even head phone is plugged in
 Description: 
-Hi, i have little problem with my alsa configuration,
-
-i use kernel 2.6.15 and alsa release 10RC3
-
-on my configuration i use 
-
-1 X snd-via82xx and 2 X snd-ice1724
-
-sometime when i reboot i card as inverted and i have this udev message:
-
- VIA 82xx Audio: probe of 0000:00:11.5 failed with error -12
-
+On my notebook Dell 630M(915GM + sigmatel 9200), the speaker still produce
+sound even headphone is plugged in. Now the speaker and headphone produce
+sound simultaneously. Suppose the speaker stop to produce sound as
+headphone is plugged in. 
+I tested Windows. The speaker really stop produce sound as headphone is
+plugged in. So it should be the driver problem. 
 ======================================================================
 
 ----------------------------------------------------------------------
- eric - 03-01-06 18:01 
+ tiwai - 03-02-06 11:50 
 ----------------------------------------------------------------------
-my modules.conf on kernel 2.6:
-
-##### ALSA Config avmmanager START #####
-alias char-major-116* snd
-alias snd-timer-1* snd_rtctimer
-alias snd-timer-2* snd_hpet
-
-alias /dev/mixer* snd-mixer-oss
-alias /dev/dsp* snd-pcm-oss
-alias /dev/midi* snd-seq-oss
-
-##### Card via id=0 #####
-alias snd-card-0 snd-via82xx
-options snd-via82xx index=0 dxs_support=3
-
-##### Card terratec28 id=1 #####
-alias snd-card-1 snd-ice1724
-options snd-ice1724 index=1 model=phase28
-
-##### Card terratec28 id=2 #####
-alias snd-card-2 snd-ice1724
-options snd-ice1724 index=2 model=phase28
-##### ALSA Config avmmanager END #####
+Which version didn't it work exactly?  Did you test CVS version?
+The latest version already has unsol event handling...
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 12:49 
+ toshio - 03-02-06 12:54 
 ----------------------------------------------------------------------
-You have two definitions of snd-ice1724 options, and the latter one
-overrides.
-Combine the options for ice1724 into a single line.
+tiwai: I know it has unsol event handling, But the problem is that it
+doesn't initialize properly at least not for the Sigmatel 9200 in my Dell
+Laptop. Hence I copied a function modified it a bit, and after calling it
+implicitly during initialisation it seems to work... See my patch for more
+detail. Still I am not an alsa guru ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-06 17:59 eric           New Issue                                    
-03-01-06 18:01 eric           Note Added: 0008285                          
-03-02-06 12:49 tiwai          Note Added: 0008299                          
+01-27-06 04:10 siukamming     New Issue                                    
+01-27-06 04:10 siukamming     File Added: codec#0                          
+01-27-06 04:10 siukamming     Distribution              => Debain unstable 
+01-27-06 04:10 siukamming     Kernel Version            => 2.6.14(Debain
+version) , 2.6.15(customized version)
+02-20-06 08:26 toshio         Note Added: 0008143                          
+02-20-06 08:29 toshio         Issue Monitored: toshio                      
+02-25-06 08:15 toshio         Note Added: 0008185                          
+03-01-06 05:32 siukamming     Note Added: 0008270                          
+03-02-06 10:51 adoroar        Note Added: 0008295                          
+03-02-06 10:51 adoroar        Note Edited: 0008295                         
+03-02-06 10:52 adoroar        Note Edited: 0008295                         
+03-02-06 11:06 toshio         File Added: unsol-patch.tar.bz2                   
+
+03-02-06 11:09 toshio         Note Added: 0008296                          
+03-02-06 11:10 toshio         Note Deleted: 0008185                        
+03-02-06 11:50 tiwai          Note Added: 0008297                          
+03-02-06 12:54 toshio         Note Added: 0008300                          
 ======================================================================
 
 
