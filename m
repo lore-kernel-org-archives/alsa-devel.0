@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001786]: Speaker produce sound even head phone is plugged in
-Date: Thu, 2 Mar 2006 10:51:31 +0100
-Message-ID: <3510a512102e74e85e1e2f8ef7a82784@bugtrack.alsa-project.org>
+Date: Thu, 2 Mar 2006 11:09:52 +0100
+Message-ID: <755570bb1ed59153a6f8fa63f0035529@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F5F71CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 10:51:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 728D31CF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 11:09:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debain unstable
 Kernel Version:             2.6.14(Debain version) , 2.6.15(customized version)
 ======================================================================
 Date Submitted:             01-27-2006 04:10 CET
-Last Modified:              03-02-2006 10:51 CET
+Last Modified:              03-02-2006 11:09 CET
 ======================================================================
 Summary:                    Speaker produce sound even head phone is plugged in
 Description: 
@@ -53,14 +53,16 @@ plugged in. So it should be the driver problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- siukamming - 03-01-06 05:32 
+ adoroar - 03-02-06 10:52 
 ----------------------------------------------------------------------
+Got a url for that patch toshio for while we wait? :)
 
 
+
 ----------------------------------------------------------------------
- adoroar - 03-02-06 10:51 
+ toshio - 03-02-06 11:09 
 ----------------------------------------------------------------------
-Got a url for that patch toshio for, whle we wait? :)
+adoroar: Patch attached. Don't forget it's licensed under the GPLv2...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -75,6 +77,11 @@ version) , 2.6.15(customized version)
 02-25-06 08:15 toshio         Note Added: 0008185                          
 03-01-06 05:32 siukamming     Note Added: 0008270                          
 03-02-06 10:51 adoroar        Note Added: 0008295                          
+03-02-06 10:51 adoroar        Note Edited: 0008295                         
+03-02-06 10:52 adoroar        Note Edited: 0008295                         
+03-02-06 11:06 toshio         File Added: unsol-patch.tar.bz2                   
+
+03-02-06 11:09 toshio         Note Added: 0008296                          
 ======================================================================
 
 
