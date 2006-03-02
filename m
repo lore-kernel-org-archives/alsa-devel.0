@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001858]: surround40 could be opened only 15 times
-Date: Thu, 2 Mar 2006 15:27:34 +0100
-Message-ID: <056dc005fd59b783b9d63831f317efff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001883]: NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804 sound - snd-intel8x0)
+Date: Thu, 2 Mar 2006 15:29:15 +0100
+Message-ID: <e8d3964e0be7664be368e8cd99236c2e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 085B01CD
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:27:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51E6F1CD
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:29:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1858> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1883> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                tiwai
+Reported By:                samael
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1858
-Category:                   PCI - cs46xx
+Issue ID:                   1883
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo / Ubuntu
+Kernel Version:             kernel-2.6.15
 ======================================================================
-Date Submitted:             02-19-2006 20:40 CET
-Last Modified:              03-02-2006 15:27 CET
+Date Submitted:             02-27-2006 09:03 CET
+Last Modified:              03-02-2006 15:29 CET
 ======================================================================
-Summary:                    surround40 could be opened only 15 times
+Summary:                    NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804
+sound - snd-intel8x0)
 Description: 
-The device surround40 could be opened only 15 times even if we have 32 pcm
-front channel and 32 rear channel.
+AMD64 3000+ on K8N4-E Delux motherboard
+(NFORCE-CK804 sound - snd-intel8x0)
+
+ALSA-1.0.2/4 - sound works perfect!! After 1.0.4 - NO SOUND!!
+GSI 21 (level, low) -> IRQ 18
+Feb 12 19:46:31 tux PCI: Setting latency timer of device 0000:00:04.0 to
+64 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+...............................................
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux AC'97 0 does not respond - RESET
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux AC'97 0 access is not valid [0xffffffff], removing
+mixer. Feb 12 19:46:31 tux Unable to initialize codec #0
+Feb 12 19:46:31 tux ACPI: PCI interrupt for device 0000:00:04.0 disabled
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-27-06 17:06 
+ tiwai - 03-02-06 15:29 
 ----------------------------------------------------------------------
-cat /proc/asound/pcm
-
-
-
-( 32 - 1 ) / 2 = 15.5
-
-----------------------------------------------------------------------
- tiwai - 03-02-06 15:27 
-----------------------------------------------------------------------
-Right, 4.0 output consumes 2 streams at least at each open.
+Did you try the old kernel with the new ALSA version?  I bet it will work,
+i.e. rather a kernel ACPI problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-06 20:40 darkbrain      New Issue                                    
-02-20-06 04:12 Raymond        Note Added: 0008141                          
-02-20-06 04:15 Raymond        Note Edited: 0008141                         
-02-27-06 17:06 Raymond        Note Added: 0008225                          
-03-02-06 15:27 tiwai          Status                   new => resolved     
-03-02-06 15:27 tiwai          Resolution               open => not an issue
-03-02-06 15:27 tiwai          Assigned To               => tiwai           
-03-02-06 15:27 tiwai          Note Added: 0008308                          
+02-27-06 09:03 samael         New Issue                                    
+02-27-06 09:03 samael         Distribution              => Gentoo / Ubuntu 
+02-27-06 09:03 samael         Kernel Version            => kernel-2.6.15   
+02-27-06 09:04 samael         Issue Monitored: samael                      
+03-02-06 15:29 tiwai          Note Added: 0008309                          
 ======================================================================
 
 
