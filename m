@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
-Date: Thu, 2 Mar 2006 01:19:10 +0100
-Message-ID: <dda6cd2813dc88a14cc16ebd63424958@bugtrack.alsa-project.org>
+Date: Thu, 2 Mar 2006 01:38:47 +0100
+Message-ID: <17b5ddfea44c7b091d8690428a9ac6fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 351C91D0
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 01:19:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F29A1D0
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 01:38:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.2
 Kernel Version:             2.6.15.4
 ======================================================================
 Date Submitted:             03-01-2006 22:35 CET
-Last Modified:              03-02-2006 01:19 CET
+Last Modified:              03-02-2006 01:38 CET
 ======================================================================
 Summary:                    Can't record anything from MIC with Acer 1641
 (ALC260)
@@ -61,25 +61,6 @@ i can hear sound from the mic but i cannot record it.
 ======================================================================
 
 ----------------------------------------------------------------------
- jwoithe - 03-02-06 00:53 
-----------------------------------------------------------------------
-This is puzzling since others have reported successful recording on the
-same type of system I think.  Anyway, some quick questions.
-
-What software are you using for recording?  If applicable, what options /
-command line arguments are you using?
-
-Does your recording software have its own controls for things like
-recording volume, recording source etc?  If so, are these set
-appropriately?
-
-When setting the input source in alsamixer, did you use the control
-labeled "Input Source"?  "Input Source 1" is not the one you want.
-
-What *is* recorded into the output file - do you hear hiss, or is it total
-silence?
-
-----------------------------------------------------------------------
  grattemedi - 03-02-06 01:19 
 ----------------------------------------------------------------------
 I 've tried two software : first i've tried with the shell command :
@@ -89,6 +70,28 @@ test.wav, there is no sound at all : "total silence".
 Indeed i use "Input Source" and not "Input Source 1".
 Secondly i tried with a kde software KRec with no success : "total
 silence" when i play what i've recorded.
+
+----------------------------------------------------------------------
+ jwoithe - 03-02-06 01:38 
+----------------------------------------------------------------------
+Interesting.  I'll have to ponder this.  Perhaps in the meantime one of the
+other 16xx owners (for whom recording works) can chime in and provide a
+suggestion.  Did I perhaps forget a step in the process as reproduced by
+grattemedi in the initial bug report?
+
+The "Capture" volume is also turned up I assume?  It really sounds as if
+the capture channel is muted, but you said it was definitely unmuted in
+alsamixer.
+
+It would be good to know whether the recorded file consisted entirely of
+zeros or whether it has low-level noise (perhaps too low to be heard when
+played back).  Could you check this using hexdump or something?  If not,
+could you put it up on the web somewhere so I can grab it?
+
+Since you can hear the mic when you turn up the "mic" control we at least
+know that the jack itself is working and that it is definitely in the
+"mic" jack (as opposed to the "line in" jack which this laptop also
+apparently has).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +103,7 @@ Date Modified  Username       Field                    Change
 03-01-06 22:37 grattemedi     Issue End Monitor: grattemedi                    
 03-02-06 00:53 jwoithe        Note Added: 0008289                          
 03-02-06 01:19 grattemedi     Note Added: 0008290                          
+03-02-06 01:38 jwoithe        Note Added: 0008291                          
 ======================================================================
 
 
