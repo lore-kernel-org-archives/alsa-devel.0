@@ -1,14 +1,30 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001886]: Problems on reboot
-Date: Thu, 2 Mar 2006 18:49:57 +0100
-Message-ID: <33d57ad9fca9905620c33819a1daa3c3@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: PCM driver only plays tiny portion of clip
+Date: Thu, 02 Mar 2006 20:49:23 +0000
+Message-ID: <1141332564.9233.6.camel@localhost.localdomain>
+References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
+	 <20060227172601.GA446@turing.informatik.uni-halle.de>
+	 <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
+	 <20060228073049.GA4158@turing.informatik.uni-halle.de>
+	 <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
+	 <20060228145541.GA20876@turing.informatik.uni-halle.de>
+	 <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
+	 <20060228170824.GA24675@turing.informatik.uni-halle.de>
+	 <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
+	 <1141240231.9233.11.camel@localhost.localdomain>
+	 <1141241474.5860.183.camel@mindpipe>
+	 <1141242058.9233.17.camel@localhost.localdomain>
+	 <1141243152.5860.197.camel@mindpipe>
+	 <1141244926.9233.32.camel@localhost.localdomain>
+	 <1141245699.5860.224.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7600D186
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 18:49:58 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7B3E7173
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 21:49:27 +0100 (MET)
+In-Reply-To: <1141245699.5860.224.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +34,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-03-01 at 15:41 -0500, Lee Revell wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1886> 
-======================================================================
-Reported By:                eric
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1886
-Category:                   PCI - via82xx
-Reproducibility:            random
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-01-2006 17:59 CET
-Last Modified:              03-02-2006 18:49 CET
-======================================================================
-Summary:                    Problems on reboot
-Description: 
-Hi, i have little problem with my alsa configuration,
+> 
+> In this example the period (# of frames between interrupts) is 256.  So
+> if the app is waiting to write 512 frames (by setting the avail_min
+> software parameter) it will be woken up every other interrupt.  (This
+> example only makes sense if there are more than 2 periods per buffer,
+> otherwise the app is constantly overwriting the data that the hardware
+> is playing).
+> 
+> Lee
 
-i use kernel 2.6.15 and alsa release 10RC3
 
-on my configuration i use 
+I think I have a good idea why my it is not working now - the DMA
+routine which transfers sound samples from the main CPU memory to the
+ring buffer of the hardware (which is effectively in a different memory
+space) is in a kernel thread which, in essence, never gets rescheduled -
+so the app thinks there is sound to be transferred but it never is -
+hence it gets wedged.
 
-1 X snd-via82xx and 2 X snd-ice1724
+To fix that I need to know what the alsa subsystem calls inside the
+driver when it wants a DMA transfer to resume - I have to reschedule the
+kernel thread there.
 
-sometime when i reboot i card as inverted and i have this udev message:
-
- VIA 82xx Audio: probe of 0000:00:11.5 failed with error -12
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-02-06 12:49 
-----------------------------------------------------------------------
-You have two definitions of snd-ice1724 options, and the latter one
-overrides.
-Combine the options for ice1724 into a single line.
-
-----------------------------------------------------------------------
- eric - 03-02-06 18:49 
-----------------------------------------------------------------------
-Problem solved !!! thanks
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-01-06 17:59 eric           New Issue                                    
-03-01-06 18:01 eric           Note Added: 0008285                          
-03-02-06 12:49 tiwai          Note Added: 0008299                          
-03-02-06 15:50 eric           Note Added: 0008312                          
-03-02-06 18:49 eric           Note Deleted: 0008312                        
-03-02-06 18:49 eric           Note Added: 0008326                          
-======================================================================
-
+(I have to use a kernel thread or at least something similar to ensure
+that the trigger callback remains atomic due to the nature of the SH
+DMAC API.)
 
 
 
