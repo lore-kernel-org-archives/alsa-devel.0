@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001875]: null device gererates much more frames than physical hw would
-Date: Thu, 2 Mar 2006 15:54:06 +0100
-Message-ID: <53ebc74a0513ae62f05daf59521a2519@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001871]: A possible (??) new feature? - volume normalisation
+Date: Thu, 2 Mar 2006 15:56:22 +0100
+Message-ID: <14639272209a17e5eb9ad7e5a3486510@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E21251CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:54:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E01451D5
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:56:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1875> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1871> 
 ======================================================================
-Reported By:                gjasny
-Assigned To:                tiwai
+Reported By:                noremac
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1875
-Category:                   1_pcm - digital audio
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - utils
+Issue ID:                   1871
+Category:                   alsamixer
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             02-24-2006 22:51 CET
-Last Modified:              03-02-2006 15:54 CET
+Date Submitted:             02-23-2006 01:55 CET
+Last Modified:              03-02-2006 15:56 CET
 ======================================================================
-Summary:                    null device gererates much more frames than physical
-hw would
+Summary:                    A possible (??) new feature? - volume normalisation
 Description: 
-Hi,
+I was pointed here from the gento forum
+http://forums.gentoo.org/viewtopic-t-436425.html?sid=afbe87e55c4b71954a0e6d8e55d3028b
 
-for some reason, my application supports capturing from the null device.
-In contrast to real devices, the null device supplies sound data as fast
-as possible.
-I would expect that I get about channel*bits*rate/8 bytes per second.
+but am not sure this is the best place for a feature request. (sorry if it
+is not)
+
+Would it be possible to build into alsa a volume modulatation of
+normalisation feature? This would accomadate for listening to music with
+huge dynamic range (I find when I turn the volume up high enough to hear
+the soft parts, the loud parts nearly deafen me).
+The feature I had in mind would be such that when this feature was
+switched off the volume controll would act as it does (as an amplification
+adjustment). When the modulation feature was activated the volume control
+would become an absolute-volume control.  
+If, for example, the modulation control was set at 50% the computor would
+calculate the difference between the volume of music and the volume as set
+with the volume control, and halve that difference. In this way the soft
+would be bought louder, and the loud softened. 
+If the modulation control was set at 100% everything would be at the same
+volume.
+
+thanks for your time
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 15:54 
+ tiwai - 03-02-06 15:56 
 ----------------------------------------------------------------------
-null plugin doesn't behave as you expected.  Use snd-dummy driver instead
-for such a purpose.
+It's OK to post a feature request here, but more appropriate place would be
+alsa-devel ML...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-06 22:51 gjasny         New Issue                                    
-03-02-06 15:54 tiwai          Status                   new => resolved     
-03-02-06 15:54 tiwai          Resolution               open => not an issue
-03-02-06 15:54 tiwai          Assigned To               => tiwai           
-03-02-06 15:54 tiwai          Note Added: 0008314                          
+02-23-06 01:55 noremac        New Issue                                    
+03-02-06 15:56 tiwai          Note Added: 0008315                          
 ======================================================================
 
 
