@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001786]: Speaker produce sound even head phone is plugged in
-Date: Thu, 2 Mar 2006 14:50:29 +0100
-Message-ID: <29864e57e7f9127d3c6d8c253f5c2bc6@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001794]: Change of the capture source works not like expected
+Date: Thu, 2 Mar 2006 15:26:33 +0100
+Message-ID: <364c8d20a9516cbf1a654b52a345b5ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D0261D4
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 14:50:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F451181
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:26:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,75 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1786> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1794> 
 ======================================================================
-Reported By:                siukamming
+Reported By:                Peppi
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1786
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   1794
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debain unstable
-Kernel Version:             2.6.14(Debain version) , 2.6.15(customized version)
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-27-2006 04:10 CET
-Last Modified:              03-02-2006 14:50 CET
+Date Submitted:             01-30-2006 02:24 CET
+Last Modified:              03-02-2006 15:26 CET
 ======================================================================
-Summary:                    Speaker produce sound even head phone is plugged in
+Summary:                    Change of the capture source works not like expected
 Description: 
-On my notebook Dell 630M(915GM + sigmatel 9200), the speaker still produce
-sound even headphone is plugged in. Now the speaker and headphone produce
-sound simultaneously. Suppose the speaker stop to produce sound as
-headphone is plugged in. 
-I tested Windows. The speaker really stop produce sound as headphone is
-plugged in. So it should be the driver problem. 
+A change from Mic to Line changes only one value.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 12:58 
+ Raymond - 02-28-06 03:50 
 ----------------------------------------------------------------------
-Well, the problem is that the code is pretty different between 2.6.15 and
-2.6.16 kernels, so your patch can't be applied to the latest version at
-all.  Care to check the latest version and rediff your patch?
+No problem on 1.0.11rc3
 
-Anyway, it'd be better to contact the author of patch_sigmatel since it's
-quite codec-specific.  Unfortunately, I have no hardware for testing this.
+amixer contents
+
+numid=102,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw---,values=2,items=8
+  ; Item #0 'Mic'
+  ; Item #1 'CD'
+  ; Item #2 'Video'
+  ; Item #3 'Aux'
+  ; Item #4 'Line'
+  ; Item #5 'Mix'
+  ; Item #6 'Mix Mono'
+  ; Item #7 'Phone'
+  : values=4,4
 
 ----------------------------------------------------------------------
- adoroar - 03-02-06 14:50 
+ tiwai - 03-02-06 15:26 
 ----------------------------------------------------------------------
-Thanks toshio, the patch worked! had to plug it in when sound was playing
-for it to mute the internal speakers.
+There was a bug in alsa-lib.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-27-06 04:10 siukamming     New Issue                                    
-01-27-06 04:10 siukamming     File Added: codec#0                          
-01-27-06 04:10 siukamming     Distribution              => Debain unstable 
-01-27-06 04:10 siukamming     Kernel Version            => 2.6.14(Debain
-version) , 2.6.15(customized version)
-02-20-06 08:26 toshio         Note Added: 0008143                          
-02-20-06 08:29 toshio         Issue Monitored: toshio                      
-02-25-06 08:15 toshio         Note Added: 0008185                          
-03-01-06 05:32 siukamming     Note Added: 0008270                          
-03-02-06 10:51 adoroar        Note Added: 0008295                          
-03-02-06 10:51 adoroar        Note Edited: 0008295                         
-03-02-06 10:52 adoroar        Note Edited: 0008295                         
-03-02-06 11:06 toshio         File Added: unsol-patch.tar.bz2                   
-
-03-02-06 11:09 toshio         Note Added: 0008296                          
-03-02-06 11:10 toshio         Note Deleted: 0008185                        
-03-02-06 11:50 tiwai          Note Added: 0008297                          
-03-02-06 12:54 toshio         Note Added: 0008300                          
-03-02-06 12:58 tiwai          Note Added: 0008301                          
-03-02-06 14:50 adoroar        Note Added: 0008306                          
+01-30-06 02:24 Peppi          New Issue                                    
+02-28-06 03:02 Peppi          Note Added: 0008236                          
+02-28-06 03:50 Raymond        Note Added: 0008237                          
+03-02-06 15:26 tiwai          Status                   new => resolved     
+03-02-06 15:26 tiwai          Resolution               open => fixed       
+03-02-06 15:26 tiwai          Assigned To               => tiwai           
+03-02-06 15:26 tiwai          Note Added: 0008307                          
 ======================================================================
 
 
