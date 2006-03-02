@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001878]: SIGSEGV in snd_pcm_rate_drain
-Date: Thu, 2 Mar 2006 17:56:08 +0100
-Message-ID: <65aa2605cc659400459bd8e8fa508086@bugtrack.alsa-project.org>
+Date: Thu, 2 Mar 2006 18:02:24 +0100
+Message-ID: <e7f50be1fd028b41cec6688c55e57f9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8842F174
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 17:56:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03B171B4
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 18:02:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1878> 
 ======================================================================
 Reported By:                Faust3
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1878
@@ -35,12 +35,14 @@ Category:                   CORE - pcm
 Reproducibility:            sometimes
 Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-25-2006 14:08 CET
-Last Modified:              03-02-2006 17:56 CET
+Last Modified:              03-02-2006 18:02 CET
 ======================================================================
 Summary:                    SIGSEGV in snd_pcm_rate_drain
 Description: 
@@ -80,16 +82,16 @@ Tell me if you need more info.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 15:45 
-----------------------------------------------------------------------
-Does the attached patch fix the problem?
-
-----------------------------------------------------------------------
  Faust3 - 03-02-06 17:56 
 ----------------------------------------------------------------------
 Yes, that seems to fix the crash for me.
 
 Thanks
+
+----------------------------------------------------------------------
+ tiwai - 03-02-06 18:02 
+----------------------------------------------------------------------
+Thanks for confirmation.  Applied to CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +102,10 @@ Date Modified  Username       Field                    Change
 03-02-06 15:46 tiwai          File Added: pcm-rate-overflow-fix.diff            
        
 03-02-06 17:56 Faust3         Note Added: 0008322                          
+03-02-06 18:02 tiwai          Status                   new => resolved     
+03-02-06 18:02 tiwai          Resolution               open => fixed       
+03-02-06 18:02 tiwai          Assigned To               => tiwai           
+03-02-06 18:02 tiwai          Note Added: 0008323                          
 ======================================================================
 
 
