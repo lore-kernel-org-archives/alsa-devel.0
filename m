@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001857]: regression in snd-cs4281 in recent 2.6.16-rcX kernels
-Date: Thu, 2 Mar 2006 16:05:04 +0100
-Message-ID: <7e8291218a16f20c789eb6beefe62711@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001854]: alsa-lib obfuscates terminal or something segfaults
+Date: Thu, 2 Mar 2006 16:07:32 +0100
+Message-ID: <1db7e317b4bf08886319ea78f552a587@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CB06191
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 16:05:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A6111B2
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 16:07:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1857> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1854> 
 ======================================================================
-Reported By:                hoffmajs
-Assigned To:                
+Reported By:                hesabo
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1857
-Category:                   PCI - cs4281
+Project:                    ALSA - lib
+Issue ID:                   1854
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Dapper)
-Kernel Version:             2.6.16-rc4
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-19-2006 06:11 CET
-Last Modified:              03-02-2006 16:05 CET
+Date Submitted:             02-18-2006 19:59 CET
+Last Modified:              03-02-2006 16:07 CET
 ======================================================================
-Summary:                    regression in snd-cs4281 in recent 2.6.16-rcX
-kernels
+Summary:                    alsa-lib obfuscates terminal or something segfaults
 Description: 
-In the recent 2.6.16-rc kernels snd-cs4281 broke for me.
-(I think since 2.6.16-rc2, but Im not sure atm. In 2.6.15 the card works
-fine.)
+alsa-lib produces bad error messages like
+"""
+ALSA lib pcm_direct.c:222:(make_local_socket) connect failed:
+I&#65535;&#65535;&#65535;&#65535;: No such file or directory
+ALSA lib pcm_dmix.c:851:(snd_pcm_dmix_open) unable to connect client
+aplay: main:544: audio open error: No such file or directory
+"""
+or
+"""
+ALSA lib pcm_direct.c:222:(make_local_socket) connect failed: : N&#9146;
+&#9149;&#9508;&#9228;&#9252; °&#9227;&#9484;&#9226; &#9146;&#9148;
+&#9229;&#9227;&#9148;&#9226;&#9228;&#9500;&#9146;&#9148;&#8804;
+ALSA &#9484;&#9227;&#9225;
+&#9147;&#9228;&#9492;_&#9229;&#9492;&#9227;&#9474;.&#9228;:851:(&#9149;&#9532;&#9229;_&#9147;&#9228;&#9492;_&#9229;&#9492;&#9227;&#9474;_&#9146;&#9147;&#9226;&#9532;)
+&#9508;&#9532;&#9618;&#9225;&#9484;&#9226; &#9500;&#9146;
+&#9228;&#9146;&#9532;&#9532;&#9226;&#9228;&#9500;
+&#9228;&#9484;&#9227;&#9226;&#9532;&#9500;
+&#9618;&#9147;&#9484;&#9618;&#8804;: &#9492;&#9618;&#9227;&#9532;:544:
+&#9618;&#9508;&#9229;&#9227;&#9146; &#9146;&#9147;&#9226;&#9532;
+&#9226;&#9148;&#9148;&#9146;&#9148;: N&#9146; &#9149;&#9508;&#9228;&#9252;
+°&#9227;&#9484;&#9226; &#9146;&#9148;
+&#9229;&#9227;&#9148;&#9226;&#9228;&#9500;&#9146;&#9148;&#8804;
+"""
+or
+"""
+Segmentation fault
+"""
 
-# > modprobe snd-cs4281
-ACPI: PCI Interrupt 0000:00:08.0[A] -> Link [LNKC] -> GSI 5 (level, low)
--> IRQ 5
-never read ISV3 and ISV4 from AC'97
-ACPI: PCI interrupt for device 0000:00:08.0 disabled
-CS4281: probe of 0000:00:08.0 failed with error -5
-
-and no soundcard is found.
-
-If you need more info or want me to test something, please say so.
-
-
-kind regards,
-Jens
-
+The segmentation fault is not reproducible nor is the string in the error
+message.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 16:05 
+ tiwai - 03-02-06 16:07 
 ----------------------------------------------------------------------
-Since there is no change in cs4281 driver for long time, it's likely an
-ACPI breakage.
+Dmix uses two shm areas.  That's why your configuration cause conflictions
+between two dmix definitions.
+
+Maybe better to add a magic key for sanity checking, though...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-06 06:11 hoffmajs       New Issue                                    
-02-19-06 06:11 hoffmajs       Distribution              => Ubuntu (Dapper) 
-02-19-06 06:11 hoffmajs       Kernel Version            => 2.6.16-rc4      
-03-02-06 16:05 tiwai          Note Added: 0008319                          
+02-18-06 19:59 hesabo         New Issue                                    
+02-18-06 22:34 hesabo         Issue Monitored: hesabo                      
+03-02-06 16:07 tiwai          Status                   new => resolved     
+03-02-06 16:07 tiwai          Resolution               open => not an issue
+03-02-06 16:07 tiwai          Assigned To               => tiwai           
+03-02-06 16:07 tiwai          Note Added: 0008320                          
 ======================================================================
 
 
