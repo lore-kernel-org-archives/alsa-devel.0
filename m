@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001859]: request update intel8x0.c to support NVIDIA nForce 410
-Date: Thu, 2 Mar 2006 16:03:52 +0100
-Message-ID: <6acf35e65419002764e1911e476ef483@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001857]: regression in snd-cs4281 in recent 2.6.16-rcX kernels
+Date: Thu, 2 Mar 2006 16:05:04 +0100
+Message-ID: <7e8291218a16f20c789eb6beefe62711@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A598F191
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 16:03:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CB06191
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 16:05:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1859> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1857> 
 ======================================================================
-Reported By:                nangate
-Assigned To:                tiwai
+Reported By:                hoffmajs
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1859
-Category:                   PCI - intel8x0
+Issue ID:                   1857
+Category:                   PCI - cs4281
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora FC4
-Kernel Version:             2.6.15-1.1831_FC4
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Ubuntu (Dapper)
+Kernel Version:             2.6.16-rc4
 ======================================================================
-Date Submitted:             02-19-2006 20:48 CET
-Last Modified:              03-02-2006 16:03 CET
+Date Submitted:             02-19-2006 06:11 CET
+Last Modified:              03-02-2006 16:05 CET
 ======================================================================
-Summary:                    request update intel8x0.c to support NVIDIA nForce
-410
+Summary:                    regression in snd-cs4281 in recent 2.6.16-rcX
+kernels
 Description: 
-The nvidia proprietary driver does not support ALSA for the 410 south
-bridge chip.
+In the recent 2.6.16-rc kernels snd-cs4281 broke for me.
+(I think since 2.6.16-rc2, but Im not sure atm. In 2.6.15 the card works
+fine.)
 
-I patched the current intel8x0.c source as follows:
+# > modprobe snd-cs4281
+ACPI: PCI Interrupt 0000:00:08.0[A] -> Link [LNKC] -> GSI 5 (level, low)
+-> IRQ 5
+never read ISV3 and ISV4 from AC'97
+ACPI: PCI interrupt for device 0000:00:08.0 disabled
+CS4281: probe of 0000:00:08.0 failed with error -5
 
-408a409
->       { 0x10de, 0x026b, PCI_ANY_ID, PCI_ANY_ID, 0, 0, DEVICE_NFORCE },  
-    /* NFORCE4 */
+and no soundcard is found.
 
-I made and replaced snd-intel8x0.ko for 2.6.15-1.1831_FC4 kernel. I
-manually updated /etc/modprobe.conf. Sound works on both KDE and GNOME
-desktops for me now.
+If you need more info or want me to test something, please say so.
+
+
+kind regards,
+Jens
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 16:03 
+ tiwai - 03-02-06 16:05 
 ----------------------------------------------------------------------
-It's already fixed.
+Since there is no change in cs4281 driver for long time, it's likely an
+ACPI breakage.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-06 20:48 nangate        New Issue                                    
-02-19-06 20:48 nangate        File Added: patch.diff                       
-02-19-06 20:48 nangate        Distribution              => Fedora FC4      
-02-19-06 20:48 nangate        Kernel Version            => 2.6.15-1.1831_FC4
-02-19-06 20:49 nangate        Issue Monitored: nangate                     
-02-26-06 20:26 nangate        Issue End Monitor: nangate                    
-03-02-06 16:03 tiwai          Status                   new => resolved     
-03-02-06 16:03 tiwai          Resolution               open => fixed       
-03-02-06 16:03 tiwai          Assigned To               => tiwai           
-03-02-06 16:03 tiwai          Note Added: 0008318                          
+02-19-06 06:11 hoffmajs       New Issue                                    
+02-19-06 06:11 hoffmajs       Distribution              => Ubuntu (Dapper) 
+02-19-06 06:11 hoffmajs       Kernel Version            => 2.6.16-rc4      
+03-02-06 16:05 tiwai          Note Added: 0008319                          
 ======================================================================
 
 
