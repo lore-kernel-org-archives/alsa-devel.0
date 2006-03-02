@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Thu, 2 Mar 2006 04:34:02 +0100
-Message-ID: <7572573a73dadb1f0155b88871e2ecb9@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001882]: Use ESC key to stop the speaker-test instead of using ctrl-C
+Date: Thu, 2 Mar 2006 04:36:38 +0100
+Message-ID: <47ac39fe0b75cb88bcec2968c7aef13a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A8FF1CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 04:34:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3016F175
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 04:36:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1882> 
 ======================================================================
-Reported By:                oggb4mp3
-Assigned To:                Clemens Ladisch
+Reported By:                Raymond
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1874
-Category:                   USB - usb-audio
+Project:                    ALSA - utils
+Issue ID:                   1882
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Arch Linux
-Kernel Version:             2.6.15-archck4
+Status:                     new
 ======================================================================
-Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              03-02-2006 04:34 CET
+Date Submitted:             02-27-2006 03:57 CET
+Last Modified:              03-02-2006 04:36 CET
 ======================================================================
-Summary:                    USB sound device appears to be loading properly, but
-all applications report the device is busy
+Summary:                    Use ESC key to stop the speaker-test instead of
+using ctrl-C
 Description: 
-I own a USB audio Device with a TI burr-brown DAC and with my recent
-upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
-this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
-I thought might be the culprit, but when I tried to apply the patch, I
-found that it was already applied.  I tried to reverse it, thinking that I
-might have had one of the devices that worked without it and this patch
-actually broke it, but no joy.
+Is it possible to use ESC key to stop the speaker-test instead of abort the
+test by using control-C ?
 
-The device appears to be present as alsa device hw:1,0, the same as it
-always was, and I can select it, but all apps report that it is busy or
-blocked.  This all worked properly with a 2.6.14-ck kernel.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
 ======================================================================
 
 ----------------------------------------------------------------------
- oggb4mp3 - 03-01-06 03:42 
+ rlrevell - 03-01-06 18:01 
 ----------------------------------------------------------------------
-Okay, I am still trying to narrow this down, and I have patched the plain
-2.6.15 kernel with the uevent patch and the
-alsa-usbaudio-2.6.15-revert-001.patch from this bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585.  Kernel
-boots, usb device works.  So for sure, something in the usb-audio device
-rewrite for 2.6.15 broke support for this device.  Whatever was reverted
-as part of the fix for bug 1585 did not fix support for this device.
+That's not what -t does in speaker-test
 
-I am not a coder, but I really want to fix this bug, so what else can I do
-to help?
-
-
+Usage: speaker-test [OPTION]... 
+-h,--help       help
+-D,--device     playback device
+-r,--rate       stream rate in Hz
+-c,--channels   count of channels in stream
+-f,--frequency  sine wave frequency in Hz
+-F,--format     sample format
+-b,--buffer     ring buffer size in us
+-p,--period     period size in us
+-t,--test       1=use pink noise, 2=use sine wave
+-s,--speaker    single speaker test. Values 1=Left or 2=right
 
 ----------------------------------------------------------------------
- oggb4mp3 - 03-02-06 04:34 
+ Raymond - 03-02-06 04:36 
 ----------------------------------------------------------------------
-Continuing to investigate so I can narrow it down for you, as I can imagine
-you are quite busy, I find that the same patch that broke playback for the
-other usb devices as reported in bug 1585 also broke playback for my
-device.  
+The feature -t wav was added last year
 
-I determined this by taking my now working 2.6.15 kernel, and applied only
-the commit entitled "start submitting URBs in the prepared state".  This
-broke playback.  The fix applied in 2.6.15.2 did not fix it for this
-device.  So I hope this is helpful and it can be fixed soon.
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-utils/speaker-test/speaker-test.c?r1=1.14&r2=1.15
+
+I am testing whether multi can be used to downmix surround51 to 4 speakers
+by hardware mixer.
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-06 07:27 oggb4mp3       New Issue                                    
-02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
-02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
-02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
-02-24-06 14:16 Clemens LadischNote Added: 0008175                          
-02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
-02-24-06 15:32 Clemens LadischNote Added: 0008178                          
-02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
-02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
-02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
-02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
-02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
-02-27-06 18:22 Clemens LadischNote Added: 0008227                          
-02-27-06 22:33 oggb4mp3       Note Added: 0008232                          
-03-01-06 03:40 oggb4mp3       Note Added: 0008263                          
-03-01-06 03:42 oggb4mp3       Note Edited: 0008263                         
-03-02-06 04:34 oggb4mp3       Note Added: 0008292                          
+02-27-06 03:57 Raymond        New Issue                                    
+02-27-06 04:01 rlrevell       Note Added: 0008212                          
+03-01-06 09:51 Raymond        Note Added: 0008277                          
+03-01-06 09:53 Raymond        Note Edited: 0008277                         
+03-01-06 18:01 rlrevell       Note Added: 0008284                          
+03-02-06 04:36 Raymond        Note Added: 0008293                          
 ======================================================================
 
 
