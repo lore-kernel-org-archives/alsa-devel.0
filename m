@@ -1,13 +1,14 @@
-From: FlyInside.com <FlyInside@triplealdo.com>
-Subject: Create Real Estate Virtual Tours No Cost
-Date: Thu, 02 Mar 2006 15:06:58 +0000
-Message-ID: <44070a12@www.aaaaldo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
+Date: Thu, 2 Mar 2006 17:10:23 +0100
+Message-ID: <ea0c4fc335c32baad414d36d42b5c136@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html;
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www.aaaaldo.com (mail.aaaaldo.com [66.103.143.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 784C51C8
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 16:45:10 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F12F71CF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 17:10:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,79 +18,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Friend <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<head>
-<title>flyinsiderev</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="10" marginwidth="0" marginheight="0">
-<!-- ImageReady Slices (flyinsiderev.psd) -->
-<table width="680" height="680" border="0" align="center" cellpadding="0" cellspacing="0" id="Table_01">
-	<tr>
-		<td>			<a href="http://www.flyinside.com/e1" target="_blank"><img src="http://www.flyinside.com/landing/aldo/flyinside_02_28_01_01.gif" alt="" width="680" height="95" border="0"></a></td>
-	</tr>
-	<tr>
 
-		<td>
-			<a href="http://www.flyinside.com/e1" target="_blank"><img src="http://www.flyinside.com/landing/aldo/flyinside_02_28_01_02.gif" alt="" width="680" height="132" border="0"></a></td>
-	</tr>
-	<tr>
-		<td>
-			<a href="http://www.flyinside.com/e1" target="_blank"><img src="http://www.flyinside.com/landing/aldo/flyinside_02_28_01_03.gif" alt="" width="680" height="62" border="0"></a></td>
-	</tr>
-	<tr>
-		<td>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1887> 
+======================================================================
+Reported By:                grattemedi
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1887
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.15.4
+======================================================================
+Date Submitted:             03-01-2006 22:35 CET
+Last Modified:              03-02-2006 17:10 CET
+======================================================================
+Summary:                    Can't record anything from MIC with Acer 1641
+(ALC260)
+Description: 
+With the new hda drivers in CVS, the speakers and jack output works very
+good.
+But I can't record anything from the external mic or from the mic input.
+I followed jwoithe advises : To record from the internal mic or the
+external mic jack, you need to:
 
-			<a href="http://www.flyinside.com/e1" target="_blank"><img src="http://www.flyinside.com/landing/aldo/flyinside_02_28_01_04.gif" alt="" width="680" height="123" border="0"></a></td>
-	</tr>
-	<tr>
-		<td>
-			<a href="http://www.flyinside.com/e1" target="_blank"><img src="http://www.flyinside.com/landing/aldo/flyinside_02_28_01_05.gif" alt="" width="680" height="50" border="0"></a></td>
-	</tr>
-	<tr>
-		<td>
-			<a href="http://www.flyinside.com/e1" target="_blank"><img src="http://www.flyinside.com/landing/aldo/flyinside_02_28_01_06.gif" alt="" width="680" height="145" border="0"></a></td>
+ * select the "mic" as the input source (displayed in "Playback" view)
+ * in the "Mic Jack Mode" control, select "Mic bias 80pc"
+ * in "Capture" view, unmute "Capture" channel (NOT "Capture 1") and
+   turn its volume up.
+Even after doing that, I can't record sound.
+Nevertheless, when I unmute the "mic" channel in the alsamixer "playback",
+i can hear sound from the mic but i cannot record it.
+======================================================================
 
-	</tr>
-	<tr>
-		<td>
-			<a href="http://www.flyinside.com/e1" target="_blank"><img src="http://www.flyinside.com/landing/aldo/flyinside_02_28_01_07.gif" alt="" width="680" height="73" border="0"></a></td>
-	</tr>
-</table>
-<!-- End ImageReady Slices -->
-<table width="674" border="0" align="center" cellpadding="0" cellspacing="0">
-  <tr>
-    <td><p><font color="#999999" 
+----------------------------------------------------------------------
+ er-ku - 03-02-06 08:30 
+----------------------------------------------------------------------
+The other 16xx owner uses Gnome and Gnome recorder. As I said in the
+mailing list, recording worked for me, but its quality was pretty poor (i
+think, it was even worse than the quality of mic playback).
 
-size="1" face="Arial, Helvetica, sans-serif"><br>
+grattemedi, if you unmute the "Capture" and "Capture 1" gains, and set
+them to max, then mark both for capture, set "Mic" as the input source for
+both channels, and then try to record something, do you hear at least the
+hiss? When I did that, I could hear a lot of noise in that case (when
+recording from the internal mic, at least).
 
-        www.triplealdo.com is a leading permission-based e-mail marketer for
-              the RealEstate Industry. This message is intended for <strong>them</strong> only.
-              To unsubscribe from triplealdo the fastest way, you may remove
-              your address by &quot;Clicking the Link on the very bottom&quot;</font></p>
-        <p align="right"><font color="#999999" size="1" face="Arial, Helvetica, sans-serif"><span 
+----------------------------------------------------------------------
+ grattemedi - 03-02-06 17:10 
+----------------------------------------------------------------------
+Hello, thank you for helping me !
+So... of course i turned up the "Capture" volume; i've tried with
+"Capture" and "Capture1" unmuted and even with "Capture" only. It has the
+same effect.
+Here is the result of the hexdump :
+>hexdump test.wav   
+0000000 4952 4646 4424 0000 4157 4556 6d66 2074
+0000010 0010 0000 0001 0001 1f40 0000 1f40 0000
+0000020 0001 0008 6164 6174 4400 0000 7f7f 7f7f
+0000030 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f
+*
+0000420 7f7f 7f7f 7f7f 7f7f 7f7f 807f 7f7f 7f7f
+0000430 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f
+*
+0004420 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f          
+000442c
 
-DEFANGED_STYLE="FONT-FAMILY: 'Arial'">To advertise your product or service fax
-              or email us for info:<br>
-                      <a href="http://www.triplealdo.com">www.triplealdo.com </a>P.O.
-                      Box 161526 Altamonte Springs, FL 32716 For info about advertising <br>
-        Please Fax 604-608-3104 <a 
+In all case when i play the recorded file, i hear nothing, no hiss, no
+noise...
 
-href="mailto:Info@triplealdo.com">Info@triplealdo.com</a></span></font><font color="#999999"> </font></p>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-01-06 22:35 grattemedi     New Issue                                    
+03-01-06 22:35 grattemedi     Distribution              => Slackware 10.2  
+03-01-06 22:35 grattemedi     Kernel Version            => 2.6.15.4        
+03-01-06 22:36 grattemedi     Issue Monitored: grattemedi                    
+03-01-06 22:37 grattemedi     Issue End Monitor: grattemedi                    
+03-02-06 00:53 jwoithe        Note Added: 0008289                          
+03-02-06 01:19 grattemedi     Note Added: 0008290                          
+03-02-06 01:38 jwoithe        Note Added: 0008291                          
+03-02-06 08:30 er-ku          Note Added: 0008294                          
+03-02-06 11:25 cartman        Issue Monitored: cartman                     
+03-02-06 17:10 grattemedi     Note Added: 0008321                          
+======================================================================
 
-    </td>
-  </tr>
-</table>
-<p>&nbsp;</p>
 
-<br><br>
-______________________________________________________<br>
-<br>
-To change your subscription details or stop receiving emails, <a href="http://www.aaaaldo.com/c/4/alsa-devel%40alsa-project.org">click here</a>
-<img src="http://www.aaaaldo.com/ctx.pl?m=505"></body></html>
 
 
 -------------------------------------------------------
