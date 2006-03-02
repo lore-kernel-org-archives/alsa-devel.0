@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001872]: Riptide firmware loading fails on my hardware
-Date: Thu, 2 Mar 2006 15:52:27 +0100
-Message-ID: <803c8511cdbd1ef85229539335b87861@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001886]: Problems on reboot
+Date: Thu, 2 Mar 2006 15:50:17 +0100
+Message-ID: <08294b391348da37800bb902d60284f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4A731CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:52:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E3881CF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:50:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1872> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1886> 
 ======================================================================
-Reported By:                hobbified
+Reported By:                eric
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1872
-Category:                   1_OTHERS
-Reproducibility:            always
+Issue ID:                   1886
+Category:                   PCI - via82xx
+Reproducibility:            random
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             Various, this data from 2.6.15-rc2-ck2
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-23-2006 03:10 CET
-Last Modified:              03-02-2006 15:52 CET
+Date Submitted:             03-01-2006 17:59 CET
+Last Modified:              03-02-2006 15:50 CET
 ======================================================================
-Summary:                    Riptide firmware loading fails on my hardware
+Summary:                    Problems on reboot
 Description: 
-When I try to use the snd-riptide module on this machine (actually a
-friend's), it fails to load the firmware properly, and so the module
-doesn't initialize. The device has PCI ID 127a:4310, which isn't in the
-PCI database, but the other function of the same device has ID 4311, which
-reports as a Riptide modem. It's an onboard device in an HP Presario. The
-problem is the same on 1.0.10 and 1.0.11rc3, but I used rc3 to produce the
-debugging output below. Also, I used the 'riptide.hex' firmware from the
-linuxant distribution (riptide-0.6lnxtbeta03122800), which I verified to
-be the same as in the Windows driver.
+Hi, i have little problem with my alsa configuration,
+
+i use kernel 2.6.15 and alsa release 10RC3
+
+on my configuration i use 
+
+1 X snd-via82xx and 2 X snd-ice1724
+
+sometime when i reboot i card as inverted and i have this udev message:
+
+ VIA 82xx Audio: probe of 0000:00:11.5 failed with error -12
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 15:52 
+ tiwai - 03-02-06 12:49 
 ----------------------------------------------------------------------
-Try the CVS version.  Some bugs on riptide driver were fixed, including the
-support of a differentl model.
+You have two definitions of snd-ice1724 options, and the latter one
+overrides.
+Combine the options for ice1724 into a single line.
+
+----------------------------------------------------------------------
+ eric - 03-02-06 15:50 
+----------------------------------------------------------------------
+Hi ,thanks but do you have a sample ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 03:10 hobbified      New Issue                                    
-02-23-06 03:10 hobbified      File Added: log.txt                          
-02-23-06 03:10 hobbified      Distribution              => Ubuntu          
-02-23-06 03:10 hobbified      Kernel Version            => Various, this data
-from 2.6.15-rc2-ck2
-02-23-06 09:22 hobbified      Issue Monitored: hobbified                    
-03-02-06 15:52 tiwai          Note Added: 0008313                          
+03-01-06 17:59 eric           New Issue                                    
+03-01-06 18:01 eric           Note Added: 0008285                          
+03-02-06 12:49 tiwai          Note Added: 0008299                          
+03-02-06 15:50 eric           Note Added: 0008312                          
 ======================================================================
 
 
