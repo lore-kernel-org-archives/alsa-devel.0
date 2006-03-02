@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001878]: SIGSEGV in snd_pcm_rate_drain
-Date: Thu, 2 Mar 2006 18:02:24 +0100
-Message-ID: <e7f50be1fd028b41cec6688c55e57f9e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001786]: Speaker produce sound even head phone is plugged in
+Date: Thu, 2 Mar 2006 18:09:18 +0100
+Message-ID: <6bce51f1719aa7a54f41a5a1afe4a5a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03B171B4
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 18:02:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D60311B4
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 18:09:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1878> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1786> 
 ======================================================================
-Reported By:                Faust3
+Reported By:                siukamming
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1878
-Category:                   CORE - pcm
-Reproducibility:            sometimes
-Severity:                   crash
+Issue ID:                   1786
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debain unstable
+Kernel Version:             2.6.14(Debain version) , 2.6.15(customized version)
 ======================================================================
-Date Submitted:             02-25-2006 14:08 CET
-Last Modified:              03-02-2006 18:02 CET
+Date Submitted:             01-27-2006 04:10 CET
+Last Modified:              03-02-2006 18:09 CET
 ======================================================================
-Summary:                    SIGSEGV in snd_pcm_rate_drain
+Summary:                    Speaker produce sound even head phone is plugged in
 Description: 
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread -1217157440 (LWP 13093)]
-0xb7e809b6 in snd_pcm_area_copy (dst_area=0x86b58c8, dst_offset=0,
-src_area=0x86b5508, src_offset=4096, samples=4294964224,
-format=SND_PCM_FORMAT_S16_LE) at pcm.c:2551
-2551                            *(u_int16_t*)dst = *(const
-u_int16_t*)src;
-(gdb) bt
-#0  0xb7e809b6 in snd_pcm_area_copy (dst_area=0x86b58c8, dst_offset=0,
-src_area=0x86b5508, src_offset=4096, samples=4294964224,
-format=SND_PCM_FORMAT_S16_LE)
-    at pcm.c:2551
-#1  0xb7e80c53 in snd_pcm_areas_copy (dst_areas=0x86b58c8, dst_offset=0,
-src_areas=0x86b5514, src_offset=4096, channels=2, frames=4294964224,
-    format=SND_PCM_FORMAT_S16_LE) at pcm.c:2650
-#2  0xb7e95d84 in snd_pcm_rate_commit_area (pcm=0x86b71d0, rate=0x86b7118,
-appl_offset=10752, size=11636, slave_size=17360) at pcm_rate.c:1067
-#3  0xb7e9653d in snd_pcm_rate_drain (pcm=0x86b71d0) at pcm_rate.c:1306
-#4  0xb7e771d2 in snd_pcm_drain (pcm=0x86b5940) at pcm.c:1057
-#5  0x080c9068 in uninit (immed=0) at ao_alsa.c:658
-#6  0x0807353d in uninit_player (mask=3659) at mplayer.c:485
-#7  0x08077d16 in main (argc=5, argv=0xbfb775b4) at mplayer.c:4488
-
-
-Problem seems to be that cont=4096 and period_size=1024
-in snd_pcm_rate_commit_area just before calling snd_pcm_areas_copy.
-With cont being unsigned the following calculation will overflow          
-    
-cont = rate->gen.slave->period_size - cont;
-slave_frames = cont;
-
-Tell me if you need more info.
-
+On my notebook Dell 630M(915GM + sigmatel 9200), the speaker still produce
+sound even headphone is plugged in. Now the speaker and headphone produce
+sound simultaneously. Suppose the speaker stop to produce sound as
+headphone is plugged in. 
+I tested Windows. The speaker really stop produce sound as headphone is
+plugged in. So it should be the driver problem. 
 ======================================================================
 
 ----------------------------------------------------------------------
- Faust3 - 03-02-06 17:56 
+ adoroar - 03-02-06 14:50 
 ----------------------------------------------------------------------
-Yes, that seems to fix the crash for me.
+Thanks toshio, the patch worked! had to plug it in when sound was playing
+for it to mute the internal speakers.
 
-Thanks
-
 ----------------------------------------------------------------------
- tiwai - 03-02-06 18:02 
+ toshio - 03-02-06 18:09 
 ----------------------------------------------------------------------
-Thanks for confirmation.  Applied to CVS now.
+tiwai: I don't mind that. But, as you said, maybe it's better to discuss
+this with the author, the alsa version in the latest kernel has other
+issues and requires other modifications to get going. See bug id 1843 and
+somehow it mutes the lines out so those need to be renabled too. Luckily
+those functions are already coded so they need to be added to
+initialisation code...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-25-06 14:08 Faust3         New Issue                                    
-02-25-06 14:09 Faust3         Issue Monitored: Faust3                      
-03-02-06 15:45 tiwai          Note Added: 0008311                          
-03-02-06 15:46 tiwai          File Added: pcm-rate-overflow-fix.diff            
-       
-03-02-06 17:56 Faust3         Note Added: 0008322                          
-03-02-06 18:02 tiwai          Status                   new => resolved     
-03-02-06 18:02 tiwai          Resolution               open => fixed       
-03-02-06 18:02 tiwai          Assigned To               => tiwai           
-03-02-06 18:02 tiwai          Note Added: 0008323                          
+01-27-06 04:10 siukamming     New Issue                                    
+01-27-06 04:10 siukamming     File Added: codec#0                          
+01-27-06 04:10 siukamming     Distribution              => Debain unstable 
+01-27-06 04:10 siukamming     Kernel Version            => 2.6.14(Debain
+version) , 2.6.15(customized version)
+02-20-06 08:26 toshio         Note Added: 0008143                          
+02-20-06 08:29 toshio         Issue Monitored: toshio                      
+02-25-06 08:15 toshio         Note Added: 0008185                          
+03-01-06 05:32 siukamming     Note Added: 0008270                          
+03-02-06 10:51 adoroar        Note Added: 0008295                          
+03-02-06 10:51 adoroar        Note Edited: 0008295                         
+03-02-06 10:52 adoroar        Note Edited: 0008295                         
+03-02-06 11:06 toshio         File Added: unsol-patch.tar.bz2                   
+
+03-02-06 11:09 toshio         Note Added: 0008296                          
+03-02-06 11:10 toshio         Note Deleted: 0008185                        
+03-02-06 11:50 tiwai          Note Added: 0008297                          
+03-02-06 12:54 toshio         Note Added: 0008300                          
+03-02-06 12:58 tiwai          Note Added: 0008301                          
+03-02-06 14:50 adoroar        Note Added: 0008306                          
+03-02-06 18:09 toshio         Note Added: 0008324                          
 ======================================================================
 
 
