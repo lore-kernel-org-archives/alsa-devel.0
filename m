@@ -1,30 +1,11 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: PCM driver only plays tiny portion of clip
-Date: Thu, 02 Mar 2006 20:49:23 +0000
-Message-ID: <1141332564.9233.6.camel@localhost.localdomain>
-References: <44054.217.150.108.178.1141056426.squirrel@newgolddream.dyndns.info>
-	 <20060227172601.GA446@turing.informatik.uni-halle.de>
-	 <40613.217.150.108.178.1141061722.squirrel@newgolddream.dyndns.info>
-	 <20060228073049.GA4158@turing.informatik.uni-halle.de>
-	 <35384.217.150.108.178.1141117853.squirrel@newgolddream.dyndns.info>
-	 <20060228145541.GA20876@turing.informatik.uni-halle.de>
-	 <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
-	 <20060228170824.GA24675@turing.informatik.uni-halle.de>
-	 <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
-	 <1141240231.9233.11.camel@localhost.localdomain>
-	 <1141241474.5860.183.camel@mindpipe>
-	 <1141242058.9233.17.camel@localhost.localdomain>
-	 <1141243152.5860.197.camel@mindpipe>
-	 <1141244926.9233.32.camel@localhost.localdomain>
-	 <1141245699.5860.224.camel@mindpipe>
+From: Jim Gleason <jgleason@helius.com>
+Subject: 1.0.11rc3 on 2.4.19 on old Caldera
+Date: Thu, 02 Mar 2006 14:35:44 -0700
+Message-ID: <1141335345.6126.25.camel@jmg.helius.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7B3E7173
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 21:49:27 +0100 (MET)
-In-Reply-To: <1141245699.5860.224.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -34,37 +15,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: alsa-user <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-03-01 at 15:41 -0500, Lee Revell wrote:
+All,
 
-> 
-> In this example the period (# of frames between interrupts) is 256.  So
-> if the app is waiting to write 512 frames (by setting the avail_min
-> software parameter) it will be woken up every other interrupt.  (This
-> example only makes sense if there are more than 2 periods per buffer,
-> otherwise the app is constantly overwriting the data that the hardware
-> is playing).
-> 
-> Lee
+I am having trouble getting a Soundblaster live 24-bit to work.  I have
+built 1.0.11rc3 (drivers, libs, utils) on a 2.4.19 kernel running on a
+very old Caldera system with limited updates (the card worked fine on my
+debian/testing machine).  (I don't have a choice on the system.)  I had
+to modify the /etc/rc.d/init.d/alsasound and /usr/sbin/alsaconf scripts
+to work with very old versions of bash and grep. When I enter aplay as
+follows:
 
+aplay  -Dplug:cards.pcm.default -f S32_LE -c2 -r44100 /dev/urandom
 
-I think I have a good idea why my it is not working now - the DMA
-routine which transfers sound samples from the main CPU memory to the
-ring buffer of the hardware (which is effectively in a different memory
-space) is in a kernel thread which, in essence, never gets rescheduled -
-so the app thinks there is sound to be transferred but it never is -
-hence it gets wedged.
+It responds with the following but I never get any sound.
 
-To fix that I need to know what the alsa subsystem calls inside the
-driver when it wants a DMA transfer to resume - I have to reschedule the
-kernel thread there.
+Playing raw data '/dev/urandom' : Signed 32 bit Little Endian, Rate
+44100 Hz, Stereo
 
-(I have to use a kernel thread or at least something similar to ensure
-that the trigger callback remains atomic due to the nature of the SH
-DMAC API.)
+I can also give it short wav files and it never returns.
+In /proc/interrupts, I get no or very limited interrupt action.
+In /proc/asound/timers I get the following:
+
+G0: system timer : 10000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+  Client application 29540 : stopped
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-1-0: PCM playback 0-1-0 : SLAVE
+P0-1-1: PCM capture 0-1-1 : SLAVE
+P0-2-0: PCM playback 0-2-0 : SLAVE
+P0-2-1: PCM capture 0-2-1 : SLAVE
+P0-3-0: PCM playback 0-3-0 : SLAVE
+P0-3-1: PCM capture 0-3-1 : SLAVE
+
+What would cause the process to freeze and be stopped like is indicated
+above?  What can I do?  Any suggestions?
+
+Jim Gleason
+
 
 
 
