@@ -1,20 +1,14 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PPC,SOUND] Fix audio gpio state detection
-Date: Thu, 02 Mar 2006 11:04:32 +1100
-Message-ID: <1141257873.3889.34.camel@localhost.localdomain>
-References: <jehd7527wq.fsf@sykes.suse.de>
-	 <1139783738.5247.54.camel@localhost.localdomain>
-	 <20060226173908.GA4871@suse.de> <20060301223034.GA5965@suse.de>
-	 <1141254596.3889.26.camel@localhost.localdomain>
-	 <1141256965.4378.145.camel@grayson>  <20060302000019.GB6792@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
+Date: Thu, 2 Mar 2006 01:19:10 +0100
+Message-ID: <dda6cd2813dc88a14cc16ebd63424958@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9A341D0
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 01:04:40 +0100 (MET)
-In-Reply-To: <20060302000019.GB6792@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 351C91D0
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 01:19:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,25 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Olaf Hering <olh@suse.de>
-Cc: Ben Collins <bcollins@ubuntu.com>, alsa-devel@alsa-project.org, Ben Collins <ben.collins@ubuntu.com>, linuxppc-dev@ozlabs.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-02 at 01:00 +0100, Olaf Hering wrote:
->  On Wed, Mar 01, Ben Collins wrote:
-> 
-> > I'm rediffing now. However, I may not include my tumbler changes
-> > immediately. For some reason, those are the ones causing problems. I
-> > need to review the diff and see if I can find the problem (which I
-> > cannot reproduce).
-> 
-> Can you make individual patches, each one fixing one thing, going from A
-> to B.  You know that hch song...
 
-In that case, it's difficult as it's more like a rewrite of the GPIO
-handling from scratch (well... almost)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1887> 
+======================================================================
+Reported By:                grattemedi
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1887
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.15.4
+======================================================================
+Date Submitted:             03-01-2006 22:35 CET
+Last Modified:              03-02-2006 01:19 CET
+======================================================================
+Summary:                    Can't record anything from MIC with Acer 1641
+(ALC260)
+Description: 
+With the new hda drivers in CVS, the speakers and jack output works very
+good.
+But I can't record anything from the external mic or from the mic input.
+I followed jwoithe advises : To record from the internal mic or the
+external mic jack, you need to:
 
-Ben.
+ * select the "mic" as the input source (displayed in "Playback" view)
+ * in the "Mic Jack Mode" control, select "Mic bias 80pc"
+ * in "Capture" view, unmute "Capture" channel (NOT "Capture 1") and
+   turn its volume up.
+Even after doing that, I can't record sound.
+Nevertheless, when I unmute the "mic" channel in the alsamixer "playback",
+i can hear sound from the mic but i cannot record it.
+======================================================================
+
+----------------------------------------------------------------------
+ jwoithe - 03-02-06 00:53 
+----------------------------------------------------------------------
+This is puzzling since others have reported successful recording on the
+same type of system I think.  Anyway, some quick questions.
+
+What software are you using for recording?  If applicable, what options /
+command line arguments are you using?
+
+Does your recording software have its own controls for things like
+recording volume, recording source etc?  If so, are these set
+appropriately?
+
+When setting the input source in alsamixer, did you use the control
+labeled "Input Source"?  "Input Source 1" is not the one you want.
+
+What *is* recorded into the output file - do you hear hiss, or is it total
+silence?
+
+----------------------------------------------------------------------
+ grattemedi - 03-02-06 01:19 
+----------------------------------------------------------------------
+I 've tried two software : first i've tried with the shell command :
+   rec test.wav    (i have also tried the --volume=100 option)
+and play test.wav to hear it.There 's no error but when i tape play
+test.wav, there is no sound at all : "total silence".
+Indeed i use "Input Source" and not "Input Source 1".
+Secondly i tried with a kde software KRec with no success : "total
+silence" when i play what i've recorded.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-01-06 22:35 grattemedi     New Issue                                    
+03-01-06 22:35 grattemedi     Distribution              => Slackware 10.2  
+03-01-06 22:35 grattemedi     Kernel Version            => 2.6.15.4        
+03-01-06 22:36 grattemedi     Issue Monitored: grattemedi                    
+03-01-06 22:37 grattemedi     Issue End Monitor: grattemedi                    
+03-02-06 00:53 jwoithe        Note Added: 0008289                          
+03-02-06 01:19 grattemedi     Note Added: 0008290                          
+======================================================================
 
 
 
