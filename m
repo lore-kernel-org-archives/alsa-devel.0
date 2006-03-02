@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001886]: Problems on reboot
-Date: Thu, 2 Mar 2006 15:50:17 +0100
-Message-ID: <08294b391348da37800bb902d60284f2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001875]: null device gererates much more frames than physical hw would
+Date: Thu, 2 Mar 2006 15:54:06 +0100
+Message-ID: <53ebc74a0513ae62f05daf59521a2519@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E3881CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:50:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E21251CF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 15:54:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1886> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1875> 
 ======================================================================
-Reported By:                eric
-Assigned To:                
+Reported By:                gjasny
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1886
-Category:                   PCI - via82xx
-Reproducibility:            random
+Project:                    ALSA - lib
+Issue ID:                   1875
+Category:                   1_pcm - digital audio
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-01-2006 17:59 CET
-Last Modified:              03-02-2006 15:50 CET
+Date Submitted:             02-24-2006 22:51 CET
+Last Modified:              03-02-2006 15:54 CET
 ======================================================================
-Summary:                    Problems on reboot
+Summary:                    null device gererates much more frames than physical
+hw would
 Description: 
-Hi, i have little problem with my alsa configuration,
+Hi,
 
-i use kernel 2.6.15 and alsa release 10RC3
-
-on my configuration i use 
-
-1 X snd-via82xx and 2 X snd-ice1724
-
-sometime when i reboot i card as inverted and i have this udev message:
-
- VIA 82xx Audio: probe of 0000:00:11.5 failed with error -12
-
+for some reason, my application supports capturing from the null device.
+In contrast to real devices, the null device supplies sound data as fast
+as possible.
+I would expect that I get about channel*bits*rate/8 bytes per second.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 12:49 
+ tiwai - 03-02-06 15:54 
 ----------------------------------------------------------------------
-You have two definitions of snd-ice1724 options, and the latter one
-overrides.
-Combine the options for ice1724 into a single line.
-
-----------------------------------------------------------------------
- eric - 03-02-06 15:50 
-----------------------------------------------------------------------
-Hi ,thanks but do you have a sample ?
+null plugin doesn't behave as you expected.  Use snd-dummy driver instead
+for such a purpose.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-06 17:59 eric           New Issue                                    
-03-01-06 18:01 eric           Note Added: 0008285                          
-03-02-06 12:49 tiwai          Note Added: 0008299                          
-03-02-06 15:50 eric           Note Added: 0008312                          
+02-24-06 22:51 gjasny         New Issue                                    
+03-02-06 15:54 tiwai          Status                   new => resolved     
+03-02-06 15:54 tiwai          Resolution               open => not an issue
+03-02-06 15:54 tiwai          Assigned To               => tiwai           
+03-02-06 15:54 tiwai          Note Added: 0008314                          
 ======================================================================
 
 
