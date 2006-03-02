@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
-Date: Thu, 2 Mar 2006 17:10:23 +0100
-Message-ID: <ea0c4fc335c32baad414d36d42b5c136@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001878]: SIGSEGV in snd_pcm_rate_drain
+Date: Thu, 2 Mar 2006 17:56:08 +0100
+Message-ID: <65aa2605cc659400459bd8e8fa508086@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F12F71CF
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 17:10:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8842F174
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 17:56:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,92 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1887> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1878> 
 ======================================================================
-Reported By:                grattemedi
-Assigned To:                tiwai
+Reported By:                Faust3
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1887
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1878
+Category:                   CORE - pcm
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.15.4
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-01-2006 22:35 CET
-Last Modified:              03-02-2006 17:10 CET
+Date Submitted:             02-25-2006 14:08 CET
+Last Modified:              03-02-2006 17:56 CET
 ======================================================================
-Summary:                    Can't record anything from MIC with Acer 1641
-(ALC260)
+Summary:                    SIGSEGV in snd_pcm_rate_drain
 Description: 
-With the new hda drivers in CVS, the speakers and jack output works very
-good.
-But I can't record anything from the external mic or from the mic input.
-I followed jwoithe advises : To record from the internal mic or the
-external mic jack, you need to:
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread -1217157440 (LWP 13093)]
+0xb7e809b6 in snd_pcm_area_copy (dst_area=0x86b58c8, dst_offset=0,
+src_area=0x86b5508, src_offset=4096, samples=4294964224,
+format=SND_PCM_FORMAT_S16_LE) at pcm.c:2551
+2551                            *(u_int16_t*)dst = *(const
+u_int16_t*)src;
+(gdb) bt
+#0  0xb7e809b6 in snd_pcm_area_copy (dst_area=0x86b58c8, dst_offset=0,
+src_area=0x86b5508, src_offset=4096, samples=4294964224,
+format=SND_PCM_FORMAT_S16_LE)
+    at pcm.c:2551
+#1  0xb7e80c53 in snd_pcm_areas_copy (dst_areas=0x86b58c8, dst_offset=0,
+src_areas=0x86b5514, src_offset=4096, channels=2, frames=4294964224,
+    format=SND_PCM_FORMAT_S16_LE) at pcm.c:2650
+#2  0xb7e95d84 in snd_pcm_rate_commit_area (pcm=0x86b71d0, rate=0x86b7118,
+appl_offset=10752, size=11636, slave_size=17360) at pcm_rate.c:1067
+#3  0xb7e9653d in snd_pcm_rate_drain (pcm=0x86b71d0) at pcm_rate.c:1306
+#4  0xb7e771d2 in snd_pcm_drain (pcm=0x86b5940) at pcm.c:1057
+#5  0x080c9068 in uninit (immed=0) at ao_alsa.c:658
+#6  0x0807353d in uninit_player (mask=3659) at mplayer.c:485
+#7  0x08077d16 in main (argc=5, argv=0xbfb775b4) at mplayer.c:4488
 
- * select the "mic" as the input source (displayed in "Playback" view)
- * in the "Mic Jack Mode" control, select "Mic bias 80pc"
- * in "Capture" view, unmute "Capture" channel (NOT "Capture 1") and
-   turn its volume up.
-Even after doing that, I can't record sound.
-Nevertheless, when I unmute the "mic" channel in the alsamixer "playback",
-i can hear sound from the mic but i cannot record it.
+
+Problem seems to be that cont=4096 and period_size=1024
+in snd_pcm_rate_commit_area just before calling snd_pcm_areas_copy.
+With cont being unsigned the following calculation will overflow          
+    
+cont = rate->gen.slave->period_size - cont;
+slave_frames = cont;
+
+Tell me if you need more info.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- er-ku - 03-02-06 08:30 
+ tiwai - 03-02-06 15:45 
 ----------------------------------------------------------------------
-The other 16xx owner uses Gnome and Gnome recorder. As I said in the
-mailing list, recording worked for me, but its quality was pretty poor (i
-think, it was even worse than the quality of mic playback).
-
-grattemedi, if you unmute the "Capture" and "Capture 1" gains, and set
-them to max, then mark both for capture, set "Mic" as the input source for
-both channels, and then try to record something, do you hear at least the
-hiss? When I did that, I could hear a lot of noise in that case (when
-recording from the internal mic, at least).
+Does the attached patch fix the problem?
 
 ----------------------------------------------------------------------
- grattemedi - 03-02-06 17:10 
+ Faust3 - 03-02-06 17:56 
 ----------------------------------------------------------------------
-Hello, thank you for helping me !
-So... of course i turned up the "Capture" volume; i've tried with
-"Capture" and "Capture1" unmuted and even with "Capture" only. It has the
-same effect.
-Here is the result of the hexdump :
->hexdump test.wav   
-0000000 4952 4646 4424 0000 4157 4556 6d66 2074
-0000010 0010 0000 0001 0001 1f40 0000 1f40 0000
-0000020 0001 0008 6164 6174 4400 0000 7f7f 7f7f
-0000030 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f
-*
-0000420 7f7f 7f7f 7f7f 7f7f 7f7f 807f 7f7f 7f7f
-0000430 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f
-*
-0004420 7f7f 7f7f 7f7f 7f7f 7f7f 7f7f          
-000442c
+Yes, that seems to fix the crash for me.
 
-In all case when i play the recorded file, i hear nothing, no hiss, no
-noise...
+Thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-06 22:35 grattemedi     New Issue                                    
-03-01-06 22:35 grattemedi     Distribution              => Slackware 10.2  
-03-01-06 22:35 grattemedi     Kernel Version            => 2.6.15.4        
-03-01-06 22:36 grattemedi     Issue Monitored: grattemedi                    
-03-01-06 22:37 grattemedi     Issue End Monitor: grattemedi                    
-03-02-06 00:53 jwoithe        Note Added: 0008289                          
-03-02-06 01:19 grattemedi     Note Added: 0008290                          
-03-02-06 01:38 jwoithe        Note Added: 0008291                          
-03-02-06 08:30 er-ku          Note Added: 0008294                          
-03-02-06 11:25 cartman        Issue Monitored: cartman                     
-03-02-06 17:10 grattemedi     Note Added: 0008321                          
+02-25-06 14:08 Faust3         New Issue                                    
+02-25-06 14:09 Faust3         Issue Monitored: Faust3                      
+03-02-06 15:45 tiwai          Note Added: 0008311                          
+03-02-06 15:46 tiwai          File Added: pcm-rate-overflow-fix.diff            
+       
+03-02-06 17:56 Faust3         Note Added: 0008322                          
 ======================================================================
 
 
