@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001882]: Use ESC key to stop the speaker-test instead of using ctrl-C
-Date: Thu, 2 Mar 2006 04:36:38 +0100
-Message-ID: <47ac39fe0b75cb88bcec2968c7aef13a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
+Date: Thu, 2 Mar 2006 08:30:20 +0100
+Message-ID: <8b01b4bcedb2913926a59e455c9e9355@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3016F175
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 04:36:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D539D1CF
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 08:30:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1882> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1887> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                
+Reported By:                grattemedi
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1882
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   1887
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.15.4
 ======================================================================
-Date Submitted:             02-27-2006 03:57 CET
-Last Modified:              03-02-2006 04:36 CET
+Date Submitted:             03-01-2006 22:35 CET
+Last Modified:              03-02-2006 08:30 CET
 ======================================================================
-Summary:                    Use ESC key to stop the speaker-test instead of
-using ctrl-C
+Summary:                    Can't record anything from MIC with Acer 1641
+(ALC260)
 Description: 
-Is it possible to use ESC key to stop the speaker-test instead of abort the
-test by using control-C ?
+With the new hda drivers in CVS, the speakers and jack output works very
+good.
+But I can't record anything from the external mic or from the mic input.
+I followed jwoithe advises : To record from the internal mic or the
+external mic jack, you need to:
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
+ * select the "mic" as the input source (displayed in "Playback" view)
+ * in the "Mic Jack Mode" control, select "Mic bias 80pc"
+ * in "Capture" view, unmute "Capture" channel (NOT "Capture 1") and
+   turn its volume up.
+Even after doing that, I can't record sound.
+Nevertheless, when I unmute the "mic" channel in the alsamixer "playback",
+i can hear sound from the mic but i cannot record it.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-01-06 18:01 
+ jwoithe - 03-02-06 01:38 
 ----------------------------------------------------------------------
-That's not what -t does in speaker-test
+Interesting.  I'll have to ponder this.  Perhaps in the meantime one of the
+other 16xx owners (for whom recording works) can chime in and provide a
+suggestion.  Did I perhaps forget a step in the process as reproduced by
+grattemedi in the initial bug report?
 
-Usage: speaker-test [OPTION]... 
--h,--help       help
--D,--device     playback device
--r,--rate       stream rate in Hz
--c,--channels   count of channels in stream
--f,--frequency  sine wave frequency in Hz
--F,--format     sample format
--b,--buffer     ring buffer size in us
--p,--period     period size in us
--t,--test       1=use pink noise, 2=use sine wave
--s,--speaker    single speaker test. Values 1=Left or 2=right
+The "Capture" volume is also turned up I assume?  It really sounds as if
+the capture channel is muted, but you said it was definitely unmuted in
+alsamixer.
+
+It would be good to know whether the recorded file consisted entirely of
+zeros or whether it has low-level noise (perhaps too low to be heard when
+played back).  Could you check this using hexdump or something?  If not,
+could you put it up on the web somewhere so I can grab it?
+
+Since you can hear the mic when you turn up the "mic" control we at least
+know that the jack itself is working and that it is definitely in the
+"mic" jack (as opposed to the "line in" jack which this laptop also
+apparently has).
 
 ----------------------------------------------------------------------
- Raymond - 03-02-06 04:36 
+ er-ku - 03-02-06 08:30 
 ----------------------------------------------------------------------
-The feature -t wav was added last year
+The other 16xx owner uses Gnome and Gnome recorder. As I said in the
+mailing list, recording worked for me, but its quality was pretty poor (i
+think, it was even worse than the quality of mic playback).
 
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-utils/speaker-test/speaker-test.c?r1=1.14&r2=1.15
-
-I am testing whether multi can be used to downmix surround51 to 4 speakers
-by hardware mixer.
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
+grattemedi, if you unmute the "Capture" and "Capture 1" gains, and set
+them to max, then mark both for capture, set "Mic" as the input source for
+both channels, and then try to record something, do you hear at least the
+hiss? When I did that, I could hear a lot of noise in that case (when
+recording from the internal mic, at least).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-06 03:57 Raymond        New Issue                                    
-02-27-06 04:01 rlrevell       Note Added: 0008212                          
-03-01-06 09:51 Raymond        Note Added: 0008277                          
-03-01-06 09:53 Raymond        Note Edited: 0008277                         
-03-01-06 18:01 rlrevell       Note Added: 0008284                          
-03-02-06 04:36 Raymond        Note Added: 0008293                          
+03-01-06 22:35 grattemedi     New Issue                                    
+03-01-06 22:35 grattemedi     Distribution              => Slackware 10.2  
+03-01-06 22:35 grattemedi     Kernel Version            => 2.6.15.4        
+03-01-06 22:36 grattemedi     Issue Monitored: grattemedi                    
+03-01-06 22:37 grattemedi     Issue End Monitor: grattemedi                    
+03-02-06 00:53 jwoithe        Note Added: 0008289                          
+03-02-06 01:19 grattemedi     Note Added: 0008290                          
+03-02-06 01:38 jwoithe        Note Added: 0008291                          
+03-02-06 08:30 er-ku          Note Added: 0008294                          
 ======================================================================
 
 
