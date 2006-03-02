@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001884]: alsaconf don't find Realtek ALC850 onboard soundchip on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
-Date: Thu, 2 Mar 2006 13:21:03 +0100
-Message-ID: <a831588095640e5a2b58c782c4b0e440@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001877]: ALSA driver not recognising nVidia MCP51 (Realtek ALC850) sound chip
+Date: Thu, 2 Mar 2006 13:19:30 +0100
+Message-ID: <16e9da4df4e0c9d8b4b0e46eddb6b864@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F38481D3
-	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 13:21:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 896BD1B4
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2006 13:19:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1884> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1877> 
 ======================================================================
-Reported By:                bergwiesel
+Reported By:                bobhesketh
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1884
-Category:                   1_OTHERS
+Issue ID:                   1877
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian 4.0.2-5
-Kernel Version:             2.6.12
-Resolution:                 not an issue
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r5
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-28-2006 15:18 CET
-Last Modified:              03-02-2006 13:21 CET
+Date Submitted:             02-25-2006 12:29 CET
+Last Modified:              03-02-2006 13:19 CET
 ======================================================================
-Summary:                    alsaconf don't find Realtek ALC850 onboard soundchip
-on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
+Summary:                    ALSA driver not recognising nVidia MCP51 (Realtek
+ALC850) sound chip
 Description: 
-Hi!
+The ASRock K8NF4G-SATA2 contains an nVidia MCP51 chipset, utilising a
+Realtek
+ALC850 codec sound chip. This is compatible with the intel8x0 ALSA sound
+driver.
+However, selecting the driver:
 
-I have an Asus A8V Deluxe mainboard with its Realtek ALC850 soundchip,
-which is fine for its own, but if I plug in my new Soundblaster X-Fi
-alsaconf don't find a thing.
+[Intel/Sis/nVidia/AMD/ALi AC97 Controller]
 
-Do you need some more informations?
+in the kernel doesn't work, and neither does the equivalent driver in the
+alsa-driver package.
 ======================================================================
 
 ----------------------------------------------------------------------
- bergwiesel - 02-28-06 16:14 
+ bobhesketh - 02-25-06 12:32 
 ----------------------------------------------------------------------
-thx
-
-that I didn't find. It's not in the mainboard manual!
+Forgot to say, I'm using the AMD64 architecture
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 13:21 
+ tiwai - 03-02-06 13:19 
 ----------------------------------------------------------------------
-Closing now as this is no bug.
+The PCI entry already exists in the latest version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-28-06 15:18 bergwiesel     New Issue                                    
-02-28-06 15:18 bergwiesel     Distribution              => Debian 4.0.2-5  
-02-28-06 15:18 bergwiesel     Kernel Version            => 2.6.12          
-02-28-06 15:20 er-ku          Note Added: 0008243                          
-02-28-06 15:52 vsu            Note Added: 0008244                          
-02-28-06 16:14 bergwiesel     Note Added: 0008245                          
-03-02-06 13:21 tiwai          Status                   new => resolved     
-03-02-06 13:21 tiwai          Resolution               open => not an issue
-03-02-06 13:21 tiwai          Assigned To               => tiwai           
-03-02-06 13:21 tiwai          Note Added: 0008304                          
+02-25-06 12:29 bobhesketh     New Issue                                    
+02-25-06 12:29 bobhesketh     Distribution              => Gentoo          
+02-25-06 12:29 bobhesketh     Kernel Version            => 2.6.15-gentoo-r5
+02-25-06 12:32 bobhesketh     Note Added: 0008188                          
+03-02-06 13:19 tiwai          Status                   new => resolved     
+03-02-06 13:19 tiwai          Resolution               open => fixed       
+03-02-06 13:19 tiwai          Assigned To               => tiwai           
+03-02-06 13:19 tiwai          Note Added: 0008303                          
 ======================================================================
 
 
